@@ -42,9 +42,9 @@ test_that(".getPanelColor returns the expected colors", {
     x <- ReducedDimensionPlot()
     out <- .getPanelColor(x)
     expect_identical(out, "#1e90ff")
-    
+
     iSEEOptions$restore()
-    
+
     x <- ReducedDimensionPlot()
     out <- .getPanelColor(x)
     expect_identical(out, "#3565AA")
@@ -111,8 +111,8 @@ test_that(".multiple_choice_error detects issues", {
     x[[iSEE:::.visualParamChoice]] <- "other"
 
     out <- iSEE:::.multiple_choice_error(msg, x, iSEE:::.visualParamChoice,
-        c(iSEE:::.visualParamChoiceColorTitle, iSEE:::.visualParamChoiceShapeTitle, iSEE:::.visualParamChoicePointTitle, iSEE:::.visualParamChoiceFacetTitle, iSEE:::.visualParamChoiceOtherTitle))
-    expect_identical(out, "values of 'VisualChoices' for 'ReducedDimensionPlot' should be in 'Color', 'Shape', 'Points', 'Facets', 'Other'")
+        c(iSEE:::.visualParamChoiceColorTitle, iSEE:::.visualParamChoiceShapeTitle, iSEE:::.visualParamChoiceSizeTitle, iSEE:::.visualParamChoicePointTitle, iSEE:::.visualParamChoiceFacetTitle, iSEE:::.visualParamChoiceTextTitle, iSEE:::.visualParamChoiceOtherTitle))
+    expect_identical(out, "values of 'VisualChoices' for 'ReducedDimensionPlot' should be in 'Color', 'Shape', 'Size', 'Point', 'Facet', 'Text', 'Other'")
 
 })
 
@@ -181,13 +181,15 @@ test_that(".requestActiveSelectionUpdate updates rObjects", {
 
     rObjects <- new.env()
     rObjects$modified <- list()
-
-    .requestActiveSelectionUpdate("ReducedDimensionPlot1", rObjects, update_output = TRUE)
+    pObjects <- new.env()
+    pObjects$memory <- list(ReducedDimensionPlot1=ReducedDimensionPlot())
+    
+    .requestActiveSelectionUpdate("ReducedDimensionPlot1", session=NULL, pObjects, rObjects, update_output = TRUE)
 
     expect_identical(rObjects$ReducedDimensionPlot1_INTERNAL_multi_select, 2L)
     expect_identical(rObjects$modified, list(ReducedDimensionPlot1 = "Reactivated"))
 
-    .requestActiveSelectionUpdate("ReducedDimensionPlot1", rObjects, update_output = FALSE)
+    .requestActiveSelectionUpdate("ReducedDimensionPlot1", session=NULL, pObjects, rObjects, update_output = FALSE)
 
     expect_identical(rObjects$ReducedDimensionPlot1_INTERNAL_multi_select, 3L)
     expect_identical(rObjects$modified, list(ReducedDimensionPlot1 = c("Reactivated", "Norender")))
@@ -262,4 +264,12 @@ test_that(".safe_nonzero_range works", {
     out <- iSEE:::.safe_nonzero_range(range = c(2, 2), centered = TRUE)
     expect_identical(out, c(1, 3))
 
+})
+
+test_that("define_visual_options throws an error for unnamed list input", {
+
+    expect_error(
+        iSEE:::.define_visual_options(X = list(1, 2, 3)),
+        "Visual parameters UI elements must be named"
+    )
 })

@@ -9,6 +9,7 @@
 \alias{.createObservers,RowTable-method}
 \alias{.hideInterface,RowTable-method}
 \alias{.multiSelectionDimension,RowTable-method}
+\alias{.singleSelectionDimension,RowTable-method}
 \title{The RowTable class}
 \description{
 The RowTable is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by no more than one row in a \code{\link{datatable}} widget.
@@ -47,6 +48,7 @@ This will also call the equivalent \linkS4class{Table} method.
 For controlling selections:
 \itemize{
 \item \code{\link{.multiSelectionDimension}(x)} returns \code{"row"} to indicate that a row selection is being transmitted.
+\item \code{\link{.singleSelectionDimension}(x)} returns \code{"feature"} to indicate that a feature identity is being transmitted.
 }
 
 Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.

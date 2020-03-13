@@ -11,6 +11,7 @@
 #' @param extra A list of additional \linkS4class{Panel} objects that might be added after the app has started.
 #' Defaults to one instance of each panel class available from \pkg{iSEE}.
 #' @param landingPage A function that renders a landing page when \code{se} is started without any specified \code{se}.
+#' See \code{\link{createLandingPage}} for more details.
 #' @param redDimArgs Deprecated, use \code{initial} instead.
 #' @param colDataArgs Deprecated, use \code{initial} instead.
 #' @param featAssayArgs Deprecated, use \code{initial} instead.
@@ -60,7 +61,7 @@
 #' The first instance of each new class in \code{extra} will be used as a template when the user adds a new panel of that class.
 #' Note that \code{initial} will automatically be appended to \code{extra} to form the final set of available panels,
 #' so it is not strictly necessary to re-specify instances of those initial panels in \code{extra}.
-#' (unless we want the parameters of newly created panels to be different from those at initializtaion).
+#' (unless we want the parameters of newly created panels to be different from those at initialization).
 #'
 #' The \code{tour} argument needs to be provided in a form compatible with the format expected by the \code{rintrojs} package.
 #' There should be two columns, \code{element} and \code{intro}, with the former describing the element to highlight and the latter providing some descriptive text.
@@ -73,7 +74,6 @@
 #' By default, the maximum request size for file uploads defaults to 5MB
 #' (\url{https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html}).
 #' To raise the limit (e.g., 50MB), run \code{options(shiny.maxRequestSize=50*1024^2)}.
-#' See \code{\link{createLandingPage}} for details on creating a custom landing page.
 #'
 #' @return A Shiny app object is returned for interactive data exploration of \code{se},
 #' either by simply printing the object or by explicitly running it with \code{\link{runApp}}.
@@ -110,12 +110,13 @@
 #'
 #' @export
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
-#' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu notificationItem
+#' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu 
+#' notificationItem
 #' @importFrom utils packageVersion
 #' @importFrom shinyjs useShinyjs
 #' @importFrom rintrojs introjsUI
 #' @importFrom shiny reactiveValues uiOutput actionButton shinyApp
-#' HTML icon tags includeCSS isolate
+#' HTML icon tags includeCSS isolate showNotification
 iSEE <- function(se,
     initial=NULL,
     extra=NULL,
@@ -371,6 +372,9 @@ iSEE <- function(se,
                     requested <- vapply(INITIAL, .encodedName, "")
                     available <- c(vapply(initial, .encodedName, ""), vapply(extra, .encodedName, ""))
                     keep <- requested %in% available
+                    if (!all(keep)) {
+                        showNotification("not all requested Panels exist in 'initial' or 'extra'", type="warning")
+                    }
                     INITIAL <- INITIAL[keep]
                 }
                 .initialize_server(SE, initial=INITIAL, extra=extra, colormap=colormap,
@@ -637,11 +641,13 @@ iSEE <- function(se,
 #' \item \code{varname}, a list of strings indicating which variable in a panel's \code{commands} represents that panel's \code{contents}.
 #' This is used within \code{\link{.track_it_all}} to ensure that the reported code makes sense.
 #' \item \code{selection_links}, a \link{graph} containing the links between panels due to transmitted multiple selections.
-#' This is constructed by \code{\link{.spawn_multi_selection_graph}}
-#' and can be modified by \code{\link{.choose_new_parent}}.
+#' This is constructed by \code{\link{.spawn_multi_selection_graph}} and can be modified by \code{\link{.choose_new_parent}}.
 #' \item \code{aesthetics_links}, a \link{graph} containing the links between panels due to transmitted single selections.
-#' This is constructed by \code{\link{.spawn_single_selection_graph}}
-#' and can be modified by \code{\link{.choose_new_parent}}.
+#' This is constructed by \code{\link{.spawn_single_selection_graph}} and can be modified by \code{\link{.choose_new_parent}}.
+#' \item \code{dynamic_multi_selections}, a list containing the panels participating in the dynamic multiple selection scheme.
+#' This is constructed by \code{\link{.spawn_dynamic_multi_selection_list}}.
+#' \item \code{dynamic_single_selections}, a list containing the panels participating in the dynamic single selection scheme.
+#' This is constructed by \code{\link{.spawn_dynamic_single_selection_list}}.
 #' }
 #'
 #' @author Aaron Lun
@@ -659,6 +665,9 @@ iSEE <- function(se,
 
     pObjects$aesthetics_links <- .spawn_single_selection_graph(memory)
     pObjects$selection_links <- .spawn_multi_selection_graph(memory)
+
+    pObjects$dynamic_multi_selections <- .spawn_dynamic_multi_selection_list(memory)
+    pObjects$dynamic_single_selections <- .spawn_dynamic_single_selection_list(memory)
 
     pObjects[[.voiceActivePanel]] <- NA_character_
 

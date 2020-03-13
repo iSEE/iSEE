@@ -172,3 +172,58 @@ test_that("aesthetics links construction works as expected", {
     ids <- igraph::get.edge.ids(g, c("ColumnDataTable1", "SampleAssayPlot1"))
     expect_identical(igraph::E(g)$fields[[ids]], "XAxisSampleName")
 })
+
+test_that("dynamic source construction works as expected", {
+    memory <- list(
+        ReducedDimensionPlot(PanelId=1L, ColumnSelectionDynamicSource=TRUE),
+        FeatureAssayPlot(PanelId=1L), # no dynamic selection, as a control.
+        FeatureAssayPlot(PanelId=2L, ColumnSelectionDynamicSource=TRUE),
+        SampleAssayPlot(PanelId=1L, RowSelectionDynamicSource=TRUE)
+    )
+
+    out <- iSEE:::.spawn_dynamic_multi_selection_list(memory)
+    expect_identical(names(out$row), "SampleAssayPlot1")
+    expect_identical(names(out$column), c("ReducedDimensionPlot1", "FeatureAssayPlot2"))
+
+    # Now for the single selections:
+    memory <- list(
+        ReducedDimensionPlot(PanelId=1L, ColorByFeatureDynamicSource=TRUE),
+        FeatureAssayPlot(PanelId=1L),
+        FeatureAssayPlot(PanelId=2L, YAxisFeatureDynamicSource=TRUE, XAxisFeatureDynamicSource=TRUE),
+        SampleAssayPlot(PanelId=1L, ColorBySampleDynamicSource=TRUE)
+    )
+
+    out <- iSEE:::.spawn_dynamic_single_selection_list(memory)
+    expect_identical(names(out$feature), c("ReducedDimensionPlot1", "FeatureAssayPlot2"))
+    expect_identical(out$feature$ReducedDimensionPlot1, "ColorByFeatureSource")
+    expect_identical(out$feature$FeatureAssayPlot2, c("XAxisFeatureSource", "YAxisFeatureSource"))
+    expect_identical(names(out$sample), "SampleAssayPlot1")
+    expect_identical(out$sample$SampleAssayPlot1, "ColorBySampleSource")
+})
+
+test_that("dynamic source editing works as expected", {
+    memory <- list(
+        ReducedDimensionPlot(PanelId=1L, ColorByFeatureDynamicSource=TRUE),
+        FeatureAssayPlot(PanelId=1L),
+        FeatureAssayPlot(PanelId=2L, YAxisFeatureDynamicSource=TRUE, XAxisFeatureDynamicSource=TRUE),
+        SampleAssayPlot(PanelId=1L, ColorBySampleDynamicSource=TRUE)
+    )
+
+    out <- iSEE:::.spawn_dynamic_single_selection_list(memory)
+
+    # Works for new panels.
+    out2 <- iSEE:::.add_panel_to_dynamic_sources(out, "ReducedDimensionPlot2", "feature", "ColorByFeatureSource")
+    expect_identical(out2$feature$ReducedDimensionPlot2, "ColorByFeatureSource")
+    out3 <- iSEE:::.delete_panel_from_dynamic_sources(out2, "ReducedDimensionPlot2", "feature", "ColorByFeatureSource")
+    expect_identical(out3, out)
+
+    # Works for existing panels with new fields.
+    out2 <- iSEE:::.delete_panel_from_dynamic_sources(out2, "FeatureAssayPlot2", "feature", "XAxisFeatureSource")
+    expect_false("XAxisFeatureSource" %in% out2$feature$FeatureAssayPlot2)
+    out3 <- iSEE:::.add_panel_to_dynamic_sources(out, "FeatureAssayPlot2", "feature", "XAxisFeatureSource")
+    expect_identical(out3, out)
+
+    # No effect of adding.
+    out2 <- iSEE:::.add_panel_to_dynamic_sources(out, "ReducedDimensionPlot1", "feature", "ColorByFeatureSource")
+    expect_identical(out, out2)
+})

@@ -63,7 +63,7 @@ test_that(".process_heatmap_assay_colormap handles custom bounds", {
 
     out <- iSEE:::.process_heatmap_assay_colormap(x, sce, plot_env)
     expect_identical(out, c(
-        '.assay_colors <- assayColorMap(colormap, "tophat_counts", discrete=FALSE)(21L)',
+        '.assay_colors <- assayColorMap(colormap, "logcounts", discrete=FALSE)(21L)',
         ".assay_colors <- circlize::colorRamp2(breaks = seq(0, 690, length.out = 21L), colors = .assay_colors)" ))
 })
 
@@ -156,7 +156,7 @@ test_that(".generateOutput detects col_selected and row_selected", {
     expect_identical(out$commands$assay[["rows"]], '.heatmap.rows <- c("0610007P14Rik", "0610009B22Rik");')
     expect_identical(out$commands$assay[["columns"]], '.heatmap.columns <- intersect(colnames(se), unlist(col_selected));')
     expect_identical(out$commands$assay[["columns"]], '.heatmap.columns <- intersect(colnames(se), unlist(col_selected));')
-    expect_identical(out$commands$assay[["data"]], 'plot.data <- assay(se, "tophat_counts")[.heatmap.rows, .heatmap.columns, drop=FALSE]\nplot.data <- as.matrix(plot.data);')
+    expect_identical(out$commands$assay[["data"]], 'plot.data <- assay(se, "logcounts")[.heatmap.rows, .heatmap.columns, drop=FALSE]\nplot.data <- as.matrix(plot.data);')
 })
 
 test_that(".generateOutput handles row_selected when not using custom feature names", {

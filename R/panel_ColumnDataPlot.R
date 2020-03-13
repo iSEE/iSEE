@@ -204,7 +204,7 @@ setMethod(".allowableYAxisChoices", "ColumnDataPlot", function(x, se) {
 })
 
 #' @export
-#' @importFrom shiny observeEvent updateSelectInput
+#' @importFrom shiny updateSelectInput
 #' @importFrom methods callNextMethod
 setMethod(".createObservers", "ColumnDataPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()

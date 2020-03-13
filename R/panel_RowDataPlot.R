@@ -201,7 +201,7 @@ setMethod(".allowableYAxisChoices", "RowDataPlot", function(x, se) {
 
 
 #' @export
-#' @importFrom shiny observeEvent updateSelectInput
+#' @importFrom shiny updateSelectInput
 #' @importFrom methods callNextMethod
 setMethod(".createObservers", "RowDataPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()

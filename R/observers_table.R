@@ -23,6 +23,7 @@
 .create_table_observers <- function(panel_name, input, session, pObjects, rObjects) {
     # Note that '.int' variables already have underscores, so these are not necessary.
     select_field <- paste0(panel_name, .int_statTableSelected)
+
     # nocov start
     observeEvent(input[[select_field]], {
         chosen <- input[[select_field]]
@@ -38,10 +39,11 @@
         pObjects$memory[[panel_name]][[.TableSelected]] <- chosen
 
         .safe_reactive_bump(rObjects, paste0(panel_name, "_", .propagateDimnames))
-    })
+    }, ignoreInit=TRUE)
     # nocov end
 
     search_field <- paste0(panel_name, .int_statTableSearch)
+
     # nocov start
     observeEvent(input[[search_field]], {
         search <- input[[search_field]]
@@ -50,11 +52,12 @@
         }
 
         pObjects$memory[[panel_name]][[.TableSearch]] <- search
-        .requestActiveSelectionUpdate(panel_name, rObjects, update_output=FALSE)
-    })
-    # nocov end
+        .requestActiveSelectionUpdate(panel_name, session, pObjects, rObjects, update_output=FALSE)
+     }, ignoreInit=TRUE)
+     # nocov end
 
     colsearch_field <- paste0(panel_name, .int_statTableColSearch)
+
     # nocov start
     observeEvent(input[[colsearch_field]], {
         search <- input[[colsearch_field]]
@@ -63,8 +66,9 @@
         }
 
         pObjects$memory[[panel_name]][[.TableColSearch]] <- search
-        .requestActiveSelectionUpdate(panel_name, rObjects, update_output=FALSE)
-    })
+        .requestActiveSelectionUpdate(panel_name, session, pObjects, rObjects, update_output=FALSE)
+    }, ignoreInit=TRUE)
     # nocov end
+
     invisible(NULL)
 }

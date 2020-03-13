@@ -16,10 +16,8 @@
 #' This is expected to lie between 400 and 1000; defaults to 500.
 #' }
 #'
-#' The following slots are relevant to \emph{receiving} a multiple selection:
+#' The following slots are relevant to \emph{receiving} a multiple selection on the rows:
 #' \itemize{
-#' \item \code{SelectionBoxOpen}, a logical scalar indicating whether the selection parameter box should be open at initialization.
-#' Defaults to \code{FALSE}.
 #' \item \code{RowSelectionSource}, a string specifying the name of the transmitting panel from which to receive a multiple row selection (e.g., \code{"RowDataPlot1"}).
 #' Defaults to \code{"---"}.
 #' \item \code{RowSelectionType}, a string specifying which of the multiple row selections from the transmitting panel should be used.
@@ -29,6 +27,11 @@
 #' Defaults to \code{"Active"}.
 #' \item \code{RowSelectionSaved}, an integer scalar specifying the index of the saved multiple row selection to use when \code{RowSelectionType="Saved"}.
 #' Defaults to 0.
+#' \item \code{DynamicRowSelectionSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for multiple row selections.
+#' }
+#'
+#' The following slots are relevant to \emph{receiving} a multiple selection on the columns:
+#' \itemize{
 #' \item \code{ColumnSelectionSource}, a string specifying the name of the transmitting panel from which to receive a multiple column selection (e.g., \code{"ColumnDataPlot1"}).
 #' Defaults to \code{"---"}.
 #' \item \code{ColumnSelectionType}, a string specifying which of the column-based selections from the transmitting panel should be used.
@@ -38,10 +41,13 @@
 #' Defaults to \code{"Active"}.
 #' \item \code{ColumnSelectionSaved}, an integer scalar specifying the index of the saved multiple column selection to use when \code{ColumnSelectionType="Saved"}.
 #' Defaults to 0.
+#' \item \code{DynamicColumnSelectionSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for multiple column selections.
 #' }
 #'
-#' The following slots are relevant to transmitting a selection of points:
+#' There are also the following miscellaneous slots:
 #' \itemize{
+#' \item \code{SelectionBoxOpen}, a logical scalar indicating whether the selection parameter box should be open at initialization.
+#' Defaults to \code{FALSE}.
 #' \item \code{SelectionHistory}, a list of arbitrary elements that contain parameters for saved multiple selections.
 #' Each element of this list corresponds to one saved selection in the current panel.
 #' Defaults to an empty list.
@@ -87,7 +93,7 @@
 #' \item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} is a no-op,
 #' i.e., it will return an empty character vector and create no files.
 #' }
-#' 
+#'
 #' For controlling selections:
 #' \itemize{
 #' \item \code{\link{.multiSelectionRestricted}(x)} will always return \code{TRUE}.
@@ -96,7 +102,7 @@
 #' \item \code{\link{.multiSelectionClear}(x)} will always return \code{x}.
 #' \item \code{\link{.multiSelectionInvalidated}(x)} will always return \code{FALSE}.
 #' \item \code{\link{.multiSelectionAvailable}(x, contents)} will return \code{nrow(contents)}.
-#' \item \code{\link{.singleSelectionDimension}(x)} will return \code{.multiSelectionDimension(x)}.
+#' \item \code{\link{.singleSelectionDimension}(x)} will always return \code{"none"}.
 #' \item \code{\link{.singleSelectionValue}(x)} will always return \code{NULL}.
 #' \item \code{\link{.singleSelectionSlots}(x)} will always return an empty list.
 #' }
@@ -116,9 +122,9 @@
 #'
 #' @seealso
 #' \linkS4class{DotPlot} and \linkS4class{Table}, for examples of direct subclasses.
-#' 
+#'
 #' @name Panel-class
-#' @aliases 
+#' @aliases
 #' initialize,Panel-method
 #' [[,Panel-method
 #' [[<-,Panel-method
@@ -133,11 +139,11 @@
 #' .renderOutput,Panel-method
 #' .exportOutput,Panel-method
 #' .multiSelectionRestricted,Panel-method
-#' .multiSelectionDimension,Panel-method 
-#' .multiSelectionClear,Panel-method 
-#' .multiSelectionActive,Panel-method 
-#' .multiSelectionInvalidated,Panel-method 
-#' .multiSelectionAvailable,Panel-method 
+#' .multiSelectionDimension,Panel-method
+#' .multiSelectionClear,Panel-method
+#' .multiSelectionActive,Panel-method
+#' .multiSelectionInvalidated,Panel-method
+#' .multiSelectionAvailable,Panel-method
 #' .singleSelectionDimension,Panel-method
 #' .singleSelectionValue,Panel-method
 #' .singleSelectionSlots,Panel-method
@@ -148,8 +154,8 @@ setMethod("initialize", "Panel", function(.Object, ...) {
     args <- list(...)
 
     args <- .empty_default(args, .organizationId, NA_integer_)
-    args <- .empty_default(args, .organizationHeight, 500L)
-    args <- .empty_default(args, .organizationWidth, 4L)
+    args <- .empty_default(args, .organizationHeight, iSEEOptions$get("panel.height"))
+    args <- .empty_default(args, .organizationWidth, iSEEOptions$get("panel.width"))
 
     args <- .empty_default(args, .selectParamBoxOpen, FALSE)
     args <- .empty_default(args, .selectRowSource, .noSelection)
@@ -160,6 +166,9 @@ setMethod("initialize", "Panel", function(.Object, ...) {
     args <- .empty_default(args, .selectColType, .selectMultiActiveTitle)
     args <- .empty_default(args, .selectColSaved, 0L)
 
+    args <- .empty_default(args, .selectRowDynamic, iSEEOptions$get("selection.dynamic.multiple"))
+    args <- .empty_default(args, .selectColDynamic, iSEEOptions$get("selection.dynamic.multiple"))
+
     args <- .empty_default(args, .dataParamBoxOpen, FALSE)
 
     do.call(callNextMethod, c(list(.Object), args))
@@ -167,7 +176,10 @@ setMethod("initialize", "Panel", function(.Object, ...) {
 
 setValidity2("Panel", function(object) {
     msg <- character(0)
-    msg <- .valid_logical_error(msg, object, c(.selectParamBoxOpen, .dataParamBoxOpen))
+
+    msg <- .valid_logical_error(msg, object, c(.selectParamBoxOpen, .dataParamBoxOpen,
+        .selectRowDynamic, .selectColDynamic))
+
     msg <- .single_string_error(msg, object, c(.selectRowSource, .selectColSource))
 
     msg <- .valid_number_error(msg, object, .organizationHeight, lower=height_limits[1], upper=height_limits[2])
@@ -196,7 +208,7 @@ setValidity2("Panel", function(object) {
 
 #' @export
 setMethod("[[", "Panel", function(x, i, j, ...) {
-    slot(x, i)        
+    slot(x, i)
 })
 
 #' @export
@@ -218,7 +230,7 @@ setMethod(".cacheCommonInfo", "Panel", function(x, se) {
 #' @export
 setMethod(".defineInterface", "Panel", function(x, se, select_info) {
     list(
-        .create_data_param_box(x, se, select_info), 
+        .create_data_param_box(x, se, select_info),
         .create_selection_param_box(x, select_info$multi$row, select_info$multi$column)
     )
 })
@@ -238,11 +250,11 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
 
     .create_box_observers(panel_name, c(.dataParamBoxOpen, .selectParamBoxOpen), pObjects, rObjects)
 
-    .create_multi_selection_choice_observer(panel_name, by_field=.selectRowSource, 
+    .create_multi_selection_choice_observer(panel_name, by_field=.selectRowSource,
         type_field=.selectRowType, saved_field=.selectRowSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_choice_observer(panel_name, by_field=.selectColSource, 
+    .create_multi_selection_choice_observer(panel_name, by_field=.selectColSource,
         type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
@@ -254,19 +266,33 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
         type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_history_observers(panel_name, 
+    .create_multi_selection_history_observers(panel_name,
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .create_dynamic_multi_selection_source_observer(panel_name,
+        dyn_field=.selectRowDynamic, by_field=.selectRowSource, source_type="row",
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .create_dynamic_multi_selection_source_observer(panel_name,
+        dyn_field=.selectColDynamic, by_field=.selectColSource, source_type="column",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     for (f in .singleSelectionSlots(x)) {
         if ("dimension" %in% names(f)) {
             .create_dimname_observers(panel_name,
                 name_field=f$parameter,
-                choices=if (f$dimension=="column") colnames(se) else rownames(se),
+                choices=if (f$dimension=="sample") colnames(se) else rownames(se),
                 use_mode_field=f$use_mode,
                 use_value=f$use_value,
                 tab_field=f$source,
                 protected=f$protected,
                 input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+
+            if (!is.null(f$dynamic)) {
+                .create_dynamic_single_selection_source_observer(panel_name, dyn_field=f$dynamic,
+                    by_field=f$source, source_type=f$dimension,
+                    input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+            }
         }
     }
 })
@@ -309,7 +335,7 @@ setMethod(".multiSelectionInvalidated", "Panel", function(x) FALSE)
 setMethod(".multiSelectionAvailable", "Panel", function(x, contents) nrow(contents))
 
 #' @export
-setMethod(".singleSelectionDimension", "Panel", function(x) .multiSelectionDimension(x))
+setMethod(".singleSelectionDimension", "Panel", function(x) "none")
 
 #' @export
 setMethod(".singleSelectionSlots", "Panel", function(x) list())

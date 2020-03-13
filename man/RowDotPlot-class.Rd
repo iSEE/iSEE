@@ -10,6 +10,12 @@
 \alias{.createObservers,RowDotPlot-method}
 \alias{.hideInterface,RowDotPlot-method}
 \alias{.multiSelectionDimension,RowDotPlot-method}
+\alias{.singleSelectionDimension,RowDotPlot-method}
+\alias{.defineVisualColorInterface,RowDotPlot-method}
+\alias{.defineVisualShapeInterface,RowDotPlot-method}
+\alias{.defineVisualSizeInterface,RowDotPlot-method}
+\alias{.defineVisualFacetInterface,RowDotPlot-method}
+\alias{.defineVisualPointInterface,RowDotPlot-method}
 \title{The RowDotPlot virtual class}
 \description{
 The RowDotPlot is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link{ggplot} plot.
@@ -50,7 +56,7 @@ Refer to the documentation for each method for more details on the remaining arg
 
 For setting up data values:
 \itemize{
-\item \code{\link{.cacheCommonInfo}(x)} adds a \code{"RowDotPlot"} entry containing \code{valid.colData.names}, a character vector of valid column data names (i.e., containing atomic values); \code{discrete.colData.names}, a character vector of names for discrete columns; and \code{continuous.colData.names}, a character vector of names of continuous columns.
+\item \code{\link{.cacheCommonInfo}(x)} adds a \code{"RowDotPlot"} entry containing \code{valid.rowData.names}, a character vector of valid column data names (i.e., containing atomic values); \code{discrete.rowData.names}, a character vector of names for discrete columns; and \code{continuous.rowData.names}, a character vector of names of continuous columns.
 This will also call the equivalent \linkS4class{DotPlot} method.
 \item \code{\link{.refineParameters}(x, se)} replaces \code{NA} values in \code{ColorByFeatAssay} with the first valid assay name in \code{se}.
 This will also call the equivalent \linkS4class{DotPlot} method.
@@ -74,7 +80,8 @@ This will also call the equivalent \linkS4class{DotPlot} method.
 
 For controlling selections:
 \itemize{
-\item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
+\item \code{\link{.multiSelectionDimension}(x)} returns \code{"row"} to indicate that a row selection is being transmitted.
+\item \code{\link{.singleSelectionDimension}(x)} returns \code{"feature"} to indicate that a feature identity is being transmitted.
 }
 
 Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.

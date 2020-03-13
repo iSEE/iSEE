@@ -53,7 +53,7 @@ This is because the order and number of rows in \code{plot.data} may have change
 Methods for this generic should return a list with \code{plot}, a \link{ggplot} object;
 and \code{commands}, a character vector of commands to produce that object when evaluated inside \code{envir}.
 This plot will subsequently be the rendered output in \code{\link{.renderOutput}}.
-Note that \code{envir} should contain a copy of the \code{plot} object in a variable named \code{dot.plot} - 
+Note that \code{envir} should contain a copy of the \code{plot} object in a variable named \code{dot.plot} -
 see below for details.
 
 Methods are expected to respond to the presence of various fields in the \code{plot.data}.
@@ -116,13 +116,13 @@ an ordered factor of length equal to \code{nrow(plot.data)} indicating the prior
 They may also generate a \code{.rescaled} variable,
 a named numeric vector containing the scaling factor to apply to the downsampling resolution for each level of \code{.priority}.
 
-The method itself should return a list containing \code{commands}, 
+The method itself should return a list containing \code{commands},
 a character vector of R commands required to generate these variables;
 and \code{rescaled}, a logical scalar indicating whether a \code{.rescaled} variable was produced.
 
 Points assigned the highest level in \code{.priority} are regarded as having the highest visual importance.
 Such points will be shown on top of other points if there are overlaps on the plot,
-allowing developers to specify that, e.g., DE genes should be shown on top of non-DE genes. 
+allowing developers to specify that, e.g., DE genes should be shown on top of non-DE genes.
 Scaling of the resolution enables developers to peform more aggressive downsampling for unimportant points.
 
 Methods for this generic may also return \code{NULL}, in which case no special action is taken.
@@ -132,7 +132,7 @@ Methods for this generic may also return \code{NULL}, in which case no special a
 
 In some cases, it is desirable to insert a default scale when \code{ColorBy="None"}.
 This is useful for highlighting points in a manner that is integral to the nature of the plot,
-e.g., up- or down-regulated genes in a MA plot. 
+e.g., up- or down-regulated genes in a MA plot.
 We provide a few generics to help control which points are highlighted and how they are colored.
 
 \code{.colorByNoneDotPlotField(x)} expects \code{x}, an instance of a \linkS4class{DotPlot} subclass,

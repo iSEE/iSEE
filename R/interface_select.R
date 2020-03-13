@@ -12,6 +12,7 @@
 #' @param by_field String specifying the name of the slot containing the identity of the panel transmitting to \code{x}.
 #' @param type_field String specifying the name of the slot containing the type of multiple selection to use in \code{x}.
 #' @param saved_field String specifying the name of the slot containing the index of the saved selection to use in \code{x}.
+#' @param dyn_field String specifying the name of the slot indicating whether to use a dynamic selection source.
 #'
 #' @return
 #' For \code{.create_selection_param_box} and \code{.create_dotplot_selection_param_box},
@@ -62,11 +63,11 @@
 
         .define_selection_choices(x, by_field=.selectRowSource,
             type_field=.selectRowType, saved_field=.selectRowSaved,
-            selectable=row_selectable, "row"),
+            dyn_field=.selectRowDynamic, selectable=row_selectable, "row"),
 
         .define_selection_choices(x, by_field=.selectColSource,
             type_field=.selectColType, saved_field=.selectColSaved,
-            selectable=col_selectable, "column"),
+            dyn_field=.selectColDynamic, selectable=col_selectable, "column"),
 
         ...
     )
@@ -148,12 +149,16 @@
 #' @rdname INTERNAL_create_selection_param_box
 #' @importFrom shiny tagList radioButtons selectizeInput
 .define_selection_choices <- function(x, by_field, type_field,
-    saved_field, selectable, source_type="row")
+    saved_field, dyn_field, selectable, source_type="row")
 {
     select_type <- paste0(.getEncodedName(x), "_", type_field)
 
     tagList(
         .define_selection_transmitter(x, by_field, selectable, source_type),
+
+        .checkboxInputHidden(x, field=dyn_field,
+            label=paste("Use dynamic", source_type, "selection"),
+            value=x[[dyn_field]]),
 
         .radioButtonsHidden(
             x, field=type_field, label=NULL, inline=TRUE,

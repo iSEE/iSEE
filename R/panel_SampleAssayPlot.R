@@ -130,10 +130,15 @@ setMethod("initialize", "SampleAssayPlot", function(.Object, ...) {
     args <- .empty_default(args, .sampAssayAssay, NA_character_)
     args <- .empty_default(args, .sampAssayXAxis, .sampAssayXAxisNothingTitle)
     args <- .empty_default(args, .sampAssayXAxisRowData, NA_character_)
+
     args <- .empty_default(args, .sampAssayXAxisColTable, .noSelection)
     args <- .empty_default(args, .sampAssayXAxisSampName, NA_character_)
+    args <- .empty_default(args, .sampAssayXAxisSampDynamic, iSEEOptions$get("selection.dynamic.single"))
+
     args <- .empty_default(args, .sampAssayYAxisColTable, .noSelection)
     args <- .empty_default(args, .sampAssayYAxisSampName, NA_character_)
+    args <- .empty_default(args, .sampAssayYAxisSampDynamic, iSEEOptions$get("selection.dynamic.single"))
+
     do.call(callNextMethod, c(list(.Object), args))
 })
 
@@ -157,6 +162,7 @@ setMethod(".refineParameters", "SampleAssayPlot", function(x, se) {
         return(NULL)
     }
 
+    all_assays <- c(intersect(iSEEOptions$get("assay"), all_assays), all_assays)
     x <- .replace_na_with_first(x, .sampAssayAssay, all_assays)
 
     for (field in c(.sampAssayXAxisSampName, .sampAssayYAxisSampName)) {
@@ -215,11 +221,16 @@ setMethod(".defineDataInterface", "SampleAssayPlot", function(x, se, select_info
         selectInput(
             .input_FUN(.sampAssayYAxisColTable), label=NULL, choices=tab_by_col,
             selected=.choose_link(x[[.sampAssayYAxisColTable]], tab_by_col)),
+        checkboxInput(.input_FUN(.sampAssayYAxisSampDynamic),
+            label="Use dynamic sample selection for the y-axis",
+            value=x[[.sampAssayYAxisSampDynamic]]),
+
         selectInput(paste0(.getEncodedName(x), "_", .sampAssayAssay), label=NULL,
             choices=all_assays, selected=x[[.sampAssayAssay]]),
         radioButtons(
             .input_FUN(.sampAssayXAxis), label="X-axis:", inline=TRUE,
             choices=xaxis_choices, selected=x[[.sampAssayXAxis]]),
+
         .conditional_on_radio(
             .input_FUN(.sampAssayXAxis),
             .sampAssayXAxisRowDataTitle,
@@ -227,6 +238,7 @@ setMethod(".defineDataInterface", "SampleAssayPlot", function(x, se, select_info
                 .input_FUN(.sampAssayXAxisRowData),
                 label="Row data of interest (X-axis):",
                 choices=row_covariates, selected=x[[.sampAssayXAxisRowData]])),
+
         .conditional_on_radio(
             .input_FUN(.sampAssayXAxis),
             .sampAssayXAxisSampNameTitle,
@@ -235,12 +247,16 @@ setMethod(".defineDataInterface", "SampleAssayPlot", function(x, se, select_info
                 label="Sample of interest (X-axis):",
                 choices=NULL, selected=NULL, multiple=FALSE),
             selectInput(.input_FUN(.sampAssayXAxisColTable), label=NULL,
-                choices=tab_by_col, selected=x[[.sampAssayXAxisColTable]]))
+                choices=tab_by_col, selected=x[[.sampAssayXAxisColTable]]),
+            checkboxInput(.input_FUN(.sampAssayXAxisSampDynamic),
+                label="Use dynamic sample selection for the x-axis",
+                value=x[[.sampAssayXAxisSampDynamic]])
+        )
     )
 })
 
 #' @export
-#' @importFrom shiny observeEvent updateSelectInput
+#' @importFrom shiny updateSelectInput
 #' @importFrom methods callNextMethod
 setMethod(".createObservers", "SampleAssayPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
@@ -256,10 +272,24 @@ setMethod(".createObservers", "SampleAssayPlot", function(x, se, input, session,
 setMethod(".singleSelectionSlots", "SampleAssayPlot", function(x) {
     c(callNextMethod(),
         list(
-            list(parameter=.sampAssayXAxisSampName, source=.sampAssayXAxisColTable, dimension="column",
-                use_mode=.sampAssayXAxis, use_value=.sampAssayXAxisSampNameTitle, protected=TRUE),
-            list(parameter=.sampAssayYAxisSampName, source=.sampAssayYAxisColTable, dimension="column",
-                use_mode=NA, use_value=NA, protected=TRUE)
+            list(
+                parameter=.sampAssayXAxisSampName,
+                source=.sampAssayXAxisColTable,
+                dimension="sample",
+                dynamic=.sampAssayXAxisSampDynamic,
+                use_mode=.sampAssayXAxis,
+                use_value=.sampAssayXAxisSampNameTitle,
+                protected=TRUE
+            ),
+            list(
+                parameter=.sampAssayYAxisSampName,
+                source=.sampAssayYAxisColTable,
+                dimension="sample",
+                dynamic=.sampAssayYAxisSampDynamic,
+                use_mode=NA,
+                use_value=NA,
+                protected=TRUE
+            )
         )
     )
 })

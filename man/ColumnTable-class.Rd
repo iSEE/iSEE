@@ -9,6 +9,7 @@
 \alias{.createObservers,ColumnTable-method}
 \alias{.hideInterface,ColumnTable-method}
 \alias{.multiSelectionDimension,ColumnTable-method}
+\alias{.singleSelectionDimension,ColumnTable-method}
 \title{The ColumnTable class}
 \description{
 The ColumnTable is a virtual class where each column in the \linkS4class{SummarizedExperiment} is represented by no more than row in a \code{\link{datatable}} widget.
@@ -47,6 +48,7 @@ This will also call the equivalent \linkS4class{Table} method.
 For controlling selections:
 \itemize{
 \item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
+\item \code{\link{.singleSelectionDimension}(x)} returns \code{"sample"} to indicate that a sample identity is being transmitted.
 }
 
 Unless explicitly specialized above, all methods from the parent classes \linkS4class{Table} and \linkS4class{Panel} are also available.

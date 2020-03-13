@@ -618,7 +618,7 @@ test_that(".define_colorby_for_column_plot handles feature selection", {
     expect_true(!is.null(env$plot.data$ColorBy))
 
     expect_match(color_out$labels$ColorBy, rn, fixed=TRUE)
-    expect_match(color_out$labels$ColorBy, assayNames(sce)[1], fixed=TRUE)
+    expect_match(color_out$labels$ColorBy, iSEEOptions$get("assay")[1], fixed=TRUE)
 
     color_add <- iSEE:::.colorDotPlot(params, env$plot.data$ColorBy)
     expect_match(color_add[1], "scale_color_gradientn", fixed=TRUE)
@@ -682,7 +682,7 @@ test_that(".define_colorby_for_row_plot handles sample selection", {
     expect_true(!is.null(env$plot.data$ColorBy))
 
     expect_match(color_out$labels$ColorBy, cn, fixed=TRUE)
-    expect_match(color_out$labels$ColorBy, assayNames(sce)[1], fixed=TRUE)
+    expect_match(color_out$labels$ColorBy, iSEEOptions$get("assay")[1], fixed=TRUE)
 
     color_add <- iSEE:::.colorDotPlot(params, env$plot.data$ColorBy)
     expect_match(color_add[1], "scale_color_gradientn", fixed=TRUE)
@@ -1131,7 +1131,7 @@ test_that(".add_facets works correctly plots", {
 # plot set up works correctly
 
 test_that(".choose_plot_type flips both full and restricted plot.data for horizontal violins", {
-    plot.data <- data.frame(X=runif(10), Y=letters[1:10])
+    plot.data <- data.frame(X=runif(10), Y=factor(letters[1:10]))
 
     envir <- new.env()
     assign("plot.data", plot.data, envir=envir)
@@ -1146,8 +1146,8 @@ test_that(".choose_plot_type flips both full and restricted plot.data for horizo
 
 test_that("Jitter is properly performed for faceted plots", {
     # Violin setup.
-    plot.data <- data.frame(Y=runif(10), X=letters[1:10],
-        FacetRow=letters[1:10], FacetColumn=LETTERS[1:10])
+    plot.data <- data.frame(Y=runif(10), X=factor(letters[1:10]),
+        FacetRow=factor(letters[1:10]), FacetColumn=factor(LETTERS[1:10]))
 
     out <- iSEE:::.violin_setup(plot_data=plot.data, horizontal=FALSE)
 
@@ -1156,8 +1156,8 @@ test_that("Jitter is properly performed for faceted plots", {
     expect_match(out[3], "FacetColumn")
 
     # Square setup
-    plot.data <- data.frame(Y=letters[1:10], X=letters[1:10],
-        FacetRow=letters[1:10], FacetColumn=LETTERS[1:10])
+    plot.data <- data.frame(Y=factor(letters[1:10]), X=factor(letters[1:10]),
+        FacetRow=factor(letters[1:10]), FacetColumn=factor(LETTERS[1:10]))
 
     out <- iSEE:::.square_setup(plot_data=plot.data)
 

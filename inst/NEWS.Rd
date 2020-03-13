@@ -1,6 +1,25 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.99.4}{
+\itemize{
+    \item Added options for dynamic choice of single/multiple selection sources.
+    \item Fixed bug around \code{NA} groupings in \code{subsetPointsByGrid()}.
+    \item Explicitly notify the user when removing invalid panels supplied by a landing page.
+}
+}
+
+\section{iSEE VERSION 1.99.3}{
+\itemize{
+    \item Fixed occurences of \code{rowData} in \code{RowDotPlot} panels.
+    \item Refactored \code{.create_visual_box()}.
+    \item Refactored visual parameter sections into generics.
+    \item Apply global option \code{selected.color} to single selections.
+    \item Added \code{panel.width}, \code{panel.height}, and \code{assay} to global options.
+    \item Added \code{checkboxInputHidden()}.
+}
+}
+
 \section{iSEE VERSION 1.99.2}{
 \itemize{
     \item Added extension points to the API.

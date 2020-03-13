@@ -1,5 +1,5 @@
 #' Hidden interface elements
-#' 
+#'
 #' Returns an interface element or \code{NULL}, depending on whether the element is hidden based on \code{\link{.hideInterface}}.
 #' This allows panels to hide interface elements that are provided by parent classes but are not needed in the subclass.
 #'
@@ -11,7 +11,7 @@
 #'
 #' @return
 #' The output of \code{FUN(id, ..)} is returned where \code{id} is defined by concatenating \code{\link{.getEncodedName}(x)} and \code{field} (separated by an underscore).
-#' 
+#'
 #' If \code{.hideInterface(x, field)} is \code{TRUE}, the output is wrapped inside a \code{\link{hidden}} call.
 #'
 #' @details
@@ -24,38 +24,44 @@
 #' \code{\link{.hideInterface}}, which determines whether an interface element should be hidden.
 #'
 #' \code{\link{.defineInterface}}, where these functions are typically used.
-#' 
+#'
 #' \code{\link{.create_selection_param_box}}, for a specific usage example.
 #'
-#' @rdname INTERNAL_hidden_elements 
+#' @rdname INTERNAL_hidden_elements
 #' @importFrom shinyjs hidden
 .hide_this_thing <- function(x, field, FUN, ...) {
     element <- FUN(paste0(.getEncodedName(x), "_", field), ...)
     if (.hideInterface(x, field)) {
         hidden(element)
     } else {
-        element 
+        element
     }
 }
 
 #' @importFrom shiny selectInput
-#' @rdname INTERNAL_hidden_elements 
+#' @rdname INTERNAL_hidden_elements
 .selectInputHidden <- function(x, field, ...) {
     .hide_this_thing(x, field, selectInput, ...)
 }
 
-#' @rdname INTERNAL_hidden_elements 
+#' @rdname INTERNAL_hidden_elements
 .collapseBoxHidden <- function(x, field, ...) {
     .hide_this_thing(x, field, collapseBox, ...)
 }
 
-#' @rdname INTERNAL_hidden_elements 
+#' @rdname INTERNAL_hidden_elements
 #' @importFrom shiny radioButtons
 .radioButtonsHidden <- function(x, field, ...) {
     .hide_this_thing(x, field, radioButtons, ...)
 }
 
-#' @rdname INTERNAL_hidden_elements 
+#' @rdname INTERNAL_hidden_elements
+#' @importFrom shiny radioButtons
+.checkboxInputHidden <- function(x, field, ...) {
+    .hide_this_thing(x, field, checkboxInput, ...)
+}
+
+#' @rdname INTERNAL_hidden_elements
 #' @importFrom shiny selectizeInput
 .selectizeInputHidden <- function(x, field, ...) {
     .hide_this_thing(x, field, selectizeInput, ...)
@@ -83,8 +89,7 @@
 #' @seealso
 #' \code{\link{.panel_generation}},
 #' \code{\link{.create_selection_param_box}},
-#' \code{\link{.create_visual_box_for_row_plots}},
-#' \code{\link{.create_visual_box_for_column_plots}}
+#' \code{\link{.create_visual_box}}
 #'
 #' @importFrom shiny conditionalPanel
 .conditional_on_radio <- function(id, choice, ...) {

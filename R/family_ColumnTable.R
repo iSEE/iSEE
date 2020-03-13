@@ -33,6 +33,7 @@
 #' For controlling selections:
 #' \itemize{
 #' \item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
+#' \item \code{\link{.singleSelectionDimension}(x)} returns \code{"sample"} to indicate that a sample identity is being transmitted.
 #' }
 #'
 #' Unless explicitly specialized above, all methods from the parent classes \linkS4class{Table} and \linkS4class{Panel} are also available.
@@ -60,6 +61,7 @@
 #' .createObservers,ColumnTable-method
 #' .hideInterface,ColumnTable-method
 #' .multiSelectionDimension,ColumnTable-method
+#' .singleSelectionDimension,ColumnTable-method
 #' @name ColumnTable-class
 NULL
 
@@ -85,6 +87,9 @@ setMethod(".createObservers", "ColumnTable", function(x, se, input, session, pOb
 
 #' @export
 setMethod(".multiSelectionDimension", "ColumnTable", function(x) "column")
+
+#' @export
+setMethod(".singleSelectionDimension", "ColumnTable", function(x) "sample")
 
 #' @export
 setMethod(".hideInterface", "ColumnTable", function(x, field) {

@@ -20,6 +20,7 @@
 .create_zoom_observer <- function(plot_name, input, session, pObjects, rObjects) {
     dblclick_field <- paste0(plot_name, "_", .zoomClick)
     save_field <- paste0(plot_name, "_", .multiSelectSave)
+
     # nocov start
     observeEvent(input[[dblclick_field]], {
         existing_brush <- pObjects$memory[[plot_name]][[.brushData]]
@@ -59,7 +60,8 @@
         } else {
             .requestUpdate(plot_name, rObjects)
         }
-    })
+    }, ignoreInit=TRUE)
     # nocov end
+
     invisible(NULL)
 }

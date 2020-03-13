@@ -4,6 +4,7 @@
 #'
 #' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
 #' @param panel_name String containing the panel name.
+#' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
 #' @param update_output A logical scalar indicating whether to call \code{.requestUpdate} as well.
@@ -77,13 +78,80 @@
     .mark_panel_as_modified(panel_name, accumulated, rObjects)
 }
 
+
 #' @export
 #' @rdname retrieveOutput
-.requestActiveSelectionUpdate <- function(panel_name, rObjects, update_output=TRUE) {
+.requestActiveSelectionUpdate <- function(panel_name, session, pObjects, rObjects, update_output=TRUE) {
     .safe_reactive_bump(rObjects, paste0(panel_name, "_", .flagMultiSelect))
-    .mark_panel_as_modified(panel_name,
-        if (update_output) .panelReactivated else c(.panelNorender, .panelReactivated), 
-        rObjects)
+
+    modes <- if (update_output) .panelReactivated else c(.panelNorender, .panelReactivated)
+    .mark_panel_as_modified(panel_name, modes, rObjects) 
+
+    .update_dynamic_selection_source_panels(panel_name, session, pObjects)
+}
+
+#' Updating dynamic selection sources
+#'
+#' Update all panels that have enabled dynamic multiple selection sources.
+#'
+#' @param panel_name String containing the name of the current panel.
+#' @param session The Shiny session object from the server function.
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#'
+#' @return
+#' Affected panels have their selection sources changed to the current \code{panel_name}.
+#' A \code{NULL} is invisibly returned.
+#'
+#' @details
+#' All panels using dynamic sources are modified so that they receive their multiple selections from the current panel.
+#' This involves updating the \code{session} to change the chosen source in the UI,
+#' which is a reasonably transparent way of plugging into the rest of the reactive machinery for handling multiple selections.
+#'
+#' However, it requires some work to avoid problems associated with circularity.
+#' The general scenario is that the current panel is receiving a multiple selection from another panel that uses a dynamic source.
+#' Making a selection on the current panel causes it to become the transmitter for the second panel, leading to circularity.
+#' In fact, this is inevitable in the common use case where the current panel is also using a dynamic source.
+#'
+#' To avoid this phenomenon in the common case, we reset the current panel's source to \code{"---"}. 
+#' We also manually edit \code{pObjects$selection_links} so that the current panel is no longer linked to the second panel.
+#' This is necessary because the observers for the selection source will respond in arbitrary order to the session update;
+#' it is possible for the current panel to still be linked to the previous source when observers for the second panel fire.
+#'
+#' In short, we delete any existing link before control leaves this function.
+#' Doing so here hopefully should not be a problem as \code{\link{.create_multi_selection_choice_observer}}
+#' (the observer responding to the change in the source choice)
+#' doesn't make any other decisions based on \code{pObjects$selection_links} anyway.
+#' 
+#' Nothing smart is done to protect against circularity in the more general case.
+#' For example, if panel A is dependent on panel B that is dependent on panel C,
+#' and C is using a dynamic selection source, any selection made on A will cause a circular dependency.
+#' There is no obvious way to break this circularity that is intuitive to the user,
+#' so we just pass the buck and rely on downstream warnings to throw warnings.
+#'
+#' @author Aaron Lun
+#' @importFrom shiny updateSelectInput
+#' @rdname INTERNAL_update_dynamic_selection_source_panels
+.update_dynamic_selection_source_panels <- function(panel_name, session, pObjects) {
+    target <- pObjects$memory[[panel_name]]
+    dim <- .multiSelectionDimension(target)
+    all_affected <- names(pObjects$dynamic_multi_selections[[dim]])
+    field <- if (dim=="row") .selectRowSource else .selectColSource
+        
+    # nocov start
+    if (!is.null(session)) {
+        if (panel_name %in% all_affected) {
+            updateSelectInput(session=session, inputId=paste0(panel_name, "_", field), selected=.noSelection)
+            pObjects$selection_links <- .delete_interpanel_link(pObjects$selection_links,
+                panel_name, parent_name=target[[field]], field=field)
+            all_affected <- setdiff(all_affected, panel_name)
+        }
+
+        for (i in all_affected) {
+            updateSelectInput(session=session, inputId=paste0(i, "_", field), selected=panel_name)
+        }
+    }
+    # nocov end
+
     invisible(NULL)
 }
 

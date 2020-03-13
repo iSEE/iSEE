@@ -74,7 +74,7 @@
 #' \item \code{VisualBoxOpen}, a logical scalar indicating whether the visual parameter box should be open.
 #' Defaults to \code{FALSE}.
 #' \item \code{VisualChoices}, a character vector specifying the visible interface elements upon initialization.
-#' This can contain zero or more of \code{"Color"}, \code{"Shape"}, \code{"Facets"}, \code{"Points"} and \code{"Other"}.
+#' This can contain zero or more of \code{"Color"}, \code{"Shape"}, \code{"Size"}, \code{"Point"} , \code{"Facet"}, \code{"Text"}, and \code{"Other"}.
 #' Defaults to \code{"Color"}.
 #' }
 #'
@@ -197,6 +197,8 @@
 #' .prioritizeDotPlotData,DotPlot-method
 #' .colorByNoneDotPlotField,DotPlot-method
 #' .colorByNoneDotPlotScale,DotPlot-method
+#' .defineVisualTextInterface,DotPlot-method
+#' .defineVisualOtherInterface,DotPlot-method
 NULL
 
 #' @export
@@ -208,9 +210,13 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
 
     args <- .empty_default(args, .colorByField, .colorByNothingTitle)
     args <- .empty_default(args, .colorByDefaultColor, iSEEOptions$get("point.color"))
+
     args <- .empty_default(args, .colorByFeatName, NA_character_)
+    args <- .empty_default(args, .colorByFeatDynamic, iSEEOptions$get("selection.dynamic.single"))
     args <- .empty_default(args, .colorByRowTable, .noSelection)
+
     args <- .empty_default(args, .colorBySampName, NA_character_)
+    args <- .empty_default(args, .colorBySampDynamic, iSEEOptions$get("selection.dynamic.single"))
     args <- .empty_default(args, .colorByColTable, .noSelection)
 
     args <- .empty_default(args, .shapeByField, .shapeByNothingTitle)
@@ -263,8 +269,8 @@ setValidity2("DotPlot", function(object) {
     msg <- .valid_number_error(msg, object, .selectTransAlpha, lower=0, upper=1)
 
     msg <- .multiple_choice_error(msg, object, .visualParamChoice,
-        c(.visualParamChoiceColorTitle, .visualParamChoiceShapeTitle, .visualParamChoicePointTitle,
-            .visualParamChoiceFacetTitle, .visualParamChoiceOtherTitle))
+        c(.visualParamChoiceColorTitle, .visualParamChoiceShapeTitle, .visualParamChoiceSizeTitle, .visualParamChoicePointTitle,
+            .visualParamChoiceFacetTitle, .visualParamChoiceTextTitle, .visualParamChoiceOtherTitle))
 
     msg <- .valid_number_error(msg, object, .plotPointSize, lower=0, upper=Inf)
 
@@ -344,6 +350,30 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 
     .create_zoom_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
+})
+
+# Interface ----
+
+#' @export
+setMethod(".defineVisualTextInterface", "DotPlot", function(x) {
+    plot_name <- .getEncodedName(x)
+
+    tagList(
+        numericInput(
+            paste0(plot_name, "_", .plotFontSize), label="Font size:",
+            min=0, value=x[[.plotFontSize]]),
+        radioButtons(
+            paste0(plot_name, "_", .plotLegendPosition), label="Legend position:", inline=TRUE,
+            choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
+            selected=x[[.plotLegendPosition]])
+    )
+
+})
+
+#' @export
+#' @export
+setMethod(".defineVisualOtherInterface", "DotPlot", function(x) {
+    NULL
 })
 
 #' @export
@@ -439,10 +469,22 @@ setMethod(".singleSelectionValue", "DotPlot", function(x, pObjects) {
 setMethod(".singleSelectionSlots", "DotPlot", function(x) {
     c(callNextMethod(),
         list(
-            list(parameter=.colorByFeatName, source=.colorByRowTable, dimension="row",
-                use_mode=.colorByField, use_value=.colorByFeatNameTitle, protected=FALSE),
-            list(parameter=.colorBySampName, source=.colorByColTable, dimension="column",
-                use_mode=.colorByField, use_value=.colorBySampNameTitle, protected=FALSE)
+            list(parameter=.colorByFeatName,
+                source=.colorByRowTable,
+                dimension="feature",
+                use_mode=.colorByField,
+                use_value=.colorByFeatNameTitle,
+                dynamic=.colorByFeatDynamic,
+                protected=FALSE
+            ),
+            list(parameter=.colorBySampName,
+                source=.colorByColTable,
+                dimension="sample",
+                use_mode=.colorByField,
+                use_value=.colorBySampNameTitle,
+                dynamic=.colorBySampDynamic,
+                protected=FALSE
+            )
         )
     )
 })
@@ -473,7 +515,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
     all_cmds <- c(all_cmds, select_out2)
 
     # We need to set up the plot type before downsampling,
-    # to ensure the X/Y jitter is correctly computed. 
+    # to ensure the X/Y jitter is correctly computed.
     all_cmds$setup <- .choose_plot_type(plot_env)
 
     # Also collect the plot coordinates before downsampling.

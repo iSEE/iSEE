@@ -55,6 +55,7 @@ subsetPointsByGrid <- function(X, Y, resolution=200, grouping=NULL) {
         }
 
         ugroups <- unique(grouping)
+        ugroups <- ugroups[!is.na(ugroups)]
         if (length(resolution)==1L) {
             resolution <- rep(resolution, length.out=length(ugroups))
             names(resolution) <- ugroups
@@ -65,7 +66,7 @@ subsetPointsByGrid <- function(X, Y, resolution=200, grouping=NULL) {
 
         output <- logical(length(X))
         for (g in ugroups) {
-            current <- grouping==g
+            current <- grouping==g & !is.na(grouping)
             output[current] <- subsetPointsByGrid(X[current], Y[current], resolution=resolution[[g]])
         }
         return(output)

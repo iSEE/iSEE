@@ -24,7 +24,7 @@
 #' \code{\link{.createObservers,RowTable-method}} for an example of a transmitter that needs to call this function.
 #'
 #' @rdname INTERNAL_dimname_prop
-#' @importFrom shiny eventReactive updateSelectizeInput
+#' @importFrom shiny eventReactive updateSelectizeInput updateSelectInput
 .create_dimname_propagation_observer <-  function(panel_name, choices, session, pObjects, rObjects) {
     dimname_name <- paste0(panel_name, "_", .propagateDimnames)
     .safe_reactive_init(rObjects, dimname_name)
@@ -51,7 +51,16 @@
                     choices=choices, selected=chosen)
             }
         }
-    })
+
+        dim <- .singleSelectionDimension(instance)
+        dynamic_dependents <- pObjects$dynamic_single_selections[[dim]]
+        for (kid in names(dynamic_dependents)) {
+            all_fields <- dynamic_dependents[[kid]]
+            for (field in all_fields) {
+                updateSelectInput(session, paste0(kid, "_", field), selected=panel_name)
+            }
+        }
+    }, ignoreInit=TRUE)
     # nocov end
 
     invisible(NULL)
@@ -150,7 +159,7 @@
         # Updating the selection, based on the currently selected row.
         if (tab!=.noSelection) {
             old_selected <- pObjects$memory[[panel_name]][[name_field]]
-            new_selected <- .singleSelectionValue(pObjects$memory[[tab]])
+            new_selected <- .singleSelectionValue(pObjects$memory[[tab]], pObjects)
 
             if (!is.null(new_selected) && new_selected != old_selected) {
                 all_choices <- rownames(pObjects$contents[[tab]])
@@ -279,4 +288,33 @@
     # nocov end
 
     invisible(NULL)
+}
+
+#' Dynamic single selection source observer
+#'
+#' Create an observer for (un)checking of the dynamic single selection source option.
+#'
+#' @param panel_name String containing the name of the plot.
+#' @param dyn_field String containing the name of the slot determining whether a dynamic source is to be used.
+#' @param by_field String containing the name of the slot controlling the single selection source.
+#' @param source_type String specifying whether the observer is to monitor \code{"feature"} or \code{"sample"} selections.
+#' @param input The Shiny input object from the server function.
+#' @param session The Shiny session object from the server function.
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#'
+#' @return An observer is created in the server function in which this is called.
+#' A \code{NULL} value is invisibly returned.
+#'
+#' @author Aaron Lun
+#'
+#' @importFrom shiny observeEvent
+#' @rdname INTERNAL_create_dynamic_single_selection_source_observer
+.create_dynamic_single_selection_source_observer <- function(panel_name,
+    dyn_field, by_field, source_type, input, session, pObjects, rObjects)
+{
+    .create_dynamic_selection_source_observer(panel_name,
+        dyn_field=dyn_field, by_field=by_field, source_type=source_type,
+        object_name="dynamic_single_selections",
+        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 }

@@ -60,6 +60,7 @@
 #' For controlling selections:
 #' \itemize{
 #' \item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
+#' \item \code{\link{.singleSelectionDimension}(x)} returns \code{"sample"} to indicate that a sample identity is being transmitted.
 #' }
 #'
 #' Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.
@@ -87,6 +88,13 @@
 #' .createObservers,ColumnDotPlot-method
 #' .hideInterface,ColumnDotPlot-method
 #' .multiSelectionDimension,ColumnDotPlot-method
+#' .singleSelectionDimension,ColumnDotPlot-method
+#' .defineVisualColorInterface,ColumnDotPlot-method
+#' .defineVisualShapeInterface,ColumnDotPlot-method
+#' .defineVisualSizeInterface,ColumnDotPlot-method
+#' .defineVisualFacetInterface,ColumnDotPlot-method
+#' .defineVisualPointInterface,ColumnDotPlot-method
+#'
 #' @name ColumnDotPlot-class
 NULL
 
@@ -96,7 +104,7 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ...) {
     args <- list(...)
     args <- .empty_default(args, .colorByColData, NA_character_)
     args <- .empty_default(args, .colorByFeatNameAssay, NA_character_)
-    args <- .empty_default(args, .colorBySampNameColor, "red")
+    args <- .empty_default(args, .colorBySampNameColor, iSEEOptions$get("selected.color"))
 
     args <- .empty_default(args, .shapeByColData, NA_character_)
 
@@ -166,6 +174,7 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 
     assays <- dp_cached$valid.assay.names
     if (length(assays)) {
+        assays <- c(intersect(iSEEOptions$get("assay"), assays), assays)
         x <- .replace_na_with_first(x, .colorByFeatNameAssay, assays)
     } else {
         x[[.colorByFeatNameAssay]] <- NA_character_
@@ -184,14 +193,161 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 setMethod(".defineInterface", "ColumnDotPlot", function(x, se, select_info) {
     list(
         .create_data_param_box(x, se, select_info),
-        .create_visual_box_for_column_plots(x, select_info$single$row, select_info$single$column, se),
+        .create_visual_box(x, se, select_info$single),
         .create_dotplot_selection_param_box(x, select_info$multi$row, select_info$multi$column)
     )
 })
 
 #' @export
+setMethod(".defineVisualColorInterface", "ColumnDotPlot", function(x, se, select_info) {
+    covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$valid.colData.names
+    all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
+
+    plot_name <- .getEncodedName(x)
+    colorby_field <- paste0(plot_name, "_", .colorByField)
+
+    tagList(
+        hr(),
+        radioButtons(
+            colorby_field, label="Color by:", inline=TRUE,
+            choices=.define_color_options_for_column_plots(se, covariates, all_assays),
+            selected=x[[.colorByField]]
+        ),
+        .conditional_on_radio(
+            colorby_field, .colorByNothingTitle,
+            colourInput(paste0(plot_name, "_", .colorByDefaultColor), label=NULL,
+                value=x[[.colorByDefaultColor]])
+        ),
+        .conditional_on_radio(
+            colorby_field, .colorByColDataTitle,
+            selectInput(paste0(plot_name, "_", .colorByColData), label=NULL,
+                choices=covariates, selected=x[[.colorByColData]])
+        ),
+        .conditional_on_radio(colorby_field, .colorByFeatNameTitle,
+            selectizeInput(paste0(plot_name, "_", .colorByFeatName), label=NULL,
+                choices=NULL, selected=NULL, multiple=FALSE),
+            selectInput(
+                paste0(plot_name, "_", .colorByFeatNameAssay), label=NULL,
+                choices=all_assays, selected=x[[.colorByFeatNameAssay]]),
+            selectInput(
+                paste0(plot_name, "_", .colorByRowTable), label=NULL, choices=select_info$row,
+                selected=.choose_link(x[[.colorByRowTable]], select_info$row)),
+            checkboxInput(
+                paste0(plot_name, "_", .colorByFeatDynamic), label="Use dynamic feature selection for coloring",
+                value=x[[.colorByFeatDynamic]])
+        ),
+        .conditional_on_radio(colorby_field, .colorBySampNameTitle,
+            selectizeInput(paste0(plot_name, "_", .colorBySampName),
+                label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
+            selectInput(
+                paste0(plot_name, "_", .colorByColTable), label=NULL, choices=select_info$column,
+                selected=.choose_link(x[[.colorByColTable]], select_info$column)),
+            colourInput(
+                paste0(plot_name, "_", .colorBySampNameColor), label=NULL,
+                value=x[[.colorBySampNameColor]]),
+            checkboxInput(
+                paste0(plot_name, "_", .colorBySampDynamic), label="Use dynamic sample selection for coloring",
+                value=x[[.colorBySampDynamic]])
+        )
+    )
+})
+
+#' @export
+setMethod(".defineVisualShapeInterface", "ColumnDotPlot", function(x, se) {
+    discrete_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$discrete.colData.names
+
+    plot_name <- .getEncodedName(x)
+    shapeby_field <- paste0(plot_name, "_", .shapeByField)
+
+    if (length(discrete_covariates)) {
+        tagList(
+            hr(),
+            radioButtons(
+                shapeby_field, label="Shape by:", inline=TRUE,
+                choices=c(.shapeByNothingTitle, if (length(discrete_covariates)) .shapeByColDataTitle),
+                selected=x[[.shapeByField]]
+            ),
+            .conditional_on_radio(
+                shapeby_field, .shapeByColDataTitle,
+                selectInput(
+                    paste0(plot_name, "_", .shapeByColData), label=NULL,
+                    choices=discrete_covariates, selected=x[[.shapeByColData]])
+            )
+        )
+    } else {
+        NULL
+    }
+})
+
+#' @export
+setMethod(".defineVisualSizeInterface", "ColumnDotPlot", function(x, se) {
+    numeric_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$continuous.colData.names
+
+    plot_name <- .getEncodedName(x)
+    sizeby_field <- paste0(plot_name, "_", .shapeByField)
+
+    tagList(
+        hr(),
+        radioButtons(
+            sizeby_field, label="Size by:", inline=TRUE,
+            choices=c(.sizeByNothingTitle, if (length(numeric_covariates)) .sizeByColDataTitle),
+            selected=x[[.sizeByField]]
+        ),
+        .conditional_on_radio(
+            sizeby_field, .sizeByNothingTitle,
+            numericInput(
+                paste0(plot_name, "_", .plotPointSize), label="Point size:",
+                min=0, value=x[[.plotPointSize]])
+        ),
+        .conditional_on_radio(
+            sizeby_field, .sizeByColDataTitle,
+            selectInput(paste0(plot_name, "_", .sizeByColData), label=NULL,
+                choices=numeric_covariates, selected=x[[.sizeByColData]])
+        )
+    )
+})
+
+#' @export
+setMethod(".defineVisualPointInterface", "ColumnDotPlot", function(x, se) {
+    numeric_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$continuous.colData.names
+
+    plot_name <- .getEncodedName(x)
+    sizeby_field <- paste0(plot_name, "_", .shapeByField)
+
+    tagList(
+        hr(),
+        .add_point_UI_elements(x),
+        checkboxInput(
+            inputId=paste0(plot_name, "_", .contourAdd),
+            label="Add contour (scatter only)",
+            value=FALSE),
+        .conditional_on_check_solo(
+            paste0(plot_name, "_", .contourAdd),
+            on_select=TRUE,
+            colourInput(
+                paste0(plot_name, "_", .contourColor), label=NULL,
+                value=x[[.contourColor]]))
+    )
+})
+
+#' @export
+setMethod(".defineVisualFacetInterface", "ColumnDotPlot", function(x, se) {
+    discrete_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$discrete.colData.names
+
+    if (length(discrete_covariates)) {
+        tagList(
+            hr(),
+            .add_facet_UI_elements(x, discrete_covariates)
+        )
+    } else {
+        NULL
+    }
+
+})
+
+#' @export
 setMethod(".hideInterface", "ColumnDotPlot", function(x, field) {
-    if (field %in% c(.selectRowSource, .selectRowType, .selectRowSaved)) {
+    if (field %in% c(.selectRowSource, .selectRowType, .selectRowSaved, .selectRowDynamic)) {
         TRUE
     } else {
         callNextMethod()
@@ -219,6 +375,9 @@ setMethod(".createObservers", "ColumnDotPlot", function(x, se, input, session, p
 
 #' @export
 setMethod(".multiSelectionDimension", "ColumnDotPlot", function(x) "column")
+
+#' @export
+setMethod(".singleSelectionDimension", "ColumnDotPlot", function(x) "sample")
 
 ###############################################################
 # See ?.addDotPlotDataColor for documentation on these methods.

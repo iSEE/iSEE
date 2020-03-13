@@ -19,11 +19,6 @@
 #' @section Constructor:
 #' \code{ReducedDimensionPlot(...)} creates an instance of a ReducedDimensionPlot class, where any slot and its value can be passed to \code{...} as a named argument.
 #'
-#' @section Contract description:
-#' The ReducedDimensionPlot will provide user interface elements to change all above slots as well as slots in its parent classes.
-#' It will also provide observers to respond to any input changes in those slots and trigger rerendering of the output.
-#' Subclasses do not have to provide any methods, as this is a concrete class.
-#'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{ReducedDimensionPlot} class.
 #' Refer to the documentation for each method for more details on the remaining arguments.
@@ -59,6 +54,9 @@
 #' \item \code{\link{.generateDotPlotData}(x, envir)} will create a data.frame of reduced dimension coordinates in \code{envir}.
 #' It will return the commands required to do so as well as a list of labels.
 #' }
+#'
+#' Subclasses do not have to provide any methods, as this is a concrete class.
+#'
 #' @author Aaron Lun
 #'
 #' @seealso

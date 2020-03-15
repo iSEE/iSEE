@@ -306,7 +306,7 @@ createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot",
     # overwriting important variables like 'se' with arbitrary user names.
     envir$.customFUN <- FUN
     tmp_call <- sprintf(fn_call, ".customFUN")
-    .text_eval(tmp_call, envir)
+    .textEval(tmp_call, envir)
 
     sprintf(fn_call, fn_name)
 }

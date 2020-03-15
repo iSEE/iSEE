@@ -145,7 +145,7 @@
         transmitter <- x[[.selectRowSource]]
         .populate_selection_environment(all_memory[[transmitter]], envir)
         envir$all_contents <- all_contents
-        .text_eval(row_select_cmds, envir)
+        .textEval(row_select_cmds, envir)
         select_cmds[["row"]] <- row_select_cmds
     }
 
@@ -157,7 +157,7 @@
         transmitter <- x[[.selectColSource]]
         .populate_selection_environment(all_memory[[transmitter]], envir)
         envir$all_contents <- all_contents
-        .text_eval(col_select_cmds, envir)
+        .textEval(col_select_cmds, envir)
         select_cmds[["col"]] <- col_select_cmds
     }
 

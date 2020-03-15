@@ -151,7 +151,7 @@ setMethod(".generateTable", "RowDataTable", function(x, envir) {
             paste(deparse(valid.names), collapse="\n     ")))
     }
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     cmds
 })

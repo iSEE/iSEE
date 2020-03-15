@@ -280,7 +280,7 @@ setMethod(".generateDotPlotData", "ReducedDimensionPlot", function(x, envir) {
     y_lab <- sprintf("Dimension %s", x[[.redDimYAxis]])
 
     data_cmds <- unlist(data_cmds)
-    .text_eval(data_cmds, envir)
+    .textEval(data_cmds, envir)
 
     list(commands=data_cmds, labels=list(title=plot_title, X=x_lab, Y=y_lab))
 })

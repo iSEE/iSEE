@@ -212,7 +212,7 @@ names(.all_aes_values) <- .all_aes_names
     color_scale_cmd <- .colorDotPlot(param_choices, plot_data$ColorBy)
 
     # Adding axes labels.
-    plot_cmds[["labs"]] <- .build_labs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
+    plot_cmds[["labs"]] <- .buildLabs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
 
     # Defining boundaries if zoomed.
     bounds <- param_choices[[.zoomData]]
@@ -345,7 +345,7 @@ names(.all_aes_values) <- .all_aes_names
         x_lab <- tmp
     }
 
-    plot_cmds[["labs"]] <- .build_labs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
+    plot_cmds[["labs"]] <- .buildLabs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
 
     # Defining boundaries if zoomed. This requires some finesse to deal with horizontal plots,
     # where the point selection is computed on the flipped coordinates.
@@ -530,7 +530,7 @@ plot.data$Y <- tmp;")
     plot_cmds[["scale_color"]] <- color_scale_cmd
 
     # Creating labels.
-    plot_cmds[["labs"]] <- .build_labs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
+    plot_cmds[["labs"]] <- .buildLabs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
 
     # Defining boundaries if zoomed.
     bounds <- param_choices[[.zoomData]]
@@ -909,14 +909,18 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @return Title and label instructions for \code{\link{ggplot}} as a character value.
 #'
 #' @author Kevin Rue-Albrecht
-#' @rdname INTERNAL_build_labs
+#' @rdname labs-utils
+#' @export
+#'
 #' @seealso
 #' \code{\link{.scatter_plot}},
 #' \code{\link{.violin_plot}},
 #' \code{\link{.square_plot}}
 #'
 #' @importFrom ggplot2 labs
-.build_labs <- function(x=NULL, y=NULL, color=NULL, shape=NULL, size=NULL, fill=NULL, group=NULL, title=NULL, subtitle=NULL){
+#' @examples
+#' cat(.buildLabs(y = "Title for Y axis", color = "Color label"))
+.buildLabs <- function(x=NULL, y=NULL, color=NULL, shape=NULL, size=NULL, fill=NULL, group=NULL, title=NULL, subtitle=NULL){
     labs_specs <- list(x, y, color, shape, size, fill, group, title, subtitle)
     names(labs_specs) <- .all_labs_names
     labs_specs <- labs_specs[lengths(labs_specs)>0L]
@@ -939,7 +943,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_make_single_lab
 #' @seealso
-#' \code{\link{.build_labs}}.
+#' \code{\link{.buildLabs}}.
 .make_single_lab <- function(name, value){
     sprintf("%s=%s", name, deparse(value))
 }

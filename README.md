@@ -34,15 +34,15 @@ Current contributors include:
 
 _iSEE_ can be easily installed from Bioconductor using `BiocManager::install()`:
 
-```
-if (!requireNamespace("BiocManager", quietly=TRUE))
+``` r
+if (!requireNamespace("BiocManager", quietly = TRUE))
     install.packages("BiocManager")
 BiocManager::install("iSEE")
 ```
 
 Optionally, if you want to install the development version from GitHub, you can use:
 
-```
+``` r
 BiocManager::install("iSEE/iSEE", dependencies = TRUE)
 # or alternatively...
 remotes::install_github("iSEE/iSEE", dependencies = TRUE)

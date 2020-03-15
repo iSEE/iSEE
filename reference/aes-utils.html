@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get panel colors — .panelColor • iSEE</title>
+<title>Generate ggplot aesthetic instructions — aes-utils • iSEE</title>
 
 
 <!-- jquery -->
@@ -35,9 +35,8 @@
 
 
 
-<meta property="og:title" content="Get panel colors — .panelColor" />
-<meta property="og:description" content="Functions to get/set panel colors at the user and developer level.
-This determines the color of the panel header as well as (for DotPlots) the color and fill of the brush." />
+<meta property="og:title" content="Generate ggplot aesthetic instructions — aes-utils" />
+<meta property="og:description" content="Generate ggplot aesthetic instructions" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -132,65 +131,94 @@ This determines the color of the panel header as well as (for DotPlots) the colo
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get panel colors</h1>
-    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/AllGenerics.R'><code>R/AllGenerics.R</code></a>, <a href='https://github.com/iSEE/iSEE/blob/master/R/utils_colors.R'><code>R/utils_colors.R</code></a></small>
-    <div class="hidden name"><code>getPanelColor.Rd</code></div>
+    <h1>Generate ggplot aesthetic instructions</h1>
+    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/plotting.R'><code>R/plotting.R</code></a></small>
+    <div class="hidden name"><code>aes-utils.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Functions to get/set panel colors at the user and developer level.
-This determines the color of the panel header as well as (for <a href='DotPlot-class.html'>DotPlot</a>s) the color and fill of the brush.</p>
+    <p>Generate ggplot aesthetic instructions</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.panelColor</span>(<span class='no'>x</span>)
-
-<span class='fu'>.getPanelColor</span>(<span class='no'>x</span>)</pre>
+    <pre class="usage"><span class='fu'>.buildAes</span>(
+  <span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>y</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>color</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>shape</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>fill</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>group</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>alt</span> <span class='kw'>=</span> <span class='kw'>NULL</span>
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An instance of a <a href='Panel-class.html'>Panel</a> class.</p></td>
+      <td><p>A <code>logical</code> that indicates whether to enable <code>x</code> in the
+aesthetic instructions (default: <code>TRUE</code>).</p></td>
+    </tr>
+    <tr>
+      <th>y</th>
+      <td><p>A <code>logical</code> that indicates whether to enable <code>y</code> in the
+aesthetic instructions (default: <code>TRUE</code>).</p></td>
+    </tr>
+    <tr>
+      <th>color</th>
+      <td><p>A <code>logical</code> that indicates whether to enable
+<code>color</code> in the aesthetic instructions (default: <code>FALSE</code>).</p></td>
+    </tr>
+    <tr>
+      <th>shape</th>
+      <td><p>A <code>logical</code> that indicates whether to enable
+<code>shape</code> in the aesthetic instructions (default: <code>FALSE</code>).</p></td>
+    </tr>
+    <tr>
+      <th>size</th>
+      <td><p>A <code>logical</code> that indicates whether to enable
+<code>size</code> in the aesthetic instructions (default: <code>FALSE</code>).</p></td>
+    </tr>
+    <tr>
+      <th>fill</th>
+      <td><p>A <code>logical</code> that indicates whether to enable
+<code>fill</code> in the aesthetic instructions (default: <code>FALSE</code>).</p></td>
+    </tr>
+    <tr>
+      <th>group</th>
+      <td><p>A <code>logical</code> that indicates whether to enable
+<code>group</code> in the aesthetic instructions (default: <code>FALSE</code>).</p></td>
+    </tr>
+    <tr>
+      <th>alt</th>
+      <td><p>Alternative aesthetics, supplied as a named character vector.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A string containing the color assigned to the class of <code>x</code>.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <p>Aesthetic instructions for <code>ggplot</code> as a character
+value.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>For developers: <code>.panelColor</code> is a method that should be subclassed for each <a href='Panel-class.html'>Panel</a> subclass.
-and determines the default color for all instances of that class.
-It is highly recommended to define colors as hex color codes, for full compatibility with both HTML elements and R plots.</p>
-<p>For users: by default, <code>.getPanelColor</code> will return the default color of each panel as specified by the developer in <code>.panelColor</code>.
-However, users can override this by setting the <code>panel.color</code> global option to a named character vector of colors (see Examples).
-This can be used to customize the color scheme for any given call to <code><a href='iSEE.html'>iSEE</a></code>.
-The names of the vector should be set to the name of class to be overridden; if a class is not named here, its default color is used.</p>
+    <div class='dont-index'><p><code>.scatter_plot</code>,
+<code>.violin_plot</code>,
+<code>.square_plot</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>rdp</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='ReducedDimensionPlot-class.html'>ReducedDimensionPlot</a></span>()
-
-<span class='co'># Default color, as specified by the developer:</span>
-<span class='fu'>.panelColor</span>(<span class='no'>rdp</span>)</div><div class='output co'>#&gt; [1] "#3565AA"</div><div class='input'>
-<span class='co'># Still the default color:</span>
-<span class='fu'>.getPanelColor</span>(<span class='no'>rdp</span>)</div><div class='output co'>#&gt; [1] "#3565AA"</div><div class='input'>
-<span class='co'># Overriding the default colors</span>
-<span class='no'>iSEEOptions</span>$<span class='fu'>set</span>(<span class='kw'>panel.color</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='kw'>ReducedDimensionPlot</span><span class='kw'>=</span><span class='st'>"#1e90ff"</span>))
-<span class='fu'>.getPanelColor</span>(<span class='no'>rdp</span>)</div><div class='output co'>#&gt; [1] "#1e90ff"</div><div class='input'>
-</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>.buildAes</span>()</div><div class='output co'>#&gt; [1] "aes(x=X, y=Y)"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
       <li><a href="#value">Value</a></li>
-      <li><a href="#details">Details</a></li>
+      <li><a href="#see-also">See also</a></li>
       <li><a href="#examples">Examples</a></li>
     </ul>
 
     <h2>Author</h2>
-    <p>Aaron Lun</p>
+    <p>Kevin Rue-Albrecht</p>
   </div>
 </div>
 

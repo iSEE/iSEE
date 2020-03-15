@@ -69,7 +69,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.5</span>
       </span>
     </div>
 
@@ -200,8 +200,8 @@ Note that a no-match in one column does not preclude a successful match in anoth
 #&gt; [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
 #&gt; [25] FALSE FALSE</div><div class='input'>
 <span class='co'># Range query:</span>
-<span class='fu'>filterDTColumn</span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>20</span>), <span class='st'>"0.1 ... 0.5"</span>)</div><div class='output co'>#&gt;  [1]  TRUE  TRUE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE FALSE FALSE FALSE
-#&gt; [13]  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE</div><div class='input'>
+<span class='fu'>filterDTColumn</span>(<span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fl'>20</span>), <span class='st'>"0.1 ... 0.5"</span>)</div><div class='output co'>#&gt;  [1]  TRUE  TRUE FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE  TRUE FALSE  TRUE
+#&gt; [13] FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE</div><div class='input'>
 <span class='co'># Factor query:</span>
 <span class='fu'>filterDTColumn</span>(<span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='no'>letters</span>), <span class='st'>"['a', 'b', 'c']"</span>)</div><div class='output co'>#&gt;  [1]  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
 #&gt; [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
@@ -211,9 +211,9 @@ Note that a no-match in one column does not preclude a successful match in anoth
     <span class='kw'>stuff</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='no'>letters</span>[<span class='fl'>1</span>:<span class='fl'>3</span>], <span class='fl'>26</span>, <span class='kw'>replace</span><span class='kw'>=</span><span class='fl'>TRUE</span>),
     <span class='kw'>stringsAsFactors</span><span class='kw'>=</span><span class='fl'>FALSE</span>)
 
-<span class='fu'>filterDT</span>(<span class='no'>X</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"0 ... 0.5"</span>, <span class='st'>"a|b"</span>), <span class='kw'>global</span><span class='kw'>=</span><span class='st'>""</span>)</div><div class='output co'>#&gt;  [1] FALSE  TRUE FALSE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE FALSE FALSE
-#&gt; [13]  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [25]  TRUE FALSE</div><div class='input'><span class='fu'>filterDT</span>(<span class='no'>X</span>, <span class='st'>""</span>, <span class='kw'>global</span><span class='kw'>=</span><span class='st'>"A"</span>)</div><div class='output co'>#&gt;  [1]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
+<span class='fu'>filterDT</span>(<span class='no'>X</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"0 ... 0.5"</span>, <span class='st'>"a|b"</span>), <span class='kw'>global</span><span class='kw'>=</span><span class='st'>""</span>)</div><div class='output co'>#&gt;  [1]  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE
+#&gt; [13] FALSE FALSE FALSE  TRUE FALSE FALSE  TRUE  TRUE FALSE  TRUE FALSE FALSE
+#&gt; [25] FALSE  TRUE</div><div class='input'><span class='fu'>filterDT</span>(<span class='no'>X</span>, <span class='st'>""</span>, <span class='kw'>global</span><span class='kw'>=</span><span class='st'>"A"</span>)</div><div class='output co'>#&gt;  [1]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
 #&gt; [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
 #&gt; [25] FALSE FALSE</div><div class='input'>
 </div></pre>

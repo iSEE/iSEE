@@ -91,7 +91,7 @@ setMethod(".cacheCommonInfo", "ColumnDataTable", function(x, se) {
     se <- callNextMethod()
 
     df <- colData(se)
-    available <- .find_atomic_fields(df)
+    available <- .findAtomicFields(df)
     .setCachedCommonInfo(se, "ColumnDataTable",
         valid.colData.names=available)
 })

@@ -246,13 +246,13 @@ setMethod(".cacheCommonInfo", "ComplexHeatmapPlot", function(x, se) {
     assays_discrete <- !assays_continuous
 
     df <- colData(se)
-    coldata_displayable <- .find_atomic_fields(df)
+    coldata_displayable <- .findAtomicFields(df)
     subdf <- df[,coldata_displayable,drop=FALSE]
     coldata_discrete <- .which_groupable(subdf)
     coldata_continuous <- .which_numeric(subdf)
 
     df <- rowData(se)
-    rowdata_displayable <- .find_atomic_fields(df)
+    rowdata_displayable <- .findAtomicFields(df)
     subdf <- df[,rowdata_displayable,drop=FALSE]
     rowdata_discrete <- .which_groupable(subdf)
     rowdata_continuous <- .which_numeric(subdf)

@@ -145,7 +145,7 @@ setMethod(".cacheCommonInfo", "RowDotPlot", function(x, se) {
     se <- callNextMethod()
 
     df <- rowData(se)
-    displayable <- .find_atomic_fields(df)
+    displayable <- .findAtomicFields(df)
 
     subdf <- df[,displayable,drop=FALSE]
     discrete <- .which_groupable(subdf)

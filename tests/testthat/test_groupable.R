@@ -23,8 +23,8 @@ test_that("grouping functions are robust in the absence of columns", {
 
 test_that("finding atomic fields works correctly", {
     X <- DataFrame(A=LETTERS[1:10], B=1L, C=0.1, D=factor(letters[1:10]))
-    expect_identical(iSEE:::.find_atomic_fields(X), colnames(X))
+    expect_identical(iSEE:::.findAtomicFields(X), colnames(X))
 
     X <- DataFrame(A=Rle(1:5), B=2)
-    expect_identical(iSEE:::.find_atomic_fields(X), "B")
+    expect_identical(iSEE:::.findAtomicFields(X), "B")
 })

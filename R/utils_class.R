@@ -61,8 +61,9 @@
 #'
 #' @author Aaron Lun, Kevin Rue-Albrecht
 #'
+#' @name class-utils
+#'
 #' @export
-#' @name class-utilities
 #' @examples
 #' showMethods("initialize", classes = "ReducedDimensionPlot", includeDefs = TRUE)
 .emptyDefault <- function(args, field, default) {
@@ -82,10 +83,23 @@
 #'
 #' @return A character vector of names of atomic fields in \code{df}.
 #'
-#' @author Aaron Lun
+#' @author Aaron Lun, Kevin Rue-Albrecht
 #'
-#' @rdname INTERNAL_find_atomic_fields
-.find_atomic_fields <- function(df) {
+#' @name dataframe-utils
+#'
+#' @export
+#' @examples
+#' x <- DataFrame(
+#'     A = rnorm(10),
+#'     B = sample(letters, 10),
+#'     DataFrame = I(DataFrame(
+#'         C = rnorm(10),
+#'         D = sample(letters, 10)
+#'     ))
+#' )
+#'
+#' .findAtomicFields(x)
+.findAtomicFields <- function(df) {
     covariates <- colnames(df)
     for (i in seq_along(covariates)) {
         current <- df[,i]

@@ -3,6 +3,7 @@
 export("assayColorMap<-")
 export("colDataColorMap<-")
 export("rowDataColorMap<-")
+export(.addFacets)
 export(.addMultiSelectionPlotCommands)
 export(.allowableXAxisChoices)
 export(.allowableYAxisChoices)

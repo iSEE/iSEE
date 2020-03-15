@@ -577,7 +577,7 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
     )
 
     # Adding a faceting command, if applicable.
-    facet_cmd <- .add_facets(x)
+    facet_cmd <- .addFacets(x)
     if (length(facet_cmd)) {
         N <- length(plot_cmds)
         plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")

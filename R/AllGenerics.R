@@ -563,7 +563,7 @@ setGeneric(".generateTable", function(x, envir) standardGeneric(".generateTable"
 
 #' Generics for setting up parameters
 #'
-#' These generics are related to the iniial setup of the \pkg{iSEE} application.
+#' These generics are related to the initial setup of the \pkg{iSEE} application.
 #'
 #' @section Caching common information:
 #' In \code{.cacheCommonInfo(x, se)}, the following arguments are required:

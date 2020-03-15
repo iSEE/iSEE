@@ -117,9 +117,9 @@ ColumnDataPlot <- function(...) {
 #' @importFrom methods callNextMethod
 setMethod("initialize", "ColumnDataPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .empty_default(args, .colDataXAxis, .colDataXAxisNothingTitle)
-    args <- .empty_default(args, .colDataXAxisColData, NA_character_)
-    args <- .empty_default(args, .colDataYAxis, NA_character_)
+    args <- .emptyDefault(args, .colDataXAxis, .colDataXAxisNothingTitle)
+    args <- .emptyDefault(args, .colDataXAxisColData, NA_character_)
+    args <- .emptyDefault(args, .colDataYAxis, NA_character_)
     do.call(callNextMethod, c(list(.Object), args))
 })
 

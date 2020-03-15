@@ -110,9 +110,9 @@ ReducedDimensionPlot <- function(...) {
 #' @importFrom methods callNextMethod
 setMethod("initialize", "ReducedDimensionPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .empty_default(args, .redDimType, NA_character_)
-    args <- .empty_default(args, .redDimXAxis, 1L)
-    args <- .empty_default(args, .redDimYAxis, 2L)
+    args <- .emptyDefault(args, .redDimType, NA_character_)
+    args <- .emptyDefault(args, .redDimXAxis, 1L)
+    args <- .emptyDefault(args, .redDimYAxis, 2L)
     do.call(callNextMethod, c(list(.Object), args))
 })
 

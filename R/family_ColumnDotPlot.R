@@ -149,8 +149,8 @@ setMethod(".cacheCommonInfo", "ColumnDotPlot", function(x, se) {
     displayable <- .findAtomicFields(df)
 
     subdf <- df[,displayable,drop=FALSE]
-    discrete <- .which_groupable(subdf)
-    continuous <- .which_numeric(subdf)
+    discrete <- .whichGroupable(subdf)
+    continuous <- .whichNumeric(subdf)
 
     .setCachedCommonInfo(se, "ColumnDotPlot",
         valid.colData.names=displayable,

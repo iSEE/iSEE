@@ -4,20 +4,20 @@ context("groupable")
 
 test_that("grouping evaluation functions work correctly", {
     X <- data.frame(A=LETTERS[1:10], B=1L, C=0.1, D=factor(letters[1:10]))
-    expect_equivalent(iSEE:::.which_groupable(X), c(1L, 4L))
-    expect_equivalent(iSEE:::.which_numeric(X), c(2L, 3L))
+    expect_equivalent(iSEE:::.whichGroupable(X), c(1L, 4L))
+    expect_equivalent(iSEE:::.whichNumeric(X), c(2L, 3L))
 
     # Too many levels to consider groupable.
     X <- data.frame(A=LETTERS, B=1L)
-    expect_equivalent(iSEE:::.which_groupable(X), integer(0))
-    expect_equivalent(iSEE:::.which_numeric(X), 2L)
+    expect_equivalent(iSEE:::.whichGroupable(X), integer(0))
+    expect_equivalent(iSEE:::.whichNumeric(X), 2L)
 })
 
 test_that("grouping functions are robust in the absence of columns", {
-    out <- iSEE:::.which_numeric(DataFrame())
+    out <- iSEE:::.whichNumeric(DataFrame())
     expect_equivalent(out, integer(0L))
 
-    out <- iSEE:::.which_groupable(DataFrame())
+    out <- iSEE:::.whichGroupable(DataFrame())
     expect_equivalent(out, integer(0L))
 })
 

@@ -3,20 +3,37 @@
 \name{dataframe-utils}
 \alias{dataframe-utils}
 \alias{.findAtomicFields}
-\title{Find atomic fields}
+\alias{.whichNumeric}
+\alias{.whichGroupable}
+\title{Class utilities}
 \usage{
-.findAtomicFields(df)
+.findAtomicFields(x)
+
+.whichGroupable(x)
+
+.whichNumeric(x)
 }
 \arguments{
-\item{df}{A data.frame or \linkS4class{DataFrame}.}
+\item{x}{A data.frame or \linkS4class{DataFrame}.}
 }
 \value{
-A character vector of names of atomic fields in \code{df}.
+\code{.findAtomicFields}: A character vector of names of atomic fields in \code{x}.
+
+\code{.whichGroupable}: An integer vector containing the indices of the categorical columns.
+
+\code{.whichNumeric}: An integer vector containing the indices of the numeric columns.
 }
 \description{
-A utility function to find column sin a data.frame or \linkS4class{DataFrame}
+\code{.findAtomicFields}: A utility function to find columns in a data.frame or \linkS4class{DataFrame}
 that are atomic R types, as most of the app does not know how to handle  more complex types being stored as columns.
 An obvious example is in data.frames expected by \code{\link{ggplot}} or \code{\link{datatable}}.
+}
+\details{
+\code{.whichNumeric}: Identify continuous columns that can be used as options in various interface elements, e.g., for sizing.
+This is typically called in \code{\link{.cacheCommonInfo}} for later use by methods of \code{\link{.defineInterface}}.
+
+\code{.whichGroupable}: Identify categorical columns that can be used as options in various interface elements, e.g., for faceting or shaping.
+This is typically called in \code{\link{.cacheCommonInfo}} for later use by methods of \code{\link{.defineInterface}}.
 }
 \examples{
 x <- DataFrame(
@@ -29,7 +46,9 @@ x <- DataFrame(
 )
 
 .findAtomicFields(x)
+.whichGroupable(x)
+.whichNumeric(x)
 }
 \author{
-Aaron Lun, Kevin Rue-Albrecht
+Aaron Lun, Kevin Rue-Albrecht, Charlotte Soneson
 }

@@ -45,7 +45,7 @@ Generate ggplot title and label instructions
 If any argument is \code{NULL}, the corresponding label is not set.
 }
 \examples{
-.buildLabs(y = "Title for Y axis", color = "Color label")
+cat(.buildLabs(y = "Title for Y axis", color = "Color label"))
 }
 \seealso{
 \code{\link{.scatter_plot}},

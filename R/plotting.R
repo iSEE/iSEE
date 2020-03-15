@@ -202,10 +202,10 @@ names(.all_aes_values) <- .all_aes_names
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
     size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
 
-    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set, 
+    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set,
         alt=c(color=.set_colorby_when_none(param_choices)))
 
-    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), 
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy),
         new_aes, color_set, size_set)
 
     # Defining the color commands.
@@ -329,10 +329,10 @@ names(.all_aes_values) <- .all_aes_names
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
     size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
 
-    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set, 
+    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set,
         alt=c(x="jitteredX", color=.set_colorby_when_none(param_choices)))
 
-    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), 
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy),
         new_aes, color_set, size_set)
 
     # Defining the color commands.
@@ -516,10 +516,10 @@ plot.data$Y <- tmp;")
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
     size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
 
-    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set, 
+    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set,
         alt=c(x="jitteredX", y="jitteredY", color=.set_colorby_when_none(param_choices)))
 
-    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), 
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy),
         new_aes, color_set, size_set)
 
     # Defining the color commands.
@@ -630,7 +630,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #'
 #' @details
 #' This function is simply a utility to avoid having to write the conditionals in each of the plotting functions above.
-#' 
+#'
 #' @author Aaron Lun
 #'
 #' @rdname INTERNAL_set_colorby_when_none
@@ -985,17 +985,25 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #'
 #' Generate ggplot instructions to facet a plot by row and/or column
 #'
-#' @param param_choices A single-row DataFrame that contains all the
+#' @param x A single-row DataFrame that contains all the
 #' input settings for the current panel.
 #'
 #' @return A string containing a command to define the row and column faceting
 #' covariates.
+#'
 #' @author Kevin Rue-Albrecht.
-#' @rdname INTERNAL_add_facets
+#' @export
+#'
+#' @name plot-utils
+#' @aliases .addFacets
 #' @importFrom ggplot2 facet_grid
-.add_facets <- function(param_choices){
-    row_facet <- param_choices[[.facetByRow]]!=.noSelection
-    col_facet <- param_choices[[.facetByColumn]]!=.noSelection
+#'
+#' @examples
+#' x <- ReducedDimensionPlot(FacetByRow = "Covariate_1", FacetByColumn = "Covariate_2")
+#' .addFacets(x)
+.addFacets <- function(x){
+    row_facet <- x[[.facetByRow]]!=.noSelection
+    col_facet <- x[[.facetByColumn]]!=.noSelection
     if (!row_facet && !col_facet) {
         return(NULL)
     }

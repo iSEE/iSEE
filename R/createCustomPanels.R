@@ -195,10 +195,10 @@ createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot",
     setMethod("initialize", className, function(.Object, ...) {
         extra_args <- list(...)
         for (i in names(defaults)) {
-            extra_args <- .empty_default(extra_args, i, defaults[[i]][1]) # select first element when multiple choice.
+            extra_args <- .emptyDefault(extra_args, i, defaults[[i]][1]) # select first element when multiple choice.
         }
-        extra_args <- .empty_default(extra_args, .selectColType, .selectMultiUnionTitle)
-        extra_args <- .empty_default(extra_args, .selectRowType, .selectMultiUnionTitle)
+        extra_args <- .emptyDefault(extra_args, .selectColType, .selectMultiUnionTitle)
+        extra_args <- .emptyDefault(extra_args, .selectRowType, .selectMultiUnionTitle)
         do.call(callNextMethod, c(list(.Object), extra_args))
     }, where=where)
 

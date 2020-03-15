@@ -114,9 +114,9 @@ RowDataPlot <- function(...) {
 #' @importFrom methods callNextMethod
 setMethod("initialize", "RowDataPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .empty_default(args, .rowDataXAxis, .rowDataXAxisNothingTitle)
-    args <- .empty_default(args, .rowDataXAxisRowData, NA_character_)
-    args <- .empty_default(args, .rowDataYAxis, NA_character_)
+    args <- .emptyDefault(args, .rowDataXAxis, .rowDataXAxisNothingTitle)
+    args <- .emptyDefault(args, .rowDataXAxisRowData, NA_character_)
+    args <- .emptyDefault(args, .rowDataYAxis, NA_character_)
     do.call(callNextMethod, c(list(.Object), args))
 })
 

@@ -153,23 +153,23 @@ NULL
 setMethod("initialize", "Panel", function(.Object, ...) {
     args <- list(...)
 
-    args <- .empty_default(args, .organizationId, NA_integer_)
-    args <- .empty_default(args, .organizationHeight, iSEEOptions$get("panel.height"))
-    args <- .empty_default(args, .organizationWidth, iSEEOptions$get("panel.width"))
+    args <- .emptyDefault(args, .organizationId, NA_integer_)
+    args <- .emptyDefault(args, .organizationHeight, iSEEOptions$get("panel.height"))
+    args <- .emptyDefault(args, .organizationWidth, iSEEOptions$get("panel.width"))
 
-    args <- .empty_default(args, .selectParamBoxOpen, FALSE)
-    args <- .empty_default(args, .selectRowSource, .noSelection)
-    args <- .empty_default(args, .selectColSource, .noSelection)
+    args <- .emptyDefault(args, .selectParamBoxOpen, FALSE)
+    args <- .emptyDefault(args, .selectRowSource, .noSelection)
+    args <- .emptyDefault(args, .selectColSource, .noSelection)
 
-    args <- .empty_default(args, .selectRowType, .selectMultiActiveTitle)
-    args <- .empty_default(args, .selectRowSaved, 0L)
-    args <- .empty_default(args, .selectColType, .selectMultiActiveTitle)
-    args <- .empty_default(args, .selectColSaved, 0L)
+    args <- .emptyDefault(args, .selectRowType, .selectMultiActiveTitle)
+    args <- .emptyDefault(args, .selectRowSaved, 0L)
+    args <- .emptyDefault(args, .selectColType, .selectMultiActiveTitle)
+    args <- .emptyDefault(args, .selectColSaved, 0L)
 
-    args <- .empty_default(args, .selectRowDynamic, iSEEOptions$get("selection.dynamic.multiple"))
-    args <- .empty_default(args, .selectColDynamic, iSEEOptions$get("selection.dynamic.multiple"))
+    args <- .emptyDefault(args, .selectRowDynamic, iSEEOptions$get("selection.dynamic.multiple"))
+    args <- .emptyDefault(args, .selectColDynamic, iSEEOptions$get("selection.dynamic.multiple"))
 
-    args <- .empty_default(args, .dataParamBoxOpen, FALSE)
+    args <- .emptyDefault(args, .dataParamBoxOpen, FALSE)
 
     do.call(callNextMethod, c(list(.Object), args))
 })

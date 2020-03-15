@@ -1,7 +1,7 @@
 #' Set and get cached commons
 #'
 #' Get and set common cached information for each class.
-#' The setter is usually called in \code{\link{.cacheCommonInfo}} 
+#' The setter is usually called in \code{\link{.cacheCommonInfo}}
 #' while the getter is usually called in \code{\link{.defineInterface}}.
 #'
 #' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
@@ -10,21 +10,21 @@
 #'
 #' @return
 #' \code{.setCachedCommonInfo} returns \code{se} with \code{...} added to its \code{\link{metadata}}.
-#' 
+#'
 #' \code{.getCachedCommonInfo} retrieves the cached common information for class \code{cls}.
 #'
 #' @details
 #' This function is intended for use by developers of \linkS4class{Panel} classes.
 #' If you're an end-user and you're reading this, you probably took a wrong turn somewhere.
-#' 
+#'
 #' @author Aaron Lun
 #'
 #' @examples
 #' se <- SummarizedExperiment()
-#' se <- .setCachedCommonInfo(se, "SomePanelClass", 
+#' se <- .setCachedCommonInfo(se, "SomePanelClass",
 #'     something=1, more_things=TRUE, something_else="A")
 #' .getCachedCommonInfo(se, "SomePanelClass")
-#' 
+#'
 #' @export
 #' @rdname setCachedCommonInfo
 #' @importFrom S4Vectors metadata metadata<-
@@ -59,19 +59,23 @@
 #' @return
 #' \code{args} is returned with the named \code{field} set to \code{default} if it was previously absent.
 #'
-#' @author Aaron Lun
-#' @rdname INTERNAL_set_empty_default
-.empty_default <- function(args, field, default) {
+#' @author Aaron Lun, Kevin Rue-Albrecht
+#'
+#' @export
+#' @name class-utilities
+#' @examples
+#' showMethods("initialize", classes = "ReducedDimensionPlot", includeDefs = TRUE)
+.emptyDefault <- function(args, field, default) {
     if (is.null(args[[field]])) {
-        args[[field]] <- default 
+        args[[field]] <- default
     }
     args
 }
 
 #' Find atomic fields
-#' 
+#'
 #' A utility function to find column sin a data.frame or \linkS4class{DataFrame}
-#' that are atomic R types, as most of the app does not know how to handle  more complex types being stored as columns. 
+#' that are atomic R types, as most of the app does not know how to handle  more complex types being stored as columns.
 #' An obvious example is in data.frames expected by \code{\link{ggplot}} or \code{\link{datatable}}.
 #'
 #' @param df A data.frame or \linkS4class{DataFrame}.
@@ -103,7 +107,7 @@
 #' @param allowable Character vector of allowable choices for a multiple-choice selection.
 #' @param lower Numeric scalar specifying the lower bound of possible values.
 #' @param upper Numeric scalar specifying the upper bound of possible values.
-#' 
+#'
 #' @return
 #' All functions return \code{msg}, possibly appended with additional error messages.
 #'
@@ -117,7 +121,7 @@
 #' \code{.allowable_choice_error} adds an error message if the slot named \code{field} does not have a value in \code{allowable}, assuming it contains a single string.
 #'
 #' \code{.multiple_choice_error} adds an error message if the slot named \code{field} does not have all of its values in \code{allowable}, assuming it contains a character vector of any length.
-#' 
+#'
 #' \code{.valid_number_error} adds an error message if the slot named \code{field} is not a non-\code{NA} number within [\code{lower}, \code{upper}].
 #'
 #' @author Aaron Lun
@@ -173,7 +177,7 @@
 #' @rdname INTERNAL_validation_errors
 .valid_number_error <- function(msg, x, field, lower, upper) {
     if (length(val <- x[[field]])!=1 || is.na(val) || val < lower || val > upper) {
-        msg <- c(msg, sprintf("'%s' for '%s' should be a numeric scalar in [%s, %s]", 
+        msg <- c(msg, sprintf("'%s' for '%s' should be a numeric scalar in [%s, %s]",
             field, class(x)[1], lower, upper))
     }
     msg
@@ -187,7 +191,7 @@
 #' @param x An instance of a \linkS4class{Panel} class.
 #' @param field String containing the name of the relevant slot.
 #' @param choices Character vector of permissible values for this slot.
-#' 
+#'
 #' @return
 #' \code{x} where the slot named \code{field} is replaced with \code{choices[1]} if it was previously \code{NA}.
 #'
@@ -244,7 +248,7 @@
 #'
 #' Identify categorical columns that can be used as options in various interface elements, e.g., for faceting or shaping.
 #' This is typically called in \code{\link{.cacheCommonInfo}} for later use by methods of \code{\link{.defineInterface}}.
-#' 
+#'
 #' @param x A DataFrame (or equivalent).
 #'
 #' @return An integer vector containing the indices of the categorical columns.

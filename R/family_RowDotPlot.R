@@ -101,13 +101,13 @@ NULL
 #' @importFrom methods callNextMethod
 setMethod("initialize", "RowDotPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .empty_default(args, .colorByRowData, NA_character_)
-    args <- .empty_default(args, .colorBySampNameAssay, NA_character_)
-    args <- .empty_default(args, .colorByFeatNameColor, iSEEOptions$get("selected.color"))
+    args <- .emptyDefault(args, .colorByRowData, NA_character_)
+    args <- .emptyDefault(args, .colorBySampNameAssay, NA_character_)
+    args <- .emptyDefault(args, .colorByFeatNameColor, iSEEOptions$get("selected.color"))
 
-    args <- .empty_default(args, .shapeByRowData, NA_character_)
+    args <- .emptyDefault(args, .shapeByRowData, NA_character_)
 
-    args <- .empty_default(args, .sizeByRowData, NA_character_)
+    args <- .emptyDefault(args, .sizeByRowData, NA_character_)
 
     do.call(callNextMethod, c(list(.Object), args))
 })

@@ -102,13 +102,13 @@ NULL
 #' @importFrom methods callNextMethod
 setMethod("initialize", "ColumnDotPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .empty_default(args, .colorByColData, NA_character_)
-    args <- .empty_default(args, .colorByFeatNameAssay, NA_character_)
-    args <- .empty_default(args, .colorBySampNameColor, iSEEOptions$get("selected.color"))
+    args <- .emptyDefault(args, .colorByColData, NA_character_)
+    args <- .emptyDefault(args, .colorByFeatNameAssay, NA_character_)
+    args <- .emptyDefault(args, .colorBySampNameColor, iSEEOptions$get("selected.color"))
 
-    args <- .empty_default(args, .shapeByColData, NA_character_)
+    args <- .emptyDefault(args, .shapeByColData, NA_character_)
 
-    args <- .empty_default(args, .sizeByColData, NA_character_)
+    args <- .emptyDefault(args, .sizeByColData, NA_character_)
 
     do.call(callNextMethod, c(list(.Object), args))
 })

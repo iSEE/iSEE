@@ -328,7 +328,7 @@ setMethod(".generateDotPlotData", "FeatureAssayPlot", function(x, envir) {
     }
 
     data_cmds <- unlist(data_cmds)
-    .text_eval(data_cmds, envir)
+    .textEval(data_cmds, envir)
 
     list(commands=data_cmds, labels=list(title=plot_title, X=x_lab, Y=y_lab))
 })

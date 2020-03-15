@@ -244,7 +244,7 @@ setMethod(".generateDotPlotData", "RowDataPlot", function(x, envir) {
     plot_title <- sprintf("%s %s", y_lab, x_title)
 
     data_cmds <- unlist(data_cmds)
-    .text_eval(data_cmds, envir)
+    .textEval(data_cmds, envir)
 
     list(commands=data_cmds, labels=list(title=plot_title, X=x_lab, Y=y_lab))
 })

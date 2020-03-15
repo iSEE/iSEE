@@ -426,7 +426,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     heatmap_call <- sprintf("hm <- ComplexHeatmap::Heatmap(matrix=plot.data, %s)", heatmap_args)
 
     heat_cmd <- paste(strwrap(heatmap_call, width = 80, exdent = 4), collapse = "\n")
-    plot_out <- .text_eval(heat_cmd, plot_env)
+    plot_out <- .textEval(heat_cmd, plot_env)
     all_cmds[["heatmap"]] <- heat_cmd
 
     # Add draw command after all evaluations (avoid drawing in the plotting device)

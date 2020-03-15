@@ -36,7 +36,7 @@
         if (.multiSelectionHasActive(instance)) {
             env$select <- .multiSelectionActive(instance)
             cmds <- .multiSelectionCommands(instance, NA)
-            .text_eval(cmds, env)
+            .textEval(cmds, env)
             n_brushed <- length(env$selected)
 
             all_output <- append(all_output,
@@ -58,7 +58,7 @@
             }
 
             env$select <- saved[[i]]
-            .text_eval(cmds, env)
+            .textEval(cmds, env)
             n_brushed <- length(env$selected)
 
             all_output <- append(all_output,

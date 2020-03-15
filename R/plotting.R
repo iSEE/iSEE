@@ -72,7 +72,7 @@ names(.all_aes_values) <- .all_aes_names
         specific <- .square_setup(envir$plot.data)
     }
 
-    .text_eval(specific, envir)
+    .textEval(specific, envir)
     envir$plot.type <- mode
     return(specific)
 }
@@ -142,7 +142,7 @@ names(.all_aes_values) <- .all_aes_names
             ""
         )
 
-        .text_eval(downsample_cmds, envir)
+        .textEval(downsample_cmds, envir)
         return(downsample_cmds)
     } else {
         return(NULL)

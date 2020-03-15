@@ -407,7 +407,7 @@ setMethod(".addDotPlotDataColor", "RowDotPlot", function(x, envir) {
         return(NULL)
     }
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     list(commands=cmds, labels=list(ColorBy=label))
 })
@@ -424,7 +424,7 @@ setMethod(".addDotPlotDataShape", "RowDotPlot", function(x, envir) {
         return(NULL)
     }
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     list(commands=cmds, labels=list(ShapeBy=label))
 })
@@ -441,7 +441,7 @@ setMethod(".addDotPlotDataSize", "RowDotPlot", function(x, envir) {
         return(NULL)
     }
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     list(commands=cmds, labels=list(SizeBy=label))
 })
@@ -464,7 +464,7 @@ setMethod(".addDotPlotDataFacets", "RowDotPlot", function(x, envir) {
         labels$FacetColumn <- facet_column
     }
 
-    .text_eval(facet_cmds, envir)
+    .textEval(facet_cmds, envir)
 
     list(commands=facet_cmds, labels=labels)
 })
@@ -486,7 +486,7 @@ setMethod(".addDotPlotDataSelected", "RowDotPlot", function(x, envir) {
     }
     cmds["footer"] <- ""
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     cmds
 })

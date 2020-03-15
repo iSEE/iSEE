@@ -528,7 +528,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
         sprintf("set.seed(%i);", nrow(panel_data)), # Using a deterministically different seed to keep things exciting.
         "plot.data <- plot.data[sample(nrow(plot.data)),,drop=FALSE];"
     )
-    .text_eval(scramble_cmds, plot_env)
+    .textEval(scramble_cmds, plot_env)
     all_cmds$shuffle <- scramble_cmds
 
     # Next, reordering by priority (this is stable so any ordering due to the
@@ -537,7 +537,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
     rescaled_res <- FALSE
     if (has_priority <- !is.null(priority_out)) {
         order_cmds <- "plot.data <- plot.data[order(.priority),,drop=FALSE];"
-        .text_eval(order_cmds, plot_env)
+        .textEval(order_cmds, plot_env)
         all_cmds$priority <- c(priority_out$commands, order_cmds)
         rescaled_res <- priority_out$rescaled
     }
@@ -589,7 +589,7 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
         flip=(plot_type == "violin_horizontal"),
         envir=envir, commands=plot_cmds)
 
-    list(plot=.text_eval(plot_cmds, envir), commands=plot_cmds)
+    list(plot=.textEval(plot_cmds, envir), commands=plot_cmds)
 })
 
 #' @export

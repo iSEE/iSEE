@@ -407,7 +407,7 @@ setMethod(".addDotPlotDataColor", "ColumnDotPlot", function(x, envir) {
         return(NULL)
     }
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     list(commands=cmds, labels=list(ColorBy=label))
 })
@@ -424,7 +424,7 @@ setMethod(".addDotPlotDataShape", "ColumnDotPlot", function(x, envir) {
         return(NULL)
     }
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     list(commands=cmds, labels=list(ShapeBy=label))
 })
@@ -441,7 +441,7 @@ setMethod(".addDotPlotDataSize", "ColumnDotPlot", function(x, envir) {
         return(NULL)
     }
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     list(commands=cmds, labels=list(SizeBy=label))
 })
@@ -464,7 +464,7 @@ setMethod(".addDotPlotDataFacets", "ColumnDotPlot", function(x, envir) {
         labels$FacetColumn <- facet_column
     }
 
-    .text_eval(facet_cmds, envir)
+    .textEval(facet_cmds, envir)
 
     list(commands=facet_cmds, labels=labels)
 })
@@ -484,7 +484,7 @@ setMethod(".addDotPlotDataSelected", "ColumnDotPlot", function(x, envir) {
         cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"
     }
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     cmds
 })

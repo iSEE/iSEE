@@ -202,7 +202,7 @@ names(.all_aes_values) <- .all_aes_names
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
     size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
 
-    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set,
+    new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
         alt=c(color=.set_colorby_when_none(param_choices)))
 
     plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy),
@@ -320,7 +320,7 @@ names(.all_aes_values) <- .all_aes_names
     plot_cmds[["ggplot"]] <- "dot.plot <- ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
     plot_cmds[["violin"]] <- sprintf(
         "geom_violin(%s, alpha=0.2, data=%s, scale='width', width=0.8) +",
-        .build_aes(color=FALSE, group=TRUE),
+        .buildAes(color=FALSE, group=TRUE),
         ifelse(is_downsampled, "plot.data.pre", "plot.data")
     )
 
@@ -329,7 +329,7 @@ names(.all_aes_values) <- .all_aes_names
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
     size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
 
-    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set,
+    new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
         alt=c(x="jitteredX", color=.set_colorby_when_none(param_choices)))
 
     plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy),
@@ -516,7 +516,7 @@ plot.data$Y <- tmp;")
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
     size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
 
-    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set,
+    new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
         alt=c(x="jitteredX", y="jitteredY", color=.set_colorby_when_none(param_choices)))
 
     plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy),
@@ -849,14 +849,19 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' value.
 #'
 #' @author Kevin Rue-Albrecht
-#' @rdname INTERNAL_build_aes
+#' @name aes-utils
+#' @export
+#'
 #' @seealso
 #' \code{\link{.scatter_plot}},
 #' \code{\link{.violin_plot}},
 #' \code{\link{.square_plot}}
 #'
 #' @importFrom ggplot2 aes
-.build_aes <- function(
+#'
+#' @examples
+#' .buildAes()
+.buildAes <- function(
     x=TRUE, y=TRUE, color=FALSE, shape=FALSE, size=FALSE, fill=FALSE,
     group=FALSE, alt=NULL) {
     active_aes <- .all_aes_values[c(x, y, color, shape, size, fill, group)]
@@ -881,7 +886,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_make_single_aes
 #' @seealso
-#' \code{\link{.build_aes}}.
+#' \code{\link{.buildAes}}.
 .make_single_aes <- function(name, value){
     sprintf("%s=%s", name, value)
 }

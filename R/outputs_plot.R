@@ -103,7 +103,7 @@
     if (any(clean_affected)) {
         clean_expression <- paste(sprintf("!is.na(%s)", clean_select_fields[clean_affected]), collapse=" & ")
         collected$na.rm <- sprintf("plot.data <- subset(plot.data, %s);", clean_expression)
-        .text_eval(collected$na.rm, envir)
+        .textEval(collected$na.rm, envir)
     }
 
     collected$select.effect <- .addDotPlotDataSelected(x, envir)
@@ -134,6 +134,6 @@
         v <- get(df, envir = envir)[[f]]
         coerce_cmds <- c(coerce_cmds, .coerce_type(v, f, as_numeric=!.is_groupable(v), df=df))
     }
-    .text_eval(coerce_cmds, envir)
+    .textEval(coerce_cmds, envir)
     coerce_cmds
 }

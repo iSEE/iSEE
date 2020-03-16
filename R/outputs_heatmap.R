@@ -46,7 +46,7 @@
         sep='\n'
     )
 
-    .text_eval(all_cmds, envir)
+    .textEval(all_cmds, envir)
     all_cmds
 }
 
@@ -124,7 +124,7 @@
         cmds <- c(cmds, 'names(.assay_colors) <- .assay_values')
     }
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
     cmds
 }
 
@@ -146,18 +146,18 @@
         cmds <- c(cmds, '.column_data[["Selected points"]] <- logical(nrow(.column_data))')
         cmds <- c(cmds, '.column_data[unlist(col_selected), "Selected points"] <- TRUE')
     }
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     # Collect color maps
     init_cmd <- ".column_col <- list()"
-    .text_eval(init_cmd, envir)
+    .textEval(init_cmd, envir)
     cmds <- c(cmds, "", init_cmd, "")
 
     for (annot in x[[.heatMapColData]]) {
         cmds <- c(cmds, .coerce_dataframe_columns(envir, annot, ".column_data"))
 
         cmd_get_value <- sprintf(".color_values <- .column_data[[%s]]", deparse(annot))
-        .text_eval(cmd_get_value, envir)
+        .textEval(cmd_get_value, envir)
         cmds <- c(cmds, cmd_get_value)
 
         if (annot %in% .getCachedCommonInfo(se, "ComplexHeatmapPlot")$continuous.colData.names) {
@@ -177,7 +177,7 @@
             colcmds <- c(colcmds, sprintf(".column_col[[%s]] <- .col_colors", deparse(annot)))
         }
 
-        .text_eval(colcmds, envir)
+        .textEval(colcmds, envir)
         cmds <- c(cmds, colcmds, "")
     }
 
@@ -207,7 +207,7 @@
         )
     )
 
-    .text_eval(additional, envir)
+    .textEval(additional, envir)
     c(cmds, additional)
 }
 
@@ -222,18 +222,18 @@
 
     cmds <- "# Keep all features to compute the full range of continuous annotations"
     cmds <- c(cmds, sprintf(".row_data <- rowData(se)[, %s, drop=FALSE]", .deparse_for_viewing(x[[.heatMapRowData]])))
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     # column color maps
     init_cmd <- ".row_col <- list()"
-    .text_eval(init_cmd, envir)
+    .textEval(init_cmd, envir)
     cmds <- c(cmds, "", init_cmd, "")
 
     for (annot in x[[.heatMapRowData]]) {
         cmds <- c(cmds, .coerce_dataframe_columns(envir, annot, ".row_data"))
 
         cmd_get_value <- sprintf('.color_values <- .row_data[[%s]]', deparse(annot))
-        .text_eval(cmd_get_value, envir)
+        .textEval(cmd_get_value, envir)
         cmds <- c(cmds, cmd_get_value)
 
         if (annot %in% .getCachedCommonInfo(se, "ComplexHeatmapPlot")$continuous.rowData.names) {
@@ -253,7 +253,7 @@
             rowcmds <- c(rowcmds, sprintf('.row_col[[%s]] <- .row_colors', deparse(annot)))
         }
 
-        .text_eval(rowcmds, envir)
+        .textEval(rowcmds, envir)
         cmds <- c(cmds, rowcmds, "")
     }
 
@@ -266,7 +266,7 @@
         )
     )
 
-    .text_eval(additional, envir)
+    .textEval(additional, envir)
     c(cmds, additional)
 }
 
@@ -315,7 +315,7 @@
             if (x[[.assayScaleRows]]) {
                 cmds <- c(cmds, "plot.data <- plot.data / apply(plot.data, 1, sd)")
             }
-            .text_eval(cmds, envir)
+            .textEval(cmds, envir)
         }
     }
 

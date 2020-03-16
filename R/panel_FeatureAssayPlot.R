@@ -127,17 +127,17 @@ FeatureAssayPlot <- function(...) {
 #' @importFrom methods callNextMethod
 setMethod("initialize", "FeatureAssayPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .empty_default(args, .featAssayAssay, NA_character_)
-    args <- .empty_default(args, .featAssayXAxis, .featAssayXAxisNothingTitle)
-    args <- .empty_default(args, .featAssayXAxisColData, NA_character_)
+    args <- .emptyDefault(args, .featAssayAssay, NA_character_)
+    args <- .emptyDefault(args, .featAssayXAxis, .featAssayXAxisNothingTitle)
+    args <- .emptyDefault(args, .featAssayXAxisColData, NA_character_)
 
-    args <- .empty_default(args, .featAssayXAxisRowTable, .noSelection)
-    args <- .empty_default(args, .featAssayXAxisFeatName, NA_character_)
-    args <- .empty_default(args, .featAssayXAxisFeatDynamic, iSEEOptions$get("selection.dynamic.single"))
+    args <- .emptyDefault(args, .featAssayXAxisRowTable, .noSelection)
+    args <- .emptyDefault(args, .featAssayXAxisFeatName, NA_character_)
+    args <- .emptyDefault(args, .featAssayXAxisFeatDynamic, iSEEOptions$get("selection.dynamic.single"))
 
-    args <- .empty_default(args, .featAssayYAxisRowTable, .noSelection)
-    args <- .empty_default(args, .featAssayYAxisFeatName, NA_character_)
-    args <- .empty_default(args, .featAssayYAxisFeatDynamic, iSEEOptions$get("selection.dynamic.single"))
+    args <- .emptyDefault(args, .featAssayYAxisRowTable, .noSelection)
+    args <- .emptyDefault(args, .featAssayYAxisFeatName, NA_character_)
+    args <- .emptyDefault(args, .featAssayYAxisFeatDynamic, iSEEOptions$get("selection.dynamic.single"))
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -328,7 +328,7 @@ setMethod(".generateDotPlotData", "FeatureAssayPlot", function(x, envir) {
     }
 
     data_cmds <- unlist(data_cmds)
-    .text_eval(data_cmds, envir)
+    .textEval(data_cmds, envir)
 
     list(commands=data_cmds, labels=list(title=plot_title, X=x_lab, Y=y_lab))
 })

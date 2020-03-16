@@ -90,7 +90,7 @@ setMethod(".cacheCommonInfo", "RowDataTable", function(x, se) {
     se <- callNextMethod()
 
     df <- rowData(se)
-    available <- .find_atomic_fields(df)
+    available <- .findAtomicFields(df)
     .setCachedCommonInfo(se, "RowDataTable",
         valid.rowData.names=available)
 })
@@ -151,7 +151,7 @@ setMethod(".generateTable", "RowDataTable", function(x, envir) {
             paste(deparse(valid.names), collapse="\n     ")))
     }
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     cmds
 })

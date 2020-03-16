@@ -4,7 +4,9 @@
 \name{iSEEOptions}
 \alias{iSEEOptions}
 \title{Default panel options}
-\format{An object of class \code{list} of length 4.}
+\format{
+An object of class \code{list} of length 4.
+}
 \usage{
 iSEEOptions
 }

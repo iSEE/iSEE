@@ -1099,31 +1099,31 @@ test_that(".define_facetby_for_row_plot works", {
     expect_match(facet_out$commands["FacetColumn"], "LETTERS", fixed=TRUE)
 })
 
-test_that(".add_facets works correctly plots", {
+test_that(".addFacets works correctly plots", {
     params <- pObjects$memory$ReducedDimensionPlot1
-    out <- iSEE:::.add_facets(params)
+    out <- iSEE:::.addFacets(params)
     expect_null(out)
 
     params[["FacetByRow"]] <- "driver_1_s"
     params[["FacetByColumn"]] <- "Core.Type"
 
-    out <- iSEE:::.add_facets(params)
+    out <- iSEE:::.addFacets(params)
     expect_identical(out, "facet_grid(FacetRow ~ FacetColumn)")
 
     params <- pObjects$memory$RowDataPlot1
-    out <- iSEE:::.add_facets(params)
+    out <- iSEE:::.addFacets(params)
     expect_null(out)
 
     params[["FacetByRow"]] <- "letters"
     params[["FacetByColumn"]] <- iSEE:::.noSelection
 
-    out <- iSEE:::.add_facets(params)
+    out <- iSEE:::.addFacets(params)
     expect_identical(out, "facet_grid(FacetRow ~ .)")
 
     params[["FacetByRow"]] <- iSEE:::.noSelection
     params[["FacetByColumn"]] <- "letters"
 
-    out <- iSEE:::.add_facets(params)
+    out <- iSEE:::.addFacets(params)
     expect_identical(out, "facet_grid(. ~ FacetColumn)")
 })
 
@@ -1330,10 +1330,10 @@ test_that("plots subsetted to no data contain a geom_blank command", {
 })
 
 ########################################
-# .build_labs ----
+# .buildLabs ----
 
-test_that(".build_labs returns NULL for NULL inputs", {
-    expect_null(iSEE:::.build_labs())
+test_that(".buildLabs returns NULL for NULL inputs", {
+    expect_null(iSEE:::.buildLabs())
 })
 
 ########################################

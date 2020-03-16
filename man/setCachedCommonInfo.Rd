@@ -23,7 +23,7 @@
 }
 \description{
 Get and set common cached information for each class.
-The setter is usually called in \code{\link{.cacheCommonInfo}} 
+The setter is usually called in \code{\link{.cacheCommonInfo}}
 while the getter is usually called in \code{\link{.defineInterface}}.
 }
 \details{
@@ -32,7 +32,7 @@ If you're an end-user and you're reading this, you probably took a wrong turn so
 }
 \examples{
 se <- SummarizedExperiment()
-se <- .setCachedCommonInfo(se, "SomePanelClass", 
+se <- .setCachedCommonInfo(se, "SomePanelClass",
     something=1, more_things=TRUE, something_else="A")
 .getCachedCommonInfo(se, "SomePanelClass")
 

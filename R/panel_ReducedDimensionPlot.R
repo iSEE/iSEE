@@ -110,9 +110,9 @@ ReducedDimensionPlot <- function(...) {
 #' @importFrom methods callNextMethod
 setMethod("initialize", "ReducedDimensionPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .empty_default(args, .redDimType, NA_character_)
-    args <- .empty_default(args, .redDimXAxis, 1L)
-    args <- .empty_default(args, .redDimYAxis, 2L)
+    args <- .emptyDefault(args, .redDimType, NA_character_)
+    args <- .emptyDefault(args, .redDimXAxis, 1L)
+    args <- .emptyDefault(args, .redDimYAxis, 2L)
     do.call(callNextMethod, c(list(.Object), args))
 })
 
@@ -280,7 +280,7 @@ setMethod(".generateDotPlotData", "ReducedDimensionPlot", function(x, envir) {
     y_lab <- sprintf("Dimension %s", x[[.redDimYAxis]])
 
     data_cmds <- unlist(data_cmds)
-    .text_eval(data_cmds, envir)
+    .textEval(data_cmds, envir)
 
     list(commands=data_cmds, labels=list(title=plot_title, X=x_lab, Y=y_lab))
 })

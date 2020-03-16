@@ -30,6 +30,20 @@ Current contributors include:
 
 [![Figure 1. _iSEE_ uses a customisable multi-panel layout.][Figure1]](https://f1000research.com/articles/7-741/v1)
 
+## Installation
+
+_iSEE_ can be easily installed from Bioconductor using `BiocManager::install()`:
+
+```r
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install("iSEE")
+# or also...
+BiocManager::install("iSEE", dependencies = TRUE)
+```
+
+Setting `dependencies = TRUE` should ensure that all packages, including the ones in the `Suggests:` field of the `DESCRIPTION`, are installed - this can be essential if you want to reproduce the code in the vignette, for example.
+
 ## Functionalities
 
 <details>
@@ -120,3 +134,7 @@ Submit a pull request once the implementation is complete, if you want to have i
 
 
 [Figure1]: https://f1000researchdata.s3.amazonaws.com/manuscripts/16293/6bf85f9d-8352-4a78-a8da-456f05f5c4c9_figure1.gif "iSEE uses a customisable multi-panel layout"
+
+## Code of Conduct
+  
+Please note that the iSEE project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.

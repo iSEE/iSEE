@@ -55,6 +55,9 @@ knitr::opts_chunk$set(
 stopifnot(requireNamespace("htmltools"))
 htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 sce <- readRDS("sce.rds")
+
+SCREENSHOT <- function(x) 
+    knitr::include_graphics(file.path("https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE", x))
 ```
 
 # Changing the default start configuration
@@ -76,6 +79,10 @@ app <- iSEE(sce, initial=list(
 ))
 ```
 
+```{r, echo=FALSE}
+SCREENSHOT("FAP-basic.png")
+```
+
 The genes to show on the Y-axis in the two plots can be specified via the `featAssayArgs` argument to `iSEE`. This is a `DataFrame`, specifying the initial parameters for each plot.
 In this case, we want to modify the `YAxis` and `YAxisFeatureName` defaults for the two plots:
 
@@ -84,6 +91,10 @@ app <- iSEE(sce, initial=list(
     FeatureAssayPlot(YAxisFeatureName="0610009L18Rik"),
     FeatureAssayPlot(YAxisFeatureName="0610009B22Rik")
 )) 
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("FAP-preset-genes.png")
 ```
 
 This will open the app with two feature assay plots, showing the selected genes.
@@ -111,6 +122,10 @@ app <- iSEE(sce, initial=list(
     ColumnDataPlot(YAxis="NREADS", PanelWidth=6L, DataBoxOpen=TRUE),
     ColumnDataPlot(YAxis="TOTAL_DUP", PanelWidth=6L, DataBoxOpen=TRUE)
 ))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("CDP-basic.png")
 ```
 
 ## Setting the X-axis {#xaxis}
@@ -156,6 +171,10 @@ rex <- RowDataTable(Selected="Ints2", Search="Ints", PanelWidth=12L)
 app <- iSEE(sce, initial=list(fex1, fex2, fex3, fex4, rex))
 ```
 
+```{r, echo=FALSE}
+SCREENSHOT("FAP-xaxis.png")
+```
+
 Note how _Example 3b_ requires an active _row data table_ as a source of selection.
 To facilitate visualisation, we added the features identifiers as the `gene_id` column in `rowData(sce)`,
 we preselected the feature `"Ints2"`, and we prefiltered the table using the pattern `"Ints"` on the `gene_id` column to show this active selection.
@@ -172,6 +191,10 @@ app <- iSEE(sce, initial=list(
 ))
 ```
 
+```{r, echo=FALSE}
+SCREENSHOT("ReDP-basic.png")
+```
+
 We refer users to the `?redDimPlotDefaults` help page to learn more about the choices of default parameters for _reduced dimension plot_ panels.
 
 ## Configuring the type of assay data {#assay}
@@ -183,6 +206,10 @@ app <- iSEE(sce, initial=list(
     FeatureAssayPlot(DataBoxOpen=TRUE, Assay="logcounts", PanelWidth=6L),
     FeatureAssayPlot(DataBoxOpen=TRUE, Assay="tophat_counts", PanelWidth=6L)
 ))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("FAP-assay.png")
 ```
 
 # Visual parameters
@@ -222,6 +249,10 @@ cdp2[["FontSize"]] <- 2
 app <- iSEE(sce, initial=list(cdp, cdp2))
 ```
 
+```{r, echo=FALSE}
+SCREENSHOT("CDP-visual.png")
+```
+
 Note that for this demonstration, we facilitate visualization of the preconfigured arguments by setting `VisualChoices` to display both the `"Color"` and `"Shape"` UI panels.
 
 ## Linking point aesthetics to variables
@@ -240,6 +271,10 @@ cdp2[["ColorByColumnData"]] <- "TOTAL_DUP"
 cdp2[["ShapeByColumnData"]] <- "driver_1_s"
 
 app <- iSEE(sce, initial=list(cdp, cdp2))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("CDP-linked-visual.png")
 ```
 
 Note that points may only be shaped by a categorical variable.
@@ -263,6 +298,10 @@ cdp3 <- cdp
 cdp3[["FacetByColumn"]] <- "---"
 
 app <- iSEE(sce, initial=list(cdp, cdp2, cdp3))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("CDP-facets.png")
 ```
 
 # Selection parameters
@@ -297,6 +336,10 @@ rdArgs <- ReducedDimensionPlot(
 app <- iSEE(sce, initial=list(cdArgs, rdArgs))
 ```
 
+```{r, echo=FALSE}
+SCREENSHOT("ReDP-select.png")
+```
+
 Note that in the example above, we chose to color selected data points in the receiver panel, by setting the `SelectionEffect` argument to `"Color"`,
 and the color of selected data points to `"darkgoldenrod1"`.
 Other choices include `"Restrict"`, to show only the selected data points;
@@ -313,6 +356,10 @@ rdArgs[["BrushData"]] <- list(
         2L)))
 
 app <- iSEE(sce, initial=list(cdArgs, rdArgs))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("ReDP-lasso.png")
 ```
 
 # Writing your own tour

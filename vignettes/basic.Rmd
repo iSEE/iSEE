@@ -54,6 +54,9 @@ knitr::opts_chunk$set(
 )
 stopifnot(requireNamespace("htmltools"))
 htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+
+SCREENSHOT <- function(x)
+    knitr::include_graphics(file.path("https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE", x))
 ```
 
 ```{r, echo=FALSE, out.width='50%', fig.align='center'}
@@ -148,6 +151,10 @@ The `runApp` function launches the app in our browser.
 
 ```{r runApp, eval=FALSE}
 shiny::runApp(app)
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("default.png")
 ```
 
 By default, the app starts with a dashboard that contains one panel or table of each type.

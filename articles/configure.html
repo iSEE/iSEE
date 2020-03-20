@@ -114,7 +114,7 @@
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">16 March 2020</h4>
+            <h4 class="date">20 March 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/configure.Rmd"><code>vignettes/configure.Rmd</code></a></small>
       <div class="hidden name"><code>configure.Rmd</code></div>
@@ -123,7 +123,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-03-16</p>
+<p><strong>Compiled date</strong>: 2020-03-20</p>
 <p><strong>Last edited</strong>: 2018-03-08</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="changing-the-default-start-configuration" class="section level1">
@@ -136,11 +136,13 @@
 <a class="sourceLine" id="cb1-3" data-line-number="3">    <span class="kw"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="dt">PanelWidth=</span>6L),</a>
 <a class="sourceLine" id="cb1-4" data-line-number="4">    <span class="kw"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="dt">PanelWidth=</span>6L)</a>
 <a class="sourceLine" id="cb1-5" data-line-number="5">))</a></code></pre></div>
+<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/configure-FAP-basic.png"><!-- --></p>
 <p>The genes to show on the Y-axis in the two plots can be specified via the <code>featAssayArgs</code> argument to <code>iSEE</code>. This is a <code>DataFrame</code>, specifying the initial parameters for each plot. In this case, we want to modify the <code>YAxis</code> and <code>YAxisFeatureName</code> defaults for the two plots:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2">    <span class="kw"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="dt">YAxisFeatureName=</span><span class="st">"0610009L18Rik"</span>),</a>
 <a class="sourceLine" id="cb2-3" data-line-number="3">    <span class="kw"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="dt">YAxisFeatureName=</span><span class="st">"0610009B22Rik"</span>)</a>
 <a class="sourceLine" id="cb2-4" data-line-number="4">)) </a></code></pre></div>
+<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/configure-FAP-preset-genes.png"><!-- --></p>
 <p>This will open the app with two feature assay plots, showing the selected genes. Of course, from this starting point, all the interactive functionality is still available, and new panels can be added, modified and linked via point selection.</p>
 </div>
 <div id="data-parameters" class="section level1">
@@ -161,6 +163,7 @@
 <a class="sourceLine" id="cb3-2" data-line-number="2">    <span class="kw"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="dt">YAxis=</span><span class="st">"NREADS"</span>, <span class="dt">PanelWidth=</span>6L, <span class="dt">DataBoxOpen=</span><span class="ot">TRUE</span>),</a>
 <a class="sourceLine" id="cb3-3" data-line-number="3">    <span class="kw"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="dt">YAxis=</span><span class="st">"TOTAL_DUP"</span>, <span class="dt">PanelWidth=</span>6L, <span class="dt">DataBoxOpen=</span><span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb3-4" data-line-number="4">))</a></code></pre></div>
+<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/configure-CDP-basic.png"><!-- --></p>
 </div>
 <div id="xaxis" class="section level2">
 <h2 class="hasAnchor">
@@ -207,6 +210,7 @@
 <a class="sourceLine" id="cb4-22" data-line-number="22"></a>
 <a class="sourceLine" id="cb4-23" data-line-number="23"><span class="co"># Initialisation</span></a>
 <a class="sourceLine" id="cb4-24" data-line-number="24">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(fex1, fex2, fex3, fex4, rex))</a></code></pre></div>
+<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/configure-FAP-xaxis.png"><!-- --></p>
 <p>Note how <em>Example 3b</em> requires an active <em>row data table</em> as a source of selection. To facilitate visualisation, we added the features identifiers as the <code>gene_id</code> column in <code>rowData(sce)</code>, we preselected the feature <code>"Ints2"</code>, and we prefiltered the table using the pattern <code>"Ints"</code> on the <code>gene_id</code> column to show this active selection.</p>
 </div>
 <div id="configuring-the-type-of-dimensionality-reduction" class="section level2">
@@ -217,6 +221,7 @@
 <a class="sourceLine" id="cb5-2" data-line-number="2">    <span class="kw"><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span>(<span class="dt">DataBoxOpen=</span><span class="ot">TRUE</span>, <span class="dt">Type=</span><span class="st">"TSNE"</span>, </a>
 <a class="sourceLine" id="cb5-3" data-line-number="3">        <span class="dt">XAxis=</span>2L, <span class="dt">YAxis=</span>1L, <span class="dt">PanelWidth=</span>6L)</a>
 <a class="sourceLine" id="cb5-4" data-line-number="4">))</a></code></pre></div>
+<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/configure-ReDP-basic.png"><!-- --></p>
 <p>We refer users to the <code><a href="../reference/defaults.html">?redDimPlotDefaults</a></code> help page to learn more about the choices of default parameters for <em>reduced dimension plot</em> panels.</p>
 </div>
 <div id="assay" class="section level2">
@@ -227,6 +232,7 @@
 <a class="sourceLine" id="cb6-2" data-line-number="2">    <span class="kw"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="dt">DataBoxOpen=</span><span class="ot">TRUE</span>, <span class="dt">Assay=</span><span class="st">"logcounts"</span>, <span class="dt">PanelWidth=</span>6L),</a>
 <a class="sourceLine" id="cb6-3" data-line-number="3">    <span class="kw"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="dt">DataBoxOpen=</span><span class="ot">TRUE</span>, <span class="dt">Assay=</span><span class="st">"tophat_counts"</span>, <span class="dt">PanelWidth=</span>6L)</a>
 <a class="sourceLine" id="cb6-4" data-line-number="4">))</a></code></pre></div>
+<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/configure-FAP-assay.png"><!-- --></p>
 </div>
 </div>
 <div id="visual-parameters" class="section level1">
@@ -255,6 +261,7 @@
 <a class="sourceLine" id="cb7-10" data-line-number="10">cdp2[[<span class="st">"FontSize"</span>]] &lt;-<span class="st"> </span><span class="dv">2</span></a>
 <a class="sourceLine" id="cb7-11" data-line-number="11"></a>
 <a class="sourceLine" id="cb7-12" data-line-number="12">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(cdp, cdp2))</a></code></pre></div>
+<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/configure-CDP-visual.png"><!-- --></p>
 <p>Note that for this demonstration, we facilitate visualization of the preconfigured arguments by setting <code>VisualChoices</code> to display both the <code>"Color"</code> and <code>"Shape"</code> UI panels.</p>
 </div>
 <div id="linking-point-aesthetics-to-variables" class="section level2">
@@ -271,6 +278,7 @@
 <a class="sourceLine" id="cb8-7" data-line-number="7">cdp2[[<span class="st">"ShapeByColumnData"</span>]] &lt;-<span class="st"> "driver_1_s"</span></a>
 <a class="sourceLine" id="cb8-8" data-line-number="8"></a>
 <a class="sourceLine" id="cb8-9" data-line-number="9">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(cdp, cdp2))</a></code></pre></div>
+<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/configure-CDP-linked-visual.png"><!-- --></p>
 <p>Note that points may only be shaped by a categorical variable.</p>
 </div>
 <div id="configuring-plot-facets" class="section level2">
@@ -288,6 +296,7 @@
 <a class="sourceLine" id="cb9-8" data-line-number="8">cdp3[[<span class="st">"FacetByColumn"</span>]] &lt;-<span class="st"> "---"</span></a>
 <a class="sourceLine" id="cb9-9" data-line-number="9"></a>
 <a class="sourceLine" id="cb9-10" data-line-number="10">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(cdp, cdp2, cdp3))</a></code></pre></div>
+<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/configure-CDP-facets.png"><!-- --></p>
 </div>
 </div>
 <div id="selection-parameters" class="section level1">
@@ -315,6 +324,7 @@
 <a class="sourceLine" id="cb10-18" data-line-number="18">)    </a>
 <a class="sourceLine" id="cb10-19" data-line-number="19"></a>
 <a class="sourceLine" id="cb10-20" data-line-number="20">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(cdArgs, rdArgs))</a></code></pre></div>
+<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/configure-ReDP-select.png"><!-- --></p>
 <p>Note that in the example above, we chose to color selected data points in the receiver panel, by setting the <code>SelectionEffect</code> argument to <code>"Color"</code>, and the color of selected data points to <code>"darkgoldenrod1"</code>. Other choices include <code>"Restrict"</code>, to show only the selected data points; and <code>"Transparent"</code> (the default), to increase the transparency of unselected data points.</p>
 <p>An identical process can be followed to preconfigure a lasso point selection:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="co"># Preconfigure the sender panel, including the point selection</span></a>
@@ -325,6 +335,7 @@
 <a class="sourceLine" id="cb11-6" data-line-number="6">        2L)))</a>
 <a class="sourceLine" id="cb11-7" data-line-number="7"></a>
 <a class="sourceLine" id="cb11-8" data-line-number="8">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(cdArgs, rdArgs))</a></code></pre></div>
+<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/configure-ReDP-lasso.png"><!-- --></p>
 </div>
 <div id="writing-your-own-tour" class="section level1">
 <h1 class="hasAnchor">
@@ -402,9 +413,9 @@
 <a class="sourceLine" id="cb13-23" data-line-number="23"><span class="co">#&gt;  [1] iSEE_1.99.5                 SingleCellExperiment_1.9.2 </span></a>
 <a class="sourceLine" id="cb13-24" data-line-number="24"><span class="co">#&gt;  [3] SummarizedExperiment_1.17.3 DelayedArray_0.13.7        </span></a>
 <a class="sourceLine" id="cb13-25" data-line-number="25"><span class="co">#&gt;  [5] BiocParallel_1.21.2         matrixStats_0.56.0         </span></a>
-<a class="sourceLine" id="cb13-26" data-line-number="26"><span class="co">#&gt;  [7] Biobase_2.47.2              GenomicRanges_1.39.2       </span></a>
-<a class="sourceLine" id="cb13-27" data-line-number="27"><span class="co">#&gt;  [9] GenomeInfoDb_1.23.13        IRanges_2.21.3             </span></a>
-<a class="sourceLine" id="cb13-28" data-line-number="28"><span class="co">#&gt; [11] S4Vectors_0.25.13           BiocGenerics_0.33.0        </span></a>
+<a class="sourceLine" id="cb13-26" data-line-number="26"><span class="co">#&gt;  [7] Biobase_2.47.3              GenomicRanges_1.39.2       </span></a>
+<a class="sourceLine" id="cb13-27" data-line-number="27"><span class="co">#&gt;  [9] GenomeInfoDb_1.23.13        IRanges_2.21.5             </span></a>
+<a class="sourceLine" id="cb13-28" data-line-number="28"><span class="co">#&gt; [11] S4Vectors_0.25.13           BiocGenerics_0.33.2        </span></a>
 <a class="sourceLine" id="cb13-29" data-line-number="29"><span class="co">#&gt; [13] BiocStyle_2.15.6           </span></a>
 <a class="sourceLine" id="cb13-30" data-line-number="30"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb13-31" data-line-number="31"><span class="co">#&gt; loaded via a namespace (and not attached):</span></a>
@@ -421,13 +432,13 @@
 <a class="sourceLine" id="cb13-42" data-line-number="42"><span class="co">#&gt; [31] GlobalOptions_0.1.1    shiny_1.4.0.2          shape_1.4.4           </span></a>
 <a class="sourceLine" id="cb13-43" data-line-number="43"><span class="co">#&gt; [34] jsonlite_1.6.1         dplyr_0.8.5            RCurl_1.98-1.1        </span></a>
 <a class="sourceLine" id="cb13-44" data-line-number="44"><span class="co">#&gt; [37] magrittr_1.5           GenomeInfoDbData_1.2.2 Matrix_1.2-18         </span></a>
-<a class="sourceLine" id="cb13-45" data-line-number="45"><span class="co">#&gt; [40] Rcpp_1.0.3             munsell_0.5.0          lifecycle_0.2.0       </span></a>
+<a class="sourceLine" id="cb13-45" data-line-number="45"><span class="co">#&gt; [40] Rcpp_1.0.4             munsell_0.5.0          lifecycle_0.2.0       </span></a>
 <a class="sourceLine" id="cb13-46" data-line-number="46"><span class="co">#&gt; [43] stringi_1.4.6          yaml_2.2.1             rintrojs_0.2.2        </span></a>
 <a class="sourceLine" id="cb13-47" data-line-number="47"><span class="co">#&gt; [46] MASS_7.3-51.5          zlibbioc_1.33.1        grid_4.0.0            </span></a>
 <a class="sourceLine" id="cb13-48" data-line-number="48"><span class="co">#&gt; [49] promises_1.1.0         shinydashboard_0.7.1   crayon_1.3.4          </span></a>
 <a class="sourceLine" id="cb13-49" data-line-number="49"><span class="co">#&gt; [52] miniUI_0.1.1.1         lattice_0.20-40        splines_4.0.0         </span></a>
 <a class="sourceLine" id="cb13-50" data-line-number="50"><span class="co">#&gt; [55] circlize_0.4.8         knitr_1.28             ComplexHeatmap_2.3.2  </span></a>
-<a class="sourceLine" id="cb13-51" data-line-number="51"><span class="co">#&gt; [58] pillar_1.4.3           igraph_1.2.4.2         rjson_0.2.20          </span></a>
+<a class="sourceLine" id="cb13-51" data-line-number="51"><span class="co">#&gt; [58] pillar_1.4.3           igraph_1.2.5           rjson_0.2.20          </span></a>
 <a class="sourceLine" id="cb13-52" data-line-number="52"><span class="co">#&gt; [61] glue_1.3.2             evaluate_0.14          BiocManager_1.30.10   </span></a>
 <a class="sourceLine" id="cb13-53" data-line-number="53"><span class="co">#&gt; [64] png_0.1-7              httpuv_1.5.2           gtable_0.3.0          </span></a>
 <a class="sourceLine" id="cb13-54" data-line-number="54"><span class="co">#&gt; [67] purrr_0.3.3            clue_0.3-57            assertthat_0.2.1      </span></a>

@@ -113,7 +113,7 @@
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">16 March 2020</h4>
+            <h4 class="date">20 March 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/custom.Rmd"><code>vignettes/custom.Rmd</code></a></small>
       <div class="hidden name"><code>custom.Rmd</code></div>
@@ -122,7 +122,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-03-16</p>
+<p><strong>Compiled date</strong>: 2020-03-20</p>
 <p><strong>Last edited</strong>: 2020-02-10</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="background" class="section level1">
@@ -197,6 +197,7 @@
 <a class="sourceLine" id="cb3-6" data-line-number="6">            <span class="dt">ColumnSelectionSource=</span><span class="st">"ColumnDataPlot1"</span>)</a>
 <a class="sourceLine" id="cb3-7" data-line-number="7">    )</a>
 <a class="sourceLine" id="cb3-8" data-line-number="8">)</a></code></pre></div>
+<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/custom-plot.png"><!-- --></p>
 <p>The most interesting aspect of <code><a href="../reference/createCustomPanels.html">createCustomPlot()</a></code> is that the UI elements for modifying the optional arguments in <code>CUSTOM_DIMRED</code> are also automatically generated. This provides a convenient way to generate a reasonably intuitive UI for rapid prototyping, though there are limitations - see the documentation for more details.</p>
 </div>
 <div id="example-of-custom-table-panel" class="section level2">
@@ -234,6 +235,7 @@
 <a class="sourceLine" id="cb5-6" data-line-number="6">        <span class="kw">GENERATOR</span>(<span class="dt">ColumnSelectionSource=</span><span class="st">"RedDimPlot1"</span>)</a>
 <a class="sourceLine" id="cb5-7" data-line-number="7">    )</a>
 <a class="sourceLine" id="cb5-8" data-line-number="8">)</a></code></pre></div>
+<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/custom-table.png"><!-- --></p>
 </div>
 </div>
 <div id="handling-active-and-saved-selections" class="section level1">
@@ -287,6 +289,7 @@
 <a class="sourceLine" id="cb8-5" data-line-number="5">    <span class="kw">TAB_GEN</span>(<span class="dt">ColumnSelectionSource=</span><span class="st">"RedDimPlot1"</span>),</a>
 <a class="sourceLine" id="cb8-6" data-line-number="6">    <span class="kw">HEAT_GEN</span>(<span class="dt">ColumnSelectionSource=</span><span class="st">"RedDimPlot1"</span>))</a>
 <a class="sourceLine" id="cb8-7" data-line-number="7">)</a></code></pre></div>
+<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/custom-heat.png"><!-- --></p>
 </div>
 <div id="advanced-extensions" class="section level1">
 <h1 class="hasAnchor">
@@ -322,9 +325,9 @@
 <a class="sourceLine" id="cb9-24" data-line-number="24"><span class="co">#&gt;  [3] ggplot2_3.3.0               SingleCellExperiment_1.9.2 </span></a>
 <a class="sourceLine" id="cb9-25" data-line-number="25"><span class="co">#&gt;  [5] SummarizedExperiment_1.17.3 DelayedArray_0.13.7        </span></a>
 <a class="sourceLine" id="cb9-26" data-line-number="26"><span class="co">#&gt;  [7] BiocParallel_1.21.2         matrixStats_0.56.0         </span></a>
-<a class="sourceLine" id="cb9-27" data-line-number="27"><span class="co">#&gt;  [9] Biobase_2.47.2              GenomicRanges_1.39.2       </span></a>
-<a class="sourceLine" id="cb9-28" data-line-number="28"><span class="co">#&gt; [11] GenomeInfoDb_1.23.13        IRanges_2.21.3             </span></a>
-<a class="sourceLine" id="cb9-29" data-line-number="29"><span class="co">#&gt; [13] S4Vectors_0.25.13           BiocGenerics_0.33.0        </span></a>
+<a class="sourceLine" id="cb9-27" data-line-number="27"><span class="co">#&gt;  [9] Biobase_2.47.3              GenomicRanges_1.39.2       </span></a>
+<a class="sourceLine" id="cb9-28" data-line-number="28"><span class="co">#&gt; [11] GenomeInfoDb_1.23.13        IRanges_2.21.5             </span></a>
+<a class="sourceLine" id="cb9-29" data-line-number="29"><span class="co">#&gt; [13] S4Vectors_0.25.13           BiocGenerics_0.33.2        </span></a>
 <a class="sourceLine" id="cb9-30" data-line-number="30"><span class="co">#&gt; [15] BiocStyle_2.15.6           </span></a>
 <a class="sourceLine" id="cb9-31" data-line-number="31"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb9-32" data-line-number="32"><span class="co">#&gt; loaded via a namespace (and not attached):</span></a>
@@ -343,14 +346,14 @@
 <a class="sourceLine" id="cb9-45" data-line-number="45"><span class="co">#&gt; [37] DelayedMatrixStats_1.9.0 shape_1.4.4              jsonlite_1.6.1          </span></a>
 <a class="sourceLine" id="cb9-46" data-line-number="46"><span class="co">#&gt; [40] dplyr_0.8.5              RCurl_1.98-1.1           magrittr_1.5            </span></a>
 <a class="sourceLine" id="cb9-47" data-line-number="47"><span class="co">#&gt; [43] BiocSingular_1.3.2       GenomeInfoDbData_1.2.2   Matrix_1.2-18           </span></a>
-<a class="sourceLine" id="cb9-48" data-line-number="48"><span class="co">#&gt; [46] Rcpp_1.0.3               ggbeeswarm_0.6.0         munsell_0.5.0           </span></a>
+<a class="sourceLine" id="cb9-48" data-line-number="48"><span class="co">#&gt; [46] Rcpp_1.0.4               ggbeeswarm_0.6.0         munsell_0.5.0           </span></a>
 <a class="sourceLine" id="cb9-49" data-line-number="49"><span class="co">#&gt; [49] viridis_0.5.1            lifecycle_0.2.0          rintrojs_0.2.2          </span></a>
 <a class="sourceLine" id="cb9-50" data-line-number="50"><span class="co">#&gt; [52] stringi_1.4.6            yaml_2.2.1               MASS_7.3-51.5           </span></a>
 <a class="sourceLine" id="cb9-51" data-line-number="51"><span class="co">#&gt; [55] zlibbioc_1.33.1          grid_4.0.0               promises_1.1.0          </span></a>
 <a class="sourceLine" id="cb9-52" data-line-number="52"><span class="co">#&gt; [58] shinydashboard_0.7.1     crayon_1.3.4             miniUI_0.1.1.1          </span></a>
 <a class="sourceLine" id="cb9-53" data-line-number="53"><span class="co">#&gt; [61] lattice_0.20-40          splines_4.0.0            circlize_0.4.8          </span></a>
 <a class="sourceLine" id="cb9-54" data-line-number="54"><span class="co">#&gt; [64] knitr_1.28               ComplexHeatmap_2.3.2     pillar_1.4.3            </span></a>
-<a class="sourceLine" id="cb9-55" data-line-number="55"><span class="co">#&gt; [67] igraph_1.2.4.2           rjson_0.2.20             glue_1.3.2              </span></a>
+<a class="sourceLine" id="cb9-55" data-line-number="55"><span class="co">#&gt; [67] igraph_1.2.5             rjson_0.2.20             glue_1.3.2              </span></a>
 <a class="sourceLine" id="cb9-56" data-line-number="56"><span class="co">#&gt; [70] evaluate_0.14            BiocManager_1.30.10      png_0.1-7               </span></a>
 <a class="sourceLine" id="cb9-57" data-line-number="57"><span class="co">#&gt; [73] httpuv_1.5.2             gtable_0.3.0             purrr_0.3.3             </span></a>
 <a class="sourceLine" id="cb9-58" data-line-number="58"><span class="co">#&gt; [76] clue_0.3-57              assertthat_0.2.1         xfun_0.12               </span></a>

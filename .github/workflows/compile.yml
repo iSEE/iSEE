@@ -1,13 +1,29 @@
 name: Compile screenshots
-on: push
+on:
+  push:
+    branches-ignore:
+      - master
 jobs:
   compilation:
     runs-on: ubuntu-latest
     name: Compile screenshots
     steps:
-    - uses: actions/checkout@v2
-    - uses: docker://iseedevelopers/screenshots:latest 
-    - uses: actions/upload-artifact@v1.0.0
+    - name: Checking out the branch
+      uses: actions/checkout@v2
+    - name: Clearing out old files 
+      run: git rm -rf --ignore-unmatch vignettes/screenshots
+    - name: Taking new screenshots
+      uses: docker://iseedevelopers/screenshots:latest 
+    - name: Committing new files
+      run : |
+        git add vignettes/screenshots
+        if [[ ! -z "$(git diff --cached)" ]]
+        then
+            git config --local user.email "infinite.monkeys.with.keyboards@gmail.com"
+            git config --local user.name "LTLA"
+            git commit -m "Compiled screenshots."
+        fi
+    - name: Pushing changes
+      uses: ad-m/github-push-action@master
       with:
-        name: screenshots
-        path: ${{ github.workspace }}/vignettes/screenshots
+        github_token: ${{ secrets.GITHUB_TOKEN }}

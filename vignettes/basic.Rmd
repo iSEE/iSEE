@@ -57,8 +57,7 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 ```
 
 ```{r, eval=!exists("SCREENSHOT"), include=FALSE}
-SCREENSHOT <- function(x, ...)
-    knitr::include_graphics(file.path("https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE", x))
+SCREENSHOT <- function(x, ...) knitr::include_graphics(file.path("screenshots", x))
 ```
 
 ```{r, echo=FALSE, out.width='50%', fig.align='center'}

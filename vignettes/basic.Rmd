@@ -116,6 +116,7 @@ Next, we apply PCA and *t*-SNE to generate two low-dimensional representations o
 The dimensionality reduction results are stored in `reducedDim(sce)`.
 
 ```{r allen-dataset-2}
+set.seed(1000)
 sce <- runPCA(sce)
 sce <- runTSNE(sce)
 reducedDimNames(sce)
@@ -156,7 +157,7 @@ shiny::runApp(app)
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("default.png")
+SCREENSHOT("basic-demo.png")
 ```
 
 By default, the app starts with a dashboard that contains one panel or table of each type.

@@ -1,0 +1,13 @@
+name: Compile screenshots
+on: push
+jobs:
+  compilation:
+    runs-on: ubuntu-latest
+    name: Compile screenshots
+    steps:
+    - uses: actions/checkout@v2
+    - uses: docker://iseedevelopers/screenshots:latest 
+    - uses: actions/upload-artifact@v1.0.0
+      with:
+        name: screenshots
+        path: ${{ github.workspace }}/vignettes/screenshots

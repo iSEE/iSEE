@@ -5,7 +5,7 @@ context("ui")
 
 test_that(".add_facet_UI_elements produces a valid tag list for column data plots", {
     rdp <- ReducedDimensionPlot(FacetByRow="driver_1_s", FacetByColumn="Core.Type")
-    groupable_colData <- colnames(colData(sce))[iSEE:::.which_groupable(colData(sce))]
+    groupable_colData <- colnames(colData(sce))[iSEE:::.whichGroupable(colData(sce))]
 
     out <- iSEE:::.add_facet_UI_elements(rdp, groupable_colData)
     expect_s3_class(out, "shiny.tag.list")

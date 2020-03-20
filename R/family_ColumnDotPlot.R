@@ -102,13 +102,13 @@ NULL
 #' @importFrom methods callNextMethod
 setMethod("initialize", "ColumnDotPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .empty_default(args, .colorByColData, NA_character_)
-    args <- .empty_default(args, .colorByFeatNameAssay, NA_character_)
-    args <- .empty_default(args, .colorBySampNameColor, iSEEOptions$get("selected.color"))
+    args <- .emptyDefault(args, .colorByColData, NA_character_)
+    args <- .emptyDefault(args, .colorByFeatNameAssay, NA_character_)
+    args <- .emptyDefault(args, .colorBySampNameColor, iSEEOptions$get("selected.color"))
 
-    args <- .empty_default(args, .shapeByColData, NA_character_)
+    args <- .emptyDefault(args, .shapeByColData, NA_character_)
 
-    args <- .empty_default(args, .sizeByColData, NA_character_)
+    args <- .emptyDefault(args, .sizeByColData, NA_character_)
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -146,11 +146,11 @@ setMethod(".cacheCommonInfo", "ColumnDotPlot", function(x, se) {
     se <- callNextMethod()
 
     df <- colData(se)
-    displayable <- .find_atomic_fields(df)
+    displayable <- .findAtomicFields(df)
 
     subdf <- df[,displayable,drop=FALSE]
-    discrete <- .which_groupable(subdf)
-    continuous <- .which_numeric(subdf)
+    discrete <- .whichGroupable(subdf)
+    continuous <- .whichNumeric(subdf)
 
     .setCachedCommonInfo(se, "ColumnDotPlot",
         valid.colData.names=displayable,
@@ -407,7 +407,7 @@ setMethod(".addDotPlotDataColor", "ColumnDotPlot", function(x, envir) {
         return(NULL)
     }
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     list(commands=cmds, labels=list(ColorBy=label))
 })
@@ -424,7 +424,7 @@ setMethod(".addDotPlotDataShape", "ColumnDotPlot", function(x, envir) {
         return(NULL)
     }
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     list(commands=cmds, labels=list(ShapeBy=label))
 })
@@ -441,7 +441,7 @@ setMethod(".addDotPlotDataSize", "ColumnDotPlot", function(x, envir) {
         return(NULL)
     }
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     list(commands=cmds, labels=list(SizeBy=label))
 })
@@ -464,7 +464,7 @@ setMethod(".addDotPlotDataFacets", "ColumnDotPlot", function(x, envir) {
         labels$FacetColumn <- facet_column
     }
 
-    .text_eval(facet_cmds, envir)
+    .textEval(facet_cmds, envir)
 
     list(commands=facet_cmds, labels=labels)
 })
@@ -484,7 +484,7 @@ setMethod(".addDotPlotDataSelected", "ColumnDotPlot", function(x, envir) {
         cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"
     }
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     cmds
 })

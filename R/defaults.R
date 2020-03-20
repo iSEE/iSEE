@@ -384,13 +384,13 @@ heatMapPlotDefaults <- function(se, number) {
 
     def_discrete <- NA_character_
     if (!is.null(se)) {
-        any_discrete <- colnames(colData(se))[.which_groupable(colData(se))]
+        any_discrete <- colnames(colData(se))[.whichGroupable(colData(se))]
         def_discrete <- any_discrete[1]
     }
 
     def_numeric <- NA_character_
     if (!is.null(se)) {
-        any_numeric <- colnames(colData(se))[.which_numeric(colData(se))]
+        any_numeric <- colnames(colData(se))[.whichNumeric(colData(se))]
         def_numeric <- any_numeric[1]
     }
 
@@ -430,13 +430,13 @@ heatMapPlotDefaults <- function(se, number) {
 
     def_discrete <- NA_character_
     if (!is.null(se)) {
-        any_discrete <- colnames(rowData(se))[.which_groupable(rowData(se))]
+        any_discrete <- colnames(rowData(se))[.whichGroupable(rowData(se))]
         def_discrete <- any_discrete[1]
     }
 
     def_numeric <- NA_character_
     if (!is.null(se)) {
-        any_numeric <- colnames(rowData(se))[.which_numeric(rowData(se))]
+        any_numeric <- colnames(rowData(se))[.whichNumeric(rowData(se))]
         def_numeric <- any_numeric[1]
     }
 

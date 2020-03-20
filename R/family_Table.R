@@ -75,8 +75,8 @@ NULL
 #' @importFrom methods callNextMethod
 setMethod("initialize", "Table", function(.Object, ...) {
     args <- list(...)
-    args <- .empty_default(args, .TableSelected, NA_character_)
-    args <- .empty_default(args, .TableSearch, "")
+    args <- .emptyDefault(args, .TableSelected, NA_character_)
+    args <- .emptyDefault(args, .TableSearch, "")
     do.call(callNextMethod, c(list(.Object), args))
 })
 

@@ -72,7 +72,7 @@ names(.all_aes_values) <- .all_aes_names
         specific <- .square_setup(envir$plot.data)
     }
 
-    .text_eval(specific, envir)
+    .textEval(specific, envir)
     envir$plot.type <- mode
     return(specific)
 }
@@ -142,7 +142,7 @@ names(.all_aes_values) <- .all_aes_names
             ""
         )
 
-        .text_eval(downsample_cmds, envir)
+        .textEval(downsample_cmds, envir)
         return(downsample_cmds)
     } else {
         return(NULL)
@@ -202,17 +202,17 @@ names(.all_aes_values) <- .all_aes_names
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
     size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
 
-    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set, 
+    new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
         alt=c(color=.set_colorby_when_none(param_choices)))
 
-    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), 
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy),
         new_aes, color_set, size_set)
 
     # Defining the color commands.
     color_scale_cmd <- .colorDotPlot(param_choices, plot_data$ColorBy)
 
     # Adding axes labels.
-    plot_cmds[["labs"]] <- .build_labs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
+    plot_cmds[["labs"]] <- .buildLabs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
 
     # Defining boundaries if zoomed.
     bounds <- param_choices[[.zoomData]]
@@ -320,7 +320,7 @@ names(.all_aes_values) <- .all_aes_names
     plot_cmds[["ggplot"]] <- "dot.plot <- ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
     plot_cmds[["violin"]] <- sprintf(
         "geom_violin(%s, alpha=0.2, data=%s, scale='width', width=0.8) +",
-        .build_aes(color=FALSE, group=TRUE),
+        .buildAes(color=FALSE, group=TRUE),
         ifelse(is_downsampled, "plot.data.pre", "plot.data")
     )
 
@@ -329,10 +329,10 @@ names(.all_aes_values) <- .all_aes_names
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
     size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
 
-    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set, 
+    new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
         alt=c(x="jitteredX", color=.set_colorby_when_none(param_choices)))
 
-    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), 
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy),
         new_aes, color_set, size_set)
 
     # Defining the color commands.
@@ -345,7 +345,7 @@ names(.all_aes_values) <- .all_aes_names
         x_lab <- tmp
     }
 
-    plot_cmds[["labs"]] <- .build_labs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
+    plot_cmds[["labs"]] <- .buildLabs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
 
     # Defining boundaries if zoomed. This requires some finesse to deal with horizontal plots,
     # where the point selection is computed on the flipped coordinates.
@@ -516,10 +516,10 @@ plot.data$Y <- tmp;")
     shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
     size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
 
-    new_aes <- .build_aes(color=color_set, shape=shape_set, size=size_set, 
+    new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
         alt=c(x="jitteredX", y="jitteredY", color=.set_colorby_when_none(param_choices)))
 
-    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy), 
+    plot_cmds[["points"]] <- .create_points(param_choices, !is.null(plot_data$SelectBy),
         new_aes, color_set, size_set)
 
     # Defining the color commands.
@@ -530,7 +530,7 @@ plot.data$Y <- tmp;")
     plot_cmds[["scale_color"]] <- color_scale_cmd
 
     # Creating labels.
-    plot_cmds[["labs"]] <- .build_labs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
+    plot_cmds[["labs"]] <- .buildLabs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
 
     # Defining boundaries if zoomed.
     bounds <- param_choices[[.zoomData]]
@@ -630,7 +630,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #'
 #' @details
 #' This function is simply a utility to avoid having to write the conditionals in each of the plotting functions above.
-#' 
+#'
 #' @author Aaron Lun
 #'
 #' @rdname INTERNAL_set_colorby_when_none
@@ -849,14 +849,19 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' value.
 #'
 #' @author Kevin Rue-Albrecht
-#' @rdname INTERNAL_build_aes
+#' @name aes-utils
+#' @export
+#'
 #' @seealso
 #' \code{\link{.scatter_plot}},
 #' \code{\link{.violin_plot}},
 #' \code{\link{.square_plot}}
 #'
 #' @importFrom ggplot2 aes
-.build_aes <- function(
+#'
+#' @examples
+#' .buildAes()
+.buildAes <- function(
     x=TRUE, y=TRUE, color=FALSE, shape=FALSE, size=FALSE, fill=FALSE,
     group=FALSE, alt=NULL) {
     active_aes <- .all_aes_values[c(x, y, color, shape, size, fill, group)]
@@ -881,7 +886,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_make_single_aes
 #' @seealso
-#' \code{\link{.build_aes}}.
+#' \code{\link{.buildAes}}.
 .make_single_aes <- function(name, value){
     sprintf("%s=%s", name, value)
 }
@@ -904,14 +909,18 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @return Title and label instructions for \code{\link{ggplot}} as a character value.
 #'
 #' @author Kevin Rue-Albrecht
-#' @rdname INTERNAL_build_labs
+#' @rdname labs-utils
+#' @export
+#'
 #' @seealso
 #' \code{\link{.scatter_plot}},
 #' \code{\link{.violin_plot}},
 #' \code{\link{.square_plot}}
 #'
 #' @importFrom ggplot2 labs
-.build_labs <- function(x=NULL, y=NULL, color=NULL, shape=NULL, size=NULL, fill=NULL, group=NULL, title=NULL, subtitle=NULL){
+#' @examples
+#' cat(.buildLabs(y = "Title for Y axis", color = "Color label"))
+.buildLabs <- function(x=NULL, y=NULL, color=NULL, shape=NULL, size=NULL, fill=NULL, group=NULL, title=NULL, subtitle=NULL){
     labs_specs <- list(x, y, color, shape, size, fill, group, title, subtitle)
     names(labs_specs) <- .all_labs_names
     labs_specs <- labs_specs[lengths(labs_specs)>0L]
@@ -934,7 +943,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @author Kevin Rue-Albrecht
 #' @rdname INTERNAL_make_single_lab
 #' @seealso
-#' \code{\link{.build_labs}}.
+#' \code{\link{.buildLabs}}.
 .make_single_lab <- function(name, value){
     sprintf("%s=%s", name, deparse(value))
 }
@@ -985,17 +994,25 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #'
 #' Generate ggplot instructions to facet a plot by row and/or column
 #'
-#' @param param_choices A single-row DataFrame that contains all the
+#' @param x A single-row DataFrame that contains all the
 #' input settings for the current panel.
 #'
 #' @return A string containing a command to define the row and column faceting
 #' covariates.
+#'
 #' @author Kevin Rue-Albrecht.
-#' @rdname INTERNAL_add_facets
+#' @export
+#'
+#' @name plot-utils
+#' @aliases .addFacets
 #' @importFrom ggplot2 facet_grid
-.add_facets <- function(param_choices){
-    row_facet <- param_choices[[.facetByRow]]!=.noSelection
-    col_facet <- param_choices[[.facetByColumn]]!=.noSelection
+#'
+#' @examples
+#' x <- ReducedDimensionPlot(FacetByRow = "Covariate_1", FacetByColumn = "Covariate_2")
+#' .addFacets(x)
+.addFacets <- function(x){
+    row_facet <- x[[.facetByRow]]!=.noSelection
+    col_facet <- x[[.facetByColumn]]!=.noSelection
     if (!row_facet && !col_facet) {
         return(NULL)
     }

@@ -6,7 +6,7 @@
 \alias{.cacheCommonInfo}
 \title{Generics for setting up parameters}
 \description{
-These generics are related to the iniial setup of the \pkg{iSEE} application.
+These generics are related to the initial setup of the \pkg{iSEE} application.
 }
 \section{Caching common information}{
 

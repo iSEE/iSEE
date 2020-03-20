@@ -158,37 +158,37 @@ ComplexHeatmapPlot <- function(...) {
 setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- list(...)
 
-    args <- .empty_default(args, .heatMapAssay, NA_character_)
-    args <- .empty_default(args, .heatMapCustomFeatNames, TRUE)
-    args <- .empty_default(args, .heatMapFeatNameText, NA_character_)
+    args <- .emptyDefault(args, .heatMapAssay, NA_character_)
+    args <- .emptyDefault(args, .heatMapCustomFeatNames, TRUE)
+    args <- .emptyDefault(args, .heatMapFeatNameText, NA_character_)
     if (!is.na(vals <- args[[.heatMapFeatNameText]])) {
         args[[.heatMapFeatNameText]] <- paste(vals, collapse="\n")
     }
 
-    args <- .empty_default(args, .heatMapClusterFeatures, FALSE)
-    args <- .empty_default(args, .heatMapClusterDistanceFeatures, .clusterDistanceSpearman)
-    args <- .empty_default(args, .heatMapClusterMethodFeatures, .clusterMethodWardD2)
-    args <- .empty_default(args, .dataParamBoxOpen, FALSE)
+    args <- .emptyDefault(args, .heatMapClusterFeatures, FALSE)
+    args <- .emptyDefault(args, .heatMapClusterDistanceFeatures, .clusterDistanceSpearman)
+    args <- .emptyDefault(args, .heatMapClusterMethodFeatures, .clusterMethodWardD2)
+    args <- .emptyDefault(args, .dataParamBoxOpen, FALSE)
 
-    args <- .empty_default(args, .visualParamChoice, .visualParamChoiceMetadataTitle)
-    args <- .empty_default(args, .heatMapColData, character(0))
-    args <- .empty_default(args, .heatMapRowData, character(0))
+    args <- .emptyDefault(args, .visualParamChoice, .visualParamChoiceMetadataTitle)
+    args <- .emptyDefault(args, .heatMapColData, character(0))
+    args <- .emptyDefault(args, .heatMapRowData, character(0))
 
-    args <- .empty_default(args, .heatMapCustomAssayBounds, FALSE)
-    args <- .empty_default(args, .assayLowerBound, NA_real_)
-    args <- .empty_default(args, .assayUpperBound, NA_real_)
-    args <- .empty_default(args, .assayCenterRows, FALSE)
-    args <- .empty_default(args, .assayScaleRows, FALSE)
-    args <- .empty_default(args, .heatMapCenteredColormap, .colormapPurpleBlackYellow)
+    args <- .emptyDefault(args, .heatMapCustomAssayBounds, FALSE)
+    args <- .emptyDefault(args, .assayLowerBound, NA_real_)
+    args <- .emptyDefault(args, .assayUpperBound, NA_real_)
+    args <- .emptyDefault(args, .assayCenterRows, FALSE)
+    args <- .emptyDefault(args, .assayScaleRows, FALSE)
+    args <- .emptyDefault(args, .heatMapCenteredColormap, .colormapPurpleBlackYellow)
 
-    args <- .empty_default(args, .showDimnames, c(.showNamesRowTitle))
+    args <- .emptyDefault(args, .showDimnames, c(.showNamesRowTitle))
 
-    args <- .empty_default(args, .plotLegendPosition, iSEEOptions$get("legend.position"))
-    args <- .empty_default(args, .plotLegendDirection, iSEEOptions$get("legend.direction"))
-    args <- .empty_default(args, .visualParamBoxOpen, FALSE)
+    args <- .emptyDefault(args, .plotLegendPosition, iSEEOptions$get("legend.position"))
+    args <- .emptyDefault(args, .plotLegendDirection, iSEEOptions$get("legend.direction"))
+    args <- .emptyDefault(args, .visualParamBoxOpen, FALSE)
 
-    args <- .empty_default(args, .selectEffect, .selectColorTitle)
-    args <- .empty_default(args, .selectColor, iSEEOptions$get("selected.color"))
+    args <- .emptyDefault(args, .selectEffect, .selectColorTitle)
+    args <- .emptyDefault(args, .selectColor, iSEEOptions$get("selected.color"))
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -246,16 +246,16 @@ setMethod(".cacheCommonInfo", "ComplexHeatmapPlot", function(x, se) {
     assays_discrete <- !assays_continuous
 
     df <- colData(se)
-    coldata_displayable <- .find_atomic_fields(df)
+    coldata_displayable <- .findAtomicFields(df)
     subdf <- df[,coldata_displayable,drop=FALSE]
-    coldata_discrete <- .which_groupable(subdf)
-    coldata_continuous <- .which_numeric(subdf)
+    coldata_discrete <- .whichGroupable(subdf)
+    coldata_continuous <- .whichNumeric(subdf)
 
     df <- rowData(se)
-    rowdata_displayable <- .find_atomic_fields(df)
+    rowdata_displayable <- .findAtomicFields(df)
     subdf <- df[,rowdata_displayable,drop=FALSE]
-    rowdata_discrete <- .which_groupable(subdf)
-    rowdata_continuous <- .which_numeric(subdf)
+    rowdata_discrete <- .whichGroupable(subdf)
+    rowdata_continuous <- .whichNumeric(subdf)
 
     .setCachedCommonInfo(se, "ComplexHeatmapPlot",
         valid.assay.names=named_assays,
@@ -426,7 +426,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     heatmap_call <- sprintf("hm <- ComplexHeatmap::Heatmap(matrix=plot.data, %s)", heatmap_args)
 
     heat_cmd <- paste(strwrap(heatmap_call, width = 80, exdent = 4), collapse = "\n")
-    plot_out <- .text_eval(heat_cmd, plot_env)
+    plot_out <- .textEval(heat_cmd, plot_env)
     all_cmds[["heatmap"]] <- heat_cmd
 
     # Add draw command after all evaluations (avoid drawing in the plotting device)

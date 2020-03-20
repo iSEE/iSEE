@@ -101,13 +101,13 @@ NULL
 #' @importFrom methods callNextMethod
 setMethod("initialize", "RowDotPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .empty_default(args, .colorByRowData, NA_character_)
-    args <- .empty_default(args, .colorBySampNameAssay, NA_character_)
-    args <- .empty_default(args, .colorByFeatNameColor, iSEEOptions$get("selected.color"))
+    args <- .emptyDefault(args, .colorByRowData, NA_character_)
+    args <- .emptyDefault(args, .colorBySampNameAssay, NA_character_)
+    args <- .emptyDefault(args, .colorByFeatNameColor, iSEEOptions$get("selected.color"))
 
-    args <- .empty_default(args, .shapeByRowData, NA_character_)
+    args <- .emptyDefault(args, .shapeByRowData, NA_character_)
 
-    args <- .empty_default(args, .sizeByRowData, NA_character_)
+    args <- .emptyDefault(args, .sizeByRowData, NA_character_)
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -145,11 +145,11 @@ setMethod(".cacheCommonInfo", "RowDotPlot", function(x, se) {
     se <- callNextMethod()
 
     df <- rowData(se)
-    displayable <- .find_atomic_fields(df)
+    displayable <- .findAtomicFields(df)
 
     subdf <- df[,displayable,drop=FALSE]
-    discrete <- .which_groupable(subdf)
-    continuous <- .which_numeric(subdf)
+    discrete <- .whichGroupable(subdf)
+    continuous <- .whichNumeric(subdf)
 
     .setCachedCommonInfo(se, "RowDotPlot",
         valid.rowData.names=displayable,
@@ -407,7 +407,7 @@ setMethod(".addDotPlotDataColor", "RowDotPlot", function(x, envir) {
         return(NULL)
     }
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     list(commands=cmds, labels=list(ColorBy=label))
 })
@@ -424,7 +424,7 @@ setMethod(".addDotPlotDataShape", "RowDotPlot", function(x, envir) {
         return(NULL)
     }
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     list(commands=cmds, labels=list(ShapeBy=label))
 })
@@ -441,7 +441,7 @@ setMethod(".addDotPlotDataSize", "RowDotPlot", function(x, envir) {
         return(NULL)
     }
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     list(commands=cmds, labels=list(SizeBy=label))
 })
@@ -464,7 +464,7 @@ setMethod(".addDotPlotDataFacets", "RowDotPlot", function(x, envir) {
         labels$FacetColumn <- facet_column
     }
 
-    .text_eval(facet_cmds, envir)
+    .textEval(facet_cmds, envir)
 
     list(commands=facet_cmds, labels=labels)
 })
@@ -486,7 +486,7 @@ setMethod(".addDotPlotDataSelected", "RowDotPlot", function(x, envir) {
     }
     cmds["footer"] <- ""
 
-    .text_eval(cmds, envir)
+    .textEval(cmds, envir)
 
     cmds
 })

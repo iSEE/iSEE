@@ -114,9 +114,9 @@ RowDataPlot <- function(...) {
 #' @importFrom methods callNextMethod
 setMethod("initialize", "RowDataPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .empty_default(args, .rowDataXAxis, .rowDataXAxisNothingTitle)
-    args <- .empty_default(args, .rowDataXAxisRowData, NA_character_)
-    args <- .empty_default(args, .rowDataYAxis, NA_character_)
+    args <- .emptyDefault(args, .rowDataXAxis, .rowDataXAxisNothingTitle)
+    args <- .emptyDefault(args, .rowDataXAxisRowData, NA_character_)
+    args <- .emptyDefault(args, .rowDataYAxis, NA_character_)
     do.call(callNextMethod, c(list(.Object), args))
 })
 
@@ -244,7 +244,7 @@ setMethod(".generateDotPlotData", "RowDataPlot", function(x, envir) {
     plot_title <- sprintf("%s %s", y_lab, x_title)
 
     data_cmds <- unlist(data_cmds)
-    .text_eval(data_cmds, envir)
+    .textEval(data_cmds, envir)
 
     list(commands=data_cmds, labels=list(title=plot_title, X=x_lab, Y=y_lab))
 })

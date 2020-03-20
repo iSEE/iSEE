@@ -205,41 +205,41 @@ NULL
 #' @importFrom methods callNextMethod
 setMethod("initialize", "DotPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .empty_default(args, .facetByRow, .noSelection)
-    args <- .empty_default(args, .facetByColumn, .noSelection)
+    args <- .emptyDefault(args, .facetByRow, .noSelection)
+    args <- .emptyDefault(args, .facetByColumn, .noSelection)
 
-    args <- .empty_default(args, .colorByField, .colorByNothingTitle)
-    args <- .empty_default(args, .colorByDefaultColor, iSEEOptions$get("point.color"))
+    args <- .emptyDefault(args, .colorByField, .colorByNothingTitle)
+    args <- .emptyDefault(args, .colorByDefaultColor, iSEEOptions$get("point.color"))
 
-    args <- .empty_default(args, .colorByFeatName, NA_character_)
-    args <- .empty_default(args, .colorByFeatDynamic, iSEEOptions$get("selection.dynamic.single"))
-    args <- .empty_default(args, .colorByRowTable, .noSelection)
+    args <- .emptyDefault(args, .colorByFeatName, NA_character_)
+    args <- .emptyDefault(args, .colorByFeatDynamic, iSEEOptions$get("selection.dynamic.single"))
+    args <- .emptyDefault(args, .colorByRowTable, .noSelection)
 
-    args <- .empty_default(args, .colorBySampName, NA_character_)
-    args <- .empty_default(args, .colorBySampDynamic, iSEEOptions$get("selection.dynamic.single"))
-    args <- .empty_default(args, .colorByColTable, .noSelection)
+    args <- .emptyDefault(args, .colorBySampName, NA_character_)
+    args <- .emptyDefault(args, .colorBySampDynamic, iSEEOptions$get("selection.dynamic.single"))
+    args <- .emptyDefault(args, .colorByColTable, .noSelection)
 
-    args <- .empty_default(args, .shapeByField, .shapeByNothingTitle)
+    args <- .emptyDefault(args, .shapeByField, .shapeByNothingTitle)
 
-    args <- .empty_default(args, .sizeByField, .sizeByNothingTitle)
+    args <- .emptyDefault(args, .sizeByField, .sizeByNothingTitle)
 
-    args <- .empty_default(args, .selectEffect, .selectTransTitle)
-    args <- .empty_default(args, .selectColor, iSEEOptions$get("selected.color"))
-    args <- .empty_default(args, .selectTransAlpha, iSEEOptions$get("selected.alpha"))
+    args <- .emptyDefault(args, .selectEffect, .selectTransTitle)
+    args <- .emptyDefault(args, .selectColor, iSEEOptions$get("selected.color"))
+    args <- .emptyDefault(args, .selectTransAlpha, iSEEOptions$get("selected.alpha"))
 
-    args <- .empty_default(args, .visualParamBoxOpen, FALSE)
-    args <- .empty_default(args, .visualParamChoice, .visualParamChoiceColorTitle)
+    args <- .emptyDefault(args, .visualParamBoxOpen, FALSE)
+    args <- .emptyDefault(args, .visualParamChoice, .visualParamChoiceColorTitle)
 
-    args <- .empty_default(args, .contourAdd, FALSE)
-    args <- .empty_default(args, .contourColor, iSEEOptions$get("contour.color"))
+    args <- .emptyDefault(args, .contourAdd, FALSE)
+    args <- .emptyDefault(args, .contourColor, iSEEOptions$get("contour.color"))
 
-    args <- .empty_default(args, .plotPointSize, iSEEOptions$get("point.size"))
-    args <- .empty_default(args, .plotPointAlpha, iSEEOptions$get("point.alpha"))
-    args <- .empty_default(args, .plotPointDownsample, iSEEOptions$get("downsample"))
-    args <- .empty_default(args, .plotPointSampleRes, iSEEOptions$get("downsample.resolution"))
+    args <- .emptyDefault(args, .plotPointSize, iSEEOptions$get("point.size"))
+    args <- .emptyDefault(args, .plotPointAlpha, iSEEOptions$get("point.alpha"))
+    args <- .emptyDefault(args, .plotPointDownsample, iSEEOptions$get("downsample"))
+    args <- .emptyDefault(args, .plotPointSampleRes, iSEEOptions$get("downsample.resolution"))
 
-    args <- .empty_default(args, .plotFontSize, iSEEOptions$get("font.size"))
-    args <- .empty_default(args, .plotLegendPosition, iSEEOptions$get("legend.position"))
+    args <- .emptyDefault(args, .plotFontSize, iSEEOptions$get("font.size"))
+    args <- .emptyDefault(args, .plotLegendPosition, iSEEOptions$get("legend.position"))
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -528,7 +528,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
         sprintf("set.seed(%i);", nrow(panel_data)), # Using a deterministically different seed to keep things exciting.
         "plot.data <- plot.data[sample(nrow(plot.data)),,drop=FALSE];"
     )
-    .text_eval(scramble_cmds, plot_env)
+    .textEval(scramble_cmds, plot_env)
     all_cmds$shuffle <- scramble_cmds
 
     # Next, reordering by priority (this is stable so any ordering due to the
@@ -537,7 +537,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
     rescaled_res <- FALSE
     if (has_priority <- !is.null(priority_out)) {
         order_cmds <- "plot.data <- plot.data[order(.priority),,drop=FALSE];"
-        .text_eval(order_cmds, plot_env)
+        .textEval(order_cmds, plot_env)
         all_cmds$priority <- c(priority_out$commands, order_cmds)
         rescaled_res <- priority_out$rescaled
     }
@@ -577,7 +577,7 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
     )
 
     # Adding a faceting command, if applicable.
-    facet_cmd <- .add_facets(x)
+    facet_cmd <- .addFacets(x)
     if (length(facet_cmd)) {
         N <- length(plot_cmds)
         plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")
@@ -589,7 +589,7 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
         flip=(plot_type == "violin_horizontal"),
         envir=envir, commands=plot_cmds)
 
-    list(plot=.text_eval(plot_cmds, envir), commands=plot_cmds)
+    list(plot=.textEval(plot_cmds, envir), commands=plot_cmds)
 })
 
 #' @export

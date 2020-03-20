@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.99.5}{
+\itemize{
+    \item Export utilities relevant to downstream panel development.
+}
+}
+
 \section{iSEE VERSION 1.99.4}{
 \itemize{
     \item Added options for dynamic choice of single/multiple selection sources.

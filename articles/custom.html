@@ -113,7 +113,7 @@
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">20 March 2020</h4>
+            <h4 class="date">24 March 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/custom.Rmd"><code>vignettes/custom.Rmd</code></a></small>
       <div class="hidden name"><code>custom.Rmd</code></div>
@@ -122,7 +122,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-03-20</p>
+<p><strong>Compiled date</strong>: 2020-03-24</p>
 <p><strong>Last edited</strong>: 2020-02-10</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="background" class="section level1">
@@ -153,32 +153,34 @@
 <a href="#example-of-custom-plot-panel" class="anchor"></a>Example of custom plot panel</h2>
 <p>To demonstrate the use of <em>custom plot panels</em>, we define an example function <code>CUSTOM_DIMRED</code> that takes a subset of features and cells in a <code>SingleCellExperiment</code> object and performs dimensionality reduction on that subset with <em><a href="https://bioconductor.org/packages/3.11/scater">scater</a></em> function <span class="citation">(McCarthy et al. 2017)</span>.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(scater)</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2"> CUSTOM_DIMRED &lt;-<span class="st"> </span><span class="cf">function</span>(se, rows, columns, <span class="dt">ntop=</span><span class="dv">500</span>, <span class="dt">scale=</span><span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">     <span class="dt">mode=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"PCA"</span>, <span class="st">"TSNE"</span>, <span class="st">"UMAP"</span>))</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"> {</a>
-<a class="sourceLine" id="cb1-5" data-line-number="5">     <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(columns)) {</a>
-<a class="sourceLine" id="cb1-6" data-line-number="6">         <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span>(</a>
-<a class="sourceLine" id="cb1-7" data-line-number="7">             <span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span><span class="kw">theme_void</span>() <span class="op">+</span><span class="st"> </span><span class="kw">geom_text</span>(</a>
-<a class="sourceLine" id="cb1-8" data-line-number="8">                 <span class="kw">aes</span>(x, y, <span class="dt">label=</span>label),</a>
-<a class="sourceLine" id="cb1-9" data-line-number="9">                 <span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">x=</span><span class="dv">0</span>, <span class="dt">y=</span><span class="dv">0</span>, <span class="dt">label=</span><span class="st">"No column data selected."</span>),</a>
-<a class="sourceLine" id="cb1-10" data-line-number="10">                 <span class="dt">size=</span><span class="dv">5</span>)</a>
-<a class="sourceLine" id="cb1-11" data-line-number="11">             )</a>
-<a class="sourceLine" id="cb1-12" data-line-number="12">     }</a>
-<a class="sourceLine" id="cb1-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb1-14" data-line-number="14">     mode &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/match.arg.html">match.arg</a></span>(mode)</a>
-<a class="sourceLine" id="cb1-15" data-line-number="15">     <span class="cf">if</span> (mode<span class="op">==</span><span class="st">"PCA"</span>) {</a>
-<a class="sourceLine" id="cb1-16" data-line-number="16">         calcFUN &lt;-<span class="st"> </span>runPCA</a>
-<a class="sourceLine" id="cb1-17" data-line-number="17">     } <span class="cf">else</span> <span class="cf">if</span> (mode<span class="op">==</span><span class="st">"TSNE"</span>) {</a>
-<a class="sourceLine" id="cb1-18" data-line-number="18">         calcFUN &lt;-<span class="st"> </span>runTSNE</a>
-<a class="sourceLine" id="cb1-19" data-line-number="19">     } <span class="cf">else</span> <span class="cf">if</span> (mode<span class="op">==</span><span class="st">"UMAP"</span>) {</a>
-<a class="sourceLine" id="cb1-20" data-line-number="20">         calcFUN &lt;-<span class="st"> </span>runUMAP</a>
-<a class="sourceLine" id="cb1-21" data-line-number="21">     }</a>
-<a class="sourceLine" id="cb1-22" data-line-number="22"></a>
-<a class="sourceLine" id="cb1-23" data-line-number="23">     kept &lt;-<span class="st"> </span>se[, <span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(columns))]</a>
-<a class="sourceLine" id="cb1-24" data-line-number="24">     kept &lt;-<span class="st"> </span><span class="kw">calcFUN</span>(kept, <span class="dt">ncomponents=</span><span class="dv">2</span>, <span class="dt">ntop=</span>ntop,</a>
-<a class="sourceLine" id="cb1-25" data-line-number="25">         <span class="dt">scale=</span>scale, <span class="dt">subset_row=</span><span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(rows)))</a>
-<a class="sourceLine" id="cb1-26" data-line-number="26">     <span class="kw"><a href="https://rdrr.io/pkg/scater/man/plotReducedDim.html">plotReducedDim</a></span>(kept, mode)</a>
-<a class="sourceLine" id="cb1-27" data-line-number="27"> }</a></code></pre></div>
+<a class="sourceLine" id="cb1-2" data-line-number="2">CUSTOM_DIMRED &lt;-<span class="st"> </span><span class="cf">function</span>(se, rows, columns, <span class="dt">ntop=</span><span class="dv">500</span>, <span class="dt">scale=</span><span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3">    <span class="dt">mode=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"PCA"</span>, <span class="st">"TSNE"</span>, <span class="st">"UMAP"</span>))</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4">{</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5">    <span class="kw"><a href="https://rdrr.io/r/base/print.html">print</a></span>(columns)</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6">    <span class="cf">if</span> (<span class="kw"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(columns)) {</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7">        <span class="kw"><a href="https://rdrr.io/r/base/function.html">return</a></span>(</a>
+<a class="sourceLine" id="cb1-8" data-line-number="8">            <span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span><span class="kw">theme_void</span>() <span class="op">+</span><span class="st"> </span><span class="kw">geom_text</span>(</a>
+<a class="sourceLine" id="cb1-9" data-line-number="9">                <span class="kw">aes</span>(x, y, <span class="dt">label=</span>label),</a>
+<a class="sourceLine" id="cb1-10" data-line-number="10">                <span class="kw"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="dt">x=</span><span class="dv">0</span>, <span class="dt">y=</span><span class="dv">0</span>, <span class="dt">label=</span><span class="st">"No column data selected."</span>),</a>
+<a class="sourceLine" id="cb1-11" data-line-number="11">                <span class="dt">size=</span><span class="dv">5</span>)</a>
+<a class="sourceLine" id="cb1-12" data-line-number="12">            )</a>
+<a class="sourceLine" id="cb1-13" data-line-number="13">    }</a>
+<a class="sourceLine" id="cb1-14" data-line-number="14"></a>
+<a class="sourceLine" id="cb1-15" data-line-number="15">    mode &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/match.arg.html">match.arg</a></span>(mode)</a>
+<a class="sourceLine" id="cb1-16" data-line-number="16">    <span class="cf">if</span> (mode<span class="op">==</span><span class="st">"PCA"</span>) {</a>
+<a class="sourceLine" id="cb1-17" data-line-number="17">        calcFUN &lt;-<span class="st"> </span>runPCA</a>
+<a class="sourceLine" id="cb1-18" data-line-number="18">    } <span class="cf">else</span> <span class="cf">if</span> (mode<span class="op">==</span><span class="st">"TSNE"</span>) {</a>
+<a class="sourceLine" id="cb1-19" data-line-number="19">        calcFUN &lt;-<span class="st"> </span>runTSNE</a>
+<a class="sourceLine" id="cb1-20" data-line-number="20">    } <span class="cf">else</span> <span class="cf">if</span> (mode<span class="op">==</span><span class="st">"UMAP"</span>) {</a>
+<a class="sourceLine" id="cb1-21" data-line-number="21">        calcFUN &lt;-<span class="st"> </span>runUMAP</a>
+<a class="sourceLine" id="cb1-22" data-line-number="22">    }</a>
+<a class="sourceLine" id="cb1-23" data-line-number="23"></a>
+<a class="sourceLine" id="cb1-24" data-line-number="24">    <span class="kw"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="dv">1000</span>)</a>
+<a class="sourceLine" id="cb1-25" data-line-number="25">    kept &lt;-<span class="st"> </span>se[, <span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(columns))]</a>
+<a class="sourceLine" id="cb1-26" data-line-number="26">    kept &lt;-<span class="st"> </span><span class="kw">calcFUN</span>(kept, <span class="dt">ncomponents=</span><span class="dv">2</span>, <span class="dt">ntop=</span>ntop,</a>
+<a class="sourceLine" id="cb1-27" data-line-number="27">        <span class="dt">scale=</span>scale, <span class="dt">subset_row=</span><span class="kw"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(rows)))</a>
+<a class="sourceLine" id="cb1-28" data-line-number="28">    <span class="kw"><a href="https://rdrr.io/pkg/scater/man/plotReducedDim.html">plotReducedDim</a></span>(kept, mode)</a>
+<a class="sourceLine" id="cb1-29" data-line-number="29">}</a></code></pre></div>
 <p>As mentioned above, <code>rows</code> and <code>columns</code> may be <code>NULL</code> if no selection was made in the respective transmitting panels. How these should be treated is up to the user-defined function. In this example, an empty <em>ggplot</em> is returned if there is no selection on the columns, while the default behaviour of <code>runPCA</code>, <code>runTSNE</code>, etc. is used if <code>rows=NULL</code>.</p>
 <p>To create instances of our panel, we call the <code><a href="../reference/createCustomPanels.html">createCustomPlot()</a></code> function with <code>CUSTOM_DIMRED</code> to set up the custom plot class and its methods. This returns a constructor function that can be directly used to generate an instance of our custom plot.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(iSEE)</a>
@@ -189,15 +191,44 @@
 <a class="sourceLine" id="cb2-6" data-line-number="6"><span class="co">#&gt; attr(,"package")</span></a>
 <a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt; [1] ".GlobalEnv"</span></a></code></pre></div>
 <p>We can now easily supply instances of our new custom plot class to <code><a href="../reference/iSEE.html">iSEE()</a></code> like any other <code>Panel</code> instance. The example below creates an application where a column data plot transmits a selection to our custom plot, the latter of which is initialized in <span class="math inline">\(t\)</span>-SNE mode with the top 1000 most variable genes.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce,</a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">    <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">        <span class="kw"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="dt">XAxis=</span><span class="st">"Column data"</span>, <span class="dt">XAxisColumnData=</span><span class="st">"Primary.Type"</span>, </a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">            <span class="dt">PanelId=</span>1L),</a>
-<a class="sourceLine" id="cb3-5" data-line-number="5">        <span class="kw">GENERATOR</span>(<span class="dt">mode=</span><span class="st">"TSNE"</span>, <span class="dt">ntop=</span><span class="dv">1000</span>, </a>
-<a class="sourceLine" id="cb3-6" data-line-number="6">            <span class="dt">ColumnSelectionSource=</span><span class="st">"ColumnDataPlot1"</span>)</a>
-<a class="sourceLine" id="cb3-7" data-line-number="7">    )</a>
-<a class="sourceLine" id="cb3-8" data-line-number="8">)</a></code></pre></div>
-<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/custom-plot.png"><!-- --></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># </span><span class="al">NOTE</span><span class="co">: as mentioned before, you don't have to create 'BrushData' manually;</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="co"># just open an app, make a brush and copy it from the panel settings.</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">cdp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">    <span class="dt">XAxis=</span><span class="st">"Column data"</span>, </a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">    <span class="dt">XAxisColumnData=</span><span class="st">"Primary.Type"</span>, </a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">    <span class="dt">PanelId=</span>1L,</a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">    <span class="dt">BrushData=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
+<a class="sourceLine" id="cb3-8" data-line-number="8">        <span class="dt">xmin =</span> <span class="fl">10.1</span>, <span class="dt">xmax =</span> <span class="fl">15.0</span>, <span class="dt">ymin =</span> <span class="fl">5106720.6</span>, <span class="dt">ymax =</span> <span class="fl">28600906.0</span>, </a>
+<a class="sourceLine" id="cb3-9" data-line-number="9">        <span class="dt">coords_css =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">xmin =</span> <span class="fl">271.0</span>, <span class="dt">xmax =</span> <span class="fl">380.0</span>, <span class="dt">ymin =</span> <span class="fl">143.0</span>, <span class="dt">ymax =</span> <span class="fl">363.0</span>), </a>
+<a class="sourceLine" id="cb3-10" data-line-number="10">        <span class="dt">coords_img =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">xmin =</span> <span class="fl">352.3</span>, <span class="dt">xmax =</span> <span class="fl">494.0</span>, <span class="dt">ymin =</span> <span class="fl">185.9</span>, <span class="dt">ymax =</span> <span class="fl">471.9</span>), </a>
+<a class="sourceLine" id="cb3-11" data-line-number="11">        <span class="dt">img_css_ratio =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">x =</span> <span class="fl">1.3</span>, <span class="dt">y =</span> <span class="fl">1.2</span>), </a>
+<a class="sourceLine" id="cb3-12" data-line-number="12">        <span class="dt">mapping =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">x =</span> <span class="st">"X"</span>, <span class="dt">y =</span> <span class="st">"Y"</span>, <span class="dt">group =</span> <span class="st">"GroupBy"</span>),</a>
+<a class="sourceLine" id="cb3-13" data-line-number="13">        <span class="dt">domain =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
+<a class="sourceLine" id="cb3-14" data-line-number="14">            <span class="dt">left =</span> <span class="fl">0.4</span>, <span class="dt">right =</span> <span class="fl">17.6</span>, <span class="dt">bottom =</span> <span class="op">-</span>569772L, <span class="dt">top =</span> 41149532L, </a>
+<a class="sourceLine" id="cb3-15" data-line-number="15">            <span class="dt">discrete_limits =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
+<a class="sourceLine" id="cb3-16" data-line-number="16">                <span class="dt">x =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"L4 Arf5"</span>, <span class="st">"L4 Ctxn3"</span>, <span class="st">"L4 Scnn1a"</span>, </a>
+<a class="sourceLine" id="cb3-17" data-line-number="17">                    <span class="st">"L5 Ucma"</span>, <span class="st">"L5a Batf3"</span>, <span class="st">"L5a Hsd11b1"</span>, <span class="st">"L5a Pde1c"</span>, </a>
+<a class="sourceLine" id="cb3-18" data-line-number="18">                    <span class="st">"L5a Tcerg1l"</span>, <span class="st">"L5b Cdh13"</span>, <span class="st">"L5b Chrna6"</span>, <span class="st">"L5b Tph2"</span>, </a>
+<a class="sourceLine" id="cb3-19" data-line-number="19">                    <span class="st">"L6a Car12"</span>, <span class="st">"L6a Mgp"</span>, <span class="st">"L6a Sla"</span>, <span class="st">"L6a Syt17"</span>, </a>
+<a class="sourceLine" id="cb3-20" data-line-number="20">                    <span class="st">"Pvalb Tacr3"</span>, <span class="st">"Sst Myh8"</span>)</a>
+<a class="sourceLine" id="cb3-21" data-line-number="21">            )</a>
+<a class="sourceLine" id="cb3-22" data-line-number="22">        ), </a>
+<a class="sourceLine" id="cb3-23" data-line-number="23">        <span class="dt">range =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
+<a class="sourceLine" id="cb3-24" data-line-number="24">            <span class="dt">left =</span> <span class="fl">68.986301369863</span>, <span class="dt">right =</span> <span class="fl">566.922374429224</span>, </a>
+<a class="sourceLine" id="cb3-25" data-line-number="25">            <span class="dt">bottom =</span> <span class="fl">541.013698630137</span>, <span class="dt">top =</span> <span class="fl">33.1552511415525</span></a>
+<a class="sourceLine" id="cb3-26" data-line-number="26">        ), </a>
+<a class="sourceLine" id="cb3-27" data-line-number="27">        <span class="dt">log =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="ot">NULL</span>), </a>
+<a class="sourceLine" id="cb3-28" data-line-number="28">        <span class="dt">direction =</span> <span class="st">"xy"</span>, </a>
+<a class="sourceLine" id="cb3-29" data-line-number="29">        <span class="dt">brushId =</span> <span class="st">"ColumnDataPlot1_Brush"</span>, </a>
+<a class="sourceLine" id="cb3-30" data-line-number="30">        <span class="dt">outputId =</span> <span class="st">"ColumnDataPlot1"</span></a>
+<a class="sourceLine" id="cb3-31" data-line-number="31">    )</a>
+<a class="sourceLine" id="cb3-32" data-line-number="32">)</a>
+<a class="sourceLine" id="cb3-33" data-line-number="33"></a>
+<a class="sourceLine" id="cb3-34" data-line-number="34">custom.p &lt;-<span class="st"> </span><span class="kw">GENERATOR</span>(<span class="dt">mode=</span><span class="st">"TSNE"</span>, <span class="dt">ntop=</span><span class="dv">1000</span>, </a>
+<a class="sourceLine" id="cb3-35" data-line-number="35">    <span class="dt">ColumnSelectionSource=</span><span class="st">"ColumnDataPlot1"</span>)</a>
+<a class="sourceLine" id="cb3-36" data-line-number="36"></a>
+<a class="sourceLine" id="cb3-37" data-line-number="37">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(cdp, custom.p)) </a></code></pre></div>
+<p><img src="screenshots/custom-plot.png" width="488"></p>
 <p>The most interesting aspect of <code><a href="../reference/createCustomPanels.html">createCustomPlot()</a></code> is that the UI elements for modifying the optional arguments in <code>CUSTOM_DIMRED</code> are also automatically generated. This provides a convenient way to generate a reasonably intuitive UI for rapid prototyping, though there are limitations - see the documentation for more details.</p>
 </div>
 <div id="example-of-custom-table-panel" class="section level2">
@@ -229,13 +260,36 @@
 <p>To create instances of our panel, we call the <code><a href="../reference/createCustomPanels.html">createCustomTable()</a></code> function with <code>CUSTOM_SUMMARY</code>, which again returns a constructor function that can be used directly in <code><a href="../reference/iSEE.html">iSEE()</a></code>. Again, the function will attempt to auto-pick an appropriate UI element for each optional argument in <code>CUSTOM_SUMMARY</code>.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(iSEE)</a>
 <a class="sourceLine" id="cb5-2" data-line-number="2">GENERATOR &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createCustomPanels.html">createCustomTable</a></span>(CUSTOM_SUMMARY)</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce,</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">    <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">        <span class="kw"><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span>(<span class="dt">PanelId=</span>1L),</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6">        <span class="kw">GENERATOR</span>(<span class="dt">ColumnSelectionSource=</span><span class="st">"RedDimPlot1"</span>)</a>
-<a class="sourceLine" id="cb5-7" data-line-number="7">    )</a>
-<a class="sourceLine" id="cb5-8" data-line-number="8">)</a></code></pre></div>
-<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/custom-table.png"><!-- --></p>
+<a class="sourceLine" id="cb5-3" data-line-number="3">custom.t &lt;-<span class="st"> </span><span class="kw">GENERATOR</span>(<span class="dt">PanelWidth=</span>8L,</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">    <span class="dt">ColumnSelectionSource=</span><span class="st">"ReducedDimensionPlot1"</span>,</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5">    <span class="dt">SearchColumns=</span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">""</span>, <span class="st">"17.8 ... 10000"</span>, <span class="st">""</span>, <span class="st">""</span>) <span class="co"># filtering for HVGs.</span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">) </a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="kw"><a href="https://rdrr.io/r/base/class.html">class</a></span>(custom.t)</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt; [1] "CustomTable"</span></a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co">#&gt; attr(,"package")</span></a>
+<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="co">#&gt; [1] ".GlobalEnv"</span></a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="co"># Preselecting some points in the reduced dimension plot.</span></a>
+<a class="sourceLine" id="cb5-13" data-line-number="13"><span class="co"># Again, you don't have to manually create the 'BrushData'!</span></a>
+<a class="sourceLine" id="cb5-14" data-line-number="14">rdp &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span>(</a>
+<a class="sourceLine" id="cb5-15" data-line-number="15">    <span class="dt">PanelId=</span>1L,</a>
+<a class="sourceLine" id="cb5-16" data-line-number="16">    <span class="dt">BrushData =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
+<a class="sourceLine" id="cb5-17" data-line-number="17">        <span class="dt">xmin =</span> <span class="fl">-44.8</span>, <span class="dt">xmax =</span> <span class="fl">-14.3</span>, <span class="dt">ymin =</span> <span class="fl">7.5</span>, <span class="dt">ymax =</span> <span class="fl">47.1</span>, </a>
+<a class="sourceLine" id="cb5-18" data-line-number="18">        <span class="dt">coords_css =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">xmin =</span> <span class="fl">55.0</span>, <span class="dt">xmax =</span> <span class="fl">169.0</span>, <span class="dt">ymin =</span> <span class="fl">48.0</span>, <span class="dt">ymax =</span> <span class="fl">188.0</span>),</a>
+<a class="sourceLine" id="cb5-19" data-line-number="19">        <span class="dt">coords_img =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">xmin =</span> <span class="fl">71.5</span>, <span class="dt">xmax =</span> <span class="fl">219.7</span>, <span class="dt">ymin =</span> <span class="fl">62.4</span>, <span class="dt">ymax =</span> <span class="fl">244.4</span>), </a>
+<a class="sourceLine" id="cb5-20" data-line-number="20">        <span class="dt">img_css_ratio =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">x =</span> <span class="fl">1.3</span>, <span class="dt">y =</span> <span class="fl">1.29</span>), </a>
+<a class="sourceLine" id="cb5-21" data-line-number="21">        <span class="dt">mapping =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">x =</span> <span class="st">"X"</span>, <span class="dt">y =</span> <span class="st">"Y"</span>), </a>
+<a class="sourceLine" id="cb5-22" data-line-number="22">        <span class="dt">domain =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">left =</span> <span class="fl">-49.1</span>, <span class="dt">right =</span> <span class="fl">57.2</span>, <span class="dt">bottom =</span> <span class="fl">-70.3</span>, <span class="dt">top =</span> <span class="fl">53.5</span>), </a>
+<a class="sourceLine" id="cb5-23" data-line-number="23">        <span class="dt">range =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">left =</span> <span class="fl">50.9</span>, <span class="dt">right =</span> <span class="fl">566.9</span>, <span class="dt">bottom =</span> <span class="fl">603.0</span>, <span class="dt">top =</span> <span class="fl">33.1</span>), </a>
+<a class="sourceLine" id="cb5-24" data-line-number="24">        <span class="dt">log =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">x =</span> <span class="ot">NULL</span>, <span class="dt">y =</span> <span class="ot">NULL</span>), </a>
+<a class="sourceLine" id="cb5-25" data-line-number="25">        <span class="dt">direction =</span> <span class="st">"xy"</span>, </a>
+<a class="sourceLine" id="cb5-26" data-line-number="26">        <span class="dt">brushId =</span> <span class="st">"ReducedDimensionPlot1_Brush"</span>, </a>
+<a class="sourceLine" id="cb5-27" data-line-number="27">        <span class="dt">outputId =</span> <span class="st">"ReducedDimensionPlot1"</span></a>
+<a class="sourceLine" id="cb5-28" data-line-number="28">    )</a>
+<a class="sourceLine" id="cb5-29" data-line-number="29">)</a>
+<a class="sourceLine" id="cb5-30" data-line-number="30"></a>
+<a class="sourceLine" id="cb5-31" data-line-number="31">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(rdp, custom.t))</a></code></pre></div>
+<p><img src="screenshots/custom-table.png" width="488"></p>
 </div>
 </div>
 <div id="handling-active-and-saved-selections" class="section level1">
@@ -285,11 +339,21 @@
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">TAB_GEN &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createCustomPanels.html">createCustomTable</a></span>(CUSTOM_DIFFEXP)</a>
 <a class="sourceLine" id="cb8-2" data-line-number="2">HEAT_GEN &lt;-<span class="st"> </span><span class="kw"><a href="../reference/createCustomPanels.html">createCustomPlot</a></span>(CUSTOM_HEAT)</a>
 <a class="sourceLine" id="cb8-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb8-4" data-line-number="4">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw"><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span>(<span class="dt">PanelId=</span>1L),</a>
-<a class="sourceLine" id="cb8-5" data-line-number="5">    <span class="kw">TAB_GEN</span>(<span class="dt">ColumnSelectionSource=</span><span class="st">"RedDimPlot1"</span>),</a>
-<a class="sourceLine" id="cb8-6" data-line-number="6">    <span class="kw">HEAT_GEN</span>(<span class="dt">ColumnSelectionSource=</span><span class="st">"RedDimPlot1"</span>))</a>
-<a class="sourceLine" id="cb8-7" data-line-number="7">)</a></code></pre></div>
-<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/custom-heat.png"><!-- --></p>
+<a class="sourceLine" id="cb8-4" data-line-number="4">rdp[[<span class="st">"SelectionHistory"</span>]] &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
+<a class="sourceLine" id="cb8-5" data-line-number="5">    <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">lasso =</span> <span class="ot">NULL</span>, <span class="dt">closed =</span> <span class="ot">TRUE</span>, <span class="dt">panelvar1 =</span> <span class="ot">NULL</span>, <span class="dt">panelvar2 =</span> <span class="ot">NULL</span>, </a>
+<a class="sourceLine" id="cb8-6" data-line-number="6">        <span class="dt">mapping =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="dt">x =</span> <span class="st">"X"</span>, <span class="dt">y =</span> <span class="st">"Y"</span>), </a>
+<a class="sourceLine" id="cb8-7" data-line-number="7">        <span class="dt">coord =</span> <span class="kw"><a href="https://rdrr.io/r/base/structure.html">structure</a></span>(<span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">44.3</span>, <span class="fl">-23.7</span>, <span class="fl">-13.5</span>, <span class="fl">-19.6</span>,</a>
+<a class="sourceLine" id="cb8-8" data-line-number="8">            <span class="fl">-33.8</span>, <span class="fl">-48.6</span>, <span class="fl">-44.3</span>, <span class="fl">-33.9</span>, <span class="fl">-55.4</span>, <span class="fl">-43.0</span>,</a>
+<a class="sourceLine" id="cb8-9" data-line-number="9">            <span class="fl">-19.5</span>, <span class="fl">-4.0</span>, <span class="fl">-22.6</span>, <span class="fl">-33.9</span>), <span class="dt">.Dim =</span> <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(7L, 2L)</a>
+<a class="sourceLine" id="cb8-10" data-line-number="10">        )</a>
+<a class="sourceLine" id="cb8-11" data-line-number="11">    )</a>
+<a class="sourceLine" id="cb8-12" data-line-number="12">)</a>
+<a class="sourceLine" id="cb8-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb8-14" data-line-number="14">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">initial=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(rdp,</a>
+<a class="sourceLine" id="cb8-15" data-line-number="15">    <span class="kw">TAB_GEN</span>(<span class="dt">ColumnSelectionSource=</span><span class="st">"ReducedDimensionPlot1"</span>),</a>
+<a class="sourceLine" id="cb8-16" data-line-number="16">    <span class="kw">HEAT_GEN</span>(<span class="dt">ColumnSelectionSource=</span><span class="st">"ReducedDimensionPlot1"</span>))</a>
+<a class="sourceLine" id="cb8-17" data-line-number="17">)</a></code></pre></div>
+<p><img src="screenshots/custom-heat.png" width="488"></p>
 </div>
 <div id="advanced-extensions" class="section level1">
 <h1 class="hasAnchor">
@@ -334,7 +398,7 @@
 <a class="sourceLine" id="cb9-33" data-line-number="33"><span class="co">#&gt;  [1] nlme_3.1-145             bitops_1.0-6             fs_1.3.2                </span></a>
 <a class="sourceLine" id="cb9-34" data-line-number="34"><span class="co">#&gt;  [4] RColorBrewer_1.1-2       rprojroot_1.3-2          tools_4.0.0             </span></a>
 <a class="sourceLine" id="cb9-35" data-line-number="35"><span class="co">#&gt;  [7] backports_1.1.5          R6_2.4.1                 irlba_2.3.3             </span></a>
-<a class="sourceLine" id="cb9-36" data-line-number="36"><span class="co">#&gt; [10] DT_0.12                  vipor_0.4.5              mgcv_1.8-31             </span></a>
+<a class="sourceLine" id="cb9-36" data-line-number="36"><span class="co">#&gt; [10] DT_0.13                  vipor_0.4.5              mgcv_1.8-31             </span></a>
 <a class="sourceLine" id="cb9-37" data-line-number="37"><span class="co">#&gt; [13] colorspace_1.4-1         GetoptLong_0.1.8         withr_2.1.2             </span></a>
 <a class="sourceLine" id="cb9-38" data-line-number="38"><span class="co">#&gt; [16] tidyselect_1.0.0         gridExtra_2.3            compiler_4.0.0          </span></a>
 <a class="sourceLine" id="cb9-39" data-line-number="39"><span class="co">#&gt; [19] BiocNeighbors_1.5.2      shinyjs_1.1              desc_1.2.0              </span></a>

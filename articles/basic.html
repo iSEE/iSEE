@@ -114,7 +114,7 @@
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">20 March 2020</h4>
+            <h4 class="date">24 March 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/basic.Rmd"><code>vignettes/basic.Rmd</code></a></small>
       <div class="hidden name"><code>basic.Rmd</code></div>
@@ -123,7 +123,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-03-20</p>
+<p><strong>Compiled date</strong>: 2020-03-24</p>
 <p><strong>Last edited</strong>: 2018-03-08</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <p><img src="../../../../R/Library/iSEE/www/iSEE.png" width="50%" style="display: block; margin: auto;"></p>
@@ -188,7 +188,7 @@
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce)</a></code></pre></div>
 <p>The <code>runApp</code> function launches the app in our browser.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">shiny<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/shiny/man/runApp.html">runApp</a></span>(app)</a></code></pre></div>
-<p><img src="https://raw.githubusercontent.com/iSEE/screenshots/compiled/images/iSEE/basic-demo.png"><!-- --></p>
+<p><img src="screenshots/basic-demo.png" width="488"></p>
 <p>By default, the app starts with a dashboard that contains one panel or table of each type. By opening the collapsible panels named “Data parameters”, “Visual parameters”, and “Selection parameters” under each plot, we can control the content and appearance of each panel.</p>
 <p>Now, look in the upper right corner for a question mark icon (<i class="fa fa-question-circle"></i>), and click on the hand button (<i class="fa fa-hand-o-right"></i>) for an introductory tour. This will perform an interactive tour of the app, based on the <em><a href="https://CRAN.R-project.org/package=rintrojs">rintrojs</a></em> package <span class="citation">(Ganz 2016)</span>. During this tour, you will be taken through the different components of the <em><a href="https://bioconductor.org/packages/3.11/iSEE">iSEE</a></em> user interface and learn the basic usage mechanisms by doing small actions guided by the tutorial: the highlighted elements will be responding to your actions, while the rest of the UI will be shaded. You can move forward and backward along the tour by clicking on the “Next”/“Back” buttons, or also using the arrow keys. You can even jump to a particular step by clicking on its circle. To exit the tour, either click on “Skip”, or simply click outside of the highlighted UI element.</p>
 <p>Once you are done generating plots, click on the wrench icon (<i class="fa fa-wrench"></i>) in the upper right corner, and click on the magic wand button (<i class="fa fa-magic"></i>) to display R code that you can export and directly re-use in your R session. This will open a modal popup where the R code used to generate the plots is displayed in a <em><a href="https://CRAN.R-project.org/package=shinyAce">shinyAce</a></em>-based text editor. Select parts or all of it to copy-and-paste it into your analysis script/Rmarkdown file. However, note that the order in which the code blocks are reported is important if you have linked panels to one another, as the panels sending point selections must be executed before those that receive the corresponding selection.</p>
@@ -442,7 +442,7 @@
 <a class="sourceLine" id="cb12-35" data-line-number="35"><span class="co">#&gt;   [5] rprojroot_1.3-2               circlize_0.4.8               </span></a>
 <a class="sourceLine" id="cb12-36" data-line-number="36"><span class="co">#&gt;   [7] XVector_0.27.1                BiocNeighbors_1.5.2          </span></a>
 <a class="sourceLine" id="cb12-37" data-line-number="37"><span class="co">#&gt;   [9] GlobalOptions_0.1.1           fs_1.3.2                     </span></a>
-<a class="sourceLine" id="cb12-38" data-line-number="38"><span class="co">#&gt;  [11] clue_0.3-57                   DT_0.12                      </span></a>
+<a class="sourceLine" id="cb12-38" data-line-number="38"><span class="co">#&gt;  [11] clue_0.3-57                   DT_0.13                      </span></a>
 <a class="sourceLine" id="cb12-39" data-line-number="39"><span class="co">#&gt;  [13] bit64_0.9-7                   interactiveDisplayBase_1.25.0</span></a>
 <a class="sourceLine" id="cb12-40" data-line-number="40"><span class="co">#&gt;  [15] AnnotationDbi_1.49.1          splines_4.0.0                </span></a>
 <a class="sourceLine" id="cb12-41" data-line-number="41"><span class="co">#&gt;  [17] knitr_1.28                    jsonlite_1.6.1               </span></a>

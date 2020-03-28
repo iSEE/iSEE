@@ -186,6 +186,7 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_scatter_plot
+#' @aliases .scatter_plot
 #' @seealso
 #' \code{\link{.generateDotPlot}}
 #'
@@ -306,6 +307,7 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson.
 #' @rdname INTERNAL_violin_plot
+#' @aliases .violin_plot
 #' @seealso
 #' \code{\link{.generateDotPlotData}},
 #' \code{\link{.generateDotPlot}}
@@ -495,6 +497,7 @@ plot.data$Y <- tmp;")
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson.
 #' @rdname INTERNAL_square_plot
+#' @aliases .square_plot
 #' @seealso
 #' \code{\link{.generateDotPlotData}},
 #' \code{\link{.generateDotPlot}}

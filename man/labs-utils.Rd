@@ -47,11 +47,6 @@ If any argument is \code{NULL}, the corresponding label is not set.
 \examples{
 cat(.buildLabs(y = "Title for Y axis", color = "Color label"))
 }
-\seealso{
-\code{\link{.scatter_plot}},
-\code{\link{.violin_plot}},
-\code{\link{.square_plot}}
-}
 \author{
 Kevin Rue-Albrecht
 }

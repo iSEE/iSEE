@@ -6,13 +6,15 @@
 
 | Platforms |  OS  | R CMD check | Coverage | 
 |:----------------:|:----------------:|:----------------:|:----------------:|
+| GitHub Actions | Multiple | [![R build status](https://github.com/iSEE/iSEE/workflows/R-CMD-check/badge.svg)](https://github.com/iSEE/iSEE/actions) | `NA` |
 | Travis CI | Linux | [![Travis CI build status](https://travis-ci.com/iSEE/iSEE.svg?branch=master)](https://travis-ci.com/iSEE/iSEE) | [![Codecov.io coverage status](https://codecov.io/github/iSEE/iSEE/coverage.svg?branch=master)](https://codecov.io/github/iSEE/iSEE) |
 | Bioc ([_devel_](http://bioconductor.org/packages/devel/bioc/html/iSEE.html)) | Multiple | [![Bioconductor-devel Build Status](http://bioconductor.org/shields/build/devel/bioc/iSEE.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/iSEE) | `NA` |
 | Bioc ([_release_](http://bioconductor.org/packages/release/bioc/html/iSEE.html)) | Multiple | [![Bioconductor-release Build Status](http://bioconductor.org/shields/build/release/bioc/iSEE.svg)](http://bioconductor.org/checkResults/release/bioc-LATEST/iSEE) | `NA` |
 
+<!-- badges: start -->
 ![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/iseedevelopers/isee)
 ![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/iseedevelopers/isee)
-
+<!-- badges: end -->
 
 ## Overview
 

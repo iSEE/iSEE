@@ -23,18 +23,4 @@ r_build_args: "--no-manual --no-resave-data"
 r_check_args: "--no-build-vignettes --no-manual --timings"
 
 r_packages:
-  - covr
   - BiocManager
-
-after_success:
-  - Rscript -e 'library(covr); codecov()'
-
-before_deploy: Rscript -e 'remotes::install_cran("pkgdown")'
-deploy:
-  provider: script
-  script: Rscript -e 'pkgdown::deploy_site_github(ssh_id = Sys.getenv("TRAVIS_DEPLOY_KEY", ""))'
-  cleanup: false
-  skip_cleanup: true
-  on:
-    branch:
-      - master

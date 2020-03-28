@@ -93,7 +93,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @details
 #' Density-dependent downsampling for speed is performed in this function, based on \code{\link{subsetPointsByGrid}}.
 #' \code{envir} is effectively passed by reference, as the setup commands are executed in the environment by this function.
-#' A \code{plot.data.pre} data.frame is also added to \code{envir} to keep the pre-subsetted information, e.g., for use in \code{\link{.violin_plot}}.
+#' A \code{plot.data.pre} data.frame is also added to \code{envir} to keep the pre-subsetted information, e.g., for use in \code{.violin_plot}.
 #'
 #' \code{priority} and \code{rescaled} are used to adjust the priority and resolution of downsampling.
 #' See \code{?link{.prioritizeDotPlotData}} for details.
@@ -179,13 +179,14 @@ names(.all_aes_values) <- .all_aes_names
 #' @return A character vector of commands to be parsed and evaluated by \code{\link{.generateDotPlot}} to produce the scatter plot.
 #'
 #' @details
-#' As described in \code{?\link{.generateDotPlot}}, the \code{\link{.scatter_plot}} function should only contain commands to generate the final ggplot object.
+#' As described in \code{?\link{.generateDotPlot}}, the \code{.scatter_plot} function should only contain commands to generate the final ggplot object.
 #'
 #' \code{plot.data.all} will be used to define the plot boundaries when selecting points to restrict (see \code{?\link{.process_selectby_choice}}).
 #' If there is no restriction and we are downsampling for speed, \code{plot.data.pre} will be used to define the boundaries.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_scatter_plot
+#'
 #' @seealso
 #' \code{\link{.generateDotPlot}}
 #'
@@ -287,7 +288,7 @@ names(.all_aes_values) <- .all_aes_names
 #' and evaluated by \code{\link{.generateDotPlotData}} to set up the
 #' required fields.
 #'
-#' For \code{\link{.violin_plot}}, a character vector of commands to be parsed
+#' For \code{.violin_plot}, a character vector of commands to be parsed
 #' and evaluated by \code{\link{.generateDotPlot}} to produce the violin plot.
 #'
 #' @details
@@ -295,7 +296,7 @@ names(.all_aes_values) <- .all_aes_names
 #' to be called by \code{\link{.generateDotPlotData}}.
 #' This includes swapping of X and Y variables when \code{horizontal=TRUE}, and adding of horizontal/vertical jitter to points.
 #'
-#' As described in \code{?\link{.generateDotPlot}}, the \code{\link{.violin_plot}} function should only contain commands to generate the final ggplot object.
+#' As described in \code{?\link{.generateDotPlot}}, the \code{.violin_plot} function should only contain commands to generate the final ggplot object.
 #'
 #' \code{plot.data.all} will be used to define the y-axis boundaries (or x-axis boundaries when \code{horizontal=TRUE}).
 #' This ensures consistent plot boundaries when selecting points to restrict (see \code{?\link{.process_selectby_choice}}),
@@ -306,6 +307,7 @@ names(.all_aes_values) <- .all_aes_names
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson.
 #' @rdname INTERNAL_violin_plot
+#'
 #' @seealso
 #' \code{\link{.generateDotPlotData}},
 #' \code{\link{.generateDotPlot}}
@@ -470,9 +472,9 @@ plot.data$Y <- tmp;")
 #' Set to \code{NULL} to have no color label.
 #' @param title A character title for the plot.
 #' Set to \code{NULL} to have no title.
-#' @param by_row Ignored argument, only provided for consistency with \code{\link{.scatter_plot}}.
+#' @param by_row Ignored argument, only provided for consistency with \code{.scatter_plot}.
 #' @param is_subsetted A logical scalar specifying whether \code{plot_data} was subsetted during \code{\link{.process_selectby_choice}}.
-#' @param is_downsampled Ignored argument, only provided for consistency with \code{\link{.scatter_plot}}.
+#' @param is_downsampled Ignored argument, only provided for consistency with \code{.scatter_plot}.
 #' @param shape_lab A character label for the shape scale.
 #' Set to \code{NULL} to have no shape label.
 #' @param size_lab A character label for the size scale.
@@ -481,7 +483,7 @@ plot.data$Y <- tmp;")
 #' @return
 #' For \code{\link{.square_setup}}, a character vector of commands to be parsed and evaluated by \code{\link{.generateDotPlotData}} to set up the required fields.
 #'
-#' For \code{\link{.square_plot}}, a character vector of commands to be parsed and evaluated by \code{\link{.generateDotPlot}} to produce the square plot.
+#' For \code{.square_plot}, a character vector of commands to be parsed and evaluated by \code{\link{.generateDotPlot}} to produce the square plot.
 #'
 #' @details
 #' Any commands to modify \code{plot.data} in preparation for creating a square plot should be placed in \code{\link{.square_setup}}.
@@ -491,10 +493,11 @@ plot.data$Y <- tmp;")
 #' This means that the dimensions of the squares on the y-axis are directly comparable, without any need to compare areas.
 #' Similarly, the widths on the y-axis default are constant when there is only one x-axis level.
 #'
-#' As described in \code{?\link{.generateDotPlot}}, the \code{\link{.square_plot}} function should only contain commands to generate the final ggplot object.
+#' As described in \code{?\link{.generateDotPlot}}, the \code{.square_plot} function should only contain commands to generate the final ggplot object.
 #'
 #' @author Kevin Rue-Albrecht, Aaron Lun, Charlotte Soneson.
 #' @rdname INTERNAL_square_plot
+#'
 #' @seealso
 #' \code{\link{.generateDotPlotData}},
 #' \code{\link{.generateDotPlot}}
@@ -749,9 +752,9 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @author Kevin Rue-Albrecht, Aaron Lun.
 #' @rdname INTERNAL_create_points
 #' @seealso
-#' \code{\link{.scatter_plot}},
-#' \code{\link{.violin_plot}},
-#' \code{\link{.square_plot}}
+#' \code{.scatter_plot},
+#' \code{.violin_plot},
+#' \code{.square_plot}
 #'
 #' @importFrom ggplot2 geom_point geom_blank
 .create_points <- function(param_choices, selected, aes, color, size) {
@@ -852,11 +855,6 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @name aes-utils
 #' @export
 #'
-#' @seealso
-#' \code{\link{.scatter_plot}},
-#' \code{\link{.violin_plot}},
-#' \code{\link{.square_plot}}
-#'
 #' @importFrom ggplot2 aes
 #'
 #' @examples
@@ -911,11 +909,6 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @author Kevin Rue-Albrecht
 #' @rdname labs-utils
 #' @export
-#'
-#' @seealso
-#' \code{\link{.scatter_plot}},
-#' \code{\link{.violin_plot}},
-#' \code{\link{.square_plot}}
 #'
 #' @importFrom ggplot2 labs
 #' @examples

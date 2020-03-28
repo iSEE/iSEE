@@ -56,10 +56,6 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 sce <- readRDS('sce.rds')
 ```
 
-```{r, eval=!exists("SCREENSHOT"), include=FALSE}
-SCREENSHOT <- function(x, ...) knitr::include_graphics(file.path("screenshots", x))
-```
-
 # Background
 
 Users can define their own custom plots or tables to include in the `iSEE` interface [@kra2018iSEE]. 
@@ -186,7 +182,7 @@ app <- iSEE(sce, initial=list(cdp, custom.p))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("custom-plot.png")
+knitr::include_graphics("screenshots/custom-plot.png")
 ```
 
 The most interesting aspect of `createCustomPlot()` is that the UI elements for modifying the optional arguments in `CUSTOM_DIMRED` are also automatically generated.
@@ -259,7 +255,7 @@ app <- iSEE(sce, initial=list(rdp, custom.t))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("custom-table.png")
+knitr::include_graphics("screenshots/custom-table.png")
 ```
 
 # Handling active and saved selections
@@ -339,7 +335,7 @@ app <- iSEE(sce, initial=list(rdp,
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("custom-heat.png")
+knitr::include_graphics("screenshots/custom-heat.png")
 ```
 
 # Advanced extensions

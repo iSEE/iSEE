@@ -6,19 +6,19 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Describing the `ExperimentColorMap` class • iSEE</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Describing the `ExperimentColorMap` class">
-<meta property="og:description" content="">
-<meta name="twitter:card" content="summary">
+<meta property="og:description" content="iSEE">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -75,7 +75,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/iSEE/iSEE">
+  <a href="https://github.com/iSEE/iSEE/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -95,25 +95,25 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1>Describing the <code>ExperimentColorMap</code> class</h1>
+      <h1 data-toc-skip>Describing the <code>ExperimentColorMap</code> class</h1>
                         <h4 class="author">Kevin Rue-Albrecht</h4>
             <address class="author_afil">
-      Kennedy Institute of Rheumatology, University of Oxford, Headington, Oxford OX3 7FY, UK.<br><a class="author_email" href="mailto:#"></a><a href="mailto:kevin.rue-albrecht@kennedy.ox.ac.uk">kevin.rue-albrecht@kennedy.ox.ac.uk</a>
+      Kennedy Institute of Rheumatology, University of Oxford, Headington, Oxford OX3 7FY, UK.<br><a class="author_email" href="mailto:#"></a><a href="mailto:kevin.rue-albrecht@kennedy.ox.ac.uk" class="email">kevin.rue-albrecht@kennedy.ox.ac.uk</a>
       </address>
                               <h4 class="author">Federico Marini</h4>
             <address class="author_afil">
-      Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz<br><a class="author_email" href="mailto:#"></a><a href="mailto:marinif@uni-mainz.de">marinif@uni-mainz.de</a>
+      Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz<br><a class="author_email" href="mailto:#"></a><a href="mailto:marinif@uni-mainz.de" class="email">marinif@uni-mainz.de</a>
       </address>
                               <h4 class="author">Charlotte Soneson</h4>
             <address class="author_afil">
-      Institute of Molecular Life Sciences, University of Zurich<br><a class="author_email" href="mailto:#"></a><a href="mailto:charlottesoneson@gmail.com">charlottesoneson@gmail.com</a>
+      Institute of Molecular Life Sciences, University of Zurich<br><a class="author_email" href="mailto:#"></a><a href="mailto:charlottesoneson@gmail.com" class="email">charlottesoneson@gmail.com</a>
       </address>
                               <h4 class="author">Aaron Lun</h4>
             <address class="author_afil">
-      Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com">infinite.monkeys.with.keyboards@gmail.com</a>
+      Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">24 March 2020</h4>
+            <h4 class="date">28 March 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/ecm.Rmd"><code>vignettes/ecm.Rmd</code></a></small>
       <div class="hidden name"><code>ecm.Rmd</code></div>
@@ -122,13 +122,13 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-03-24</p>
+<p><strong>Compiled date</strong>: 2020-03-28</p>
 <p><strong>Last edited</strong>: 2018-03-08</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="background" class="section level1">
 <h1 class="hasAnchor">
 <a href="#background" class="anchor"></a>Background</h1>
-<p><em><a href="https://bioconductor.org/packages/3.11/iSEE">iSEE</a></em> coordinates the coloration in every plot via the <code>ExperimentColorMap</code> class <span class="citation">(Rue-Albrecht et al. 2018)</span>. Colors for samples or features are defined from column or row metadata or assay values using “colormaps”. Each colormap is a function that takes a single integer argument and returns that number of distinct colors. The <code>ExperimentColorMap</code> is a container that stores these functions for use within the <code><a href="../reference/iSEE.html">iSEE()</a></code> function. Users can define their own colormaps to customize coloration for specific assays or covariates.</p>
+<p><em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> coordinates the coloration in every plot via the <code>ExperimentColorMap</code> class <span class="citation">(Rue-Albrecht et al. 2018)</span>. Colors for samples or features are defined from column or row metadata or assay values using “colormaps”. Each colormap is a function that takes a single integer argument and returns that number of distinct colors. The <code>ExperimentColorMap</code> is a container that stores these functions for use within the <code><a href="../reference/iSEE.html">iSEE()</a></code> function. Users can define their own colormaps to customize coloration for specific assays or covariates.</p>
 </div>
 <div id="defining-colormaps" class="section level1">
 <h1 class="hasAnchor">
@@ -137,29 +137,29 @@
 <h2 class="hasAnchor">
 <a href="#colormaps-for-continuous-variables" class="anchor"></a>Colormaps for continuous variables</h2>
 <p>For continuous variables, the function will be asked to generate a number of colors (21, by default). Interpolation will then be performed internally to generate a color gradient. Users can use existing color scales like <code><a href="https://rdrr.io/pkg/viridis/man/reexports.html">viridis::viridis</a></code> or <code>heat.colors</code>:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># Coloring for log-counts:</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">logcounts_color_fun &lt;-<span class="st"> </span>viridis<span class="op">::</span>viridis</a></code></pre></div>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="co"># Coloring for log-counts:</span>
+<span class="no">logcounts_color_fun</span> <span class="kw">&lt;-</span> <span class="kw pkg">viridis</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/viridis/man/reexports.html">viridis</a></span></pre></body></html></div>
 <p>It is also possible to use a function that completely ignores any arguments, and simply returns a fixed number of interpolation points:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># Coloring for FPKMs:</span></a>
-<a class="sourceLine" id="cb2-2" data-line-number="2">fpkm_color_fun &lt;-<span class="st"> </span><span class="cf">function</span>(n){</a>
-<a class="sourceLine" id="cb2-3" data-line-number="3">    <span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"black"</span>,<span class="st">"brown"</span>,<span class="st">"red"</span>,<span class="st">"orange"</span>,<span class="st">"yellow"</span>)</a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">}</a></code></pre></div>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="co"># Coloring for FPKMs:</span>
+<span class="no">fpkm_color_fun</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">n</span>){
+    <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"black"</span>,<span class="st">"brown"</span>,<span class="st">"red"</span>,<span class="st">"orange"</span>,<span class="st">"yellow"</span>)
+}</pre></body></html></div>
 </div>
 <div id="colormaps-for-categorical-variables" class="section level2">
 <h2 class="hasAnchor">
 <a href="#colormaps-for-categorical-variables" class="anchor"></a>Colormaps for categorical variables</h2>
 <p>For categorical variables, the function should accept the number of levels and return a color per level. Colors are automatically assigned to factor levels in the specified order of the levels.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># Coloring for the 'driver' metadata variable.</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">driver_color_fun &lt;-<span class="st"> </span><span class="cf">function</span>(n){</a>
-<a class="sourceLine" id="cb3-3" data-line-number="3">    RColorBrewer<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html">brewer.pal</a></span>(n, <span class="st">"Set2"</span>)</a>
-<a class="sourceLine" id="cb3-4" data-line-number="4">}</a></code></pre></div>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># Coloring for the 'driver' metadata variable.</span>
+<span class="no">driver_color_fun</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">n</span>){
+    <span class="kw pkg">RColorBrewer</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html">brewer.pal</a></span>(<span class="no">n</span>, <span class="st">"Set2"</span>)
+}</pre></body></html></div>
 <p>Alternatively, the function can ignore its arguments and simply return a named vector of colors if users want to specify the color for each level explicitly It is the user’s responsibility to ensure that all levels are accounted for<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>. For instance, the following colormap function will only be compatible with factors of two levels, namely <code>"Y"</code> and <code>"N"</code>:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># Coloring for the QC metadata variable:</span></a>
-<a class="sourceLine" id="cb4-2" data-line-number="2">qc_color_fun &lt;-<span class="st"> </span><span class="cf">function</span>(n){</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3">    qc_colors &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"forestgreen"</span>, <span class="st">"firebrick1"</span>)</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4">    <span class="kw"><a href="https://rdrr.io/r/base/names.html">names</a></span>(qc_colors) &lt;-<span class="st"> </span><span class="kw"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Y"</span>, <span class="st">"N"</span>)</a>
-<a class="sourceLine" id="cb4-5" data-line-number="5">    qc_colors</a>
-<a class="sourceLine" id="cb4-6" data-line-number="6">}</a></code></pre></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="co"># Coloring for the QC metadata variable:</span>
+<span class="no">qc_color_fun</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">n</span>){
+    <span class="no">qc_colors</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"forestgreen"</span>, <span class="st">"firebrick1"</span>)
+    <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">qc_colors</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Y"</span>, <span class="st">"N"</span>)
+    <span class="no">qc_colors</span>
+}</pre></body></html></div>
 </div>
 </div>
 <div id="the-colormap-hierarchy" class="section level1">
@@ -195,43 +195,43 @@
 <a href="#creating-the-experimentcolormap" class="anchor"></a>Creating the <code>ExperimentColorMap</code>
 </h1>
 <p>We store the set of colormap functions in an instance of the <code>ExperimentColorMap</code> class. Named functions passed as <code>assays</code>, <code>colData</code>, or <code>rowData</code> arguments will be used for coloring data in those slots, respectively.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span>(iSEE)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2">ecm &lt;-<span class="st"> </span><span class="kw"><a href="../reference/ExperimentColorMap-class.html">ExperimentColorMap</a></span>(</a>
-<a class="sourceLine" id="cb5-3" data-line-number="3">    <span class="dt">assays =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb5-4" data-line-number="4">        <span class="dt">counts =</span> heat.colors,</a>
-<a class="sourceLine" id="cb5-5" data-line-number="5">        <span class="dt">logcounts =</span> logcounts_color_fun,</a>
-<a class="sourceLine" id="cb5-6" data-line-number="6">        <span class="dt">cufflinks_fpkm =</span> fpkm_color_fun</a>
-<a class="sourceLine" id="cb5-7" data-line-number="7">    ),</a>
-<a class="sourceLine" id="cb5-8" data-line-number="8">    <span class="dt">colData =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb5-9" data-line-number="9">        <span class="dt">passes_qc_checks_s =</span> qc_color_fun,</a>
-<a class="sourceLine" id="cb5-10" data-line-number="10">        <span class="dt">driver_1_s =</span> driver_color_fun</a>
-<a class="sourceLine" id="cb5-11" data-line-number="11">    ),</a>
-<a class="sourceLine" id="cb5-12" data-line-number="12">    <span class="dt">all_continuous =</span> <span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>(</a>
-<a class="sourceLine" id="cb5-13" data-line-number="13">        <span class="dt">assays =</span> viridis<span class="op">::</span>plasma</a>
-<a class="sourceLine" id="cb5-14" data-line-number="14">    )</a>
-<a class="sourceLine" id="cb5-15" data-line-number="15">)</a>
-<a class="sourceLine" id="cb5-16" data-line-number="16">ecm</a>
-<a class="sourceLine" id="cb5-17" data-line-number="17"><span class="co">#&gt; Class: ExperimentColorMap</span></a>
-<a class="sourceLine" id="cb5-18" data-line-number="18"><span class="co">#&gt; assays(3): counts logcounts cufflinks_fpkm</span></a>
-<a class="sourceLine" id="cb5-19" data-line-number="19"><span class="co">#&gt; colData(2): passes_qc_checks_s driver_1_s</span></a>
-<a class="sourceLine" id="cb5-20" data-line-number="20"><span class="co">#&gt; rowData(0):</span></a>
-<a class="sourceLine" id="cb5-21" data-line-number="21"><span class="co">#&gt; all_discrete(0):</span></a>
-<a class="sourceLine" id="cb5-22" data-line-number="22"><span class="co">#&gt; all_continuous(1): assays</span></a></code></pre></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">iSEE</span>)
+<span class="no">ecm</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/ExperimentColorMap-class.html">ExperimentColorMap</a></span>(
+    <span class="kw">assays</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+        <span class="kw">counts</span> <span class="kw">=</span> <span class="no">heat.colors</span>,
+        <span class="kw">logcounts</span> <span class="kw">=</span> <span class="no">logcounts_color_fun</span>,
+        <span class="kw">cufflinks_fpkm</span> <span class="kw">=</span> <span class="no">fpkm_color_fun</span>
+    ),
+    <span class="kw">colData</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+        <span class="kw">passes_qc_checks_s</span> <span class="kw">=</span> <span class="no">qc_color_fun</span>,
+        <span class="kw">driver_1_s</span> <span class="kw">=</span> <span class="no">driver_color_fun</span>
+    ),
+    <span class="kw">all_continuous</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+        <span class="kw">assays</span> <span class="kw">=</span> <span class="kw pkg">viridis</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/viridis/man/reexports.html">plasma</a></span>
+    )
+)
+<span class="no">ecm</span>
+<span class="co">#&gt; Class: ExperimentColorMap</span>
+<span class="co">#&gt; assays(3): counts logcounts cufflinks_fpkm</span>
+<span class="co">#&gt; colData(2): passes_qc_checks_s driver_1_s</span>
+<span class="co">#&gt; rowData(0):</span>
+<span class="co">#&gt; all_discrete(0):</span>
+<span class="co">#&gt; all_continuous(1): assays</span></pre></body></html></div>
 <p>Users can change the defaults for all assays or column data by modifying the <em>shared</em> colormaps. Similarly, users can modify the defaults for all continuous or categorical data by modifying the global colormaps. This is demonstrated below for the continuous variables:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="../reference/ExperimentColorMap-class.html">ExperimentColorMap</a></span>(</a>
-<a class="sourceLine" id="cb6-2" data-line-number="2">    <span class="dt">all_continuous=</span><span class="kw"><a href="https://rdrr.io/r/base/list.html">list</a></span>( <span class="co"># shared</span></a>
-<a class="sourceLine" id="cb6-3" data-line-number="3">        <span class="dt">assays=</span>viridis<span class="op">::</span>plasma,</a>
-<a class="sourceLine" id="cb6-4" data-line-number="4">        <span class="dt">colData=</span>viridis<span class="op">::</span>inferno</a>
-<a class="sourceLine" id="cb6-5" data-line-number="5">    ),</a>
-<a class="sourceLine" id="cb6-6" data-line-number="6">    <span class="dt">global_continuous=</span>viridis<span class="op">::</span>magma <span class="co"># global</span></a>
-<a class="sourceLine" id="cb6-7" data-line-number="7">)</a>
-<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co">#&gt; Class: ExperimentColorMap</span></a>
-<a class="sourceLine" id="cb6-9" data-line-number="9"><span class="co">#&gt; assays(0):</span></a>
-<a class="sourceLine" id="cb6-10" data-line-number="10"><span class="co">#&gt; colData(0):</span></a>
-<a class="sourceLine" id="cb6-11" data-line-number="11"><span class="co">#&gt; rowData(0):</span></a>
-<a class="sourceLine" id="cb6-12" data-line-number="12"><span class="co">#&gt; all_discrete(0):</span></a>
-<a class="sourceLine" id="cb6-13" data-line-number="13"><span class="co">#&gt; all_continuous(2): assays colData</span></a>
-<a class="sourceLine" id="cb6-14" data-line-number="14"><span class="co">#&gt; global_continuous(1)</span></a></code></pre></div>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="../reference/ExperimentColorMap-class.html">ExperimentColorMap</a></span>(
+    <span class="kw">all_continuous</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>( <span class="co"># shared</span>
+        <span class="kw">assays</span><span class="kw">=</span><span class="kw pkg">viridis</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/viridis/man/reexports.html">plasma</a></span>,
+        <span class="kw">colData</span><span class="kw">=</span><span class="kw pkg">viridis</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/viridis/man/reexports.html">inferno</a></span>
+    ),
+    <span class="kw">global_continuous</span><span class="kw">=</span><span class="kw pkg">viridis</span><span class="kw ns">::</span><span class="no"><a href="https://rdrr.io/pkg/viridis/man/reexports.html">magma</a></span> <span class="co"># global</span>
+)
+<span class="co">#&gt; Class: ExperimentColorMap</span>
+<span class="co">#&gt; assays(0):</span>
+<span class="co">#&gt; colData(0):</span>
+<span class="co">#&gt; rowData(0):</span>
+<span class="co">#&gt; all_discrete(0):</span>
+<span class="co">#&gt; all_continuous(2): assays colData</span>
+<span class="co">#&gt; global_continuous(1)</span></pre></body></html></div>
 </div>
 <div id="benefits" class="section level1">
 <h1 class="hasAnchor">
@@ -249,10 +249,10 @@
 <div id="demonstration" class="section level1">
 <h1 class="hasAnchor">
 <a href="#demonstration" class="anchor"></a>Demonstration</h1>
-<p>Here, we use the <code>allen</code> single-cell RNA-seq data set to demonstrate the use of the <code>ExperimentColorMap</code> class. Using the <code>sce</code> object that we created <a href="https://bioconductor.org/packages/3.11/iSEE/vignettes/basic.html">previously</a>, we create an <code>iSEE</code> app with the <code>SingleCellExperiment</code> object and the colormap generated above.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">app &lt;-<span class="st"> </span><span class="kw"><a href="../reference/iSEE.html">iSEE</a></span>(sce, <span class="dt">colormap =</span> ecm)</a></code></pre></div>
+<p>Here, we use the <code>allen</code> single-cell RNA-seq data set to demonstrate the use of the <code>ExperimentColorMap</code> class. Using the <code>sce</code> object that we created <a href="https://bioconductor.org/packages/3.10/iSEE/vignettes/basic.html">previously</a>, we create an <code>iSEE</code> app with the <code>SingleCellExperiment</code> object and the colormap generated above.</p>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">colormap</span> <span class="kw">=</span> <span class="no">ecm</span>)</pre></body></html></div>
 <p>We run this using <code>runApp</code> to open the app on our browser.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1">shiny<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/shiny/man/runApp.html">runApp</a></span>(app)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="kw pkg">shiny</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html">runApp</a></span>(<span class="no">app</span>)</pre></body></html></div>
 <p><img src="screenshots/ecm-demo.png" width="488"></p>
 <p>Now, choose to color cells by <code>Column data</code> and select <code>passes_qc_checks_s</code>. We will see that all cells that passed QC (<code>Y</code>) are colored “forestgreen”, while the ones that didn’t pass are colored firebrick.</p>
 <p>If we color any plot by gene expression, we see that use of counts follows the <code>heat.colors</code> coloring scheme; use of log-counts follows the <code>viridis</code> coloring scheme; and use of FPKMs follows the black-to-yellow scheme we defined in <code>fpkm_color_fun</code>.</p>
@@ -260,66 +260,61 @@
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()</a>
-<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="co">#&gt; R Under development (unstable) (2020-03-13 r77948)</span></a>
-<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span></a>
-<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="co">#&gt; Running under: Ubuntu 16.04.6 LTS</span></a>
-<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#&gt; Matrix products: default</span></a>
-<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="co">#&gt; BLAS:   /home/travis/R-bin/lib/R/lib/libRblas.so</span></a>
-<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">#&gt; LAPACK: /home/travis/R-bin/lib/R/lib/libRlapack.so</span></a>
-<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co">#&gt; locale:</span></a>
-<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="co">#&gt;  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span></a>
-<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#&gt;  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span></a>
-<a class="sourceLine" id="cb9-13" data-line-number="13"><span class="co">#&gt;  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   </span></a>
-<a class="sourceLine" id="cb9-14" data-line-number="14"><span class="co">#&gt;  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span></a>
-<a class="sourceLine" id="cb9-15" data-line-number="15"><span class="co">#&gt;  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span></a>
-<a class="sourceLine" id="cb9-16" data-line-number="16"><span class="co">#&gt; [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span></a>
-<a class="sourceLine" id="cb9-17" data-line-number="17"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-18" data-line-number="18"><span class="co">#&gt; attached base packages:</span></a>
-<a class="sourceLine" id="cb9-19" data-line-number="19"><span class="co">#&gt; [1] parallel  stats4    stats     graphics  grDevices utils     datasets </span></a>
-<a class="sourceLine" id="cb9-20" data-line-number="20"><span class="co">#&gt; [8] methods   base     </span></a>
-<a class="sourceLine" id="cb9-21" data-line-number="21"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-22" data-line-number="22"><span class="co">#&gt; other attached packages:</span></a>
-<a class="sourceLine" id="cb9-23" data-line-number="23"><span class="co">#&gt;  [1] iSEE_1.99.5                 SingleCellExperiment_1.9.2 </span></a>
-<a class="sourceLine" id="cb9-24" data-line-number="24"><span class="co">#&gt;  [3] SummarizedExperiment_1.17.3 DelayedArray_0.13.7        </span></a>
-<a class="sourceLine" id="cb9-25" data-line-number="25"><span class="co">#&gt;  [5] BiocParallel_1.21.2         matrixStats_0.56.0         </span></a>
-<a class="sourceLine" id="cb9-26" data-line-number="26"><span class="co">#&gt;  [7] Biobase_2.47.3              GenomicRanges_1.39.2       </span></a>
-<a class="sourceLine" id="cb9-27" data-line-number="27"><span class="co">#&gt;  [9] GenomeInfoDb_1.23.13        IRanges_2.21.5             </span></a>
-<a class="sourceLine" id="cb9-28" data-line-number="28"><span class="co">#&gt; [11] S4Vectors_0.25.13           BiocGenerics_0.33.2        </span></a>
-<a class="sourceLine" id="cb9-29" data-line-number="29"><span class="co">#&gt; [13] BiocStyle_2.15.6           </span></a>
-<a class="sourceLine" id="cb9-30" data-line-number="30"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb9-31" data-line-number="31"><span class="co">#&gt; loaded via a namespace (and not attached):</span></a>
-<a class="sourceLine" id="cb9-32" data-line-number="32"><span class="co">#&gt;  [1] nlme_3.1-145           bitops_1.0-6           fs_1.3.2              </span></a>
-<a class="sourceLine" id="cb9-33" data-line-number="33"><span class="co">#&gt;  [4] RColorBrewer_1.1-2     rprojroot_1.3-2        tools_4.0.0           </span></a>
-<a class="sourceLine" id="cb9-34" data-line-number="34"><span class="co">#&gt;  [7] backports_1.1.5        R6_2.4.1               DT_0.13               </span></a>
-<a class="sourceLine" id="cb9-35" data-line-number="35"><span class="co">#&gt; [10] vipor_0.4.5            mgcv_1.8-31            colorspace_1.4-1      </span></a>
-<a class="sourceLine" id="cb9-36" data-line-number="36"><span class="co">#&gt; [13] GetoptLong_0.1.8       tidyselect_1.0.0       gridExtra_2.3         </span></a>
-<a class="sourceLine" id="cb9-37" data-line-number="37"><span class="co">#&gt; [16] compiler_4.0.0         shinyjs_1.1            desc_1.2.0            </span></a>
-<a class="sourceLine" id="cb9-38" data-line-number="38"><span class="co">#&gt; [19] colourpicker_1.0       bookdown_0.18          scales_1.1.0          </span></a>
-<a class="sourceLine" id="cb9-39" data-line-number="39"><span class="co">#&gt; [22] pkgdown_1.4.1          stringr_1.4.0          digest_0.6.25         </span></a>
-<a class="sourceLine" id="cb9-40" data-line-number="40"><span class="co">#&gt; [25] rmarkdown_2.1          XVector_0.27.1         pkgconfig_2.0.3       </span></a>
-<a class="sourceLine" id="cb9-41" data-line-number="41"><span class="co">#&gt; [28] htmltools_0.4.0        fastmap_1.0.1          htmlwidgets_1.5.1     </span></a>
-<a class="sourceLine" id="cb9-42" data-line-number="42"><span class="co">#&gt; [31] rlang_0.4.5            GlobalOptions_0.1.1    shiny_1.4.0.2         </span></a>
-<a class="sourceLine" id="cb9-43" data-line-number="43"><span class="co">#&gt; [34] shape_1.4.4            jsonlite_1.6.1         dplyr_0.8.5           </span></a>
-<a class="sourceLine" id="cb9-44" data-line-number="44"><span class="co">#&gt; [37] RCurl_1.98-1.1         magrittr_1.5           GenomeInfoDbData_1.2.2</span></a>
-<a class="sourceLine" id="cb9-45" data-line-number="45"><span class="co">#&gt; [40] Matrix_1.2-18          Rcpp_1.0.4             munsell_0.5.0         </span></a>
-<a class="sourceLine" id="cb9-46" data-line-number="46"><span class="co">#&gt; [43] viridis_0.5.1          lifecycle_0.2.0        stringi_1.4.6         </span></a>
-<a class="sourceLine" id="cb9-47" data-line-number="47"><span class="co">#&gt; [46] yaml_2.2.1             rintrojs_0.2.2         MASS_7.3-51.5         </span></a>
-<a class="sourceLine" id="cb9-48" data-line-number="48"><span class="co">#&gt; [49] zlibbioc_1.33.1        grid_4.0.0             promises_1.1.0        </span></a>
-<a class="sourceLine" id="cb9-49" data-line-number="49"><span class="co">#&gt; [52] shinydashboard_0.7.1   crayon_1.3.4           miniUI_0.1.1.1        </span></a>
-<a class="sourceLine" id="cb9-50" data-line-number="50"><span class="co">#&gt; [55] lattice_0.20-40        splines_4.0.0          circlize_0.4.8        </span></a>
-<a class="sourceLine" id="cb9-51" data-line-number="51"><span class="co">#&gt; [58] knitr_1.28             ComplexHeatmap_2.3.2   pillar_1.4.3          </span></a>
-<a class="sourceLine" id="cb9-52" data-line-number="52"><span class="co">#&gt; [61] igraph_1.2.5           rjson_0.2.20           glue_1.3.2            </span></a>
-<a class="sourceLine" id="cb9-53" data-line-number="53"><span class="co">#&gt; [64] evaluate_0.14          BiocManager_1.30.10    png_0.1-7             </span></a>
-<a class="sourceLine" id="cb9-54" data-line-number="54"><span class="co">#&gt; [67] httpuv_1.5.2           gtable_0.3.0           purrr_0.3.3           </span></a>
-<a class="sourceLine" id="cb9-55" data-line-number="55"><span class="co">#&gt; [70] clue_0.3-57            assertthat_0.2.1       ggplot2_3.3.0         </span></a>
-<a class="sourceLine" id="cb9-56" data-line-number="56"><span class="co">#&gt; [73] xfun_0.12              mime_0.9               xtable_1.8-4          </span></a>
-<a class="sourceLine" id="cb9-57" data-line-number="57"><span class="co">#&gt; [76] later_1.0.0            viridisLite_0.3.0      tibble_2.1.3          </span></a>
-<a class="sourceLine" id="cb9-58" data-line-number="58"><span class="co">#&gt; [79] memoise_1.1.0          cluster_2.1.0          shinyWidgets_0.5.1    </span></a>
-<a class="sourceLine" id="cb9-59" data-line-number="59"><span class="co">#&gt; [82] shinyAce_0.4.1</span></a>
-<a class="sourceLine" id="cb9-60" data-line-number="60"><span class="co"># devtools::session_info()</span></a></code></pre></div>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
+<span class="co">#&gt; R version 3.6.3 (2020-02-29)</span>
+<span class="co">#&gt; Platform: x86_64-apple-darwin15.6.0 (64-bit)</span>
+<span class="co">#&gt; Running under: macOS Catalina 10.15.3</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Matrix products: default</span>
+<span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib</span>
+<span class="co">#&gt; LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; locale:</span>
+<span class="co">#&gt; [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; attached base packages:</span>
+<span class="co">#&gt; [1] parallel  stats4    stats     graphics  grDevices utils     datasets </span>
+<span class="co">#&gt; [8] methods   base     </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; other attached packages:</span>
+<span class="co">#&gt;  [1] iSEE_1.99.5                 SingleCellExperiment_1.8.0 </span>
+<span class="co">#&gt;  [3] SummarizedExperiment_1.16.1 DelayedArray_0.12.2        </span>
+<span class="co">#&gt;  [5] BiocParallel_1.20.1         matrixStats_0.56.0         </span>
+<span class="co">#&gt;  [7] Biobase_2.46.0              GenomicRanges_1.38.0       </span>
+<span class="co">#&gt;  [9] GenomeInfoDb_1.22.1         IRanges_2.20.2             </span>
+<span class="co">#&gt; [11] S4Vectors_0.24.3            BiocGenerics_0.32.0        </span>
+<span class="co">#&gt; [13] BiocStyle_2.14.4           </span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; loaded via a namespace (and not attached):</span>
+<span class="co">#&gt;  [1] nlme_3.1-144           bitops_1.0-6           fs_1.3.2              </span>
+<span class="co">#&gt;  [4] RColorBrewer_1.1-2     rprojroot_1.3-2        tools_3.6.3           </span>
+<span class="co">#&gt;  [7] backports_1.1.5        R6_2.4.1               DT_0.13               </span>
+<span class="co">#&gt; [10] vipor_0.4.5            mgcv_1.8-31            colorspace_1.4-1      </span>
+<span class="co">#&gt; [13] GetoptLong_0.1.8       tidyselect_1.0.0       gridExtra_2.3         </span>
+<span class="co">#&gt; [16] compiler_3.6.3         shinyjs_1.1            desc_1.2.0            </span>
+<span class="co">#&gt; [19] colourpicker_1.0       bookdown_0.18          scales_1.1.0          </span>
+<span class="co">#&gt; [22] pkgdown_1.5.0.9000     stringr_1.4.0          digest_0.6.25         </span>
+<span class="co">#&gt; [25] rmarkdown_2.1          XVector_0.26.0         pkgconfig_2.0.3       </span>
+<span class="co">#&gt; [28] htmltools_0.4.0        fastmap_1.0.1          htmlwidgets_1.5.1     </span>
+<span class="co">#&gt; [31] rlang_0.4.5            GlobalOptions_0.1.1    shiny_1.4.0.2         </span>
+<span class="co">#&gt; [34] shape_1.4.4            jsonlite_1.6.1         dplyr_0.8.5           </span>
+<span class="co">#&gt; [37] RCurl_1.98-1.1         magrittr_1.5           GenomeInfoDbData_1.2.2</span>
+<span class="co">#&gt; [40] Matrix_1.2-18          Rcpp_1.0.4.4           munsell_0.5.0         </span>
+<span class="co">#&gt; [43] viridis_0.5.1          lifecycle_0.2.0        stringi_1.4.6         </span>
+<span class="co">#&gt; [46] yaml_2.2.1             rintrojs_0.2.2         MASS_7.3-51.5         </span>
+<span class="co">#&gt; [49] zlibbioc_1.32.0        grid_3.6.3             promises_1.1.0        </span>
+<span class="co">#&gt; [52] shinydashboard_0.7.1   crayon_1.3.4           miniUI_0.1.1.1        </span>
+<span class="co">#&gt; [55] lattice_0.20-38        splines_3.6.3          circlize_0.4.8        </span>
+<span class="co">#&gt; [58] knitr_1.28             ComplexHeatmap_2.2.0   pillar_1.4.3          </span>
+<span class="co">#&gt; [61] igraph_1.2.5           rjson_0.2.20           glue_1.3.2            </span>
+<span class="co">#&gt; [64] evaluate_0.14          BiocManager_1.30.10    png_0.1-7             </span>
+<span class="co">#&gt; [67] httpuv_1.5.2           gtable_0.3.0           purrr_0.3.3           </span>
+<span class="co">#&gt; [70] clue_0.3-57            assertthat_0.2.1       ggplot2_3.3.0         </span>
+<span class="co">#&gt; [73] xfun_0.12              mime_0.9               xtable_1.8-4          </span>
+<span class="co">#&gt; [76] later_1.0.0            viridisLite_0.3.0      tibble_2.1.3          </span>
+<span class="co">#&gt; [79] memoise_1.1.0          cluster_2.1.0          shinyWidgets_0.5.1    </span>
+<span class="co">#&gt; [82] shinyAce_0.4.1</span>
+<span class="co"># devtools::session_info()</span></pre></body></html></div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
@@ -333,38 +328,16 @@
 <div class="footnotes">
 <hr>
 <ol>
-<li id="fn1"><p>Needless to say, these functions should not be used as shared or global colormaps.<a href="#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn1"><p>Needless to say, these functions should not be used as shared or global colormaps.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <div id="tocnav">
-      <h2 class="hasAnchor">
-<a href="#tocnav" class="anchor"></a>Contents</h2>
-      <ul class="nav nav-pills nav-stacked">
-<li><a href="#background">Background</a></li>
-      <li>
-<a href="#defining-colormaps">Defining colormaps</a><ul class="nav nav-pills nav-stacked">
-<li><a href="#colormaps-for-continuous-variables">Colormaps for continuous variables</a></li>
-      <li><a href="#colormaps-for-categorical-variables">Colormaps for categorical variables</a></li>
-      </ul>
-</li>
-      <li>
-<a href="#the-colormap-hierarchy">The colormap hierarchy</a><ul class="nav nav-pills nav-stacked">
-<li><a href="#specific-and-shared-colormaps">Specific and shared colormaps</a></li>
-      <li><a href="#searching-for-colors">Searching for colors</a></li>
-      </ul>
-</li>
-      <li><a href="#creating-the-experimentcolormap">Creating the <code>ExperimentColorMap</code></a></li>
-      <li><a href="#benefits">Benefits</a></li>
-      <li><a href="#demonstration">Demonstration</a></li>
-      <li><a href="#session-info">Session Info</a></li>
-      <li><a href="#references">References</a></li>
-      </ul>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
 </div>
-      </div>
 
 </div>
 
@@ -375,7 +348,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.9000.</p>
 </div>
 
       </footer>

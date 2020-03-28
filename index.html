@@ -6,10 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Interactive SummarizedExperiment Explorer • iSEE</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha256-916EbMg70RQy9LHiGkXzG8hSg9EdNy97GazNG/aiY1w=" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/all.min.css" integrity="sha256-nAmazAk6vS34Xqo0BSrTb+abbtFlgsFK7NKSi6o7Y78=" crossorigin="anonymous">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.7.1/css/v4-shims.min.css" integrity="sha256-6qHlizsOWFskGlwVOKuns+D1nB6ssZrHQrNj1wGplHc=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/headroom.min.js" integrity="sha256-DJFC1kqIhelURkuza0AvYal5RxMtpzLjFhsnVIeuk+U=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.9.4/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="bootstrap-toc.css">
+<script src="bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Interactive SummarizedExperiment Explorer">
 <meta property="og:description" content="Create an interactive Shiny-based graphical user interface 
     for exploring data stored in SummarizedExperiment objects, including 
@@ -19,13 +20,12 @@
     and extensibility to new panel types via S4 classes. Special attention 
     is given to single-cell data in a SingleCellExperiment object with 
     visualization of dimensionality reduction results.">
-<meta name="twitter:card" content="summary">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body>
+<body data-spy="scroll" data-target="#toc">
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -82,7 +82,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/iSEE/iSEE">
+  <a href="https://github.com/iSEE/iSEE/">
     <span class="fab fa fab fa-github fa-lg"></span>
      
   </a>
@@ -116,18 +116,24 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
+<td align="center">GitHub Actions</td>
+<td align="center">Multiple</td>
+<td align="center"><a href="https://github.com/iSEE/iSEE/actions"><img src="https://github.com/iSEE/iSEE/workflows/R-CMD-check/badge.svg" alt="R build status"></a></td>
+<td align="center"><code>NA</code></td>
+</tr>
+<tr class="even">
 <td align="center">Travis CI</td>
 <td align="center">Linux</td>
 <td align="center"><a href="https://travis-ci.com/iSEE/iSEE"><img src="https://travis-ci.com/iSEE/iSEE.svg?branch=master" alt="Travis CI build status"></a></td>
 <td align="center"><a href="https://codecov.io/github/iSEE/iSEE"><img src="https://codecov.io/github/iSEE/iSEE/coverage.svg?branch=master" alt="Codecov.io coverage status"></a></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="center">Bioc (<a href="http://bioconductor.org/packages/devel/bioc/html/iSEE.html"><em>devel</em></a>)</td>
 <td align="center">Multiple</td>
 <td align="center"><a href="http://bioconductor.org/checkResults/devel/bioc-LATEST/iSEE"><img src="http://bioconductor.org/shields/build/devel/bioc/iSEE.svg" alt="Bioconductor-devel Build Status"></a></td>
 <td align="center"><code>NA</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="center">Bioc (<a href="http://bioconductor.org/packages/release/bioc/html/iSEE.html"><em>release</em></a>)</td>
 <td align="center">Multiple</td>
 <td align="center"><a href="http://bioconductor.org/checkResults/release/bioc-LATEST/iSEE"><img src="http://bioconductor.org/shields/build/release/bioc/iSEE.svg" alt="Bioconductor-release Build Status"></a></td>
@@ -135,7 +141,7 @@
 </tr>
 </tbody>
 </table>
-<p><img src="https://img.shields.io/docker/cloud/automated/iseedevelopers/isee" alt="Docker Cloud Automated build"><img src="https://img.shields.io/docker/cloud/build/iseedevelopers/isee" alt="Docker Cloud Build Status"></p>
+<!-- badges: start --><p><img src="https://img.shields.io/docker/cloud/automated/iseedevelopers/isee" alt="Docker Cloud Automated build"><img src="https://img.shields.io/docker/cloud/build/iseedevelopers/isee" alt="Docker Cloud Build Status"><!-- badges: end --></p>
 </div>
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
@@ -154,79 +160,64 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p><em>iSEE</em> can be easily installed from Bioconductor using <code><a href="https://rdrr.io/pkg/BiocManager/man/install.html">BiocManager::install()</a></code>:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="cf">if</span> (<span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"BiocManager"</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>))</a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">    <span class="kw"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"BiocManager"</span>)</a>
-<a class="sourceLine" id="cb1-3" data-line-number="3">BiocManager<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>(<span class="st">"iSEE"</span>)</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co"># or also...</span></a>
-<a class="sourceLine" id="cb1-5" data-line-number="5">BiocManager<span class="op">::</span><span class="kw"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>(<span class="st">"iSEE"</span>, <span class="dt">dependencies =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="r"><span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"BiocManager"</span>, <span class="kw">quietly</span> <span class="kw">=</span> <span class="fl">TRUE</span>))
+    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"BiocManager"</span>)
+<span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>(<span class="st">"iSEE"</span>)
+<span class="co"># or also...</span>
+<span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>(<span class="st">"iSEE"</span>, <span class="kw">dependencies</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></div>
 <p>Setting <code>dependencies = TRUE</code> should ensure that all packages, including the ones in the <code>Suggests:</code> field of the <code>DESCRIPTION</code>, are installed - this can be essential if you want to reproduce the code in the vignette, for example.</p>
 </div>
 <div id="functionalities" class="section level2">
 <h2 class="hasAnchor">
 <a href="#functionalities" class="anchor"></a>Functionalities</h2>
-<details><summary><b>
-Click to expand the list of features available in <i>iSEE</i> applications.
-</b></summary>  
+<details><p><summary><b> Click to expand the list of features available in <i>iSEE</i> applications. </b></summary></p>
+<div id="general" class="section level3">
+<h3 class="hasAnchor">
+<a href="#general" class="anchor"></a>General</h3>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> Multiple interactive plot types with selectable points.</p>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> Interactive tables with selectable rows.</p>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> Coloring of samples and features by metadata or expression data.</p>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> Zooming to a plot subregion.</p>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> Transmission of point selections between panels to highlight, color, or restrict data points in the receiving panel(s).</p>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> Lasso point selection to define complex shapes.</p>
+</div>
+<div id="sample-level-visualization" class="section level3">
+<h3 class="hasAnchor">
+<a href="#sample-level-visualization" class="anchor"></a>Sample-level visualization</h3>
+<p>The <em>iSEE</em> user interface currently contains the following components where each data point represents a single biological sample:</p>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Reduced dimension plot</strong>: Scatter plot of reduced dimensionality data.</p>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Column data plot</strong>: Adaptive plot of any one or two sample metadata. A scatter, violin, or square design is dynamically applied according to the continuous or discrete nature of the metadata.</p>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Feature assay plot</strong>: Adaptive plot of expression data across samples for any two features or one feature against one sample metadata.</p>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Column statistics table</strong>: Table of sample metadata.</p>
+</div>
+<div id="feature-level-visualization" class="section level3">
+<h3 class="hasAnchor">
+<a href="#feature-level-visualization" class="anchor"></a>Feature-level visualization</h3>
+<p>The <em>iSEE</em> user interface currently contains the following components where each data point represents a genomic feature:</p>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Row data plot</strong>: Adaptive plot of any two feature metadata. A scatter, violin, or square design is dynamically applied according to the continuous or discrete nature of the metadata.</p>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Sample assay plot</strong>: Adaptive plot of expression data across features for any two samples or one sample against one feature metadata.</p>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Row statistics table</strong>: Table of feature metadata.</p>
+</div>
+<div id="integrated-visualization" class="section level3">
+<h3 class="hasAnchor">
+<a href="#integrated-visualization" class="anchor"></a>Integrated visualization</h3>
+<p>The <em>iSEE</em> user interface contains the following components that integrate sample and feature information:</p>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Heat map plot</strong>: Visualize multiple features across multiple samples annotated with sample metadata.</p>
+</div>
+<div id="custom-panels" class="section level3">
+<h3 class="hasAnchor">
+<a href="#custom-panels" class="anchor"></a>Custom panels</h3>
+<p>The <em>iSEE</em> user interface allows users to programmatically define their own plotting and table panels.</p>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Custom data plot</strong>: Plotting panel that can be assigned any user-defined function returning a <code>ggplot</code> object.</p>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Custom statistics table</strong>: Table panel that can be assigned any user-defined function returning a <code>data.frame</code> object.</p>
+</div>
+<div id="miscellaneous" class="section level3">
+<h3 class="hasAnchor">
+<a href="#miscellaneous" class="anchor"></a>Miscellaneous</h3>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> The <em>iSEE</em> user interface continually tracks the code corresponding to all visible plotting panels. This code is rendered in a <a href="https://cran.r-project.org/web/packages/shinyAce/index.html">shinyAce</a> text editor and can be copy-pasted into R scripts for customization and further use.</p>
+<p><span class="emoji" data-emoji="white_check_mark">✅</span> Speech recognition can be enabled to control the user interface using voice commands.</p>
 
-### General
-
-:white_check_mark: Multiple interactive plot types with selectable points.
-
-:white_check_mark: Interactive tables with selectable rows.
-
-:white_check_mark: Coloring of samples and features by metadata or expression data.
-
-:white_check_mark: Zooming to a plot subregion.
-
-:white_check_mark: Transmission of point selections between panels to highlight, color, or restrict data points in the receiving panel(s).
-
-:white_check_mark: Lasso point selection to define complex shapes.
-
-### Sample-level visualization
-
-The _iSEE_ user interface currently contains the following components where each data point represents a single biological sample:
-
-:white_check_mark:  **Reduced dimension plot**: Scatter plot of reduced dimensionality data.
-
-:white_check_mark: **Column data plot**: Adaptive plot of any one or two sample metadata.
-A scatter, violin, or square design is dynamically applied according to the continuous or discrete nature of the metadata.
-
-:white_check_mark: **Feature assay plot**: Adaptive plot of expression data across samples for any two features or one feature against one sample metadata.
-
-:white_check_mark: **Column statistics table**: Table of sample metadata.
-
-### Feature-level visualization
-
-The _iSEE_ user interface currently contains the following components where each data point represents a genomic feature:
-
-:white_check_mark: **Row data plot**: Adaptive plot of any two feature metadata.
-A scatter, violin, or square design is dynamically applied according to the continuous or discrete nature of the metadata.
-
-:white_check_mark: **Sample assay plot**: Adaptive plot of expression data across features for any two samples or one sample against one feature metadata.
-
-:white_check_mark: **Row statistics table**: Table of feature metadata.
-
-### Integrated visualization
-
-The _iSEE_ user interface contains the following components that integrate sample and feature information:
-
-:white_check_mark: **Heat map plot**: Visualize multiple features across multiple samples annotated with sample metadata.
-
-### Custom panels
-
-The _iSEE_ user interface allows users to programmatically define their own plotting and table panels.
-
-:white_check_mark: **Custom data plot**: Plotting panel that can be assigned any user-defined function returning a `ggplot` object.
-
-:white_check_mark: **Custom statistics table**: Table panel that can be assigned any user-defined function returning a `data.frame` object.
-
-### Miscellaneous
-
-:white_check_mark: The _iSEE_ user interface continually tracks the code corresponding to all visible plotting panels.
-This code is rendered in a [shinyAce](https://cran.r-project.org/web/packages/shinyAce/index.html) text editor and can be copy-pasted into R scripts for customization and further use.
-
-:white_check_mark: Speech recognition can be enabled to control the user interface using voice commands.
-
+</div>
 </details>
 </div>
 <div id="want-to-try-isee" class="section level2">
@@ -257,13 +248,13 @@ This code is rendered in a [shinyAce](https://cran.r-project.org/web/packages/sh
 
   </div>
 
-  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
 <li>Download from BIOC at <br><a href="https://www.bioconductor.org/packages/iSEE">https://​www.bioconductor.org/​packages/​iSEE</a>
 </li>
-<li>Browse source code at <br><a href="https://github.com/iSEE/iSEE">https://​github.com/​iSEE/​iSEE</a>
+<li>Browse source code at <br><a href="https://github.com/iSEE/iSEE/">https://​github.com/​iSEE/​iSEE/​</a>
 </li>
 <li>Report a bug at <br><a href="https://github.com/iSEE/iSEE/issues">https://​github.com/​iSEE/​iSEE/​issues</a>
 </li>
@@ -292,10 +283,10 @@ This code is rendered in a [shinyAce](https://cran.r-project.org/web/packages/sh
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
-<li>Kevin Rue-Albrecht <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-3899-3872" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
-<li>Federico Marini <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-3252-7758" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
-<li>Charlotte Soneson <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-3833-2169" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
-<li>Aaron Lun <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-3564-4813" target="orcid.widget"><img src="https://members.orcid.org/sites/default/files/vector_iD_icon.svg" class="orcid" alt="ORCID"></a> </li>
+<li>Kevin Rue-Albrecht <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-3899-3872" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Federico Marini <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-3252-7758" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Charlotte Soneson <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-3833-2169" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li>Aaron Lun <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0002-3564-4813" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 </ul>
 </div>
 
@@ -308,7 +299,7 @@ This code is rendered in a [shinyAce](https://cran.r-project.org/web/packages/sh
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.4.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.0.9000.</p>
 </div>
 
       </footer>

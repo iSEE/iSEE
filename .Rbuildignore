@@ -1,7 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^.gitignore$
-^.travis.yml$
+^\.gitignore$
+^\.travis\.yml$
 ^codecov\.yml$
 ^Dockerfile$
 ^_pkgdown\.yml$
@@ -9,5 +9,6 @@
 ^pkgdown$
 ^doc$
 ^Meta$
-^.github$
+^\.github$
 ^CODE_OF_CONDUCT\.md$
+^\.github$

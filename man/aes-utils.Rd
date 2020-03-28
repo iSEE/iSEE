@@ -50,11 +50,6 @@ Generate ggplot aesthetic instructions
 \examples{
 .buildAes()
 }
-\seealso{
-\code{\link{.scatter_plot}},
-\code{\link{.violin_plot}},
-\code{\link{.square_plot}}
-}
 \author{
 Kevin Rue-Albrecht
 }

@@ -36,7 +36,7 @@ jobs:
 
       - name: Query dependencies
         run: |
-          install.packages(c('remotes', 'devtools', 'BiocManager'))
+          install.packages(c('remotes', 'BiocManager'))
           install.packages("Rcpp", repos="https://rcppcore.github.io/drat")
           install.packages('BiocFileCache')
           install.packages("Rtsne")

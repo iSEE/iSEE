@@ -19,5 +19,5 @@ Charlotte Soneson \email{charlottesoneson@gmail.com}
 
 Federico Marini \email{marinif@uni-mainz.de}
 
-Kevin Rue-Albrecht \email{kevin.rue-albrecht@kennedy.ox.ac.uk}
+Kevin Rue-Albrecht \email{kevinrue67@gmail.com}
 }

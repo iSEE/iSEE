@@ -6,7 +6,7 @@ author:
   affiliation: 
   - &id4 Kennedy Institute of Rheumatology, University of Oxford,
     Headington, Oxford OX3 7FY, UK.
-  email: kevin.rue-albrecht@kennedy.ox.ac.uk
+  email: kevinrue67@gmail.com
 - name: Federico Marini
   affiliation: 
   - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz

@@ -1,8 +1,8 @@
-FROM bioconductor/devel_base2
+FROM bioconductor/bioconductor_docker:devel
 
-MAINTAINER kevin.rue-albrecht@kennedy.ox.ac.uk
-LABEL authors="kevin.rue-albrecht@kennedy.ox.ac.uk" \
-    description="Docker image containing the iSEE package in a bioconductor/devel_base2 container."
+MAINTAINER kevinrue67@gmail.com
+LABEL authors="kevinrue67@gmail.com" \
+    description="Docker image containing the iSEE package in a bioconductor/bioconductor_docker:devel container."
 
 # Set the working directory to /app
 WORKDIR /app

@@ -56,6 +56,10 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 sce <- readRDS('sce.rds')
 ```
 
+```{r, eval=!exists("SCREENSHOT"), include=FALSE}
+SCREENSHOT <- function(x, ...) knitr::include_graphics(file.path("screenshots", x))
+```
+
 # Background
 
 `r Biocpkg("iSEE")` coordinates the coloration in every plot via the `ExperimentColorMap` class [@kra2018iSEE].
@@ -203,7 +207,7 @@ shiny::runApp(app)
 ```
 
 ```{r, echo=FALSE}
-knitr::include_graphics("screenshots/ecm-demo.png")
+SCREENSHOT("ecm-demo.png")
 ```
 
 Now, choose to color cells by `Column data` and select `passes_qc_checks_s`.

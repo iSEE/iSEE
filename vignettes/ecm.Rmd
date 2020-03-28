@@ -57,7 +57,7 @@ sce <- readRDS('sce.rds')
 ```
 
 ```{r, eval=!exists("SCREENSHOT"), include=FALSE}
-SCREENSHOT <- function(x, ...) knitr::include_graphics(file.path("screenshots", x))
+SCREENSHOT <- function(x, ...) knitr::include_graphics(x)
 ```
 
 # Background
@@ -207,7 +207,7 @@ shiny::runApp(app)
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("ecm-demo.png")
+SCREENSHOT("screenshots/ecm-demo.png")
 ```
 
 Now, choose to color cells by `Column data` and select `passes_qc_checks_s`.

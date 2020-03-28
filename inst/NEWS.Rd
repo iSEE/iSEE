@@ -1,6 +1,12 @@
 \name{NEWS}
 \title{News for Package 'iSEE'}
 
+\section{iSEE VERSION 1.99.6}{
+\itemize{
+    \item Embed dynamically generated screenshots.
+}
+}
+
 \section{iSEE VERSION 1.99.5}{
 \itemize{
     \item Export utilities relevant to downstream panel development.

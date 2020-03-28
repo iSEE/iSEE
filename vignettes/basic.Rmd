@@ -57,7 +57,7 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 ```
 
 ```{r, eval=!exists("SCREENSHOT"), include=FALSE}
-SCREENSHOT <- function(x, ...) knitr::include_graphics(file.path("screenshots", x))
+SCREENSHOT <- function(x, ...) knitr::include_graphics(x)
 ```
 
 ```{r, echo=FALSE, out.width='50%', fig.align='center'}
@@ -156,7 +156,7 @@ shiny::runApp(app)
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("basic-demo.png")
+SCREENSHOT("screenshots/basic-demo.png")
 ```
 
 By default, the app starts with a dashboard that contains one panel or table of each type.

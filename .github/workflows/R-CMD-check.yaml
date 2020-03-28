@@ -92,6 +92,6 @@ jobs:
           Rscript -e "install.packages(c('remotes', 'BiocManager'))"
           Rscript -e "install.packages('Rcpp', repos='https://rcppcore.github.io/drat')"
           Rscript -e "BiocManager::install('BiocFileCache')"
-          Rscript -e "install.packages("Rtsne")"
-          Rscript -e "BiocManager::install("GenomeInfoDbData")"
+          Rscript -e "install.packages('Rtsne')"
+          Rscript -e "BiocManager::install('GenomeInfoDbData')"
           Rscript -e "remotes::install_dev('pkgdown'); pkgdown::deploy_to_branch(new_process = FALSE)"

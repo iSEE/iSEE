@@ -38,7 +38,7 @@ jobs:
         run: |
           install.packages(c('remotes', 'BiocManager'))
           install.packages("Rcpp", repos="https://rcppcore.github.io/drat")
-          install.packages('BiocFileCache')
+          install.packages('dbplyr')
           install.packages("Rtsne")
           BiocManager::install("GenomeInfoDbData")
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), "depends.Rds", version = 2)
@@ -68,9 +68,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Check
-        run: |
-          devtools::document()
-          rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error", check_dir = "check")
+        run: rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error", check_dir = "check")
         shell: Rscript {0}
 
       - name: Upload check results
@@ -93,7 +91,7 @@ jobs:
           R CMD INSTALL .
           Rscript -e "install.packages(c('remotes', 'BiocManager'))"
           Rscript -e "install.packages('Rcpp', repos='https://rcppcore.github.io/drat')"
-          Rscript -e "install.packages('BiocFileCache')"
-          Rscript -e "install.packages("Rtsne")"
-          Rscript -e "BiocManager::install("GenomeInfoDbData")"
+          Rscript -e "install.packages('dbplyr')"
+          install.packages("Rtsne")
+          BiocManager::install("GenomeInfoDbData")
           Rscript -e "remotes::install_dev('pkgdown'); pkgdown::deploy_to_branch(new_process = FALSE)"

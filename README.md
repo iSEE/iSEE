@@ -55,62 +55,62 @@ Click to expand the list of features available in <i>iSEE</i> applications.
 
 ### General
 
-:white_check_mark: Multiple interactive plot types with selectable points.
+* Multiple interactive plot types with selectable points.
 
-:white_check_mark: Interactive tables with selectable rows.
+* Interactive tables with selectable rows.
 
-:white_check_mark: Coloring of samples and features by metadata or expression data.
+* Coloring of samples and features by metadata or expression data.
 
-:white_check_mark: Zooming to a plot subregion.
+* Zooming to a plot subregion.
 
-:white_check_mark: Transmission of point selections between panels to highlight, color, or restrict data points in the receiving panel(s).
+* Transmission of point selections between panels to highlight, color, or restrict data points in the receiving panel(s).
 
-:white_check_mark: Lasso point selection to define complex shapes.
+* Lasso point selection to define complex shapes.
 
 ### Sample-level visualization
 
 The _iSEE_ user interface currently contains the following components where each data point represents a single biological sample:
 
-:white_check_mark:  **Reduced dimension plot**: Scatter plot of reduced dimensionality data.
+*  **Reduced dimension plot**: Scatter plot of reduced dimensionality data.
 
-:white_check_mark: **Column data plot**: Adaptive plot of any one or two sample metadata.
+* **Column data plot**: Adaptive plot of any one or two sample metadata.
 A scatter, violin, or square design is dynamically applied according to the continuous or discrete nature of the metadata.
 
-:white_check_mark: **Feature assay plot**: Adaptive plot of expression data across samples for any two features or one feature against one sample metadata.
+* **Feature assay plot**: Adaptive plot of expression data across samples for any two features or one feature against one sample metadata.
 
-:white_check_mark: **Column statistics table**: Table of sample metadata.
+* **Column statistics table**: Table of sample metadata.
 
 ### Feature-level visualization
 
 The _iSEE_ user interface currently contains the following components where each data point represents a genomic feature:
 
-:white_check_mark: **Row data plot**: Adaptive plot of any two feature metadata.
+* **Row data plot**: Adaptive plot of any two feature metadata.
 A scatter, violin, or square design is dynamically applied according to the continuous or discrete nature of the metadata.
 
-:white_check_mark: **Sample assay plot**: Adaptive plot of expression data across features for any two samples or one sample against one feature metadata.
+* **Sample assay plot**: Adaptive plot of expression data across features for any two samples or one sample against one feature metadata.
 
-:white_check_mark: **Row statistics table**: Table of feature metadata.
+* **Row statistics table**: Table of feature metadata.
 
 ### Integrated visualization
 
 The _iSEE_ user interface contains the following components that integrate sample and feature information:
 
-:white_check_mark: **Heat map plot**: Visualize multiple features across multiple samples annotated with sample metadata.
+* **Heat map plot**: Visualize multiple features across multiple samples annotated with sample metadata.
 
 ### Custom panels
 
 The _iSEE_ user interface allows users to programmatically define their own plotting and table panels.
 
-:white_check_mark: **Custom data plot**: Plotting panel that can be assigned any user-defined function returning a `ggplot` object.
+* **Custom data plot**: Plotting panel that can be assigned any user-defined function returning a `ggplot` object.
 
-:white_check_mark: **Custom statistics table**: Table panel that can be assigned any user-defined function returning a `data.frame` object.
+* **Custom statistics table**: Table panel that can be assigned any user-defined function returning a `data.frame` object.
 
 ### Miscellaneous
 
-:white_check_mark: The _iSEE_ user interface continually tracks the code corresponding to all visible plotting panels.
+* The _iSEE_ user interface continually tracks the code corresponding to all visible plotting panels.
 This code is rendered in a [shinyAce](https://cran.r-project.org/web/packages/shinyAce/index.html) text editor and can be copy-pasted into R scripts for customization and further use.
 
-:white_check_mark: Speech recognition can be enabled to control the user interface using voice commands.
+* Speech recognition can be enabled to control the user interface using voice commands.
 
 </details>
 

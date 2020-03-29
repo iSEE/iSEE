@@ -78,7 +78,7 @@ A scatter, violin, or square design is dynamically applied according to the cont
 
 * **Feature assay plot**: Adaptive plot of expression data across samples for any two features or one feature against one sample metadata.
 
-* **Column statistics table**: Table of sample metadata.
+* **Column data table**: Table of sample metadata.
 
 ### Feature-level visualization
 
@@ -89,21 +89,18 @@ A scatter, violin, or square design is dynamically applied according to the cont
 
 * **Sample assay plot**: Adaptive plot of expression data across features for any two samples or one sample against one feature metadata.
 
-* **Row statistics table**: Table of feature metadata.
+* **Row data table**: Table of feature metadata.
 
 ### Integrated visualization
 
 The _iSEE_ user interface contains the following components that integrate sample and feature information:
 
-* **Heat map plot**: Visualize multiple features across multiple samples annotated with sample metadata.
+* **Complex heatmap plot**: Visualize multiple features across multiple samples annotated with sample metadata.
 
 ### Custom panels
 
-The _iSEE_ user interface allows users to programmatically define their own plotting and table panels.
-
-* **Custom data plot**: Plotting panel that can be assigned any user-defined function returning a `ggplot` object.
-
-* **Custom statistics table**: Table panel that can be assigned any user-defined function returning a `data.frame` object.
+The _iSEE_ API allows users to programmatically define their own plotting and table panels.
+See the section [Extending _iSEE_](#extending-isee) further below.
 
 ### Miscellaneous
 
@@ -127,13 +124,12 @@ We set up instances of _iSEE_ applications running on diverse types of datasets 
 Please keep in mind that those public instances are for trial purposes only;
 yet they demonstrate how you or your system administrator can setup _iSEE_ for analyzing or sharing your precomputed `SummarizedExperiment`/`SingleCellExperiment` object.
 
-## Extending _iSEE_
+## Extending _iSEE_ {#extending-isee}
 
 If you want to extend the functionality of _iSEE_, you can create custom panels which add new possibilities to interact with your data.
-You can find a gallery with working examples of how to do it [here](https://github.com/kevinrue/iSEE_custom).
+Custom panels can be defined in independent R packages that include _iSEE_ in the `Imports:` sections of their DESCRIPTION file.
+You can find a collection of working examples of how to do it in [iSEEu](https://github.com/iSEE/iSEEu).
 Feel free to contact the developing team, should you need some clarifications on how _iSEE_ works internally.
-Submit a pull request once the implementation is complete, if you want to have it added to the gallery. 
-
 
 [Figure1]: https://f1000researchdata.s3.amazonaws.com/manuscripts/16293/6bf85f9d-8352-4a78-a8da-456f05f5c4c9_figure1.gif "iSEE uses a customisable multi-panel layout"
 

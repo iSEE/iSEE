@@ -177,49 +177,57 @@
 <div id="general" class="section level3">
 <h3 class="hasAnchor">
 <a href="#general" class="anchor"></a>General</h3>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> Multiple interactive plot types with selectable points.</p>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> Interactive tables with selectable rows.</p>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> Coloring of samples and features by metadata or expression data.</p>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> Zooming to a plot subregion.</p>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> Transmission of point selections between panels to highlight, color, or restrict data points in the receiving panel(s).</p>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> Lasso point selection to define complex shapes.</p>
+<ul>
+<li><p>Multiple interactive plot types with selectable points.</p></li>
+<li><p>Interactive tables with selectable rows.</p></li>
+<li><p>Coloring of samples and features by metadata or expression data.</p></li>
+<li><p>Zooming to a plot subregion.</p></li>
+<li><p>Transmission of point selections between panels to highlight, color, or restrict data points in the receiving panel(s).</p></li>
+<li><p>Lasso point selection to define complex shapes.</p></li>
+</ul>
 </div>
 <div id="sample-level-visualization" class="section level3">
 <h3 class="hasAnchor">
 <a href="#sample-level-visualization" class="anchor"></a>Sample-level visualization</h3>
 <p>The <em>iSEE</em> user interface currently contains the following components where each data point represents a single biological sample:</p>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Reduced dimension plot</strong>: Scatter plot of reduced dimensionality data.</p>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Column data plot</strong>: Adaptive plot of any one or two sample metadata. A scatter, violin, or square design is dynamically applied according to the continuous or discrete nature of the metadata.</p>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Feature assay plot</strong>: Adaptive plot of expression data across samples for any two features or one feature against one sample metadata.</p>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Column statistics table</strong>: Table of sample metadata.</p>
+<ul>
+<li><p><strong>Reduced dimension plot</strong>: Scatter plot of reduced dimensionality data.</p></li>
+<li><p><strong>Column data plot</strong>: Adaptive plot of any one or two sample metadata. A scatter, violin, or square design is dynamically applied according to the continuous or discrete nature of the metadata.</p></li>
+<li><p><strong>Feature assay plot</strong>: Adaptive plot of expression data across samples for any two features or one feature against one sample metadata.</p></li>
+<li><p><strong>Column data table</strong>: Table of sample metadata.</p></li>
+</ul>
 </div>
 <div id="feature-level-visualization" class="section level3">
 <h3 class="hasAnchor">
 <a href="#feature-level-visualization" class="anchor"></a>Feature-level visualization</h3>
 <p>The <em>iSEE</em> user interface currently contains the following components where each data point represents a genomic feature:</p>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Row data plot</strong>: Adaptive plot of any two feature metadata. A scatter, violin, or square design is dynamically applied according to the continuous or discrete nature of the metadata.</p>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Sample assay plot</strong>: Adaptive plot of expression data across features for any two samples or one sample against one feature metadata.</p>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Row statistics table</strong>: Table of feature metadata.</p>
+<ul>
+<li><p><strong>Row data plot</strong>: Adaptive plot of any two feature metadata. A scatter, violin, or square design is dynamically applied according to the continuous or discrete nature of the metadata.</p></li>
+<li><p><strong>Sample assay plot</strong>: Adaptive plot of expression data across features for any two samples or one sample against one feature metadata.</p></li>
+<li><p><strong>Row data table</strong>: Table of feature metadata.</p></li>
+</ul>
 </div>
 <div id="integrated-visualization" class="section level3">
 <h3 class="hasAnchor">
 <a href="#integrated-visualization" class="anchor"></a>Integrated visualization</h3>
 <p>The <em>iSEE</em> user interface contains the following components that integrate sample and feature information:</p>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Heat map plot</strong>: Visualize multiple features across multiple samples annotated with sample metadata.</p>
+<ul>
+<li>
+<strong>Complex heatmap plot</strong>: Visualize multiple features across multiple samples annotated with sample metadata.</li>
+</ul>
 </div>
 <div id="custom-panels" class="section level3">
 <h3 class="hasAnchor">
 <a href="#custom-panels" class="anchor"></a>Custom panels</h3>
-<p>The <em>iSEE</em> user interface allows users to programmatically define their own plotting and table panels.</p>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Custom data plot</strong>: Plotting panel that can be assigned any user-defined function returning a <code>ggplot</code> object.</p>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> <strong>Custom statistics table</strong>: Table panel that can be assigned any user-defined function returning a <code>data.frame</code> object.</p>
+<p>The <em>iSEE</em> API allows users to programmatically define their own plotting and table panels. See the section <a href="#extending-isee">Extending <em>iSEE</em></a> further below.</p>
 </div>
 <div id="miscellaneous" class="section level3">
 <h3 class="hasAnchor">
 <a href="#miscellaneous" class="anchor"></a>Miscellaneous</h3>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> The <em>iSEE</em> user interface continually tracks the code corresponding to all visible plotting panels. This code is rendered in a <a href="https://cran.r-project.org/web/packages/shinyAce/index.html">shinyAce</a> text editor and can be copy-pasted into R scripts for customization and further use.</p>
-<p><span class="emoji" data-emoji="white_check_mark">✅</span> Speech recognition can be enabled to control the user interface using voice commands.</p>
-
+<ul>
+<li><p>The <em>iSEE</em> user interface continually tracks the code corresponding to all visible plotting panels. This code is rendered in a <a href="https://cran.r-project.org/web/packages/shinyAce/index.html">shinyAce</a> text editor and can be copy-pasted into R scripts for customization and further use.</p></li>
+<li><p>Speech recognition can be enabled to control the user interface using voice commands.</p></li>
+</ul>
 </div>
 </details>
 </div>
@@ -236,11 +244,10 @@
 </ul>
 <p>Please keep in mind that those public instances are for trial purposes only; yet they demonstrate how you or your system administrator can setup <em>iSEE</em> for analyzing or sharing your precomputed <code>SummarizedExperiment</code>/<code>SingleCellExperiment</code> object.</p>
 </div>
-<div id="extending-isee" class="section level2">
+<div id="extending-isee-extending-isee" class="section level2">
 <h2 class="hasAnchor">
-<a href="#extending-isee" class="anchor"></a>Extending <em>iSEE</em>
-</h2>
-<p>If you want to extend the functionality of <em>iSEE</em>, you can create custom panels which add new possibilities to interact with your data. You can find a gallery with working examples of how to do it <a href="https://github.com/kevinrue/iSEE_custom">here</a>. Feel free to contact the developing team, should you need some clarifications on how <em>iSEE</em> works internally. Submit a pull request once the implementation is complete, if you want to have it added to the gallery.</p>
+<a href="#extending-isee-extending-isee" class="anchor"></a>Extending <em>iSEE</em> {#extending-isee}</h2>
+<p>If you want to extend the functionality of <em>iSEE</em>, you can create custom panels which add new possibilities to interact with your data. Custom panels can be defined in independent R packages that include <em>iSEE</em> in the <code>Imports:</code> sections of their DESCRIPTION file. You can find a collection of working examples of how to do it in <a href="https://github.com/iSEE/iSEEu">iSEEu</a>. Feel free to contact the developing team, should you need some clarifications on how <em>iSEE</em> works internally.</p>
 </div>
 <div id="code-of-conduct" class="section level2">
 <h2 class="hasAnchor">

@@ -1,4 +1,4 @@
-# iSEE 1.99.5.9000
+# iSEE 1.99.6
 
 * Added static screenshots to vignettes.
 * Added GitHub Actions for continuous integration and deployment.

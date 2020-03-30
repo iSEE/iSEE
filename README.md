@@ -124,7 +124,7 @@ We set up instances of _iSEE_ applications running on diverse types of datasets 
 Please keep in mind that those public instances are for trial purposes only;
 yet they demonstrate how you or your system administrator can setup _iSEE_ for analyzing or sharing your precomputed `SummarizedExperiment`/`SingleCellExperiment` object.
 
-## Extending _iSEE_ {#extending-isee}
+## Extending _iSEE_
 
 If you want to extend the functionality of _iSEE_, you can create custom panels which add new possibilities to interact with your data.
 Custom panels can be defined in independent R packages that include _iSEE_ in the `Imports:` sections of their DESCRIPTION file.

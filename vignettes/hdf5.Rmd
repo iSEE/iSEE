@@ -1,0 +1,195 @@
+---
+title: >
+  How to use `r Biocpkg("iSEE")` with HDF5
+author:
+- name: Kevin Rue-Albrecht
+  affiliation: 
+  - &id4 Kennedy Institute of Rheumatology, University of Oxford,
+    Headington, Oxford OX3 7FY, UK.
+  email: kevinrue67@gmail.com
+- name: Federico Marini
+  affiliation: 
+  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
+  - Center for Thrombosis and Hemostasis (CTH), Mainz
+  email: marinif@uni-mainz.de
+- name: Charlotte Soneson
+  affiliation: 
+  - &id3 Institute of Molecular Life Sciences, University of Zurich
+  - SIB Swiss Institute of Bioinformatics
+  email: charlottesoneson@gmail.com
+- name: Aaron Lun
+  affiliation: 
+  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
+  email: infinite.monkeys.with.keyboards@gmail.com 
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('iSEE')`"
+output: 
+  BiocStyle::html_document:
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{3. Using with HDF5}
+  %\VignetteEncoding{UTF-8}  
+  %\VignettePackage{iSEE}
+  %\VignetteKeywords{GeneExpression, RNASeq, Sequencing, Visualization, QualityControl, GUI}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+bibliography: iSEE.bib
+---
+
+**Compiled date**: `r Sys.Date()`
+
+**Last edited**: 2018-03-08
+
+**License**: `r packageDescription("iSEE")[["License"]]`
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  error = FALSE,
+  warning = FALSE,
+  message = FALSE,
+    crop = NULL
+)
+stopifnot(requireNamespace("htmltools"))
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+sce <- readRDS("sce.rds")
+```
+
+```{r, eval=!exists("SCREENSHOT"), include=FALSE}
+SCREENSHOT <- function(x, ...) knitr::include_graphics(x)
+```
+
+# Storing data in an HDF5 file
+
+Many `SummarizedExperiment` objects store assay matrices as regular `matrix` objects.
+
+```{r}
+library(SingleCellExperiment)
+class(assay(sce, "logcounts"))
+```
+
+This type of matrices is fully loaded in memory, which can become prohibitive for very large datasets.
+
+However, the HDF5 file format provides an alternative to work with large datasets.
+
+> HDF5 is a unique technology suite that makes possible the management of extremely large and complex data collections.
+> (Source: https://support.hdfgroup.org/HDF5/whatishdf5.html)
+
+An empty HDF5 file is created as follows.
+
+```{r}
+library(rhdf5)
+h5createFile("myhdf5file.h5")
+```
+
+The HDF5 file can contain a group hierarchy.
+For instance, we create a group for the assays.
+
+```{r}
+h5createGroup("myhdf5file.h5", "assays")
+```
+
+We can then write the assay matrices to the HDF5 file.
+
+```{r}
+for (i in assayNames(sce)) {
+  h5write(assay(sce, i), "myhdf5file.h5", file.path("assays", i))
+}
+```
+
+We can also write the `colData` and `rowData` objects to the HDF5 file.
+However, those must be coerced to `data.frame` first, which would require special treatment if there were nested columns (which we don't havein this case).
+
+```{r}
+h5write(as.data.frame(colData(sce)), "myhdf5file.h5", "colData")
+h5write(as.data.frame(rowData(sce)), "myhdf5file.h5", "rowData")
+```
+
+Similarly to the assays, we can also write the reduced dimension matrices to the HDF5 file.
+
+```{r}
+h5createGroup("myhdf5file.h5", "reducedDims")
+for (i in reducedDimNames(sce)) {
+  h5write(reducedDim(sce, i), "myhdf5file.h5", file.path("reducedDims", i))
+}
+```
+
+We can list the file content as follows.
+
+```{r}
+h5ls("myhdf5file.h5")
+```
+
+# Accessing data from an HDF5 file
+
+With the data saved in an HDF5 file, it is then possible to create a `SingleCellExperiment` object
+
+```{r}
+sce.h5 <- SingleCellExperiment(
+  assays = list(
+    tophat_counts = h5read("myhdf5file.h5", "assays/tophat_counts"),
+    logcounts = h5read("myhdf5file.h5", "assays/logcounts")
+  ),
+  colData = h5read("myhdf5file.h5", "colData"),
+  rowData = h5read("myhdf5file.h5", "rowData"),
+  reducedDims = list(
+    PCA = h5read("myhdf5file.h5", "reducedDims/PCA"),
+    TSNE = h5read("myhdf5file.h5", "reducedDims/TSNE")
+  )
+)
+```
+
+We can then used the `SingleCellExperiment` object as usual.
+
+```{r}
+library(iSEE)
+app <- iSEE(sce.h5)
+```
+
+# Tips
+
+## Automatically detecting assays
+
+Assuming one knows the naming convention used in an HDF5 file, the names of assays stored in a given file can be obtained as follows.
+
+```{r}
+subset(h5ls("myhdf5file.h5"), group == "/assays", "name", drop=TRUE)
+```
+
+That list can then be used to automatically populate the `assays` component of a `SummarizedExperiment` object.
+
+```{r}
+assay_names <- subset(h5ls("myhdf5file.h5"), group == "/assays", "name", drop=TRUE)
+h5read_local <- function(assay_name, file, parent.node) {
+  out <- h5read(file, file.path(parent.node, assay_name))
+  names(out) <- assay_name
+  out
+}
+se <- SummarizedExperiment(
+  assays = sapply(assay_names, h5read_local, file = "myhdf5file.h5", parent.node = "assays", simplify = FALSE)
+)
+se
+```
+
+## Automatically detecting reduced dimensions
+
+Similarly to assays, the names of reduced dimension representations stored in the file can be fetched as follows.
+
+```{r}
+subset(h5ls("myhdf5file.h5"), group == "/reducedDims", "name", drop=TRUE)
+```
+
+# Session Info {.unnumbered}
+
+```{r sessioninfo}
+sessionInfo()
+# devtools::session_info()
+```
+
+# References {.unnumbered}
+
+```{r, include=FALSE}
+file.remove("myhdf5file.h5")
+```

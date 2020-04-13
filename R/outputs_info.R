@@ -21,6 +21,7 @@
 #' @importFrom shiny tagList renderUI
 .create_selection_info_output <- function(plot_name, se, output, pObjects, rObjects) {
     gen_field <- paste0(plot_name, "_", .panelMultiSelectInfo)
+
     # nocov start
     output[[gen_field]] <- renderUI({
         .trackMultiSelection(plot_name, rObjects)
@@ -79,6 +80,7 @@
         }
     })
     # nocov end
+
     invisible(NULL)
 }
 

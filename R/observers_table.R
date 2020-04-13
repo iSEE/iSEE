@@ -31,7 +31,15 @@
             return(NULL)
         }
 
-        chosen <- rownames(pObjects$contents[[panel_name]])[chosen]
+        tab <- pObjects$contents[[panel_name]]
+        if (chosen > nrow(tab)) { 
+            # It occasionally happens that the input does not update fast
+            # enough when DT changes, see iSEE/iSEE#400. This clause prevents
+            # an ugly crash and allows the app to recover.
+            return(NULL)
+        }
+
+        chosen <- rownames(tab)[chosen]
         previous <- pObjects$memory[[panel_name]][[.TableSelected]]
         if (chosen==previous) {
             return(NULL)

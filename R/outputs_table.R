@@ -31,7 +31,7 @@
         # conventionally re-render when the API regenerates; rather, it seems
         # somehow to load the cached version of the initialized table, thus
         # wiping out any changes that have happened in the meantime. So,
-        # we force it to rerender.
+        # we force the DT to rerender so that it loads with memorized values.
         force(rObjects$rerendered)
 
         t.out <- .retrieveOutput(panel_name, se, pObjects, rObjects)

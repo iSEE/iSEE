@@ -5,7 +5,7 @@ author:
   affiliation: 
   - &id4 Kennedy Institute of Rheumatology, University of Oxford,
     Headington, Oxford OX3 7FY, UK.
-  email: kevin.rue-albrecht@kennedy.ox.ac.uk
+  email: kevinrue67@gmail.com
 - name: Federico Marini
   affiliation: 
   - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
@@ -13,7 +13,7 @@ author:
   email: marinif@uni-mainz.de
 - name: Charlotte Soneson
   affiliation: 
-  - &id3 Institute of Molecular Life Sciences, University of Zurich
+  - &id3 Friedrich Miescher Institute for Biomedical Research, Basel, Switzerland
   - SIB Swiss Institute of Bioinformatics
   email: charlottesoneson@gmail.com
 - name: Aaron Lun

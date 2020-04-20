@@ -111,14 +111,14 @@
       </address>
                               <h4 class="author">Charlotte Soneson</h4>
             <address class="author_afil">
-      Institute of Molecular Life Sciences, University of Zurich<br><a class="author_email" href="mailto:#"></a><a href="mailto:charlottesoneson@gmail.com" class="email">charlottesoneson@gmail.com</a>
+      Friedrich Miescher Institute for Biomedical Research, Basel, Switzerland<br><a class="author_email" href="mailto:#"></a><a href="mailto:charlottesoneson@gmail.com" class="email">charlottesoneson@gmail.com</a>
       </address>
                               <h4 class="author">Aaron Lun</h4>
             <address class="author_afil">
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">13 April 2020</h4>
+            <h4 class="date">20 April 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/configure.Rmd"><code>vignettes/configure.Rmd</code></a></small>
       <div class="hidden name"><code>configure.Rmd</code></div>
@@ -127,8 +127,8 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-04-13</p>
-<p><strong>Last edited</strong>: 2018-03-08</p>
+<p><strong>Compiled date</strong>: 2020-04-20</p>
+<p><strong>Last edited</strong>: 2020-04-20</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="changing-the-default-start-configuration" class="section level1">
 <h1 class="hasAnchor">
@@ -141,7 +141,7 @@
     <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">6L</span>)
 ))</pre></body></html></div>
 <p><img src="screenshots/configure-FAP-basic.png" width="488"></p>
-<p>The genes to show on the Y-axis in the two plots can be specified via the <code>featAssayArgs</code> argument to <code>iSEE</code>. This is a <code>DataFrame</code>, specifying the initial parameters for each plot. In this case, we want to modify the <code>YAxis</code> and <code>YAxisFeatureName</code> defaults for the two plots:</p>
+<p>The genes to show on the Y-axis in the two plots can be specified via the <code>YAxisFeatureName</code> argument to the respective panels in <code>iSEE</code>.</p>
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
     <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="kw">YAxisFeatureName</span><span class="kw">=</span><span class="st">"0610009L18Rik"</span>),
     <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="kw">YAxisFeatureName</span><span class="kw">=</span><span class="st">"0610009B22Rik"</span>)
@@ -157,7 +157,7 @@
 <a href="#overview" class="anchor"></a>Overview</h2>
 <p>The <em>data parameters</em> control the source of the information represented on the X-axis and Y-axis of each plot. Those parameters are accessible at runtime in the eponymous collapsible box.</p>
 <p>We refer users to the individual help page of each panel type listed <a href="#further">below</a> to learn more about the choices of X-axis variables for each type of panel.</p>
-<p>From a running <code>iSEE</code> application, you can also display all the R code that is required to set up the current configuration by clicking on <code>Display panel settings</code> under the wrench icon in the top-right corner.</p>
+<p>From a running <code>iSEE</code> application, you can also display all the R code that is required to set up the current configuration by clicking on <code>Display panel settings</code> under the export icon in the top-right corner.</p>
 </div>
 <div id="setting-the-y-axis" class="section level2">
 <h2 class="hasAnchor">
@@ -172,8 +172,8 @@
 <div id="xaxis" class="section level2">
 <h2 class="hasAnchor">
 <a href="#xaxis" class="anchor"></a>Setting the X-axis</h2>
-<p>The X-axis can be set to different types of variables, which generally requires setting at least two columns in the <code>DataFrame</code> of arguments. The type of variable is generally set in the <code>XAxis</code> column, while the name of the variable is stored in a different column for each type of variable. At runtime, this allows the app to remember the last selected variable of each type.</p>
-<p>For instance, the <code>XAxis</code> column of <em>feature assay plot</em> arguments can have up to four different values:</p>
+<p>The X-axis can be set to different types of variables. The type of variable is generally set in the <code>XAxis</code> slot, while the name of the variable is stored in a different slot depending on the value of <code>XAxis</code>. At runtime, this allows the app to remember the last selected variable of each type.</p>
+<p>For instance, the <code>XAxis</code> slot of the <em>feature assay plot</em> can have up to four different values:</p>
 <ol style="list-style-type: decimal">
 <li>
 <code>"None"</code>: does not require any addition input (draws a single violin for all features).</li>
@@ -220,18 +220,17 @@
 <div id="configuring-the-type-of-dimensionality-reduction" class="section level2">
 <h2 class="hasAnchor">
 <a href="#configuring-the-type-of-dimensionality-reduction" class="anchor"></a>Configuring the type of dimensionality reduction</h2>
-<p>In the case of reduced dimension plots, <em>data parameters</em> include the name of the reduced dimension slot from which to fetch coordinates. This information is stored in the <code>Type</code> column:</p>
+<p>In the case of reduced dimension plots, <em>data parameters</em> include the name of the reduced dimension slot from which to fetch coordinates. This information is stored in the <code>Type</code> slot:</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
     <span class="fu"><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span>(<span class="kw">DataBoxOpen</span><span class="kw">=</span><span class="fl">TRUE</span>, <span class="kw">Type</span><span class="kw">=</span><span class="st">"TSNE"</span>,
         <span class="kw">XAxis</span><span class="kw">=</span><span class="fl">2L</span>, <span class="kw">YAxis</span><span class="kw">=</span><span class="fl">1L</span>, <span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">6L</span>)
 ))</pre></body></html></div>
 <p><img src="screenshots/configure-ReDP-basic.png" width="488"></p>
-<p>We refer users to the <code><a href="../reference/defaults.html">?redDimPlotDefaults</a></code> help page to learn more about the choices of default parameters for <em>reduced dimension plot</em> panels.</p>
 </div>
 <div id="assay" class="section level2">
 <h2 class="hasAnchor">
 <a href="#assay" class="anchor"></a>Configuring the type of assay data</h2>
-<p>For axes linked to an assay, such as the Y-axis of <em>feature assay plot</em> panels, the assay to display can be set through the <code>Assay</code> column of the arguments:</p>
+<p>For axes linked to an assay, such as the Y-axis of <em>feature assay plot</em> panels, the assay to display can be set through the <code>Assay</code> argument:</p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
     <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="kw">DataBoxOpen</span><span class="kw">=</span><span class="fl">TRUE</span>, <span class="kw">Assay</span><span class="kw">=</span><span class="st">"logcounts"</span>, <span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">6L</span>),
     <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="kw">DataBoxOpen</span><span class="kw">=</span><span class="fl">TRUE</span>, <span class="kw">Assay</span><span class="kw">=</span><span class="st">"tophat_counts"</span>, <span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">6L</span>)
@@ -252,7 +251,7 @@
 <h2 class="hasAnchor">
 <a href="#configuring-default-visual-parameters" class="anchor"></a>Configuring default visual parameters</h2>
 <p>Certain visual parameters can be set to a constant user-defined value. Those include: color, transparency (i.e., alpha), downsampling resolution, as well as text font size and legend position.</p>
-<p>For instance, the default color of data points in <em>column data plot</em> panels can be set to a value different than the default <code>"black"</code> through the <code>ColorByDefaultColor</code> column, while the default transparency value is controlled through the <code>PointAlpha</code> column. Here, we alter several default visual parameters in the second panel:</p>
+<p>For instance, the default color of data points in <em>column data plot</em> panels can be set to a value different than the default <code>"black"</code> through the <code>ColorByDefaultColor</code> slot, while the default transparency value is controlled through the <code>PointAlpha</code> slot Here, we alter several default visual parameters in the second panel:</p>
 <div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">cdp</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="kw">VisualBoxOpen</span><span class="kw">=</span><span class="fl">TRUE</span>,
     <span class="kw">VisualChoices</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Color"</span>, <span class="st">"Size"</span>, <span class="st">"Point"</span>, <span class="st">"Text"</span>))
 
@@ -272,7 +271,7 @@
 <h2 class="hasAnchor">
 <a href="#linking-point-aesthetics-to-variables" class="anchor"></a>Linking point aesthetics to variables</h2>
 <p>The color and point of data points can be linked to variables in a manner similar to the X-axis parameters demonstrated <a href="#xaxis">above</a>.</p>
-<p>For instance, the color of data points in <em>column data plot</em> panels can be set to a variable in <code>colData(sce)</code> by setting the <code>ColorBy</code> value to <code>"Column data"</code>, and the <code>ColorByColumnData</code> value to the desired coloumn name:</p>
+<p>For instance, the color of data points in <em>column data plot</em> panels can be set to a variable in <code>colData(sce)</code> by setting the <code>ColorBy</code> value to <code>"Column data"</code>, and the <code>ColorByColumnData</code> value to the desired column name:</p>
 <div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">cdp</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="kw">VisualBoxOpen</span><span class="kw">=</span><span class="fl">TRUE</span>, <span class="kw">VisualChoices</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Color"</span>, <span class="st">"Shape"</span>),
     <span class="kw">ColorByColumnData</span><span class="kw">=</span><span class="st">"Core.Type"</span>, <span class="kw">ShapeByColumnData</span><span class="kw">=</span><span class="st">"Core.Type"</span>,
     <span class="kw">ColorBy</span><span class="kw">=</span><span class="st">"Column data"</span>, <span class="kw">ShapeBy</span><span class="kw">=</span><span class="st">"Column data"</span>)
@@ -289,7 +288,7 @@
 <h2 class="hasAnchor">
 <a href="#configuring-plot-facets" class="anchor"></a>Configuring plot facets</h2>
 <p>Categorical variables may also be used to facet plots by row and column.</p>
-<p>For instance, <em>column data plot</em> panels can be facet by variables stored in the columns of <code>colData(sce)</code>. Users can enable faceting by setting <code>FacetByRow</code> and/or <code>FacetByColumn</code> columns to the appropriate column name in <code>colData(sce)</code>. We demonstrate below how faceting may be enabled by row, column, or both:</p>
+<p>For instance, <em>column data plot</em> panels can be facet by variables stored in the columns of <code>colData(sce)</code>. Users can enable faceting by setting <code>FacetByRow</code> and/or <code>FacetByColumn</code> to the appropriate column name in <code>colData(sce)</code>. We demonstrate below how faceting may be enabled by row, column, or both:</p>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">cdp</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="kw">VisualBoxOpen</span><span class="kw">=</span><span class="fl">TRUE</span>, <span class="kw">VisualChoices</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Facet"</span>),
     <span class="kw">FacetByRow</span><span class="kw">=</span><span class="st">"driver_1_s"</span>, <span class="kw">FacetByColumn</span><span class="kw">=</span><span class="st">"Core.Type"</span>, <span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">4L</span>)
 
@@ -306,8 +305,8 @@
 <div id="selection-parameters" class="section level1">
 <h1 class="hasAnchor">
 <a href="#selection-parameters" class="anchor"></a>Selection parameters</h1>
-<p>The initial state of <em>iSEE</em> applications can be configured all the way down to point selections and links between panels. For instance, in the example below, we preconfigure the <code>ColumnSelectionSource</code> column of a <em>column data plot</em> panel to receive a point selection from a <em>reduced dimension plot</em> panel. This requires an active selection in the <em>reduced dimension plot</em> panel, which is achieved by preconfiguring the <code>BrushData</code> column of the arguments.</p>
-<p>The simplest way to obtain a valid input for the <code>BrushData</code> column is to launch an <em>iSEE</em> application, make the desired selection using a Shiny brush, open the <em>iSEE</em> code tracker, and copy paste the relevant point selection data. The result should look as below:</p>
+<p>The initial state of <em>iSEE</em> applications can be configured all the way down to point selections and links between panels. For instance, in the example below, we preconfigure the <code>ColumnSelectionSource</code> column of a <em>column data plot</em> panel to receive a point selection from a <em>reduced dimension plot</em> panel. This requires an active selection in the <em>reduced dimension plot</em> panel, which is achieved by preconfiguring the <code>BrushData</code> slot.</p>
+<p>The simplest way to obtain a valid <code>BrushData</code> value is to launch an <em>iSEE</em> application, make the desired selection using a Shiny brush, open the <em>iSEE</em> code tracker, and copy paste the relevant point selection data. The result should look as below:</p>
 <div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="co"># Preconfigure the receiver panel</span>
 <span class="no">cdArgs</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(
     <span class="kw">XAxis</span><span class="kw">=</span><span class="st">"Column data"</span>,
@@ -408,13 +407,14 @@
 <ul>
 <li><code><a href="../reference/ReducedDimensionPlot-class.html">?ReducedDimensionPlot</a></code></li>
 <li><code><a href="../reference/ColumnDataPlot-class.html">?ColumnDataPlot</a></code></li>
+<li><code><a href="../reference/ColumnDataTable-class.html">?ColumnDataTable</a></code></li>
 <li><code><a href="../reference/FeatureAssayPlot-class.html">?FeatureAssayPlot</a></code></li>
 <li><code><a href="../reference/RowDataPlot-class.html">?RowDataPlot</a></code></li>
 <li><code><a href="../reference/RowDataTable-class.html">?RowDataTable</a></code></li>
 <li><code><a href="../reference/SampleAssayPlot-class.html">?SampleAssayPlot</a></code></li>
-<li><code>?HeatMapPlot</code></li>
+<li><code><a href="../reference/ComplexHeatmapPlot-class.html">?ComplexHeatmapPlot</a></code></li>
 </ul>
-<p>Some fairly complex configurations for a variety of data sets can be found at <a href="https://github.com/LTLA/iSEE2018" class="uri">https://github.com/LTLA/iSEE2018</a>. These may serve as useful examples for setting up your own configurations.</p>
+<p>Some fairly complex configurations for a variety of data sets can be found at <a href="https://github.com/iSEE/iSEE2018" class="uri">https://github.com/iSEE/iSEE2018</a>. These may serve as useful examples for setting up your own configurations.</p>
 </div>
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
@@ -450,29 +450,29 @@
 <span class="co">#&gt;  [7] backports_1.1.6        R6_2.4.1               DT_0.13               </span>
 <span class="co">#&gt; [10] vipor_0.4.5            mgcv_1.8-31            colorspace_1.4-1      </span>
 <span class="co">#&gt; [13] GetoptLong_0.1.8       tidyselect_1.0.0       compiler_3.6.3        </span>
-<span class="co">#&gt; [16] cli_2.0.2              shinyjs_1.1            desc_1.2.0            </span>
-<span class="co">#&gt; [19] colourpicker_1.0       bookdown_0.18          scales_1.1.0          </span>
-<span class="co">#&gt; [22] pkgdown_1.5.1.9000     stringr_1.4.0          digest_0.6.25         </span>
-<span class="co">#&gt; [25] rmarkdown_2.1          XVector_0.26.0         pkgconfig_2.0.3       </span>
-<span class="co">#&gt; [28] htmltools_0.4.0        fastmap_1.0.1          htmlwidgets_1.5.1     </span>
-<span class="co">#&gt; [31] rlang_0.4.5            GlobalOptions_0.1.1    shiny_1.4.0.2         </span>
-<span class="co">#&gt; [34] shape_1.4.4            jsonlite_1.6.1         dplyr_0.8.5           </span>
-<span class="co">#&gt; [37] RCurl_1.98-1.1         magrittr_1.5           GenomeInfoDbData_1.2.2</span>
-<span class="co">#&gt; [40] Matrix_1.2-18          Rcpp_1.0.4.6           munsell_0.5.0         </span>
-<span class="co">#&gt; [43] fansi_0.4.1            lifecycle_0.2.0        stringi_1.4.6         </span>
-<span class="co">#&gt; [46] yaml_2.2.1             rintrojs_0.2.2         MASS_7.3-51.5         </span>
-<span class="co">#&gt; [49] zlibbioc_1.32.0        grid_3.6.3             promises_1.1.0        </span>
-<span class="co">#&gt; [52] shinydashboard_0.7.1   crayon_1.3.4           miniUI_0.1.1.1        </span>
-<span class="co">#&gt; [55] lattice_0.20-38        splines_3.6.3          circlize_0.4.8        </span>
-<span class="co">#&gt; [58] knitr_1.28             ComplexHeatmap_2.2.0   pillar_1.4.3          </span>
-<span class="co">#&gt; [61] igraph_1.2.5           rjson_0.2.20           glue_1.4.0            </span>
-<span class="co">#&gt; [64] evaluate_0.14          BiocManager_1.30.10    png_0.1-7             </span>
-<span class="co">#&gt; [67] vctrs_0.2.4            httpuv_1.5.2           gtable_0.3.0          </span>
-<span class="co">#&gt; [70] purrr_0.3.3            clue_0.3-57            assertthat_0.2.1      </span>
-<span class="co">#&gt; [73] ggplot2_3.3.0          xfun_0.13              mime_0.9              </span>
-<span class="co">#&gt; [76] xtable_1.8-4           later_1.0.0            viridisLite_0.3.0     </span>
-<span class="co">#&gt; [79] tibble_3.0.0           memoise_1.1.0          cluster_2.1.0         </span>
-<span class="co">#&gt; [82] shinyWidgets_0.5.1     ellipsis_0.3.0         shinyAce_0.4.1</span>
+<span class="co">#&gt; [16] shinyjs_1.1            desc_1.2.0             colourpicker_1.0      </span>
+<span class="co">#&gt; [19] bookdown_0.18          scales_1.1.0           pkgdown_1.5.1.9000    </span>
+<span class="co">#&gt; [22] stringr_1.4.0          digest_0.6.25          rmarkdown_2.1         </span>
+<span class="co">#&gt; [25] XVector_0.26.0         pkgconfig_2.0.3        htmltools_0.4.0       </span>
+<span class="co">#&gt; [28] fastmap_1.0.1          htmlwidgets_1.5.1      rlang_0.4.5           </span>
+<span class="co">#&gt; [31] GlobalOptions_0.1.1    shiny_1.4.0.2          shape_1.4.4           </span>
+<span class="co">#&gt; [34] jsonlite_1.6.1         dplyr_0.8.5            RCurl_1.98-1.2        </span>
+<span class="co">#&gt; [37] magrittr_1.5           GenomeInfoDbData_1.2.2 Matrix_1.2-18         </span>
+<span class="co">#&gt; [40] Rcpp_1.0.4.8           munsell_0.5.0          lifecycle_0.2.0       </span>
+<span class="co">#&gt; [43] stringi_1.4.6          yaml_2.2.1             rintrojs_0.2.2        </span>
+<span class="co">#&gt; [46] MASS_7.3-51.5          zlibbioc_1.32.0        grid_3.6.3            </span>
+<span class="co">#&gt; [49] promises_1.1.0         shinydashboard_0.7.1   crayon_1.3.4          </span>
+<span class="co">#&gt; [52] miniUI_0.1.1.1         lattice_0.20-38        splines_3.6.3         </span>
+<span class="co">#&gt; [55] circlize_0.4.8         knitr_1.28             ComplexHeatmap_2.2.0  </span>
+<span class="co">#&gt; [58] pillar_1.4.3           igraph_1.2.5           rjson_0.2.20          </span>
+<span class="co">#&gt; [61] glue_1.4.0             evaluate_0.14          BiocManager_1.30.10   </span>
+<span class="co">#&gt; [64] png_0.1-7              vctrs_0.2.4            httpuv_1.5.2          </span>
+<span class="co">#&gt; [67] gtable_0.3.0           purrr_0.3.4            clue_0.3-57           </span>
+<span class="co">#&gt; [70] assertthat_0.2.1       ggplot2_3.3.0          xfun_0.13             </span>
+<span class="co">#&gt; [73] mime_0.9               xtable_1.8-4           later_1.0.0           </span>
+<span class="co">#&gt; [76] viridisLite_0.3.0      tibble_3.0.1           memoise_1.1.0         </span>
+<span class="co">#&gt; [79] cluster_2.1.0          shinyWidgets_0.5.1     ellipsis_0.3.0        </span>
+<span class="co">#&gt; [82] shinyAce_0.4.1</span>
 <span class="co"># devtools::session_info()</span></pre></body></html></div>
 </div>
 <div id="references" class="section level1 unnumbered">

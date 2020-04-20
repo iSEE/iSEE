@@ -13,7 +13,7 @@ author:
   email: marinif@uni-mainz.de
 - name: Charlotte Soneson
   affiliation: 
-  - &id3 Institute of Molecular Life Sciences, University of Zurich
+  - &id3 Friedrich Miescher Institute for Biomedical Research, Basel, Switzerland
   - SIB Swiss Institute of Bioinformatics
   email: charlottesoneson@gmail.com
 - name: Aaron Lun
@@ -38,7 +38,7 @@ bibliography: iSEE.bib
 
 **Compiled date**: `r Sys.Date()`
 
-**Last edited**: 2020-02-10
+**Last edited**: 2020-04-20
 
 **License**: `r packageDescription("iSEE")[["License"]]`
 

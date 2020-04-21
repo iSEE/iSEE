@@ -253,7 +253,9 @@ If a `SingleCellExperiment` object is supplied to the `iSEE` function, reduced d
 Examples include low-dimensional embeddings from principal components analysis (PCA) or _t_-distributed stochastic neighbour embedding (_t_-SNE) [@van2008visualizing].
 These results are used to construct a two-dimensional *Reduced dimension plot* where each point is a sample, to facilitate efficient exploration of high-dimensional datasets. 
 The "Data parameters" control the `reducedDim` slot to be displayed, as well as the two dimensions to plot against each other. 
-Note that `iSEE` does not compute reduced dimension embeddings; they must be precomputed and available in the object provided to the `iSEE` function.
+
+Note that this builtin panel does not compute reduced dimension embeddings; they must be precomputed and available in the object provided to the `iSEE` function.
+Nevertheless, custom panels - such as the `r Biocpkg("iSEEu")` `DynamicReducedDimensionPlot` can be developed and used to enable such features.
 
 ### Column data plots {#coldataplot}
 

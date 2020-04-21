@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.99.8</span>
       </span>
     </div>
 
@@ -118,7 +118,7 @@
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">20 April 2020</h4>
+            <h4 class="date">21 April 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/basic.Rmd"><code>vignettes/basic.Rmd</code></a></small>
       <div class="hidden name"><code>basic.Rmd</code></div>
@@ -127,7 +127,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-04-20</p>
+<p><strong>Compiled date</strong>: 2020-04-21</p>
 <p><strong>Last edited</strong>: 2020-04-20</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <p><img src="../../../_temp/Library/iSEE/www/iSEE.png" width="50%" style="display: block; margin: auto;"></p>
@@ -260,7 +260,8 @@
 <div id="reduced-dimension-plots" class="section level3">
 <h3 class="hasAnchor">
 <a href="#reduced-dimension-plots" class="anchor"></a>Reduced dimension plots</h3>
-<p>If a <code>SingleCellExperiment</code> object is supplied to the <code>iSEE</code> function, reduced dimension results are extracted from the <code>reducedDim</code> slot. Examples include low-dimensional embeddings from principal components analysis (PCA) or <em>t</em>-distributed stochastic neighbour embedding (<em>t</em>-SNE) <span class="citation">(Van der Maaten and Hinton 2008)</span>. These results are used to construct a two-dimensional <em>Reduced dimension plot</em> where each point is a sample, to facilitate efficient exploration of high-dimensional datasets. The “Data parameters” control the <code>reducedDim</code> slot to be displayed, as well as the two dimensions to plot against each other. Note that <code>iSEE</code> does not compute reduced dimension embeddings; they must be precomputed and available in the object provided to the <code>iSEE</code> function.</p>
+<p>If a <code>SingleCellExperiment</code> object is supplied to the <code>iSEE</code> function, reduced dimension results are extracted from the <code>reducedDim</code> slot. Examples include low-dimensional embeddings from principal components analysis (PCA) or <em>t</em>-distributed stochastic neighbour embedding (<em>t</em>-SNE) <span class="citation">(Van der Maaten and Hinton 2008)</span>. These results are used to construct a two-dimensional <em>Reduced dimension plot</em> where each point is a sample, to facilitate efficient exploration of high-dimensional datasets. The “Data parameters” control the <code>reducedDim</code> slot to be displayed, as well as the two dimensions to plot against each other.</p>
+<p>Note that this builtin panel does not compute reduced dimension embeddings; they must be precomputed and available in the object provided to the <code>iSEE</code> function. Nevertheless, custom panels - such as the <em><a href="https://bioconductor.org/packages/3.10/iSEEu">iSEEu</a></em> <code>DynamicReducedDimensionPlot</code> can be developed and used to enable such features.</p>
 </div>
 <div id="coldataplot" class="section level3">
 <h3 class="hasAnchor">
@@ -430,7 +431,7 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
 <span class="co">#&gt;  [1] scater_1.14.6               ggplot2_3.3.0              </span>
-<span class="co">#&gt;  [3] scRNAseq_2.0.2              iSEE_1.99.7                </span>
+<span class="co">#&gt;  [3] scRNAseq_2.0.2              iSEE_1.99.8                </span>
 <span class="co">#&gt;  [5] SingleCellExperiment_1.8.0  SummarizedExperiment_1.16.1</span>
 <span class="co">#&gt;  [7] DelayedArray_0.12.3         BiocParallel_1.20.1        </span>
 <span class="co">#&gt;  [9] matrixStats_0.56.0          Biobase_2.46.0             </span>
@@ -482,7 +483,7 @@
 <span class="co">#&gt;  [81] bit_1.1-15.2                  tidyselect_1.0.0             </span>
 <span class="co">#&gt;  [83] magrittr_1.5                  bookdown_0.18                </span>
 <span class="co">#&gt;  [85] R6_2.4.1                      DBI_1.1.0                    </span>
-<span class="co">#&gt;  [87] pillar_1.4.3                  withr_2.1.2                  </span>
+<span class="co">#&gt;  [87] pillar_1.4.3                  withr_2.2.0                  </span>
 <span class="co">#&gt;  [89] mgcv_1.8-31                   RCurl_1.98-1.2               </span>
 <span class="co">#&gt;  [91] tibble_3.0.1                  crayon_1.3.4                 </span>
 <span class="co">#&gt;  [93] shinyWidgets_0.5.1            BiocFileCache_1.10.2         </span>

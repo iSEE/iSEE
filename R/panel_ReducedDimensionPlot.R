@@ -6,11 +6,11 @@
 #' @section ReducedDimensionPlot slot overview:
 #' The following slots control the dimensionality reduction result that is used:
 #' \itemize{
-#' \item \code{RedDimType}, a string specifying the name of the dimensionality reduction result.
+#' \item \code{Type}, a string specifying the name of the dimensionality reduction result.
 #' If \code{NA}, defaults to the first entry of \code{\link{reducedDims}}.
-#' \item \code{RedDimXAxis}, integer scalar specifying the dimension to plot on the x-axis.
+#' \item \code{XAxis}, integer scalar specifying the dimension to plot on the x-axis.
 #' Defaults to 1.
-#' \item \code{RedDimYAxis}, integer scalar specifying the dimension to plot on the y-axis.
+#' \item \code{YAxis}, integer scalar specifying the dimension to plot on the y-axis.
 #' Defaults to 2.
 #' }
 #'

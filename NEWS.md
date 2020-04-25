@@ -1,3 +1,7 @@
+# iSEE 1.99.9
+
+* Fixed slot names in the `ReducedDimensionPlot()` man page.
+
 # iSEE 1.99.8
 
 * Protect against transient invalid selected index; fixes #400.

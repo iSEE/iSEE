@@ -61,124 +61,92 @@ sce <- readRDS("sce.rds")
 SCREENSHOT <- function(x, ...) knitr::include_graphics(x)
 ```
 
-# Storing data in an HDF5 file
+# Wrapping matrices in HDF5 files
+
+Let us make a copy of the originak `sce` object to work with; we will be comparing the memory footprint of the object using an HDF5 backend.
+
+```{r}
+sce_h5 <- sce
+```
 
 Many `SummarizedExperiment` objects store assay matrices as regular `matrix` objects.
 
 ```{r}
 library(SingleCellExperiment)
-class(assay(sce, "logcounts"))
+class(assay(sce_h5, "logcounts"))
 ```
 
-This type of matrices is fully loaded in memory, which can become prohibitive for very large datasets.
+This type of base `matrix` is fully loaded in memory, which can become prohibitive for very large datasets.
 
 However, the HDF5 file format provides an alternative to work with large datasets.
 
 > HDF5 is a unique technology suite that makes possible the management of extremely large and complex data collections.
 > (Source: https://support.hdfgroup.org/HDF5/whatishdf5.html)
 
-An empty HDF5 file is created as follows.
+Array-like objects such as matrices can be wrapped in an `HDF5Matrix` object as follows.
 
 ```{r}
-library(rhdf5)
-h5createFile("myhdf5file.h5")
+library(HDF5Array)
+assay(sce_h5, "tophat_counts") <- writeHDF5Array(assay(sce_h5, "tophat_counts"))
+class(assay(sce_h5, "tophat_counts"))
+assay(sce_h5, "logcounts") <- writeHDF5Array(assay(sce_h5, "logcounts"))
+class(assay(sce_h5, "logcounts"))
 ```
 
-The HDF5 file can contain a group hierarchy.
-For instance, we create a group for the assays.
+Comparing the memory footprint of the backed up original object `sce` and the HDF5-backed `sce_h5` object reveals the smallermemory footprint of HDF5-backed objects.
 
 ```{r}
-h5createGroup("myhdf5file.h5", "assays")
+format(object.size(sce), units = "Mb")
+format(object.size(sce_h5), units = "Mb")
 ```
 
-We can then write the assay matrices to the HDF5 file.
-
-```{r}
-for (i in assayNames(sce)) {
-  h5write(assay(sce, i), "myhdf5file.h5", file.path("assays", i))
-}
+```{r, results='asis', echo=FALSE}
+cat(sprintf(
+  "In this case, using an HDF5 backend reduced the memory footprint %.1f-fold.",
+  object.size(sce) / object.size(sce_h5)))
 ```
 
-We can also write the `colData` and `rowData` objects to the HDF5 file.
-However, those must be coerced to `data.frame` first, which would require special treatment if there were nested columns (which we don't havein this case).
-
-```{r}
-h5write(as.data.frame(colData(sce)), "myhdf5file.h5", "colData")
-h5write(as.data.frame(rowData(sce)), "myhdf5file.h5", "rowData")
-```
-
-Similarly to the assays, we can also write the reduced dimension matrices to the HDF5 file.
-
-```{r}
-h5createGroup("myhdf5file.h5", "reducedDims")
-for (i in reducedDimNames(sce)) {
-  h5write(reducedDim(sce, i), "myhdf5file.h5", file.path("reducedDims", i))
-}
-```
-
-We can list the file content as follows.
-
-```{r}
-h5ls("myhdf5file.h5")
-```
-
-# Accessing data from an HDF5 file
-
-With the data saved in an HDF5 file, it is then possible to create a `SingleCellExperiment` object
-
-```{r}
-sce.h5 <- SingleCellExperiment(
-  assays = list(
-    tophat_counts = h5read("myhdf5file.h5", "assays/tophat_counts"),
-    logcounts = h5read("myhdf5file.h5", "assays/logcounts")
-  ),
-  colData = h5read("myhdf5file.h5", "colData"),
-  rowData = h5read("myhdf5file.h5", "rowData"),
-  reducedDims = list(
-    PCA = h5read("myhdf5file.h5", "reducedDims/PCA"),
-    TSNE = h5read("myhdf5file.h5", "reducedDims/TSNE")
-  )
-)
-```
+# iSEE supports HDF5-backed assays
 
 We can then used the `SingleCellExperiment` object as usual.
 
 ```{r}
 library(iSEE)
-app <- iSEE(sce.h5)
+app <- iSEE(sce_h5)
 ```
 
-# Tips
+# Reduced dimensions
 
-## Automatically detecting assays
+Dimensionality reduction results are also stored as matrices of coordinates, and can be similarly wrapped in `HDF5Matrix` objects.
 
-Assuming one knows the naming convention used in an HDF5 file, the names of assays stored in a given file can be obtained as follows.
-
-```{r}
-subset(h5ls("myhdf5file.h5"), group == "/assays", "name", drop=TRUE)
-```
-
-That list can then be used to automatically populate the `assays` component of a `SummarizedExperiment` object.
+Note that coercion - using the `as()` method, is a valid alternative that has the same effect as the `writeHDF5Array()` method.
+However, an added benefit of `writeHDF5Array()` is the `filepath=` argument allowing users to control the HDF5 file where to write the dataset.
 
 ```{r}
-assay_names <- subset(h5ls("myhdf5file.h5"), group == "/assays", "name", drop=TRUE)
-h5read_local <- function(assay_name, file, parent.node) {
-  out <- h5read(file, file.path(parent.node, assay_name))
-  names(out) <- assay_name
-  out
+sce_h5_rd <- sce_h5
+for (i in seq_along(reducedDims(sce_h5_rd))) {
+  reducedDim(sce_h5_rd, i) <- writeHDF5Array(reducedDim(sce_h5_rd, i))
+  reducedDim(sce_h5_rd, i) <- as(reducedDim(sce_h5_rd, i), "HDF5Matrix")
 }
-se <- SummarizedExperiment(
-  assays = sapply(assay_names, h5read_local, file = "myhdf5file.h5", parent.node = "assays", simplify = FALSE)
-)
-se
 ```
 
-## Automatically detecting reduced dimensions
-
-Similarly to assays, the names of reduced dimension representations stored in the file can be fetched as follows.
+As dimensionality reduction results already represent condensed representation of the dataset, the memory gain is smaller than for assays.
 
 ```{r}
-subset(h5ls("myhdf5file.h5"), group == "/reducedDims", "name", drop=TRUE)
+format(object.size(sce_h5), units = "Mb")
+format(object.size(sce_h5_rd), units = "Mb")
+```
+
+```{r, results='asis', echo=FALSE}
+cat(sprintf(
+  "Wrapping dimensionality reduction results further reduced the memory footprint %.1f-fold.",
+  object.size(sce_h5) / object.size(sce_h5_rd)))
+```
+
+We can then used the `SingleCellExperiment` object as usual.
+
+```{r}
+app <- iSEE(sce_h5_rd)
 ```
 
 # Session Info {.unnumbered}
@@ -189,7 +157,3 @@ sessionInfo()
 ```
 
 # References {.unnumbered}
-
-```{r, include=FALSE}
-file.remove("myhdf5file.h5")
-```

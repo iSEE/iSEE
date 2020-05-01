@@ -1,3 +1,16 @@
+# iSEE 1.99.9
+
+* Fixed slot names in the `ReducedDimensionPlot()` man page.
+
+# iSEE 1.99.8
+
+* Protect against transient invalid selected index; fixes #400.
+* Forced `renderDT` to rerun expression upon panel reorg.
+
+# iSEE 1.99.7
+
+* Fixed out-of-date vignette content.
+
 # iSEE 1.99.6
 
 * Added static screenshots to vignettes.

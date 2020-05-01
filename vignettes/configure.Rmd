@@ -14,7 +14,7 @@ author:
   email: marinif@uni-mainz.de
 - name: Charlotte Soneson
   affiliation: 
-  - &id3 Institute of Molecular Life Sciences, University of Zurich
+  - &id3 Friedrich Miescher Institute for Biomedical Research, Basel, Switzerland
   - SIB Swiss Institute of Bioinformatics
   email: charlottesoneson@gmail.com
 - name: Aaron Lun
@@ -39,7 +39,7 @@ bibliography: iSEE.bib
 
 **Compiled date**: `r Sys.Date()`
 
-**Last edited**: 2018-03-08
+**Last edited**: 2020-04-20
 
 **License**: `r packageDescription("iSEE")[["License"]]`
 
@@ -84,8 +84,7 @@ app <- iSEE(sce, initial=list(
 SCREENSHOT("screenshots/configure-FAP-basic.png")
 ```
 
-The genes to show on the Y-axis in the two plots can be specified via the `featAssayArgs` argument to `iSEE`. This is a `DataFrame`, specifying the initial parameters for each plot.
-In this case, we want to modify the `YAxis` and `YAxisFeatureName` defaults for the two plots:
+The genes to show on the Y-axis in the two plots can be specified via the `YAxisFeatureName` argument to the respective panels in `iSEE`. 
 
 ```{r fexArg}
 app <- iSEE(sce, initial=list(
@@ -110,7 +109,7 @@ Those parameters are accessible at runtime in the eponymous collapsible box.
 
 We refer users to the individual help page of each panel type listed [below](#further) to learn more about the choices of X-axis variables for each type of panel.
 
-From a running `iSEE` application, you can also display all the R code that is required to set up the current configuration by clicking on `Display panel settings` under the wrench icon in the top-right corner. 
+From a running `iSEE` application, you can also display all the R code that is required to set up the current configuration by clicking on `Display panel settings` under the export icon in the top-right corner. 
 
 ## Setting the Y-axis
 
@@ -131,11 +130,11 @@ SCREENSHOT("screenshots/configure-CDP-basic.png")
 
 ## Setting the X-axis {#xaxis}
 
-The X-axis can be set to different types of variables, which generally requires setting at least two columns in the `DataFrame` of arguments.
-The type of variable is generally set in the `XAxis` column, while the name of the variable is stored in a different column for each type of variable.
+The X-axis can be set to different types of variables.
+The type of variable is generally set in the `XAxis` slot, while the name of the variable is stored in a different slot depending on the value of `XAxis`.
 At runtime, this allows the app to remember the last selected variable of each type.
 
-For instance, the `XAxis` column of _feature assay plot_ arguments can have up to four different values:
+For instance, the `XAxis` slot of the _feature assay plot_ can have up to four different values:
 
 1. `"None"`: does not require any addition input (draws a single violin for all features).
 2. `"Column data"`: requires `XAxisColumnData` to be set to a column name in the `colData(sce)`.
@@ -182,8 +181,8 @@ we preselected the feature `"Ints2"`, and we prefiltered the table using the pat
 
 ## Configuring the type of dimensionality reduction
 
-In the case of reduced dimension plots, _data parameters_  include the name of the reduced dimension slot from which to fetch coordinates.
-This information is stored in the `Type` column:
+In the case of reduced dimension plots, _data parameters_ include the name of the reduced dimension slot from which to fetch coordinates.
+This information is stored in the `Type` slot:
 
 ```{r redDimPlotDefaults-type}
 app <- iSEE(sce, initial=list(
@@ -196,11 +195,9 @@ app <- iSEE(sce, initial=list(
 SCREENSHOT("screenshots/configure-ReDP-basic.png")
 ```
 
-We refer users to the `?redDimPlotDefaults` help page to learn more about the choices of default parameters for _reduced dimension plot_ panels.
-
 ## Configuring the type of assay data {#assay}
 
-For axes linked to an assay, such as the Y-axis of _feature assay plot_ panels, the assay to display can be set through the `Assay` column of the arguments:
+For axes linked to an assay, such as the Y-axis of _feature assay plot_ panels, the assay to display can be set through the `Assay` argument:
 
 ```{r featAssayPlotDefaults-assay}
 app <- iSEE(sce, initial=list(
@@ -222,7 +219,7 @@ Those parameters include: color, shape, size, opacity, facet, as well as font si
 Some visual parameters can be associated to variables and controlled through `r CRANpkg("ggplot2")` aesthetics, while others can be set to constant user-defined values.
 All those parameters are accessible at runtime in the eponymous collapsible box.
 
-We refer users to the `?"iSEE point parameters"`  help page to learn more about the visual parameters variables configurable for each type of panel;
+We refer users to the `?"iSEE point parameters"` help page to learn more about the visual parameters variables configurable for each type of panel;
 and to the `?"iSEE selection parameters"` help page to learn more about the choices of parameters that control the appearance of point selections in receiver plot panels.
 
 ## Configuring default visual parameters
@@ -231,8 +228,8 @@ Certain visual parameters can be set to a constant user-defined value.
 Those include: color, transparency (i.e., alpha), downsampling resolution, as well as text font size and legend position.
 
 For instance, the default color of data points in _column data plot_ panels can be set to
-a value different than the default `"black"` through the `ColorByDefaultColor` column,
-while the default transparency value is controlled through the `PointAlpha` column.
+a value different than the default `"black"` through the `ColorByDefaultColor` slot,
+while the default transparency value is controlled through the `PointAlpha` slot
 Here, we alter several default visual parameters in the second panel:
 
 ```{r ColorByDefaultColor}
@@ -260,7 +257,7 @@ Note that for this demonstration, we facilitate visualization of the preconfigur
 
 The color and point of data points can be linked to variables in a manner similar to the X-axis parameters demonstrated [above](#xaxis).
 
-For instance, the color of data points in _column data plot_ panels can be set to a variable in `colData(sce)` by setting the `ColorBy` value to `"Column data"`, and the `ColorByColumnData` value to the desired coloumn name:
+For instance, the color of data points in _column data plot_ panels can be set to a variable in `colData(sce)` by setting the `ColorBy` value to `"Column data"`, and the `ColorByColumnData` value to the desired column name:
 
 ```{r aesthetic-covariate}
 cdp <- ColumnDataPlot(VisualBoxOpen=TRUE, VisualChoices=c("Color", "Shape"),
@@ -285,7 +282,7 @@ Note that points may only be shaped by a categorical variable.
 Categorical variables may also be used to facet plots by row and column.
 
 For instance, _column data plot_ panels can be facet by variables stored in the columns of `colData(sce)`.
-Users can enable faceting by setting `FacetByRow` and/or `FacetByColumn` columns to the appropriate column name in `colData(sce)`.
+Users can enable faceting by setting `FacetByRow` and/or `FacetByColumn` to the appropriate column name in `colData(sce)`.
 We demonstrate below how faceting may be enabled by row, column, or both:
 
 ```{r facet}
@@ -309,9 +306,9 @@ SCREENSHOT("screenshots/configure-CDP-facets.png")
 
 The initial state of _iSEE_ applications can be configured all the way down to point selections and links between panels.
 For instance, in the example below, we preconfigure the `ColumnSelectionSource` column of a _column data plot_ panel to receive a point selection from a _reduced dimension plot_ panel.
-This requires an active selection in the _reduced dimension plot_ panel, which is achieved by preconfiguring the `BrushData` column of the arguments.
+This requires an active selection in the _reduced dimension plot_ panel, which is achieved by preconfiguring the `BrushData` slot.
 
-The simplest way to obtain a valid input for the `BrushData` column is to launch an _iSEE_ application, make the desired selection using a Shiny brush, open the _iSEE_ code tracker, and copy paste the relevant point selection data.
+The simplest way to obtain a valid `BrushData` value is to launch an _iSEE_ application, make the desired selection using a Shiny brush, open the _iSEE_ code tracker, and copy paste the relevant point selection data.
 The result should look as below:
 
 ```{r select-brish}
@@ -433,13 +430,14 @@ Users should refer to the following help pages for the full list of values that 
 
 - `?ReducedDimensionPlot`
 - `?ColumnDataPlot`
+- `?ColumnDataTable`
 - `?FeatureAssayPlot`
 - `?RowDataPlot`
 - `?RowDataTable`
 - `?SampleAssayPlot`
-- `?HeatMapPlot`
+- `?ComplexHeatmapPlot`
 
-Some fairly complex configurations for a variety of data sets can be found at https://github.com/LTLA/iSEE2018.
+Some fairly complex configurations for a variety of data sets can be found at https://github.com/iSEE/iSEE2018.
 These may serve as useful examples for setting up your own configurations.
 
 # Session Info {.unnumbered}

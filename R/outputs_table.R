@@ -21,10 +21,18 @@
 #' @importFrom utils head
 .create_table_output <- function(panel_name, se, output, pObjects, rObjects) {
     force(se)
+
     # nocov start
     output[[panel_name]] <- renderDataTable({
         .trackUpdate(panel_name, rObjects)
         param_choices <- pObjects$memory[[panel_name]]
+
+        # This is a rather odd one. It is necessary because the DT doesn't
+        # conventionally re-render when the API regenerates; rather, it seems
+        # somehow to load the cached version of the initialized table, thus
+        # wiping out any changes that have happened in the meantime. So,
+        # we force the DT to rerender so that it loads with memorized values.
+        force(rObjects$rerendered)
 
         t.out <- .retrieveOutput(panel_name, se, pObjects, rObjects)
         full_tab <- t.out$contents
@@ -83,6 +91,7 @@
         )
     })
     # nocov end
+
     invisible(NULL)
 }
 

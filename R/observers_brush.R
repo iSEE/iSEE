@@ -96,7 +96,7 @@
         # Hack to resolve https://github.com/rstudio/shiny/issues/947.
         # By luck, the triggering of the click field seems to be delayed enough
         # that input data is sent to the brush field first. Thus, we can
-        # check the brush field for a non-NULL value avoid action if
+        # check the brush field for a non-NULL value and avoid action if
         # the user had brushed rather than clicked. A separate click should
         # continue past this point, as any Shiny brush would be wiped upon
         # replotting and thus would not have any value in the input.

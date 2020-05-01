@@ -14,7 +14,7 @@
 #' @author Aaron Lun \email{infinite.monkeys.with.keyboards@@gmail.com}
 #' @author Charlotte Soneson \email{charlottesoneson@@gmail.com}
 #' @author Federico Marini \email{marinif@@uni-mainz.de}
-#' @author Kevin Rue-Albrecht \email{kevin.rue-albrecht@@kennedy.ox.ac.uk}
+#' @author Kevin Rue-Albrecht \email{kevinrue67@@gmail.com}
 #' @name iSEE-pkg
 #' @docType package
 NULL

@@ -1,3 +1,7 @@
+# iSEE 2.1.1
+
+* Add vignette documenting the use of HDF5.
+
 # iSEE 1.99.9
 
 * Fixed slot names in the `ReducedDimensionPlot()` man page.

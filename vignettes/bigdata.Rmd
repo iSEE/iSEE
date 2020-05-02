@@ -1,0 +1,154 @@
+---
+title: >
+  How to use `r Biocpkg("iSEE")` with big data
+author:
+- name: Kevin Rue-Albrecht
+  affiliation: 
+  - &id4 Kennedy Institute of Rheumatology, University of Oxford,
+    Headington, Oxford OX3 7FY, UK.
+  email: kevinrue67@gmail.com
+- name: Federico Marini
+  affiliation: 
+  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
+  - Center for Thrombosis and Hemostasis (CTH), Mainz
+  email: marinif@uni-mainz.de
+- name: Charlotte Soneson
+  affiliation: 
+  - &id3 Institute of Molecular Life Sciences, University of Zurich
+  - SIB Swiss Institute of Bioinformatics
+  email: charlottesoneson@gmail.com
+- name: Aaron Lun
+  affiliation: 
+  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
+  email: infinite.monkeys.with.keyboards@gmail.com 
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('iSEE')`"
+output: 
+  BiocStyle::html_document:
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{6. Using iSEE with HDF5}
+  %\VignetteEncoding{UTF-8}  
+  %\VignettePackage{iSEE}
+  %\VignetteKeywords{GeneExpression, RNASeq, Sequencing, Visualization, QualityControl, GUI}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+bibliography: iSEE.bib
+---
+
+**Compiled date**: `r Sys.Date()`
+
+**Last edited**: 2018-03-08
+
+**License**: `r packageDescription("iSEE")[["License"]]`
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  error = FALSE,
+  warning = FALSE,
+  message = FALSE,
+    crop = NULL
+)
+stopifnot(requireNamespace("htmltools"))
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+```{r, eval=!exists("SCREENSHOT"), include=FALSE}
+SCREENSHOT <- function(x, ...) knitr::include_graphics(x)
+```
+
+# Overview
+
+Some tweaks can be performed to enable `r Biocpkg("iSEE")` to run efficiently on large datasets.
+This includes datasets with many features (methylation, SNPs) or many columns (cytometry, single-cell RNA-seq).
+To demonstate some of this functionality, we will use a dataset from the `r Biocpkg("TENxPBMCData")` dataset:
+
+```{r}
+library(TENxPBMCData)
+sce.pbmc <- TENxPBMCData("pbmc68k")
+sce.pbmc$Library <- factor(sce.pbmc$Library)
+sce.pbmc
+```
+
+# Using out of memory matrices
+
+Many `SummarizedExperiment` objects store assay matrices as in-memory matrix-like objects,
+be they ordinary matrices or alternative representations such as sparse matrices from the `r CRANpkg("Matrix")` package.
+For example, if we looked at the Allen data, we would see that the counts are stored as an ordinary matrix.
+
+```{r}
+library(scRNAseq)
+sce.allen <- ReprocessedAllenData("tophat_counts")
+class(assay(sce.allen, "tophat_counts"))
+```
+
+In situations involving large datasets and limited computational resources, storing the entire assay in memory may not be feasible.
+Rather, we can represent the data as a file-backed matrix where contents are stored on disk and retrieved on demand.
+Within the Bioconductor ecosystem, the easiest way of doing this is to create a `HDF5Matrix`, which uses a [HDF5 file](https://support.hdfgroup.org/HDF5/whatishdf5.html) to store all the assay data.
+We see that this has already been done for use in the 68K PBMC dataset:
+
+```{r}
+counts(sce.pbmc, withDimnames=FALSE)
+```
+
+Despite the dimensions of this matrix, the `HDF5Matrix` object occupies very little space in memory.
+
+```{r}
+object.size(counts(sce.pbmc, withDimnames=FALSE))
+```
+
+However, parts of the data can still be read in on demand.
+For all intents and purposes, the `HDF5Matrix` appears to be an ordinary matrix to downstream applications and can be used as such.
+
+```{r}
+first.gene <- counts(sce.pbmc)[1,]
+head(first.gene)
+```
+
+This means that we can use the 68K PBMC `SingleCellExperiment` object in `iSEE()` without any extra work.
+The app below shows the distribution of counts for everyone's favorite gene _MALAT1_ across libraries.
+Here, `iSEE()` is simply retrieving data on demand from the `HDF5Matrix` without ever loading the entire assay matrix into memory.
+This enables it to run efficiently on arbitrary large datasets with limited resources.
+
+```{r}
+library(iSEE)
+app <- iSEE(sce.pbmc, initial=
+    list(RowDataTable(Selected="ENSG00000251562", Search="MALAT1"), 
+        FeatureAssayPlot(XAxis="Column data", XAxisColumnData="Library",
+            YAxisFeatureSource="RowDataTable1")
+    )
+)
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("screenshots/bigdata-hdf5.png")
+```
+
+Generally speaking, these HDF5 files are written once by a process with sufficient computational resources (i.e., memory and time).
+We typically create `HDF5Matrix` objects using the `writeHDF5Array()` function from the `r Biocpkg("HDF5Array")` package.
+After the file is created, the objects can be read many times in more deprived environments.
+
+```{r}
+sce.h5 <- sce.allen
+library(HDF5Array)
+assay(sce.h5, "tophat_counts", withDimnames=FALSE)  <- 
+    writeHDF5Array(assay(sce.h5, "tophat_counts"), file="assay.h5", name="counts")
+class(assay(sce.h5, "tophat_counts", withDimnames=FALSE))
+list.files("assay.h5")
+```
+
+It is worth noting that `iSEE()` does not know or care that the data is stored in a HDF5 file.
+The app is fully compatible with any matrix-like representation of the assay data that supports `dim()` and `[,`.
+As such, `iSEE()` can be directly used with other memory-efficient objects like the `DeferredMatrix` and `LowRankMatrix` from the `r BiocStyle::Biocpkg("BiocSingular")` package, or perhaps the `ResidualMatrix` from the `r Biocpkg("batchelor")` package.
+
+# Session Info {.unnumbered}
+
+```{r sessioninfo}
+sessionInfo()
+# devtools::session_info()
+```
+
+# References {.unnumbered}

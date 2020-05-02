@@ -19,7 +19,7 @@ It provides slots and methods for specifying which sample to use and what to plo
 }
 \section{Slot overview}{
 
-The following slots control the dimensionality reduction result that is used:
+The following slots control the values on the y-axis:
 \itemize{
 \item \code{YAxisSampleName}, a string specifying the name of the sample to plot on the y-axis.
 If \code{NA}, defaults to the first column name of the SummarizedExperiment object.
@@ -27,6 +27,12 @@ If \code{NA}, defaults to the first column name of the SummarizedExperiment obje
 Defaults to the first valid assay name (see \code{?"\link{.refineParameters,DotPlot-method}"} for details).
 \item \code{YAxisSampleSource}, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces \code{YAxisSampleName}.
 Defaults to \code{"---"}, i.e., no transmission is performed.
+\item \code{YAxisSampleDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for the y-axis.
+Defaults to \code{FALSE}.
+}
+
+The following slots control the values on the x-axis:
+\itemize{
 \item \code{XAxis}, string specifying what should be plotting on the x-axis.
 This can be any one of \code{"None"}, \code{"Sample name"} or \code{"Column data"}.
 Defaults to \code{"None"}.
@@ -38,6 +44,8 @@ if \code{XAxis="Sample name"}.
 Defaults to the first column name.
 \item \code{XAxisSampleSource}, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces \code{XAxisSampleName}.
 Defaults to \code{"---"}, i.e., no transmission is performed.
+\item \code{XAxisSampleDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for the x-axis.
+Defaults to \code{FALSE}.
 }
 
 In addition, this class inherits all slots from its parent \linkS4class{ColumnDotPlot}, \linkS4class{DotPlot} and \linkS4class{Panel} classes.

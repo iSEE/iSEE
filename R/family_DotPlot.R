@@ -23,6 +23,10 @@
 #' If \code{NA}, this defaults to the name of the first column.
 #' \item \code{ColorBySampleSource}, a string specifying the name of the panel to use for transmitting the sample selection to \code{ColorBySampleNameColor}.
 #' Defaults to \code{"---"}.
+#' \item \code{ColorByFeatureDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source when coloring by feature.
+#' Defaults to \code{FALSE}.
+#' \item \code{ColorBySampleDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source when coloring by feature.
+#' Defaults to \code{FALSE}.
 #' }
 #'
 #' The following slots control other metadata-related aesthetic aspects of the points:

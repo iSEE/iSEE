@@ -27,7 +27,8 @@
 #' Defaults to \code{"Active"}.
 #' \item \code{RowSelectionSaved}, an integer scalar specifying the index of the saved multiple row selection to use when \code{RowSelectionType="Saved"}.
 #' Defaults to 0.
-#' \item \code{DynamicRowSelectionSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for multiple row selections.
+#' \item \code{RowSelectionDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for multiple row selections.
+#' Defaults to \code{FALSE}.
 #' }
 #'
 #' The following slots are relevant to \emph{receiving} a multiple selection on the columns:
@@ -41,7 +42,8 @@
 #' Defaults to \code{"Active"}.
 #' \item \code{ColumnSelectionSaved}, an integer scalar specifying the index of the saved multiple column selection to use when \code{ColumnSelectionType="Saved"}.
 #' Defaults to 0.
-#' \item \code{DynamicColumnSelectionSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for multiple column selections.
+#' \item \code{ColumnSelectionDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for multiple column selections.
+#' Defaults to \code{FALSE}.
 #' }
 #'
 #' There are also the following miscellaneous slots:

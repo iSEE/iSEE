@@ -373,27 +373,6 @@ Users can facet by row and/or column, using categorical factors in `colData(se)`
 This provides a convenient way to stratify points in a single plot by multiple factors of interest.
 Note that point selection can only occur _within_ a single facet at a time; points cannot be selected across facets.
 
-## Point selections between linked panels {#select-and-link}
-
-To link one plot to another, users can instruct a plotting panel to receive a selection of data points from another (transmitting) panel.
-This is done using the appropriate field in the "Selection parameters" box.
-Data point selection on the transmitting panel can then affect the receiving plot in a variety of ways:
-
-- If the point selection effect is set to `"Restrict"`, only the subset of points selected in the transmitter are visible in the receiver.
-- If set to `"Color"`, the selected subset of points is plotted in the receiver with a user-selected color.
-- If set to `"Transparent"`, the selected subset will be drawn with no transparency, while all non-selected points will be plotted with the specified alpha value.
-
-It is possible to set up a tree of panels that transmit selections to each other, much like the gating structures used in flow cytometry.
-This requires all panels acting as both receivers and transmitters to have their effects set to `"Restrict"` - see [this mass cytometry tour](https://github.com/iSEE/iSEE2018/blob/master/tours/cytof/app.R) for an example.
-
-While we have focused above on receiving point selections for plots, it is also possible to transmit from plots to tables.
-This will subset the table so that only the rows corresponding to selected points are visible.
-Obviously, this means that users should only transmit from row-based plots to *row data tables*, and from column-based plots to *column data tables*.
-
-Most panels will also have an option to dynamically change the choice of transmitting panel according to the last active selection in the app.
-This allows users to, for example, simply brush on any plot in the app and have all participating receiving panels immediately use that selection without requiring manual resetting of the transmitter.
-Note that this option will not change the app state when it is set; it only has an effect on the next user-mediated selection of points in the app.
-
 ## Zooming in and out
 
 Zooming in is possible by first selecting a region of interest in a plot using the brush (drag and select); double-clicking on the brushed area then zooms into the selected area. 

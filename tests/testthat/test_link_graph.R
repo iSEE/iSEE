@@ -117,6 +117,10 @@ test_that("evaluation order works properly", {
     # Recall that only transmitting panels are ever reported by this function
     eval_order <- iSEE:::.establish_eval_order(g)
     expect_identical(eval_order, c("ReducedDimensionPlot1", "ColumnDataPlot1", "FeatureAssayPlot1"))
+
+    # Again, only transmitting panels are ever reported by this function
+    eval_order <- iSEE:::.has_child(g)
+    expect_identical(sort(eval_order), sort(c("ReducedDimensionPlot1", "ColumnDataPlot1", "FeatureAssayPlot1")))
 })
 
 test_that("graph adding and deleting responds to fields", {

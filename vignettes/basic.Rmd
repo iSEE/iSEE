@@ -366,11 +366,6 @@ This is achieved by checking the `"Shape"` box to reveal the shape-setting optio
 The size and opacity of the data points can be modified via the options available by checking the `"Point"` box.
 This may be useful for aesthetically pleasing visualizations when the number of points is very large or small.
 
-It is also possible to downsample points to reduce the time required to generate the plot, via the `"Downsample points for speed"` checkbox.
-This uses density-dependent downsampling whereby only the last point for an overlapping set of points is shown.
-In this manner, we avoid wasting time in plotting many points that would not be visible anyway.
-Note that this is only effective when the point size is large and the opacity is set to unity.
-
 ## Faceting 
 
 Each point-based plot can be split into multiple facets using the options in the `"Facet"` checkbox.

@@ -1,0 +1,398 @@
+---
+title: >
+  Sharing information across `r Biocpkg("iSEE")` panels
+author:
+- name: Kevin Rue-Albrecht
+  affiliation: 
+  - &id4 Kennedy Institute of Rheumatology, University of Oxford,
+    Headington, Oxford OX3 7FY, UK.
+  email: kevinrue67@gmail.com
+- name: Federico Marini
+  affiliation: 
+  - &id1 Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz
+  - Center for Thrombosis and Hemostasis (CTH), Mainz
+  email: marinif@uni-mainz.de
+- name: Charlotte Soneson
+  affiliation: 
+  - &id3 Friedrich Miescher Institute for Biomedical Research, Basel, Switzerland
+  - SIB Swiss Institute of Bioinformatics
+  email: charlottesoneson@gmail.com
+- name: Aaron Lun
+  email: infinite.monkeys.with.keyboards@gmail.com
+date: "`r BiocStyle::doc_date()`"
+package: "`r BiocStyle::pkg_ver('iSEE')`"
+output: 
+  BiocStyle::html_document:
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{2. Sharing information across panels}
+  %\VignetteEncoding{UTF-8}  
+  %\VignettePackage{iSEE}
+  %\VignetteKeywords{GeneExpression, RNASeq, Sequencing, Visualization, QualityControl, GUI}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+bibliography: iSEE.bib
+---
+
+**Compiled date**: `r Sys.Date()`
+
+**Last edited**: 2020-04-20
+
+**License**: `r packageDescription("iSEE")[["License"]]`
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>",
+    error = FALSE,
+    warning = FALSE,
+    message = FALSE,
+    crop = NULL
+)
+stopifnot(requireNamespace("htmltools"))
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+sce <- readRDS("sce.rds")
+```
+
+```{r, eval=!exists("SCREENSHOT"), include=FALSE}
+SCREENSHOT <- identity
+#SCREENSHOT <- function(x, ...) knitr::include_graphics(x)
+```
+
+```{r, echo=FALSE, out.width='50%', fig.align='center'}
+knitr::include_graphics(path = system.file(package="iSEE", "www/iSEE.png", mustWork=TRUE))
+```
+
+# Introduction 
+
+One of `r Biocpkg("iSEE")`'s main features is the ability to share information between panels.
+This facilitates deeper exploration of a dataset by allowing users to visualize relationships across multiple metrics.
+`iSEE()` currently supports three modes of information sharing between panels - multiple selections, single selections and dynamic selections - which are demonstrated in this vignette using the Allen dataset processed in the `r Biocpkg("iSEE", "basic.html", "previous vignette")`.
+
+# Multiple selections
+
+## Basic use
+
+As its name suggests, this involves selecting multiple features or samples in one panel and transmitting their identities to another panel to affect the visualization.
+To demonstrate, we will create a small app involving a single reduced dimension plot and a column metadata plot.
+
+```{r}
+library(iSEE)
+app <- iSEE(sce, initial=list(
+    ReducedDimensionPlot(),
+    ColumnDataPlot()
+))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("links-multi-naive.png")
+```
+
+We indicate that we want one panel to "receive" a multiple selection from another panel.
+This is done by specifying the selection source (for samples/columns in this case, given the nature of the two panels)
+and indicating that the column data plot is to receive a selection from the reduced dimension plot.
+
+```{r, echo=FALSE}
+rdp <- ReducedDimensionPlot()
+cdp <- ColumnDataPlot(
+    YAxis="NREADS",
+    XAxis="Column data",
+    XAxisColumnData="dissection_s",
+    ColumnSelectionSource="ReducedDimensionPlot1",
+    SelectionBoxOpen=TRUE)
+
+app <- iSEE(sce, initial=list(rdp, cdp))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("links-multi-unselected.png")
+```
+
+We can click-and-drag to select multiple points in the reduced dimension plot with a brush,
+which highlights those same points in the column data plot.
+This enables users to easily explore relationships between different visualizations in the `iSEE()` interface.
+
+```{r, echo=FALSE}
+brush <- list(xmin = -45.943219326064, xmax = -0.9320051164658, ymin = -70.389479254644, ymax = -5.1362394173266,
+    coords_css = list(xmin = 51.009614944458, xmax = 219.009614944458, ymin = 233.009613037109,
+        ymax = 463.856708268114), coords_img = list(xmin = 66.3132158276913, xmax = 284.715575288405,
+        ymin = 302.912485837478, ymax = 603.013698630137), img_css_ratio = list(x = 1.30001404440901,
+        y = 1.29999995231628), mapping = list(x = "X", y = "Y"), domain = list(left = -49.1019902822795,
+        right = 57.2288623709446, bottom = -70.389479254644, top = 53.5190834641121),
+    range = list(left = 50.986301369863, right = 566.922374429224, bottom = 603.013698630137,
+        top = 33.1552511415525), log = list(x = NULL, y = NULL), direction = "xy",
+    brushId = "ReducedDimensionPlot1_Brush", outputId = "ReducedDimensionPlot1")
+
+rdp <- ReducedDimensionPlot(BrushData=brush)
+app <- iSEE(sce, initial=list(rdp, cdp))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("links-multi-brushed.png")
+```
+
+Alternatively, a single click will lay down lasso waypoints for a non-rectangular selection.
+Once closed, the points in the lasso will be transmitted to the column data plot.
+
+```{r, echo=FALSE}
+lasso <- list(lasso = NULL, closed = TRUE, panelvar1 = NULL, panelvar2 = NULL, mapping = list(
+        x = "X", y = "Y"), coord = structure(c(24.7886887175902, 24.7886887175902, 43.0075135167132, 
+    53.1886214926936, 53.4565453867984, 53.7244692809032, 39.2565789992467, 23.4490692470664, 
+    24.7886887175902, -8.24559471370669, -26.3363891653729, -39.0564790142006, -45.5578582702682, 
+    -23.5097025323, -3.44022743748286, 15.7812416674124, -0.896209467717313, -8.24559471370669
+    ), .Dim = c(9L, 2L)))
+
+app <- iSEE(sce, initial=list(ReducedDimensionPlot(BrushData=lasso), cdp))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("links-multi-lasso.png")
+```
+
+## Selection effects
+
+Transparency is the default aesthetic effect used to distinguish points in multiple selections in receiving plots.
+Alternatively, we may use color:
+
+```{r, echo=FALSE}
+cdp2 <- cdp
+cdp2[["SelectionEffect"]] <- "Color"
+app <- iSEE(sce, initial=list(rdp, cdp2))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("links-multi-color.png")
+```
+
+Another option is to restrict the receiving plot so that it only shows the points in the multiple selection.
+This effectively "gates" the dataset on the selection in the reduced dimension plot, 
+analogous to identification populations of interest in flow cytometry studies.
+Indeed, this gating process can be repeated as many times as desired;
+a multiple selection could made on the column data plot and transmitted to another panel, and so on.
+(See [this mass cytometry tour](https://github.com/iSEE/iSEE2018/blob/master/tours/cytof/app.R) for an example.)
+
+```{r, echo=FALSE}
+cdp2 <- cdp
+cdp2[["SelectionEffect"]] <- "Restrict"
+app <- iSEE(sce, initial=list(rdp, cdp2))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("links-multi-restrict.png")
+```
+
+Of course, not all receiving panels need to be plots.
+If we transmit a multiple selection to a column data table,
+the effect is to subset the rows of the table corresponding to the selected points.
+
+```{r, echo=FALSE}
+cdt <- ColumnDataTable(ColumnSelectionSource="ReducedDimensionPlot1",
+    SelectionBoxOpen=TRUE, PanelWidth=8L)
+app <- iSEE(sce, initial=list(rdp, cdt))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("links-multi-table.png")
+```
+
+As an aside, it is equally possible for a table to transmit a multiple selection to other panels.
+This is achieved using the search fields to subset the dataset to the desired selection.
+
+```{r, echo=FALSE}
+app <- iSEE(sce, initial=list(
+    ColumnDataTable(PanelWidth=8L, Search="L6a"),
+    ReducedDimensionPlot(ColumnSelectionSource="ColumnDataTable1")
+))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("links-multi-table2.png")
+```
+
+## Saving selections
+
+In certain panels (usually plots), multiple selections can be saved to form disjoint selections.
+Receiving plots can then choose to respond to the union of all selections, 
+just the active selection, or one of the saved selections.
+For example, here the column data plot is responding to the union of all selections.
+
+```{r, echo=FALSE}
+rdp <- ReducedDimensionPlot(SelectionBoxOpen=TRUE, 
+    SelectionHistory=list(brush, lasso))
+cdp[["ColumnSelectionType"]] <- "Union"
+
+app <- iSEE(sce, initial=list(rdp, cdp))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("links-multi-saved.png")
+```
+
+The saved selection history operates on a first-in-last-out basis.
+Upon saving, a snapshot is taken of the current "active" selection, i.e., the brush or lasso that is just created.
+Deletion will only operate on the last saved selection.
+
+# Single selections
+
+Another mode of information sharing involves transmitting a selection of a single feature or sample.
+This allows users to conveniently direct other panels to focus on a feature or sample of interest.
+For example, we can transmit a single selection from a row data table to a reduced dimension plot,
+instructing the latter to color points by the expression of the chosen feature.
+
+```{r, echo=FALSE}
+rdp <- ReducedDimensionPlot(VisualBoxOpen=TRUE, 
+    ColorByFeatureSource="RowDataTable1",
+    ColorBy="Feature name")
+rdt <- RowDataTable(Search="Neuro",
+    Selected="Neurod1")
+app <- iSEE(sce, initial=list(rdt, rdp))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("links-single-color.png")
+```
+
+The same approach can be used to control what is plotted on a feature assay plot.
+Clicking on a different row of the table will directly change the axes (in this case, the y-axis) of the plot,
+allowing the user to synchronise different aspects of the `iSEE()` interface to whatever is currently of interest.
+
+```{r, echo=FALSE}
+fap <- FeatureAssayPlot(DataBoxOpen=TRUE,
+    YAxisFeatureSource="RowDataTable1",
+    XAxis="Column data", XAxisColumnData="dissection_s")
+app <- iSEE(sce, initial=list(rdt, fap))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("links-single-color.png")
+```
+
+While the most obvious applications lie in transmitting features, the same approach also applies to samples.
+In the example below, the reduced dimension plot highlights the location of the sample chosen in the column data table.
+This is useful for checking the behavior of specific samples of interest, e.g., during quality control. 
+
+```{r, echo=FALSE}
+cdt <- ColumnDataTable()
+rdp <- ReducedDimensionPlot(VisualBoxOpen=TRUE,
+    ColorBySampleSource="ColumnDataTable1",
+    ColorBy="Sample name")
+app <- iSEE(sce, initial=list(cdt, rdp))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("links-single-sample.png")
+```
+
+It is also possible to transmit single selections between plots using brushes or lassos.
+If the brush/lasso contains multiple points, one of them is arbitrarily chosen for the purposes of obtaining a single selection.
+Below, we select a single highly variable gene to examine its distribution of expression values across the reduced dimension plot.
+
+```{r, echo=FALSE}
+BB <- list(xmin = 7.9644610460621, xmax = 10.11596038509, ymin = 24.542997535857, ymax = 26.582843087131, 
+    coords_css = list(xmin = 232.009614944458, xmax = 280.009614944458, ymin = 66.0096168518066, 
+        ymax = 95.0096168518066), coords_img = list(xmin = 301.615757865723, xmax = 364.016431997355, 
+        ymin = 85.8124987597648, ymax = 123.512497376937), img_css_ratio = list(x = 1.30001404440901, 
+        y = 1.29999995231628), mapping = list(x = "X", y = "Y"), domain = list(left = -0.814852879170668, 
+        right = 17.111910462584, bottom = -1.40152310296966, top = 29.4319851623629), 
+    range = list(left = 46.986301369863, right = 566.922374429224, bottom = 603.013698630137, 
+        top = 33.1552511415525), log = list(x = NULL, y = NULL), direction = "xy", 
+    brushId = "RowDataPlot1_Brush", outputId = "RowDataPlot1")
+
+rdpX <- RowDataPlot(YAxis="var_log", XAxis="Row data", 
+    XAxisRowData="mean_log", BrushData=BB)
+rdp <- ReducedDimensionPlot(VisualBoxOpen=TRUE,
+    ColorByFeatureSource="RowDataPlot1",
+    ColorBy="Feature name")
+app <- iSEE(sce, initial=list(rdpX, rdp))
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("links-single-plot2plot.png")
+```
+
+# Dynamic selections
+
+Most panels will also have an option to dynamically change the choice of transmitting panel according to the last active selection in the app.
+This allows users to, for example, simply brush on any plot in the app and have all participating receiving panels immediately use that selection without requiring manual resetting of the transmitter.
+To illustrate, let's set up an instance with three different plots that all represent points as samples.
+
+```{r, echo=FALSE}
+initial <- list(
+    ReducedDimensionPlot(SelectionBoxOpen=TRUE,
+        ColumnSelectionDynamicSource=TRUE
+    ),
+    FeatureAssayPlot(SelectionBoxOpen=TRUE,
+        ColumnSelectionDynamicSource=TRUE,
+        XAxis="Column data", XAxisColumnData="dissection_s"
+    ),
+    ColumnDataPlot(SelectionBoxOpen=TRUE, YAxis="NREADS",
+        ColumnSelectionDynamicSource=TRUE,
+        XAxis="Column data", XAxisColumnData="Core.Type"
+    )
+)
+
+app <- iSEE(sce, initial=initial)
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("links-dynamic-multi.png")
+```
+
+Notice how we have checked the dynamic source selection option in the selection parameter box.
+This means that, upon making a selection in any one of the plots, all of the other plots will automatically respond as if they had been manually set to receive a transmission from that plot.
+
+```{r, echo=FALSE}
+initial <- list(
+    ReducedDimensionPlot(SelectionBoxOpen=TRUE,
+        ColumnSelectionDynamicSource=TRUE,
+        BrushData=brush
+    ),
+    FeatureAssayPlot(SelectionBoxOpen=TRUE,
+        ColumnSelectionDynamicSource=TRUE,
+        ColumnSelectionSource="ReducedDimensionPlot1",
+        XAxis="Column data", XAxisColumnData="dissection_s"
+    ),
+    ColumnDataPlot(SelectionBoxOpen=TRUE, YAxis="NREADS",
+        ColumnSelectionDynamicSource=TRUE,
+        ColumnSelectionSource="ReducedDimensionPlot1",
+        XAxis="Column data", XAxisColumnData="Core.Type"
+    )
+)
+
+app <- iSEE(sce, initial=initial)
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("links-dynamic-multi2.png")
+```
+
+The same logic applies for some parameters that respond to single selections.
+This allows a panel to respond to an appropriate single selection from any other panel in the interface,
+without requiring the user to manually set the relationship between panels.
+In the example below, users can easily define the y-axis of the feature assay plot from a selected row in the row data table or from a selected single point in the row data plot.
+
+```{r, echo=FALSE}
+initial <- list(
+    RowDataTable(),
+    RowDataPlot(YAxis="var_log", XAxis="Row data",
+        XAxisRowData="mean_log", BrushData=BB),
+    FeatureAssayPlot(DataBoxOpen=TRUE,
+        YAxisFeatureDynamicSource=TRUE,
+        YAxisFeatureSource="RowDataPlot1",
+        XAxis="Column data", XAxisColumnData="dissection_s"
+    )
+)
+
+app <- iSEE(sce, initial=initial)
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("links-dynamic-single.png")
+```
+
+# Session Info {.unnumbered}
+
+```{r sessioninfo}
+sessionInfo()
+```

@@ -181,16 +181,22 @@
 #' Establish the evaluation order
 #'
 #' Establish the order in which panels are to be evaluated during app initialization,
-#' to ensure that panels transmitting a multiple selection have valid \code{pObjects$contents} for downstream use.
+#' to ensure that panels transmitting a single/multiple selection have valid \code{pObjects$contents} for downstream use.
 #'
-#' @param graph A graph object containing links between panels, produced by \code{\link{.spawn_multi_selection_graph}}.
+#' @param graph A graph object containing links between panels,
+#' produced by \code{\link{.spawn_multi_selection_graph}} or friends.
 #'
 #' @details
-#' This function identifies any initial connections between panels (e.g., specified in the panel arguments) for point selection.
-#' It then orders the connected panels such that any transmitters are placed in front of their receivers.
-#'
+#' These functions identify any initial connections between panels (e.g., specified in the panel arguments) for point selection.
 #' The idea is to \dQuote{evaluate} the plots at the start of the app, to obtain the coordinates for transmitting to other panels.
 #' Otherwise, errors will be encountered whereby a panel tries to select from a set of coordinates that do not yet exist.
+#'
+#' \code{.establish_eval_order} is intended for use in the multiple selection graph;
+#' the connected panels are returned in an order such that any transmitters are placed in front of their receivers.
+#' This is necessary to accommodate complex DAGs where one panel transmits to another, which transmits to another, and so on.
+#'
+#' \code{.has_child} is intended for use in the single selection graph and will simply report all transmitting panels.
+#' There is no need to order dependencies as all single selections exert their effects through a named parameter that is watched by an observer; we can thus rely on the observers to propagate all necessary effects.
 #'
 #' Note that only transmitting panels are ever reported by this function.
 #' It is not necessary to evaluate receiving-only panels.
@@ -206,6 +212,12 @@
     iso <- V(graph)[degree(graph, mode="out") == 0]
     graph <- delete.vertices(graph, iso)
     names(topo_sort(graph, mode="out"))
+}
+
+#' @rdname INTERNAL_establish_eval_order
+#' @importFrom igraph V degree
+.has_child <- function(graph) {
+    names(V(graph)[degree(graph, mode="out") != 0])
 }
 
 #' Spawn the dynamic selection source lists

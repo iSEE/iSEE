@@ -46,6 +46,7 @@ Suggests:
     knitr,
     rmarkdown,
     scRNAseq,
+    TENxPBMCData,
     scater,
     DelayedArray,
     RColorBrewer,

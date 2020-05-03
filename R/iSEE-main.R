@@ -463,9 +463,15 @@ iSEE <- function(se,
 
     pObjects <- .create_persistent_objects(memory, reservoir, counter)
 
-    # Evaluating certain plots to fill the coordinate list, if there are any selections.
-    # This is done in topological order so that all dependencies are satisfied.
+    # Evaluating certain plots to fill the coordinate list, if there are any
+    # multiple selections. This is done in topological order so that all
+    # dependencies between panels are satisfied, allowing downstream observers
+    # to render any panel in a valid state.
+
     eval_order <- .establish_eval_order(pObjects$selection_links)
+    eval_extra <- .has_child(pObjects$aesthetics_links)
+    eval_order <- union(eval_order, eval_extra)
+
     for (panel_name in eval_order) {
         p.out <- .generateOutput(pObjects$memory[[panel_name]], se,
             all_memory=pObjects$memory, all_contents=pObjects$contents)

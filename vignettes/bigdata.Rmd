@@ -18,8 +18,6 @@ author:
   - SIB Swiss Institute of Bioinformatics
   email: charlottesoneson@gmail.com
 - name: Aaron Lun
-  affiliation: 
-  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
   email: infinite.monkeys.with.keyboards@gmail.com 
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('iSEE')`"
@@ -54,6 +52,7 @@ knitr::opts_chunk$set(
 )
 stopifnot(requireNamespace("htmltools"))
 htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+unlink("assay.h5")
 ```
 
 ```{r, eval=!exists("SCREENSHOT"), include=FALSE}
@@ -144,11 +143,93 @@ It is worth noting that `iSEE()` does not know or care that the data is stored i
 The app is fully compatible with any matrix-like representation of the assay data that supports `dim()` and `[,`.
 As such, `iSEE()` can be directly used with other memory-efficient objects like the `DeferredMatrix` and `LowRankMatrix` from the `r BiocStyle::Biocpkg("BiocSingular")` package, or perhaps the `ResidualMatrix` from the `r Biocpkg("batchelor")` package.
 
+```{r, echo=FALSE}
+unlink("assay.h5")
+```
+
+# Downsampling points
+
+It is also possible to downsample points to reduce the time required to generate the plot.
+This involves subsetting the dataset so that only the most recently plotted point for an overlapping set of points is shown.
+In this manner, we avoid wasting time in plotting many points that would not be visible anyway.
+To demonstrate, we will re-use the 68K PBMC example and perform downsampling on the feature assay plot;
+we can see that its aesthetics are largely similar to the non-downsampled counterpart above.
+
+```{r}
+library(iSEE)
+app <- iSEE(sce.pbmc, initial=
+    list(RowDataTable(Selected="ENSG00000251562", Search="MALAT1"), 
+        FeatureAssayPlot(XAxis="Column data", XAxisColumnData="Library",
+            YAxisFeatureSource="RowDataTable1", 
+            VisualChoices="Point", Downsample=TRUE,
+            VisualBoxOpen=TRUE
+        )
+    )
+)
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("screenshots/bigdata-downsample.png")
+```
+
+Downsampling is possible in all `iSEE()` plotting panels that represent features or samples as points.
+We can turn on downsampling for all such panels using the relevant field in `iSEEOptions()`,
+which spares us the hassle of setting `Downsample=` individually in each panel constructor.
+
+```{r, eval=FALSE}
+iSEEOptions(downsample=TRUE)
+```
+
+The downsampling only affects the visualization and the speed of the plot rendering.
+Any interactions with other panels occur as if all of the points were still there.
+For example, if one makes a brush, all of the points therein will be selected regardless of whether they were downsampled.
+
+```{r, echo=FALSE}
+brushed <- list(xmin = 0.4, xmax = 1.6672635882221, ymin = 21.106156820944, ymax = 62.899238475283, 
+        coords_css = list(xmin = 41.5274754930861, xmax = 102.504791259766, ymin = 200.009613037109, 
+            ymax = 365.009613037109), coords_img = list(xmin = 53.986301369863, xmax = 133.25766825691, 
+            ymin = 260.012487411041, ymax = 474.512479543227), img_css_ratio = list(x = 1.30001404440901, 
+            y = 1.29999995231628), mapping = list(x = "X", y = "Y", group = "GroupBy"), 
+        domain = list(left = 0.4, right = 8.6, bottom = -5.1, top = 107.1, discrete_limits = list(
+            x = list("1", "2", "3", "4", "5", "6", "7", "8"))), range = list(left = 53.986301369863, 
+            right = 566.922374429224, bottom = 609.013698630137, top = 33.1552511415525), 
+        log = list(x = NULL, y = NULL), direction = "xy", brushId = "FeatureAssayPlot1_Brush", 
+        outputId = "FeatureAssayPlot1")
+
+library(iSEE)
+app <- iSEE(sce.pbmc, initial=
+    list(RowDataTable(Selected="ENSG00000251562", Search="MALAT1"), 
+        FeatureAssayPlot(XAxis="Column data", XAxisColumnData="Library",
+            YAxisFeatureSource="RowDataTable1", 
+            YAxisFeatureName="ENSG00000251562",
+            VisualChoices="Point", Downsample=TRUE,
+            VisualBoxOpen=TRUE, BrushData=brushed 
+        )
+    )
+)
+```
+
+```{r, echo=FALSE}
+SCREENSHOT("screenshots/bigdata-downsample2.png")
+```
+
+The downsampling resolution determines the degree to which points are considered to be overlapping.
+Decreasing the resolution will downsample more aggressively, 
+improving plotting speed but potentially affecting the fidelity of the visualization.
+This may compromise the aesthetics of the plot when the size of the points is small,
+in which case an increase in resolution may be required at the cost of speed.
+
+Obviously, downsampling will not preserve overlays for partially transparent points,
+but any reliance on partial transparency is probably not a good idea in the first place when there are many points.
+
+# Alternative visualizations
+
+The `ReducedDimensionHexPlot` class from the `r Biocpkg("iSEEu")` package will create a hexplot rather than a scatter plot,
+thus avoiding the need to render each point in the reduced dimension plot.
+
 # Session Info {.unnumbered}
 
 ```{r sessioninfo}
 sessionInfo()
 # devtools::session_info()
 ```
-
-# References {.unnumbered}

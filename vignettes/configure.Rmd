@@ -18,8 +18,6 @@ author:
   - SIB Swiss Institute of Bioinformatics
   email: charlottesoneson@gmail.com
 - name: Aaron Lun
-  affiliation: 
-  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
   email: infinite.monkeys.with.keyboards@gmail.com 
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('iSEE')`"

@@ -8,31 +8,6 @@ iSEE(
   se,
   initial = NULL,
   extra = NULL,
-  redDimArgs = NULL,
-  colDataArgs = NULL,
-  featAssayArgs = NULL,
-  rowStatArgs = NULL,
-  rowDataArgs = NULL,
-  sampAssayArgs = NULL,
-  colStatArgs = NULL,
-  customDataArgs = NULL,
-  customStatArgs = NULL,
-  heatMapArgs = NULL,
-  redDimMax = 5,
-  colDataMax = 5,
-  featAssayMax = 5,
-  rowStatMax = 5,
-  rowDataMax = 5,
-  sampAssayMax = 5,
-  colStatMax = 5,
-  customDataMax = 5,
-  customStatMax = 5,
-  heatMapMax = 5,
-  initialPanels = NULL,
-  annotFun = NULL,
-  customDataFun = NULL,
-  customStatFun = NULL,
-  customSendAll = FALSE,
   colormap = ExperimentColorMap(),
   landingPage = createLandingPage(),
   tour = NULL,
@@ -53,59 +28,6 @@ Defaults to one instance of each panel class available from \pkg{iSEE}.}
 
 \item{extra}{A list of additional \linkS4class{Panel} objects that might be added after the app has started.
 Defaults to one instance of each panel class available from \pkg{iSEE}.}
-
-\item{redDimArgs}{Deprecated, use \code{initial} instead.}
-
-\item{colDataArgs}{Deprecated, use \code{initial} instead.}
-
-\item{featAssayArgs}{Deprecated, use \code{initial} instead.}
-
-\item{rowStatArgs}{Deprecated, use \code{initial} instead.}
-
-\item{rowDataArgs}{Deprecated, use \code{initial} instead.}
-
-\item{sampAssayArgs}{Deprecated, use \code{initial} instead.}
-
-\item{colStatArgs}{Deprecated, use \code{initial} instead.}
-
-\item{customDataArgs}{Deprecated, use \code{initial} instead.}
-
-\item{customStatArgs}{Deprecated, use \code{initial} instead.}
-
-\item{heatMapArgs}{Deprecated, use \code{initial} instead.}
-
-\item{redDimMax}{Deprecated and ignored.}
-
-\item{colDataMax}{Deprecated and ignored.}
-
-\item{featAssayMax}{Deprecated and ignored.}
-
-\item{rowStatMax}{Deprecated and ignored.}
-
-\item{rowDataMax}{Deprecated and ignored.}
-
-\item{sampAssayMax}{Deprecated and ignored.}
-
-\item{colStatMax}{Deprecated and ignored.}
-
-\item{customDataMax}{Deprecated and ignored.}
-
-\item{customStatMax}{Deprecated and ignored.}
-
-\item{heatMapMax}{Deprecated and ignored.}
-
-\item{initialPanels}{Deprecated, use \code{initial} instead.}
-
-\item{annotFun}{Deprecated and ignored.
-Read the book for the new, more extensible approach for creating custom panels.}
-
-\item{customDataFun}{Deprecated and ignored.
-Read the book for the new, more extensible approach for creating custom panels.}
-
-\item{customStatFun}{Deprecated and ignored.
-Read the book for the new, more extensible approach for creating custom panels.}
-
-\item{customSendAll}{Deprecated and ignored.}
 
 \item{colormap}{An \linkS4class{ExperimentColorMap} object that defines custom colormaps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.}
 

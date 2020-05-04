@@ -295,6 +295,7 @@ setValidity2("DotPlot", function(object) {
 
 #' @export
 #' @importFrom methods callNextMethod
+#' @importFrom SummarizedExperiment assayNames
 setMethod(".cacheCommonInfo", "DotPlot", function(x, se) {
     if (!is.null(.getCachedCommonInfo(se, "DotPlot"))) {
         return(se)

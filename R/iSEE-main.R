@@ -12,34 +12,6 @@
 #' Defaults to one instance of each panel class available from \pkg{iSEE}.
 #' @param landingPage A function that renders a landing page when \code{se} is started without any specified \code{se}.
 #' See \code{\link{createLandingPage}} for more details.
-#' @param redDimArgs Deprecated, use \code{initial} instead.
-#' @param colDataArgs Deprecated, use \code{initial} instead.
-#' @param featAssayArgs Deprecated, use \code{initial} instead.
-#' @param rowStatArgs Deprecated, use \code{initial} instead.
-#' @param rowDataArgs Deprecated, use \code{initial} instead.
-#' @param sampAssayArgs Deprecated, use \code{initial} instead.
-#' @param colStatArgs Deprecated, use \code{initial} instead.
-#' @param customDataArgs Deprecated, use \code{initial} instead.
-#' @param customStatArgs Deprecated, use \code{initial} instead.
-#' @param heatMapArgs Deprecated, use \code{initial} instead.
-#' @param redDimMax Deprecated and ignored.
-#' @param colDataMax Deprecated and ignored.
-#' @param featAssayMax Deprecated and ignored.
-#' @param rowStatMax Deprecated and ignored.
-#' @param rowDataMax Deprecated and ignored.
-#' @param sampAssayMax Deprecated and ignored.
-#' @param colStatMax Deprecated and ignored.
-#' @param customDataMax Deprecated and ignored.
-#' @param customStatMax Deprecated and ignored.
-#' @param heatMapMax Deprecated and ignored.
-#' @param initialPanels Deprecated, use \code{initial} instead.
-#' @param annotFun Deprecated and ignored.
-#' Read the book for the new, more extensible approach for creating custom panels.
-#' @param customDataFun Deprecated and ignored.
-#' Read the book for the new, more extensible approach for creating custom panels.
-#' @param customStatFun Deprecated and ignored.
-#' Read the book for the new, more extensible approach for creating custom panels.
-#' @param customSendAll Deprecated and ignored.
 #' @param colormap An \linkS4class{ExperimentColorMap} object that defines custom colormaps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.
 #' @param tour A data.frame with the content of the interactive tour to be displayed after starting up the app.
 #' @param appTitle A string indicating the title to be displayed in the app.
@@ -120,31 +92,6 @@
 iSEE <- function(se,
     initial=NULL,
     extra=NULL,
-    redDimArgs=NULL,
-    colDataArgs=NULL,
-    featAssayArgs=NULL,
-    rowStatArgs=NULL,
-    rowDataArgs=NULL,
-    sampAssayArgs=NULL,
-    colStatArgs=NULL,
-    customDataArgs=NULL,
-    customStatArgs=NULL,
-    heatMapArgs=NULL,
-    redDimMax=5,
-    colDataMax=5,
-    featAssayMax=5,
-    rowStatMax=5,
-    rowDataMax=5,
-    sampAssayMax=5,
-    colStatMax=5,
-    customDataMax=5,
-    customStatMax=5,
-    heatMapMax=5,
-    initialPanels=NULL,
-    annotFun=NULL,
-    customDataFun=NULL,
-    customStatFun=NULL,
-    customSendAll=FALSE,
     colormap=ExperimentColorMap(),
     landingPage=createLandingPage(),
     tour=NULL,
@@ -161,26 +108,6 @@ iSEE <- function(se,
         se_name <- "se"
     }
     ecm_name <- deparse(substitute(colormap))
-
-    if (has_se) {
-        # This will get re-done in initialize_server(), anyway.
-        placeholder <- .fill_se_dimnames(se)$se
-
-        old_stuff <- .create_new_from_old(placeholder, redDimArgs=redDimArgs,
-            colDataArgs=colDataArgs,
-            featAssayArgs=featAssayArgs,
-            rowStatArgs=rowStatArgs,
-            rowDataArgs=rowDataArgs,
-            sampAssayArgs=sampAssayArgs,
-            colStatArgs=colStatArgs,
-            heatMapArgs=heatMapArgs,
-            initialPanels=initialPanels)
-
-        if (!is.null(old_stuff)) {
-            initial <- old_stuff$initial
-            extra <- old_stuff$extra
-        }
-    }
 
     if (is.null(initial) || is.null(extra)) {
         all_defaults <- list(

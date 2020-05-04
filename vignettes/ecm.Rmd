@@ -17,8 +17,6 @@ author:
   - SIB Swiss Institute of Bioinformatics
   email: charlottesoneson@gmail.com
 - name: Aaron Lun
-  affiliation: 
-  - &id2 Cancer Research UK Cambridge Institute, University of Cambridge
   email: infinite.monkeys.with.keyboards@gmail.com 
 date: "`r BiocStyle::doc_date()`"
 package: "`r BiocStyle::pkg_ver('iSEE')`"
@@ -26,7 +24,7 @@ output:
   BiocStyle::html_document:
     toc_float: true
 vignette: >
-  %\VignetteIndexEntry{2. The ExperimentColorMap Class}
+  %\VignetteIndexEntry{4. The ExperimentColorMap Class}
   %\VignetteEncoding{UTF-8}  
   %\VignettePackage{iSEE}
   %\VignetteKeywords{GeneExpression, RNASeq, Sequencing, Visualization, QualityControl, GUI}

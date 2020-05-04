@@ -3,8 +3,7 @@ title: Controlling the `iSEE` interface using speech recognition
 author:
 - name: Kevin Rue-Albrecht
   affiliation: 
-  - &id4 Kennedy Institute of Rheumatology, University of Oxford,
-    Headington, Oxford OX3 7FY, UK.
+  - &id4 MRC WIMM Centre for Computational Biology, University of Oxford, Oxford, OX3 9DS, UK
   email: kevinrue67@gmail.com
 - name: Federico Marini
   affiliation: 

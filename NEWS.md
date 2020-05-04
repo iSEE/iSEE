@@ -1,6 +1,14 @@
+# iSEE 2.1.2
+
+* Added a new vignette to describe panel links.
+* Fixed documentation for `*DynamicSource` slots.
+* Fixed reception of single selection from plot at initialization.
+* Removed deprecated functionality.
+
 # iSEE 2.1.1
 
-* Add vignette documenting the use of HDF5.
+* Added vignette documenting the use of out-of-memory matrices for big data.
+* Added `TENxPBMCData` to `Suggests:`.
 
 # iSEE 1.99.9
 
@@ -71,7 +79,7 @@
 
 * Fix `rbind()` of `data.frame` and `DataFrame` objects.
 * Fix error related to using `&&` with variable length greater than 1.
-* Replace deprecated scater argument.
+* Replace deprecated `scater` argument.
 * Replace deprecated functions: `SingleCellExperiment::clearSpikes()`, `SingleCellExperiment::clearSizeFactors()`.
 
 # iSEE 1.7.0

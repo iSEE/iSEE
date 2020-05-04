@@ -344,3 +344,11 @@ test_that(".build_heatmap_assay_legend_title handles centering and scaling", {
     expect_identical(out, "tophat_counts\n(centered, scaled)")
 
 })
+
+test_that("constructor concatenates newlines in text", {
+
+    com <- ComplexHeatmapPlot(PanelId=1L, CustomRowsText=LETTERS)
+    stored <- com[["CustomRowsText"]]
+    expect_identical(stored, paste(LETTERS, collapse="\n"))
+
+})

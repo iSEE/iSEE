@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.1</span>
       </span>
     </div>
 
@@ -59,6 +59,10 @@
 </a>
     </li>
     <li>
+      <a href="../articles/bigdata.html">How to use `r Biocpkg("iSEE")` with big data
+</a>
+    </li>
+    <li>
       <a href="../articles/configure.html">Configuring `r Biocpkg("iSEE")` apps
 </a>
     </li>
@@ -67,6 +71,10 @@
     </li>
     <li>
       <a href="../articles/ecm.html">Describing the `ExperimentColorMap` class</a>
+    </li>
+    <li>
+      <a href="../articles/links.html">Sharing information across `r Biocpkg("iSEE")` panels
+</a>
     </li>
     <li>
       <a href="../articles/voice.html">Controlling the `iSEE` interface using speech recognition</a>
@@ -118,7 +126,7 @@
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">30 April 2020</h4>
+            <h4 class="date">4 May 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/basic.Rmd"><code>vignettes/basic.Rmd</code></a></small>
       <div class="hidden name"><code>basic.Rmd</code></div>
@@ -127,7 +135,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-04-30</p>
+<p><strong>Compiled date</strong>: 2020-05-04</p>
 <p><strong>Last edited</strong>: 2020-04-20</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <p><img src="../../../_temp/Library/iSEE/www/iSEE.png" width="50%" style="display: block; margin: auto;"></p>
@@ -346,25 +354,11 @@
 <h2 class="hasAnchor">
 <a href="#controlling-point-aesthetics" class="anchor"></a>Controlling point aesthetics</h2>
 <p>Data points can be set to different shapes according to categorical factors in <code>colData(se)</code> (for column-based plots) or <code>rowData(se)</code> (for row-based plots). This is achieved by checking the <code>"Shape"</code> box to reveal the shape-setting options. The size and opacity of the data points can be modified via the options available by checking the <code>"Point"</code> box. This may be useful for aesthetically pleasing visualizations when the number of points is very large or small.</p>
-<p>It is also possible to downsample points to reduce the time required to generate the plot, via the <code>"Downsample points for speed"</code> checkbox. This uses density-dependent downsampling whereby only the last point for an overlapping set of points is shown. In this manner, we avoid wasting time in plotting many points that would not be visible anyway. Note that this is only effective when the point size is large and the opacity is set to unity.</p>
 </div>
 <div id="faceting" class="section level2">
 <h2 class="hasAnchor">
 <a href="#faceting" class="anchor"></a>Faceting</h2>
 <p>Each point-based plot can be split into multiple facets using the options in the <code>"Facet"</code> checkbox. Users can facet by row and/or column, using categorical factors in <code>colData(se)</code> (for column-based plots) or <code>rowData(se)</code> (for row-based plots). This provides a convenient way to stratify points in a single plot by multiple factors of interest. Note that point selection can only occur <em>within</em> a single facet at a time; points cannot be selected across facets.</p>
-</div>
-<div id="select-and-link" class="section level2">
-<h2 class="hasAnchor">
-<a href="#select-and-link" class="anchor"></a>Point selections between linked panels</h2>
-<p>To link one plot to another, users can instruct a plotting panel to receive a selection of data points from another (transmitting) panel. This is done using the appropriate field in the “Selection parameters” box. Data point selection on the transmitting panel can then affect the receiving plot in a variety of ways:</p>
-<ul>
-<li>If the point selection effect is set to <code>"Restrict"</code>, only the subset of points selected in the transmitter are visible in the receiver.</li>
-<li>If set to <code>"Color"</code>, the selected subset of points is plotted in the receiver with a user-selected color.</li>
-<li>If set to <code>"Transparent"</code>, the selected subset will be drawn with no transparency, while all non-selected points will be plotted with the specified alpha value.</li>
-</ul>
-<p>It is possible to set up a tree of panels that transmit selections to each other, much like the gating structures used in flow cytometry. This requires all panels acting as both receivers and transmitters to have their effects set to <code>"Restrict"</code> - see <a href="https://github.com/iSEE/iSEE2018/blob/master/tours/cytof/app.R">this mass cytometry tour</a> for an example.</p>
-<p>While we have focused above on receiving point selections for plots, it is also possible to transmit from plots to tables. This will subset the table so that only the rows corresponding to selected points are visible. Obviously, this means that users should only transmit from row-based plots to <em>row data tables</em>, and from column-based plots to <em>column data tables</em>.</p>
-<p>Most panels will also have an option to dynamically change the choice of transmitting panel according to the last active selection in the app. This allows users to, for example, simply brush on any plot in the app and have all participating receiving panels immediately use that selection without requiring manual resetting of the transmitter. Note that this option will not change the app state when it is set; it only has an effect on the next user-mediated selection of points in the app.</p>
 </div>
 <div id="zooming-in-and-out" class="section level2">
 <h2 class="hasAnchor">
@@ -431,7 +425,7 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
 <span class="co">#&gt;  [1] scater_1.14.6               ggplot2_3.3.0              </span>
-<span class="co">#&gt;  [3] scRNAseq_2.0.2              iSEE_2.1.0                 </span>
+<span class="co">#&gt;  [3] scRNAseq_2.0.2              iSEE_2.1.1                 </span>
 <span class="co">#&gt;  [5] SingleCellExperiment_1.8.0  SummarizedExperiment_1.16.1</span>
 <span class="co">#&gt;  [7] DelayedArray_0.12.3         BiocParallel_1.20.1        </span>
 <span class="co">#&gt;  [9] matrixStats_0.56.0          Biobase_2.46.0             </span>
@@ -443,7 +437,7 @@
 <span class="co">#&gt;   [1] Rtsne_0.15                    ggbeeswarm_0.6.0             </span>
 <span class="co">#&gt;   [3] colorspace_1.4-1              rjson_0.2.20                 </span>
 <span class="co">#&gt;   [5] ellipsis_0.3.0                rprojroot_1.3-2              </span>
-<span class="co">#&gt;   [7] circlize_0.4.8                XVector_0.26.0               </span>
+<span class="co">#&gt;   [7] circlize_0.4.9                XVector_0.26.0               </span>
 <span class="co">#&gt;   [9] BiocNeighbors_1.4.2           GlobalOptions_0.1.1          </span>
 <span class="co">#&gt;  [11] fs_1.4.1                      clue_0.3-57                  </span>
 <span class="co">#&gt;  [13] DT_0.13                       bit64_0.9-7                  </span>
@@ -476,7 +470,7 @@
 <span class="co">#&gt;  [67] gridExtra_2.3                 memoise_1.1.0                </span>
 <span class="co">#&gt;  [69] stringi_1.4.6                 RSQLite_2.2.0                </span>
 <span class="co">#&gt;  [71] BiocVersion_3.10.1            desc_1.2.0                   </span>
-<span class="co">#&gt;  [73] shape_1.4.4                   rlang_0.4.5                  </span>
+<span class="co">#&gt;  [73] shape_1.4.4                   rlang_0.4.6                  </span>
 <span class="co">#&gt;  [75] pkgconfig_2.0.3               bitops_1.0-6                 </span>
 <span class="co">#&gt;  [77] evaluate_0.14                 lattice_0.20-38              </span>
 <span class="co">#&gt;  [79] purrr_0.3.4                   htmlwidgets_1.5.1            </span>

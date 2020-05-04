@@ -73,7 +73,7 @@ It provides slots and methods for specifying which sample to use and what to plo
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.1</span>
       </span>
     </div>
 
@@ -100,6 +100,10 @@ It provides slots and methods for specifying which sample to use and what to plo
 </a>
     </li>
     <li>
+      <a href="../articles/bigdata.html">How to use `r Biocpkg("iSEE")` with big data
+</a>
+    </li>
+    <li>
       <a href="../articles/configure.html">Configuring `r Biocpkg("iSEE")` apps
 </a>
     </li>
@@ -108,6 +112,10 @@ It provides slots and methods for specifying which sample to use and what to plo
     </li>
     <li>
       <a href="../articles/ecm.html">Describing the `ExperimentColorMap` class</a>
+    </li>
+    <li>
+      <a href="../articles/links.html">Sharing information across `r Biocpkg("iSEE")` panels
+</a>
     </li>
     <li>
       <a href="../articles/voice.html">Controlling the `iSEE` interface using speech recognition</a>
@@ -154,13 +162,18 @@ It provides slots and methods for specifying which sample to use and what to plo
 
     
 
-<p>The following slots control the dimensionality reduction result that is used:</p><ul>
+<p>The following slots control the values on the y-axis:</p><ul>
 <li><p><code>YAxisSampleName</code>, a string specifying the name of the sample to plot on the y-axis.
 If <code>NA</code>, defaults to the first column name of the SummarizedExperiment object.</p></li>
 <li><p><code>Assay</code>, string specifying the name of the assay to use for obtaining expression values.
 Defaults to the first valid assay name (see <code>?"<a href='DotPlot-class.html'>.refineParameters,DotPlot-method</a>"</code> for details).</p></li>
 <li><p><code>YAxisSampleSource</code>, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces <code>YAxisSampleName</code>.
 Defaults to <code>"---"</code>, i.e., no transmission is performed.</p></li>
+<li><p><code>YAxisSampleDynamicSource</code>, a logical scalar indicating whether <code>x</code> should dynamically change its selection source for the y-axis.
+Defaults to <code>FALSE</code>.</p></li>
+</ul>
+
+<p>The following slots control the values on the x-axis:</p><ul>
 <li><p><code>XAxis</code>, string specifying what should be plotting on the x-axis.
 This can be any one of <code>"None"</code>, <code>"Sample name"</code> or <code>"Column data"</code>.
 Defaults to <code>"None"</code>.</p></li>
@@ -172,6 +185,8 @@ if <code>XAxis="Sample name"</code>.
 Defaults to the first column name.</p></li>
 <li><p><code>XAxisSampleSource</code>, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces <code>XAxisSampleName</code>.
 Defaults to <code>"---"</code>, i.e., no transmission is performed.</p></li>
+<li><p><code>XAxisSampleDynamicSource</code>, a logical scalar indicating whether <code>x</code> should dynamically change its selection source for the x-axis.
+Defaults to <code>FALSE</code>.</p></li>
 </ul>
 
 <p>In addition, this class inherits all slots from its parent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>, <a href='DotPlot-class.html'>DotPlot</a> and <a href='Panel-class.html'>Panel</a> classes.</p>

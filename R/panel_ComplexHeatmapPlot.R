@@ -232,6 +232,7 @@ setValidity2("ComplexHeatmapPlot", function(object) {
 
 #' @export
 #' @importFrom methods callNextMethod
+#' @importFrom SummarizedExperiment assayNames
 setMethod(".cacheCommonInfo", "ComplexHeatmapPlot", function(x, se) {
     if (!is.null(.getCachedCommonInfo(se, "ComplexHeatmapPlot"))) {
         return(se)

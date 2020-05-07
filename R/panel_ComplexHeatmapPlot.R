@@ -161,7 +161,9 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- .emptyDefault(args, .heatMapAssay, NA_character_)
     args <- .emptyDefault(args, .heatMapCustomFeatNames, TRUE)
     args <- .emptyDefault(args, .heatMapFeatNameText, NA_character_)
-    if (!is.na(vals <- args[[.heatMapFeatNameText]])) {
+
+    vals <- args[[.heatMapFeatNameText]]
+    if (length(vals)!=1L) {
         args[[.heatMapFeatNameText]] <- paste(vals, collapse="\n")
     }
 

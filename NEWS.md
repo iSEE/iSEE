@@ -1,3 +1,7 @@
+# iSEE 2.1.3
+
+* Fixed handling of logical > 1 when processing the `CustomRowsText` slot in the `ComplexHeatmapPlot` constructor.
+
 # iSEE 2.1.2
 
 * Added a new vignette to describe panel links.
@@ -16,7 +20,7 @@
 
 # iSEE 1.99.8
 
-* Protect against transient invalid selected index; fixes #400.
+* Protected against transient invalid selected index; fixes #400.
 * Forced `renderDT` to rerun expression upon panel reorg.
 
 # iSEE 1.99.7

@@ -86,6 +86,7 @@ jobs:
           local_deps <- remotes::local_package_deps(dependencies = TRUE)
           deps <- remotes::dev_package_deps(dependencies = TRUE, repos = BiocManager::repositories())
           BiocManager::install(local_deps[local_deps %in% deps$package[deps$diff != 0]], Ncpu = 2L)
+          BiocManager::install("Rtsne", Ncpu = 2L)
           remotes::install_cran('rcmdcheck', Ncpu = 2L)
         shell: Rscript {0}
 

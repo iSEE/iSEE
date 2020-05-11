@@ -406,12 +406,12 @@ iSEE <- function(se,
     }
 
     # Observer set-up.
-    .create_general_observers(tour, runLocal, 
-        se_name=se_name, ecm_name=ecm_name, mod_commands=mod_commands,
+    .create_general_observers(runLocal, se_name=se_name, ecm_name=ecm_name, mod_commands=mod_commands,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_organization_observers(se=se,
-        input=input, output=output, session=session,
+    .create_tour_observer(se, memory=pObjects$memory, tour=tour, input=input, session=session)
+
+    .create_organization_observers(se=se, input=input, output=output, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
     .create_child_propagation_observer(se, pObjects, rObjects)

@@ -37,24 +37,10 @@
 #'
 #' @importFrom utils read.delim sessionInfo citation browseURL capture.output
 #' @importFrom shiny observeEvent showModal modalDialog HTML br tagList showNotification p pre downloadButton
-#' @importFrom rintrojs introjs
 #' @importFrom shinyAce aceEditor
 #'
 #' @rdname INTERNAL_general_observers
-.create_general_observers <- function(tour, runLocal, se_name, ecm_name, mod_commands, input, session, pObjects, rObjects) {
-    observeEvent(input[[.generalTourSteps]], {
-        if(is.null(tour)) {
-            tour <- read.delim(system.file("extdata", "intro_firststeps.txt", package="iSEE"),
-                sep=";", stringsAsFactors=FALSE, row.names=NULL, quote="")
-        }
-        introjs(session, options=list(steps=tour))
-    }, ignoreInit=TRUE)
-
-    if (!is.null(tour)) {
-        # Only triggers _after_ panels are fully setup, so observers are properly ID'd.
-        session$onFlushed(function() { introjs(session, options=list(steps=tour)) })
-    }
-
+.create_general_observers <- function(runLocal, se_name, ecm_name, mod_commands, input, session, pObjects, rObjects) {
     observeEvent(input[[.generalTrackedCode]], {
         all_cmds <- .track_it_all(pObjects, se_name, ecm_name, mod_commands)
         all_cmds <- paste(all_cmds, collapse="\n")
@@ -124,6 +110,34 @@
     .create_export_observers(input, session, pObjects)
 
     invisible(NULL)
+}
+
+#' Tour observer for \code{\link{iSEE}}
+#'
+#' A function to set up the observers for the tour.
+#'
+#' @inheritParams .initialize_server
+#' @param memory A list of \linkS4class{Panel} objects specifying the current memory of the app.
+#'
+#' @return An observer is created in the server function in which this is called.
+#' A \code{NULL} value is invisibly returned.
+#'
+#' @author Aaron Lun
+#' @importFrom rintrojs introjs
+#' @importFrom shiny observeEvent
+#' @rdname INTERNAL_create_tour_observer
+.create_tour_observer <- function(se, memory, tour, input, session) {
+    observeEvent(input[[.generalTourSteps]], {
+        if (is.null(tour)) {
+            tour <- .assemble_tour(se, memory)
+        }
+        introjs(session, options=list(steps=tour))
+    }, ignoreInit=TRUE)
+
+    if (!is.null(tour)) {
+        # Only triggers _after_ panels are fully setup, so observers are properly ID'd.
+        session$onFlushed(function() { introjs(session, options=list(steps=tour)) })
+    }
 }
 
 #' Create the export observers

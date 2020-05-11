@@ -114,7 +114,7 @@
         return(.truncated_tour)
     }
     element <- c(element, paste0("#", enc_fap))
-    intro <- c(intro, "A <font color=\"#402ee8\">Feature assay plot</font> displays the assay values (here, gene expression) across all cells. Like the <font color=\"#402ee8\">Column data plot</font>, points represent cells and can be shown in both violin or scatter plots, depending on the variable selected on the x-axis.")
+    intro <- c(intro, "A <font color=\"#402ee8\">Feature assay plot</font> displays the assay values for a chosen feature (here, gene expression) across all cells. Like the <font color=\"#402ee8\">Column data plot</font>, points represent cells and can be shown in both violin or scatter plots, depending on the variable selected on the x-axis.")
 
     enc_cdt <- "ColumnDataTable1"
     if (check && !enc_cdt %in% all_encs) {
@@ -162,7 +162,7 @@
     intro <- c(intro, "<strong>Action:</strong> make a brush on this plot by click-and-dragging a rectangular region over some points.")
 
     element <- c(element, paste0("#", enc_fap))
-    intro <- c(intro, "The points selected in the <font color=\"#402ee8\">Reduced dimension plot 1</font> are shown as opaque in this plot, while all other points are transparent.")
+    intro <- c(intro, "The points selected in the <font color=\"#402ee8\">Reduced dimension plot 1</font> are shown as opaque in this plot, while all other points are semi-transparent.")
 
     element <- c(element, paste0("#", enc_fap, "_", .selectEffect))
     intro <- c(intro, 'The effect of the selection can also be altered. If set to <font color="#402ee8">Restrict</font>, only the selected points will be plotted in the receiving plot. If <font color="#402ee8">Color</font>, all points are plotted and the selected points are marked with a specified color. The default is to use <font color="#402ee8">Transparent</font>, where all non-selected points are transparent.')

@@ -64,7 +64,6 @@
     intro <- c(intro, "By default, the points (cells) are not colored.<br/><br/><strong>Action:</strong> select <code>Column data</code> to colour the cells by a column metadata variable.")
 
     if (check && !"passes_qc_checks_s" %in% colnames(colData(se))) {
-        print("passes_qc_checks_s")
         return(.truncated_tour)
     }
     element <- c(element, paste0("#", enc_rdp, "_", .colorByColData, " + .selectize-control"))

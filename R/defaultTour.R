@@ -193,7 +193,7 @@
     element <- c(element, paste0("#", enc_rdp))
     intro <- c(intro, 'A zooming functionality is also available by first brushing, then double-clicking on the brushed area.<br /><br /><strong>Action:</strong> click and drag to brush over an area. Now, double click inside the marked area to zoom in. To zoom out to the original plot, double-click on the plot.')
 
-    # Highlighting the heatmap: KRA to add.
+    # Highlighting the heatmap:
     element <- c(element, paste0("#", enc_chm, "_", .dataParamBoxOpen))
     intro <- c(intro, "The <font color=\"#402ee8\">Complex heat map</font> panel provides a powerful and responsive visualisation of any assay matrix in the <code>SummarizedExperiment</code> object.<br/><br/><strong>Action:</strong> open this box.")
 
@@ -201,13 +201,10 @@
     intro <- c(intro, "The assay displayed can be changed here.")
 
     element <- c(element, paste0("#", enc_chm, "_", .heatMapCustomFeatNames))
-    intro <- c(intro, "This checkbox switches the panel between two modes:<ul><li>A modal text editor used to paste and edit a list of features manually.</li><li>The same dynamic selection mechanism used for other panels.</li><u/>")
-
-    element <- c(element, paste0("#", enc_chm, "_", .featureNamesEdit))
-    intro <- c(intro, "This button open the modal text editor.")
+    intro <- c(intro, "This checkbox switches the selection of features between two modes:<ul><li>A manual selection using a text editor to paste and edit a custom list of features.</li><li>The same dynamic selection mechanism used for other row-based panels.</li></ul><strong>Action:</strong> untick the box to enable dynamic selection (i.e. disable the custom list of features).")
 
     element <- c(element, paste0("#", enc_chm, "_", .visualParamBoxOpen))
-    intro <- c(intro, "The <font color=\"#402ee8\">Complex heat map</font> panel also includes a number of visual effects to integrate additional information in the plot.<br/><br/><strong>Action:</strong> open this box.")
+    intro <- c(intro, "The <font color=\"#402ee8\">Complex heat map</font> panel also includes a number of visual effects to augment the plot with additional integrated information.<br/><br/><strong>Action:</strong> open this box.")
 
     element <- c(element, paste0("#", enc_chm, "_", .heatMapColData, " + .selectize-control"))
     intro <- c(intro, "Column-level metadata can be selected and displayed above the heatmap.<br/><br/><strong>Action:</strong> Select a few metadata fields. Note how items can be reordered by drag-and-drop.")
@@ -227,10 +224,38 @@
     element <- c(element, paste0("#", enc_chm, "_", .heatMapCenteredColormap, " + .selectize-control"))
     intro <- c(intro, "Similarly, if rows are centered, a colormap suitable for centered values can be selected in this menu.<br/><br/><strong>Action:</strong> choose any colormap.")
 
-    element <- c(element, paste0("#", enc_chm))
-    intro <- c(intro, "To be continued...")
+    element <- c(element, paste0("#", enc_chm, "_", .selectParamBoxOpen))
+    intro <- c(intro, "The two-dimensional nature of the <font color=\"#402ee8\">Complex heat map</font> panel makes it the only builtin panel capable of receiving selections on both dimensions simultaneously.<br/><br/><strong>Action:</strong> open this box.")
 
-    # TODO
+    element <- c(element, paste0("#", enc_chm, "_", .selectRowSource, " + .selectize-control"))
+    intro <- c(intro, "The source of incoming row selections (i.e., features) can be selected here.<br/><br/><strong>Action:</strong> Select the panel <font color=\"#402ee8\">Row data plot 1</font>")
+
+    element <- c(element, paste0("#", enc_chm, "_", .selectColSource, " + .selectize-control"))
+    intro <- c(intro, "Similarly, the source of incoming column selections (i.e., samples) can be selected here.<br/><br/><strong>Action:</strong> Select the panel <font color=\"#402ee8\">Column data plot 1</font>")
+
+    element <- c(element, paste0("#", enc_rop))
+    intro <- c(intro, "<strong>Action:</strong> Select data points representing features in this <font color=\"#402ee8\">Row data plot</font>.")
+
+    element <- c(element, paste0("#", enc_cdp))
+    intro <- c(intro, "<strong>Action:</strong> Select samples representing samples in this <font color=\"#402ee8\">Column data plot</font>.")
+
+    element <- c(element, paste0("#", enc_chm))
+    intro <- c(intro, "You can see the result of our interactions so far, including the selections applied to both rows and columns of this plot.")
+
+    element <- c(element, paste0("#", enc_chm, "_", .selectEffect))
+    intro <- c(intro, "By default, all samples are shown in the heatmap, and column selections are colored. Alternatively, the heatmap can be restricted to show only the selected samples.<br/><br/><strong>Action:</strong> Select the 'Restrict' effect.")
+
+    element <- c(element, paste0("#", enc_chm, "_", .heatMapClusterFeatures))
+    intro <- c(intro, "Having seleted features of interest, it is often helpful to cluster them by expression profile.<br/><br/><strong>Action:</strong> tick this box.")
+
+    element <- c(element, paste0("#", enc_chm, "_", .heatMapClusterDistanceFeatures, " + .selectize-control"))
+    intro <- c(intro, "A number of clustering distances are available to choose from.")
+
+    element <- c(element, paste0("#", enc_chm, "_", .heatMapClusterMethodFeatures, " + .selectize-control"))
+    intro <- c(intro, "So are clustering methods.")
+
+    element <- c(element, paste0("#", enc_chm))
+    intro <- c(intro, "At this point, we have constructed a rich heatmap that combines assay data with column and row metadata for a selection of features and samples, with features clustered by expression profile.")
 
     # Wrapping up.
     element <- c(element, ".navbar-static-top")

@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.3</span>
       </span>
     </div>
 
@@ -148,11 +148,29 @@
       <small>Source: <a href='https://github.com/iSEE/iSEE/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="isee-213" class="section level1">
+<h1 class="page-header" data-toc-text="2.1.3">
+<a href="#isee-213" class="anchor"></a>iSEE 2.1.3</h1>
+<ul>
+<li>Fixed handling of logical &gt; 1 when processing the <code>CustomRowsText</code> slot in the <code>ComplexHeatmapPlot</code> constructor.</li>
+</ul>
+</div>
+    <div id="isee-212" class="section level1">
+<h1 class="page-header" data-toc-text="2.1.2">
+<a href="#isee-212" class="anchor"></a>iSEE 2.1.2</h1>
+<ul>
+<li>Added a new vignette to describe panel links.</li>
+<li>Fixed documentation for <code>*DynamicSource</code> slots.</li>
+<li>Fixed reception of single selection from plot at initialization.</li>
+<li>Removed deprecated functionality.</li>
+</ul>
+</div>
     <div id="isee-211" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.1">
 <a href="#isee-211" class="anchor"></a>iSEE 2.1.1</h1>
 <ul>
-<li>Add vignette documenting the use of HDF5.</li>
+<li>Added vignette documenting the use of out-of-memory matrices for big data.</li>
+<li>Added <code>TENxPBMCData</code> to <code>Suggests:</code>.</li>
 </ul>
 </div>
     <div id="isee-1999" class="section level1">
@@ -166,7 +184,7 @@
 <h1 class="page-header" data-toc-text="1.99.8">
 <a href="#isee-1998" class="anchor"></a>iSEE 1.99.8</h1>
 <ul>
-<li>Protect against transient invalid selected index; fixes <a href='https://github.com/iSEE/iSEE/issues/400'>#400</a>.</li>
+<li>Protected against transient invalid selected index; fixes <a href='https://github.com/iSEE/iSEE/issues/400'>#400</a>.</li>
 <li>Forced <code>renderDT</code> to rerun expression upon panel reorg.</li>
 </ul>
 </div>
@@ -259,8 +277,8 @@
 <ul>
 <li>Fix <code><a href="https://rdrr.io/r/base/cbind.html">rbind()</a></code> of <code>data.frame</code> and <code>DataFrame</code> objects.</li>
 <li>Fix error related to using <code>&amp;&amp;</code> with variable length greater than 1.</li>
-<li>Replace deprecated scater argument.</li>
-<li>Replace deprecated functions: <code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SCE-isSpike.html">SingleCellExperiment::clearSpikes()</a></code>, <code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/SCE-sizeFactors.html">SingleCellExperiment::clearSizeFactors()</a></code>.</li>
+<li>Replace deprecated <code>scater</code> argument.</li>
+<li>Replace deprecated functions: <code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/defunct.html">SingleCellExperiment::clearSpikes()</a></code>, <code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/defunct.html">SingleCellExperiment::clearSizeFactors()</a></code>.</li>
 </ul>
 </div>
     <div id="isee-170" class="section level1">
@@ -311,14 +329,14 @@
 <h1 class="page-header" data-toc-text="1.5.8">
 <a href="#isee-158" class="anchor"></a>iSEE 1.5.8</h1>
 <ul>
-<li>Substituted deprecated <code><a href="https://rdrr.io/pkg/scater/man/normalize.html">scater::normalize()</a></code> by <code><a href="https://rdrr.io/pkg/scater/man/logNormCounts.html">scater::logNormCounts()</a></code>.</li>
+<li>Substituted deprecated <code>scater::normalize()</code> by <code><a href="https://rdrr.io/pkg/scater/man/logNormCounts.html">scater::logNormCounts()</a></code>.</li>
 </ul>
 </div>
     <div id="isee-157" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.7">
 <a href="#isee-157" class="anchor"></a>iSEE 1.5.7</h1>
 <ul>
-<li>Simplified protection of <code><a href="../reference/defaults.html">redDimPlotDefaults()</a></code> against empty <code>reducedDims</code>.</li>
+<li>Simplified protection of <code>redDimPlotDefaults()</code> against empty <code>reducedDims</code>.</li>
 <li>Fix to declare all panel types not available.</li>
 </ul>
 </div>
@@ -544,7 +562,7 @@
 <h1 class="page-header" data-toc-text="1.1.4">
 <a href="#isee-114" class="anchor"></a>iSEE 1.1.4</h1>
 <ul>
-<li>Split <code><a href="../reference/defaults.html">?defaults</a></code> help page by panel type.</li>
+<li>Split <code>?defaults</code> help page by panel type.</li>
 <li>Generalized support for custom data plots and statistics tables.</li>
 </ul>
 </div>

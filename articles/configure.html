@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.3</span>
       </span>
     </div>
 
@@ -108,7 +108,7 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip></h1>
-<p>Configuring <em><a href="https://bioconductor.org/packages/3.10/iSEE">iSEE</a></em> apps</p>
+<p>Configuring <em><a href="https://bioconductor.org/packages/3.12/iSEE">iSEE</a></em> apps</p>
                         <h4 class="author">Kevin Rue-Albrecht</h4>
             <address class="author_afil">
       Kennedy Institute of Rheumatology, University of Oxford, Headington, Oxford OX3 7FY, UK.<br><a class="author_email" href="mailto:#"></a><a href="mailto:kevinrue67@gmail.com" class="email">kevinrue67@gmail.com</a>
@@ -122,11 +122,10 @@
       Friedrich Miescher Institute for Biomedical Research, Basel, Switzerland<br><a class="author_email" href="mailto:#"></a><a href="mailto:charlottesoneson@gmail.com" class="email">charlottesoneson@gmail.com</a>
       </address>
                               <h4 class="author">Aaron Lun</h4>
-            <address class="author_afil">
-      Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
-      </address>
+                  <a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
+      
                   
-            <h4 class="date">4 May 2020</h4>
+            <h4 class="date">18 May 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/configure.Rmd"><code>vignettes/configure.Rmd</code></a></small>
       <div class="hidden name"><code>configure.Rmd</code></div>
@@ -135,7 +134,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-05-04</p>
+<p><strong>Compiled date</strong>: 2020-05-18</p>
 <p><strong>Last edited</strong>: 2020-04-20</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="changing-the-default-start-configuration" class="section level1">
@@ -379,24 +378,22 @@
 <h1 class="hasAnchor">
 <a href="#writing-your-own-tour" class="anchor"></a>Writing your own tour</h1>
 <p>By providing a data frame to the <code>tour</code> argument of <code>iSEE</code>, you can create your own tour that will start when the app is launched<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. The data frame should have two columns, <code>element</code> and <code>intro</code>:</p>
-<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">introtour</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.delim</a></span>(
-    <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span>(<span class="st">"extdata/intro_firststeps.txt"</span>, <span class="kw">package</span> <span class="kw">=</span> <span class="st">"iSEE"</span>),
-    <span class="kw">sep</span> <span class="kw">=</span> <span class="st">";"</span>, <span class="kw">header</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">introtour</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/defaultTour.html">defaultTour</a></span>()
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">introtour</span>)
-<span class="co">#&gt;           element</span>
-<span class="co">#&gt; 1        #Welcome</span>
-<span class="co">#&gt; 2      #allpanels</span>
-<span class="co">#&gt; 3    #redDimPlot1</span>
-<span class="co">#&gt; 4   #colDataPlot1</span>
-<span class="co">#&gt; 5 #featAssayPlot1</span>
-<span class="co">#&gt; 6  #rowStatTable1</span>
-<span class="co">#&gt;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 intro</span>
-<span class="co">#&gt; 1 Welcome to the interactive tour for iSEE - the Interactive SummarizedExperiment Explorer.&lt;br/&gt;&lt;br/&gt;You will be shown around the different components of iSEE and learn the basic usage mechanisms by doing. Highlighted elements will respond to the user's actions, while the rest of the UI will be shaded. You will be prompted at particular spots to perform some actions, which will be marked with &lt;strong&gt;Action:&lt;/strong&gt; text. Please take care to follow these instructions, since later parts of the tour may assume that all the actions from previous steps have been performed.&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Action:&lt;/strong&gt; now, click on the 'Next' button or use the right arrow of your keyboard to proceed into your tour.</span>
-<span class="co">#&gt; 2      iSEE provides a Shiny interface that allows you to generate a series of panels for exploring &lt;code&gt;SummarizedExperiment&lt;/code&gt; objects. Here, we use single-cell RNA sequencing data from the &lt;a href=https://doi.org/doi:10.18129/B9.bioc.scRNAseq&gt;&lt;i&gt;scRNAseq&lt;/i&gt; package&lt;/a&gt;, specifically a subset of gene expression profiles from cells in the mouse visual cortex &lt;a href=https://doi.org/10.1038/nn.4216&gt;(Tasic &lt;i&gt;et al.&lt;/i&gt;, 2016)&lt;/a&gt;. Each column of the &lt;code&gt;SummarizedExperiment&lt;/code&gt; corresponds to a cell, while each row corresponds to a gene.&lt;br/&gt;&lt;br/&gt;Using iSEE, you can generate a variety of different panel types to visualize the data. These are described in more detail in the following steps.</span>
-<span class="co">#&gt; 3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  For example, you can construct a &lt;font color=#402ee8&gt;Reduced dimension plot&lt;/font&gt; (e.g., PCA, &lt;i&gt;t&lt;/i&gt;-SNE) to efficiently explore high-dimensional datasets. Here, each point represents a cell.</span>
-<span class="co">#&gt; 4                                                                                                                                                                                                                                                                                                                                         You can construct a &lt;font color=#402ee8&gt;Column data plot&lt;/font&gt; involving column-level metadata, where each point represents a column (in this case, a cell) in the &lt;code&gt;SummarizedExperiment&lt;/code&gt; object. Points can be displayed using violin plots stratified by an experimental factor on the x-axis, or as a scatter plot involving continuous variables on both the x- and y-axes.</span>
-<span class="co">#&gt; 5                                                                                                                                                                                                                                                                                                                                                                                                                                A &lt;font color=#402ee8&gt;Feature assay plot&lt;/font&gt; displays the assay values (here, gene expression) across all cells. Like the &lt;font color=#402ee8&gt;Column data plot&lt;/font&gt;, points represent cells and can be shown in both violin or scatter plots, depending on the variable selected on the x-axis.</span>
-<span class="co">#&gt; 6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      A &lt;font color=#402ee8&gt;Row statistic table&lt;/font&gt; displays values in the &lt;code&gt;rowData&lt;/code&gt; slot of your input object. They can also be used to efficiently select genes for the other plots.</span></pre></body></html></div>
+<span class="co">#&gt;                                            element</span>
+<span class="co">#&gt; 1                                         #Welcome</span>
+<span class="co">#&gt; 2                                       #allpanels</span>
+<span class="co">#&gt; 3                           #ReducedDimensionPlot1</span>
+<span class="co">#&gt; 4               #ReducedDimensionPlot1_DataBoxOpen</span>
+<span class="co">#&gt; 5 #ReducedDimensionPlot1_Type + .selectize-control</span>
+<span class="co">#&gt; 6                           #ReducedDimensionPlot1</span>
+<span class="co">#&gt;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   intro</span>
+<span class="co">#&gt; 1 Welcome to the interactive tour for iSEE - the Interactive SummarizedExperiment Explorer.&lt;br/&gt;&lt;br/&gt;You will be shown around the different components of iSEE and learn the basic usage mechanisms by doing. Highlighted elements will respond to the user's actions, while the rest of the UI will be shaded. You will be prompted at particular spots to perform some actions, which will be marked with "&lt;strong&gt;Action:&lt;/strong&gt;" text. Please take care to follow these instructions, since later parts of the tour may assume that all the actions from previous steps have been performed.&lt;br/&gt;&lt;br/&gt;&lt;strong&gt;Action:&lt;/strong&gt; now, click on the 'Next' button or use the right arrow of your keyboard to proceed into your tour.</span>
+<span class="co">#&gt; 2    iSEE provides a Shiny interface that allows you to generate a series of panels for exploring &lt;code&gt;SummarizedExperiment&lt;/code&gt; objects. Here, we use single-cell RNA sequencing data from the &lt;a href="https://doi.org/doi:10.18129/B9.bioc.scRNAseq"&gt;&lt;i&gt;scRNAseq&lt;/i&gt; package&lt;/a&gt;, specifically a subset of gene expression profiles from cells in the mouse visual cortex &lt;a href="https://doi.org/10.1038/nn.4216"&gt;(Tasic &lt;i&gt;et al.&lt;/i&gt;, 2016)&lt;/a&gt;. Each column of the &lt;code&gt;SummarizedExperiment&lt;/code&gt; corresponds to a cell, while each row corresponds to a gene.&lt;br/&gt;&lt;br/&gt;Using iSEE, you can generate a variety of different panel types to visualize the data. These are described in more detail in the following steps.</span>
+<span class="co">#&gt; 3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          For example, you can construct a &lt;font color="#402ee8"&gt;Reduced dimension plot&lt;/font&gt; to visualize a low-dimensional representation (e.g., PCA, &lt;i&gt;t&lt;/i&gt;-SNE) of our dataset of interest. Here, each point represents a cell.</span>
+<span class="co">#&gt; 4                                                                                                                                                                                                                                                                                                                 For each plot panel, a variety of parameters are available to control the appearance and behaviour of the plot. These parameters are located in these collapsible boxes, such as the &lt;font color="#402ee8"&gt;Data parameters&lt;/font&gt; box that contains parameters related to the type of data being shown.&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;Action:&lt;/strong&gt; click on the header of this collapsible box to see the available options.</span>
+<span class="co">#&gt; 5                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     &lt;strong&gt;Action:&lt;/strong&gt; change this to &lt;code&gt;TSNE&lt;/code&gt; to see the two-dimensional &lt;i&gt;t&lt;/i&gt;-SNE representation.</span>
+<span class="co">#&gt; 6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      You can see how the panel immediately switched to the requested dimensionality reduction result.</span></pre></body></html></div>
 <p>Each entry of the <code>element</code> column contains the name of a UI element in the application, prefixed by a hash sign (<code>#</code>). The <code>intro</code> column contains the corresponding text (or basic HTML) that is to be shown at each step.</p>
 <p>The simplest way to get started is to copy the <code>intro_firststeps.txt</code> file from the <code>inst/extdata</code> folder and edit it for your specific data set. More customized tours require some knowledge of the names of the UI elements to put in the <code>element</code> column. We recommend one of the following options:</p>
 <ul>
@@ -428,13 +425,13 @@
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
 <div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
-<span class="co">#&gt; R version 3.6.3 (2020-02-29)</span>
-<span class="co">#&gt; Platform: x86_64-apple-darwin15.6.0 (64-bit)</span>
+<span class="co">#&gt; R version 4.0.0 (2020-04-24)</span>
+<span class="co">#&gt; Platform: x86_64-apple-darwin17.0 (64-bit)</span>
 <span class="co">#&gt; Running under: macOS Catalina 10.15.4</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Matrix products: default</span>
-<span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib</span>
-<span class="co">#&gt; LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib</span>
+<span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib</span>
+<span class="co">#&gt; LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; locale:</span>
 <span class="co">#&gt; [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span>
@@ -444,42 +441,41 @@
 <span class="co">#&gt; [8] methods   base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt;  [1] iSEE_2.1.1                  SingleCellExperiment_1.8.0 </span>
-<span class="co">#&gt;  [3] SummarizedExperiment_1.16.1 DelayedArray_0.12.3        </span>
-<span class="co">#&gt;  [5] BiocParallel_1.20.1         matrixStats_0.56.0         </span>
-<span class="co">#&gt;  [7] Biobase_2.46.0              GenomicRanges_1.38.0       </span>
-<span class="co">#&gt;  [9] GenomeInfoDb_1.22.1         IRanges_2.20.2             </span>
-<span class="co">#&gt; [11] S4Vectors_0.24.4            BiocGenerics_0.32.0        </span>
-<span class="co">#&gt; [13] BiocStyle_2.14.4           </span>
+<span class="co">#&gt;  [1] iSEE_2.1.3                  SingleCellExperiment_1.11.1</span>
+<span class="co">#&gt;  [3] SummarizedExperiment_1.19.4 DelayedArray_0.15.1        </span>
+<span class="co">#&gt;  [5] matrixStats_0.56.0          Biobase_2.49.0             </span>
+<span class="co">#&gt;  [7] GenomicRanges_1.41.1        GenomeInfoDb_1.25.0        </span>
+<span class="co">#&gt;  [9] IRanges_2.23.4              S4Vectors_0.27.6           </span>
+<span class="co">#&gt; [11] BiocGenerics_0.35.2         BiocStyle_2.17.0           </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
-<span class="co">#&gt;  [1] nlme_3.1-144           bitops_1.0-6           fs_1.4.1              </span>
-<span class="co">#&gt;  [4] RColorBrewer_1.1-2     rprojroot_1.3-2        tools_3.6.3           </span>
-<span class="co">#&gt;  [7] backports_1.1.6        R6_2.4.1               DT_0.13               </span>
+<span class="co">#&gt;  [1] nlme_3.1-147           bitops_1.0-6           fs_1.4.1              </span>
+<span class="co">#&gt;  [4] RColorBrewer_1.1-2     rprojroot_1.3-2        tools_4.0.0           </span>
+<span class="co">#&gt;  [7] backports_1.1.7        R6_2.4.1               DT_0.13               </span>
 <span class="co">#&gt; [10] vipor_0.4.5            mgcv_1.8-31            colorspace_1.4-1      </span>
-<span class="co">#&gt; [13] GetoptLong_0.1.8       tidyselect_1.0.0       compiler_3.6.3        </span>
+<span class="co">#&gt; [13] GetoptLong_0.1.8       tidyselect_1.1.0       compiler_4.0.0        </span>
 <span class="co">#&gt; [16] shinyjs_1.1            desc_1.2.0             colourpicker_1.0      </span>
-<span class="co">#&gt; [19] bookdown_0.18          scales_1.1.0           pkgdown_1.5.1.9000    </span>
+<span class="co">#&gt; [19] bookdown_0.19          scales_1.1.1           pkgdown_1.5.1.9000    </span>
 <span class="co">#&gt; [22] stringr_1.4.0          digest_0.6.25          rmarkdown_2.1         </span>
-<span class="co">#&gt; [25] XVector_0.26.0         pkgconfig_2.0.3        htmltools_0.4.0       </span>
+<span class="co">#&gt; [25] XVector_0.29.0         pkgconfig_2.0.3        htmltools_0.4.0       </span>
 <span class="co">#&gt; [28] fastmap_1.0.1          htmlwidgets_1.5.1      rlang_0.4.6           </span>
 <span class="co">#&gt; [31] GlobalOptions_0.1.1    shiny_1.4.0.2          shape_1.4.4           </span>
 <span class="co">#&gt; [34] jsonlite_1.6.1         dplyr_0.8.5            RCurl_1.98-1.2        </span>
-<span class="co">#&gt; [37] magrittr_1.5           GenomeInfoDbData_1.2.2 Matrix_1.2-18         </span>
-<span class="co">#&gt; [40] Rcpp_1.0.4.9           munsell_0.5.0          lifecycle_0.2.0       </span>
+<span class="co">#&gt; [37] magrittr_1.5           GenomeInfoDbData_1.2.3 Matrix_1.2-18         </span>
+<span class="co">#&gt; [40] Rcpp_1.0.4.6           munsell_0.5.0          lifecycle_0.2.0       </span>
 <span class="co">#&gt; [43] stringi_1.4.6          yaml_2.2.1             rintrojs_0.2.2        </span>
-<span class="co">#&gt; [46] MASS_7.3-51.5          zlibbioc_1.32.0        grid_3.6.3            </span>
+<span class="co">#&gt; [46] MASS_7.3-51.5          zlibbioc_1.35.0        grid_4.0.0            </span>
 <span class="co">#&gt; [49] promises_1.1.0         shinydashboard_0.7.1   crayon_1.3.4          </span>
-<span class="co">#&gt; [52] miniUI_0.1.1.1         lattice_0.20-38        splines_3.6.3         </span>
-<span class="co">#&gt; [55] circlize_0.4.9         knitr_1.28             ComplexHeatmap_2.2.0  </span>
-<span class="co">#&gt; [58] pillar_1.4.3           igraph_1.2.5           rjson_0.2.20          </span>
-<span class="co">#&gt; [61] glue_1.4.0             evaluate_0.14          BiocManager_1.30.10   </span>
-<span class="co">#&gt; [64] png_0.1-7              vctrs_0.2.4            httpuv_1.5.2          </span>
+<span class="co">#&gt; [52] miniUI_0.1.1.1         lattice_0.20-41        splines_4.0.0         </span>
+<span class="co">#&gt; [55] circlize_0.4.9         knitr_1.28             ComplexHeatmap_2.5.1  </span>
+<span class="co">#&gt; [58] pillar_1.4.4           igraph_1.2.5           rjson_0.2.20          </span>
+<span class="co">#&gt; [61] glue_1.4.1             evaluate_0.14          BiocManager_1.30.10   </span>
+<span class="co">#&gt; [64] png_0.1-7              vctrs_0.3.0            httpuv_1.5.2          </span>
 <span class="co">#&gt; [67] gtable_0.3.0           purrr_0.3.4            clue_0.3-57           </span>
 <span class="co">#&gt; [70] assertthat_0.2.1       ggplot2_3.3.0          xfun_0.13             </span>
 <span class="co">#&gt; [73] mime_0.9               xtable_1.8-4           later_1.0.0           </span>
 <span class="co">#&gt; [76] viridisLite_0.3.0      tibble_3.0.1           memoise_1.1.0         </span>
-<span class="co">#&gt; [79] cluster_2.1.0          shinyWidgets_0.5.1     ellipsis_0.3.0        </span>
+<span class="co">#&gt; [79] cluster_2.1.0          shinyWidgets_0.5.2     ellipsis_0.3.1        </span>
 <span class="co">#&gt; [82] shinyAce_0.4.1</span>
 <span class="co"># devtools::session_info()</span></pre></body></html></div>
 </div>
@@ -495,7 +491,7 @@
 <div class="footnotes">
 <hr>
 <ol>
-<li id="fn1"><p>We’ll re-use the example from the <a href="https://bioconductor.org/packages/3.10/iSEE/vignettes/basic.html">previous workflow</a>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>We’ll re-use the example from the <a href="https://bioconductor.org/packages/3.12/iSEE/vignettes/basic.html">previous workflow</a>.<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
 <li id="fn2"><p>In theory. On servers, sometimes the tour does not recognize the UI elements at start-up and needs to be restarted via the “Click me for quick tour” button to work properly.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>

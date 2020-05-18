@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.3</span>
       </span>
     </div>
 
@@ -124,7 +124,7 @@
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">4 May 2020</h4>
+            <h4 class="date">18 May 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/custom.Rmd"><code>vignettes/custom.Rmd</code></a></small>
       <div class="hidden name"><code>custom.Rmd</code></div>
@@ -133,7 +133,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-05-04</p>
+<p><strong>Compiled date</strong>: 2020-05-18</p>
 <p><strong>Last edited</strong>: 2020-04-20</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="background" class="section level1">
@@ -162,7 +162,7 @@
 <div id="example-of-custom-plot-panel" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example-of-custom-plot-panel" class="anchor"></a>Example of custom plot panel</h2>
-<p>To demonstrate the use of <em>custom plot panels</em>, we define an example function <code>CUSTOM_DIMRED</code> that takes a subset of features and cells in a <code>SingleCellExperiment</code> object and performs dimensionality reduction on that subset with <em><a href="https://bioconductor.org/packages/3.10/scater">scater</a></em> function <span class="citation">(McCarthy et al. 2017)</span>.</p>
+<p>To demonstrate the use of <em>custom plot panels</em>, we define an example function <code>CUSTOM_DIMRED</code> that takes a subset of features and cells in a <code>SingleCellExperiment</code> object and performs dimensionality reduction on that subset with <em><a href="https://bioconductor.org/packages/3.12/scater">scater</a></em> function <span class="citation">(McCarthy et al. 2017)</span>.</p>
 <div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">scater</span>)
 <span class="no">CUSTOM_DIMRED</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">se</span>, <span class="no">rows</span>, <span class="no">columns</span>, <span class="no">ntop</span><span class="kw">=</span><span class="fl">500</span>, <span class="no">scale</span><span class="kw">=</span><span class="fl">TRUE</span>,
     <span class="no">mode</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"PCA"</span>, <span class="st">"TSNE"</span>, <span class="st">"UMAP"</span>))
@@ -306,7 +306,7 @@
 <div id="handling-active-and-saved-selections" class="section level1">
 <h1 class="hasAnchor">
 <a href="#handling-active-and-saved-selections" class="anchor"></a>Handling active and saved selections</h1>
-<p>Recall that the second and third arguments are actually lists containing both active and saved selections from the transmitter. More advanced custom panels can take advantage of these multiple selections to perform more sophisticated data processing. For example, we can write a function that computes log-fold changes between the samples in the active selection and the samples in each saved selection. (It would be trivial to extend this to obtain actual differential expression statistics, e.g., using <code>scran::findMarkers()</code> or functions from packages like <em><a href="https://bioconductor.org/packages/3.10/limma">limma</a></em>.)</p>
+<p>Recall that the second and third arguments are actually lists containing both active and saved selections from the transmitter. More advanced custom panels can take advantage of these multiple selections to perform more sophisticated data processing. For example, we can write a function that computes log-fold changes between the samples in the active selection and the samples in each saved selection. (It would be trivial to extend this to obtain actual differential expression statistics, e.g., using <code>scran::findMarkers()</code> or functions from packages like <em><a href="https://bioconductor.org/packages/3.12/limma">limma</a></em>.)</p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">CUSTOM_DIFFEXP</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">se</span>, <span class="no">ri</span>, <span class="no">ci</span>, <span class="no">assay</span><span class="kw">=</span><span class="st">"logcounts"</span>) {
     <span class="no">ri</span> <span class="kw">&lt;-</span> <span class="no">ri</span>$<span class="no">active</span>
     <span class="kw">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="no">ri</span>)) {
@@ -375,13 +375,13 @@
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
-<span class="co">#&gt; R version 3.6.3 (2020-02-29)</span>
-<span class="co">#&gt; Platform: x86_64-apple-darwin15.6.0 (64-bit)</span>
+<span class="co">#&gt; R version 4.0.0 (2020-04-24)</span>
+<span class="co">#&gt; Platform: x86_64-apple-darwin17.0 (64-bit)</span>
 <span class="co">#&gt; Running under: macOS Catalina 10.15.4</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Matrix products: default</span>
-<span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRblas.0.dylib</span>
-<span class="co">#&gt; LAPACK: /Library/Frameworks/R.framework/Versions/3.6/Resources/lib/libRlapack.dylib</span>
+<span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib</span>
+<span class="co">#&gt; LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; locale:</span>
 <span class="co">#&gt; [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span>
@@ -391,47 +391,61 @@
 <span class="co">#&gt; [8] methods   base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt;  [1] iSEE_2.1.1                  scater_1.14.6              </span>
-<span class="co">#&gt;  [3] ggplot2_3.3.0               SingleCellExperiment_1.8.0 </span>
-<span class="co">#&gt;  [5] SummarizedExperiment_1.16.1 DelayedArray_0.12.3        </span>
-<span class="co">#&gt;  [7] BiocParallel_1.20.1         matrixStats_0.56.0         </span>
-<span class="co">#&gt;  [9] Biobase_2.46.0              GenomicRanges_1.38.0       </span>
-<span class="co">#&gt; [11] GenomeInfoDb_1.22.1         IRanges_2.20.2             </span>
-<span class="co">#&gt; [13] S4Vectors_0.24.4            BiocGenerics_0.32.0        </span>
-<span class="co">#&gt; [15] BiocStyle_2.14.4           </span>
+<span class="co">#&gt;  [1] iSEE_2.1.3                  scater_1.17.0              </span>
+<span class="co">#&gt;  [3] ggplot2_3.3.0               SingleCellExperiment_1.11.1</span>
+<span class="co">#&gt;  [5] SummarizedExperiment_1.19.4 DelayedArray_0.15.1        </span>
+<span class="co">#&gt;  [7] matrixStats_0.56.0          Biobase_2.49.0             </span>
+<span class="co">#&gt;  [9] GenomicRanges_1.41.1        GenomeInfoDb_1.25.0        </span>
+<span class="co">#&gt; [11] IRanges_2.23.4              S4Vectors_0.27.6           </span>
+<span class="co">#&gt; [13] BiocGenerics_0.35.2         BiocStyle_2.17.0           </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
-<span class="co">#&gt;  [1] nlme_3.1-144             bitops_1.0-6             fs_1.4.1                </span>
-<span class="co">#&gt;  [4] RColorBrewer_1.1-2       rprojroot_1.3-2          tools_3.6.3             </span>
-<span class="co">#&gt;  [7] backports_1.1.6          R6_2.4.1                 irlba_2.3.3             </span>
-<span class="co">#&gt; [10] DT_0.13                  vipor_0.4.5              mgcv_1.8-31             </span>
-<span class="co">#&gt; [13] colorspace_1.4-1         GetoptLong_0.1.8         withr_2.2.0             </span>
-<span class="co">#&gt; [16] tidyselect_1.0.0         gridExtra_2.3            compiler_3.6.3          </span>
-<span class="co">#&gt; [19] BiocNeighbors_1.4.2      shinyjs_1.1              desc_1.2.0              </span>
-<span class="co">#&gt; [22] colourpicker_1.0         bookdown_0.18            scales_1.1.0            </span>
-<span class="co">#&gt; [25] pkgdown_1.5.1.9000       stringr_1.4.0            digest_0.6.25           </span>
-<span class="co">#&gt; [28] rmarkdown_2.1            XVector_0.26.0           pkgconfig_2.0.3         </span>
-<span class="co">#&gt; [31] htmltools_0.4.0          fastmap_1.0.1            htmlwidgets_1.5.1       </span>
-<span class="co">#&gt; [34] rlang_0.4.6              GlobalOptions_0.1.1      shiny_1.4.0.2           </span>
-<span class="co">#&gt; [37] DelayedMatrixStats_1.8.0 shape_1.4.4              jsonlite_1.6.1          </span>
-<span class="co">#&gt; [40] dplyr_0.8.5              RCurl_1.98-1.2           magrittr_1.5            </span>
-<span class="co">#&gt; [43] BiocSingular_1.2.2       GenomeInfoDbData_1.2.2   Matrix_1.2-18           </span>
-<span class="co">#&gt; [46] Rcpp_1.0.4.9             ggbeeswarm_0.6.0         munsell_0.5.0           </span>
-<span class="co">#&gt; [49] viridis_0.5.1            lifecycle_0.2.0          rintrojs_0.2.2          </span>
-<span class="co">#&gt; [52] stringi_1.4.6            yaml_2.2.1               MASS_7.3-51.5           </span>
-<span class="co">#&gt; [55] zlibbioc_1.32.0          grid_3.6.3               promises_1.1.0          </span>
-<span class="co">#&gt; [58] shinydashboard_0.7.1     crayon_1.3.4             miniUI_0.1.1.1          </span>
-<span class="co">#&gt; [61] lattice_0.20-38          splines_3.6.3            circlize_0.4.9          </span>
-<span class="co">#&gt; [64] knitr_1.28               ComplexHeatmap_2.2.0     pillar_1.4.3            </span>
-<span class="co">#&gt; [67] igraph_1.2.5             rjson_0.2.20             glue_1.4.0              </span>
-<span class="co">#&gt; [70] evaluate_0.14            BiocManager_1.30.10      httpuv_1.5.2            </span>
-<span class="co">#&gt; [73] png_0.1-7                vctrs_0.2.4              gtable_0.3.0            </span>
-<span class="co">#&gt; [76] purrr_0.3.4              clue_0.3-57              assertthat_0.2.1        </span>
-<span class="co">#&gt; [79] xfun_0.13                mime_0.9                 rsvd_1.0.3              </span>
-<span class="co">#&gt; [82] xtable_1.8-4             later_1.0.0              viridisLite_0.3.0       </span>
-<span class="co">#&gt; [85] tibble_3.0.1             beeswarm_0.2.3           memoise_1.1.0           </span>
-<span class="co">#&gt; [88] cluster_2.1.0            shinyWidgets_0.5.1       ellipsis_0.3.0          </span>
-<span class="co">#&gt; [91] shinyAce_0.4.1</span>
+<span class="co">#&gt;  [1] nlme_3.1-147              bitops_1.0-6             </span>
+<span class="co">#&gt;  [3] fs_1.4.1                  RColorBrewer_1.1-2       </span>
+<span class="co">#&gt;  [5] rprojroot_1.3-2           tools_4.0.0              </span>
+<span class="co">#&gt;  [7] backports_1.1.7           R6_2.4.1                 </span>
+<span class="co">#&gt;  [9] irlba_2.3.3               DT_0.13                  </span>
+<span class="co">#&gt; [11] vipor_0.4.5               mgcv_1.8-31              </span>
+<span class="co">#&gt; [13] colorspace_1.4-1          GetoptLong_0.1.8         </span>
+<span class="co">#&gt; [15] withr_2.2.0               tidyselect_1.1.0         </span>
+<span class="co">#&gt; [17] gridExtra_2.3             compiler_4.0.0           </span>
+<span class="co">#&gt; [19] BiocNeighbors_1.7.0       shinyjs_1.1              </span>
+<span class="co">#&gt; [21] desc_1.2.0                colourpicker_1.0         </span>
+<span class="co">#&gt; [23] bookdown_0.19             scales_1.1.1             </span>
+<span class="co">#&gt; [25] pkgdown_1.5.1.9000        stringr_1.4.0            </span>
+<span class="co">#&gt; [27] digest_0.6.25             rmarkdown_2.1            </span>
+<span class="co">#&gt; [29] XVector_0.29.0            pkgconfig_2.0.3          </span>
+<span class="co">#&gt; [31] htmltools_0.4.0           fastmap_1.0.1            </span>
+<span class="co">#&gt; [33] htmlwidgets_1.5.1         rlang_0.4.6              </span>
+<span class="co">#&gt; [35] GlobalOptions_0.1.1       shiny_1.4.0.2            </span>
+<span class="co">#&gt; [37] DelayedMatrixStats_1.11.0 shape_1.4.4              </span>
+<span class="co">#&gt; [39] jsonlite_1.6.1            BiocParallel_1.23.0      </span>
+<span class="co">#&gt; [41] dplyr_0.8.5               RCurl_1.98-1.2           </span>
+<span class="co">#&gt; [43] magrittr_1.5              BiocSingular_1.5.0       </span>
+<span class="co">#&gt; [45] GenomeInfoDbData_1.2.3    Matrix_1.2-18            </span>
+<span class="co">#&gt; [47] Rcpp_1.0.4.6              ggbeeswarm_0.6.0         </span>
+<span class="co">#&gt; [49] munsell_0.5.0             viridis_0.5.1            </span>
+<span class="co">#&gt; [51] lifecycle_0.2.0           rintrojs_0.2.2           </span>
+<span class="co">#&gt; [53] stringi_1.4.6             yaml_2.2.1               </span>
+<span class="co">#&gt; [55] MASS_7.3-51.5             zlibbioc_1.35.0          </span>
+<span class="co">#&gt; [57] grid_4.0.0                promises_1.1.0           </span>
+<span class="co">#&gt; [59] shinydashboard_0.7.1      crayon_1.3.4             </span>
+<span class="co">#&gt; [61] miniUI_0.1.1.1            lattice_0.20-41          </span>
+<span class="co">#&gt; [63] splines_4.0.0             circlize_0.4.9           </span>
+<span class="co">#&gt; [65] knitr_1.28                ComplexHeatmap_2.5.1     </span>
+<span class="co">#&gt; [67] pillar_1.4.4              igraph_1.2.5             </span>
+<span class="co">#&gt; [69] rjson_0.2.20              glue_1.4.1               </span>
+<span class="co">#&gt; [71] evaluate_0.14             BiocManager_1.30.10      </span>
+<span class="co">#&gt; [73] httpuv_1.5.2              png_0.1-7                </span>
+<span class="co">#&gt; [75] vctrs_0.3.0               gtable_0.3.0             </span>
+<span class="co">#&gt; [77] purrr_0.3.4               clue_0.3-57              </span>
+<span class="co">#&gt; [79] assertthat_0.2.1          xfun_0.13                </span>
+<span class="co">#&gt; [81] mime_0.9                  rsvd_1.0.3               </span>
+<span class="co">#&gt; [83] xtable_1.8-4              later_1.0.0              </span>
+<span class="co">#&gt; [85] viridisLite_0.3.0         tibble_3.0.1             </span>
+<span class="co">#&gt; [87] beeswarm_0.2.3            memoise_1.1.0            </span>
+<span class="co">#&gt; [89] cluster_2.1.0             shinyWidgets_0.5.2       </span>
+<span class="co">#&gt; [91] ellipsis_0.3.1            shinyAce_0.4.1</span>
 <span class="co"># devtools::session_info()</span></pre></body></html></div>
 </div>
 <div id="references" class="section level1 unnumbered">

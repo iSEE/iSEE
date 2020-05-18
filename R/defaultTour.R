@@ -16,7 +16,7 @@
 #' This is used by \code{\link{defaultTour}} to return an example for people to look at.
 #'
 #' I will note that I tried to create a generic system that would allow each panel to decide what steps it would put in.
-#' The problem is that it ends up being too general to be useful as an introductory tour, 
+#' The problem is that it ends up being too general to be useful as an introductory tour,
 #' as you can't talk about specific covariates or values.
 #'
 #' @author Aaron Lun
@@ -42,10 +42,10 @@
         return(.truncated_tour)
     }
 
-    element <- c(element, paste0("#", enc_rdp)) 
+    element <- c(element, paste0("#", enc_rdp))
     intro <- c(intro, "For example, you can construct a <font color=\"#402ee8\">Reduced dimension plot</font> to visualize a low-dimensional representation (e.g., PCA, <i>t</i>-SNE) of our dataset of interest. Here, each point represents a cell.")
 
-    element <- c(element, paste0("#", enc_rdp, "_", .dataParamBoxOpen)) 
+    element <- c(element, paste0("#", enc_rdp, "_", .dataParamBoxOpen))
     intro <- c(intro, "For each plot panel, a variety of parameters are available to control the appearance and behaviour of the plot. These parameters are located in these collapsible boxes, such as the <font color=\"#402ee8\">Data parameters</font> box that contains parameters related to the type of data being shown.<br /><br /><strong>Action:</strong> click on the header of this collapsible box to see the available options.")
 
     if (check && (!is(se, "SingleCellExperiment") || !all(c("PCA", "TSNE") %in% reducedDimNames(se)))) {
@@ -56,7 +56,7 @@
 
     element <- c(element, paste0("#", enc_rdp))
     intro <- c(intro, "You can see how the panel immediately switched to the requested dimensionality reduction result.")
- 
+
     element <- c(element, paste0("#", enc_rdp, "_", .visualParamBoxOpen))
     intro <- c(intro, "The <font color=\"#402ee8\">Visual parameters</font> box contains parameters related to coloring, point appearance, and other visual aspects.<br /><br /><strong>Action:</strong> please click on the header of this box to see the available options.")
 
@@ -77,7 +77,7 @@
     if (check && !enc_cdp %in% all_encs) {
         return(.truncated_tour)
     }
-    
+
     element <- c(element, paste0("#", enc_cdp))
     intro <- c(intro, "You can construct a <font color=\"#402ee8\">Column data plot</font> involving column-level metadata, where each point represents a column (in this case, a cell) in the <code>SummarizedExperiment</code> object. Points can be displayed using violin plots stratified by an experimental factor on the x-axis, or as a scatter plot involving continuous variables on both the x- and y-axes.")
 
@@ -144,11 +144,11 @@
     element <- c(element, paste0("#", enc_sap))
     intro <- c(intro, "A <font color=\"#402ee8\">Sample assay plot</font> displays the assay values across features for a chosen sample on the y-axis (possibly against another sample on the x-axis). This is best used for bulk datasets where it is more feasible to inspect individual samples.")
 
-    enc_chp <- "ComplexHeatmapPlot1"
-    if (check && !enc_chp %in% all_encs) {
+    enc_chm <- "ComplexHeatmapPlot1"
+    if (check && !enc_chm %in% all_encs) {
         return(.truncated_tour)
     }
-    element <- c(element, paste0("#", enc_chp))
+    element <- c(element, paste0("#", enc_chm))
     intro <- c(intro, "You can produce a <font color=\"#402ee8\">Complex heat map</font> to visualize a feature-by-sample matrix of assay values, for a selected subset of features.")
 
     # Highlighting the multiple selection modes.
@@ -194,6 +194,43 @@
     intro <- c(intro, 'A zooming functionality is also available by first brushing, then double-clicking on the brushed area.<br /><br /><strong>Action:</strong> click and drag to brush over an area. Now, double click inside the marked area to zoom in. To zoom out to the original plot, double-click on the plot.')
 
     # Highlighting the heatmap: KRA to add.
+    element <- c(element, paste0("#", enc_chm, "_", .dataParamBoxOpen))
+    intro <- c(intro, "The <font color=\"#402ee8\">Complex heat map</font> panel provides a powerful and responsive visualisation of any assay matrix in the <code>SummarizedExperiment</code> object.<br/><br/><strong>Action:</strong> open this box.")
+
+    element <- c(element, paste0("#", enc_chm, "_", .heatMapAssay, " + .selectize-control"))
+    intro <- c(intro, "The assay displayed can be changed here.")
+
+    element <- c(element, paste0("#", enc_chm, "_", .heatMapCustomFeatNames))
+    intro <- c(intro, "This checkbox switches the panel between two modes:<ul><li>A modal text editor used to paste and edit a list of features manually.</li><li>The same dynamic selection mechanism used for other panels.</li><u/>")
+
+    element <- c(element, paste0("#", enc_chm, "_", .featureNamesEdit))
+    intro <- c(intro, "This button open the modal text editor.")
+
+    element <- c(element, paste0("#", enc_chm, "_", .visualParamBoxOpen))
+    intro <- c(intro, "The <font color=\"#402ee8\">Complex heat map</font> panel also includes a number of visual effects to integrate additional information in the plot.<br/><br/><strong>Action:</strong> open this box.")
+
+    element <- c(element, paste0("#", enc_chm, "_", .heatMapColData, " + .selectize-control"))
+    intro <- c(intro, "Column-level metadata can be selected and displayed above the heatmap.<br/><br/><strong>Action:</strong> Select a few metadata fields. Note how items can be reordered by drag-and-drop.")
+
+    element <- c(element, paste0("#", enc_chm, "_", .heatMapRowData, " + .selectize-control"))
+    intro <- c(intro, "The same can be done to display row-level metadata on the left of the heatmap.<br/><br/><strong>Action:</strong> Select a few metadata fields.")
+
+    element <- c(element, paste0("#", enc_chm, "_", .visualParamChoice))
+    intro <- c(intro, "Data transformation can also be applied to rows of the matrix, to facilitate intepretation without the need to store additional assay matrices.<br/><br/><strong>Action:</strong> tick the 'Transform' box. You may also untick the 'Annotations' box to free up space in the Visual parameters box.")
+
+    element <- c(element, paste0("#", enc_chm, "_", .assayCenterRows))
+    intro <- c(intro, "Row values can be centered using this checkbox.<br/><br/><strong>Action:</strong> tick the box.")
+
+    element <- c(element, paste0("#", enc_chm, "_", .assayScaleRows))
+    intro <- c(intro, "Once centered, row values can additional be scaled using this checkbox.<br/><br/><strong>Action:</strong> tick this box.")
+
+    element <- c(element, paste0("#", enc_chm, "_", .heatMapCenteredColormap, " + .selectize-control"))
+    intro <- c(intro, "Similarly, if rows are centered, a colormap suitable for centered values can be selected in this menu.<br/><br/><strong>Action:</strong> choose any colormap.")
+
+    element <- c(element, paste0("#", enc_chm))
+    intro <- c(intro, "To be continued...")
+
+    # TODO
 
     # Wrapping up.
     element <- c(element, ".navbar-static-top")
@@ -234,4 +271,4 @@
 #' @examples
 #' defaultTour()
 #' @export
-defaultTour <- function() .assemble_tour(NULL, NULL) 
+defaultTour <- function() .assemble_tour(NULL, NULL)

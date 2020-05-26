@@ -38,13 +38,13 @@
 #' \itemize{
 #' \item \code{FUN}, a function to initialize the \code{\link{iSEE}} observer architecture.
 #' This function expects to be passed:
-#' \itemize{
-#' \item \code{SE}, a SummarizedExperiment object.
-#' \item \code{INITIAL}, a list of \linkS4class{Panel} objects describing the initial application state.
-#' If \code{NULL}, the initial state from \code{initial} in the top-level \code{\link{iSEE}} call is used instead.
-#' \item \code{TOUR}, a data.frame containing a tour to be attached to the app - see \code{\link[defaultTour}} for an example.
-#' If \code{NULL} (the default), no tour is added.
-#' }
+#'   \itemize{
+#'   \item \code{SE}, a SummarizedExperiment object.
+#'   \item \code{INITIAL}, a list of \linkS4class{Panel} objects describing the initial application state.
+#'   If \code{NULL}, the initial state from \code{initial} in the top-level \code{\link{iSEE}} call is used instead.
+#'   \item \code{TOUR}, a data.frame containing a tour to be attached to the app - see \code{\link{defaultTour}} for an example.
+#'   If \code{NULL} (the default), no tour is added.
+#'   }
 #' \item \code{input}, the Shiny input list.
 #' \item \code{output}, the Shiny output list.
 #' \item \code{session}, the Shiny session object.

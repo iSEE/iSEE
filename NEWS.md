@@ -1,3 +1,8 @@
+# iSEE 2.1.4
+
+* Add progress bar when exporting panel outputs. 
+* Fix missing section in `createLandingPage()` man page.
+
 # iSEE 2.1.3
 
 * Fixed handling of logical > 1 when processing the `CustomRowsText` slot in the `ComplexHeatmapPlot` constructor.

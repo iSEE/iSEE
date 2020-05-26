@@ -51,8 +51,37 @@ This can be used in Shiny bookmarking to initialize an \code{\link{iSEE}} in a d
 provided that \code{requireButton=FALSE} so that reactive expressions are immediately triggered upon setting \code{se=} and \code{initial=} in the URL.
 We do not use bookmarking to set all individual \code{\link{iSEE}} parameters as we will run afoul of URL character limits.
 }
-\section{}{
-NA
+\section{Defining a custom landing page}{
+
+We note that \code{createLandingPage} is just a limited wrapper around the landing page API.
+In \code{\link{iSEE}}, \code{landingPage} can be any function that accepts the following arguments:
+\itemize{
+\item \code{FUN}, a function to initialize the \code{\link{iSEE}} observer architecture.
+This function expects to be passed:
+  \itemize{
+  \item \code{SE}, a SummarizedExperiment object.
+  \item \code{INITIAL}, a list of \linkS4class{Panel} objects describing the initial application state.
+  If \code{NULL}, the initial state from \code{initial} in the top-level \code{\link{iSEE}} call is used instead.
+  \item \code{TOUR}, a data.frame containing a tour to be attached to the app - see \code{\link{defaultTour}} for an example.
+  If \code{NULL} (the default), no tour is added.
+  }
+\item \code{input}, the Shiny input list.
+\item \code{output}, the Shiny output list.
+\item \code{session}, the Shiny session object.
+}
+
+The \code{landingPage} function should define a \code{\link{renderUI}} expression that is assigned to \code{output$allPanels}.
+This should define a UI that contains all widgets necessary for a user to set up an \code{\link{iSEE}} session interactively.
+We suggest that all UI elements have IDs prefixed with \code{"initialize_INTERNAL"} to avoid conflicts.
+
+The function should also define observers to respond to user interactions with the UI elements.
+These are typically used to define a SummarizedExperiment object and an input state as a list of \linkS4class{Panel}s;
+any one of these observers may then call \code{FUN} on those arguments to launch the main \code{\link{iSEE}} instance.
+
+Note that, once the main app is launched,
+the UI elements constructed here are lost and observers will never be called again.
+There is no explicit \dQuote{unload} mechanism to return to the landing page from the main app,
+though a browser refresh is usually sufficient.
 }
 
 \examples{

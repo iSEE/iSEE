@@ -16,7 +16,7 @@
 #'
 #' @rdname INTERNAL_create_general_output
 #' @importFrom utils zip
-#' @importFrom shiny downloadHandler renderPlot checkboxGroupInput actionButton downloadButton withProgress
+#' @importFrom shiny downloadHandler renderPlot checkboxGroupInput actionButton downloadButton withProgress incProgress
 .create_general_output <- function(se, input, output, session, pObjects, rObjects) {
     # nocov start
     output[[.generalLinkGraphPlot]] <- renderPlot({

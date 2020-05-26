@@ -1,0 +1,7 @@
+# References
+
+.small-p[
+```{r, include=TRUE, echo=FALSE, results="asis"}
+PrintBibliography(bib)
+```
+]

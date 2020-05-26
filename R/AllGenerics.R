@@ -268,6 +268,11 @@ setGeneric(".exportOutput", function(x, se, all_memory, all_contents) {
 })
 
 #' @export
+setGeneric(".exportMarkdownSlide", function(x, se, all_memory, all_contents) {
+    standardGeneric(".exportMarkdownSlide")
+})
+
+#' @export
 #' @rdname getEncodedName
 setGeneric(".fullName", function(x) standardGeneric(".fullName"))
 

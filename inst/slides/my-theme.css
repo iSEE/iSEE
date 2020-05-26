@@ -1,0 +1,51 @@
+div.my-header {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    height: 80px;
+    width: 100%;
+}
+
+div.my-header img {
+    margin-top: 3px;
+    margin-right: 3px;
+}
+
+div.my-footer {
+    background-color: #002147;
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    height: 30px;
+    width: 100%;
+}
+div.my-footer span {
+    font-family: 'Lato', 'Palatino Linotype', 'Book Antiqua', Palatino, 'Microsoft YaHei', 'Songti SC', serif;
+    font-size: 13pt;
+    color: #F7F8FA;
+    position: absolute;
+    left: 15px;
+    bottom: 2px;
+}
+
+.remark-slide-content {
+    background-color: #FAFAFA;
+    border-top: 80px solid white;
+}
+
+.remark-slide-number {
+    color: #F7F8FA;
+    bottom: 3px;
+}
+
+.title-slide {
+    border-top: 0px;
+}
+
+h1 {
+    color: #002147;
+}
+
+.small-p p {
+    font-size: small;
+}

@@ -17,6 +17,7 @@
 #' @rdname INTERNAL_create_general_output
 #' @importFrom utils zip
 #' @importFrom shiny downloadHandler renderPlot checkboxGroupInput actionButton downloadButton withProgress incProgress
+#' @importFrom pagedown chrome_print
 .create_general_output <- function(se, input, output, session, pObjects, rObjects) {
     # nocov start
     output[[.generalLinkGraphPlot]] <- renderPlot({
@@ -34,7 +35,8 @@
                 choices=all_options, selected=all_options),
             actionButton(.generalExportOutputAll, label="Select all"),
             actionButton(.generalExportOutputNone, label="Select none"),
-            downloadButton(.generalExportOutputDownload, "Download")
+            downloadButton(.generalExportOutputDownload, "Download"),
+            downloadButton(.generalExportOutputSlides, "As slides")
         )
     })
     # nocov end
@@ -76,6 +78,85 @@
             }, session = session)
 
             zip(file, files=unlist(all.files))
+        }
+    )
+    # nocov end
+    # nocov start
+    output[[.generalExportOutputSlides]] <- downloadHandler(
+        filename="iSEE_slides.zip",
+        content=function(file) {
+            dumptmp <- tempfile()
+            dir.create(dumptmp)
+            oldwd <- getwd()
+            setwd(dumptmp)
+            
+            on.exit({
+                setwd(oldwd)
+                unlink(dumptmp, recursive=TRUE)
+            })
+            
+            rmd_tmpfile <- "iSEE_slides.Rmd"
+            
+            # Copy Rmd template and custom CSS
+            file.copy(from = system.file(package = "iSEE", "slides", "header.Rmd"), to = rmd_tmpfile, overwrite = TRUE)
+            file.copy(from = system.file(package = "iSEE", "slides", "my-theme.css"), to = "my-theme.css", overwrite = TRUE)
+            file.copy(from = system.file(package = "iSEE", "slides", "references.bib"), to = "references.bib", overwrite = TRUE)
+            
+            # Dump se to an RDS file that the presentation can work from
+            saveRDS(object = se, file = "se.rds")
+            
+            # Loops through all panels, add their code chunk to the Rmd file
+            # Compile the Rmd into PDF and 
+            all.slides <- list()
+            n_plots <- length(input[[.generalExportOutputChoices]])
+            withProgress(message = 'Collating markdown', value = 1, max = 3, {
+                for (i in input[[.generalExportOutputChoices]]) {
+                    i_object <- pObjects$memory[[i]]
+                    
+                    if (!is(i_object, "DotPlot")) {
+                        next
+                    }
+                    
+                    code_out <- .exportMarkdownSlide(i_object, se=se, all_memory=pObjects$memory, all_contents=pObjects$contents)
+                    if (is(i_object, "DotPlot")) {
+                        code_out <- c(code_out, "dot.plot")
+                    }
+                    code_out <- c(
+                        sprintf("# %s", .getFullName(i_object)),
+                        "",
+                        sprintf("```{r %s, echo=FALSE, fig.align='center'}", .getEncodedName(i_object)),
+                        code_out,
+                        "```"
+                    )
+                    code_out <- paste0(code_out, collapse = "\n")
+                    all.slides[[i]] <- code_out
+                }
+                
+                rmd_out <- paste0(all.slides, collapse = "\n\n---\n\n")
+                write(x = rmd_out, file = rmd_tmpfile, append = TRUE, sep = "\n")
+                
+                # Appendix
+                rmd_out <- scan(file = system.file(package = 'iSEE', 'slides', 'footer.Rmd'), what = "character", sep = "\n", blank.lines.skip = FALSE)
+                rmd_out <- c(
+                    '',
+                    '---',
+                    '',
+                    rmd_out
+                )
+                write(x = rmd_out, file = rmd_tmpfile, append = TRUE, sep = "\n")
+                
+                # Compile slides in HTML and PDF
+                incProgress(1, message = 'Running chrome_print()', session = session)
+                chrome_print(input = rmd_tmpfile)
+                # knitr::knit(input = rmd_tmpfile, quiet = FALSE)
+                # rmarkdown::render(input = rmd_tmpfile, quiet = TRUE)
+                
+                incProgress(1, message = 'Cleaning up', session = session)
+                file.remove("se.rds")
+                
+            }, session = session)
+            
+            zip(file, files=list.files("."))
         }
     )
     # nocov end

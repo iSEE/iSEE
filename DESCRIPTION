@@ -52,7 +52,8 @@ Suggests:
     HDF5Array,
     RColorBrewer,
     viridis,
-    htmltools
+    htmltools,
+    pagedown
 URL: https://github.com/iSEE/iSEE
 BugReports: https://github.com/iSEE/iSEE/issues
 biocViews: ImmunoOncology, Visualization, GUI, DimensionReduction, 

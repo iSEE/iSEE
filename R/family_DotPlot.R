@@ -426,6 +426,23 @@ setMethod(".exportOutput", "DotPlot", function(x, se, all_memory, all_contents) 
 })
 
 #' @export
+#' @importFrom grDevices pdf dev.off
+setMethod(".exportMarkdownSlide", "DotPlot", function(x, se, all_memory, all_contents) {
+    contents <- .generateOutput(x, se, all_memory=all_memory, all_contents=all_contents)
+    # print(.exportMarkdownSlide)
+    # print(str(contents$commands))
+    # print(str(unlist(print(contents$commands))))
+    
+    rmd_lines <- c(
+        "",
+        unlist(contents$commands),
+        ""
+    )
+    
+    rmd_lines
+})
+
+#' @export
 setMethod(".multiSelectionRestricted", "DotPlot", function(x) {
     x[[.selectEffect]] == .selectRestrictTitle
 })

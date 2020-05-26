@@ -1,7 +1,11 @@
+# iSEE 2.1.5
+
+* Added functionality to export panel plot output as `xaringan::moon_reader()` slides in PDF and HTML formats.
+
 # iSEE 2.1.4
 
-* Add progress bar when exporting panel outputs. 
-* Fix missing section in `createLandingPage()` man page.
+* Added progress bar when exporting panel outputs. 
+* Fixed missing section in `createLandingPage()` man page.
 
 # iSEE 2.1.3
 

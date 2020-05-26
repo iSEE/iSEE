@@ -1,0 +1,42 @@
+---
+title: 'iSEE plot outputs'
+subtitle: '<https://bioconductor.org/packages/iSEE/>'
+author: "Rendered using [pagedown](https://pagedown.rbind.io/)"
+institute: "A [Bioconductor](https://bioconductor.org/) package"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: [default, metropolis, rladies-fonts, "my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+# uncomment this line to produce HTML and PDF in RStudio:
+knit: pagedown::chrome_print
+---
+
+```{r setup, include=FALSE}
+library(RefManageR)
+BibOptions(
+  check.entries = FALSE,
+  bib.style = "authoryear",
+  cite.style = "authoryear",
+  max.names = 2,
+  style = "markdown",
+  hyperlink = "to.doc",
+  dashed = TRUE)
+bib <- ReadBib("references.bib")
+NoCite(bib, "rue2018isee")
+```
+
+# The dataset
+
+.small[
+```{r import, echo=FALSE}
+se <- readRDS("se.rds")
+se
+```
+]
+
+---

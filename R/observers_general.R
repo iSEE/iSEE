@@ -20,6 +20,8 @@
 .generalExportOutputNone <- "iSEE_INTERNAL_export_content_none"
 .generalExportOutputChoices <- "iSEE_INTERNAL_export_content_choices"
 
+.generalExportOutputSlides <- "iSEE_INTERNAL_export_content_slides"
+
 #nocov start
 
 #' General observers for \code{\link{iSEE}}

@@ -59,16 +59,6 @@
             }
             org_pObjects$initialized <- TRUE
         }
-        
-        N <- length(pObjects$memory)
-        for (i in seq_len(N)) {
-            instance <- pObjects$memory[[i]]
-            panel_name <- .getEncodedName(instance)
-            prefix <- paste0(panel_name, "_")
-            
-            updateSelectInput(session = session, inputId = paste0(prefix, .organizationWidth), selected = instance[[.organizationWidth]])
-            updateSelectInput(session = session, inputId = paste0(prefix, .organizationHeight), selected = instance[[.organizationHeight]])
-        }
 
         showModal(modalDialog(
             title="Panel organization", size="m", fade=TRUE,
@@ -124,7 +114,7 @@
 
         org_pObjects$memory <- adjusted
         org_rObjects$rerender <- .increment_counter(org_rObjects$rerender)
-    }, ignoreInit=TRUE, ignoreNULL = FALSE)
+    }, ignoreInit=TRUE)
     # nocov end
 
     # nocov start
@@ -155,6 +145,13 @@
         # .create_dimname_observers() for some affected functions.
 
         rObjects$rerender <- .increment_counter(rObjects$rerender)
+
+        # We need to rerender the organization UI so that changes propagate to
+        # the 'default' state of the panelParams UI element. Otherwise, we'll 
+        # be stuck in a tricky situation where the modal is launched before 
+        # 'panelParams' has a chance to rerender, causing the old UI elements
+        # to trigger the width/height observers to set the old defaults.
+        org_rObjects$rerender <- .increment_counter(org_rObjects$rerender)
 
         removeModal(session)
     }, ignoreInit=TRUE)

@@ -114,14 +114,13 @@
 
         org_pObjects$memory <- adjusted
         org_rObjects$rerender <- .increment_counter(org_rObjects$rerender)
-    }, ignoreInit=TRUE)
+    }, ignoreInit=TRUE, ignoreNULL = FALSE)
     # nocov end
 
     # nocov start
     observeEvent(input$update_ui, {
         left <- names(org_pObjects$memory)
         right <- names(pObjects$memory)
-
         pObjects$memory <- org_pObjects$memory
         pObjects$counter <- org_pObjects$counter
 

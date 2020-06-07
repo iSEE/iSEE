@@ -59,6 +59,16 @@
             }
             org_pObjects$initialized <- TRUE
         }
+        
+        N <- length(pObjects$memory)
+        for (i in seq_len(N)) {
+            instance <- pObjects$memory[[i]]
+            panel_name <- .getEncodedName(instance)
+            prefix <- paste0(panel_name, "_")
+            
+            updateSelectInput(session = session, inputId = paste0(prefix, .organizationWidth), selected = instance[[.organizationWidth]])
+            updateSelectInput(session = session, inputId = paste0(prefix, .organizationHeight), selected = instance[[.organizationHeight]])
+        }
 
         showModal(modalDialog(
             title="Panel organization", size="m", fade=TRUE,

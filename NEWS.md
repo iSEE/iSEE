@@ -1,3 +1,8 @@
+# iSEE 2.1.5
+
+* Fixed initialization of panel size to current value when the "Organize panels" window is closed and re-opened.
+* Fixed removal of last panel from the interface.
+
 # iSEE 2.1.4
 
 * Add progress bar when exporting panel outputs. 

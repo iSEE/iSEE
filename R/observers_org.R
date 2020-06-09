@@ -124,7 +124,8 @@
 
         org_pObjects$memory <- adjusted
         org_rObjects$rerender <- .increment_counter(org_rObjects$rerender)
-    }, ignoreInit=TRUE)
+    }, ignoreInit=TRUE,
+    ignoreNULL=FALSE) # necessary when users remove the last panel from the UI
     # nocov end
 
     # nocov start

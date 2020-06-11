@@ -284,7 +284,7 @@ setMethod(".defineVisualSizeInterface", "ColumnDotPlot", function(x, se) {
     numeric_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$continuous.colData.names
 
     plot_name <- .getEncodedName(x)
-    sizeby_field <- paste0(plot_name, "_", .shapeByField)
+    sizeby_field <- paste0(plot_name, "_", .sizeByField)
 
     tagList(
         hr(),

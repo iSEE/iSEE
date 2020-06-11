@@ -42,6 +42,7 @@
     # when observeEvent's expression actually gets executed.
     org_pObjects <- new.env()
     org_pObjects$initialized <- FALSE
+    org_pObjects$ui_updating <- FALSE
     org_rObjects <- reactiveValues(rerender=0)
 
     available_enc <- vapply(pObjects$reservoir, .encodedName, "")
@@ -59,6 +60,14 @@
             }
             org_pObjects$initialized <- TRUE
         }
+
+        # Here we disable the observers until the UI has been rerendered with
+        # the latest memory. Otherwise, we'll be stuck in a tricky situation
+        # where the modal is launched before 'panelParams' has a chance to
+        # rerender, causing the old UI elements to trigger the width/height
+        # observers to set the old defaults.
+        org_pObjects$ui_updating <- TRUE
+        org_rObjects$rerender <- .increment_counter(org_rObjects$rerender)
 
         showModal(modalDialog(
             title="Panel organization", size="m", fade=TRUE,
@@ -78,6 +87,7 @@
     # nocov start
     output$panelParams <- renderUI({
         force(org_rObjects$rerender)
+        org_pObjects$ui_updating <- FALSE
         .panel_organization(org_pObjects$memory)
     })
     # nocov end
@@ -114,14 +124,14 @@
 
         org_pObjects$memory <- adjusted
         org_rObjects$rerender <- .increment_counter(org_rObjects$rerender)
-    }, ignoreInit=TRUE)
+    }, ignoreInit=TRUE,
+    ignoreNULL=FALSE) # necessary when users remove the last panel from the UI
     # nocov end
 
     # nocov start
     observeEvent(input$update_ui, {
         left <- names(org_pObjects$memory)
         right <- names(pObjects$memory)
-
         pObjects$memory <- org_pObjects$memory
         pObjects$counter <- org_pObjects$counter
 
@@ -175,8 +185,13 @@
     panel_name <- .getEncodedName(x)
 
     width_name <- paste0(panel_name, "_", .organizationWidth)
+
     # nocov start
     observeEvent(input[[width_name]], {
+        if (org_pObjects$ui_updating) {
+            return(NULL)
+        }
+
         cur.width <- org_pObjects$memory[[panel_name]][[.organizationWidth]]
         new.width <- as.integer(input[[width_name]])
         if (!isTRUE(all.equal(new.width, cur.width))) {
@@ -186,8 +201,13 @@
     # nocov end
 
     height_name <- paste0(panel_name, "_", .organizationHeight)
+
     # nocov start
     observeEvent(input[[height_name]], {
+        if (org_pObjects$ui_updating) {
+            return(NULL)
+        }
+
         cur.height <- org_pObjects$memory[[panel_name]][[.organizationHeight]]
         new.height <- as.integer(input[[height_name]])
         if (!isTRUE(all.equal(new.height, cur.height))) {

@@ -4,7 +4,9 @@
 context("plotting")
 
 memory <- list(
-    ReducedDimensionPlot(),
+    ReducedDimensionPlot(
+        LegendPointSize = 2
+    ),
     ColumnDataPlot(),
     FeatureAssayPlot(),
     RowDataPlot(),

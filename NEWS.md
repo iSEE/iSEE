@@ -1,3 +1,11 @@
+# iSEE 2.1.7
+
+* Added control of legend point size under the "Text" category of teh "Visual parameters" box.
+
+# iSEE 2.1.6
+
+* Fixed bug for `sizeBy` observers.
+
 # iSEE 2.1.5
 
 * Fixed initialization of panel size to current value when the "Organize panels" window is closed and re-opened.

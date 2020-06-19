@@ -86,6 +86,7 @@ iSEEOptions <- new_defaults(list(
     contour.color = "blue",
 
     font.size = 1,
+    legend.point.size = 1,
     legend.position = .plotLegendBottomTitle,
     legend.direction = .plotLegendHorizontalTitle,
 

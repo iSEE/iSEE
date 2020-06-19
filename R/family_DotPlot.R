@@ -107,6 +107,8 @@
 #' \itemize{
 #' \item \code{FontSize}, positive numeric scalar specifying the relative font size.
 #' Defaults to 1.
+#' \item \code{PointSize}, positive numeric scalar specifying the relative point size.
+#' Defaults to 1.
 #' \item \code{LegendPosition}, string specifying the position of the legend on the plot.
 #' Defaults to \code{"Right"} but can also be \code{"Bottom"}.
 #' }
@@ -243,6 +245,7 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     args <- .emptyDefault(args, .plotPointSampleRes, iSEEOptions$get("downsample.resolution"))
 
     args <- .emptyDefault(args, .plotFontSize, iSEEOptions$get("font.size"))
+    args <- .emptyDefault(args, .legendPointSize, iSEEOptions$get("legend.point.size"))
     args <- .emptyDefault(args, .plotLegendPosition, iSEEOptions$get("legend.position"))
 
     do.call(callNextMethod, c(list(.Object), args))
@@ -283,6 +286,8 @@ setValidity2("DotPlot", function(object) {
     msg <- .valid_number_error(msg, object, .plotPointSampleRes, lower=1, upper=Inf)
 
     msg <- .valid_number_error(msg, object, .plotFontSize, lower=0, upper=Inf)
+    
+    msg <- .valid_number_error(msg, object, .legendPointSize, lower=0, upper=Inf)
 
     msg <- .allowable_choice_error(msg, object, .plotLegendPosition,
         c(.plotLegendRightTitle, .plotLegendBottomTitle))
@@ -341,7 +346,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
         fields=c(
             .colorByDefaultColor, .selectColor, .selectTransAlpha,
             .shapeByField, .sizeByField,
-            .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
+            .plotPointSize, .plotPointAlpha, .plotFontSize, .legendPointSize, .plotLegendPosition,
             .plotPointDownsample, .plotPointSampleRes, .contourAdd,
             .contourColor),
         input=input, pObjects=pObjects, rObjects=rObjects)
@@ -367,6 +372,9 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x) {
         numericInput(
             paste0(plot_name, "_", .plotFontSize), label="Font size:",
             min=0, value=x[[.plotFontSize]]),
+        numericInput(
+            paste0(plot_name, "_", .legendPointSize), label="Legend point size:",
+            min=0, value=x[[.legendPointSize]]),
         radioButtons(
             paste0(plot_name, "_", .plotLegendPosition), label="Legend position:", inline=TRUE,
             choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),

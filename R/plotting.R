@@ -240,6 +240,9 @@ names(.all_aes_values) <- .all_aes_names
 
     # Adding further aesthetic elements.
     plot_cmds[["scale_color"]] <- color_scale_cmd
+    if (param_choices[[.legendPointSize]] != 1) {
+        plot_cmds[["guides"]] <- sprintf("guides(colour = guide_legend(override.aes = list(size=%i))) +", param_choices[[.legendPointSize]])
+    }
     plot_cmds[["theme_base"]] <- "theme_bw() +"
     plot_cmds[["theme_custom"]] <- sprintf(
         "theme(legend.position='%s', legend.box='vertical', legend.text=element_text(size=%s), legend.title=element_text(size=%s),

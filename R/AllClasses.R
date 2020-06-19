@@ -225,9 +225,11 @@ collated[.plotPointDownsample] <- "logical"
 collated[.plotPointSampleRes] <- "numeric"
 
 .plotFontSize <- "FontSize"
+.legendPointSize <- "LegendPointSize"
 .plotLegendPosition <- "LegendPosition"
 
 collated[.plotFontSize] <- "numeric"
+collated[.legendPointSize] <- "numeric"
 collated[.plotLegendPosition] <- "character"
 
 #' @export

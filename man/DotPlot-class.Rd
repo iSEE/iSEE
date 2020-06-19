@@ -134,6 +134,8 @@ The following slots refer to general plotting parameters:
 \itemize{
 \item \code{FontSize}, positive numeric scalar specifying the relative font size.
 Defaults to 1.
+\item \code{PointSize}, positive numeric scalar specifying the relative point size.
+Defaults to 1.
 \item \code{LegendPosition}, string specifying the position of the legend on the plot.
 Defaults to \code{"Right"} but can also be \code{"Bottom"}.
 }

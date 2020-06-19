@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -155,11 +155,11 @@
     </div>
 
     <pre class="usage"><span class='fu'>createLandingPage</span>(
-  <span class='kw'>seUI</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>seLoad</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>initUI</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>initLoad</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='kw'>requireButton</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+  seUI = <span class='kw'>NULL</span>,
+  seLoad = <span class='kw'>NULL</span>,
+  initUI = <span class='kw'>NULL</span>,
+  initLoad = <span class='kw'>NULL</span>,
+  requireButton = <span class='fl'>TRUE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -181,7 +181,7 @@ and returns a SummarizedExperiment object.</p></td>
     <tr>
       <th>initLoad</th>
       <td><p>Function that accepts the input value of the UI element from <code>initUI</code>
-and returns a list of <a href='Panel-class.html'>Panel</a>s.</p></td>
+and returns a list of Panels.</p></td>
     </tr>
     <tr>
       <th>requireButton</th>
@@ -192,36 +192,36 @@ or if it should initialize upon any modification to the UI element in <code>seUI
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A function that generates a landing page upon being passed to <code><a href='iSEE.html'>iSEE</a></code>
+    <p>A function that generates a landing page upon being passed to <code>iSEE</code>
 as the <code>landingPage</code> argument.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>By default, this function creates a landing page in which users can upload an RDS file containing a SummarizedExperiment,
-which is subsequently read by <code><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></code> to launch an instance of <code><a href='iSEE.html'>iSEE</a></code>.
+which is subsequently read by <code><a href='https://rdrr.io/r/base/readRDS.html'>readRDS</a></code> to launch an instance of <code>iSEE</code>.
 However, any source of SummarizedExperiment objects can be used;
 for example, we can retrieve them from databases by modifying <code>seUI</code> and <code>seLoad</code> appropriately.</p>
-<p>The default landing page also allows users to upload a RDS file containing a list of <a href='Panel-class.html'>Panel</a>s
-that specifies the initial state of the <code><a href='iSEE.html'>iSEE</a></code> instance
-(to be used as the <code>initial</code> argument in <code><a href='iSEE.html'>iSEE</a></code>).
+<p>The default landing page also allows users to upload a RDS file containing a list of Panels
+that specifies the initial state of the <code>iSEE</code> instance
+(to be used as the <code>initial</code> argument in <code>iSEE</code>).
 Again, any source can be used to create this list if <code>initUI</code> and <code>initLoad</code> are modified appropriately.
-Note that only <a href='Panel-class.html'>Panel</a> classes that were in the original <code><a href='iSEE.html'>iSEE</a>()</code> call
+Note that only Panel classes that were in the original <code>iSEE()</code> call
 (as the original <code>initial</code> or in the <code>extra</code>) will be used for security and other reasons.</p>
 <p>The UI elements for the SummarizedExperiment and the initial state are named <code>"se"</code> and <code>"initial"</code> respectively.
-This can be used in Shiny bookmarking to initialize an <code><a href='iSEE.html'>iSEE</a></code> in a desired state by simply clicking a link,
+This can be used in Shiny bookmarking to initialize an <code>iSEE</code> in a desired state by simply clicking a link,
 provided that <code>requireButton=FALSE</code> so that reactive expressions are immediately triggered upon setting <code>se=</code> and <code>initial=</code> in the URL.
-We do not use bookmarking to set all individual <code><a href='iSEE.html'>iSEE</a></code> parameters as we will run afoul of URL character limits.</p>
+We do not use bookmarking to set all individual <code>iSEE</code> parameters as we will run afoul of URL character limits.</p>
     <h2 class="hasAnchor" id="defining-a-custom-landing-page"><a class="anchor" href="#defining-a-custom-landing-page"></a>Defining a custom landing page</h2>
 
     
 
 <p>We note that <code>createLandingPage</code> is just a limited wrapper around the landing page API.
-In <code><a href='iSEE.html'>iSEE</a></code>, <code>landingPage</code> can be any function that accepts the following arguments:</p><ul>
-<li><p><code>FUN</code>, a function to initialize the <code><a href='iSEE.html'>iSEE</a></code> observer architecture.
+In <code>iSEE</code>, <code>landingPage</code> can be any function that accepts the following arguments:</p><ul>
+<li><p><code>FUN</code>, a function to initialize the <code>iSEE</code> observer architecture.
 This function expects to be passed:</p><ul>
 <li><p><code>SE</code>, a SummarizedExperiment object.</p></li>
-<li><p><code>INITIAL</code>, a list of <a href='Panel-class.html'>Panel</a> objects describing the initial application state.
-  If <code>NULL</code>, the initial state from <code>initial</code> in the top-level <code><a href='iSEE.html'>iSEE</a></code> call is used instead.</p></li>
-<li><p><code>TOUR</code>, a data.frame containing a tour to be attached to the app - see <code><a href='defaultTour.html'>defaultTour</a></code> for an example.
+<li><p><code>INITIAL</code>, a list of Panel objects describing the initial application state.
+  If <code>NULL</code>, the initial state from <code>initial</code> in the top-level <code>iSEE</code> call is used instead.</p></li>
+<li><p><code>TOUR</code>, a data.frame containing a tour to be attached to the app - see <code>defaultTour</code> for an example.
   If <code>NULL</code> (the default), no tour is added.</p></li>
 </ul></li>
 <li><p><code>input</code>, the Shiny input list.</p></li>
@@ -229,12 +229,12 @@ This function expects to be passed:</p><ul>
 <li><p><code>session</code>, the Shiny session object.</p></li>
 </ul>
 
-<p>The <code>landingPage</code> function should define a <code>renderUI</code> expression that is assigned to <code>output$allPanels</code>.
-This should define a UI that contains all widgets necessary for a user to set up an <code><a href='iSEE.html'>iSEE</a></code> session interactively.
+<p>The <code>landingPage</code> function should define a <code><a href='https://rdrr.io/pkg/shiny/man/renderUI.html'>renderUI</a></code> expression that is assigned to <code>output$allPanels</code>.
+This should define a UI that contains all widgets necessary for a user to set up an <code>iSEE</code> session interactively.
 We suggest that all UI elements have IDs prefixed with <code>"initialize_INTERNAL"</code> to avoid conflicts.</p>
 <p>The function should also define observers to respond to user interactions with the UI elements.
-These are typically used to define a SummarizedExperiment object and an input state as a list of <a href='Panel-class.html'>Panel</a>s;
-any one of these observers may then call <code>FUN</code> on those arguments to launch the main <code><a href='iSEE.html'>iSEE</a></code> instance.</p>
+These are typically used to define a SummarizedExperiment object and an input state as a list of Panels;
+any one of these observers may then call <code>FUN</code> on those arguments to launch the main <code>iSEE</code> instance.</p>
 <p>Note that, once the main app is launched,
 the UI elements constructed here are lost and observers will never be called again.
 There is no explicit &#8220;unload&#8221; mechanism to return to the landing page from the main app,
@@ -273,23 +273,24 @@ though a browser refresh is usually sufficient.</p>
 #&gt;     }, ignoreNULL = TRUE, ignoreInit = TRUE)
 #&gt;     invisible(NULL)
 #&gt; }
-#&gt; &lt;bytecode: 0x7fe3b55e37a0&gt;
-#&gt; &lt;environment: 0x7fe3b55e5458&gt;</div><div class='input'>
+#&gt; &lt;bytecode: 0x7f86c582eeb8&gt;
+#&gt; &lt;environment: 0x7f86c582d510&gt;</div><div class='input'>
 <span class='co'># Alternative approach, to create a landing page</span>
 <span class='co'># that opens one of the datasets from the scRNAseq package.</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scRNAseq</span>)
-<span class='no'>all.data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span>(<span class='st'>"package:scRNAseq"</span>)
-<span class='no'>all.data</span> <span class='kw'>&lt;-</span> <span class='no'>all.data</span>[<span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span>(<span class='st'>"Data$"</span>, <span class='no'>all.data</span>)]
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'>scRNAseq</span>)
+<span class='kw'>all.data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span>(<span class='st'>"package:scRNAseq"</span>)
+<span class='kw'>all.data</span> <span class='op'>&lt;-</span> <span class='kw'>all.data</span>[<span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span>(<span class='st'>"Data$"</span>, <span class='kw'>all.data</span>)]
 
-<span class='no'>lpfun</span> <span class='kw'>&lt;-</span> <span class='fu'>createLandingPage</span>(
-    <span class='kw'>seUI</span><span class='kw'>=</span><span class='kw'>function</span>(<span class='no'>id</span>) <span class='fu'>selectInput</span>(<span class='no'>id</span>, <span class='st'>"Dataset:"</span>, <span class='kw'>choices</span><span class='kw'>=</span><span class='no'>all.data</span>),
-    <span class='kw'>seLoad</span><span class='kw'>=</span><span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/get.html'>get</a></span>(<span class='no'>x</span>, <span class='fu'><a href='https://rdrr.io/r/base/as.environment.html'>as.environment</a></span>(<span class='st'>"package:scRNAseq"</span>))()
+<span class='kw'>lpfun</span> <span class='op'>&lt;-</span> <span class='fu'>createLandingPage</span>(
+    seUI=<span class='fu'>function</span>(<span class='kw'>id</span>) <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/selectInput.html'>selectInput</a></span>(<span class='kw'>id</span>, <span class='st'>"Dataset:"</span>, choices=<span class='kw'>all.data</span>),
+    seLoad=<span class='fu'>function</span>(<span class='kw'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/get.html'>get</a></span>(<span class='kw'>x</span>, <span class='fu'><a href='https://rdrr.io/r/base/as.environment.html'>as.environment</a></span>(<span class='st'>"package:scRNAseq"</span>))()
 )
 
-<span class='no'>app</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='iSEE.html'>iSEE</a></span>(<span class='kw'>landingPage</span><span class='kw'>=</span><span class='no'>lpfun</span>)
-<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span>()) {
-  <span class='kw pkg'>shiny</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/shiny/man/runApp.html'>runApp</a></span>(<span class='no'>app</span>, <span class='kw'>port</span><span class='kw'>=</span><span class='fl'>1234</span>)
-}</div></pre>
+<span class='kw'>app</span> <span class='op'>&lt;-</span> <span class='fu'>iSEE</span>(landingPage=<span class='kw'>lpfun</span>)
+<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span>()) {
+  <span class='kw'>shiny</span>::<span class='fu'><a href='https://rdrr.io/pkg/shiny/man/runApp.html'>runApp</a></span>(<span class='kw'>app</span>, port=<span class='fl'>1234</span>)
+}
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

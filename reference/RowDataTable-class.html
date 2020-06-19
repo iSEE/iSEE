@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -151,7 +151,7 @@
     </div>
 
     <div class="ref-description">
-    <p>The RowDataTable is a panel class for creating a <a href='ColumnTable-class.html'>ColumnTable</a> where the value of the table is defined as the <code>rowData</code> of the SummarizedExperiment.</p>
+    <p>The RowDataTable is a panel class for creating a ColumnTable where the value of the table is defined as the <code>rowData</code> of the SummarizedExperiment.</p>
     </div>
 
 
@@ -160,7 +160,7 @@
 
     
 
-<p>This class inherits all slots from its parent <a href='ColumnTable-class.html'>ColumnTable</a> and <a href='Table-class.html'>Table</a> classes.</p>
+<p>This class inherits all slots from its parent ColumnTable and Table classes.</p>
     <h2 class="hasAnchor" id="constructor"><a class="anchor" href="#constructor"></a>Constructor</h2>
 
     
@@ -174,24 +174,24 @@
 <p>In the following code snippets, <code>x</code> is an instance of a RowDataTable class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For setting up data values:</p><ul>
-<li><p><code><a href='setup-generics.html'>.cacheCommonInfo</a>(x)</code> adds a <code>"RowDataTable"</code> entry containing <code>valid.rowData.names</code>, a character vector of names of atomic columns of the <code>rowData</code>.
-This will also call the equivalent <a href='ColumnTable-class.html'>ColumnTable</a> method.</p></li>
-<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> adjusts <code>ColSearch</code> to a character vector of length equal to the number of atomic fields in the <code>rowData</code>.
-This will also call the equivalent <a href='ColumnTable-class.html'>ColumnTable</a> method for further refinements to <code>x</code>.</p></li>
+<li><p><code>.cacheCommonInfo(x)</code> adds a <code>"RowDataTable"</code> entry containing <code>valid.rowData.names</code>, a character vector of names of atomic columns of the <code>rowData</code>.
+This will also call the equivalent ColumnTable method.</p></li>
+<li><p><code>.refineParameters(x, se)</code> adjusts <code>ColSearch</code> to a character vector of length equal to the number of atomic fields in the <code>rowData</code>.
+This will also call the equivalent ColumnTable method for further refinements to <code>x</code>.</p></li>
 </ul>
 
 <p>For defining the interface:</p><ul>
-<li><p><code><a href='interface-generics.html'>.hideInterface</a>(x, field)</code> returns <code>TRUE</code> if <code>field="DataBoxOpen"</code>, 
-otherwise it calls <code><a href='Table-class.html'>.hideInterface,Table-method</a></code></p></li>
-<li><p><code><a href='getPanelColor.html'>.panelColor</a>(x)</code> will return the specified default color for this panel class.</p></li>
+<li><p><code>.hideInterface(x, field)</code> returns <code>TRUE</code> if <code>field="DataBoxOpen"</code>, 
+otherwise it calls <code>.hideInterface,Table-method</code></p></li>
+<li><p><code>.panelColor(x)</code> will return the specified default color for this panel class.</p></li>
 </ul>
 
 <p>For defining the panel name:</p><ul>
-<li><p><code><a href='getEncodedName.html'>.fullName</a>(x)</code> will return <code>"Row data table"</code>.</p></li>
+<li><p><code>.fullName(x)</code> will return <code>"Row data table"</code>.</p></li>
 </ul>
 
 <p>For creating the output:</p><ul>
-<li><p><code><a href='table-generics.html'>.generateTable</a>(x, envir)</code> will modify <code>envir</code> to contain the relevant data.frame for display,
+<li><p><code>.generateTable(x, envir)</code> will modify <code>envir</code> to contain the relevant data.frame for display,
 while returning a character vector of commands required to produce that data.frame.
 Each row of the data.frame should correspond to a row of the SummarizedExperiment.</p></li>
 </ul>
@@ -205,19 +205,19 @@ Each row of the data.frame should correspond to a row of the SummarizedExperimen
 <span class='co'># For end-users #</span>
 <span class='co'>#################</span>
 
-<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>RowDataTable</span>()
-<span class='no'>x</span><span class='kw'>[[</span><span class='st'>"Selected"</span>]]</div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='no'>x</span><span class='kw'>[[</span><span class='st'>"Selected"</span>]] <span class='kw'>&lt;-</span> <span class='st'>"SOME_ROW_NAME"</span>
+<span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'>RowDataTable</span>()
+<span class='kw'>x</span>[[<span class='st'>"Selected"</span>]]</div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='kw'>x</span>[[<span class='st'>"Selected"</span>]] <span class='op'>&lt;-</span> <span class='st'>"SOME_ROW_NAME"</span>
 
 <span class='co'>##################</span>
 <span class='co'># For developers #</span>
 <span class='co'>##################</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scater</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/reexports.html'>mockSCE</a></span>()
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://bioconductor.org/packages/scater'>scater</a></span>)
+<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/mockSCE.html'>mockSCE</a></span>()
 
 <span class='co'># Sets the search columns appropriately.</span>
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span>(<span class='no'>x</span>, <span class='no'>sce</span>)
-<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span>(<span class='no'>x</span>, <span class='no'>sce</span>)</div><div class='output co'>#&gt; An object of class "RowDataTable"
+<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'>.cacheCommonInfo</span>(<span class='kw'>x</span>, <span class='kw'>sce</span>)
+<span class='fu'>.refineParameters</span>(<span class='kw'>x</span>, <span class='kw'>sce</span>)</div><div class='output co'>#&gt; An object of class "RowDataTable"
 #&gt; Slot "Selected":
 #&gt; [1] "Gene_0001"
 #&gt; 
@@ -268,8 +268,7 @@ Each row of the data.frame should correspond to a row of the SummarizedExperimen
 #&gt; 
 #&gt; Slot "SelectionHistory":
 #&gt; list()
-#&gt; </div><div class='input'>
-</div></pre>
+#&gt; </div><div class='input'></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

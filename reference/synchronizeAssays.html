@@ -77,7 +77,7 @@ in the ExperimentColorMap are assigned the appropriate default colormap." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -156,7 +156,7 @@ in the ExperimentColorMap are assigned the appropriate default colormap." />
     </div>
 
     <div class="ref-description">
-    <p>This function returns an updated <a href='ExperimentColorMap-class.html'>ExperimentColorMap</a>
+    <p>This function returns an updated ExperimentColorMap
 in which colormaps in the <code>assays</code> slot
 are ordered to match the position of their corresponding
 assay in the SingleCellExperiment object.
@@ -164,14 +164,14 @@ Assays in the SingleCellExperiment that do not have a match
 in the ExperimentColorMap are assigned the appropriate default colormap.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>synchronizeAssays</span>(<span class='no'>ecm</span>, <span class='no'>se</span>)</pre>
+    <pre class="usage"><span class='fu'>synchronizeAssays</span>(<span class='kw'>ecm</span>, <span class='kw'>se</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>ecm</th>
-      <td><p>An <a href='ExperimentColorMap-class.html'>ExperimentColorMap</a>.</p></td>
+      <td><p>An ExperimentColorMap.</p></td>
     </tr>
     <tr>
       <th>se</th>
@@ -181,7 +181,7 @@ in the ExperimentColorMap are assigned the appropriate default colormap.</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An <a href='ExperimentColorMap-class.html'>ExperimentColorMap</a> with colormaps in the
+    <p>An ExperimentColorMap with colormaps in the
 <code>assay</code> slot synchronized to match the position of the corresponding
 assay in the SingleCellExperiment.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -222,36 +222,35 @@ in the ExperimentColorMap are assigned the appropriate default colormap.</p></li
     <pre class="examples"><div class='input'>
 <span class='co'># Example ExperimentColorMap ----</span>
 
-<span class='no'>count_colors</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>n</span>){
+<span class='kw'>count_colors</span> <span class='op'>&lt;-</span> <span class='fu'>function</span>(<span class='kw'>n</span>){
   <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"black"</span>,<span class='st'>"brown"</span>,<span class='st'>"red"</span>,<span class='st'>"orange"</span>,<span class='st'>"yellow"</span>)
 }
-<span class='no'>fpkm_colors</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>viridis</span><span class='kw ns'>::</span><span class='no'><a href='https://rdrr.io/pkg/viridis/man/reexports.html'>inferno</a></span>
+<span class='kw'>fpkm_colors</span> <span class='op'>&lt;-</span> <span class='kw'>viridis</span>::<span class='kw'><a href='https://rdrr.io/pkg/viridisLite/man/viridis.html'>inferno</a></span>
 
-<span class='no'>ecm</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='ExperimentColorMap-class.html'>ExperimentColorMap</a></span>(
-    <span class='kw'>assays</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
-        <span class='kw'>counts</span> <span class='kw'>=</span> <span class='no'>count_colors</span>,
-        <span class='kw'>tophat_counts</span> <span class='kw'>=</span> <span class='no'>count_colors</span>,
-        <span class='kw'>cufflinks_fpkm</span> <span class='kw'>=</span> <span class='no'>fpkm_colors</span>,
-        <span class='kw'>rsem_counts</span> <span class='kw'>=</span> <span class='no'>count_colors</span>,
-        <span class='kw'>orphan</span> <span class='kw'>=</span> <span class='no'>count_colors</span>,
-        <span class='kw'>orphan2</span> <span class='kw'>=</span> <span class='no'>count_colors</span>,
-        <span class='no'>count_colors</span>,
-        <span class='no'>fpkm_colors</span>
+<span class='kw'>ecm</span> <span class='op'>&lt;-</span> <span class='fu'>ExperimentColorMap</span>(
+    assays = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
+        counts = <span class='kw'>count_colors</span>,
+        tophat_counts = <span class='kw'>count_colors</span>,
+        cufflinks_fpkm = <span class='kw'>fpkm_colors</span>,
+        rsem_counts = <span class='kw'>count_colors</span>,
+        orphan = <span class='kw'>count_colors</span>,
+        orphan2 = <span class='kw'>count_colors</span>,
+        <span class='kw'>count_colors</span>,
+        <span class='kw'>fpkm_colors</span>
     )
 )
 
 <span class='co'># Example SingleCellExperiment ----</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scRNAseq</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span>(<span class='kw'>assays</span><span class='kw'>=</span><span class='st'>"tophat_counts"</span>)</div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2020-06-01</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scater</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/reexports.html'>logNormCounts</a></span>(<span class='no'>sce</span>, <span class='kw'>exprs_values</span><span class='kw'>=</span><span class='st'>"tophat_counts"</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/runPCA.html'>runPCA</a></span>(<span class='no'>sce</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/runTSNE.html'>runTSNE</a></span>(<span class='no'>sce</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'>scRNAseq</span>)
+<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span>(assays=<span class='st'>"tophat_counts"</span>)</div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2020-06-11</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://bioconductor.org/packages/scater'>scater</a></span>)
+<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/logNormCounts.html'>logNormCounts</a></span>(<span class='kw'>sce</span>, exprs_values=<span class='st'>"tophat_counts"</span>)
+<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/runPCA.html'>runPCA</a></span>(<span class='kw'>sce</span>)
+<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/runTSNE.html'>runTSNE</a></span>(<span class='kw'>sce</span>)
 
 <span class='co'># Example ----</span>
 
-<span class='no'>ecm_sync</span> <span class='kw'>&lt;-</span> <span class='fu'>synchronizeAssays</span>(<span class='no'>ecm</span>, <span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Unused assays dropped from ecm: unnamed [7,8], named [counts,cufflinks_fpkm,rsem_counts,orphan,orphan2]</span></div><div class='input'>
-</div></pre>
+<span class='kw'>ecm_sync</span> <span class='op'>&lt;-</span> <span class='fu'>synchronizeAssays</span>(<span class='kw'>ecm</span>, <span class='kw'>sce</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: Unused assays dropped from ecm: unnamed [7,8], named [counts,cufflinks_fpkm,rsem_counts,orphan,orphan2]</span></div><div class='input'></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -75,7 +75,7 @@ as well as to control the choice of transmitting panels from which to receive a 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -225,43 +225,43 @@ and <code>i</code> is a string containing the slot name:</p><ul>
 
     
 
-<p>In the following code snippets, <code>x</code> is an instance of a <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> class.
+<p>In the following code snippets, <code>x</code> is an instance of a ColumnDotPlot class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For setting up data values:</p><ul>
-<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> is a no-op, returning <code>x</code> without modification.</p></li>
-<li><p><code><a href='setup-generics.html'>.cacheCommonInfo</a>(x, se)</code> is a no-op, returning <code>se</code> without modification.</p></li>
+<li><p><code>.refineParameters(x, se)</code> is a no-op, returning <code>x</code> without modification.</p></li>
+<li><p><code>.cacheCommonInfo(x, se)</code> is a no-op, returning <code>se</code> without modification.</p></li>
 </ul>
 
 <p>For defining the interface:</p><ul>
-<li><p><code><a href='interface-generics.html'>.defineInterface</a>(x, se, select_info)</code> will return a list of collapsible boxes for changing data and selection parameters.
-The data parameter box will be populated based on <code><a href='interface-generics.html'>.defineDataInterface</a></code>.</p></li>
-<li><p><code><a href='interface-generics.html'>.defineDataInterface</a>(x, se, select_info)</code> will return an empty list.</p></li>
-<li><p><code><a href='interface-generics.html'>.hideInterface</a>(x, field)</code> will always return <code>FALSE</code>.</p></li>
+<li><p><code>.defineInterface(x, se, select_info)</code> will return a list of collapsible boxes for changing data and selection parameters.
+The data parameter box will be populated based on <code>.defineDataInterface</code>.</p></li>
+<li><p><code>.defineDataInterface(x, se, select_info)</code> will return an empty list.</p></li>
+<li><p><code>.hideInterface(x, field)</code> will always return <code>FALSE</code>.</p></li>
 </ul>
 
 <p>For monitoring reactive expressions:</p><ul>
-<li><p><code><a href='observer-generics.html'>.createObservers</a>(x, se, input, session, pObjects, rObjects)</code> will add observers to respond to changes in multiple selection options.
-It will also call <code><a href='single-select-generics.html'>.singleSelectionSlots</a>(x)</code> to set up observers for responding to transmitted single selections.</p></li>
-<li><p><code><a href='output-generics.html'>.renderOutput</a>(x, se, output, pObjects, rObjects)</code> will add elements to <code>output</code> for rendering the information textboxes at the bottom of each panel.
+<li><p><code>.createObservers(x, se, input, session, pObjects, rObjects)</code> will add observers to respond to changes in multiple selection options.
+It will also call <code>.singleSelectionSlots(x)</code> to set up observers for responding to transmitted single selections.</p></li>
+<li><p><code>.renderOutput(x, se, output, pObjects, rObjects)</code> will add elements to <code>output</code> for rendering the information textboxes at the bottom of each panel.
 Each panel should specialize this method to add rendering expressions for the actual output (e.g., plots, tables),
 followed by a <code>callNextMethod</code> to create the textboxes.</p></li>
 </ul>
 
 <p>For generating output:</p><ul>
-<li><p><code><a href='output-generics.html'>.exportOutput</a>(x, se, all_memory, all_contents)</code> is a no-op,
+<li><p><code>.exportOutput(x, se, all_memory, all_contents)</code> is a no-op,
 i.e., it will return an empty character vector and create no files.</p></li>
 </ul>
 
 <p>For controlling selections:</p><ul>
-<li><p><code><a href='multi-select-generics.html'>.multiSelectionRestricted</a>(x)</code> will always return <code>TRUE</code>.</p></li>
-<li><p><code><a href='multi-select-generics.html'>.multiSelectionDimension</a>(x)</code> will always return <code>"none"</code>.</p></li>
-<li><p><code><a href='multi-select-generics.html'>.multiSelectionActive</a>(x)</code> will always return <code>NULL</code>.</p></li>
-<li><p><code><a href='multi-select-generics.html'>.multiSelectionClear</a>(x)</code> will always return <code>x</code>.</p></li>
-<li><p><code><a href='multi-select-generics.html'>.multiSelectionInvalidated</a>(x)</code> will always return <code>FALSE</code>.</p></li>
-<li><p><code><a href='multi-select-generics.html'>.multiSelectionAvailable</a>(x, contents)</code> will return <code><a href='https://rdrr.io/r/base/nrow.html'>nrow(contents)</a></code>.</p></li>
-<li><p><code><a href='single-select-generics.html'>.singleSelectionDimension</a>(x)</code> will always return <code>"none"</code>.</p></li>
-<li><p><code><a href='single-select-generics.html'>.singleSelectionValue</a>(x)</code> will always return <code>NULL</code>.</p></li>
-<li><p><code><a href='single-select-generics.html'>.singleSelectionSlots</a>(x)</code> will always return an empty list.</p></li>
+<li><p><code>.multiSelectionRestricted(x)</code> will always return <code>TRUE</code>.</p></li>
+<li><p><code>.multiSelectionDimension(x)</code> will always return <code>"none"</code>.</p></li>
+<li><p><code>.multiSelectionActive(x)</code> will always return <code>NULL</code>.</p></li>
+<li><p><code>.multiSelectionClear(x)</code> will always return <code>x</code>.</p></li>
+<li><p><code>.multiSelectionInvalidated(x)</code> will always return <code>FALSE</code>.</p></li>
+<li><p><code>.multiSelectionAvailable(x, contents)</code> will return <code><a href='https://rdrr.io/r/base/nrow.html'>nrow(contents)</a></code>.</p></li>
+<li><p><code>.singleSelectionDimension(x)</code> will always return <code>"none"</code>.</p></li>
+<li><p><code>.singleSelectionValue(x)</code> will always return <code>NULL</code>.</p></li>
+<li><p><code>.singleSelectionSlots(x)</code> will always return an empty list.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="subclass-expectations"><a class="anchor" href="#subclass-expectations"></a>Subclass expectations</h2>
@@ -269,15 +269,15 @@ i.e., it will return an empty character vector and create no files.</p></li>
     
 
 <p>Subclasses are required to implement methods for:</p><ul>
-<li><p><code><a href='output-generics.html'>.defineOutput</a></code></p></li>
-<li><p><code><a href='output-generics.html'>.generateOutput</a></code></p></li>
-<li><p><code><a href='output-generics.html'>.renderOutput</a></code></p></li>
-<li><p><code><a href='getEncodedName.html'>.fullName</a></code></p></li>
-<li><p><code><a href='getPanelColor.html'>.panelColor</a></code></p></li>
+<li><p><code>.defineOutput</code></p></li>
+<li><p><code>.generateOutput</code></p></li>
+<li><p><code>.renderOutput</code></p></li>
+<li><p><code>.fullName</code></p></li>
+<li><p><code>.panelColor</code></p></li>
 </ul><p>Subclasses that transmit selections should also implement specialized methods for selection-related parameters listed above.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><a href='DotPlot-class.html'>DotPlot</a> and <a href='Table-class.html'>Table</a>, for examples of direct subclasses.</p></div>
+    <div class='dont-index'><p>DotPlot and Table, for examples of direct subclasses.</p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Aaron Lun</p>

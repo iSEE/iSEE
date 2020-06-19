@@ -73,7 +73,7 @@ It provides observers for monitoring table selection, global search and column-s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -164,14 +164,14 @@ It provides observers for monitoring table selection, global search and column-s
 
 <p>The following slots control aspects of the <code><a href='https://rdrr.io/pkg/DT/man/datatable.html'>DT::datatable</a></code> interface:</p><ul>
 <li><p><code>Selected</code>, a string containing the name of the currently selected row of the data.frame.
-Defaults to <code>NA</code>, in which case the value should be chosen by the subclass' <code><a href='setup-generics.html'>.refineParameters</a></code> method.</p></li>
+Defaults to <code>NA</code>, in which case the value should be chosen by the subclass' <code>.refineParameters</code> method.</p></li>
 <li><p><code>Search</code>, a string containing the regular expression for the global search.
 Defaults to <code>""</code>, i.e., no search.</p></li>
 <li><p><code>SearchColumns</code>, a character vector where each entry contains the search string for each column.
 Defaults to an empty character vector, i.e., no search.</p></li>
 </ul>
 
-<p>In addition, this class inherits all slots from its parent <a href='Panel-class.html'>Panel</a> class.</p>
+<p>In addition, this class inherits all slots from its parent Panel class.</p>
     <h2 class="hasAnchor" id="supported-methods"><a class="anchor" href="#supported-methods"></a>Supported methods</h2>
 
     
@@ -179,40 +179,40 @@ Defaults to an empty character vector, i.e., no search.</p></li>
 <p>In the following code snippets, <code>x</code> is an instance of a Table class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For defining the interface:</p><ul>
-<li><p><code><a href='output-generics.html'>.defineOutput</a>(x, id)</code> returns a UI element for a <code><a href='https://rdrr.io/pkg/DT/man/dataTableOutput.html'>dataTableOutput</a></code> widget.</p></li>
+<li><p><code>.defineOutput(x, id)</code> returns a UI element for a <code><a href='https://rdrr.io/pkg/DT/man/dataTableOutput.html'>dataTableOutput</a></code> widget.</p></li>
 </ul>
 
 <p>For defining reactive expressions:</p><ul>
-<li><p><code><a href='observer-generics.html'>.createObservers</a>(x, se, input, session, pObjects, rObjects)</code> sets up observers for all of the slots.
-This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.</p></li>
-<li><p><code><a href='output-generics.html'>.renderOutput</a>(x, se, output, pObjects, rObjects)</code> will add a rendered <code>datatable</code> object to <code>output</code>.
-This will also call the equivalent <a href='Panel-class.html'>Panel</a> method to render the panel information testboxes.</p></li>
-<li><p><code><a href='output-generics.html'>.generateOutput</a>(x, se, all_memory, all_contents)</code> returns a list containing <code>contents</code>, a data.frame with one row per point currently present in the table;
+<li><p><code>.createObservers(x, se, input, session, pObjects, rObjects)</code> sets up observers for all of the slots.
+This will also call the equivalent Panel method.</p></li>
+<li><p><code>.renderOutput(x, se, output, pObjects, rObjects)</code> will add a rendered <code>datatable</code> object to <code>output</code>.
+This will also call the equivalent Panel method to render the panel information testboxes.</p></li>
+<li><p><code>.generateOutput(x, se, all_memory, all_contents)</code> returns a list containing <code>contents</code>, a data.frame with one row per point currently present in the table;
 and <code>commands</code>, a list of character vector containing the R commands required to generate <code>contents</code> and <code>plot</code>.</p></li>
-<li><p><code><a href='output-generics.html'>.exportOutput</a>(x, se, all_memory, all_contents)</code> will create a CSV file containing the current table, and return a string containing the path to that file. 
-This assumes that the <code>contents</code> field returned by <code><a href='output-generics.html'>.generateOutput</a></code> is a data.frame or can be coerced into one.</p></li>
+<li><p><code>.exportOutput(x, se, all_memory, all_contents)</code> will create a CSV file containing the current table, and return a string containing the path to that file. 
+This assumes that the <code>contents</code> field returned by <code>.generateOutput</code> is a data.frame or can be coerced into one.</p></li>
 </ul>
 
 <p>For controlling selections:</p><ul>
-<li><p><code><a href='multi-select-generics.html'>.multiSelectionRestricted</a>(x)</code> returns <code>TRUE</code>.
+<li><p><code>.multiSelectionRestricted(x)</code> returns <code>TRUE</code>.
 Transmission of a selection to a Table will manifest as a subsetting of the rows.</p></li>
-<li><p><code><a href='multi-select-generics.html'>.multiSelectionActive</a>(x)</code> returns a list containing the contents of <code>x[["Search"]]</code> and <code>x[["ColumnSearch"]]</code>.
+<li><p><code>.multiSelectionActive(x)</code> returns a list containing the contents of <code>x[["Search"]]</code> and <code>x[["ColumnSearch"]]</code>.
 If both contain only empty strings, a <code>NULL</code> is returned instead.</p></li>
-<li><p><code><a href='multi-select-generics.html'>.multiSelectionCommands</a>(x, index)</code> returns a character vector of R expressions that - when evaluated - return a character vector of the row names of the table after applying all search filters.
+<li><p><code>.multiSelectionCommands(x, index)</code> returns a character vector of R expressions that - when evaluated - return a character vector of the row names of the table after applying all search filters.
 The value of <code>index</code> is ignored.</p></li>
-<li><p><code><a href='single-select-generics.html'>.singleSelectionValue</a>(x, pObjects)</code> returns the name of the row that was last selected in the <code>datatable</code> widget.</p></li>
+<li><p><code>.singleSelectionValue(x, pObjects)</code> returns the name of the row that was last selected in the <code>datatable</code> widget.</p></li>
 </ul>
 
-<p>Unless explicitly specialized above, all methods from the parent class <a href='Panel-class.html'>Panel</a> are also available.</p>
+<p>Unless explicitly specialized above, all methods from the parent class Panel are also available.</p>
     <h2 class="hasAnchor" id="subclass-expectations"><a class="anchor" href="#subclass-expectations"></a>Subclass expectations</h2>
 
     
 
-<p>The Table is a rather vaguely defined class for which the only purpose is to avoid duplicating code for <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s and <a href='RowDotPlot-class.html'>RowDotPlot</a>s.
+<p>The Table is a rather vaguely defined class for which the only purpose is to avoid duplicating code for ColumnDotPlots and RowDotPlots.
 We recommend extending those subclasses instead.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><a href='Panel-class.html'>Panel</a>, for the immediate parent class.</p></div>
+    <div class='dont-index'><p>Panel, for the immediate parent class.</p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Aaron Lun</p>

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -151,17 +151,17 @@
     </div>
 
     <div class="ref-description">
-    <p>Add ggplot instructions to create brushes and lassos for both saved and active mutliple selections in a <a href='DotPlot-class.html'>DotPlot</a> panel.</p>
+    <p>Add ggplot instructions to create brushes and lassos for both saved and active mutliple selections in a DotPlot panel.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.addMultiSelectionPlotCommands</span>(<span class='no'>x</span>, <span class='no'>envir</span>, <span class='no'>commands</span>, <span class='kw'>flip</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>.addMultiSelectionPlotCommands</span>(<span class='kw'>x</span>, <span class='kw'>envir</span>, <span class='kw'>commands</span>, flip = <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An instance of a <a href='DotPlot-class.html'>DotPlot</a> class.</p></td>
+      <td><p>An instance of a DotPlot class.</p></td>
     </tr>
     <tr>
       <th>envir</th>
@@ -183,7 +183,7 @@ only relevant to horizontal violin plots.</p></td>
     <p>A character vector containing <code>commands</code> plus any additional commands required to draw the self selections.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This is a utility function that is intended for use in <code><a href='plot-generics.html'>.generateDotPlot</a></code>.
+    <p>This is a utility function that is intended for use in <code>.generateDotPlot</code>.
 It will modify <code>envir</code> by adding <code>all_active</code> and <code>all_saved</code> variables,
 so developers should not use these names for their own variables in <code>envir</code>.</p>
 <p>If no self-selection structures exist in <code>x</code>, <code>commands</code> is returned directly without modification.</p>

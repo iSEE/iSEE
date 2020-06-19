@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -161,23 +161,23 @@
     
 
 <p>In <code>.defineInterface(x, se, select_info)</code>, the required arguments are:</p><ul>
-<li><p><code>x</code>, an instance of a <a href='Panel-class.html'>Panel</a> class.</p></li>
+<li><p><code>x</code>, an instance of a Panel class.</p></li>
 <li><p><code>se</code>, a SummarizedExperiment object containing the current dataset.
-This can be assumed to have been produced by running <code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code>.</p></li>
+This can be assumed to have been produced by running <code>.refineParameters(x, se)</code>.</p></li>
 <li><p><code>select_info</code>, a list of two lists, <code>single</code> and <code>multiple</code>,
 each of which contains the character vectors <code>row</code> and <code>column</code>.
 This specifies the panels available for transmitting single/multiple selections on the rows/columns,
-see <code>?<a href='multi-select-generics.html'>.multiSelectionDimension</a></code> and <code>?<a href='single-select-generics.html'>.singleSelectionDimension</a></code> for more details.</p></li>
+see <code>?.multiSelectionDimension</code> and <code>?.singleSelectionDimension</code> for more details.</p></li>
 </ul>
 
-<p>Methods for this generic are expected to return a list of <code><a href='collapseBox.html'>collapseBox</a></code> elements.
+<p>Methods for this generic are expected to return a list of <code>collapseBox</code> elements.
 Each parameter box can contain arbitrary numbers of additional UI elements,
 each of which is expected to modify one slot of <code>x</code> upon user interaction.</p>
-<p>The ID of each interface element should follow the form of <code>PANEL_SLOT</code> where <code>PANEL</code> is the panel name (from <code><a href='getEncodedName.html'>.getEncodedName</a>(x)</code>) and <code>SLOT</code> is the name of the slot modified by the interface element,
+<p>The ID of each interface element should follow the form of <code>PANEL_SLOT</code> where <code>PANEL</code> is the panel name (from <code>.getEncodedName(x)</code>) and <code>SLOT</code> is the name of the slot modified by the interface element,
 e.g., <code>"ReducedDimensionPlot1_Type"</code>.
-Each interface element should have an equivalent observer in <code><a href='observer-generics.html'>.createObservers</a></code> unless they are hidden by <code>.hideInterface</code> (see below).</p>
+Each interface element should have an equivalent observer in <code>.createObservers</code> unless they are hidden by <code>.hideInterface</code> (see below).</p>
 <p>It is the developer's responsibility to call <code>callNextMethod</code> to obtain interface elements for parent classes.
-Refer to the contract for each <a href='Panel-class.html'>Panel</a> class to determine what is already provided by each parent.</p>
+Refer to the contract for each Panel class to determine what is already provided by each parent.</p>
     <h2 class="hasAnchor" id="defining-the-data-parameter-interface"><a class="anchor" href="#defining-the-data-parameter-interface"></a>Defining the data parameter interface</h2>
 
     
@@ -188,15 +188,15 @@ which are automatically placed inside the &#8220;Data parameters&#8221; collapsi
 Each element's ID should still follow the <code>PANEL_SLOT</code> pattern described above.</p>
 <p>This method aims to provide a simpler alternative to specializing <code>.defineInterface</code> for the most common use case,
 where new panels wish to add their own interface elements for altering the contents of the panel.
-In fact, <code><a href='Panel-class.html'>.defineInterface,Panel-method</a></code> will simply call <code>.defineDataInterface</code> to populate the data parameter box.</p>
+In fact, <code>.defineInterface,Panel-method</code> will simply call <code>.defineDataInterface</code> to populate the data parameter box.</p>
 <p>It is the developer's responsibility to call <code>callNextMethod</code> to obtain interface elements for parent classes.
-Refer to the contract for each <a href='Panel-class.html'>Panel</a> class to determine what is already provided by each parent.</p>
+Refer to the contract for each Panel class to determine what is already provided by each parent.</p>
     <h2 class="hasAnchor" id="hiding-interface-elements"><a class="anchor" href="#hiding-interface-elements"></a>Hiding interface elements</h2>
 
     
 
 <p>In <code>.hideInterface(x, field)</code>, the required arguments are:</p><ul>
-<li><p><code>x</code>, an instance of a <a href='Panel-class.html'>Panel</a> class.</p></li>
+<li><p><code>x</code>, an instance of a Panel class.</p></li>
 <li><p><code>field</code>, string containing the name of a slot of <code>x</code>.</p></li>
 </ul>
 
@@ -204,7 +204,7 @@ Refer to the contract for each <a href='Panel-class.html'>Panel</a> class to det
 This is useful for hiding UI elements that cannot be changed or have no effect.</p>
 <p>It is the developer's responsibility to call <code>callNextMethod</code> to hide the same interface elements as parent classes.
 This is not strictly required if one wishes to expose previously hidden elements.
-Refer to the contract for each <a href='Panel-class.html'>Panel</a> class to determine what is already provided by each parent.</p>
+Refer to the contract for each Panel class to determine what is already provided by each parent.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Aaron Lun</p>

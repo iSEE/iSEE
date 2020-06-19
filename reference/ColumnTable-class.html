@@ -73,7 +73,7 @@ It provides observers for monitoring table selection, global search and column-s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -163,7 +163,7 @@ It provides observers for monitoring table selection, global search and column-s
     
 
 <p>No new slots are added.
-All slots provided in the <a href='Table-class.html'>Table</a> parent class are available.</p>
+All slots provided in the Table parent class are available.</p>
     <h2 class="hasAnchor" id="supported-methods"><a class="anchor" href="#supported-methods"></a>Supported methods</h2>
 
     
@@ -171,41 +171,41 @@ All slots provided in the <a href='Table-class.html'>Table</a> parent class are 
 <p>In the following code snippets, <code>x</code> is an instance of a ColumnTable class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For setting up data values:</p><ul>
-<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> replaces <code>NA</code> values in <code>Selected</code> with the first column name of <code>se</code>.
-This will also call the equivalent <a href='Table-class.html'>Table</a> method.</p></li>
+<li><p><code>.refineParameters(x, se)</code> replaces <code>NA</code> values in <code>Selected</code> with the first column name of <code>se</code>.
+This will also call the equivalent Table method.</p></li>
 </ul>
 
 <p>For defining the interface:</p><ul>
-<li><p><code><a href='interface-generics.html'>.hideInterface</a>(x, field)</code> returns a logical scalar indicating whether the interface element corresponding to <code>field</code> should be hidden.
+<li><p><code>.hideInterface(x, field)</code> returns a logical scalar indicating whether the interface element corresponding to <code>field</code> should be hidden.
 This returns <code>TRUE</code> for row selection parameters (<code>"RowSelectionSource"</code>, <code>"RowSelectionType"</code> and <code>"RowSelectionSaved"</code>),
-otherwise it dispatches to the <a href='Panel-class.html'>Panel</a> method.</p></li>
+otherwise it dispatches to the Panel method.</p></li>
 </ul>
 
 <p>For monitoring reactive expressions:</p><ul>
-<li><p><code><a href='observer-generics.html'>.createObservers</a>(x, se, input, session, pObjects, rObjects)</code> sets up observers to propagate changes in the <code>Selected</code> to linked plots.
-This will also call the equivalent <a href='Table-class.html'>Table</a> method.</p></li>
+<li><p><code>.createObservers(x, se, input, session, pObjects, rObjects)</code> sets up observers to propagate changes in the <code>Selected</code> to linked plots.
+This will also call the equivalent Table method.</p></li>
 </ul>
 
 <p>For controlling selections:</p><ul>
-<li><p><code><a href='multi-select-generics.html'>.multiSelectionDimension</a>(x)</code> returns <code>"column"</code> to indicate that a column selection is being transmitted.</p></li>
-<li><p><code><a href='single-select-generics.html'>.singleSelectionDimension</a>(x)</code> returns <code>"sample"</code> to indicate that a sample identity is being transmitted.</p></li>
+<li><p><code>.multiSelectionDimension(x)</code> returns <code>"column"</code> to indicate that a column selection is being transmitted.</p></li>
+<li><p><code>.singleSelectionDimension(x)</code> returns <code>"sample"</code> to indicate that a sample identity is being transmitted.</p></li>
 </ul>
 
-<p>Unless explicitly specialized above, all methods from the parent classes <a href='Table-class.html'>Table</a> and <a href='Panel-class.html'>Panel</a> are also available.</p>
+<p>Unless explicitly specialized above, all methods from the parent classes Table and Panel are also available.</p>
     <h2 class="hasAnchor" id="subclass-expectations"><a class="anchor" href="#subclass-expectations"></a>Subclass expectations</h2>
 
     
 
 <p>Subclasses are expected to implement methods for:</p><ul>
-<li><p><code><a href='table-generics.html'>.generateTable</a></code></p></li>
-<li><p><code><a href='getEncodedName.html'>.fullName</a></code></p></li>
-<li><p><code><a href='getPanelColor.html'>.panelColor</a></code></p></li>
+<li><p><code>.generateTable</code></p></li>
+<li><p><code>.fullName</code></p></li>
+<li><p><code>.panelColor</code></p></li>
 </ul>
 
-<p>The method for <code><a href='table-generics.html'>.generateTable</a></code> should create a <code>tab</code> data.frame where each row corresponds to a column in the SummarizedExperiment object.</p>
+<p>The method for <code>.generateTable</code> should create a <code>tab</code> data.frame where each row corresponds to a column in the SummarizedExperiment object.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><a href='Table-class.html'>Table</a>, for the immediate parent class that contains the actual slot definitions.</p></div>
+    <div class='dont-index'><p>Table, for the immediate parent class that contains the actual slot definitions.</p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Aaron Lun</p>

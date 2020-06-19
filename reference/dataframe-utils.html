@@ -74,7 +74,7 @@ An obvious example is in data.frames expected by ggplot or datatable." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -158,11 +158,11 @@ that are atomic R types, as most of the app does not know how to handle  more co
 An obvious example is in data.frames expected by <code>ggplot</code> or <code>datatable</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.findAtomicFields</span>(<span class='no'>x</span>)
+    <pre class="usage"><span class='fu'>.findAtomicFields</span>(<span class='kw'>x</span>)
 
-<span class='fu'>.whichGroupable</span>(<span class='no'>x</span>)
+<span class='fu'>.whichGroupable</span>(<span class='kw'>x</span>)
 
-<span class='fu'>.whichNumeric</span>(<span class='no'>x</span>)</pre>
+<span class='fu'>.whichNumeric</span>(<span class='kw'>x</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -181,25 +181,25 @@ An obvious example is in data.frames expected by <code>ggplot</code> or <code>da
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p><code>.whichNumeric</code>: Identify continuous columns that can be used as options in various interface elements, e.g., for sizing.
-This is typically called in <code><a href='setup-generics.html'>.cacheCommonInfo</a></code> for later use by methods of <code><a href='interface-generics.html'>.defineInterface</a></code>.</p>
+This is typically called in <code>.cacheCommonInfo</code> for later use by methods of <code>.defineInterface</code>.</p>
 <p><code>.whichGroupable</code>: Identify categorical columns that can be used as options in various interface elements, e.g., for faceting or shaping.
-This is typically called in <code><a href='setup-generics.html'>.cacheCommonInfo</a></code> for later use by methods of <code><a href='interface-generics.html'>.defineInterface</a></code>.</p>
+This is typically called in <code>.cacheCommonInfo</code> for later use by methods of <code>.defineInterface</code>.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Aaron Lun, Kevin Rue-Albrecht, Charlotte Soneson</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>DataFrame</span>(
-    <span class='kw'>A</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span>),
-    <span class='kw'>B</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='no'>letters</span>, <span class='fl'>10</span>),
-    <span class='kw'>DataFrame</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span>(<span class='fu'>DataFrame</span>(
-        <span class='kw'>C</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span>),
-        <span class='kw'>D</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='no'>letters</span>, <span class='fl'>10</span>)
+    <pre class="examples"><div class='input'><span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'>DataFrame</span>(
+    A = <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span>),
+    B = <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='kw'>letters</span>, <span class='fl'>10</span>),
+    DataFrame = <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span>(<span class='fu'>DataFrame</span>(
+        C = <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span>),
+        D = <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='kw'>letters</span>, <span class='fl'>10</span>)
     ))
 )
 
-<span class='fu'>.findAtomicFields</span>(<span class='no'>x</span>)</div><div class='output co'>#&gt; [1] "A" "B"</div><div class='input'><span class='fu'>.whichGroupable</span>(<span class='no'>x</span>)</div><div class='output co'>#&gt;         B DataFrame 
-#&gt;         2         3 </div><div class='input'><span class='fu'>.whichNumeric</span>(<span class='no'>x</span>)</div><div class='output co'>#&gt; A 
+<span class='fu'>.findAtomicFields</span>(<span class='kw'>x</span>)</div><div class='output co'>#&gt; [1] "A" "B"</div><div class='input'><span class='fu'>.whichGroupable</span>(<span class='kw'>x</span>)</div><div class='output co'>#&gt;         B DataFrame 
+#&gt;         2         3 </div><div class='input'><span class='fu'>.whichNumeric</span>(<span class='kw'>x</span>)</div><div class='output co'>#&gt; A 
 #&gt; 1 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

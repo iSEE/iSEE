@@ -73,7 +73,7 @@ It provides slots and methods to control various aesthetics of the dots and to s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -164,19 +164,19 @@ It provides slots and methods to control various aesthetics of the dots and to s
 
 <p>The following slots are relevant to coloring of the points:</p><ul>
 <li><p><code>ColorBy</code>, a string specifying how points should be colored.
-This should be one of <code>"None"</code>, <code>"Feature name"</code>, <code>"Sample name"</code> and either <code>"Column data"</code> (for <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s) or <code>"Row data"</code> (for <a href='RowDotPlot-class.html'>RowDotPlot</a>s).
+This should be one of <code>"None"</code>, <code>"Feature name"</code>, <code>"Sample name"</code> and either <code>"Column data"</code> (for ColumnDotPlots) or <code>"Row data"</code> (for RowDotPlots).
 Defaults to <code>"None"</code>.</p></li>
 <li><p><code>ColorByDefaultColor</code>, a string specifying the default color to use for all points if <code>ColorBy="None"</code>.
 Defaults to <code>"black"</code>.</p></li>
 <li><p><code>ColorByFeatureName</code>, a string specifying the feature to be used for coloring points when <code>ColorBy="Feature name"</code>.
-For <a href='RowDotPlot-class.html'>RowDotPlot</a>s, this is used to highlight the point corresponding to the selected feature;
-for <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s, this is used to color each point according to the expression of that feature.
+For RowDotPlots, this is used to highlight the point corresponding to the selected feature;
+for ColumnDotPlots, this is used to color each point according to the expression of that feature.
 If <code>NA</code>, this defaults to the name of the first row.</p></li>
 <li><p><code>ColorByFeatureSource</code>, a string specifying the name of the panel to use for transmitting the feature selection to <code>ColorByFeatureName</code>.
 Defaults to <code>"---"</code>.</p></li>
 <li><p><code>ColorBySampleName</code>, a string specifying the sample to be used for coloring points when <code>ColorBy="Sample name"</code>.
-For <a href='RowDotPlot-class.html'>RowDotPlot</a>s, this is used to color each point according to the expression of that sample;
-for <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s, this is used to highlight the point corresponding to the selected sample.
+For RowDotPlots, this is used to color each point according to the expression of that sample;
+for ColumnDotPlots, this is used to highlight the point corresponding to the selected sample.
 If <code>NA</code>, this defaults to the name of the first column.</p></li>
 <li><p><code>ColorBySampleSource</code>, a string specifying the name of the panel to use for transmitting the sample selection to <code>ColorBySampleNameColor</code>.
 Defaults to <code>"---"</code>.</p></li>
@@ -188,21 +188,21 @@ Defaults to <code>FALSE</code>.</p></li>
 
 <p>The following slots control other metadata-related aesthetic aspects of the points:</p><ul>
 <li><p><code>ShapeBy</code>, a string specifying how the point shape should be determined.
-This should be one of <code>"None"</code> and either <code>"Column data"</code> (for <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s) or <code>"Row data"</code> (for <a href='RowDotPlot-class.html'>RowDotPlot</a>s).
+This should be one of <code>"None"</code> and either <code>"Column data"</code> (for ColumnDotPlots) or <code>"Row data"</code> (for RowDotPlots).
 Defaults to <code>"None"</code>.</p></li>
 <li><p><code>SizeBy</code>, a string specifying the metadata field for controlling point size.
-This should be one of <code>"None"</code> and either <code>"Column data"</code> (for <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s) or <code>"Row data"</code> (for <a href='RowDotPlot-class.html'>RowDotPlot</a>s).
+This should be one of <code>"None"</code> and either <code>"Column data"</code> (for ColumnDotPlots) or <code>"Row data"</code> (for RowDotPlots).
 Defaults to <code>"None"</code>.</p></li>
 </ul>
 
 <p>The following slots control the faceting:</p><ul>
 <li><p><code>FacetByRow</code>, a string specifying the metadata field to use for creating row facets.
-For <a href='RowDotPlot-class.html'>RowDotPlot</a>s, this should be a field in the <code>rowData</code>,
-while for <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s, this should be a field in the <code>colData</code>.
+For RowDotPlots, this should be a field in the <code>rowData</code>,
+while for ColumnDotPlots, this should be a field in the <code>colData</code>.
 Defaults to <code>"---"</code>, i.e., no row faceting.</p></li>
 <li><p><code>FacetByColumn</code>, a string specifying the metadata field to use for creating column facets.
-For <a href='RowDotPlot-class.html'>RowDotPlot</a>s, this should be a field in the <code>rowData</code>,
-while for <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s, this should be a field in the <code>colData</code>.
+For RowDotPlots, this should be a field in the <code>rowData</code>,
+while for ColumnDotPlots, this should be a field in the <code>colData</code>.
 Defaults to <code>"---"</code>, i.e., no column faceting.</p></li>
 </ul>
 
@@ -220,7 +220,7 @@ Defaults to <code>"red"</code>.</p></li>
 <p>The following slots control the behavior of brushes:</p><ul>
 <li><p><code>ZoomData</code>, a named numeric vector of plot coordinates with <code>"xmin"</code>, <code>"xmax"</code>, <code>"ymin"</code> and <code>"ymax"</code> elements parametrizing the zoom boundaries.
 Defaults to an empty vector, i.e., no zoom.</p></li>
-<li><p><code>BrushData</code>, a list containing either a Shiny brush (see <code>?brushedPoints</code>) or an <span class="pkg">iSEE</span> lasso (see <code>?<a href='lassoPoints.html'>lassoPoints</a></code>).
+<li><p><code>BrushData</code>, a list containing either a Shiny brush (see <code>?brushedPoints</code>) or an <span class="pkg">iSEE</span> lasso (see <code>?lassoPoints</code>).
 Defaults to an empty list, i.e., no brush or lasso.</p></li>
 </ul>
 
@@ -248,7 +248,7 @@ Defaults to 1.</p></li>
 Defaults to 1, i.e., not transparent.</p></li>
 <li><p><code>Downsample</code>, logical scalar indicating whether to downsample points for faster plotting.
 Defaults to <code>FALSE</code>.</p></li>
-<li><p><code>DownsampleResolution</code>, numeric scalar specifying the resolution of the downsampling grid (see <code>?<a href='subsetPointsByGrid.html'>subsetPointsByGrid</a></code>) if <code>Downsample=TRUE</code>.
+<li><p><code>DownsampleResolution</code>, numeric scalar specifying the resolution of the downsampling grid (see <code>?subsetPointsByGrid</code>) if <code>Downsample=TRUE</code>.
 Larger values correspond to reduced downsampling at the cost of plotting speed.
 Defaults to 200.</p></li>
 </ul>
@@ -256,11 +256,13 @@ Defaults to 200.</p></li>
 <p>The following slots refer to general plotting parameters:</p><ul>
 <li><p><code>FontSize</code>, positive numeric scalar specifying the relative font size.
 Defaults to 1.</p></li>
+<li><p><code>PointSize</code>, positive numeric scalar specifying the relative point size.
+Defaults to 1.</p></li>
 <li><p><code>LegendPosition</code>, string specifying the position of the legend on the plot.
 Defaults to <code>"Right"</code> but can also be <code>"Bottom"</code>.</p></li>
 </ul>
 
-<p>In addition, this class inherits all slots from its parent <a href='Panel-class.html'>Panel</a> class.</p>
+<p>In addition, this class inherits all slots from its parent Panel class.</p>
     <h2 class="hasAnchor" id="supported-methods"><a class="anchor" href="#supported-methods"></a>Supported methods</h2>
 
     
@@ -268,61 +270,61 @@ Defaults to <code>"Right"</code> but can also be <code>"Bottom"</code>.</p></li>
 <p>In the following code snippets, <code>x</code> is an instance of a DotPlot class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For setting up the objects:</p><ul>
-<li><p><code><a href='setup-generics.html'>.cacheCommonInfo</a>(x)</code> adds a <code>"DotPlot"</code> entry containing <code>valid.assay.names</code>, a character vector of valid assay names.
+<li><p><code>.cacheCommonInfo(x)</code> adds a <code>"DotPlot"</code> entry containing <code>valid.assay.names</code>, a character vector of valid assay names.
 Valid names are defined as those that are non-empty, i.e., not <code>""</code>.
-This method will also call the equivalent <a href='Panel-class.html'>Panel</a> method.</p></li>
-<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> replaces <code>NA</code> values in <code>ColorByFeatureName</code> and <code>ColorBySampleNameColor</code> with the first row and column name, respectively, of <code>se</code>.
-This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.</p></li>
+This method will also call the equivalent Panel method.</p></li>
+<li><p><code>.refineParameters(x, se)</code> replaces <code>NA</code> values in <code>ColorByFeatureName</code> and <code>ColorBySampleNameColor</code> with the first row and column name, respectively, of <code>se</code>.
+This will also call the equivalent Panel method.</p></li>
 </ul>
 
 <p>For defining the interface:</p><ul>
-<li><p><code><a href='output-generics.html'>.defineOutput</a>(x, id)</code> returns a UI element for a brushable plot.</p></li>
+<li><p><code>.defineOutput(x, id)</code> returns a UI element for a brushable plot.</p></li>
 </ul>
 
 <p>For generating the output:</p><ul>
-<li><p><code><a href='output-generics.html'>.generateOutput</a>(x, se, all_memory, all_contents)</code> returns a list containing <code>contents</code>, a data.frame with one row per point currently present in the plot;
+<li><p><code>.generateOutput(x, se, all_memory, all_contents)</code> returns a list containing <code>contents</code>, a data.frame with one row per point currently present in the plot;
 <code>plot</code>, a ggplot object;
 and <code>commands</code>, a list of character vector containing the R commands required to generate <code>contents</code> and <code>plot</code>.</p></li>
-<li><p><code><a href='plot-generics.html'>.generateDotPlot</a>(x, labels, envir)</code> returns a list containing <code>plot</code> and <code>commands</code>, as described above.
-This is called within <code><a href='output-generics.html'>.generateOutput</a></code> for all DotPlot instances by default.
+<li><p><code>.generateDotPlot(x, labels, envir)</code> returns a list containing <code>plot</code> and <code>commands</code>, as described above.
+This is called within <code>.generateOutput</code> for all DotPlot instances by default.
 Methods are also guaranteed to generate a <code>dot.plot</code> variable in <code>envir</code> containing the ggplot object corresponding to <code>plot</code>.</p></li>
-<li><p><code><a href='plot-generics.html'>.prioritizeDotPlotData</a>(x, envir)</code> returns <code>NULL</code>.</p></li>
-<li><p><code><a href='plot-generics.html'>.colorByNoneDotPlotField</a>(x)</code> returns <code>NULL</code>.</p></li>
-<li><p><code><a href='plot-generics.html'>.colorByNoneDotPlotScale</a>(x)</code> returns <code>NULL</code>.</p></li>
-<li><p><code><a href='output-generics.html'>.exportOutput</a>(x, se, all_memory, all_contents)</code> will create a PDF file containing the current plot, and return a string containing the path to that PDF.
-This assumes that the <code>plot</code> field returned by <code><a href='output-generics.html'>.generateOutput</a></code> is a ggplot object.</p></li>
+<li><p><code>.prioritizeDotPlotData(x, envir)</code> returns <code>NULL</code>.</p></li>
+<li><p><code>.colorByNoneDotPlotField(x)</code> returns <code>NULL</code>.</p></li>
+<li><p><code>.colorByNoneDotPlotScale(x)</code> returns <code>NULL</code>.</p></li>
+<li><p><code>.exportOutput(x, se, all_memory, all_contents)</code> will create a PDF file containing the current plot, and return a string containing the path to that PDF.
+This assumes that the <code>plot</code> field returned by <code>.generateOutput</code> is a ggplot object.</p></li>
 </ul>
 
 <p>For defining reactive expressions:</p><ul>
-<li><p><code><a href='observer-generics.html'>.createObservers</a>(x, se, input, session, pObjects, rObjects)</code> sets up observers for some (but not all!) of the slots.
-This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.</p></li>
-<li><p><code><a href='output-generics.html'>.renderOutput</a>(x, se, output, pObjects, rObjects)</code> will add a rendered plot element to <code>output</code>.
+<li><p><code>.createObservers(x, se, input, session, pObjects, rObjects)</code> sets up observers for some (but not all!) of the slots.
+This will also call the equivalent Panel method.</p></li>
+<li><p><code>.renderOutput(x, se, output, pObjects, rObjects)</code> will add a rendered plot element to <code>output</code>.
 The reactive expression will add the contents of the plot to <code>pObjects$contents</code> and the relevant commands to <code>pObjects$commands</code>.
-This will also call the equivalent <a href='Panel-class.html'>Panel</a> method to render the panel information testboxes.</p></li>
+This will also call the equivalent Panel method to render the panel information testboxes.</p></li>
 </ul>
 
 <p>For controlling selections:</p><ul>
-<li><p><code><a href='multi-select-generics.html'>.multiSelectionRestricted</a>(x)</code> returns a logical scalar indicating whether <code>x</code> is restricting the plotted points to those that were selected in a transmitting panel, i.e., is <code>SelectionEffect="Restrict"</code>?</p></li>
-<li><p><code><a href='multi-select-generics.html'>.multiSelectionCommands</a>(x, index)</code> returns a character vector of R expressions that - when evaluated - returns a character vector of the names of selected points in the active and/or saved selections of <code>x</code>.
+<li><p><code>.multiSelectionRestricted(x)</code> returns a logical scalar indicating whether <code>x</code> is restricting the plotted points to those that were selected in a transmitting panel, i.e., is <code>SelectionEffect="Restrict"</code>?</p></li>
+<li><p><code>.multiSelectionCommands(x, index)</code> returns a character vector of R expressions that - when evaluated - returns a character vector of the names of selected points in the active and/or saved selections of <code>x</code>.
 The active selection is returned if <code>index=NA</code>, otherwise one of the saved selection is returned.</p></li>
-<li><p><code><a href='multi-select-generics.html'>.multiSelectionActive</a>(x)</code> returns <code>x[["BrushData"]]</code> or <code>NULL</code> if there is no brush or closed lasso.</p></li>
-<li><p><code><a href='multi-select-generics.html'>.multiSelectionClear</a>(x)</code> returns <code>x</code> after setting the <code>BrushData</code> slot to an empty list.</p></li>
-<li><p><code><a href='single-select-generics.html'>.singleSelectionValue</a>(x)</code> returns the name of the first selected element in the active brush.
+<li><p><code>.multiSelectionActive(x)</code> returns <code>x[["BrushData"]]</code> or <code>NULL</code> if there is no brush or closed lasso.</p></li>
+<li><p><code>.multiSelectionClear(x)</code> returns <code>x</code> after setting the <code>BrushData</code> slot to an empty list.</p></li>
+<li><p><code>.singleSelectionValue(x)</code> returns the name of the first selected element in the active brush.
 If no brush is active, <code>NULL</code> is returned instead.</p></li>
-<li><p><code><a href='single-select-generics.html'>.singleSelectionSlots</a>(x)</code> will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of coloring parameters.
+<li><p><code>.singleSelectionSlots(x)</code> will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of coloring parameters.
 This includes the output of <code>callNextMethod</code>.</p></li>
 </ul>
 
-<p>Unless explicitly specialized above, all methods from the parent class <a href='Panel-class.html'>Panel</a> are also available.</p>
+<p>Unless explicitly specialized above, all methods from the parent class Panel are also available.</p>
     <h2 class="hasAnchor" id="subclass-expectations"><a class="anchor" href="#subclass-expectations"></a>Subclass expectations</h2>
 
     
 
-<p>The DotPlot is a rather vaguely defined class for which the only purpose is to avoid duplicating code for <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s and <a href='RowDotPlot-class.html'>RowDotPlot</a>s.
+<p>The DotPlot is a rather vaguely defined class for which the only purpose is to avoid duplicating code for ColumnDotPlots and RowDotPlots.
 We recommend extending those subclasses instead.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><a href='RowDotPlot-class.html'>RowDotPlot</a> and <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>, which are more amenable to extension.</p></div>
+    <div class='dont-index'><p>RowDotPlot and ColumnDotPlot, which are more amenable to extension.</p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Aaron Lun</p>

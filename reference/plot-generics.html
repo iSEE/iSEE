@@ -73,7 +73,7 @@ DotPlot subclasses can specialize one or more of them to modify the behavior of 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -152,8 +152,8 @@ DotPlot subclasses can specialize one or more of them to modify the behavior of 
     </div>
 
     <div class="ref-description">
-    <p>A series of generics for controlling how plotting is performed in <a href='DotPlot-class.html'>DotPlot</a> panels.
-<a href='DotPlot-class.html'>DotPlot</a> subclasses can specialize one or more of them to modify the behavior of <code><a href='output-generics.html'>.generateOutput</a></code>.</p>
+    <p>A series of generics for controlling how plotting is performed in DotPlot panels.
+DotPlot subclasses can specialize one or more of them to modify the behavior of <code>.generateOutput</code>.</p>
     </div>
 
 
@@ -163,7 +163,7 @@ DotPlot subclasses can specialize one or more of them to modify the behavior of 
     
 
 <p>In <code>.generateDotPlotData(x, envir)</code>, the following arguments are required:</p><ul>
-<li><p><code>x</code>, an instance of a <a href='DotPlot-class.html'>DotPlot</a> subclass.</p></li>
+<li><p><code>x</code>, an instance of a DotPlot subclass.</p></li>
 <li><p><code>envir</code>, the evaluation environment in which the data.frame is to be constructed.
 This can be assumed to have <code>se</code>, the SummarizedExperiment object containing the current dataset;
 possibly <code>col_selected</code>, if a multiple column selection is being transmitted to <code>x</code>;
@@ -173,7 +173,7 @@ and possibly <code>row_selected</code>, if a multiple row selection is being tra
 <p>The method should add a <code>plot.data</code> variable in <code>envir</code> containing a data.frame with columns named <code>"X"</code> and <code>"Y"</code>, denoting the variables to show on the x- and y-axes respectively.
 It should return a list with <code>commands</code>, a character vector of commands that produces <code>plot.data</code> when evaluated in <code>envir</code>;
 and <code>labels</code>, a list of strings containing labels for the x-axis (named <code>"X"</code>), y-axis (<code>"Y"</code>) and plot (<code>"title"</code>).</p>
-<p>Each row of the <code>plot.data</code> data.frame should correspond to one row or column in the SummarizedExperiment <code>envir$se</code> for <a href='RowDotPlot-class.html'>RowDotPlot</a>s and <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s respectively.
+<p>Each row of the <code>plot.data</code> data.frame should correspond to one row or column in the SummarizedExperiment <code>envir$se</code> for RowDotPlots and ColumnDotPlots respectively.
 Note that, even if only a subset of rows/columns in the SummarizedExperiment are to be shown, there must always be one row in the data.frame per row/column of the SummarizedExperiment, and in the same order.
 All other rows of the data.frame should be filled in with <code>NA</code>s rather than omitted entirely.
 This is necessary for correct interactions with later methods that add other variables to <code>plot.data</code>.</p>
@@ -183,7 +183,7 @@ This is necessary for correct interactions with later methods that add other var
     
 
 <p>In <code>.generateDotPlot(x, labels, envir)</code>, the following arguments are required:</p><ul>
-<li><p><code>x</code>, an instance of a <a href='DotPlot-class.html'>DotPlot</a> subclass.</p></li>
+<li><p><code>x</code>, an instance of a DotPlot subclass.</p></li>
 <li><p><code>labels</code>, a list of labels corresponding to the columns of <code>plot.data</code>.
 This is typically used to define axis or legend labels in the plot.</p></li>
 <li><p><code>envir</code>, the evaluation environment in which the ggplot object is to be constructed.
@@ -195,7 +195,7 @@ This is because the order and number of rows in <code>plot.data</code> may have 
 
 <p>Methods for this generic should return a list with <code>plot</code>, a ggplot object;
 and <code>commands</code>, a character vector of commands to produce that object when evaluated inside <code>envir</code>.
-This plot will subsequently be the rendered output in <code><a href='output-generics.html'>.renderOutput</a></code>.
+This plot will subsequently be the rendered output in <code>.renderOutput</code>.
 Note that <code>envir</code> should contain a copy of the <code>plot</code> object in a variable named <code>dot.plot</code> -
 see below for details.</p>
 <p>Methods are expected to respond to the presence of various fields in the <code>plot.data</code>.
@@ -226,12 +226,12 @@ This is a data.frame that contains all points prior to downsampling (but after s
 and is again mainly used to fix the boundaries of the plot.</p></li>
 </ul>
 
-<p>Developers may wish to use the <code><a href='addMultiSelectionCommands.html'>.addMultiSelectionPlotCommands</a></code> utility to draw brushes and lassos of <code>x</code>.
+<p>Developers may wish to use the <code>.addMultiSelectionPlotCommands</code> utility to draw brushes and lassos of <code>x</code>.
 Note that this refers to the brushes and lassos made on <code>x</code> itself, not those transmitted from another panel to <code>x</code>.</p>
 <p>It would be very unwise for methods to alter the x-axis, y-axis or faceting values in <code>plot.data</code>.
 This will lead to uninuitive discrepancies between apparent visual selections for a brush/lasso
-and the actual multiple selection that is evaluated by downstream functions like <code><a href='processMultiSelections.html'>.processMultiSelections</a></code>.</p>
-<p>In certain situations, a <a href='DotPlot-class.html'>DotPlot</a> subclass may be able to build off a ggplot generated by its parent class.
+and the actual multiple selection that is evaluated by downstream functions like <code>.processMultiSelections</code>.</p>
+<p>In certain situations, a DotPlot subclass may be able to build off a ggplot generated by its parent class.
 This is easily done by exploiting the fact that methods for this generic are expected to store a copy of their <code>plot</code> ggplot object as a <code>dot.plot</code> variable in <code>envir</code>.
 A specialized method for the subclass can <code>callNextMethod()</code> to populate <code>envir</code> with the initial <code>dot.plot</code>, and then just construct and execute commands to add more <span class="pkg">ggplot2</span> layers as desired.</p>
     <h2 class="hasAnchor" id="prioritizing-points"><a class="anchor" href="#prioritizing-points"></a>Prioritizing points</h2>
@@ -239,7 +239,7 @@ A specialized method for the subclass can <code>callNextMethod()</code> to popul
     
 
 <p>In <code>.prioritizeDotPlotData(x, envir)</code>, the following arguments are required:</p><ul>
-<li><p><code>x</code>, an instance of a <a href='DotPlot-class.html'>DotPlot</a> subclass.</p></li>
+<li><p><code>x</code>, an instance of a DotPlot subclass.</p></li>
 <li><p><code>envir</code>, the evaluation environment in which the ggplot object is to be constructed.
 This can be assumed to have <code>plot.data</code>, a data.frame of plotting data.</p>
 <p>Again, note that <code>se</code>, <code>row_selected</code> and <code>col_selected</code> will still be present in <code>envir</code>,
@@ -267,12 +267,12 @@ Scaling of the resolution enables developers to peform more aggressive downsampl
 This is useful for highlighting points in a manner that is integral to the nature of the plot,
 e.g., up- or down-regulated genes in a MA plot.
 We provide a few generics to help control which points are highlighted and how they are colored.</p>
-<p><code>.colorByNoneDotPlotField(x)</code> expects <code>x</code>, an instance of a <a href='DotPlot-class.html'>DotPlot</a> subclass,
+<p><code>.colorByNoneDotPlotField(x)</code> expects <code>x</code>, an instance of a DotPlot subclass,
 and returns a string containing a name of a column in <code>plot.data</code> to use for coloring in the <code>ggplot</code> mapping.
 This assumes that the relevant field was added to <code>plot.data</code> by a method for <code>.generateDotPlotData</code>.</p>
-<p><code>.colorByNoneDotPlotScale(x)</code> expects <code>x</code>, an instance of a <a href='DotPlot-class.html'>DotPlot</a> subclass,
+<p><code>.colorByNoneDotPlotScale(x)</code> expects <code>x</code>, an instance of a DotPlot subclass,
 and returns a string containing a <span class="pkg">ggplot2</span> <code>scale_color_*</code> call, e.g., <code>scale_color_manual</code>.
-This string should end with a <code><a href='https://rdrr.io/r/base/Arithmetic.html'>"+"</a></code> operator as additional <span class="pkg">ggplot2</span> layers will be added by <span class="pkg">iSEE</span>.</p>
+This string should end with a <code>"+"</code> operator as additional <span class="pkg">ggplot2</span> layers will be added by <span class="pkg">iSEE</span>.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Kevin &#8220;K-pop&#8221; Rue-Albrecht, Aaron &#8220;A-bomb&#8221; Lun</p>

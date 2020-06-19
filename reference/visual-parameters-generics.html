@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -151,21 +151,21 @@
     </div>
 
     <div class="ref-description">
-    <p>These generics allow subclasses to override the user inputs controlling visual parameters of <a href='DotPlot-class.html'>DotPlot</a> panels.</p>
+    <p>These generics allow subclasses to override the user inputs controlling visual parameters of DotPlot panels.</p>
     </div>
 
 
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>In practice, it is a good idea to make use of information precomputed by <code><a href='setup-generics.html'>.cacheCommonInfo</a></code>.
-For example, <code><a href='ColumnDotPlot-class.html'>.cacheCommonInfo,ColumnDotPlot-method</a></code> will add vectors specifying whether a variable in the <code>colData</code> is valid and discrete or continuous.</p>
+    <p>In practice, it is a good idea to make use of information precomputed by <code>.cacheCommonInfo</code>.
+For example, <code>.cacheCommonInfo,ColumnDotPlot-method</code> will add vectors specifying whether a variable in the <code>colData</code> is valid and discrete or continuous.</p>
 <p>It is possible to hide individual sections of visual parameters by returning <code>NULL</code>.</p>
     <h2 class="hasAnchor" id="color-parameters"><a class="anchor" href="#color-parameters"></a>Color parameters</h2>
 
     
 
-<p><code>.defineVisualColorInterface(x, se, select_info)</code> takes <code>x</code>, a <a href='Panel-class.html'>Panel</a> instance,
+<p><code>.defineVisualColorInterface(x, se, select_info)</code> takes <code>x</code>, a Panel instance,
 <code>se</code>, the SummarizedExperiment object,
 and <code>select_info</code> a list of character vectors named <code>row</code> and <code>column</code> which specifies the names of panels available for transmitting single selections on the rows/columns.
 It is expected to return an HTML tag definition that contains user inputs controlling the <code>color</code> aesthetic of <code>ggplot</code> objects.</p>
@@ -173,28 +173,28 @@ It is expected to return an HTML tag definition that contains user inputs contro
 
     
 
-<p><code>.defineVisualShapeInterface</code> takes <code>x</code>, a <a href='Panel-class.html'>Panel</a> instance,
+<p><code>.defineVisualShapeInterface</code> takes <code>x</code>, a Panel instance,
 and <code>se</code>, the SummarizedExperiment object.
 It is expected to return an HTML tag definition that contains user inputs controlling the <code>shape</code> aesthetic of <code>ggplot</code> objects.</p>
     <h2 class="hasAnchor" id="size-parameters"><a class="anchor" href="#size-parameters"></a>Size parameters</h2>
 
     
 
-<p><code>.defineVisualSizeInterface</code> takes <code>x</code>, a <a href='Panel-class.html'>Panel</a> instance,
+<p><code>.defineVisualSizeInterface</code> takes <code>x</code>, a Panel instance,
 and <code>se</code>, the SummarizedExperiment object.
 It is expected to return an HTML tag definition that contains user inputs controlling the <code>size</code> aesthetic of <code>ggplot</code> objects.</p>
     <h2 class="hasAnchor" id="point-parameters"><a class="anchor" href="#point-parameters"></a>Point parameters</h2>
 
     
 
-<p><code>.defineVisualPointInterface</code> takes <code>x</code>, a <a href='Panel-class.html'>Panel</a> instance,
+<p><code>.defineVisualPointInterface</code> takes <code>x</code>, a Panel instance,
 and <code>se</code>, the SummarizedExperiment object.
 It is expected to return an HTML tag definition that contains user inputs to controlling other aesthetics of <code>ggplot</code> objects (e.g. <code>alpha</code>).</p>
     <h2 class="hasAnchor" id="facet-parameters"><a class="anchor" href="#facet-parameters"></a>Facet parameters</h2>
 
     
 
-<p><code>.defineVisualFacetInterface</code> takes <code>x</code>, a <a href='Panel-class.html'>Panel</a> instance,
+<p><code>.defineVisualFacetInterface</code> takes <code>x</code>, a Panel instance,
 and <code>se</code>, the SummarizedExperiment object.
 It is expected to return an HTML tag definition that contains user inputs controlling the <code>facet_grid</code> applied to
 <code>ggplot</code> objects.</p>
@@ -202,14 +202,14 @@ It is expected to return an HTML tag definition that contains user inputs contro
 
     
 
-<p><code>.defineVisualTextInterface</code> takes <code>x</code>, a <a href='Panel-class.html'>Panel</a> instance,
+<p><code>.defineVisualTextInterface</code> takes <code>x</code>, a Panel instance,
 and <code>se</code>, the SummarizedExperiment object.
 It is expected to return an HTML tag definition that contains user inputs controlling the appearance of non-data text elements of <code>ggplot</code> objects (e.g., font size, legend position).</p>
     <h2 class="hasAnchor" id="other-parameters"><a class="anchor" href="#other-parameters"></a>Other parameters</h2>
 
     
 
-<p><code>.defineVisualOtherInterface</code> takes <code>x</code>, a <a href='Panel-class.html'>Panel</a> instance.
+<p><code>.defineVisualOtherInterface</code> takes <code>x</code>, a Panel instance.
 It is expected to return an HTML tag definition that contains user inputs to display in the <code>"Other"</code> section of the visual parameters.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 

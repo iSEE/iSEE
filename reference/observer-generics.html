@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -161,16 +161,16 @@
     
 
 <p>In <code>.createObservers(x, se, input, session, pObjects, rObjects)</code>, the required arguments are:</p><ul>
-<li><p><code>x</code>, an instance of a <a href='Panel-class.html'>Panel</a> class.</p></li>
+<li><p><code>x</code>, an instance of a Panel class.</p></li>
 <li><p><code>se</code>, a SummarizedExperiment object containing the current dataset.
-This can be assumed to have been produced by running <code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code>.</p></li>
+This can be assumed to have been produced by running <code>.refineParameters(x, se)</code>.</p></li>
 <li><p><code>input</code>, the Shiny input object from the server function.</p></li>
 <li><p><code>session</code>, the Shiny session object from the server function.</p></li>
-<li><p><code>pObjects</code>, an environment containing global parameters generated in the <code><a href='iSEE.html'>iSEE</a></code> app.</p></li>
-<li><p><code>rObjects</code>, a reactive list of values generated in the <code><a href='iSEE.html'>iSEE</a></code> app.</p></li>
+<li><p><code>pObjects</code>, an environment containing global parameters generated in the <code>iSEE</code> app.</p></li>
+<li><p><code>rObjects</code>, a reactive list of values generated in the <code>iSEE</code> app.</p></li>
 </ul>
 
-<p>Methods for this generic are expected to set up all observers required to respond to changes in the interface elements set up by <code><a href='interface-generics.html'>.defineInterface</a></code>.
+<p>Methods for this generic are expected to set up all observers required to respond to changes in the interface elements set up by <code>.defineInterface</code>.
 Recall that each interface element has an ID of the form of <code>PANEL_SLOT</code>, where <code>PANEL</code> is the panel name and <code>SLOT</code> is the name of the slot modified by the interface element; so observers should respond to those names in <code>input</code>.
 The return value of this generic is not used; only the side-effect of observer set-up is relevant.</p>
 <p>It is the developer's responsibility to call <code>callNextMethod</code> to set up the observers required by the parent class.
@@ -182,22 +182,22 @@ Each parent class should implement observers for its slots, so it is usually onl
 
 <p>Consider an observer for an interface element that modifies a slot of <code>x</code>.
 The code within this observer is expected to modify the &#8220;memory&#8221; of the app state in <code>pObjects</code>, via:</p><pre>
-<span class='no'>new_value</span> <span class='kw'>&lt;-</span> <span class='no'>input</span><span class='kw'>[[</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='no'>PANEL</span>, <span class='st'>"_"</span>, <span class='no'>SLOT</span>)]]
-<span class='no'>pObjects</span>$<span class='no'>memory</span><span class='kw'>[[</span><span class='no'>PANEL</span>]]<span class='kw'>[[</span><span class='no'>SLOT</span>]] <span class='kw'>&lt;-</span> <span class='no'>new_value</span></pre>
+<span class='kw'>new_value</span> <span class='op'>&lt;-</span> <span class='kw'>input</span>[[<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='kw'>PANEL</span>, <span class='st'>"_"</span>, <span class='kw'>SLOT</span>)]]
+<span class='kw'>pObjects</span><span class='op'>$</span><span class='kw'>memory</span>[[<span class='kw'>PANEL</span>]][[<span class='kw'>SLOT</span>]] <span class='op'>&lt;-</span> <span class='kw'>new_value</span></pre>
 
 <p>This enables <span class="pkg">iSEE</span> to keep a record of the current state of the application.
-In fact, any changes must go through <code>pObjects$memory</code> before they change the output in <code><a href='output-generics.html'>.renderOutput</a></code>;
+In fact, any changes must go through <code>pObjects$memory</code> before they change the output in <code>.renderOutput</code>;
 there is no direct interaction between <code>input</code> and <code>output</code> in this framework.</p>
     <h2 class="hasAnchor" id="triggering-re-rendering"><a class="anchor" href="#triggering-re-rendering"></a>Triggering re-rendering</h2>
 
     
 
-<p>To trigger re-rendering of an output, observers should call <code><a href='retrieveOutput.html'>.requestUpdate</a>(PANEL, rObjects)</code>,
+<p>To trigger re-rendering of an output, observers should call <code>.requestUpdate(PANEL, rObjects)</code>,
 where <code>PANEL</code> is the name of the current panel.
 This will request a re-rendering of the output with no additional side effects and is most useful for responding to aesthetic parameters.</p>
 <p>In some cases, changes to some parameters may invalidate existing multiple selections,
 e.g., brushes and lassos are no longer valid if the variable on the axes are altered.
-Observers responding to such changes should instead call <code><a href='retrieveOutput.html'>.requestCleanUpdate</a></code>,
+Observers responding to such changes should instead call <code>.requestCleanUpdate</code>,
 which will destroy all existing selections in order to avoid misleading conclusions.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 

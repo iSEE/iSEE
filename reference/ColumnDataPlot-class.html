@@ -73,7 +73,7 @@ It provides slots and methods for specifying which column metadata variable to u
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -152,7 +152,7 @@ It provides slots and methods for specifying which column metadata variable to u
     </div>
 
     <div class="ref-description">
-    <p>The ColumnDataPlot is a panel class for creating a <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> where the y-axis represents a variable from the <code>colData</code> of a SummarizedExperiment object.
+    <p>The ColumnDataPlot is a panel class for creating a ColumnDotPlot where the y-axis represents a variable from the <code>colData</code> of a SummarizedExperiment object.
 It provides slots and methods for specifying which column metadata variable to use on the y-axis and what to plot on the x-axis.</p>
     </div>
 
@@ -164,7 +164,7 @@ It provides slots and methods for specifying which column metadata variable to u
 
 <p>The following slots control the column data information that is used:</p><ul>
 <li><p><code>YAxis</code>, a string specifying the column of the <code>colData</code> to show on the y-axis.
-If <code>NA</code>, defaults to the first valid field (see <code>?"<a href='ColumnDotPlot-class.html'>.refineParameters,ColumnDotPlot-method</a>"</code>).</p></li>
+If <code>NA</code>, defaults to the first valid field (see <code>?".refineParameters,ColumnDotPlot-method"</code>).</p></li>
 <li><p><code>XAxis</code>, string specifying what should be plotting on the x-axis.
 This can be any one of <code>"None"</code> or <code>"Column data"</code>.
 Defaults to <code>"None"</code>.</p></li>
@@ -172,7 +172,7 @@ Defaults to <code>"None"</code>.</p></li>
 If <code>NA</code>, defaults to the first valid field.</p></li>
 </ul>
 
-<p>In addition, this class inherits all slots from its parent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>, <a href='DotPlot-class.html'>DotPlot</a> and <a href='Panel-class.html'>Panel</a> classes.</p>
+<p>In addition, this class inherits all slots from its parent ColumnDotPlot, DotPlot and Panel classes.</p>
     <h2 class="hasAnchor" id="constructor"><a class="anchor" href="#constructor"></a>Constructor</h2>
 
     
@@ -185,29 +185,29 @@ If <code>NA</code>, defaults to the first valid field.</p></li>
 <p>In the following code snippets, <code>x</code> is an instance of a ColumnDataPlot class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For setting up data values:</p><ul>
-<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> returns <code>x</code> after replacing any <code>NA</code> value in <code>YAxis</code> or <code>XAxisColumnData</code> with the name of the first valid <code>colData</code> variable.
-This will also call the equivalent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> method for further refinements to <code>x</code>.
+<li><p><code>.refineParameters(x, se)</code> returns <code>x</code> after replacing any <code>NA</code> value in <code>YAxis</code> or <code>XAxisColumnData</code> with the name of the first valid <code>colData</code> variable.
+This will also call the equivalent ColumnDotPlot method for further refinements to <code>x</code>.
 If no valid column metadata variables are available, <code>NULL</code> is returned instead.</p></li>
 </ul>
 
 <p>For defining the interface:</p><ul>
-<li><p><code><a href='interface-generics.html'>.defineDataInterface</a>(x, se, select_info)</code> returns a list of interface elements for manipulating all slots described above.</p></li>
-<li><p><code><a href='getPanelColor.html'>.panelColor</a>(x)</code> will return the specified default color for this panel class.</p></li>
-<li><p><code><a href='metadata-plot-generics.html'>.allowableXAxisChoices</a>(x, se)</code> returns a character vector specifying the acceptable variables in <code>colData(se)</code> that can be used as choices for the x-axis.</p></li>
-<li><p><code><a href='metadata-plot-generics.html'>.allowableYAxisChoices</a>(x, se)</code> returns a character vector specifying the acceptable variables in <code>colData(se)</code> that can be used as choices for the y-axis.</p></li>
+<li><p><code>.defineDataInterface(x, se, select_info)</code> returns a list of interface elements for manipulating all slots described above.</p></li>
+<li><p><code>.panelColor(x)</code> will return the specified default color for this panel class.</p></li>
+<li><p><code>.allowableXAxisChoices(x, se)</code> returns a character vector specifying the acceptable variables in <code>colData(se)</code> that can be used as choices for the x-axis.</p></li>
+<li><p><code>.allowableYAxisChoices(x, se)</code> returns a character vector specifying the acceptable variables in <code>colData(se)</code> that can be used as choices for the y-axis.</p></li>
 </ul>
 
 <p>For monitoring reactive expressions:</p><ul>
-<li><p><code><a href='observer-generics.html'>.createObservers</a>(x, se, input, session, pObjects, rObjects)</code> sets up observers for all slots described above and in the parent classes.
-This will also call the equivalent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> method.</p></li>
+<li><p><code>.createObservers(x, se, input, session, pObjects, rObjects)</code> sets up observers for all slots described above and in the parent classes.
+This will also call the equivalent ColumnDotPlot method.</p></li>
 </ul>
 
 <p>For defining the panel name:</p><ul>
-<li><p><code><a href='getEncodedName.html'>.fullName</a>(x)</code> will return <code>"Column data plot"</code>.</p></li>
+<li><p><code>.fullName(x)</code> will return <code>"Column data plot"</code>.</p></li>
 </ul>
 
 <p>For creating the plot:</p><ul>
-<li><p><code><a href='plot-generics.html'>.generateDotPlotData</a>(x, envir)</code> will create a data.frame of column metadata variables in <code>envir</code>.
+<li><p><code>.generateDotPlotData(x, envir)</code> will create a data.frame of column metadata variables in <code>envir</code>.
 It will return the commands required to do so as well as a list of labels.</p></li>
 </ul>
 
@@ -218,7 +218,7 @@ It will return the commands required to do so as well as a list of labels.</p></
 <p>Subclasses do not have to provide any methods, as this is a concrete class.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>, for the immediate parent class.</p></div>
+    <div class='dont-index'><p>ColumnDotPlot, for the immediate parent class.</p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Aaron Lun</p>
@@ -228,26 +228,26 @@ It will return the commands required to do so as well as a list of labels.</p></
 <span class='co'># For end-users #</span>
 <span class='co'>#################</span>
 
-<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>ColumnDataPlot</span>()
-<span class='no'>x</span><span class='kw'>[[</span><span class='st'>"XAxis"</span>]]</div><div class='output co'>#&gt; [1] "None"</div><div class='input'><span class='no'>x</span><span class='kw'>[[</span><span class='st'>"XAxis"</span>]] <span class='kw'>&lt;-</span> <span class='st'>"Column data"</span>
+<span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'>ColumnDataPlot</span>()
+<span class='kw'>x</span>[[<span class='st'>"XAxis"</span>]]</div><div class='output co'>#&gt; [1] "None"</div><div class='input'><span class='kw'>x</span>[[<span class='st'>"XAxis"</span>]] <span class='op'>&lt;-</span> <span class='st'>"Column data"</span>
 
 <span class='co'>##################</span>
 <span class='co'># For developers #</span>
 <span class='co'>##################</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scater</span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: ggplot2</span></div><div class='input'><span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/reexports.html'>mockSCE</a></span>()
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/reexports.html'>logNormCounts</a></span>(<span class='no'>sce</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://bioconductor.org/packages/scater'>scater</a></span>)</div><div class='output co'>#&gt; <span class='message'>Loading required package: ggplot2</span></div><div class='input'><span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/mockSCE.html'>mockSCE</a></span>()
+<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/logNormCounts.html'>logNormCounts</a></span>(<span class='kw'>sce</span>)
 
-<span class='no'>old_cd</span> <span class='kw'>&lt;-</span> <span class='fu'>colData</span>(<span class='no'>sce</span>)
-<span class='fu'>colData</span>(<span class='no'>sce</span>) <span class='kw'>&lt;-</span> <span class='kw'>NULL</span>
+<span class='kw'>old_cd</span> <span class='op'>&lt;-</span> <span class='fu'>colData</span>(<span class='kw'>sce</span>)
+<span class='fu'>colData</span>(<span class='kw'>sce</span>) <span class='op'>&lt;-</span> <span class='kw'>NULL</span>
 
 <span class='co'># Spits out a NULL and a warning if there is nothing to plot.</span>
-<span class='no'>sce0</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span>(<span class='no'>x</span>, <span class='no'>sce</span>)
-<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: no valid y-axis 'colData' fields for 'ColumnDataPlot'</span></div><div class='output co'>#&gt; NULL</div><div class='input'>
+<span class='kw'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'>.cacheCommonInfo</span>(<span class='kw'>x</span>, <span class='kw'>sce</span>)
+<span class='fu'>.refineParameters</span>(<span class='kw'>x</span>, <span class='kw'>sce0</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: no valid y-axis 'colData' fields for 'ColumnDataPlot'</span></div><div class='output co'>#&gt; NULL</div><div class='input'>
 <span class='co'># Replaces the default with something sensible.</span>
-<span class='fu'>colData</span>(<span class='no'>sce</span>) <span class='kw'>&lt;-</span> <span class='no'>old_cd</span>
-<span class='no'>sce0</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span>(<span class='no'>x</span>, <span class='no'>sce</span>)
-<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; An object of class "ColumnDataPlot"
+<span class='fu'>colData</span>(<span class='kw'>sce</span>) <span class='op'>&lt;-</span> <span class='kw'>old_cd</span>
+<span class='kw'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'>.cacheCommonInfo</span>(<span class='kw'>x</span>, <span class='kw'>sce</span>)
+<span class='fu'>.refineParameters</span>(<span class='kw'>x</span>, <span class='kw'>sce0</span>)</div><div class='output co'>#&gt; An object of class "ColumnDataPlot"
 #&gt; Slot "XAxis":
 #&gt; [1] "Column data"
 #&gt; 
@@ -350,6 +350,9 @@ It will return the commands required to do so as well as a list of labels.</p></
 #&gt; Slot "FontSize":
 #&gt; [1] 1
 #&gt; 
+#&gt; Slot "LegendPointSize":
+#&gt; [1] 1
+#&gt; 
 #&gt; Slot "LegendPosition":
 #&gt; [1] "Bottom"
 #&gt; 
@@ -394,8 +397,7 @@ It will return the commands required to do so as well as a list of labels.</p></
 #&gt; 
 #&gt; Slot "SelectionHistory":
 #&gt; list()
-#&gt; </div><div class='input'>
-</div></pre>
+#&gt; </div><div class='input'></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

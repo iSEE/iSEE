@@ -73,7 +73,7 @@ creating variables in the evaluation environment with the identity of the select
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -156,18 +156,18 @@ creating variables in the evaluation environment with the identity of the select
 creating variables in the evaluation environment with the identity of the selected rows or columns.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.processMultiSelections</span>(<span class='no'>x</span>, <span class='no'>all_memory</span>, <span class='no'>all_contents</span>, <span class='no'>envir</span>)</pre>
+    <pre class="usage"><span class='fu'>.processMultiSelections</span>(<span class='kw'>x</span>, <span class='kw'>all_memory</span>, <span class='kw'>all_contents</span>, <span class='kw'>envir</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An instance of a <a href='Panel-class.html'>Panel</a> class.</p></td>
+      <td><p>An instance of a Panel class.</p></td>
     </tr>
     <tr>
       <th>all_memory</th>
-      <td><p>A named list of <a href='Panel-class.html'>Panel</a> instances containing parameters for the current app state.</p></td>
+      <td><p>A named list of Panel instances containing parameters for the current app state.</p></td>
     </tr>
     <tr>
       <th>all_contents</th>
@@ -188,12 +188,12 @@ The return value is the  character vector of commands required to construct thos
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This function is primarily intended for use by developers of new panels.
-It should be called inside <code><a href='output-generics.html'>.generateOutput</a></code> to easily process row/column multiple selections.
+It should be called inside <code>.generateOutput</code> to easily process row/column multiple selections.
 Developers can check whether <code>row_selected</code> or <code>col_selected</code> exists in <code>envir</code>
 to determine whether any row or column selection was performed (and adjust the behavior of <code>.generateOutput</code> accordingly).</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='output-generics.html'>.generateOutput</a></code> and its related generic <code><a href='output-generics.html'>.renderOutput</a></code>, where this function should generally be used.</p></div>
+    <div class='dont-index'><p><code>.generateOutput</code> and its related generic <code>.renderOutput</code>, where this function should generally be used.</p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Aaron Lun</p>

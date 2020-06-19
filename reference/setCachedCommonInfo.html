@@ -74,7 +74,7 @@ while the getter is usually called in .defineInterface." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -154,13 +154,13 @@ while the getter is usually called in .defineInterface." />
 
     <div class="ref-description">
     <p>Get and set common cached information for each class.
-The setter is usually called in <code><a href='setup-generics.html'>.cacheCommonInfo</a></code>
-while the getter is usually called in <code><a href='interface-generics.html'>.defineInterface</a></code>.</p>
+The setter is usually called in <code>.cacheCommonInfo</code>
+while the getter is usually called in <code>.defineInterface</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.setCachedCommonInfo</span>(<span class='no'>se</span>, <span class='no'>cls</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>.setCachedCommonInfo</span>(<span class='kw'>se</span>, <span class='kw'>cls</span>, <span class='kw'>...</span>)
 
-<span class='fu'>.getCachedCommonInfo</span>(<span class='no'>se</span>, <span class='no'>cls</span>)</pre>
+<span class='fu'>.getCachedCommonInfo</span>(<span class='kw'>se</span>, <span class='kw'>cls</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -185,17 +185,17 @@ while the getter is usually called in <code><a href='interface-generics.html'>.d
 <p><code>.getCachedCommonInfo</code> retrieves the cached common information for class <code>cls</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This function is intended for use by developers of <a href='Panel-class.html'>Panel</a> classes.
+    <p>This function is intended for use by developers of Panel classes.
 If you're an end-user and you're reading this, you probably took a wrong turn somewhere.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Aaron Lun</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>se</span> <span class='kw'>&lt;-</span> <span class='fu'>SummarizedExperiment</span>()
-<span class='no'>se</span> <span class='kw'>&lt;-</span> <span class='fu'>.setCachedCommonInfo</span>(<span class='no'>se</span>, <span class='st'>"SomePanelClass"</span>,
-    <span class='kw'>something</span><span class='kw'>=</span><span class='fl'>1</span>, <span class='kw'>more_things</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>something_else</span><span class='kw'>=</span><span class='st'>"A"</span>)
-<span class='fu'>.getCachedCommonInfo</span>(<span class='no'>se</span>, <span class='st'>"SomePanelClass"</span>)</div><div class='output co'>#&gt; $something
+    <pre class="examples"><div class='input'><span class='kw'>se</span> <span class='op'>&lt;-</span> <span class='fu'>SummarizedExperiment</span>()
+<span class='kw'>se</span> <span class='op'>&lt;-</span> <span class='fu'>.setCachedCommonInfo</span>(<span class='kw'>se</span>, <span class='st'>"SomePanelClass"</span>,
+    something=<span class='fl'>1</span>, more_things=<span class='fl'>TRUE</span>, something_else=<span class='st'>"A"</span>)
+<span class='fu'>.getCachedCommonInfo</span>(<span class='kw'>se</span>, <span class='st'>"SomePanelClass"</span>)</div><div class='output co'>#&gt; $something
 #&gt; [1] 1
 #&gt; 
 #&gt; $more_things
@@ -203,8 +203,7 @@ If you're an end-user and you're reading this, you probably took a wrong turn so
 #&gt; 
 #&gt; $something_else
 #&gt; [1] "A"
-#&gt; </div><div class='input'>
-</div></pre>
+#&gt; </div><div class='input'></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

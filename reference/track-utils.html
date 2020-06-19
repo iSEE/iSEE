@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -154,13 +154,13 @@
     <p>Utility functions to track internal events for a panel by monitoring the status of reactive variables in <code>rObjects</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.trackUpdate</span>(<span class='no'>panel_name</span>, <span class='no'>rObjects</span>)
+    <pre class="usage"><span class='fu'>.trackUpdate</span>(<span class='kw'>panel_name</span>, <span class='kw'>rObjects</span>)
 
-<span class='fu'>.trackSingleSelection</span>(<span class='no'>panel_name</span>, <span class='no'>rObjects</span>)
+<span class='fu'>.trackSingleSelection</span>(<span class='kw'>panel_name</span>, <span class='kw'>rObjects</span>)
 
-<span class='fu'>.trackMultiSelection</span>(<span class='no'>panel_name</span>, <span class='no'>rObjects</span>)
+<span class='fu'>.trackMultiSelection</span>(<span class='kw'>panel_name</span>, <span class='kw'>rObjects</span>)
 
-<span class='fu'>.trackRelinkedSelection</span>(<span class='no'>panel_name</span>, <span class='no'>rObjects</span>)</pre>
+<span class='fu'>.trackRelinkedSelection</span>(<span class='kw'>panel_name</span>, <span class='kw'>rObjects</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,7 +171,7 @@
     </tr>
     <tr>
       <th>rObjects</th>
-      <td><p>A reactive list of values generated in the <code><a href='iSEE.html'>iSEE</a></code> app.</p></td>
+      <td><p>A reactive list of values generated in the <code>iSEE</code> app.</p></td>
     </tr>
     </table>
 
@@ -182,7 +182,7 @@
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p><code>.trackUpdate</code> will track whether an update has been requested to the current panel
-(see also <code><a href='retrieveOutput.html'>.requestUpdate</a></code>).</p>
+(see also <code>.requestUpdate</code>).</p>
 <p><code>.trackSingleSelection</code> will track whether the single selection in the current panel has changed.
 Note that this will not cause a reaction if the change involves cancelling a single selection.</p>
 <p><code>.trackMultiSelection</code> will track whether the multiple selections in the current panel have changed.

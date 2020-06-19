@@ -74,7 +74,7 @@ and request an update to the output of the affected panel." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -159,23 +159,23 @@ and request an update to the output of the affected panel.</p>
     </div>
 
     <pre class="usage"><span class='fu'>.createUnprotectedParameterObservers</span>(
-  <span class='no'>panel_name</span>,
-  <span class='no'>fields</span>,
-  <span class='no'>input</span>,
-  <span class='no'>pObjects</span>,
-  <span class='no'>rObjects</span>,
-  <span class='kw'>ignoreInit</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>ignoreNULL</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+  <span class='kw'>panel_name</span>,
+  <span class='kw'>fields</span>,
+  <span class='kw'>input</span>,
+  <span class='kw'>pObjects</span>,
+  <span class='kw'>rObjects</span>,
+  ignoreInit = <span class='fl'>TRUE</span>,
+  ignoreNULL = <span class='fl'>TRUE</span>
 )
 
 <span class='fu'>.createProtectedParameterObservers</span>(
-  <span class='no'>panel_name</span>,
-  <span class='no'>fields</span>,
-  <span class='no'>input</span>,
-  <span class='no'>pObjects</span>,
-  <span class='no'>rObjects</span>,
-  <span class='kw'>ignoreInit</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>ignoreNULL</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+  <span class='kw'>panel_name</span>,
+  <span class='kw'>fields</span>,
+  <span class='kw'>input</span>,
+  <span class='kw'>pObjects</span>,
+  <span class='kw'>rObjects</span>,
+  ignoreInit = <span class='fl'>TRUE</span>,
+  ignoreNULL = <span class='fl'>TRUE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -195,15 +195,15 @@ and request an update to the output of the affected panel.</p>
     </tr>
     <tr>
       <th>pObjects</th>
-      <td><p>An environment containing global parameters generated in the <code><a href='iSEE.html'>iSEE</a></code> app.</p></td>
+      <td><p>An environment containing global parameters generated in the <code>iSEE</code> app.</p></td>
     </tr>
     <tr>
       <th>rObjects</th>
-      <td><p>A reactive list of values generated in the <code><a href='iSEE.html'>iSEE</a></code> app.</p></td>
+      <td><p>A reactive list of values generated in the <code>iSEE</code> app.</p></td>
     </tr>
     <tr>
       <th>ignoreInit, ignoreNULL</th>
-      <td><p>Further arguments to pass to <code>observeEvent</code>.</p></td>
+      <td><p>Further arguments to pass to <code><a href='https://rdrr.io/pkg/shiny/man/observeEvent.html'>observeEvent</a></code>.</p></td>
     </tr>
     </table>
 
@@ -219,7 +219,7 @@ as those existing selections are assumed to not make any sense in the context of
 <p>By comparison, an unprotected parameter only changes the aesthetics and will not clear existing selections.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='retrieveOutput.html'>.requestUpdate</a></code> and <code><a href='retrieveOutput.html'>.requestCleanUpdate</a></code>,
+    <div class='dont-index'><p><code>.requestUpdate</code> and <code>.requestCleanUpdate</code>,
 used to trigger updates to the panel output.</p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 

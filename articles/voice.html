@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
       </span>
     </div>
 
@@ -101,7 +101,7 @@
 
       
 
-      </header><link href="voice_files/font-awesome-5.1.0/css/all.css" rel="stylesheet">
+      </header><script src="voice_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="voice_files/font-awesome-5.1.0/css/all.css" rel="stylesheet">
 <link href="voice_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
@@ -123,7 +123,7 @@
                   <a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       
                   
-            <h4 class="date">11 June 2020</h4>
+            <h4 class="date">19 June 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/voice.Rmd"><code>vignettes/voice.Rmd</code></a></small>
       <div class="hidden name"><code>voice.Rmd</code></div>
@@ -132,7 +132,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-06-11</p>
+<p><strong>Compiled date</strong>: 2020-06-19</p>
 <p><strong>Last edited</strong>: 2018-11-29</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="feature" class="section level1">
@@ -157,13 +157,17 @@
 <h1 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h1>
 <p>Using the <code>sce</code> object that we generated <a href="https://bioconductor.org/packages/3.12/iSEE/vignettes/basic.html">earlier</a>, enabling speech recognition is as simple as setting <code>voice=TRUE</code> below:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">iSEE</span>)
-<span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">voice</span><span class="kw">=</span><span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/iSEE/iSEE">iSEE</a></span>)
+<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>, voice=<span class="fl">TRUE</span>)
+</pre></div>
 <p>With <code>voice=TRUE</code>, the lightweight JavaScript speech recognition library <em>annyang</em> is loaded and activated in any web browser tab that runs <code>app</code>.</p>
 <p>If your default browser is not compatible with the feature, or if you work in <em>RStudio</em>, you can prevent the application from opening in the default browser by setting <code>launch.browser=FALSE</code> as follows:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="kw">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/interactive.html">interactive</a></span>()) {
-    <span class="kw pkg">shiny</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html">runApp</a></span>(<span class="no">app</span>, <span class="kw">port</span><span class="kw">=</span><span class="fl">1234</span>, <span class="kw">launch.browser</span><span class="kw">=</span><span class="fl">FALSE</span>)
-}</pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="co">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/interactive.html">interactive</a></span>()) {
+    <span class="kw">shiny</span>::<span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html">runApp</a></span>(<span class="kw">app</span>, port=<span class="fl">1234</span>, launch.browser=<span class="fl">FALSE</span>)
+}
+</pre></div>
 <p>At that point, your R console should be displaying the address and port where <code>app</code> is running. In the example above, that would be:</p>
 <pre><code>Listening on http://127.0.0.1:1234</code></pre>
 <p>Using a compatible browser, navigate to the indicated address and port. Note that when the web page opens, you may be prompted to allow the web browser to use your microphone, which you must accept to enable the functionality.</p>
@@ -188,7 +192,8 @@
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
 <span class="co">#&gt; R version 4.0.0 (2020-04-24)</span>
 <span class="co">#&gt; Platform: x86_64-apple-darwin17.0 (64-bit)</span>
 <span class="co">#&gt; Running under: macOS Catalina 10.15.5</span>
@@ -205,43 +210,44 @@
 <span class="co">#&gt; [8] methods   base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt;  [1] iSEE_2.1.6                  SingleCellExperiment_1.11.4</span>
-<span class="co">#&gt;  [3] SummarizedExperiment_1.19.5 DelayedArray_0.15.1        </span>
-<span class="co">#&gt;  [5] matrixStats_0.56.0          Biobase_2.49.0             </span>
-<span class="co">#&gt;  [7] GenomicRanges_1.41.5        GenomeInfoDb_1.25.1        </span>
-<span class="co">#&gt;  [9] IRanges_2.23.9              S4Vectors_0.27.12          </span>
-<span class="co">#&gt; [11] BiocGenerics_0.35.4         BiocStyle_2.17.0           </span>
+<span class="co">#&gt;  [1] iSEE_2.1.7                  SingleCellExperiment_1.11.4</span>
+<span class="co">#&gt;  [3] SummarizedExperiment_1.19.5 DelayedArray_0.15.4        </span>
+<span class="co">#&gt;  [5] matrixStats_0.56.0          Matrix_1.2-18              </span>
+<span class="co">#&gt;  [7] Biobase_2.49.0              GenomicRanges_1.41.5       </span>
+<span class="co">#&gt;  [9] GenomeInfoDb_1.25.2         IRanges_2.23.10            </span>
+<span class="co">#&gt; [11] S4Vectors_0.27.12           BiocGenerics_0.35.4        </span>
+<span class="co">#&gt; [13] BiocStyle_2.17.0           </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
-<span class="co">#&gt;  [1] nlme_3.1-147           bitops_1.0-6           fs_1.4.1              </span>
-<span class="co">#&gt;  [4] RColorBrewer_1.1-2     rprojroot_1.3-2        tools_4.0.0           </span>
-<span class="co">#&gt;  [7] backports_1.1.7        R6_2.4.1               DT_0.13               </span>
-<span class="co">#&gt; [10] vipor_0.4.5            mgcv_1.8-31            colorspace_1.4-1      </span>
-<span class="co">#&gt; [13] GetoptLong_0.1.8       tidyselect_1.1.0       compiler_4.0.0        </span>
-<span class="co">#&gt; [16] shinyjs_1.1            desc_1.2.0             colourpicker_1.0      </span>
-<span class="co">#&gt; [19] bookdown_0.19          scales_1.1.1           pkgdown_1.5.1.9000    </span>
-<span class="co">#&gt; [22] stringr_1.4.0          digest_0.6.25          rmarkdown_2.2         </span>
-<span class="co">#&gt; [25] XVector_0.29.2         pkgconfig_2.0.3        htmltools_0.4.0       </span>
-<span class="co">#&gt; [28] fastmap_1.0.1          htmlwidgets_1.5.1      rlang_0.4.6           </span>
-<span class="co">#&gt; [31] GlobalOptions_0.1.1    shiny_1.4.0.2          shape_1.4.4           </span>
-<span class="co">#&gt; [34] generics_0.0.2         jsonlite_1.6.1         dplyr_1.0.0           </span>
-<span class="co">#&gt; [37] RCurl_1.98-1.2         magrittr_1.5           GenomeInfoDbData_1.2.3</span>
-<span class="co">#&gt; [40] Matrix_1.2-18          Rcpp_1.0.4.6           munsell_0.5.0         </span>
-<span class="co">#&gt; [43] lifecycle_0.2.0        stringi_1.4.6          yaml_2.2.1            </span>
-<span class="co">#&gt; [46] rintrojs_0.2.2         MASS_7.3-51.5          zlibbioc_1.35.0       </span>
-<span class="co">#&gt; [49] grid_4.0.0             promises_1.1.0         shinydashboard_0.7.1  </span>
-<span class="co">#&gt; [52] crayon_1.3.4           miniUI_0.1.1.1         lattice_0.20-41       </span>
-<span class="co">#&gt; [55] splines_4.0.0          circlize_0.4.9         knitr_1.28            </span>
-<span class="co">#&gt; [58] ComplexHeatmap_2.5.3   pillar_1.4.4           igraph_1.2.5          </span>
-<span class="co">#&gt; [61] rjson_0.2.20           glue_1.4.1             evaluate_0.14         </span>
-<span class="co">#&gt; [64] BiocManager_1.30.10    png_0.1-7              vctrs_0.3.1           </span>
-<span class="co">#&gt; [67] httpuv_1.5.4           gtable_0.3.0           purrr_0.3.4           </span>
-<span class="co">#&gt; [70] clue_0.3-57            assertthat_0.2.1       ggplot2_3.3.1         </span>
-<span class="co">#&gt; [73] xfun_0.14              mime_0.9               xtable_1.8-4          </span>
-<span class="co">#&gt; [76] later_1.1.0.1          viridisLite_0.3.0      tibble_3.0.1          </span>
-<span class="co">#&gt; [79] memoise_1.1.0          cluster_2.1.0          shinyWidgets_0.5.3    </span>
-<span class="co">#&gt; [82] ellipsis_0.3.1         shinyAce_0.4.1</span>
-<span class="co"># devtools::session_info()</span></pre></body></html></div>
+<span class="co">#&gt;  [1] viridisLite_0.3.0      jsonlite_1.6.1         splines_4.0.0         </span>
+<span class="co">#&gt;  [4] rintrojs_0.2.2         shiny_1.4.0.2          assertthat_0.2.1      </span>
+<span class="co">#&gt;  [7] BiocManager_1.30.10    vipor_0.4.5            GenomeInfoDbData_1.2.3</span>
+<span class="co">#&gt; [10] yaml_2.2.1             pillar_1.4.4           backports_1.1.8       </span>
+<span class="co">#&gt; [13] lattice_0.20-41        glue_1.4.1             digest_0.6.25         </span>
+<span class="co">#&gt; [16] RColorBrewer_1.1-2     promises_1.1.1         XVector_0.29.2        </span>
+<span class="co">#&gt; [19] colorspace_1.4-1       htmltools_0.5.0        httpuv_1.5.4          </span>
+<span class="co">#&gt; [22] pkgconfig_2.0.3        GetoptLong_1.0.0       bookdown_0.19         </span>
+<span class="co">#&gt; [25] zlibbioc_1.35.0        purrr_0.3.4            xtable_1.8-4          </span>
+<span class="co">#&gt; [28] scales_1.1.1           later_1.1.0.1          tibble_3.0.1          </span>
+<span class="co">#&gt; [31] mgcv_1.8-31            generics_0.0.2         ggplot2_3.3.2         </span>
+<span class="co">#&gt; [34] ellipsis_0.3.1         DT_0.13                shinyjs_1.1           </span>
+<span class="co">#&gt; [37] magrittr_1.5           crayon_1.3.4           mime_0.9              </span>
+<span class="co">#&gt; [40] memoise_1.1.0          evaluate_0.14          fs_1.4.1              </span>
+<span class="co">#&gt; [43] nlme_3.1-147           shinydashboard_0.7.1   colourpicker_1.0      </span>
+<span class="co">#&gt; [46] tools_4.0.0            GlobalOptions_0.1.2    lifecycle_0.2.0       </span>
+<span class="co">#&gt; [49] ComplexHeatmap_2.5.3   stringr_1.4.0          munsell_0.5.0         </span>
+<span class="co">#&gt; [52] cluster_2.1.0          shinyAce_0.4.1         compiler_4.0.0        </span>
+<span class="co">#&gt; [55] pkgdown_1.5.1.9000     rlang_0.4.6            grid_4.0.0            </span>
+<span class="co">#&gt; [58] RCurl_1.98-1.2         rjson_0.2.20           htmlwidgets_1.5.1     </span>
+<span class="co">#&gt; [61] circlize_0.4.10        igraph_1.2.5           miniUI_0.1.1.1        </span>
+<span class="co">#&gt; [64] shinyWidgets_0.5.3     bitops_1.0-6           rmarkdown_2.3         </span>
+<span class="co">#&gt; [67] gtable_0.3.0           R6_2.4.1               knitr_1.28            </span>
+<span class="co">#&gt; [70] dplyr_1.0.0            fastmap_1.0.1          clue_0.3-57           </span>
+<span class="co">#&gt; [73] rprojroot_1.3-2        shape_1.4.4            desc_1.2.0            </span>
+<span class="co">#&gt; [76] stringi_1.4.6          Rcpp_1.0.4.6           vctrs_0.3.1           </span>
+<span class="co">#&gt; [79] png_0.1-7              tidyselect_1.1.0       xfun_0.14</span>
+<span class="co"># devtools::session_info()</span>
+</pre></div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">

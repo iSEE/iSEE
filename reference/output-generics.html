@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.8</span>
       </span>
     </div>
 
@@ -166,7 +166,7 @@
 </ul>
 
 <p>Methods for this generic are expected to return an output element for inclusion into the <span class="pkg">iSEE</span> interface, such as the output of <code><a href='https://rdrr.io/pkg/shiny/man/plotOutput.html'>plotOutput</a></code>.
-Multiple elements can be provided via a <code><a href='https://rdrr.io/pkg/shiny/man/tag.html'>tagList</a></code>.</p>
+Multiple elements can be provided via a <code><a href='https://rdrr.io/pkg/htmltools/man/tag.html'>tagList</a></code>.</p>
 <p>The IDs of the output elements are expected to be prefixed with the panel name from <code>.getEncodedName(x)</code> and an underscore, e.g., <code>"ReducedDimensionPlot1_someOutput"</code>.
 One of the output elements may simply have the ID set to <code>PANEL</code> alone;
 this is usually the case for simple panels with one primary output like a DotPlot.</p>

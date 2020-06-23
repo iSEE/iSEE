@@ -1,3 +1,8 @@
+# iSEE 2.1.8
+
+* Fixed control of legend point size for continuous covariates.
+* Extended control of legend point size for violin plots and Hinton plots.
+
 # iSEE 2.1.7
 
 * Added control of legend point size under the "Text" category of teh "Visual parameters" box.

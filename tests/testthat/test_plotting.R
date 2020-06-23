@@ -1360,3 +1360,27 @@ test_that(".add_selectby_column handles NAs correctly", {
     expect_true(any(grepl("subset.*is.na", unlist(out))))
     expect_identical(nrow(env$plot.data), 0L)
 })
+
+
+test_that(".create_guides_command produces a command when expected", {
+
+    x <- ReducedDimensionPlot(PointSize = 1, LegendPointSize = 2)
+
+    out <- iSEE:::.create_guides_command(x, factor(sce$driver_1_s))
+    expect_identical(
+        out,
+        "guides(colour = guide_legend(override.aes = list(size=2)), fill = guide_legend(override.aes = list(size=2))) +"
+    )
+
+    # Same point size in plot and legend returns NULL
+    x <- ReducedDimensionPlot(LegendPointSize = 2, PointSize = 2)
+    out <- iSEE:::.create_guides_command(x, factor(sce$driver_1_s))
+    expect_null(out)
+
+    # Continuous coloring covariate returns NULL, no matter the point size requested
+    x <- ReducedDimensionPlot(PointSize = 1, LegendPointSize = 2)
+
+    out <- iSEE:::.create_guides_command(x, sce$NREADS)
+    expect_null(out)
+
+})

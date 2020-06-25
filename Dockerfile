@@ -10,6 +10,12 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 ADD . /app
 
+# install libglpk-dev in the Docker image
+RUN apt-get update && \
+    apt-get install -y libglpk-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Install iSEE and dependencies
 RUN Rscript -e "BiocManager::install('iSEE', version = 'devel')"
 

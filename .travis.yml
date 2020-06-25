@@ -5,7 +5,7 @@ language: r
 r: bioc-devel
 
 sudo: false
-cache: packages
+#cache: packages
 
 warnings_are_errors: false
 

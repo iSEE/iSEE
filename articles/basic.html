@@ -125,7 +125,7 @@
                   <a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       
                   
-            <h4 class="date">23 June 2020</h4>
+            <h4 class="date">25 June 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/basic.Rmd"><code>vignettes/basic.Rmd</code></a></small>
       <div class="hidden name"><code>basic.Rmd</code></div>
@@ -134,34 +134,27 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-06-23</p>
+<p><strong>Compiled date</strong>: 2020-06-25</p>
 <p><strong>Last edited</strong>: 2020-04-20</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
-<p><img src="../../../_temp/Library/iSEE/www/iSEE.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="../../../../tmp/RtmpbZmMS6/temp_libpath65e31ddfa55b/iSEE/www/iSEE.png" width="50%" style="display: block; margin: auto;"></p>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
 <p><em><a href="https://bioconductor.org/packages/3.12/iSEE">iSEE</a></em> is a <a href="http://bioconductor.org">Bioconductor</a> package that provides an interactive Shiny-based graphical user interface for exploring data stored in <code>SummarizedExperiment</code> objects <span class="citation">(Rue-Albrecht et al. 2018)</span>. Instructions to install the package are available <em><a href="https://bioconductor.org/packages/3.12/iSEE">here</a></em>. Once installed, the package can be loaded and attached to your current workspace as follows:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/iSEE/iSEE">iSEE</a></span>)
-</pre></div>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">iSEE</span>)</pre></body></html></div>
 <p>If you have a <code>SummarizedExperiment</code> object<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> named <code>se</code>, you can launch an <em><a href="https://bioconductor.org/packages/3.12/iSEE">iSEE</a></em> app by running:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">se</span>)
-</pre></div>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">se</span>)</pre></body></html></div>
 <p>In this vignette, we demonstrate this process using the <code>allen</code> single-cell RNA-seq data set from the <em><a href="https://bioconductor.org/packages/3.12/scRNAseq">scRNAseq</a></em> package. However, if you want to start playing with the app immediately, you can simply run:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/example.html">example</a></span>(<span class="kw">iSEE</span>, ask=<span class="fl">FALSE</span>)
-</pre></div>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/example.html">example</a></span>(<span class="no">iSEE</span>, <span class="kw">ask</span><span class="kw">=</span><span class="fl">FALSE</span>)</pre></body></html></div>
 </div>
 <div id="setting-up-the-data" class="section level1">
 <h1 class="hasAnchor">
 <a href="#setting-up-the-data" class="anchor"></a>Setting up the data</h1>
 <p>The <code>allen</code> data set contains expression values for 379 cells from the mouse visual cortex <span class="citation">(Tasic et al. 2016)</span>, and can be loaded directly by calling <code><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html">ReprocessedAllenData()</a></code> and specifying the value for the <code>assays</code> parameter. To begin with, we assign the output of this call to an <code>sce</code> object and inspect it.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">scRNAseq</span>)
-<span class="kw">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html">ReprocessedAllenData</a></span>(assays = <span class="st">"tophat_counts"</span>)   <span class="co"># specifying the assays to speed up the example</span>
-<span class="kw">sce</span>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">scRNAseq</span>)
+<span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html">ReprocessedAllenData</a></span>(<span class="kw">assays</span> <span class="kw">=</span> <span class="st">"tophat_counts"</span>)   <span class="co"># specifying the assays to speed up the example</span>
+<span class="no">sce</span>
 <span class="co">#&gt; class: SingleCellExperiment </span>
 <span class="co">#&gt; dim: 20816 379 </span>
 <span class="co">#&gt; metadata(2): SuppInfo which_qc</span>
@@ -171,11 +164,9 @@
 <span class="co">#&gt; colnames(379): SRR2140028 SRR2140022 ... SRR2139341 SRR2139336</span>
 <span class="co">#&gt; colData names(22): NREADS NALIGNED ... Animal.ID passes_qc_checks_s</span>
 <span class="co">#&gt; reducedDimNames(0):</span>
-<span class="co">#&gt; altExpNames(1): ERCC</span>
-</pre></div>
+<span class="co">#&gt; altExpNames(1): ERCC</span></pre></body></html></div>
 <p>As provided, the <code>sce</code> object contains raw data and a number of quality control and experimental cell annotations, all available in <code>colData(sce)</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="fu">colData</span>(<span class="kw">sce</span>))
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="fu">colData</span>(<span class="no">sce</span>))
 <span class="co">#&gt;  [1] "NREADS"                       "NALIGNED"                    </span>
 <span class="co">#&gt;  [3] "RALIGN"                       "TOTAL_DUP"                   </span>
 <span class="co">#&gt;  [5] "PRIMER"                       "PCT_RIBOSOMAL_BASES"         </span>
@@ -186,39 +177,28 @@
 <span class="co">#&gt; [15] "MEDIAN_5PRIME_TO_3PRIME_BIAS" "driver_1_s"                  </span>
 <span class="co">#&gt; [17] "dissection_s"                 "Core.Type"                   </span>
 <span class="co">#&gt; [19] "Primary.Type"                 "Secondary.Type"              </span>
-<span class="co">#&gt; [21] "Animal.ID"                    "passes_qc_checks_s"</span>
-</pre></div>
+<span class="co">#&gt; [21] "Animal.ID"                    "passes_qc_checks_s"</span></pre></body></html></div>
 <p>Then, we normalize the expression values with <em><a href="https://bioconductor.org/packages/3.12/scater">scater</a></em>.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="http://bioconductor.org/packages/scater">scater</a></span>)
-<span class="kw">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/logNormCounts.html">logNormCounts</a></span>(<span class="kw">sce</span>, exprs_values=<span class="st">"tophat_counts"</span>)
-</pre></div>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">scater</span>)
+<span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/reexports.html">logNormCounts</a></span>(<span class="no">sce</span>, <span class="kw">exprs_values</span><span class="kw">=</span><span class="st">"tophat_counts"</span>)</pre></body></html></div>
 <p>Next, we apply PCA and <em>t</em>-SNE to generate two low-dimensional representations of the cells. The dimensionality reduction results are stored in <code>reducedDim(sce)</code>.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1000</span>)
-<span class="kw">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/runPCA.html">runPCA</a></span>(<span class="kw">sce</span>)
-<span class="kw">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/runTSNE.html">runTSNE</a></span>(<span class="kw">sce</span>)
-<span class="fu">reducedDimNames</span>(<span class="kw">sce</span>)
-<span class="co">#&gt; [1] "PCA"  "TSNE"</span>
-</pre></div>
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1000</span>)
+<span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/runPCA.html">runPCA</a></span>(<span class="no">sce</span>)
+<span class="no">sce</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/runTSNE.html">runTSNE</a></span>(<span class="no">sce</span>)
+<span class="fu">reducedDimNames</span>(<span class="no">sce</span>)
+<span class="co">#&gt; [1] "PCA"  "TSNE"</span></pre></body></html></div>
 <p>At this point, the <code>sce</code> object does not contain any annotations for the rows (i.e., features) in the data set. Thus, to prepare a fully-featured example application, we also add some gene metadata to the <code>rowData</code> related to the mean-variance relationship in the data.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="fu">rowData</span>(<span class="kw">sce</span>)<span class="op">$</span><span class="kw">mean_log</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span>(<span class="fu">logcounts</span>(<span class="kw">sce</span>))
-<span class="fu">rowData</span>(<span class="kw">sce</span>)<span class="op">$</span><span class="kw">var_log</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(<span class="fu">logcounts</span>(<span class="kw">sce</span>), <span class="fl">1</span>, <span class="kw">var</span>)
-</pre></div>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu">rowData</span>(<span class="no">sce</span>)$<span class="no">mean_log</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span>(<span class="fu">logcounts</span>(<span class="no">sce</span>))
+<span class="fu">rowData</span>(<span class="no">sce</span>)$<span class="no">var_log</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span>(<span class="fu">logcounts</span>(<span class="no">sce</span>), <span class="fl">1</span>, <span class="no">var</span>)</pre></body></html></div>
 <p>It is important to note that <code>iSEE</code> relies primarily on precomputed values stored in the various slots of objects derived from the <code>SummarizedExperiment</code> class<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. This allows users to visualize any metrics of interest, but also requires these to be calculated and added to the object before the initialization of the app. That said, it is straightforward to iteratively explore a precomputed object, take notes of new metrics to compute, close the app, store new results in the <code>SummarizedExperiment</code> object, and launch a new app using the updated object.</p>
 </div>
 <div id="launching-the-interface" class="section level1">
 <h1 class="hasAnchor">
 <a href="#launching-the-interface" class="anchor"></a>Launching the interface</h1>
 <p>To begin the exploration, we create an <code>iSEE</code> app with the <code>SingleCellExperiment</code> object generated above. In its simplest form, the <code>iSEE</code> function only requires the input object. However, <em><a href="https://bioconductor.org/packages/3.12/iSEE">iSEE</a></em> applications can be extensively <a href="https://bioconductor.org/packages/3.12/iSEE/vignettes/configure.html">reconfigured</a> using a number of optional arguments to the <code>iSEE</code> function.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>)
-</pre></div>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>)</pre></body></html></div>
 <p>The <code>runApp</code> function launches the app in our browser.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="kw">shiny</span>::<span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html">runApp</a></span>(<span class="kw">app</span>)
-</pre></div>
+<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="kw pkg">shiny</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html">runApp</a></span>(<span class="no">app</span>)</pre></body></html></div>
 <p><img src="screenshots/basic-demo.png" width="488"></p>
 <p>By default, the app starts with a dashboard that contains one panel or table of each type. By opening the collapsible panels named “Data parameters”, “Visual parameters”, and “Selection parameters” under each plot, we can control the content and appearance of each panel.</p>
 <p>Now, look in the upper right corner for a question mark icon (<i class="fa fa-question-circle"></i>), and click on the hand button (<i class="fa fa-hand-o-right"></i>) for an introductory tour. This will perform an interactive tour of the app, based on the <em><a href="https://CRAN.R-project.org/package=rintrojs">rintrojs</a></em> package <span class="citation">(Ganz 2016)</span>. During this tour, you will be taken through the different components of the <em><a href="https://bioconductor.org/packages/3.12/iSEE">iSEE</a></em> user interface and learn the basic usage mechanisms by doing small actions guided by the tutorial: the highlighted elements will be responding to your actions, while the rest of the UI will be shaded. You can move forward and backward along the tour by clicking on the “Next”/“Back” buttons, or also using the arrow keys. You can even jump to a particular step by clicking on its circle. To exit the tour, either click on “Skip”, or simply click outside of the highlighted UI element.</p>
@@ -403,8 +383,7 @@
 <a href="#additional-information" class="anchor"></a>Additional information</h1>
 <p>Bug reports can be posted on the <a href="https://support.bioconductor.org">Bioconductor support site</a> or raised as issues in the <em><a href="https://github.com/iSEE/iSEE">iSEE</a></em> GitHub repository. The GitHub repository also contains the development version of the package, where new functionality is added over time. The authors appreciate well-considered suggestions for improvements or new features, or even better, pull requests.</p>
 <p>If you use <em><a href="https://bioconductor.org/packages/3.12/iSEE">iSEE</a></em> for your analysis, please cite it as shown below:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span>(<span class="st">"iSEE"</span>)
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span>(<span class="st">"iSEE"</span>)
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Rue-Albrecht K, Marini F, Soneson C, Lun ATL (2018). "iSEE: Interactive</span>
 <span class="co">#&gt; SummarizedExperiment Explorer." _F1000Research_, *7*, 741. doi:</span>
@@ -423,24 +402,26 @@
 <span class="co">#&gt;     volume = {7},</span>
 <span class="co">#&gt;     pages = {741},</span>
 <span class="co">#&gt;     doi = {10.12688/f1000research.14966.1},</span>
-<span class="co">#&gt;   }</span>
-</pre></div>
+<span class="co">#&gt;   }</span></pre></body></html></div>
 </div>
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
-<div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
-<span class="co">#&gt; R version 4.0.1 (2020-06-06)</span>
-<span class="co">#&gt; Platform: x86_64-apple-darwin17.0 (64-bit)</span>
-<span class="co">#&gt; Running under: macOS Catalina 10.15.5</span>
+<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
+<span class="co">#&gt; R version 4.0.0 (2020-04-24)</span>
+<span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span>
+<span class="co">#&gt; Running under: Ubuntu 18.04.4 LTS</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Matrix products: default</span>
-<span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib</span>
-<span class="co">#&gt; LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib</span>
+<span class="co">#&gt; BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.2.20.so</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; locale:</span>
-<span class="co">#&gt; [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span>
+<span class="co">#&gt;  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span>
+<span class="co">#&gt;  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span>
+<span class="co">#&gt;  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             </span>
+<span class="co">#&gt;  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span>
+<span class="co">#&gt;  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span>
+<span class="co">#&gt; [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; attached base packages:</span>
 <span class="co">#&gt; [1] parallel  stats4    stats     graphics  grDevices utils     datasets </span>
@@ -452,7 +433,7 @@
 <span class="co">#&gt;  [5] SingleCellExperiment_1.11.5 SummarizedExperiment_1.19.5</span>
 <span class="co">#&gt;  [7] DelayedArray_0.15.5         matrixStats_0.56.0         </span>
 <span class="co">#&gt;  [9] Matrix_1.2-18               Biobase_2.49.0             </span>
-<span class="co">#&gt; [11] GenomicRanges_1.41.5        GenomeInfoDb_1.25.2        </span>
+<span class="co">#&gt; [11] GenomicRanges_1.41.5        GenomeInfoDb_1.25.4        </span>
 <span class="co">#&gt; [13] IRanges_2.23.10             S4Vectors_0.27.12          </span>
 <span class="co">#&gt; [15] BiocGenerics_0.35.4         BiocStyle_2.17.0           </span>
 <span class="co">#&gt; </span>
@@ -465,53 +446,53 @@
 <span class="co">#&gt;  [11] GlobalOptions_0.1.2           fs_1.4.1                     </span>
 <span class="co">#&gt;  [13] clue_0.3-57                   DT_0.13                      </span>
 <span class="co">#&gt;  [15] bit64_0.9-7                   interactiveDisplayBase_1.27.5</span>
-<span class="co">#&gt;  [17] AnnotationDbi_1.51.0          splines_4.0.1                </span>
-<span class="co">#&gt;  [19] knitr_1.29                    jsonlite_1.6.1               </span>
+<span class="co">#&gt;  [17] AnnotationDbi_1.51.0          splines_4.0.0                </span>
+<span class="co">#&gt;  [19] knitr_1.28                    jsonlite_1.6.1               </span>
 <span class="co">#&gt;  [21] cluster_2.1.0                 dbplyr_1.4.4                 </span>
 <span class="co">#&gt;  [23] png_0.1-7                     shinydashboard_0.7.1         </span>
-<span class="co">#&gt;  [25] shiny_1.5.0                   BiocManager_1.30.10          </span>
-<span class="co">#&gt;  [27] compiler_4.0.1                httr_1.4.1                   </span>
+<span class="co">#&gt;  [25] shiny_1.4.0.2                 BiocManager_1.30.10          </span>
+<span class="co">#&gt;  [27] compiler_4.0.0                httr_1.4.1                   </span>
 <span class="co">#&gt;  [29] backports_1.1.8               assertthat_0.2.1             </span>
 <span class="co">#&gt;  [31] fastmap_1.0.1                 BiocSingular_1.5.0           </span>
 <span class="co">#&gt;  [33] later_1.1.0.1                 htmltools_0.5.0              </span>
-<span class="co">#&gt;  [35] tools_4.0.1                   rsvd_1.0.3                   </span>
+<span class="co">#&gt;  [35] tools_4.0.0                   rsvd_1.0.3                   </span>
 <span class="co">#&gt;  [37] igraph_1.2.5                  gtable_0.3.0                 </span>
 <span class="co">#&gt;  [39] glue_1.4.1                    GenomeInfoDbData_1.2.3       </span>
 <span class="co">#&gt;  [41] dplyr_1.0.0                   rappdirs_0.3.1               </span>
-<span class="co">#&gt;  [43] Rcpp_1.0.4.6                  pkgdown_1.5.1.9000           </span>
-<span class="co">#&gt;  [45] vctrs_0.3.1                   nlme_3.1-148                 </span>
+<span class="co">#&gt;  [43] Rcpp_1.0.4.6                  pkgdown_1.5.1                </span>
+<span class="co">#&gt;  [45] vctrs_0.3.1                   nlme_3.1-147                 </span>
 <span class="co">#&gt;  [47] ExperimentHub_1.15.0          DelayedMatrixStats_1.11.0    </span>
 <span class="co">#&gt;  [49] rintrojs_0.2.2                xfun_0.15                    </span>
 <span class="co">#&gt;  [51] stringr_1.4.0                 irlba_2.3.3                  </span>
 <span class="co">#&gt;  [53] mime_0.9                      miniUI_0.1.1.1               </span>
 <span class="co">#&gt;  [55] lifecycle_0.2.0               shinyAce_0.4.1               </span>
 <span class="co">#&gt;  [57] AnnotationHub_2.21.1          zlibbioc_1.35.0              </span>
-<span class="co">#&gt;  [59] scales_1.1.1                  colourpicker_1.0             </span>
-<span class="co">#&gt;  [61] promises_1.1.1                RColorBrewer_1.1-2           </span>
-<span class="co">#&gt;  [63] ComplexHeatmap_2.5.3          yaml_2.2.1                   </span>
-<span class="co">#&gt;  [65] curl_4.3                      gridExtra_2.3                </span>
-<span class="co">#&gt;  [67] memoise_1.1.0                 stringi_1.4.6                </span>
-<span class="co">#&gt;  [69] RSQLite_2.2.0                 BiocVersion_3.12.0           </span>
-<span class="co">#&gt;  [71] desc_1.2.0                    BiocParallel_1.23.0          </span>
-<span class="co">#&gt;  [73] shape_1.4.4                   rlang_0.4.6                  </span>
-<span class="co">#&gt;  [75] pkgconfig_2.0.3               bitops_1.0-6                 </span>
-<span class="co">#&gt;  [77] evaluate_0.14                 lattice_0.20-41              </span>
-<span class="co">#&gt;  [79] purrr_0.3.4                   htmlwidgets_1.5.1            </span>
-<span class="co">#&gt;  [81] bit_1.1-15.2                  tidyselect_1.1.0             </span>
-<span class="co">#&gt;  [83] magrittr_1.5                  bookdown_0.19                </span>
-<span class="co">#&gt;  [85] R6_2.4.1                      generics_0.0.2               </span>
-<span class="co">#&gt;  [87] DBI_1.1.0                     pillar_1.4.4                 </span>
-<span class="co">#&gt;  [89] withr_2.2.0                   mgcv_1.8-31                  </span>
-<span class="co">#&gt;  [91] RCurl_1.98-1.2                tibble_3.0.1                 </span>
-<span class="co">#&gt;  [93] crayon_1.3.4                  shinyWidgets_0.5.3           </span>
-<span class="co">#&gt;  [95] BiocFileCache_1.13.0          rmarkdown_2.3                </span>
-<span class="co">#&gt;  [97] viridis_0.5.1                 GetoptLong_1.0.0             </span>
-<span class="co">#&gt;  [99] grid_4.0.1                    blob_1.2.1                   </span>
-<span class="co">#&gt; [101] digest_0.6.25                 xtable_1.8-4                 </span>
-<span class="co">#&gt; [103] httpuv_1.5.4                  munsell_0.5.0                </span>
-<span class="co">#&gt; [105] beeswarm_0.2.3                viridisLite_0.3.0            </span>
-<span class="co">#&gt; [107] vipor_0.4.5                   shinyjs_1.1</span>
-</pre></div>
+<span class="co">#&gt;  [59] MASS_7.3-51.5                 scales_1.1.1                 </span>
+<span class="co">#&gt;  [61] colourpicker_1.0              promises_1.1.1               </span>
+<span class="co">#&gt;  [63] RColorBrewer_1.1-2            ComplexHeatmap_2.5.3         </span>
+<span class="co">#&gt;  [65] yaml_2.2.1                    curl_4.3                     </span>
+<span class="co">#&gt;  [67] gridExtra_2.3                 memoise_1.1.0                </span>
+<span class="co">#&gt;  [69] stringi_1.4.6                 RSQLite_2.2.0                </span>
+<span class="co">#&gt;  [71] BiocVersion_3.12.0            desc_1.2.0                   </span>
+<span class="co">#&gt;  [73] BiocParallel_1.23.0           shape_1.4.4                  </span>
+<span class="co">#&gt;  [75] rlang_0.4.6                   pkgconfig_2.0.3              </span>
+<span class="co">#&gt;  [77] bitops_1.0-6                  evaluate_0.14                </span>
+<span class="co">#&gt;  [79] lattice_0.20-41               purrr_0.3.4                  </span>
+<span class="co">#&gt;  [81] htmlwidgets_1.5.1             bit_1.1-15.2                 </span>
+<span class="co">#&gt;  [83] tidyselect_1.1.0              magrittr_1.5                 </span>
+<span class="co">#&gt;  [85] bookdown_0.19                 R6_2.4.1                     </span>
+<span class="co">#&gt;  [87] generics_0.0.2                DBI_1.1.0                    </span>
+<span class="co">#&gt;  [89] pillar_1.4.4                  withr_2.2.0                  </span>
+<span class="co">#&gt;  [91] mgcv_1.8-31                   RCurl_1.98-1.2               </span>
+<span class="co">#&gt;  [93] tibble_3.0.1                  crayon_1.3.4                 </span>
+<span class="co">#&gt;  [95] shinyWidgets_0.5.3            BiocFileCache_1.13.0         </span>
+<span class="co">#&gt;  [97] rmarkdown_2.3                 viridis_0.5.1                </span>
+<span class="co">#&gt;  [99] GetoptLong_1.0.0              grid_4.0.0                   </span>
+<span class="co">#&gt; [101] blob_1.2.1                    digest_0.6.25                </span>
+<span class="co">#&gt; [103] xtable_1.8-4                  httpuv_1.5.4                 </span>
+<span class="co">#&gt; [105] munsell_0.5.0                 beeswarm_0.2.3               </span>
+<span class="co">#&gt; [107] viridisLite_0.3.0             vipor_0.4.5                  </span>
+<span class="co">#&gt; [109] shinyjs_1.1</span></pre></body></html></div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
@@ -557,7 +538,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

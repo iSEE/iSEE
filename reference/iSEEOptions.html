@@ -154,7 +154,7 @@
     <p>Set global options using <code>iSEEOptions$set()</code>, so that all relevant panels will use these default values during initialization.</p>
     </div>
 
-    <pre class="usage"><span class='kw'>iSEEOptions</span></pre>
+    <pre class="usage"><span class='no'>iSEEOptions</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
@@ -169,7 +169,7 @@
     
 
 
-<dl>
+<dl'>
 <dt><code>point.color</code></dt><dd><p>Default color of data points in <code>DotPlot</code> panels (character).</p></dd>
 <dt><code>point.size</code></dt><dd><p>Default size of data points in <code>DotPlot</code> panels (numeric).</p></dd>
 <dt><code>point.alpha</code></dt><dd><p>Default alpha level controlling transparency of data points in <code>DotPlot</code> panels (numeric).</p></dd>
@@ -192,12 +192,9 @@ It is highly recommended to define colors as hex color codes (e.g., <code>"#1e90
 
 </dl>
 
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Kevin Rue-Albrecht</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>iSEEOptions</span><span class='op'>$</span><span class='fu'><a href='https://rdrr.io/r/base/get.html'>get</a></span>(<span class='st'>'downsample'</span>); <span class='kw'>iSEEOptions</span><span class='op'>$</span><span class='fu'><a href='https://rdrr.io/r/base/get.html'>get</a></span>(<span class='st'>'selected.color'</span>)</div><div class='output co'>#&gt; [1] FALSE</div><div class='output co'>#&gt; [1] "red"</div></pre>
+    <pre class="examples"><div class='input'><span class='no'>iSEEOptions</span>$<span class='fu'><a href='https://rdrr.io/r/base/get.html'>get</a></span>(<span class='st'>'downsample'</span>); <span class='no'>iSEEOptions</span>$<span class='fu'><a href='https://rdrr.io/r/base/get.html'>get</a></span>(<span class='st'>'selected.color'</span>)</div><div class='output co'>#&gt; [1] FALSE</div><div class='output co'>#&gt; [1] "red"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -213,7 +210,7 @@ It is highly recommended to define colors as hex color codes (e.g., <code>"#1e90
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

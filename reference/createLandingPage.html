@@ -155,11 +155,11 @@
     </div>
 
     <pre class="usage"><span class='fu'>createLandingPage</span>(
-  seUI = <span class='kw'>NULL</span>,
-  seLoad = <span class='kw'>NULL</span>,
-  initUI = <span class='kw'>NULL</span>,
-  initLoad = <span class='kw'>NULL</span>,
-  requireButton = <span class='fl'>TRUE</span>
+  <span class='kw'>seUI</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>seLoad</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>initUI</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>initLoad</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>requireButton</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -229,7 +229,7 @@ This function expects to be passed:</p><ul>
 <li><p><code>session</code>, the Shiny session object.</p></li>
 </ul>
 
-<p>The <code>landingPage</code> function should define a <code><a href='https://rdrr.io/pkg/shiny/man/renderUI.html'>renderUI</a></code> expression that is assigned to <code>output$allPanels</code>.
+<p>The <code>landingPage</code> function should define a <code>renderUI</code> expression that is assigned to <code>output$allPanels</code>.
 This should define a UI that contains all widgets necessary for a user to set up an <code>iSEE</code> session interactively.
 We suggest that all UI elements have IDs prefixed with <code>"initialize_INTERNAL"</code> to avoid conflicts.</p>
 <p>The function should also define observers to respond to user interactions with the UI elements.
@@ -239,9 +239,6 @@ any one of these observers may then call <code>FUN</code> on those arguments to 
 the UI elements constructed here are lost and observers will never be called again.
 There is no explicit &#8220;unload&#8221; mechanism to return to the landing page from the main app,
 though a browser refresh is usually sufficient.</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Aaron Lun</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>createLandingPage</span>()</div><div class='output co'>#&gt; function (FUN, input, output, session) 
@@ -273,24 +270,23 @@ though a browser refresh is usually sufficient.</p>
 #&gt;     }, ignoreNULL = TRUE, ignoreInit = TRUE)
 #&gt;     invisible(NULL)
 #&gt; }
-#&gt; &lt;bytecode: 0x7fe1c8d577f0&gt;
-#&gt; &lt;environment: 0x7fe1c8d55b38&gt;</div><div class='input'>
+#&gt; &lt;bytecode: 0x55b168364c40&gt;
+#&gt; &lt;environment: 0x55b168366818&gt;</div><div class='input'>
 <span class='co'># Alternative approach, to create a landing page</span>
 <span class='co'># that opens one of the datasets from the scRNAseq package.</span>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'>scRNAseq</span>)
-<span class='kw'>all.data</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span>(<span class='st'>"package:scRNAseq"</span>)
-<span class='kw'>all.data</span> <span class='op'>&lt;-</span> <span class='kw'>all.data</span>[<span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span>(<span class='st'>"Data$"</span>, <span class='kw'>all.data</span>)]
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scRNAseq</span>)
+<span class='no'>all.data</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/ls.html'>ls</a></span>(<span class='st'>"package:scRNAseq"</span>)
+<span class='no'>all.data</span> <span class='kw'>&lt;-</span> <span class='no'>all.data</span>[<span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span>(<span class='st'>"Data$"</span>, <span class='no'>all.data</span>)]
 
-<span class='kw'>lpfun</span> <span class='op'>&lt;-</span> <span class='fu'>createLandingPage</span>(
-    seUI=<span class='fu'>function</span>(<span class='kw'>id</span>) <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/selectInput.html'>selectInput</a></span>(<span class='kw'>id</span>, <span class='st'>"Dataset:"</span>, choices=<span class='kw'>all.data</span>),
-    seLoad=<span class='fu'>function</span>(<span class='kw'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/get.html'>get</a></span>(<span class='kw'>x</span>, <span class='fu'><a href='https://rdrr.io/r/base/as.environment.html'>as.environment</a></span>(<span class='st'>"package:scRNAseq"</span>))()
+<span class='no'>lpfun</span> <span class='kw'>&lt;-</span> <span class='fu'>createLandingPage</span>(
+    <span class='kw'>seUI</span><span class='kw'>=</span><span class='kw'>function</span>(<span class='no'>id</span>) <span class='fu'>selectInput</span>(<span class='no'>id</span>, <span class='st'>"Dataset:"</span>, <span class='kw'>choices</span><span class='kw'>=</span><span class='no'>all.data</span>),
+    <span class='kw'>seLoad</span><span class='kw'>=</span><span class='kw'>function</span>(<span class='no'>x</span>) <span class='fu'><a href='https://rdrr.io/r/base/get.html'>get</a></span>(<span class='no'>x</span>, <span class='fu'><a href='https://rdrr.io/r/base/as.environment.html'>as.environment</a></span>(<span class='st'>"package:scRNAseq"</span>))()
 )
 
-<span class='kw'>app</span> <span class='op'>&lt;-</span> <span class='fu'>iSEE</span>(landingPage=<span class='kw'>lpfun</span>)
-<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span>()) {
-  <span class='kw'>shiny</span>::<span class='fu'><a href='https://rdrr.io/pkg/shiny/man/runApp.html'>runApp</a></span>(<span class='kw'>app</span>, port=<span class='fl'>1234</span>)
-}
-</div></pre>
+<span class='no'>app</span> <span class='kw'>&lt;-</span> <span class='fu'>iSEE</span>(<span class='kw'>landingPage</span><span class='kw'>=</span><span class='no'>lpfun</span>)
+<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span>()) {
+  <span class='kw pkg'>shiny</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/shiny/man/runApp.html'>runApp</a></span>(<span class='no'>app</span>, <span class='kw'>port</span><span class='kw'>=</span><span class='fl'>1234</span>)
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -306,7 +302,7 @@ though a browser refresh is usually sufficient.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

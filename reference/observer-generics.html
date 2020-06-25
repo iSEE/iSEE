@@ -182,8 +182,8 @@ Each parent class should implement observers for its slots, so it is usually onl
 
 <p>Consider an observer for an interface element that modifies a slot of <code>x</code>.
 The code within this observer is expected to modify the &#8220;memory&#8221; of the app state in <code>pObjects</code>, via:</p><pre>
-<span class='kw'>new_value</span> <span class='op'>&lt;-</span> <span class='kw'>input</span>[[<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='kw'>PANEL</span>, <span class='st'>"_"</span>, <span class='kw'>SLOT</span>)]]
-<span class='kw'>pObjects</span><span class='op'>$</span><span class='kw'>memory</span>[[<span class='kw'>PANEL</span>]][[<span class='kw'>SLOT</span>]] <span class='op'>&lt;-</span> <span class='kw'>new_value</span></pre>
+<span class='no'>new_value</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;- <span class='no'>input</span><span class='kw'>[[</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='no'>PANEL</span>, <span class='st'>"_"</span>, <span class='no'>SLOT</span>)]]
+<span class='no'>pObjects</span>$<span class='no'>memory</span><span class='kw'>[[</span><span class='no'>PANEL</span>]]<span class='kw'>[[</span><span class='no'>SLOT</span>]] <span class='kw'>&amp;</span><span class='no'>lt</span>;- <span class='no'>new_value</span></pre>
 
 <p>This enables <span class="pkg">iSEE</span> to keep a record of the current state of the application.
 In fact, any changes must go through <code>pObjects$memory</code> before they change the output in <code>.renderOutput</code>;
@@ -199,9 +199,6 @@ This will request a re-rendering of the output with no additional side effects a
 e.g., brushes and lassos are no longer valid if the variable on the axes are altered.
 Observers responding to such changes should instead call <code>.requestCleanUpdate</code>,
 which will destroy all existing selections in order to avoid misleading conclusions.</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Aaron Lun</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -218,7 +215,7 @@ which will destroy all existing selections in order to avoid misleading conclusi
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

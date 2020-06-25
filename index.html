@@ -127,24 +127,18 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="center">GitHub Actions</td>
-<td align="center">Multiple</td>
-<td align="center"><a href="https://github.com/iSEE/iSEE/actions"><img src="https://github.com/iSEE/iSEE/workflows/R-CMD-check/badge.svg" alt="R build status"></a></td>
-<td align="center"><code>NA</code></td>
-</tr>
-<tr class="even">
 <td align="center">Travis CI</td>
 <td align="center">Linux</td>
 <td align="center"><a href="https://travis-ci.com/iSEE/iSEE"><img src="https://travis-ci.com/iSEE/iSEE.svg?branch=master" alt="Travis CI build status"></a></td>
 <td align="center"><a href="https://codecov.io/github/iSEE/iSEE"><img src="https://codecov.io/github/iSEE/iSEE/coverage.svg?branch=master" alt="Codecov.io coverage status"></a></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="center">Bioc (<a href="http://bioconductor.org/packages/devel/bioc/html/iSEE.html"><em>devel</em></a>)</td>
 <td align="center">Multiple</td>
 <td align="center"><a href="http://bioconductor.org/checkResults/devel/bioc-LATEST/iSEE"><img src="http://bioconductor.org/shields/build/devel/bioc/iSEE.svg" alt="Bioconductor-devel Build Status"></a></td>
 <td align="center"><code>NA</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="center">Bioc (<a href="http://bioconductor.org/packages/release/bioc/html/iSEE.html"><em>release</em></a>)</td>
 <td align="center">Multiple</td>
 <td align="center"><a href="http://bioconductor.org/checkResults/release/bioc-LATEST/iSEE"><img src="http://bioconductor.org/shields/build/release/bioc/iSEE.svg" alt="Bioconductor-release Build Status"></a></td>
@@ -152,7 +146,7 @@
 </tr>
 </tbody>
 </table>
-<!-- badges: start --><p><img src="https://img.shields.io/docker/cloud/automated/iseedevelopers/isee" alt="Docker Cloud Automated build"><img src="https://img.shields.io/docker/cloud/build/iseedevelopers/isee" alt="Docker Cloud Build Status"><!-- badges: end --></p>
+<!-- badges: start --><p><a href="https://github.com/iSEE/iSEEu/actions"><img src="https://github.com/iSEE/iSEEu/workflows/build_check_deploy/badge.svg" alt="R build status"></a> <img src="https://img.shields.io/docker/cloud/automated/iseedevelopers/isee" alt="Docker Cloud Automated build"><img src="https://img.shields.io/docker/cloud/build/iseedevelopers/isee" alt="Docker Cloud Build Status"><!-- badges: end --></p>
 </div>
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
@@ -171,13 +165,11 @@
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p><em>iSEE</em> can be easily installed from Bioconductor using <code><a href="https://rdrr.io/pkg/BiocManager/man/install.html">BiocManager::install()</a></code>:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="co">if</span> (<span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"BiocManager"</span>, quietly = <span class="fl">TRUE</span>))
+<div class="sourceCode" id="cb1"><pre class="r"><span class="kw">if</span> (!<span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span>(<span class="st">"BiocManager"</span>, <span class="kw">quietly</span> <span class="kw">=</span> <span class="fl">TRUE</span>))
     <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"BiocManager"</span>)
-<span class="kw">BiocManager</span>::<span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>(<span class="st">"iSEE"</span>)
+<span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>(<span class="st">"iSEE"</span>)
 <span class="co"># or also...</span>
-<span class="kw">BiocManager</span>::<span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>(<span class="st">"iSEE"</span>, dependencies = <span class="fl">TRUE</span>)
-</pre></div>
+<span class="kw pkg">BiocManager</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span>(<span class="st">"iSEE"</span>, <span class="kw">dependencies</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></div>
 <p>Setting <code>dependencies = TRUE</code> should ensure that all packages, including the ones in the <code>Suggests:</code> field of the <code>DESCRIPTION</code>, are installed - this can be essential if you want to reproduce the code in the vignette, for example.</p>
 </div>
 <div id="functionalities" class="section level2">
@@ -320,7 +312,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

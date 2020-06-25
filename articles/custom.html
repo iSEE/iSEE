@@ -124,7 +124,7 @@
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">23 June 2020</h4>
+            <h4 class="date">25 June 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/custom.Rmd"><code>vignettes/custom.Rmd</code></a></small>
       <div class="hidden name"><code>custom.Rmd</code></div>
@@ -133,7 +133,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-06-23</p>
+<p><strong>Compiled date</strong>: 2020-06-25</p>
 <p><strong>Last edited</strong>: 2020-04-20</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="background" class="section level1">
@@ -147,7 +147,7 @@
 <div id="minimum-requirements" class="section level2">
 <h2 class="hasAnchor">
 <a href="#minimum-requirements" class="anchor"></a>Minimum requirements</h2>
-<p>Recalculations in custom panels are performed using user-defined functions that are supplied to the <code><a href="../reference/iSEE.html">iSEE()</a></code> call. The only requirements are that the function must accept:</p>
+<p>Recalculations in custom panels are performed using user-defined functions that are supplied to the <code><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE()</a></code> call. The only requirements are that the function must accept:</p>
 <ul>
 <li>A <code>SummarizedExperiment</code> object or its derivatives as the first argument.</li>
 <li>A list of character vectors containing row names as the <em>second</em> argument. Each vector specifies the rows that are currently selected in the transmitting <em>row-based</em> panel, as an active selection or as one of the saved selection. This may be <code>NULL</code> if no transmitting panel was selected or if no selections are available.</li>
@@ -163,153 +163,143 @@
 <h2 class="hasAnchor">
 <a href="#example-of-custom-plot-panel" class="anchor"></a>Example of custom plot panel</h2>
 <p>To demonstrate the use of <em>custom plot panels</em>, we define an example function <code>CUSTOM_DIMRED</code> that takes a subset of features and cells in a <code>SingleCellExperiment</code> object and performs dimensionality reduction on that subset with <em><a href="https://bioconductor.org/packages/3.12/scater">scater</a></em> function <span class="citation">(McCarthy et al. 2017)</span>.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="http://bioconductor.org/packages/scater">scater</a></span>)
-<span class="kw">CUSTOM_DIMRED</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">se</span>, <span class="kw">rows</span>, <span class="kw">columns</span>, <span class="kw">ntop</span>=<span class="fl">500</span>, <span class="kw">scale</span>=<span class="fl">TRUE</span>,
-    <span class="kw">mode</span>=<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"PCA"</span>, <span class="st">"TSNE"</span>, <span class="st">"UMAP"</span>))
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">scater</span>)
+<span class="no">CUSTOM_DIMRED</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">se</span>, <span class="no">rows</span>, <span class="no">columns</span>, <span class="no">ntop</span><span class="kw">=</span><span class="fl">500</span>, <span class="no">scale</span><span class="kw">=</span><span class="fl">TRUE</span>,
+    <span class="no">mode</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"PCA"</span>, <span class="st">"TSNE"</span>, <span class="st">"UMAP"</span>))
 {
-    <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="kw">columns</span>)
-    <span class="co">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="kw">columns</span>)) {
+    <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">columns</span>)
+    <span class="kw">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="no">columns</span>)) {
         <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(
-            <span class="fu">ggplot</span>() <span class="op">+</span> <span class="fu">theme_void</span>() <span class="op">+</span> <span class="fu">geom_text</span>(
-                <span class="fu">aes</span>(<span class="kw">x</span>, <span class="kw">y</span>, label=<span class="kw">label</span>),
-                <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(x=<span class="fl">0</span>, y=<span class="fl">0</span>, label=<span class="st">"No column data selected."</span>),
-                size=<span class="fl">5</span>)
+            <span class="fu">ggplot</span>() + <span class="fu">theme_void</span>() + <span class="fu">geom_text</span>(
+                <span class="fu">aes</span>(<span class="no">x</span>, <span class="no">y</span>, <span class="kw">label</span><span class="kw">=</span><span class="no">label</span>),
+                <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">x</span><span class="kw">=</span><span class="fl">0</span>, <span class="kw">y</span><span class="kw">=</span><span class="fl">0</span>, <span class="kw">label</span><span class="kw">=</span><span class="st">"No column data selected."</span>),
+                <span class="kw">size</span><span class="kw">=</span><span class="fl">5</span>)
             )
     }
 
-    <span class="kw">mode</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/match.arg.html">match.arg</a></span>(<span class="kw">mode</span>)
-    <span class="co">if</span> (<span class="kw">mode</span><span class="op">==</span><span class="st">"PCA"</span>) {
-        <span class="kw">calcFUN</span> <span class="op">&lt;-</span> <span class="kw">runPCA</span>
-    } <span class="co">else</span> <span class="co">if</span> (<span class="kw">mode</span><span class="op">==</span><span class="st">"TSNE"</span>) {
-        <span class="kw">calcFUN</span> <span class="op">&lt;-</span> <span class="kw">runTSNE</span>
-    } <span class="co">else</span> <span class="co">if</span> (<span class="kw">mode</span><span class="op">==</span><span class="st">"UMAP"</span>) {
-        <span class="kw">calcFUN</span> <span class="op">&lt;-</span> <span class="kw">runUMAP</span>
+    <span class="no">mode</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/match.arg.html">match.arg</a></span>(<span class="no">mode</span>)
+    <span class="kw">if</span> (<span class="no">mode</span><span class="kw">==</span><span class="st">"PCA"</span>) {
+        <span class="no">calcFUN</span> <span class="kw">&lt;-</span> <span class="no">runPCA</span>
+    } <span class="kw">else</span> <span class="kw">if</span> (<span class="no">mode</span><span class="kw">==</span><span class="st">"TSNE"</span>) {
+        <span class="no">calcFUN</span> <span class="kw">&lt;-</span> <span class="no">runTSNE</span>
+    } <span class="kw">else</span> <span class="kw">if</span> (<span class="no">mode</span><span class="kw">==</span><span class="st">"UMAP"</span>) {
+        <span class="no">calcFUN</span> <span class="kw">&lt;-</span> <span class="no">runUMAP</span>
     }
 
     <span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span>(<span class="fl">1000</span>)
-    <span class="kw">kept</span> <span class="op">&lt;-</span> <span class="kw">se</span>[, <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="kw">columns</span>))]
-    <span class="kw">kept</span> <span class="op">&lt;-</span> <span class="fu">calcFUN</span>(<span class="kw">kept</span>, ncomponents=<span class="fl">2</span>, ntop=<span class="kw">ntop</span>,
-        scale=<span class="kw">scale</span>, subset_row=<span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="kw">rows</span>)))
-    <span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotReducedDim.html">plotReducedDim</a></span>(<span class="kw">kept</span>, <span class="kw">mode</span>)
-}
-</pre></div>
+    <span class="no">kept</span> <span class="kw">&lt;-</span> <span class="no">se</span>[, <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="no">columns</span>))]
+    <span class="no">kept</span> <span class="kw">&lt;-</span> <span class="fu">calcFUN</span>(<span class="no">kept</span>, <span class="kw">ncomponents</span><span class="kw">=</span><span class="fl">2</span>, <span class="kw">ntop</span><span class="kw">=</span><span class="no">ntop</span>,
+        <span class="kw">scale</span><span class="kw">=</span><span class="no">scale</span>, <span class="kw">subset_row</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="no">rows</span>)))
+    <span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotReducedDim.html">plotReducedDim</a></span>(<span class="no">kept</span>, <span class="no">mode</span>)
+}</pre></body></html></div>
 <p>As mentioned above, <code>rows</code> and <code>columns</code> may be <code>NULL</code> if no selection was made in the respective transmitting panels. How these should be treated is up to the user-defined function. In this example, an empty <em>ggplot</em> is returned if there is no selection on the columns, while the default behaviour of <code>runPCA</code>, <code>runTSNE</code>, etc. is used if <code>rows=NULL</code>.</p>
-<p>To create instances of our panel, we call the <code><a href="../reference/createCustomPanels.html">createCustomPlot()</a></code> function with <code>CUSTOM_DIMRED</code> to set up the custom plot class and its methods. This returns a constructor function that can be directly used to generate an instance of our custom plot.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/iSEE/iSEE">iSEE</a></span>)
-<span class="kw">GENERATOR</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCustomPanels.html">createCustomPlot</a></span>(<span class="kw">CUSTOM_DIMRED</span>)
-<span class="kw">custom_panel</span> <span class="op">&lt;-</span> <span class="fu">GENERATOR</span>()
-<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="kw">custom_panel</span>)
+<p>To create instances of our panel, we call the <code><a href="https://rdrr.io/pkg/iSEE/man/createCustomPanels.html">createCustomPlot()</a></code> function with <code>CUSTOM_DIMRED</code> to set up the custom plot class and its methods. This returns a constructor function that can be directly used to generate an instance of our custom plot.</p>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">iSEE</span>)
+<span class="no">GENERATOR</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/createCustomPanels.html">createCustomPlot</a></span>(<span class="no">CUSTOM_DIMRED</span>)
+<span class="no">custom_panel</span> <span class="kw">&lt;-</span> <span class="fu">GENERATOR</span>()
+<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="no">custom_panel</span>)
 <span class="co">#&gt; [1] "CustomPlot"</span>
 <span class="co">#&gt; attr(,"package")</span>
-<span class="co">#&gt; [1] ".GlobalEnv"</span>
-</pre></div>
-<p>We can now easily supply instances of our new custom plot class to <code><a href="../reference/iSEE.html">iSEE()</a></code> like any other <code>Panel</code> instance. The example below creates an application where a column data plot transmits a selection to our custom plot, the latter of which is initialized in <span class="math inline">\(t\)</span>-SNE mode with the top 1000 most variable genes.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="co"># NOTE: as mentioned before, you don't have to create 'BrushData' manually;</span>
+<span class="co">#&gt; [1] ".GlobalEnv"</span></pre></body></html></div>
+<p>We can now easily supply instances of our new custom plot class to <code><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE()</a></code> like any other <code>Panel</code> instance. The example below creates an application where a column data plot transmits a selection to our custom plot, the latter of which is initialized in <span class="math inline">\(t\)</span>-SNE mode with the top 1000 most variable genes.</p>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="co"># NOTE: as mentioned before, you don't have to create 'BrushData' manually;</span>
 <span class="co"># just open an app, make a brush and copy it from the panel settings.</span>
-<span class="kw">cdp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(
-    XAxis=<span class="st">"Column data"</span>, 
-    XAxisColumnData=<span class="st">"Primary.Type"</span>, 
-    PanelId=<span class="fl">1L</span>,
-    BrushData=<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-        xmin = <span class="fl">10.1</span>, xmax = <span class="fl">15.0</span>, ymin = <span class="fl">5106720.6</span>, ymax = <span class="fl">28600906.0</span>, 
-        coords_css = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(xmin = <span class="fl">271.0</span>, xmax = <span class="fl">380.0</span>, ymin = <span class="fl">143.0</span>, ymax = <span class="fl">363.0</span>), 
-        coords_img = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(xmin = <span class="fl">352.3</span>, xmax = <span class="fl">494.0</span>, ymin = <span class="fl">185.9</span>, ymax = <span class="fl">471.9</span>), 
-        img_css_ratio = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(x = <span class="fl">1.3</span>, y = <span class="fl">1.2</span>), 
-        mapping = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(x = <span class="st">"X"</span>, y = <span class="st">"Y"</span>, group = <span class="st">"GroupBy"</span>),
-        domain = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-            left = <span class="fl">0.4</span>, right = <span class="fl">17.6</span>, bottom = <span class="op">-</span><span class="fl">569772L</span>, top = <span class="fl">41149532L</span>, 
-            discrete_limits = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-                x = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"L4 Arf5"</span>, <span class="st">"L4 Ctxn3"</span>, <span class="st">"L4 Scnn1a"</span>, 
-                    <span class="st">"L5 Ucma"</span>, <span class="st">"L5a Batf3"</span>, <span class="st">"L5a Hsd11b1"</span>, <span class="st">"L5a Pde1c"</span>, 
-                    <span class="st">"L5a Tcerg1l"</span>, <span class="st">"L5b Cdh13"</span>, <span class="st">"L5b Chrna6"</span>, <span class="st">"L5b Tph2"</span>, 
-                    <span class="st">"L6a Car12"</span>, <span class="st">"L6a Mgp"</span>, <span class="st">"L6a Sla"</span>, <span class="st">"L6a Syt17"</span>, 
+<span class="no">cdp</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(
+    <span class="kw">XAxis</span><span class="kw">=</span><span class="st">"Column data"</span>,
+    <span class="kw">XAxisColumnData</span><span class="kw">=</span><span class="st">"Primary.Type"</span>,
+    <span class="kw">PanelId</span><span class="kw">=</span><span class="fl">1L</span>,
+    <span class="kw">BrushData</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+        <span class="kw">xmin</span> <span class="kw">=</span> <span class="fl">10.1</span>, <span class="kw">xmax</span> <span class="kw">=</span> <span class="fl">15.0</span>, <span class="kw">ymin</span> <span class="kw">=</span> <span class="fl">5106720.6</span>, <span class="kw">ymax</span> <span class="kw">=</span> <span class="fl">28600906.0</span>,
+        <span class="kw">coords_css</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">xmin</span> <span class="kw">=</span> <span class="fl">271.0</span>, <span class="kw">xmax</span> <span class="kw">=</span> <span class="fl">380.0</span>, <span class="kw">ymin</span> <span class="kw">=</span> <span class="fl">143.0</span>, <span class="kw">ymax</span> <span class="kw">=</span> <span class="fl">363.0</span>),
+        <span class="kw">coords_img</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">xmin</span> <span class="kw">=</span> <span class="fl">352.3</span>, <span class="kw">xmax</span> <span class="kw">=</span> <span class="fl">494.0</span>, <span class="kw">ymin</span> <span class="kw">=</span> <span class="fl">185.9</span>, <span class="kw">ymax</span> <span class="kw">=</span> <span class="fl">471.9</span>),
+        <span class="kw">img_css_ratio</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="fl">1.3</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="fl">1.2</span>),
+        <span class="kw">mapping</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"X"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"Y"</span>, <span class="kw">group</span> <span class="kw">=</span> <span class="st">"GroupBy"</span>),
+        <span class="kw">domain</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+            <span class="kw">left</span> <span class="kw">=</span> <span class="fl">0.4</span>, <span class="kw">right</span> <span class="kw">=</span> <span class="fl">17.6</span>, <span class="kw">bottom</span> <span class="kw">=</span> -<span class="fl">569772L</span>, <span class="kw">top</span> <span class="kw">=</span> <span class="fl">41149532L</span>,
+            <span class="kw">discrete_limits</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+                <span class="kw">x</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="st">"L4 Arf5"</span>, <span class="st">"L4 Ctxn3"</span>, <span class="st">"L4 Scnn1a"</span>,
+                    <span class="st">"L5 Ucma"</span>, <span class="st">"L5a Batf3"</span>, <span class="st">"L5a Hsd11b1"</span>, <span class="st">"L5a Pde1c"</span>,
+                    <span class="st">"L5a Tcerg1l"</span>, <span class="st">"L5b Cdh13"</span>, <span class="st">"L5b Chrna6"</span>, <span class="st">"L5b Tph2"</span>,
+                    <span class="st">"L6a Car12"</span>, <span class="st">"L6a Mgp"</span>, <span class="st">"L6a Sla"</span>, <span class="st">"L6a Syt17"</span>,
                     <span class="st">"Pvalb Tacr3"</span>, <span class="st">"Sst Myh8"</span>)
             )
-        ), 
-        range = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-            left = <span class="fl">68.986301369863</span>, right = <span class="fl">566.922374429224</span>, 
-            bottom = <span class="fl">541.013698630137</span>, top = <span class="fl">33.1552511415525</span>
-        ), 
-        log = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(x = <span class="kw">NULL</span>, y = <span class="kw">NULL</span>), 
-        direction = <span class="st">"xy"</span>, 
-        brushId = <span class="st">"ColumnDataPlot1_Brush"</span>, 
-        outputId = <span class="st">"ColumnDataPlot1"</span>
+        ),
+        <span class="kw">range</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+            <span class="kw">left</span> <span class="kw">=</span> <span class="fl">68.986301369863</span>, <span class="kw">right</span> <span class="kw">=</span> <span class="fl">566.922374429224</span>,
+            <span class="kw">bottom</span> <span class="kw">=</span> <span class="fl">541.013698630137</span>, <span class="kw">top</span> <span class="kw">=</span> <span class="fl">33.1552511415525</span>
+        ),
+        <span class="kw">log</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="kw">NULL</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="kw">NULL</span>),
+        <span class="kw">direction</span> <span class="kw">=</span> <span class="st">"xy"</span>,
+        <span class="kw">brushId</span> <span class="kw">=</span> <span class="st">"ColumnDataPlot1_Brush"</span>,
+        <span class="kw">outputId</span> <span class="kw">=</span> <span class="st">"ColumnDataPlot1"</span>
     )
 )
 
-<span class="kw">custom.p</span> <span class="op">&lt;-</span> <span class="fu">GENERATOR</span>(mode=<span class="st">"TSNE"</span>, ntop=<span class="fl">1000</span>, 
-    ColumnSelectionSource=<span class="st">"ColumnDataPlot1"</span>)
+<span class="no">custom.p</span> <span class="kw">&lt;-</span> <span class="fu">GENERATOR</span>(<span class="kw">mode</span><span class="kw">=</span><span class="st">"TSNE"</span>, <span class="kw">ntop</span><span class="kw">=</span><span class="fl">1000</span>,
+    <span class="kw">ColumnSelectionSource</span><span class="kw">=</span><span class="st">"ColumnDataPlot1"</span>)
 
-<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>, initial=<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">cdp</span>, <span class="kw">custom.p</span>)) 
-</pre></div>
+<span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">cdp</span>, <span class="no">custom.p</span>))</pre></body></html></div>
 <p><img src="screenshots/custom-plot.png" width="488"></p>
-<p>The most interesting aspect of <code><a href="../reference/createCustomPanels.html">createCustomPlot()</a></code> is that the UI elements for modifying the optional arguments in <code>CUSTOM_DIMRED</code> are also automatically generated. This provides a convenient way to generate a reasonably intuitive UI for rapid prototyping, though there are limitations - see the documentation for more details.</p>
+<p>The most interesting aspect of <code><a href="https://rdrr.io/pkg/iSEE/man/createCustomPanels.html">createCustomPlot()</a></code> is that the UI elements for modifying the optional arguments in <code>CUSTOM_DIMRED</code> are also automatically generated. This provides a convenient way to generate a reasonably intuitive UI for rapid prototyping, though there are limitations - see the documentation for more details.</p>
 </div>
 <div id="example-of-custom-table-panel" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example-of-custom-table-panel" class="anchor"></a>Example of custom table panel</h2>
 <p>To demonstrate the use of <em>custom table panels</em>, we define an example function <code>CUSTOM_SUMMARY</code> below. This takes a subset of features and cells in a <code>SingleCellExperiment</code> object and creates dataframe that details the <code>mean</code>, <code>variance</code> and count of samples with expression above a given cut-off within the selection. If either <code>rows</code> or <code>columns</code> are <code>NULL</code>, all rows or columns are used, respectively.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="kw">CUSTOM_SUMMARY</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">se</span>, <span class="kw">ri</span>, <span class="kw">ci</span>, <span class="kw">assay</span>=<span class="st">"logcounts"</span>, <span class="kw">min_exprs</span>=<span class="fl">0</span>) {
-    <span class="co">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="kw">ri</span>)) {
-        <span class="kw">ri</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="kw">se</span>)
-    } <span class="co">else</span> {
-        <span class="kw">ri</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="kw">ri</span>))
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">CUSTOM_SUMMARY</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">se</span>, <span class="no">ri</span>, <span class="no">ci</span>, <span class="no">assay</span><span class="kw">=</span><span class="st">"logcounts"</span>, <span class="no">min_exprs</span><span class="kw">=</span><span class="fl">0</span>) {
+    <span class="kw">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="no">ri</span>)) {
+        <span class="no">ri</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">se</span>)
+    } <span class="kw">else</span> {
+        <span class="no">ri</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="no">ri</span>))
     }
-    <span class="co">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="kw">ci</span>)) {
-        <span class="kw">ci</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="kw">se</span>)
-    } <span class="co">else</span> {
-        <span class="kw">ci</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="kw">ci</span>))
+    <span class="kw">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="no">ci</span>)) {
+        <span class="no">ci</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">se</span>)
+    } <span class="kw">else</span> {
+        <span class="no">ci</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span>(<span class="no">ci</span>))
     }
-    
-    <span class="kw">assayMatrix</span> <span class="op">&lt;-</span> <span class="fu">assay</span>(<span class="kw">se</span>, <span class="kw">assay</span>)[<span class="kw">ri</span>, <span class="kw">ci</span>, drop=<span class="fl">FALSE</span>]
-    
+
+    <span class="no">assayMatrix</span> <span class="kw">&lt;-</span> <span class="fu">assay</span>(<span class="no">se</span>, <span class="no">assay</span>)[<span class="no">ri</span>, <span class="no">ci</span>, <span class="kw">drop</span><span class="kw">=</span><span class="fl">FALSE</span>]
+
     <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(
-        Mean = <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span>(<span class="kw">assayMatrix</span>),
-        Var = <span class="fu">rowVars</span>(<span class="kw">assayMatrix</span>),
-        Sum = <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="kw">assayMatrix</span>),
-        n_detected = <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="kw">assayMatrix</span> <span class="op">&gt;</span> <span class="kw">min_exprs</span>),
-        row.names = <span class="kw">ri</span>
+        <span class="kw">Mean</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span>(<span class="no">assayMatrix</span>),
+        <span class="kw">Var</span> <span class="kw">=</span> <span class="fu">rowVars</span>(<span class="no">assayMatrix</span>),
+        <span class="kw">Sum</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">assayMatrix</span>),
+        <span class="kw">n_detected</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span>(<span class="no">assayMatrix</span> <span class="kw">&gt;</span> <span class="no">min_exprs</span>),
+        <span class="kw">row.names</span> <span class="kw">=</span> <span class="no">ri</span>
     )
-}
-</pre></div>
-<p>To create instances of our panel, we call the <code><a href="../reference/createCustomPanels.html">createCustomTable()</a></code> function with <code>CUSTOM_SUMMARY</code>, which again returns a constructor function that can be used directly in <code><a href="../reference/iSEE.html">iSEE()</a></code>. Again, the function will attempt to auto-pick an appropriate UI element for each optional argument in <code>CUSTOM_SUMMARY</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/iSEE/iSEE">iSEE</a></span>)
-<span class="kw">GENERATOR</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCustomPanels.html">createCustomTable</a></span>(<span class="kw">CUSTOM_SUMMARY</span>)
-<span class="kw">custom.t</span> <span class="op">&lt;-</span> <span class="fu">GENERATOR</span>(PanelWidth=<span class="fl">8L</span>,
-    ColumnSelectionSource=<span class="st">"ReducedDimensionPlot1"</span>,
-    SearchColumns=<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">""</span>, <span class="st">"17.8 ... 10000"</span>, <span class="st">""</span>, <span class="st">""</span>) <span class="co"># filtering for HVGs.</span>
-) 
-<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="kw">custom.t</span>)
+}</pre></body></html></div>
+<p>To create instances of our panel, we call the <code><a href="https://rdrr.io/pkg/iSEE/man/createCustomPanels.html">createCustomTable()</a></code> function with <code>CUSTOM_SUMMARY</code>, which again returns a constructor function that can be used directly in <code><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE()</a></code>. Again, the function will attempt to auto-pick an appropriate UI element for each optional argument in <code>CUSTOM_SUMMARY</code>.</p>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">iSEE</span>)
+<span class="no">GENERATOR</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/createCustomPanels.html">createCustomTable</a></span>(<span class="no">CUSTOM_SUMMARY</span>)
+<span class="no">custom.t</span> <span class="kw">&lt;-</span> <span class="fu">GENERATOR</span>(<span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">8L</span>,
+    <span class="kw">ColumnSelectionSource</span><span class="kw">=</span><span class="st">"ReducedDimensionPlot1"</span>,
+    <span class="kw">SearchColumns</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">""</span>, <span class="st">"17.8 ... 10000"</span>, <span class="st">""</span>, <span class="st">""</span>) <span class="co"># filtering for HVGs.</span>
+)
+<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="no">custom.t</span>)
 <span class="co">#&gt; [1] "CustomTable"</span>
 <span class="co">#&gt; attr(,"package")</span>
 <span class="co">#&gt; [1] ".GlobalEnv"</span>
 
 <span class="co"># Preselecting some points in the reduced dimension plot.</span>
 <span class="co"># Again, you don't have to manually create the 'BrushData'!</span>
-<span class="kw">rdp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span>(
-    PanelId=<span class="fl">1L</span>,
-    BrushData = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-        xmin = <span class="op">-</span><span class="fl">44.8</span>, xmax = <span class="op">-</span><span class="fl">14.3</span>, ymin = <span class="fl">7.5</span>, ymax = <span class="fl">47.1</span>, 
-        coords_css = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(xmin = <span class="fl">55.0</span>, xmax = <span class="fl">169.0</span>, ymin = <span class="fl">48.0</span>, ymax = <span class="fl">188.0</span>),
-        coords_img = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(xmin = <span class="fl">71.5</span>, xmax = <span class="fl">219.7</span>, ymin = <span class="fl">62.4</span>, ymax = <span class="fl">244.4</span>), 
-        img_css_ratio = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(x = <span class="fl">1.3</span>, y = <span class="fl">1.29</span>), 
-        mapping = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(x = <span class="st">"X"</span>, y = <span class="st">"Y"</span>), 
-        domain = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(left = <span class="op">-</span><span class="fl">49.1</span>, right = <span class="fl">57.2</span>, bottom = <span class="op">-</span><span class="fl">70.3</span>, top = <span class="fl">53.5</span>), 
-        range = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(left = <span class="fl">50.9</span>, right = <span class="fl">566.9</span>, bottom = <span class="fl">603.0</span>, top = <span class="fl">33.1</span>), 
-        log = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(x = <span class="kw">NULL</span>, y = <span class="kw">NULL</span>), 
-        direction = <span class="st">"xy"</span>, 
-        brushId = <span class="st">"ReducedDimensionPlot1_Brush"</span>, 
-        outputId = <span class="st">"ReducedDimensionPlot1"</span>
+<span class="no">rdp</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span>(
+    <span class="kw">PanelId</span><span class="kw">=</span><span class="fl">1L</span>,
+    <span class="kw">BrushData</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+        <span class="kw">xmin</span> <span class="kw">=</span> -<span class="fl">44.8</span>, <span class="kw">xmax</span> <span class="kw">=</span> -<span class="fl">14.3</span>, <span class="kw">ymin</span> <span class="kw">=</span> <span class="fl">7.5</span>, <span class="kw">ymax</span> <span class="kw">=</span> <span class="fl">47.1</span>,
+        <span class="kw">coords_css</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">xmin</span> <span class="kw">=</span> <span class="fl">55.0</span>, <span class="kw">xmax</span> <span class="kw">=</span> <span class="fl">169.0</span>, <span class="kw">ymin</span> <span class="kw">=</span> <span class="fl">48.0</span>, <span class="kw">ymax</span> <span class="kw">=</span> <span class="fl">188.0</span>),
+        <span class="kw">coords_img</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">xmin</span> <span class="kw">=</span> <span class="fl">71.5</span>, <span class="kw">xmax</span> <span class="kw">=</span> <span class="fl">219.7</span>, <span class="kw">ymin</span> <span class="kw">=</span> <span class="fl">62.4</span>, <span class="kw">ymax</span> <span class="kw">=</span> <span class="fl">244.4</span>),
+        <span class="kw">img_css_ratio</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="fl">1.3</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="fl">1.29</span>),
+        <span class="kw">mapping</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"X"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"Y"</span>),
+        <span class="kw">domain</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">left</span> <span class="kw">=</span> -<span class="fl">49.1</span>, <span class="kw">right</span> <span class="kw">=</span> <span class="fl">57.2</span>, <span class="kw">bottom</span> <span class="kw">=</span> -<span class="fl">70.3</span>, <span class="kw">top</span> <span class="kw">=</span> <span class="fl">53.5</span>),
+        <span class="kw">range</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">left</span> <span class="kw">=</span> <span class="fl">50.9</span>, <span class="kw">right</span> <span class="kw">=</span> <span class="fl">566.9</span>, <span class="kw">bottom</span> <span class="kw">=</span> <span class="fl">603.0</span>, <span class="kw">top</span> <span class="kw">=</span> <span class="fl">33.1</span>),
+        <span class="kw">log</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="kw">NULL</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="kw">NULL</span>),
+        <span class="kw">direction</span> <span class="kw">=</span> <span class="st">"xy"</span>,
+        <span class="kw">brushId</span> <span class="kw">=</span> <span class="st">"ReducedDimensionPlot1_Brush"</span>,
+        <span class="kw">outputId</span> <span class="kw">=</span> <span class="st">"ReducedDimensionPlot1"</span>
     )
 )
 
-<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>, initial=<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">rdp</span>, <span class="kw">custom.t</span>))
-</pre></div>
+<span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">rdp</span>, <span class="no">custom.t</span>))</pre></body></html></div>
 <p><img src="screenshots/custom-table.png" width="488"></p>
 </div>
 </div>
@@ -317,69 +307,63 @@
 <h1 class="hasAnchor">
 <a href="#handling-active-and-saved-selections" class="anchor"></a>Handling active and saved selections</h1>
 <p>Recall that the second and third arguments are actually lists containing both active and saved selections from the transmitter. More advanced custom panels can take advantage of these multiple selections to perform more sophisticated data processing. For example, we can write a function that computes log-fold changes between the samples in the active selection and the samples in each saved selection. (It would be trivial to extend this to obtain actual differential expression statistics, e.g., using <code>scran::findMarkers()</code> or functions from packages like <em><a href="https://bioconductor.org/packages/3.12/limma">limma</a></em>.)</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="kw">CUSTOM_DIFFEXP</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">se</span>, <span class="kw">ri</span>, <span class="kw">ci</span>, <span class="kw">assay</span>=<span class="st">"logcounts"</span>) {
-    <span class="kw">ri</span> <span class="op">&lt;-</span> <span class="kw">ri</span><span class="op">$</span><span class="kw">active</span>
-    <span class="co">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="kw">ri</span>)) { 
-        <span class="kw">ri</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="kw">se</span>)
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">CUSTOM_DIFFEXP</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">se</span>, <span class="no">ri</span>, <span class="no">ci</span>, <span class="no">assay</span><span class="kw">=</span><span class="st">"logcounts"</span>) {
+    <span class="no">ri</span> <span class="kw">&lt;-</span> <span class="no">ri</span>$<span class="no">active</span>
+    <span class="kw">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="no">ri</span>)) {
+        <span class="no">ri</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">se</span>)
     }
-    <span class="kw">assayMatrix</span> <span class="op">&lt;-</span> <span class="fu">assay</span>(<span class="kw">se</span>, <span class="kw">assay</span>)[<span class="kw">ri</span>, , drop=<span class="fl">FALSE</span>]
+    <span class="no">assayMatrix</span> <span class="kw">&lt;-</span> <span class="fu">assay</span>(<span class="no">se</span>, <span class="no">assay</span>)[<span class="no">ri</span>, , <span class="kw">drop</span><span class="kw">=</span><span class="fl">FALSE</span>]
 
-    <span class="co">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="kw">ci</span><span class="op">$</span><span class="kw">active</span>) <span class="op">||</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="kw">ci</span>)<span class="op">&lt;</span><span class="fl">2L</span>) {
-        <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(row.names=<span class="fu"><a href="https://rdrr.io/r/base/character.html">character</a></span>(<span class="fl">0</span>), LogFC=<span class="fu"><a href="https://rdrr.io/r/base/integer.html">integer</a></span>(<span class="fl">0</span>))) <span class="co"># dummy value.</span>
+    <span class="kw">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/NULL.html">is.null</a></span>(<span class="no">ci</span>$<span class="no">active</span>) <span class="kw">||</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">ci</span>)<span class="kw">&lt;</span><span class="fl">2L</span>) {
+        <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(<span class="kw">row.names</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">character</a></span>(<span class="fl">0</span>), <span class="kw">LogFC</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/integer.html">integer</a></span>(<span class="fl">0</span>))) <span class="co"># dummy value.</span>
     }
-    <span class="kw">active</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span>(<span class="kw">assayMatrix</span>[,<span class="kw">ci</span><span class="op">$</span><span class="kw">active</span>,drop=<span class="fl">FALSE</span>])
+    <span class="no">active</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span>(<span class="no">assayMatrix</span>[,<span class="no">ci</span>$<span class="no">active</span>,<span class="kw">drop</span><span class="kw">=</span><span class="fl">FALSE</span>])
 
-    <span class="kw">all_saved</span> <span class="op">&lt;-</span> <span class="kw">ci</span>[<span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span>(<span class="st">"saved"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">ci</span>))]
-    <span class="kw">lfcs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">vector</a></span>(<span class="st">"list"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="kw">all_saved</span>))
-    <span class="co">for</span> (<span class="kw">i</span> <span class="co">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_along</a></span>(<span class="kw">lfcs</span>)) {
-        <span class="kw">saved</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span>(<span class="kw">assayMatrix</span>[,<span class="kw">all_saved</span>[[<span class="kw">i</span>]],drop=<span class="fl">FALSE</span>])
-        <span class="kw">lfcs</span>[[<span class="kw">i</span>]] <span class="op">&lt;-</span> <span class="kw">active</span> <span class="op">-</span> <span class="kw">saved</span>
+    <span class="no">all_saved</span> <span class="kw">&lt;-</span> <span class="no">ci</span>[<span class="fu"><a href="https://rdrr.io/r/base/grep.html">grep</a></span>(<span class="st">"saved"</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">ci</span>))]
+    <span class="no">lfcs</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/vector.html">vector</a></span>(<span class="st">"list"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">all_saved</span>))
+    <span class="kw">for</span> (<span class="no">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_along</a></span>(<span class="no">lfcs</span>)) {
+        <span class="no">saved</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span>(<span class="no">assayMatrix</span>[,<span class="no">all_saved</span><span class="kw">[[</span><span class="no">i</span>]],<span class="kw">drop</span><span class="kw">=</span><span class="fl">FALSE</span>])
+        <span class="no">lfcs</span><span class="kw">[[</span><span class="no">i</span>]] <span class="kw">&lt;-</span> <span class="no">active</span> - <span class="no">saved</span>
     }
 
-    <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="kw">lfcs</span>) <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"LogFC/%i"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_along</a></span>(<span class="kw">lfcs</span>))
-    <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(<span class="kw">data.frame</span>, <span class="kw">lfcs</span>)
-}
-</pre></div>
+    <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">lfcs</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html">sprintf</a></span>(<span class="st">"LogFC/%i"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_along</a></span>(<span class="no">lfcs</span>))
+    <span class="fu"><a href="https://rdrr.io/r/base/do.call.html">do.call</a></span>(<span class="no">data.frame</span>, <span class="no">lfcs</span>)
+}</pre></body></html></div>
 <p>We also re-use these statistics to visualize some of the genes with the largest log-fold changes:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="kw">CUSTOM_HEAT</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">se</span>, <span class="kw">ri</span>, <span class="kw">ci</span>, <span class="kw">assay</span>=<span class="st">"logcounts"</span>) {
-    <span class="kw">everything</span> <span class="op">&lt;-</span> <span class="fu">CUSTOM_DIFFEXP</span>(<span class="kw">se</span>, <span class="kw">ri</span>, <span class="kw">ci</span>, assay=<span class="kw">assay</span>)
-    <span class="co">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="kw">everything</span>) <span class="op">==</span> <span class="fl">0L</span>) {
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">CUSTOM_HEAT</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">se</span>, <span class="no">ri</span>, <span class="no">ci</span>, <span class="no">assay</span><span class="kw">=</span><span class="st">"logcounts"</span>) {
+    <span class="no">everything</span> <span class="kw">&lt;-</span> <span class="fu">CUSTOM_DIFFEXP</span>(<span class="no">se</span>, <span class="no">ri</span>, <span class="no">ci</span>, <span class="kw">assay</span><span class="kw">=</span><span class="no">assay</span>)
+    <span class="kw">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">everything</span>) <span class="kw">==</span> <span class="fl">0L</span>) {
         <span class="fu"><a href="https://rdrr.io/r/base/function.html">return</a></span>(<span class="fu">ggplot</span>()) <span class="co"># empty ggplot if no genes reported.</span>
     }
 
-    <span class="kw">everything</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="kw">everything</span>)
-    <span class="kw">top</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span>(<span class="kw">everything</span>)), decreasing=<span class="fl">TRUE</span>), <span class="fl">50</span>)
-    <span class="kw">topFC</span> <span class="op">&lt;-</span> <span class="kw">everything</span>[<span class="kw">top</span>, , drop=<span class="fl">FALSE</span>]
-    <span class="kw">dfFC</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(
-        gene=<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="kw">topFC</span>), <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="kw">topFC</span>)),
-        contrast=<span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="kw">topFC</span>), each=<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="kw">topFC</span>)),
-        value=<span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="kw">topFC</span>)
+    <span class="no">everything</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">as.matrix</a></span>(<span class="no">everything</span>)
+    <span class="no">top</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/order.html">order</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowMeans</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span>(<span class="no">everything</span>)), <span class="kw">decreasing</span><span class="kw">=</span><span class="fl">TRUE</span>), <span class="fl">50</span>)
+    <span class="no">topFC</span> <span class="kw">&lt;-</span> <span class="no">everything</span>[<span class="no">top</span>, , <span class="kw">drop</span><span class="kw">=</span><span class="fl">FALSE</span>]
+    <span class="no">dfFC</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span>(
+        <span class="kw">gene</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span>(<span class="no">topFC</span>), <span class="fu"><a href="https://rdrr.io/r/base/nrow.html">ncol</a></span>(<span class="no">topFC</span>)),
+        <span class="kw">contrast</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">topFC</span>), <span class="kw">each</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span>(<span class="no">topFC</span>)),
+        <span class="kw">value</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/vector.html">as.vector</a></span>(<span class="no">topFC</span>)
     )
-    <span class="fu">ggplot</span>(<span class="kw">dfFC</span>, <span class="fu">aes</span>(<span class="kw">contrast</span>, <span class="kw">gene</span>)) <span class="op">+</span> <span class="fu">geom_raster</span>(<span class="fu">aes</span>(fill = <span class="kw">value</span>))
-}
-</pre></div>
+    <span class="fu">ggplot</span>(<span class="no">dfFC</span>, <span class="fu">aes</span>(<span class="no">contrast</span>, <span class="no">gene</span>)) + <span class="fu">geom_raster</span>(<span class="fu">aes</span>(<span class="kw">fill</span> <span class="kw">=</span> <span class="no">value</span>))
+}</pre></body></html></div>
 <p>We test this out as shown below. Note that each saved selection is also the active selection when it is first generated, hence the log-fold changes of zero in the last column of the heat map until a new active selection is drawn.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="kw">TAB_GEN</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCustomPanels.html">createCustomTable</a></span>(<span class="kw">CUSTOM_DIFFEXP</span>)
-<span class="kw">HEAT_GEN</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/createCustomPanels.html">createCustomPlot</a></span>(<span class="kw">CUSTOM_HEAT</span>)
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">TAB_GEN</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/createCustomPanels.html">createCustomTable</a></span>(<span class="no">CUSTOM_DIFFEXP</span>)
+<span class="no">HEAT_GEN</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/createCustomPanels.html">createCustomPlot</a></span>(<span class="no">CUSTOM_HEAT</span>)
 
-<span class="kw">rdp</span>[[<span class="st">"SelectionHistory"</span>]] <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(lasso = <span class="kw">NULL</span>, closed = <span class="fl">TRUE</span>, panelvar1 = <span class="kw">NULL</span>, panelvar2 = <span class="kw">NULL</span>, 
-        mapping = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(x = <span class="st">"X"</span>, y = <span class="st">"Y"</span>), 
-        coord = <span class="fu"><a href="https://rdrr.io/r/base/structure.html">structure</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="op">-</span><span class="fl">44.3</span>, <span class="op">-</span><span class="fl">23.7</span>, <span class="op">-</span><span class="fl">13.5</span>, <span class="op">-</span><span class="fl">19.6</span>,
-            <span class="op">-</span><span class="fl">33.8</span>, <span class="op">-</span><span class="fl">48.6</span>, <span class="op">-</span><span class="fl">44.3</span>, <span class="op">-</span><span class="fl">33.9</span>, <span class="op">-</span><span class="fl">55.4</span>, <span class="op">-</span><span class="fl">43.0</span>,
-            <span class="op">-</span><span class="fl">19.5</span>, <span class="op">-</span><span class="fl">4.0</span>, <span class="op">-</span><span class="fl">22.6</span>, <span class="op">-</span><span class="fl">33.9</span>), .Dim = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">7L</span>, <span class="fl">2L</span>)
+<span class="no">rdp</span><span class="kw">[[</span><span class="st">"SelectionHistory"</span>]] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">lasso</span> <span class="kw">=</span> <span class="kw">NULL</span>, <span class="kw">closed</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">panelvar1</span> <span class="kw">=</span> <span class="kw">NULL</span>, <span class="kw">panelvar2</span> <span class="kw">=</span> <span class="kw">NULL</span>,
+        <span class="kw">mapping</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"X"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"Y"</span>),
+        <span class="kw">coord</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/structure.html">structure</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(-<span class="fl">44.3</span>, -<span class="fl">23.7</span>, -<span class="fl">13.5</span>, -<span class="fl">19.6</span>,
+            -<span class="fl">33.8</span>, -<span class="fl">48.6</span>, -<span class="fl">44.3</span>, -<span class="fl">33.9</span>, -<span class="fl">55.4</span>, -<span class="fl">43.0</span>,
+            -<span class="fl">19.5</span>, -<span class="fl">4.0</span>, -<span class="fl">22.6</span>, -<span class="fl">33.9</span>), <span class="kw">.Dim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">7L</span>, <span class="fl">2L</span>)
         )
     )
 )
 
-<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>, initial=<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">rdp</span>,
-    <span class="fu">TAB_GEN</span>(ColumnSelectionSource=<span class="st">"ReducedDimensionPlot1"</span>),
-    <span class="fu">HEAT_GEN</span>(ColumnSelectionSource=<span class="st">"ReducedDimensionPlot1"</span>))
-)
-</pre></div>
+<span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">rdp</span>,
+    <span class="fu">TAB_GEN</span>(<span class="kw">ColumnSelectionSource</span><span class="kw">=</span><span class="st">"ReducedDimensionPlot1"</span>),
+    <span class="fu">HEAT_GEN</span>(<span class="kw">ColumnSelectionSource</span><span class="kw">=</span><span class="st">"ReducedDimensionPlot1"</span>))
+)</pre></body></html></div>
 <p><img src="screenshots/custom-heat.png" width="488"></p>
 </div>
 <div id="advanced-extensions" class="section level1">
@@ -390,18 +374,21 @@
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
-<span class="co">#&gt; R version 4.0.1 (2020-06-06)</span>
-<span class="co">#&gt; Platform: x86_64-apple-darwin17.0 (64-bit)</span>
-<span class="co">#&gt; Running under: macOS Catalina 10.15.5</span>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
+<span class="co">#&gt; R version 4.0.0 (2020-04-24)</span>
+<span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span>
+<span class="co">#&gt; Running under: Ubuntu 18.04.4 LTS</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Matrix products: default</span>
-<span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib</span>
-<span class="co">#&gt; LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib</span>
+<span class="co">#&gt; BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.2.20.so</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; locale:</span>
-<span class="co">#&gt; [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span>
+<span class="co">#&gt;  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span>
+<span class="co">#&gt;  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span>
+<span class="co">#&gt;  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             </span>
+<span class="co">#&gt;  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span>
+<span class="co">#&gt;  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span>
+<span class="co">#&gt; [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; attached base packages:</span>
 <span class="co">#&gt; [1] parallel  stats4    stats     graphics  grDevices utils     datasets </span>
@@ -413,29 +400,29 @@
 <span class="co">#&gt;  [5] SummarizedExperiment_1.19.5 DelayedArray_0.15.5        </span>
 <span class="co">#&gt;  [7] matrixStats_0.56.0          Matrix_1.2-18              </span>
 <span class="co">#&gt;  [9] Biobase_2.49.0              GenomicRanges_1.41.5       </span>
-<span class="co">#&gt; [11] GenomeInfoDb_1.25.2         IRanges_2.23.10            </span>
+<span class="co">#&gt; [11] GenomeInfoDb_1.25.4         IRanges_2.23.10            </span>
 <span class="co">#&gt; [13] S4Vectors_0.27.12           BiocGenerics_0.35.4        </span>
 <span class="co">#&gt; [15] BiocStyle_2.17.0           </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
-<span class="co">#&gt;  [1] nlme_3.1-148              bitops_1.0-6             </span>
+<span class="co">#&gt;  [1] nlme_3.1-147              bitops_1.0-6             </span>
 <span class="co">#&gt;  [3] fs_1.4.1                  RColorBrewer_1.1-2       </span>
-<span class="co">#&gt;  [5] rprojroot_1.3-2           tools_4.0.1              </span>
+<span class="co">#&gt;  [5] rprojroot_1.3-2           tools_4.0.0              </span>
 <span class="co">#&gt;  [7] backports_1.1.8           R6_2.4.1                 </span>
 <span class="co">#&gt;  [9] irlba_2.3.3               DT_0.13                  </span>
 <span class="co">#&gt; [11] vipor_0.4.5               mgcv_1.8-31              </span>
 <span class="co">#&gt; [13] colorspace_1.4-1          GetoptLong_1.0.0         </span>
 <span class="co">#&gt; [15] withr_2.2.0               tidyselect_1.1.0         </span>
-<span class="co">#&gt; [17] gridExtra_2.3             compiler_4.0.1           </span>
+<span class="co">#&gt; [17] gridExtra_2.3             compiler_4.0.0           </span>
 <span class="co">#&gt; [19] BiocNeighbors_1.7.0       shinyjs_1.1              </span>
 <span class="co">#&gt; [21] desc_1.2.0                colourpicker_1.0         </span>
 <span class="co">#&gt; [23] bookdown_0.19             scales_1.1.1             </span>
-<span class="co">#&gt; [25] pkgdown_1.5.1.9000        stringr_1.4.0            </span>
+<span class="co">#&gt; [25] pkgdown_1.5.1             stringr_1.4.0            </span>
 <span class="co">#&gt; [27] digest_0.6.25             rmarkdown_2.3            </span>
 <span class="co">#&gt; [29] XVector_0.29.2            pkgconfig_2.0.3          </span>
 <span class="co">#&gt; [31] htmltools_0.5.0           fastmap_1.0.1            </span>
 <span class="co">#&gt; [33] htmlwidgets_1.5.1         rlang_0.4.6              </span>
-<span class="co">#&gt; [35] GlobalOptions_0.1.2       shiny_1.5.0              </span>
+<span class="co">#&gt; [35] GlobalOptions_0.1.2       shiny_1.4.0.2            </span>
 <span class="co">#&gt; [37] DelayedMatrixStats_1.11.0 shape_1.4.4              </span>
 <span class="co">#&gt; [39] generics_0.0.2            jsonlite_1.6.1           </span>
 <span class="co">#&gt; [41] BiocParallel_1.23.0       dplyr_1.0.0              </span>
@@ -445,27 +432,27 @@
 <span class="co">#&gt; [49] ggbeeswarm_0.6.0          munsell_0.5.0            </span>
 <span class="co">#&gt; [51] viridis_0.5.1             lifecycle_0.2.0          </span>
 <span class="co">#&gt; [53] rintrojs_0.2.2            stringi_1.4.6            </span>
-<span class="co">#&gt; [55] yaml_2.2.1                zlibbioc_1.35.0          </span>
-<span class="co">#&gt; [57] grid_4.0.1                promises_1.1.1           </span>
-<span class="co">#&gt; [59] shinydashboard_0.7.1      crayon_1.3.4             </span>
-<span class="co">#&gt; [61] miniUI_0.1.1.1            lattice_0.20-41          </span>
-<span class="co">#&gt; [63] splines_4.0.1             circlize_0.4.10          </span>
-<span class="co">#&gt; [65] knitr_1.29                ComplexHeatmap_2.5.3     </span>
-<span class="co">#&gt; [67] pillar_1.4.4              igraph_1.2.5             </span>
-<span class="co">#&gt; [69] rjson_0.2.20              glue_1.4.1               </span>
-<span class="co">#&gt; [71] evaluate_0.14             BiocManager_1.30.10      </span>
-<span class="co">#&gt; [73] png_0.1-7                 vctrs_0.3.1              </span>
-<span class="co">#&gt; [75] httpuv_1.5.4              gtable_0.3.0             </span>
-<span class="co">#&gt; [77] purrr_0.3.4               clue_0.3-57              </span>
-<span class="co">#&gt; [79] assertthat_0.2.1          xfun_0.15                </span>
-<span class="co">#&gt; [81] mime_0.9                  rsvd_1.0.3               </span>
-<span class="co">#&gt; [83] xtable_1.8-4              later_1.1.0.1            </span>
-<span class="co">#&gt; [85] viridisLite_0.3.0         tibble_3.0.1             </span>
-<span class="co">#&gt; [87] beeswarm_0.2.3            memoise_1.1.0            </span>
-<span class="co">#&gt; [89] cluster_2.1.0             shinyWidgets_0.5.3       </span>
-<span class="co">#&gt; [91] ellipsis_0.3.1            shinyAce_0.4.1</span>
-<span class="co"># devtools::session_info()</span>
-</pre></div>
+<span class="co">#&gt; [55] yaml_2.2.1                MASS_7.3-51.5            </span>
+<span class="co">#&gt; [57] zlibbioc_1.35.0           grid_4.0.0               </span>
+<span class="co">#&gt; [59] promises_1.1.1            shinydashboard_0.7.1     </span>
+<span class="co">#&gt; [61] crayon_1.3.4              miniUI_0.1.1.1           </span>
+<span class="co">#&gt; [63] lattice_0.20-41           splines_4.0.0            </span>
+<span class="co">#&gt; [65] circlize_0.4.10           knitr_1.28               </span>
+<span class="co">#&gt; [67] ComplexHeatmap_2.5.3      pillar_1.4.4             </span>
+<span class="co">#&gt; [69] igraph_1.2.5              rjson_0.2.20             </span>
+<span class="co">#&gt; [71] glue_1.4.1                evaluate_0.14            </span>
+<span class="co">#&gt; [73] BiocManager_1.30.10       httpuv_1.5.4             </span>
+<span class="co">#&gt; [75] png_0.1-7                 vctrs_0.3.1              </span>
+<span class="co">#&gt; [77] gtable_0.3.0              purrr_0.3.4              </span>
+<span class="co">#&gt; [79] clue_0.3-57               assertthat_0.2.1         </span>
+<span class="co">#&gt; [81] xfun_0.15                 mime_0.9                 </span>
+<span class="co">#&gt; [83] rsvd_1.0.3                xtable_1.8-4             </span>
+<span class="co">#&gt; [85] later_1.1.0.1             viridisLite_0.3.0        </span>
+<span class="co">#&gt; [87] tibble_3.0.1              beeswarm_0.2.3           </span>
+<span class="co">#&gt; [89] memoise_1.1.0             cluster_2.1.0            </span>
+<span class="co">#&gt; [91] shinyWidgets_0.5.3        ellipsis_0.3.1           </span>
+<span class="co">#&gt; [93] shinyAce_0.4.1</span>
+<span class="co"># devtools::session_info()</span></pre></body></html></div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
@@ -496,7 +483,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

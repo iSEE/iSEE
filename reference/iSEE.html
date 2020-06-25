@@ -157,17 +157,17 @@ SummarizedExperiment object, using a Shiny interface.</p>
     </div>
 
     <pre class="usage"><span class='fu'>iSEE</span>(
-  <span class='kw'>se</span>,
-  initial = <span class='kw'>NULL</span>,
-  extra = <span class='kw'>NULL</span>,
-  colormap = <span class='fu'>ExperimentColorMap</span>(),
-  landingPage = <span class='fu'>createLandingPage</span>(),
-  tour = <span class='kw'>NULL</span>,
-  appTitle = <span class='kw'>NULL</span>,
-  runLocal = <span class='fl'>TRUE</span>,
-  voice = <span class='fl'>FALSE</span>,
-  bugs = <span class='fl'>FALSE</span>,
-  <span class='kw'>...</span>
+  <span class='no'>se</span>,
+  <span class='kw'>initial</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>extra</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>colormap</span> <span class='kw'>=</span> <span class='fu'>ExperimentColorMap</span>(),
+  <span class='kw'>landingPage</span> <span class='kw'>=</span> <span class='fu'>createLandingPage</span>(),
+  <span class='kw'>tour</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>appTitle</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>runLocal</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>voice</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>bugs</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>...</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -223,14 +223,14 @@ Alternatively, a named numeric vector control the respective number of each bug 
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Further arguments to pass to <code><a href='https://rdrr.io/pkg/shiny/man/shinyApp.html'>shinyApp</a></code>.</p></td>
+      <td><p>Further arguments to pass to <code>shinyApp</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A Shiny app object is returned for interactive data exploration of <code>se</code>,
-either by simply printing the object or by explicitly running it with <code><a href='https://rdrr.io/pkg/shiny/man/runApp.html'>runApp</a></code>.</p>
+either by simply printing the object or by explicitly running it with <code>runApp</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Configuring the initial state of the app is as easy as passing a list of Panel objects to <code>initial</code>.
@@ -261,20 +261,20 @@ iSEE: Interactive SummarizedExperiment Explorer
 <p>Javascript code for <code>bugs</code> was based on <a href='https://github.com/Auz/Bug'>https://github.com/Auz/Bug</a>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'>scRNAseq</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scRNAseq</span>)
 
 <span class='co'># Example data ----</span>
-<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span>(assays=<span class='st'>"tophat_counts"</span>)</div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2020-06-11</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='kw'>sce</span>)</div><div class='output co'>#&gt; [1] "SingleCellExperiment"
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span>(<span class='kw'>assays</span><span class='kw'>=</span><span class='st'>"tophat_counts"</span>)</div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2020-06-11</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='no'>sce</span>)</div><div class='output co'>#&gt; [1] "SingleCellExperiment"
 #&gt; attr(,"package")
 #&gt; [1] "SingleCellExperiment"</div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://bioconductor.org/packages/scater'>scater</a></span>)
-<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/logNormCounts.html'>logNormCounts</a></span>(<span class='kw'>sce</span>, exprs_values=<span class='st'>"tophat_counts"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scater</span>)
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/reexports.html'>logNormCounts</a></span>(<span class='no'>sce</span>, <span class='kw'>exprs_values</span><span class='kw'>=</span><span class='st'>"tophat_counts"</span>)
 
-<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/runPCA.html'>runPCA</a></span>(<span class='kw'>sce</span>, ncomponents=<span class='fl'>4</span>)
-<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/runTSNE.html'>runTSNE</a></span>(<span class='kw'>sce</span>)
-<span class='fu'>rowData</span>(<span class='kw'>sce</span>)<span class='op'>$</span><span class='kw'>ave_count</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowMeans</a></span>(<span class='fu'>assay</span>(<span class='kw'>sce</span>, <span class='st'>"tophat_counts"</span>))
-<span class='fu'>rowData</span>(<span class='kw'>sce</span>)<span class='op'>$</span><span class='kw'>n_cells</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowSums</a></span>(<span class='fu'>assay</span>(<span class='kw'>sce</span>, <span class='st'>"tophat_counts"</span>) <span class='op'>&gt;</span> <span class='fl'>0</span>)
-<span class='kw'>sce</span></div><div class='output co'>#&gt; class: SingleCellExperiment 
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/runPCA.html'>runPCA</a></span>(<span class='no'>sce</span>, <span class='kw'>ncomponents</span><span class='kw'>=</span><span class='fl'>4</span>)
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/runTSNE.html'>runTSNE</a></span>(<span class='no'>sce</span>)
+<span class='fu'>rowData</span>(<span class='no'>sce</span>)$<span class='no'>ave_count</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowMeans</a></span>(<span class='fu'>assay</span>(<span class='no'>sce</span>, <span class='st'>"tophat_counts"</span>))
+<span class='fu'>rowData</span>(<span class='no'>sce</span>)$<span class='no'>n_cells</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/colSums.html'>rowSums</a></span>(<span class='fu'>assay</span>(<span class='no'>sce</span>, <span class='st'>"tophat_counts"</span>) <span class='kw'>&gt;</span> <span class='fl'>0</span>)
+<span class='no'>sce</span></div><div class='output co'>#&gt; class: SingleCellExperiment 
 #&gt; dim: 20816 379 
 #&gt; metadata(2): SuppInfo which_qc
 #&gt; assays(2): tophat_counts logcounts
@@ -286,11 +286,10 @@ iSEE: Interactive SummarizedExperiment Explorer
 #&gt; altExpNames(1): ERCC</div><div class='input'>
 <span class='co'># launch the app itself ----</span>
 
-<span class='kw'>app</span> <span class='op'>&lt;-</span> <span class='fu'>iSEE</span>(<span class='kw'>sce</span>)
-<span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span>()) {
-  <span class='kw'>shiny</span>::<span class='fu'><a href='https://rdrr.io/pkg/shiny/man/runApp.html'>runApp</a></span>(<span class='kw'>app</span>, port=<span class='fl'>1234</span>)
-}
-</div></pre>
+<span class='no'>app</span> <span class='kw'>&lt;-</span> <span class='fu'>iSEE</span>(<span class='no'>sce</span>)
+<span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span>()) {
+  <span class='kw pkg'>shiny</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/shiny/man/runApp.html'>runApp</a></span>(<span class='no'>app</span>, <span class='kw'>port</span><span class='kw'>=</span><span class='fl'>1234</span>)
+}</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -306,7 +305,7 @@ iSEE: Interactive SummarizedExperiment Explorer
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

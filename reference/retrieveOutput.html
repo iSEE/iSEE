@@ -154,18 +154,18 @@
     <p>Respond to or request a re-rendering of the Panel output via reactive variables.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.retrieveOutput</span>(<span class='kw'>panel_name</span>, <span class='kw'>se</span>, <span class='kw'>pObjects</span>, <span class='kw'>rObjects</span>)
+    <pre class="usage"><span class='fu'>.retrieveOutput</span>(<span class='no'>panel_name</span>, <span class='no'>se</span>, <span class='no'>pObjects</span>, <span class='no'>rObjects</span>)
 
-<span class='fu'>.requestUpdate</span>(<span class='kw'>panel_name</span>, <span class='kw'>rObjects</span>)
+<span class='fu'>.requestUpdate</span>(<span class='no'>panel_name</span>, <span class='no'>rObjects</span>)
 
-<span class='fu'>.requestCleanUpdate</span>(<span class='kw'>panel_name</span>, <span class='kw'>pObjects</span>, <span class='kw'>rObjects</span>)
+<span class='fu'>.requestCleanUpdate</span>(<span class='no'>panel_name</span>, <span class='no'>pObjects</span>, <span class='no'>rObjects</span>)
 
 <span class='fu'>.requestActiveSelectionUpdate</span>(
-  <span class='kw'>panel_name</span>,
-  <span class='kw'>session</span>,
-  <span class='kw'>pObjects</span>,
-  <span class='kw'>rObjects</span>,
-  update_output = <span class='fl'>TRUE</span>
+  <span class='no'>panel_name</span>,
+  <span class='no'>session</span>,
+  <span class='no'>pObjects</span>,
+  <span class='no'>rObjects</span>,
+  <span class='kw'>update_output</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -218,9 +218,6 @@ e.g., if the coordinates change in a DotPlot, existing brushes and lassos are us
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code>.createProtectedParameterObservers</code>, for examples where the update-requesting functions are used.</p></div>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Aaron Lun</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -237,7 +234,7 @@ e.g., if the coordinates change in a DotPlot, existing brushes and lassos are us
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

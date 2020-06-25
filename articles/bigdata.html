@@ -125,7 +125,7 @@
                   <a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       
                   
-            <h4 class="date">23 June 2020</h4>
+            <h4 class="date">25 June 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/bigdata.Rmd"><code>vignettes/bigdata.Rmd</code></a></small>
       <div class="hidden name"><code>bigdata.Rmd</code></div>
@@ -134,18 +134,17 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-06-23</p>
+<p><strong>Compiled date</strong>: 2020-06-25</p>
 <p><strong>Last edited</strong>: 2018-03-08</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="overview" class="section level1">
 <h1 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h1>
 <p>Some tweaks can be performed to enable <em><a href="https://bioconductor.org/packages/3.12/iSEE">iSEE</a></em> to run efficiently on large datasets. This includes datasets with many features (methylation, SNPs) or many columns (cytometry, single-cell RNA-seq). To demonstate some of this functionality, we will use a dataset from the <em><a href="https://bioconductor.org/packages/3.12/TENxPBMCData">TENxPBMCData</a></em> dataset:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">TENxPBMCData</span>)
-<span class="kw">sce.pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/TENxPBMCData/man/TENxPBMCData.html">TENxPBMCData</a></span>(<span class="st">"pbmc68k"</span>)
-<span class="kw">sce.pbmc</span><span class="op">$</span><span class="kw">Library</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="kw">sce.pbmc</span><span class="op">$</span><span class="kw">Library</span>)
-<span class="kw">sce.pbmc</span>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">TENxPBMCData</span>)
+<span class="no">sce.pbmc</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/TENxPBMCData/man/TENxPBMCData.html">TENxPBMCData</a></span>(<span class="st">"pbmc68k"</span>)
+<span class="no">sce.pbmc</span>$<span class="no">Library</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span>(<span class="no">sce.pbmc</span>$<span class="no">Library</span>)
+<span class="no">sce.pbmc</span>
 <span class="co">#&gt; class: SingleCellExperiment </span>
 <span class="co">#&gt; dim: 32738 68579 </span>
 <span class="co">#&gt; metadata(0):</span>
@@ -156,22 +155,18 @@
 <span class="co">#&gt; colnames: NULL</span>
 <span class="co">#&gt; colData names(11): Sample Barcode ... Individual Date_published</span>
 <span class="co">#&gt; reducedDimNames(0):</span>
-<span class="co">#&gt; altExpNames(0):</span>
-</pre></div>
+<span class="co">#&gt; altExpNames(0):</span></pre></body></html></div>
 </div>
 <div id="using-out-of-memory-matrices" class="section level1">
 <h1 class="hasAnchor">
 <a href="#using-out-of-memory-matrices" class="anchor"></a>Using out of memory matrices</h1>
 <p>Many <code>SummarizedExperiment</code> objects store assay matrices as in-memory matrix-like objects, be they ordinary matrices or alternative representations such as sparse matrices from the <em><a href="https://CRAN.R-project.org/package=Matrix">Matrix</a></em> package. For example, if we looked at the Allen data, we would see that the counts are stored as an ordinary matrix.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">scRNAseq</span>)
-<span class="kw">sce.allen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html">ReprocessedAllenData</a></span>(<span class="st">"tophat_counts"</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="fu">assay</span>(<span class="kw">sce.allen</span>, <span class="st">"tophat_counts"</span>))
-<span class="co">#&gt; [1] "matrix" "array"</span>
-</pre></div>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">scRNAseq</span>)
+<span class="no">sce.allen</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html">ReprocessedAllenData</a></span>(<span class="st">"tophat_counts"</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="fu">assay</span>(<span class="no">sce.allen</span>, <span class="st">"tophat_counts"</span>))
+<span class="co">#&gt; [1] "matrix" "array"</span></pre></body></html></div>
 <p>In situations involving large datasets and limited computational resources, storing the entire assay in memory may not be feasible. Rather, we can represent the data as a file-backed matrix where contents are stored on disk and retrieved on demand. Within the Bioconductor ecosystem, the easiest way of doing this is to create a <code>HDF5Matrix</code>, which uses a <a href="https://support.hdfgroup.org/HDF5/whatishdf5.html">HDF5 file</a> to store all the assay data. We see that this has already been done for use in the 68K PBMC dataset:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="fu">counts</span>(<span class="kw">sce.pbmc</span>, withDimnames=<span class="fl">FALSE</span>)
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu">counts</span>(<span class="no">sce.pbmc</span>, <span class="kw">withDimnames</span><span class="kw">=</span><span class="fl">FALSE</span>)
 <span class="co">#&gt; &lt;32738 x 68579&gt; matrix of class HDF5Matrix and type "integer":</span>
 <span class="co">#&gt;              [,1]     [,2]     [,3]     [,4] ... [,68576] [,68577] [,68578]</span>
 <span class="co">#&gt;     [1,]        0        0        0        0   .        0        0        0</span>
@@ -196,66 +191,53 @@
 <span class="co">#&gt; [32735,]        0</span>
 <span class="co">#&gt; [32736,]        0</span>
 <span class="co">#&gt; [32737,]        0</span>
-<span class="co">#&gt; [32738,]        0</span>
-</pre></div>
+<span class="co">#&gt; [32738,]        0</span></pre></body></html></div>
 <p>Despite the dimensions of this matrix, the <code>HDF5Matrix</code> object occupies very little space in memory.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span>(<span class="fu">counts</span>(<span class="kw">sce.pbmc</span>, withDimnames=<span class="fl">FALSE</span>))
-<span class="co">#&gt; 2392 bytes</span>
-</pre></div>
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span>(<span class="fu">counts</span>(<span class="no">sce.pbmc</span>, <span class="kw">withDimnames</span><span class="kw">=</span><span class="fl">FALSE</span>))
+<span class="co">#&gt; 2312 bytes</span></pre></body></html></div>
 <p>However, parts of the data can still be read in on demand. For all intents and purposes, the <code>HDF5Matrix</code> appears to be an ordinary matrix to downstream applications and can be used as such.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="kw">first.gene</span> <span class="op">&lt;-</span> <span class="fu">counts</span>(<span class="kw">sce.pbmc</span>)[<span class="fl">1</span>,]
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">first.gene</span>)
-<span class="co">#&gt; [1] 0 0 0 0 0 0</span>
-</pre></div>
-<p>This means that we can use the 68K PBMC <code>SingleCellExperiment</code> object in <code><a href="../reference/iSEE.html">iSEE()</a></code> without any extra work. The app below shows the distribution of counts for everyone’s favorite gene <em>MALAT1</em> across libraries. Here, <code><a href="../reference/iSEE.html">iSEE()</a></code> is simply retrieving data on demand from the <code>HDF5Matrix</code> without ever loading the entire assay matrix into memory. This enables it to run efficiently on arbitrary large datasets with limited resources.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/iSEE/iSEE">iSEE</a></span>)
-<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce.pbmc</span>, initial=
-    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="../reference/RowDataTable-class.html">RowDataTable</a></span>(Selected=<span class="st">"ENSG00000251562"</span>, Search=<span class="st">"MALAT1"</span>), 
-        <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(XAxis=<span class="st">"Column data"</span>, XAxisColumnData=<span class="st">"Library"</span>,
-            YAxisFeatureSource=<span class="st">"RowDataTable1"</span>)
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">first.gene</span> <span class="kw">&lt;-</span> <span class="fu">counts</span>(<span class="no">sce.pbmc</span>)[<span class="fl">1</span>,]
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">first.gene</span>)
+<span class="co">#&gt; [1] 0 0 0 0 0 0</span></pre></body></html></div>
+<p>This means that we can use the 68K PBMC <code>SingleCellExperiment</code> object in <code><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE()</a></code> without any extra work. The app below shows the distribution of counts for everyone’s favorite gene <em>MALAT1</em> across libraries. Here, <code><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE()</a></code> is simply retrieving data on demand from the <code>HDF5Matrix</code> without ever loading the entire assay matrix into memory. This enables it to run efficiently on arbitrary large datasets with limited resources.</p>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">iSEE</span>)
+<span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce.pbmc</span>, <span class="kw">initial</span><span class="kw">=</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/RowDataTable-class.html">RowDataTable</a></span>(<span class="kw">Selected</span><span class="kw">=</span><span class="st">"ENSG00000251562"</span>, <span class="kw">Search</span><span class="kw">=</span><span class="st">"MALAT1"</span>),
+        <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="kw">XAxis</span><span class="kw">=</span><span class="st">"Column data"</span>, <span class="kw">XAxisColumnData</span><span class="kw">=</span><span class="st">"Library"</span>,
+            <span class="kw">YAxisFeatureSource</span><span class="kw">=</span><span class="st">"RowDataTable1"</span>)
     )
-)
-</pre></div>
+)</pre></body></html></div>
 <p><img src="screenshots/bigdata-hdf5.png" width="488"></p>
 <p>Generally speaking, these HDF5 files are written once by a process with sufficient computational resources (i.e., memory and time). We typically create <code>HDF5Matrix</code> objects using the <code><a href="https://rdrr.io/pkg/HDF5Array/man/writeHDF5Array.html">writeHDF5Array()</a></code> function from the <em><a href="https://bioconductor.org/packages/3.12/HDF5Array">HDF5Array</a></em> package. After the file is created, the objects can be read many times in more deprived environments.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="kw">sce.h5</span> <span class="op">&lt;-</span> <span class="kw">sce.allen</span>
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw">HDF5Array</span>)
-<span class="fu">assay</span>(<span class="kw">sce.h5</span>, <span class="st">"tophat_counts"</span>, withDimnames=<span class="fl">FALSE</span>)  <span class="op">&lt;-</span> 
-    <span class="fu"><a href="https://rdrr.io/pkg/HDF5Array/man/writeHDF5Array.html">writeHDF5Array</a></span>(<span class="fu">assay</span>(<span class="kw">sce.h5</span>, <span class="st">"tophat_counts"</span>), file=<span class="st">"assay.h5"</span>, name=<span class="st">"counts"</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="fu">assay</span>(<span class="kw">sce.h5</span>, <span class="st">"tophat_counts"</span>, withDimnames=<span class="fl">FALSE</span>))
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">sce.h5</span> <span class="kw">&lt;-</span> <span class="no">sce.allen</span>
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">HDF5Array</span>)
+<span class="fu">assay</span>(<span class="no">sce.h5</span>, <span class="st">"tophat_counts"</span>, <span class="kw">withDimnames</span><span class="kw">=</span><span class="fl">FALSE</span>)  <span class="kw">&lt;-</span>
+    <span class="fu"><a href="https://rdrr.io/pkg/HDF5Array/man/writeHDF5Array.html">writeHDF5Array</a></span>(<span class="fu">assay</span>(<span class="no">sce.h5</span>, <span class="st">"tophat_counts"</span>), <span class="kw">file</span><span class="kw">=</span><span class="st">"assay.h5"</span>, <span class="kw">name</span><span class="kw">=</span><span class="st">"counts"</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span>(<span class="fu">assay</span>(<span class="no">sce.h5</span>, <span class="st">"tophat_counts"</span>, <span class="kw">withDimnames</span><span class="kw">=</span><span class="fl">FALSE</span>))
 <span class="co">#&gt; [1] "HDF5Matrix"</span>
 <span class="co">#&gt; attr(,"package")</span>
 <span class="co">#&gt; [1] "HDF5Array"</span>
 <span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span>(<span class="st">"assay.h5"</span>)
-<span class="co">#&gt; character(0)</span>
-</pre></div>
-<p>It is worth noting that <code><a href="../reference/iSEE.html">iSEE()</a></code> does not know or care that the data is stored in a HDF5 file. The app is fully compatible with any matrix-like representation of the assay data that supports <code><a href="https://rdrr.io/r/base/dim.html">dim()</a></code> and <code>[,</code>. As such, <code><a href="../reference/iSEE.html">iSEE()</a></code> can be directly used with other memory-efficient objects like the <code>DeferredMatrix</code> and <code>LowRankMatrix</code> from the <em><a href="https://bioconductor.org/packages/3.12/BiocSingular">BiocSingular</a></em> package, or perhaps the <code>ResidualMatrix</code> from the <em><a href="https://bioconductor.org/packages/3.12/batchelor">batchelor</a></em> package.</p>
+<span class="co">#&gt; character(0)</span></pre></body></html></div>
+<p>It is worth noting that <code><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE()</a></code> does not know or care that the data is stored in a HDF5 file. The app is fully compatible with any matrix-like representation of the assay data that supports <code><a href="https://rdrr.io/r/base/dim.html">dim()</a></code> and <code>[,</code>. As such, <code><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE()</a></code> can be directly used with other memory-efficient objects like the <code>DeferredMatrix</code> and <code>LowRankMatrix</code> from the <em><a href="https://bioconductor.org/packages/3.12/BiocSingular">BiocSingular</a></em> package, or perhaps the <code>ResidualMatrix</code> from the <em><a href="https://bioconductor.org/packages/3.12/batchelor">batchelor</a></em> package.</p>
 </div>
 <div id="downsampling-points" class="section level1">
 <h1 class="hasAnchor">
 <a href="#downsampling-points" class="anchor"></a>Downsampling points</h1>
 <p>It is also possible to downsample points to reduce the time required to generate the plot. This involves subsetting the dataset so that only the most recently plotted point for an overlapping set of points is shown. In this manner, we avoid wasting time in plotting many points that would not be visible anyway. To demonstrate, we will re-use the 68K PBMC example and perform downsampling on the feature assay plot; we can see that its aesthetics are largely similar to the non-downsampled counterpart above.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/iSEE/iSEE">iSEE</a></span>)
-<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce.pbmc</span>, initial=
-    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="../reference/RowDataTable-class.html">RowDataTable</a></span>(Selected=<span class="st">"ENSG00000251562"</span>, Search=<span class="st">"MALAT1"</span>), 
-        <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(XAxis=<span class="st">"Column data"</span>, XAxisColumnData=<span class="st">"Library"</span>,
-            YAxisFeatureSource=<span class="st">"RowDataTable1"</span>, 
-            VisualChoices=<span class="st">"Point"</span>, Downsample=<span class="fl">TRUE</span>,
-            VisualBoxOpen=<span class="fl">TRUE</span>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">iSEE</span>)
+<span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce.pbmc</span>, <span class="kw">initial</span><span class="kw">=</span>
+    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/RowDataTable-class.html">RowDataTable</a></span>(<span class="kw">Selected</span><span class="kw">=</span><span class="st">"ENSG00000251562"</span>, <span class="kw">Search</span><span class="kw">=</span><span class="st">"MALAT1"</span>),
+        <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="kw">XAxis</span><span class="kw">=</span><span class="st">"Column data"</span>, <span class="kw">XAxisColumnData</span><span class="kw">=</span><span class="st">"Library"</span>,
+            <span class="kw">YAxisFeatureSource</span><span class="kw">=</span><span class="st">"RowDataTable1"</span>,
+            <span class="kw">VisualChoices</span><span class="kw">=</span><span class="st">"Point"</span>, <span class="kw">Downsample</span><span class="kw">=</span><span class="fl">TRUE</span>,
+            <span class="kw">VisualBoxOpen</span><span class="kw">=</span><span class="fl">TRUE</span>
         )
     )
-)
-</pre></div>
+)</pre></body></html></div>
 <p><img src="screenshots/bigdata-downsample.png" width="488"></p>
-<p>Downsampling is possible in all <code><a href="../reference/iSEE.html">iSEE()</a></code> plotting panels that represent features or samples as points. We can turn on downsampling for all such panels using the relevant field in <code><a href="../reference/iSEEOptions.html">iSEEOptions()</a></code>, which spares us the hassle of setting <code>Downsample=</code> individually in each panel constructor.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="fu"><a href="../reference/iSEEOptions.html">iSEEOptions</a></span>(downsample=<span class="fl">TRUE</span>)
-</pre></div>
+<p>Downsampling is possible in all <code><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE()</a></code> plotting panels that represent features or samples as points. We can turn on downsampling for all such panels using the relevant field in <code><a href="https://rdrr.io/pkg/iSEE/man/iSEEOptions.html">iSEEOptions()</a></code>, which spares us the hassle of setting <code>Downsample=</code> individually in each panel constructor.</p>
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEEOptions.html">iSEEOptions</a></span>(<span class="kw">downsample</span><span class="kw">=</span><span class="fl">TRUE</span>)</pre></body></html></div>
 <p>The downsampling only affects the visualization and the speed of the plot rendering. Any interactions with other panels occur as if all of the points were still there. For example, if one makes a brush, all of the points therein will be selected regardless of whether they were downsampled.</p>
 <p><img src="screenshots/bigdata-downsample2.png" width="488"></p>
 <p>The downsampling resolution determines the degree to which points are considered to be overlapping. Decreasing the resolution will downsample more aggressively, improving plotting speed but potentially affecting the fidelity of the visualization. This may compromise the aesthetics of the plot when the size of the points is small, in which case an increase in resolution may be required at the cost of speed.</p>
@@ -269,18 +251,21 @@
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
-<span class="co">#&gt; R version 4.0.1 (2020-06-06)</span>
-<span class="co">#&gt; Platform: x86_64-apple-darwin17.0 (64-bit)</span>
-<span class="co">#&gt; Running under: macOS Catalina 10.15.5</span>
+<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
+<span class="co">#&gt; R version 4.0.0 (2020-04-24)</span>
+<span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span>
+<span class="co">#&gt; Running under: Ubuntu 18.04.4 LTS</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Matrix products: default</span>
-<span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib</span>
-<span class="co">#&gt; LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib</span>
+<span class="co">#&gt; BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.2.20.so</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; locale:</span>
-<span class="co">#&gt; [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span>
+<span class="co">#&gt;  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span>
+<span class="co">#&gt;  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span>
+<span class="co">#&gt;  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             </span>
+<span class="co">#&gt;  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span>
+<span class="co">#&gt;  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span>
+<span class="co">#&gt; [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; attached base packages:</span>
 <span class="co">#&gt; [1] parallel  stats4    stats     graphics  grDevices utils     datasets </span>
@@ -288,67 +273,67 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
 <span class="co">#&gt;  [1] iSEE_2.1.8                  scRNAseq_2.3.6             </span>
-<span class="co">#&gt;  [3] TENxPBMCData_1.7.0          HDF5Array_1.17.2           </span>
+<span class="co">#&gt;  [3] TENxPBMCData_1.7.0          HDF5Array_1.17.3           </span>
 <span class="co">#&gt;  [5] rhdf5_2.33.3                SingleCellExperiment_1.11.5</span>
 <span class="co">#&gt;  [7] SummarizedExperiment_1.19.5 DelayedArray_0.15.5        </span>
 <span class="co">#&gt;  [9] matrixStats_0.56.0          Matrix_1.2-18              </span>
 <span class="co">#&gt; [11] Biobase_2.49.0              GenomicRanges_1.41.5       </span>
-<span class="co">#&gt; [13] GenomeInfoDb_1.25.2         IRanges_2.23.10            </span>
+<span class="co">#&gt; [13] GenomeInfoDb_1.25.4         IRanges_2.23.10            </span>
 <span class="co">#&gt; [15] S4Vectors_0.27.12           BiocGenerics_0.35.4        </span>
 <span class="co">#&gt; [17] BiocStyle_2.17.0           </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
-<span class="co">#&gt;  [1] nlme_3.1-148                  bitops_1.0-6                 </span>
-<span class="co">#&gt;  [3] fs_1.4.1                      bit64_0.9-7                  </span>
-<span class="co">#&gt;  [5] RColorBrewer_1.1-2            httr_1.4.1                   </span>
-<span class="co">#&gt;  [7] rprojroot_1.3-2               tools_4.0.1                  </span>
-<span class="co">#&gt;  [9] backports_1.1.8               DT_0.13                      </span>
-<span class="co">#&gt; [11] R6_2.4.1                      vipor_0.4.5                  </span>
-<span class="co">#&gt; [13] mgcv_1.8-31                   DBI_1.1.0                    </span>
-<span class="co">#&gt; [15] colorspace_1.4-1              rhdf5filters_1.1.0           </span>
-<span class="co">#&gt; [17] GetoptLong_1.0.0              tidyselect_1.1.0             </span>
-<span class="co">#&gt; [19] bit_1.1-15.2                  curl_4.3                     </span>
-<span class="co">#&gt; [21] compiler_4.0.1                shinyjs_1.1                  </span>
-<span class="co">#&gt; [23] desc_1.2.0                    colourpicker_1.0             </span>
-<span class="co">#&gt; [25] bookdown_0.19                 scales_1.1.1                 </span>
-<span class="co">#&gt; [27] rappdirs_0.3.1                pkgdown_1.5.1.9000           </span>
-<span class="co">#&gt; [29] stringr_1.4.0                 digest_0.6.25                </span>
-<span class="co">#&gt; [31] rmarkdown_2.3                 XVector_0.29.2               </span>
-<span class="co">#&gt; [33] pkgconfig_2.0.3               htmltools_0.5.0              </span>
-<span class="co">#&gt; [35] dbplyr_1.4.4                  fastmap_1.0.1                </span>
-<span class="co">#&gt; [37] htmlwidgets_1.5.1             rlang_0.4.6                  </span>
-<span class="co">#&gt; [39] GlobalOptions_0.1.2           RSQLite_2.2.0                </span>
-<span class="co">#&gt; [41] shiny_1.5.0                   shape_1.4.4                  </span>
-<span class="co">#&gt; [43] generics_0.0.2                jsonlite_1.6.1               </span>
-<span class="co">#&gt; [45] dplyr_1.0.0                   RCurl_1.98-1.2               </span>
-<span class="co">#&gt; [47] magrittr_1.5                  GenomeInfoDbData_1.2.3       </span>
-<span class="co">#&gt; [49] munsell_0.5.0                 Rcpp_1.0.4.6                 </span>
-<span class="co">#&gt; [51] Rhdf5lib_1.11.2               lifecycle_0.2.0              </span>
-<span class="co">#&gt; [53] rintrojs_0.2.2                stringi_1.4.6                </span>
-<span class="co">#&gt; [55] yaml_2.2.1                    zlibbioc_1.35.0              </span>
-<span class="co">#&gt; [57] BiocFileCache_1.13.0          AnnotationHub_2.21.1         </span>
-<span class="co">#&gt; [59] grid_4.0.1                    blob_1.2.1                   </span>
-<span class="co">#&gt; [61] promises_1.1.1                shinydashboard_0.7.1         </span>
-<span class="co">#&gt; [63] ExperimentHub_1.15.0          crayon_1.3.4                 </span>
-<span class="co">#&gt; [65] miniUI_0.1.1.1                lattice_0.20-41              </span>
-<span class="co">#&gt; [67] splines_4.0.1                 circlize_0.4.10              </span>
-<span class="co">#&gt; [69] knitr_1.29                    ComplexHeatmap_2.5.3         </span>
-<span class="co">#&gt; [71] pillar_1.4.4                  igraph_1.2.5                 </span>
-<span class="co">#&gt; [73] rjson_0.2.20                  glue_1.4.1                   </span>
-<span class="co">#&gt; [75] BiocVersion_3.12.0            evaluate_0.14                </span>
-<span class="co">#&gt; [77] BiocManager_1.30.10           vctrs_0.3.1                  </span>
-<span class="co">#&gt; [79] png_0.1-7                     httpuv_1.5.4                 </span>
-<span class="co">#&gt; [81] gtable_0.3.0                  purrr_0.3.4                  </span>
-<span class="co">#&gt; [83] clue_0.3-57                   assertthat_0.2.1             </span>
-<span class="co">#&gt; [85] ggplot2_3.3.2                 xfun_0.15                    </span>
-<span class="co">#&gt; [87] mime_0.9                      xtable_1.8-4                 </span>
-<span class="co">#&gt; [89] later_1.1.0.1                 viridisLite_0.3.0            </span>
-<span class="co">#&gt; [91] tibble_3.0.1                  AnnotationDbi_1.51.0         </span>
-<span class="co">#&gt; [93] memoise_1.1.0                 cluster_2.1.0                </span>
-<span class="co">#&gt; [95] shinyWidgets_0.5.3            ellipsis_0.3.1               </span>
-<span class="co">#&gt; [97] interactiveDisplayBase_1.27.5 shinyAce_0.4.1</span>
-<span class="co"># devtools::session_info()</span>
-</pre></div>
+<span class="co">#&gt;  [1] colorspace_1.4-1              rjson_0.2.20                 </span>
+<span class="co">#&gt;  [3] ellipsis_0.3.1                rprojroot_1.3-2              </span>
+<span class="co">#&gt;  [5] circlize_0.4.10               XVector_0.29.2               </span>
+<span class="co">#&gt;  [7] GlobalOptions_0.1.2           fs_1.4.1                     </span>
+<span class="co">#&gt;  [9] clue_0.3-57                   DT_0.13                      </span>
+<span class="co">#&gt; [11] bit64_0.9-7                   interactiveDisplayBase_1.27.5</span>
+<span class="co">#&gt; [13] AnnotationDbi_1.51.0          splines_4.0.0                </span>
+<span class="co">#&gt; [15] knitr_1.28                    jsonlite_1.6.1               </span>
+<span class="co">#&gt; [17] cluster_2.1.0                 dbplyr_1.4.4                 </span>
+<span class="co">#&gt; [19] png_0.1-7                     shinydashboard_0.7.1         </span>
+<span class="co">#&gt; [21] shiny_1.4.0.2                 BiocManager_1.30.10          </span>
+<span class="co">#&gt; [23] compiler_4.0.0                httr_1.4.1                   </span>
+<span class="co">#&gt; [25] backports_1.1.8               assertthat_0.2.1             </span>
+<span class="co">#&gt; [27] fastmap_1.0.1                 later_1.1.0.1                </span>
+<span class="co">#&gt; [29] htmltools_0.5.0               tools_4.0.0                  </span>
+<span class="co">#&gt; [31] igraph_1.2.5                  gtable_0.3.0                 </span>
+<span class="co">#&gt; [33] glue_1.4.1                    GenomeInfoDbData_1.2.3       </span>
+<span class="co">#&gt; [35] dplyr_1.0.0                   rappdirs_0.3.1               </span>
+<span class="co">#&gt; [37] Rcpp_1.0.4.6                  pkgdown_1.5.1                </span>
+<span class="co">#&gt; [39] vctrs_0.3.1                   rhdf5filters_1.1.0           </span>
+<span class="co">#&gt; [41] nlme_3.1-147                  ExperimentHub_1.15.0         </span>
+<span class="co">#&gt; [43] rintrojs_0.2.2                xfun_0.15                    </span>
+<span class="co">#&gt; [45] stringr_1.4.0                 mime_0.9                     </span>
+<span class="co">#&gt; [47] miniUI_0.1.1.1                lifecycle_0.2.0              </span>
+<span class="co">#&gt; [49] shinyAce_0.4.1                AnnotationHub_2.21.1         </span>
+<span class="co">#&gt; [51] zlibbioc_1.35.0               MASS_7.3-51.5                </span>
+<span class="co">#&gt; [53] scales_1.1.1                  colourpicker_1.0             </span>
+<span class="co">#&gt; [55] promises_1.1.1                RColorBrewer_1.1-2           </span>
+<span class="co">#&gt; [57] ComplexHeatmap_2.5.3          yaml_2.2.1                   </span>
+<span class="co">#&gt; [59] curl_4.3                      memoise_1.1.0                </span>
+<span class="co">#&gt; [61] ggplot2_3.3.2                 stringi_1.4.6                </span>
+<span class="co">#&gt; [63] RSQLite_2.2.0                 BiocVersion_3.12.0           </span>
+<span class="co">#&gt; [65] desc_1.2.0                    shape_1.4.4                  </span>
+<span class="co">#&gt; [67] rlang_0.4.6                   pkgconfig_2.0.3              </span>
+<span class="co">#&gt; [69] bitops_1.0-6                  evaluate_0.14                </span>
+<span class="co">#&gt; [71] lattice_0.20-41               purrr_0.3.4                  </span>
+<span class="co">#&gt; [73] Rhdf5lib_1.11.2               htmlwidgets_1.5.1            </span>
+<span class="co">#&gt; [75] bit_1.1-15.2                  tidyselect_1.1.0             </span>
+<span class="co">#&gt; [77] magrittr_1.5                  bookdown_0.19                </span>
+<span class="co">#&gt; [79] R6_2.4.1                      generics_0.0.2               </span>
+<span class="co">#&gt; [81] DBI_1.1.0                     pillar_1.4.4                 </span>
+<span class="co">#&gt; [83] mgcv_1.8-31                   RCurl_1.98-1.2               </span>
+<span class="co">#&gt; [85] tibble_3.0.1                  crayon_1.3.4                 </span>
+<span class="co">#&gt; [87] shinyWidgets_0.5.3            BiocFileCache_1.13.0         </span>
+<span class="co">#&gt; [89] rmarkdown_2.3                 GetoptLong_1.0.0             </span>
+<span class="co">#&gt; [91] grid_4.0.0                    blob_1.2.1                   </span>
+<span class="co">#&gt; [93] digest_0.6.25                 xtable_1.8-4                 </span>
+<span class="co">#&gt; [95] httpuv_1.5.4                  munsell_0.5.0                </span>
+<span class="co">#&gt; [97] viridisLite_0.3.0             vipor_0.4.5                  </span>
+<span class="co">#&gt; [99] shinyjs_1.1</span>
+<span class="co"># devtools::session_info()</span></pre></body></html></div>
 </div>
   </div>
 
@@ -367,7 +352,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

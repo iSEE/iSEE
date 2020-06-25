@@ -154,7 +154,7 @@
     <p>Add ggplot instructions to create brushes and lassos for both saved and active mutliple selections in a DotPlot panel.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.addMultiSelectionPlotCommands</span>(<span class='kw'>x</span>, <span class='kw'>envir</span>, <span class='kw'>commands</span>, flip = <span class='fl'>FALSE</span>)</pre>
+    <pre class="usage"><span class='fu'>.addMultiSelectionPlotCommands</span>(<span class='no'>x</span>, <span class='no'>envir</span>, <span class='no'>commands</span>, <span class='kw'>flip</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -187,9 +187,6 @@ only relevant to horizontal violin plots.</p></td>
 It will modify <code>envir</code> by adding <code>all_active</code> and <code>all_saved</code> variables,
 so developers should not use these names for their own variables in <code>envir</code>.</p>
 <p>If no self-selection structures exist in <code>x</code>, <code>commands</code> is returned directly without modification.</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Aaron Lun</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -206,7 +203,7 @@ so developers should not use these names for their own variables in <code>envir<
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

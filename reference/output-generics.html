@@ -165,8 +165,8 @@
 <li><p><code>...</code>, further arguments that are not currently used.</p></li>
 </ul>
 
-<p>Methods for this generic are expected to return an output element for inclusion into the <span class="pkg">iSEE</span> interface, such as the output of <code><a href='https://rdrr.io/pkg/shiny/man/plotOutput.html'>plotOutput</a></code>.
-Multiple elements can be provided via a <code><a href='https://rdrr.io/pkg/htmltools/man/tag.html'>tagList</a></code>.</p>
+<p>Methods for this generic are expected to return an output element for inclusion into the <span class="pkg">iSEE</span> interface, such as the output of <code>plotOutput</code>.
+Multiple elements can be provided via a <code>tagList</code>.</p>
 <p>The IDs of the output elements are expected to be prefixed with the panel name from <code>.getEncodedName(x)</code> and an underscore, e.g., <code>"ReducedDimensionPlot1_someOutput"</code>.
 One of the output elements may simply have the ID set to <code>PANEL</code> alone;
 this is usually the case for simple panels with one primary output like a DotPlot.</p>
@@ -241,9 +241,6 @@ Each file name should be prefixed with the <code>.getEncodedName</code>.
 The method itself should return a character vector containing <em>relative</em> paths to all newly created files.</p>
 <p>To implement this method, we suggest simply passing all arguments onto <code>.generateOutput</code>
 and then handling the contents appropriately.</p>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Aaron Lun</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -260,7 +257,7 @@ and then handling the contents appropriately.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

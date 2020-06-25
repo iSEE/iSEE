@@ -125,7 +125,7 @@
                   <a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       
                   
-            <h4 class="date">23 June 2020</h4>
+            <h4 class="date">25 June 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/configure.Rmd"><code>vignettes/configure.Rmd</code></a></small>
       <div class="hidden name"><code>configure.Rmd</code></div>
@@ -134,7 +134,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-06-23</p>
+<p><strong>Compiled date</strong>: 2020-06-25</p>
 <p><strong>Last edited</strong>: 2020-04-20</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="changing-the-default-start-configuration" class="section level1">
@@ -142,21 +142,17 @@
 <a href="#changing-the-default-start-configuration" class="anchor"></a>Changing the default start configuration</h1>
 <p>The default start configuration with one plot of each type may not always be the most appropriate. <code>iSEE</code> allows the user to programmatically modify the initial settings <span class="citation">(Rue-Albrecht et al. 2018)</span>, avoiding the need to click through the choices to obtain the desired panel setup. Almost every aspect of the initial app state can be customized, down to whether or not the parameter boxes are open or closed!</p>
 <p>To demonstrate this feature, let’s assume that we are only interested in <em>feature assay plot</em> panels. The default set of panels can be changed via the <code>initialPanels</code> argument of the <code>iSEE</code> function call. Given a <code>SingleCellExperiment</code> or <code>SummarizedExperiment</code> object named <code>sce</code><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, the following code opens an app with two adjacent feature assay plots. Note that each panel is set to occupy half the width of the application window, which is set to 12 units by the <em><a href="https://CRAN.R-project.org/package=shiny">shiny</a></em> package.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/iSEE/iSEE">iSEE</a></span>)
-<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>, initial=<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(PanelWidth=<span class="fl">6L</span>),
-    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(PanelWidth=<span class="fl">6L</span>)
-))
-</pre></div>
+<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">iSEE</span>)
+<span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+    <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">6L</span>),
+    <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">6L</span>)
+))</pre></body></html></div>
 <p><img src="screenshots/configure-FAP-basic.png" width="488"></p>
 <p>The genes to show on the Y-axis in the two plots can be specified via the <code>YAxisFeatureName</code> argument to the respective panels in <code>iSEE</code>.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>, initial=<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(YAxisFeatureName=<span class="st">"0610009L18Rik"</span>),
-    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(YAxisFeatureName=<span class="st">"0610009B22Rik"</span>)
-)) 
-</pre></div>
+<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+    <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="kw">YAxisFeatureName</span><span class="kw">=</span><span class="st">"0610009L18Rik"</span>),
+    <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="kw">YAxisFeatureName</span><span class="kw">=</span><span class="st">"0610009B22Rik"</span>)
+))</pre></body></html></div>
 <p><img src="screenshots/configure-FAP-preset-genes.png" width="488"></p>
 <p>This will open the app with two feature assay plots, showing the selected genes. Of course, from this starting point, all the interactive functionality is still available, and new panels can be added, modified and linked via point selection.</p>
 </div>
@@ -174,12 +170,10 @@
 <h2 class="hasAnchor">
 <a href="#setting-the-y-axis" class="anchor"></a>Setting the Y-axis</h2>
 <p>The nature of the Y-axis is defined by the type of panel. For instance, <em>column data plot</em> panels require the name of a column in the <code>colData(sce)</code>. Users can preconfigure the Y-axis of individual <em>column data plot</em> panels as follows:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>, initial=<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-    <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(YAxis=<span class="st">"NREADS"</span>, PanelWidth=<span class="fl">6L</span>, DataBoxOpen=<span class="fl">TRUE</span>),
-    <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(YAxis=<span class="st">"TOTAL_DUP"</span>, PanelWidth=<span class="fl">6L</span>, DataBoxOpen=<span class="fl">TRUE</span>)
-))
-</pre></div>
+<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+    <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="kw">YAxis</span><span class="kw">=</span><span class="st">"NREADS"</span>, <span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">6L</span>, <span class="kw">DataBoxOpen</span><span class="kw">=</span><span class="fl">TRUE</span>),
+    <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="kw">YAxis</span><span class="kw">=</span><span class="st">"TOTAL_DUP"</span>, <span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">6L</span>, <span class="kw">DataBoxOpen</span><span class="kw">=</span><span class="fl">TRUE</span>)
+))</pre></body></html></div>
 <p><img src="screenshots/configure-CDP-basic.png" width="488"></p>
 </div>
 <div id="xaxis" class="section level2">
@@ -203,32 +197,30 @@
 </li>
 </ol>
 <p>Each of these scenarios is demonstrated below:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="kw">fex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(DataBoxOpen=<span class="fl">TRUE</span>, PanelWidth=<span class="fl">6L</span>)
+<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="no">fex</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="kw">DataBoxOpen</span><span class="kw">=</span><span class="fl">TRUE</span>, <span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">6L</span>)
 
 <span class="co"># Example 1</span>
-<span class="kw">fex1</span> <span class="op">&lt;-</span> <span class="kw">fex</span>
-<span class="kw">fex1</span>[[<span class="st">"XAxis"</span>]] <span class="op">&lt;-</span> <span class="st">"None"</span>
+<span class="no">fex1</span> <span class="kw">&lt;-</span> <span class="no">fex</span>
+<span class="no">fex1</span><span class="kw">[[</span><span class="st">"XAxis"</span>]] <span class="kw">&lt;-</span> <span class="st">"None"</span>
 
 <span class="co"># Example 2</span>
-<span class="kw">fex2</span> <span class="op">&lt;-</span> <span class="kw">fex</span>
-<span class="kw">fex2</span>[[<span class="st">"XAxis"</span>]] <span class="op">&lt;-</span> <span class="st">"Column data"</span>
-<span class="kw">fex2</span>[[<span class="st">"XAxisColumnData"</span>]] <span class="op">&lt;-</span> <span class="st">"Core.Type"</span>
+<span class="no">fex2</span> <span class="kw">&lt;-</span> <span class="no">fex</span>
+<span class="no">fex2</span><span class="kw">[[</span><span class="st">"XAxis"</span>]] <span class="kw">&lt;-</span> <span class="st">"Column data"</span>
+<span class="no">fex2</span><span class="kw">[[</span><span class="st">"XAxisColumnData"</span>]] <span class="kw">&lt;-</span> <span class="st">"Core.Type"</span>
 
 <span class="co"># Example 3a</span>
-<span class="kw">fex3</span> <span class="op">&lt;-</span> <span class="kw">fex</span>
-<span class="kw">fex3</span>[[<span class="st">"XAxis"</span>]] <span class="op">&lt;-</span> <span class="st">"Feature name"</span>
-<span class="kw">fex3</span>[[<span class="st">"XAxisFeatureName"</span>]] <span class="op">&lt;-</span> <span class="st">"Zyx"</span>
+<span class="no">fex3</span> <span class="kw">&lt;-</span> <span class="no">fex</span>
+<span class="no">fex3</span><span class="kw">[[</span><span class="st">"XAxis"</span>]] <span class="kw">&lt;-</span> <span class="st">"Feature name"</span>
+<span class="no">fex3</span><span class="kw">[[</span><span class="st">"XAxisFeatureName"</span>]] <span class="kw">&lt;-</span> <span class="st">"Zyx"</span>
 
 <span class="co"># Example 4 (also requires a row statistic table)</span>
-<span class="kw">fex4</span> <span class="op">&lt;-</span> <span class="kw">fex</span>
-<span class="kw">fex4</span>[[<span class="st">"XAxis"</span>]] <span class="op">&lt;-</span> <span class="st">"Feature name"</span>
-<span class="kw">fex4</span>[[<span class="st">"XAxisFeatureSource"</span>]] <span class="op">&lt;-</span> <span class="st">"RowDataTable1"</span>
-<span class="kw">rex</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RowDataTable-class.html">RowDataTable</a></span>(Selected=<span class="st">"Ints2"</span>, Search=<span class="st">"Ints"</span>, PanelWidth=<span class="fl">12L</span>)
+<span class="no">fex4</span> <span class="kw">&lt;-</span> <span class="no">fex</span>
+<span class="no">fex4</span><span class="kw">[[</span><span class="st">"XAxis"</span>]] <span class="kw">&lt;-</span> <span class="st">"Feature name"</span>
+<span class="no">fex4</span><span class="kw">[[</span><span class="st">"XAxisFeatureSource"</span>]] <span class="kw">&lt;-</span> <span class="st">"RowDataTable1"</span>
+<span class="no">rex</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/RowDataTable-class.html">RowDataTable</a></span>(<span class="kw">Selected</span><span class="kw">=</span><span class="st">"Ints2"</span>, <span class="kw">Search</span><span class="kw">=</span><span class="st">"Ints"</span>, <span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">12L</span>)
 
 <span class="co"># Initialisation</span>
-<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>, initial=<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">fex1</span>, <span class="kw">fex2</span>, <span class="kw">fex3</span>, <span class="kw">fex4</span>, <span class="kw">rex</span>))
-</pre></div>
+<span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">fex1</span>, <span class="no">fex2</span>, <span class="no">fex3</span>, <span class="no">fex4</span>, <span class="no">rex</span>))</pre></body></html></div>
 <p><img src="screenshots/configure-FAP-xaxis.png" width="488"></p>
 <p>Note how <em>Example 3b</em> requires an active <em>row data table</em> as a source of selection. To facilitate visualisation, we added the features identifiers as the <code>gene_id</code> column in <code>rowData(sce)</code>, we preselected the feature <code>"Ints2"</code>, and we prefiltered the table using the pattern <code>"Ints"</code> on the <code>gene_id</code> column to show this active selection.</p>
 </div>
@@ -236,24 +228,20 @@
 <h2 class="hasAnchor">
 <a href="#configuring-the-type-of-dimensionality-reduction" class="anchor"></a>Configuring the type of dimensionality reduction</h2>
 <p>In the case of reduced dimension plots, <em>data parameters</em> include the name of the reduced dimension slot from which to fetch coordinates. This information is stored in the <code>Type</code> slot:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>, initial=<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-    <span class="fu"><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span>(DataBoxOpen=<span class="fl">TRUE</span>, Type=<span class="st">"TSNE"</span>, 
-        XAxis=<span class="fl">2L</span>, YAxis=<span class="fl">1L</span>, PanelWidth=<span class="fl">6L</span>)
-))
-</pre></div>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+    <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span>(<span class="kw">DataBoxOpen</span><span class="kw">=</span><span class="fl">TRUE</span>, <span class="kw">Type</span><span class="kw">=</span><span class="st">"TSNE"</span>,
+        <span class="kw">XAxis</span><span class="kw">=</span><span class="fl">2L</span>, <span class="kw">YAxis</span><span class="kw">=</span><span class="fl">1L</span>, <span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">6L</span>)
+))</pre></body></html></div>
 <p><img src="screenshots/configure-ReDP-basic.png" width="488"></p>
 </div>
 <div id="assay" class="section level2">
 <h2 class="hasAnchor">
 <a href="#assay" class="anchor"></a>Configuring the type of assay data</h2>
 <p>For axes linked to an assay, such as the Y-axis of <em>feature assay plot</em> panels, the assay to display can be set through the <code>Assay</code> argument:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>, initial=<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(DataBoxOpen=<span class="fl">TRUE</span>, Assay=<span class="st">"logcounts"</span>, PanelWidth=<span class="fl">6L</span>),
-    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(DataBoxOpen=<span class="fl">TRUE</span>, Assay=<span class="st">"tophat_counts"</span>, PanelWidth=<span class="fl">6L</span>)
-))
-</pre></div>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+    <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="kw">DataBoxOpen</span><span class="kw">=</span><span class="fl">TRUE</span>, <span class="kw">Assay</span><span class="kw">=</span><span class="st">"logcounts"</span>, <span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">6L</span>),
+    <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span>(<span class="kw">DataBoxOpen</span><span class="kw">=</span><span class="fl">TRUE</span>, <span class="kw">Assay</span><span class="kw">=</span><span class="st">"tophat_counts"</span>, <span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">6L</span>)
+))</pre></body></html></div>
 <p><img src="screenshots/configure-FAP-assay.png" width="488"></p>
 </div>
 </div>
@@ -271,20 +259,18 @@
 <a href="#configuring-default-visual-parameters" class="anchor"></a>Configuring default visual parameters</h2>
 <p>Certain visual parameters can be set to a constant user-defined value. Those include: color, transparency (i.e., alpha), downsampling resolution, as well as text font size and legend position.</p>
 <p>For instance, the default color of data points in <em>column data plot</em> panels can be set to a value different than the default <code>"black"</code> through the <code>ColorByDefaultColor</code> slot, while the default transparency value is controlled through the <code>PointAlpha</code> slot Here, we alter several default visual parameters in the second panel:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="kw">cdp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(VisualBoxOpen=<span class="fl">TRUE</span>, 
-    VisualChoices=<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Color"</span>, <span class="st">"Size"</span>, <span class="st">"Point"</span>, <span class="st">"Text"</span>))
+<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="no">cdp</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="kw">VisualBoxOpen</span><span class="kw">=</span><span class="fl">TRUE</span>,
+    <span class="kw">VisualChoices</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Color"</span>, <span class="st">"Size"</span>, <span class="st">"Point"</span>, <span class="st">"Text"</span>))
 
-<span class="kw">cdp2</span> <span class="op">&lt;-</span> <span class="kw">cdp</span>
-<span class="kw">cdp2</span>[[<span class="st">"ColorByDefaultColor"</span>]] <span class="op">&lt;-</span> <span class="st">"chocolate3"</span>
-<span class="kw">cdp2</span>[[<span class="st">"PointAlpha"</span>]] <span class="op">&lt;-</span> <span class="fl">0.2</span>
-<span class="kw">cdp2</span>[[<span class="st">"PointSize"</span>]] <span class="op">&lt;-</span> <span class="fl">2</span>
-<span class="kw">cdp2</span>[[<span class="st">"Downsample"</span>]] <span class="op">&lt;-</span> <span class="fl">TRUE</span>
-<span class="kw">cdp2</span>[[<span class="st">"DownsampleResolution"</span>]] <span class="op">&lt;-</span> <span class="fl">150</span>
-<span class="kw">cdp2</span>[[<span class="st">"FontSize"</span>]] <span class="op">&lt;-</span> <span class="fl">2</span>
+<span class="no">cdp2</span> <span class="kw">&lt;-</span> <span class="no">cdp</span>
+<span class="no">cdp2</span><span class="kw">[[</span><span class="st">"ColorByDefaultColor"</span>]] <span class="kw">&lt;-</span> <span class="st">"chocolate3"</span>
+<span class="no">cdp2</span><span class="kw">[[</span><span class="st">"PointAlpha"</span>]] <span class="kw">&lt;-</span> <span class="fl">0.2</span>
+<span class="no">cdp2</span><span class="kw">[[</span><span class="st">"PointSize"</span>]] <span class="kw">&lt;-</span> <span class="fl">2</span>
+<span class="no">cdp2</span><span class="kw">[[</span><span class="st">"Downsample"</span>]] <span class="kw">&lt;-</span> <span class="fl">TRUE</span>
+<span class="no">cdp2</span><span class="kw">[[</span><span class="st">"DownsampleResolution"</span>]] <span class="kw">&lt;-</span> <span class="fl">150</span>
+<span class="no">cdp2</span><span class="kw">[[</span><span class="st">"FontSize"</span>]] <span class="kw">&lt;-</span> <span class="fl">2</span>
 
-<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>, initial=<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">cdp</span>, <span class="kw">cdp2</span>))
-</pre></div>
+<span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">cdp</span>, <span class="no">cdp2</span>))</pre></body></html></div>
 <p><img src="screenshots/configure-CDP-visual.png" width="488"></p>
 <p>Note that for this demonstration, we facilitate visualization of the preconfigured arguments by setting <code>VisualChoices</code> to display both the <code>"Color"</code> and <code>"Shape"</code> UI panels.</p>
 </div>
@@ -293,17 +279,15 @@
 <a href="#linking-point-aesthetics-to-variables" class="anchor"></a>Linking point aesthetics to variables</h2>
 <p>The color and point of data points can be linked to variables in a manner similar to the X-axis parameters demonstrated <a href="#xaxis">above</a>.</p>
 <p>For instance, the color of data points in <em>column data plot</em> panels can be set to a variable in <code>colData(sce)</code> by setting the <code>ColorBy</code> value to <code>"Column data"</code>, and the <code>ColorByColumnData</code> value to the desired column name:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit">
-<span class="kw">cdp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(VisualBoxOpen=<span class="fl">TRUE</span>, VisualChoices=<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Color"</span>, <span class="st">"Shape"</span>),
-    ColorByColumnData=<span class="st">"Core.Type"</span>, ShapeByColumnData=<span class="st">"Core.Type"</span>,
-    ColorBy=<span class="st">"Column data"</span>, ShapeBy=<span class="st">"Column data"</span>)
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">cdp</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="kw">VisualBoxOpen</span><span class="kw">=</span><span class="fl">TRUE</span>, <span class="kw">VisualChoices</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Color"</span>, <span class="st">"Shape"</span>),
+    <span class="kw">ColorByColumnData</span><span class="kw">=</span><span class="st">"Core.Type"</span>, <span class="kw">ShapeByColumnData</span><span class="kw">=</span><span class="st">"Core.Type"</span>,
+    <span class="kw">ColorBy</span><span class="kw">=</span><span class="st">"Column data"</span>, <span class="kw">ShapeBy</span><span class="kw">=</span><span class="st">"Column data"</span>)
 
-<span class="kw">cdp2</span> <span class="op">&lt;-</span> <span class="kw">cdp</span>
-<span class="kw">cdp2</span>[[<span class="st">"ColorByColumnData"</span>]] <span class="op">&lt;-</span> <span class="st">"TOTAL_DUP"</span>
-<span class="kw">cdp2</span>[[<span class="st">"ShapeByColumnData"</span>]] <span class="op">&lt;-</span> <span class="st">"driver_1_s"</span>
+<span class="no">cdp2</span> <span class="kw">&lt;-</span> <span class="no">cdp</span>
+<span class="no">cdp2</span><span class="kw">[[</span><span class="st">"ColorByColumnData"</span>]] <span class="kw">&lt;-</span> <span class="st">"TOTAL_DUP"</span>
+<span class="no">cdp2</span><span class="kw">[[</span><span class="st">"ShapeByColumnData"</span>]] <span class="kw">&lt;-</span> <span class="st">"driver_1_s"</span>
 
-<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>, initial=<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">cdp</span>, <span class="kw">cdp2</span>))
-</pre></div>
+<span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">cdp</span>, <span class="no">cdp2</span>))</pre></body></html></div>
 <p><img src="screenshots/configure-CDP-linked-visual.png" width="488"></p>
 <p>Note that points may only be shaped by a categorical variable.</p>
 </div>
@@ -312,18 +296,16 @@
 <a href="#configuring-plot-facets" class="anchor"></a>Configuring plot facets</h2>
 <p>Categorical variables may also be used to facet plots by row and column.</p>
 <p>For instance, <em>column data plot</em> panels can be facet by variables stored in the columns of <code>colData(sce)</code>. Users can enable faceting by setting <code>FacetByRow</code> and/or <code>FacetByColumn</code> to the appropriate column name in <code>colData(sce)</code>. We demonstrate below how faceting may be enabled by row, column, or both:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="kw">cdp</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(VisualBoxOpen=<span class="fl">TRUE</span>, VisualChoices=<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Facet"</span>),
-    FacetByRow=<span class="st">"driver_1_s"</span>, FacetByColumn=<span class="st">"Core.Type"</span>, PanelWidth=<span class="fl">4L</span>)
+<div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">cdp</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(<span class="kw">VisualBoxOpen</span><span class="kw">=</span><span class="fl">TRUE</span>, <span class="kw">VisualChoices</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"Facet"</span>),
+    <span class="kw">FacetByRow</span><span class="kw">=</span><span class="st">"driver_1_s"</span>, <span class="kw">FacetByColumn</span><span class="kw">=</span><span class="st">"Core.Type"</span>, <span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">4L</span>)
 
-<span class="kw">cdp2</span> <span class="op">&lt;-</span> <span class="kw">cdp</span>
-<span class="kw">cdp2</span>[[<span class="st">"FacetByRow"</span>]] <span class="op">&lt;-</span> <span class="st">"---"</span>
+<span class="no">cdp2</span> <span class="kw">&lt;-</span> <span class="no">cdp</span>
+<span class="no">cdp2</span><span class="kw">[[</span><span class="st">"FacetByRow"</span>]] <span class="kw">&lt;-</span> <span class="st">"---"</span>
 
-<span class="kw">cdp3</span> <span class="op">&lt;-</span> <span class="kw">cdp</span>
-<span class="kw">cdp3</span>[[<span class="st">"FacetByColumn"</span>]] <span class="op">&lt;-</span> <span class="st">"---"</span>
+<span class="no">cdp3</span> <span class="kw">&lt;-</span> <span class="no">cdp</span>
+<span class="no">cdp3</span><span class="kw">[[</span><span class="st">"FacetByColumn"</span>]] <span class="kw">&lt;-</span> <span class="st">"---"</span>
 
-<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>, initial=<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">cdp</span>, <span class="kw">cdp2</span>, <span class="kw">cdp3</span>))
-</pre></div>
+<span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">cdp</span>, <span class="no">cdp2</span>, <span class="no">cdp3</span>))</pre></body></html></div>
 <p><img src="screenshots/configure-CDP-facets.png" width="488"></p>
 </div>
 </div>
@@ -332,77 +314,72 @@
 <a href="#selection-parameters" class="anchor"></a>Selection parameters</h1>
 <p>The initial state of <em>iSEE</em> applications can be configured all the way down to point selections and links between panels. For instance, in the example below, we preconfigure the <code>ColumnSelectionSource</code> column of a <em>column data plot</em> panel to receive a point selection from a <em>reduced dimension plot</em> panel. This requires an active selection in the <em>reduced dimension plot</em> panel, which is achieved by preconfiguring the <code>BrushData</code> slot.</p>
 <p>The simplest way to obtain a valid <code>BrushData</code> value is to launch an <em>iSEE</em> application, make the desired selection using a Shiny brush, open the <em>iSEE</em> code tracker, and copy paste the relevant point selection data. The result should look as below:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="co"># Preconfigure the receiver panel</span>
-<span class="kw">cdArgs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(
-    XAxis=<span class="st">"Column data"</span>,
-    XAxisColumnData=<span class="st">"driver_1_s"</span>,
+<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="co"># Preconfigure the receiver panel</span>
+<span class="no">cdArgs</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/ColumnDataPlot-class.html">ColumnDataPlot</a></span>(
+    <span class="kw">XAxis</span><span class="kw">=</span><span class="st">"Column data"</span>,
+    <span class="kw">XAxisColumnData</span><span class="kw">=</span><span class="st">"driver_1_s"</span>,
 
     <span class="co"># Configuring the selection parameters.</span>
-    SelectionBoxOpen=<span class="fl">TRUE</span>,
-    ColumnSelectionSource=<span class="st">"ReducedDimensionPlot1"</span>,
-    SelectionEffect=<span class="st">"Color"</span>, 
-    SelectionColor=<span class="st">"purple"</span>, 
+    <span class="kw">SelectionBoxOpen</span><span class="kw">=</span><span class="fl">TRUE</span>,
+    <span class="kw">ColumnSelectionSource</span><span class="kw">=</span><span class="st">"ReducedDimensionPlot1"</span>,
+    <span class="kw">SelectionEffect</span><span class="kw">=</span><span class="st">"Color"</span>,
+    <span class="kw">SelectionColor</span><span class="kw">=</span><span class="st">"purple"</span>,
 
     <span class="co"># Throwing in some parameters for aesthetic reasons.</span>
-    ColorByDefaultColor=<span class="st">"#BDB3B3"</span>, 
-    PointSize=<span class="fl">2</span>,
-    PanelWidth=<span class="fl">6L</span>)
+    <span class="kw">ColorByDefaultColor</span><span class="kw">=</span><span class="st">"#BDB3B3"</span>,
+    <span class="kw">PointSize</span><span class="kw">=</span><span class="fl">2</span>,
+    <span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">6L</span>)
 
 <span class="co"># Preconfigure the sender panel, including the point selection.</span>
 <span class="co"># NOTE: You don't actually have to write this from scratch! Just</span>
 <span class="co"># open an iSEE instance, make a brush and then look at the 'BrushData'</span>
 <span class="co"># entry when you click on the 'Display panel settings' button.</span>
-<span class="kw">rdArgs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span>(
-    BrushData = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-        xmin = <span class="fl">13.7</span>, xmax = <span class="fl">53.5</span>, ymin = <span class="op">-</span><span class="fl">36.5</span>, ymax = <span class="fl">37.2</span>, 
-        coords_css = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(xmin = <span class="fl">413.2</span>, xmax = <span class="fl">650.2</span>, ymin = <span class="fl">83.0</span>, ymax = <span class="fl">344.0</span>), 
-        coords_img = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(xmin = <span class="fl">537.2</span>, xmax = <span class="fl">845.3</span>, ymin = <span class="fl">107.9</span>, ymax = <span class="fl">447.2</span>), 
-        img_css_ratio = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(x = <span class="fl">1.3</span>, y = <span class="fl">1.3</span>), 
-        mapping = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(x = <span class="st">"X"</span>, y = <span class="st">"Y"</span>), 
-        domain = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(left = <span class="op">-</span><span class="fl">49.1</span>, right = <span class="fl">57.2</span>, bottom = <span class="op">-</span><span class="fl">70.4</span>, top = <span class="fl">53.5</span>), 
-        range = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(left = <span class="fl">50.9</span>, right = <span class="fl">873.9</span>, bottom = <span class="fl">603.0</span>, top = <span class="fl">33.1</span>), 
-        log = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(x = <span class="kw">NULL</span>, y = <span class="kw">NULL</span>), 
-        direction = <span class="st">"xy"</span>, 
-        brushId = <span class="st">"ReducedDimensionPlot1_Brush"</span>, 
-        outputId = <span class="st">"ReducedDimensionPlot1"</span>
+<span class="no">rdArgs</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span>(
+    <span class="kw">BrushData</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+        <span class="kw">xmin</span> <span class="kw">=</span> <span class="fl">13.7</span>, <span class="kw">xmax</span> <span class="kw">=</span> <span class="fl">53.5</span>, <span class="kw">ymin</span> <span class="kw">=</span> -<span class="fl">36.5</span>, <span class="kw">ymax</span> <span class="kw">=</span> <span class="fl">37.2</span>,
+        <span class="kw">coords_css</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">xmin</span> <span class="kw">=</span> <span class="fl">413.2</span>, <span class="kw">xmax</span> <span class="kw">=</span> <span class="fl">650.2</span>, <span class="kw">ymin</span> <span class="kw">=</span> <span class="fl">83.0</span>, <span class="kw">ymax</span> <span class="kw">=</span> <span class="fl">344.0</span>),
+        <span class="kw">coords_img</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">xmin</span> <span class="kw">=</span> <span class="fl">537.2</span>, <span class="kw">xmax</span> <span class="kw">=</span> <span class="fl">845.3</span>, <span class="kw">ymin</span> <span class="kw">=</span> <span class="fl">107.9</span>, <span class="kw">ymax</span> <span class="kw">=</span> <span class="fl">447.2</span>),
+        <span class="kw">img_css_ratio</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="fl">1.3</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="fl">1.3</span>),
+        <span class="kw">mapping</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"X"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"Y"</span>),
+        <span class="kw">domain</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">left</span> <span class="kw">=</span> -<span class="fl">49.1</span>, <span class="kw">right</span> <span class="kw">=</span> <span class="fl">57.2</span>, <span class="kw">bottom</span> <span class="kw">=</span> -<span class="fl">70.4</span>, <span class="kw">top</span> <span class="kw">=</span> <span class="fl">53.5</span>),
+        <span class="kw">range</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">left</span> <span class="kw">=</span> <span class="fl">50.9</span>, <span class="kw">right</span> <span class="kw">=</span> <span class="fl">873.9</span>, <span class="kw">bottom</span> <span class="kw">=</span> <span class="fl">603.0</span>, <span class="kw">top</span> <span class="kw">=</span> <span class="fl">33.1</span>),
+        <span class="kw">log</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="kw">NULL</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="kw">NULL</span>),
+        <span class="kw">direction</span> <span class="kw">=</span> <span class="st">"xy"</span>,
+        <span class="kw">brushId</span> <span class="kw">=</span> <span class="st">"ReducedDimensionPlot1_Brush"</span>,
+        <span class="kw">outputId</span> <span class="kw">=</span> <span class="st">"ReducedDimensionPlot1"</span>
     ),
-    PanelWidth=<span class="fl">6L</span>
-)    
+    <span class="kw">PanelWidth</span><span class="kw">=</span><span class="fl">6L</span>
+)
 
-<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>, initial=<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">cdArgs</span>, <span class="kw">rdArgs</span>))
-</pre></div>
+<span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">cdArgs</span>, <span class="no">rdArgs</span>))</pre></body></html></div>
 <p><img src="screenshots/configure-ReDP-select.png" width="488"></p>
 <p>Note that in the example above, we chose to color selected data points in the receiver panel, by setting the <code>SelectionEffect</code> argument to <code>"Color"</code>, and the color of selected data points to <code>"darkgoldenrod1"</code>. Other choices include <code>"Restrict"</code>, to show only the selected data points; and <code>"Transparent"</code> (the default), to increase the transparency of unselected data points.</p>
 <p>An identical process can be followed to preconfigure a lasso point selection:</p>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="co"># Preconfigure the sender panel, including the point selection.</span>
+<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="co"># Preconfigure the sender panel, including the point selection.</span>
 <span class="co"># NOTE: again, you shouldn't try writing this from scratch! Just</span>
 <span class="co"># make a lasso and then copy the panel settings in 'BrushData'.</span>
-<span class="kw">rdArgs</span>[[<span class="st">"BrushData"</span>]] <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-    lasso = <span class="kw">NULL</span>, closed = <span class="fl">TRUE</span>, panelvar1 = <span class="kw">NULL</span>, panelvar2 = <span class="kw">NULL</span>, 
-    mapping = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(x = <span class="st">"X"</span>, y = <span class="st">"Y"</span>), 
-    coord = <span class="fu"><a href="https://rdrr.io/r/base/structure.html">structure</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">18.4</span>, 
-        <span class="fl">18.5</span>, <span class="fl">26.1</span>, <span class="fl">39.9</span>, 
-        <span class="fl">55.2</span>, <span class="fl">50.3</span>, <span class="fl">54.3</span>, 
-        <span class="fl">33.3</span>, <span class="fl">18.4</span>, <span class="fl">35.5</span>, 
-        <span class="op">-</span><span class="fl">4.2</span>, <span class="op">-</span><span class="fl">21.2</span>, <span class="op">-</span><span class="fl">46.1</span>, 
-        <span class="op">-</span><span class="fl">43.5</span>, <span class="op">-</span><span class="fl">18.1</span>, <span class="fl">7.3</span>, 
-        <span class="fl">19.7</span>, <span class="fl">35.5</span>), .Dim = <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">9L</span>, <span class="fl">2L</span>)
+<span class="no">rdArgs</span><span class="kw">[[</span><span class="st">"BrushData"</span>]] <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+    <span class="kw">lasso</span> <span class="kw">=</span> <span class="kw">NULL</span>, <span class="kw">closed</span> <span class="kw">=</span> <span class="fl">TRUE</span>, <span class="kw">panelvar1</span> <span class="kw">=</span> <span class="kw">NULL</span>, <span class="kw">panelvar2</span> <span class="kw">=</span> <span class="kw">NULL</span>,
+    <span class="kw">mapping</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">x</span> <span class="kw">=</span> <span class="st">"X"</span>, <span class="kw">y</span> <span class="kw">=</span> <span class="st">"Y"</span>),
+    <span class="kw">coord</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/structure.html">structure</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">18.4</span>,
+        <span class="fl">18.5</span>, <span class="fl">26.1</span>, <span class="fl">39.9</span>,
+        <span class="fl">55.2</span>, <span class="fl">50.3</span>, <span class="fl">54.3</span>,
+        <span class="fl">33.3</span>, <span class="fl">18.4</span>, <span class="fl">35.5</span>,
+        -<span class="fl">4.2</span>, -<span class="fl">21.2</span>, -<span class="fl">46.1</span>,
+        -<span class="fl">43.5</span>, -<span class="fl">18.1</span>, <span class="fl">7.3</span>,
+        <span class="fl">19.7</span>, <span class="fl">35.5</span>), <span class="kw">.Dim</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">9L</span>, <span class="fl">2L</span>)
     )
 )
 
-<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>, initial=<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">cdArgs</span>, <span class="kw">rdArgs</span>))
-</pre></div>
+<span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="no">cdArgs</span>, <span class="no">rdArgs</span>))</pre></body></html></div>
 <p><img src="screenshots/configure-ReDP-lasso.png" width="488"></p>
 </div>
 <div id="writing-your-own-tour" class="section level1">
 <h1 class="hasAnchor">
 <a href="#writing-your-own-tour" class="anchor"></a>Writing your own tour</h1>
 <p>By providing a data frame to the <code>tour</code> argument of <code>iSEE</code>, you can create your own tour that will start when the app is launched<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. The data frame should have two columns, <code>element</code> and <code>intro</code>:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit">
-<span class="kw">introtour</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/defaultTour.html">defaultTour</a></span>()
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="kw">introtour</span>)
+<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">introtour</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/defaultTour.html">defaultTour</a></span>()
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span>(<span class="no">introtour</span>)
 <span class="co">#&gt;                                            element</span>
 <span class="co">#&gt; 1                                         #Welcome</span>
 <span class="co">#&gt; 2                                       #allpanels</span>
@@ -416,8 +393,7 @@
 <span class="co">#&gt; 3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          For example, you can construct a &lt;font color="#402ee8"&gt;Reduced dimension plot&lt;/font&gt; to visualize a low-dimensional representation (e.g., PCA, &lt;i&gt;t&lt;/i&gt;-SNE) of our dataset of interest. Here, each point represents a cell.</span>
 <span class="co">#&gt; 4                                                                                                                                                                                                                                                                                                                 For each plot panel, a variety of parameters are available to control the appearance and behaviour of the plot. These parameters are located in these collapsible boxes, such as the &lt;font color="#402ee8"&gt;Data parameters&lt;/font&gt; box that contains parameters related to the type of data being shown.&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;Action:&lt;/strong&gt; click on the header of this collapsible box to see the available options.</span>
 <span class="co">#&gt; 5                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     &lt;strong&gt;Action:&lt;/strong&gt; change this to &lt;code&gt;TSNE&lt;/code&gt; to see the two-dimensional &lt;i&gt;t&lt;/i&gt;-SNE representation.</span>
-<span class="co">#&gt; 6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      You can see how the panel immediately switched to the requested dimensionality reduction result.</span>
-</pre></div>
+<span class="co">#&gt; 6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      You can see how the panel immediately switched to the requested dimensionality reduction result.</span></pre></body></html></div>
 <p>Each entry of the <code>element</code> column contains the name of a UI element in the application, prefixed by a hash sign (<code>#</code>). The <code>intro</code> column contains the corresponding text (or basic HTML) that is to be shown at each step.</p>
 <p>The simplest way to get started is to copy the <code>intro_firststeps.txt</code> file from the <code>inst/extdata</code> folder and edit it for your specific data set. More customized tours require some knowledge of the names of the UI elements to put in the <code>element</code> column. We recommend one of the following options:</p>
 <ul>
@@ -434,32 +410,35 @@
 <a href="#further" class="anchor"></a>Further reading</h1>
 <p>Users should refer to the following help pages for the full list of values that can be specified in <code>iSEE</code>:</p>
 <ul>
-<li><code><a href="../reference/ReducedDimensionPlot-class.html">?ReducedDimensionPlot</a></code></li>
-<li><code><a href="../reference/ColumnDataPlot-class.html">?ColumnDataPlot</a></code></li>
-<li><code><a href="../reference/ColumnDataTable-class.html">?ColumnDataTable</a></code></li>
-<li><code><a href="../reference/FeatureAssayPlot-class.html">?FeatureAssayPlot</a></code></li>
-<li><code><a href="../reference/RowDataPlot-class.html">?RowDataPlot</a></code></li>
-<li><code><a href="../reference/RowDataTable-class.html">?RowDataTable</a></code></li>
-<li><code><a href="../reference/SampleAssayPlot-class.html">?SampleAssayPlot</a></code></li>
-<li><code><a href="../reference/ComplexHeatmapPlot-class.html">?ComplexHeatmapPlot</a></code></li>
+<li><code><a href="https://rdrr.io/pkg/iSEE/man/ReducedDimensionPlot-class.html">?ReducedDimensionPlot</a></code></li>
+<li><code><a href="https://rdrr.io/pkg/iSEE/man/ColumnDataPlot-class.html">?ColumnDataPlot</a></code></li>
+<li><code><a href="https://rdrr.io/pkg/iSEE/man/ColumnDataTable-class.html">?ColumnDataTable</a></code></li>
+<li><code><a href="https://rdrr.io/pkg/iSEE/man/FeatureAssayPlot-class.html">?FeatureAssayPlot</a></code></li>
+<li><code><a href="https://rdrr.io/pkg/iSEE/man/RowDataPlot-class.html">?RowDataPlot</a></code></li>
+<li><code><a href="https://rdrr.io/pkg/iSEE/man/RowDataTable-class.html">?RowDataTable</a></code></li>
+<li><code><a href="https://rdrr.io/pkg/iSEE/man/SampleAssayPlot-class.html">?SampleAssayPlot</a></code></li>
+<li><code><a href="https://rdrr.io/pkg/iSEE/man/ComplexHeatmapPlot-class.html">?ComplexHeatmapPlot</a></code></li>
 </ul>
 <p>Some fairly complex configurations for a variety of data sets can be found at <a href="https://github.com/iSEE/iSEE2018" class="uri">https://github.com/iSEE/iSEE2018</a>. These may serve as useful examples for setting up your own configurations.</p>
 </div>
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
-<div class="sourceCode" id="cb13"><pre class="downlit">
-<span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
-<span class="co">#&gt; R version 4.0.1 (2020-06-06)</span>
-<span class="co">#&gt; Platform: x86_64-apple-darwin17.0 (64-bit)</span>
-<span class="co">#&gt; Running under: macOS Catalina 10.15.5</span>
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
+<span class="co">#&gt; R version 4.0.0 (2020-04-24)</span>
+<span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span>
+<span class="co">#&gt; Running under: Ubuntu 18.04.4 LTS</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Matrix products: default</span>
-<span class="co">#&gt; BLAS:   /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRblas.dylib</span>
-<span class="co">#&gt; LAPACK: /Library/Frameworks/R.framework/Versions/4.0/Resources/lib/libRlapack.dylib</span>
+<span class="co">#&gt; BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.2.20.so</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; locale:</span>
-<span class="co">#&gt; [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8</span>
+<span class="co">#&gt;  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span>
+<span class="co">#&gt;  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span>
+<span class="co">#&gt;  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=C             </span>
+<span class="co">#&gt;  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span>
+<span class="co">#&gt;  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span>
+<span class="co">#&gt; [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; attached base packages:</span>
 <span class="co">#&gt; [1] parallel  stats4    stats     graphics  grDevices utils     datasets </span>
@@ -470,40 +449,40 @@
 <span class="co">#&gt;  [3] SummarizedExperiment_1.19.5 DelayedArray_0.15.5        </span>
 <span class="co">#&gt;  [5] matrixStats_0.56.0          Matrix_1.2-18              </span>
 <span class="co">#&gt;  [7] Biobase_2.49.0              GenomicRanges_1.41.5       </span>
-<span class="co">#&gt;  [9] GenomeInfoDb_1.25.2         IRanges_2.23.10            </span>
+<span class="co">#&gt;  [9] GenomeInfoDb_1.25.4         IRanges_2.23.10            </span>
 <span class="co">#&gt; [11] S4Vectors_0.27.12           BiocGenerics_0.35.4        </span>
 <span class="co">#&gt; [13] BiocStyle_2.17.0           </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
-<span class="co">#&gt;  [1] viridisLite_0.3.0      jsonlite_1.6.1         splines_4.0.1         </span>
-<span class="co">#&gt;  [4] rintrojs_0.2.2         shiny_1.5.0            assertthat_0.2.1      </span>
-<span class="co">#&gt;  [7] BiocManager_1.30.10    vipor_0.4.5            GenomeInfoDbData_1.2.3</span>
-<span class="co">#&gt; [10] yaml_2.2.1             pillar_1.4.4           backports_1.1.8       </span>
-<span class="co">#&gt; [13] lattice_0.20-41        glue_1.4.1             digest_0.6.25         </span>
-<span class="co">#&gt; [16] RColorBrewer_1.1-2     promises_1.1.1         XVector_0.29.2        </span>
-<span class="co">#&gt; [19] colorspace_1.4-1       htmltools_0.5.0        httpuv_1.5.4          </span>
-<span class="co">#&gt; [22] pkgconfig_2.0.3        GetoptLong_1.0.0       bookdown_0.19         </span>
-<span class="co">#&gt; [25] zlibbioc_1.35.0        purrr_0.3.4            xtable_1.8-4          </span>
-<span class="co">#&gt; [28] scales_1.1.1           later_1.1.0.1          tibble_3.0.1          </span>
-<span class="co">#&gt; [31] mgcv_1.8-31            generics_0.0.2         ggplot2_3.3.2         </span>
-<span class="co">#&gt; [34] ellipsis_0.3.1         DT_0.13                shinyjs_1.1           </span>
-<span class="co">#&gt; [37] magrittr_1.5           crayon_1.3.4           mime_0.9              </span>
-<span class="co">#&gt; [40] memoise_1.1.0          evaluate_0.14          fs_1.4.1              </span>
-<span class="co">#&gt; [43] nlme_3.1-148           shinydashboard_0.7.1   colourpicker_1.0      </span>
-<span class="co">#&gt; [46] tools_4.0.1            GlobalOptions_0.1.2    lifecycle_0.2.0       </span>
-<span class="co">#&gt; [49] ComplexHeatmap_2.5.3   stringr_1.4.0          munsell_0.5.0         </span>
-<span class="co">#&gt; [52] cluster_2.1.0          shinyAce_0.4.1         compiler_4.0.1        </span>
-<span class="co">#&gt; [55] pkgdown_1.5.1.9000     rlang_0.4.6            grid_4.0.1            </span>
-<span class="co">#&gt; [58] RCurl_1.98-1.2         rjson_0.2.20           htmlwidgets_1.5.1     </span>
-<span class="co">#&gt; [61] circlize_0.4.10        igraph_1.2.5           miniUI_0.1.1.1        </span>
-<span class="co">#&gt; [64] shinyWidgets_0.5.3     bitops_1.0-6           rmarkdown_2.3         </span>
-<span class="co">#&gt; [67] gtable_0.3.0           R6_2.4.1               knitr_1.29            </span>
-<span class="co">#&gt; [70] dplyr_1.0.0            fastmap_1.0.1          clue_0.3-57           </span>
-<span class="co">#&gt; [73] rprojroot_1.3-2        shape_1.4.4            desc_1.2.0            </span>
-<span class="co">#&gt; [76] stringi_1.4.6          Rcpp_1.0.4.6           vctrs_0.3.1           </span>
-<span class="co">#&gt; [79] png_0.1-7              tidyselect_1.1.0       xfun_0.15</span>
-<span class="co"># devtools::session_info()</span>
-</pre></div>
+<span class="co">#&gt;  [1] nlme_3.1-147           bitops_1.0-6           fs_1.4.1              </span>
+<span class="co">#&gt;  [4] RColorBrewer_1.1-2     rprojroot_1.3-2        tools_4.0.0           </span>
+<span class="co">#&gt;  [7] backports_1.1.8        R6_2.4.1               DT_0.13               </span>
+<span class="co">#&gt; [10] vipor_0.4.5            mgcv_1.8-31            colorspace_1.4-1      </span>
+<span class="co">#&gt; [13] GetoptLong_1.0.0       tidyselect_1.1.0       compiler_4.0.0        </span>
+<span class="co">#&gt; [16] shinyjs_1.1            desc_1.2.0             colourpicker_1.0      </span>
+<span class="co">#&gt; [19] bookdown_0.19          scales_1.1.1           pkgdown_1.5.1         </span>
+<span class="co">#&gt; [22] stringr_1.4.0          digest_0.6.25          rmarkdown_2.3         </span>
+<span class="co">#&gt; [25] XVector_0.29.2         pkgconfig_2.0.3        htmltools_0.5.0       </span>
+<span class="co">#&gt; [28] fastmap_1.0.1          htmlwidgets_1.5.1      rlang_0.4.6           </span>
+<span class="co">#&gt; [31] GlobalOptions_0.1.2    shiny_1.4.0.2          shape_1.4.4           </span>
+<span class="co">#&gt; [34] generics_0.0.2         jsonlite_1.6.1         dplyr_1.0.0           </span>
+<span class="co">#&gt; [37] RCurl_1.98-1.2         magrittr_1.5           GenomeInfoDbData_1.2.3</span>
+<span class="co">#&gt; [40] Rcpp_1.0.4.6           munsell_0.5.0          lifecycle_0.2.0       </span>
+<span class="co">#&gt; [43] stringi_1.4.6          yaml_2.2.1             rintrojs_0.2.2        </span>
+<span class="co">#&gt; [46] MASS_7.3-51.5          zlibbioc_1.35.0        grid_4.0.0            </span>
+<span class="co">#&gt; [49] promises_1.1.1         shinydashboard_0.7.1   crayon_1.3.4          </span>
+<span class="co">#&gt; [52] miniUI_0.1.1.1         lattice_0.20-41        splines_4.0.0         </span>
+<span class="co">#&gt; [55] circlize_0.4.10        knitr_1.28             ComplexHeatmap_2.5.3  </span>
+<span class="co">#&gt; [58] pillar_1.4.4           igraph_1.2.5           rjson_0.2.20          </span>
+<span class="co">#&gt; [61] glue_1.4.1             evaluate_0.14          BiocManager_1.30.10   </span>
+<span class="co">#&gt; [64] png_0.1-7              vctrs_0.3.1            httpuv_1.5.4          </span>
+<span class="co">#&gt; [67] gtable_0.3.0           purrr_0.3.4            clue_0.3-57           </span>
+<span class="co">#&gt; [70] assertthat_0.2.1       ggplot2_3.3.2          xfun_0.15             </span>
+<span class="co">#&gt; [73] mime_0.9               xtable_1.8-4           later_1.1.0.1         </span>
+<span class="co">#&gt; [76] viridisLite_0.3.0      tibble_3.0.1           memoise_1.1.0         </span>
+<span class="co">#&gt; [79] cluster_2.1.0          shinyWidgets_0.5.3     ellipsis_0.3.1        </span>
+<span class="co">#&gt; [82] shinyAce_0.4.1</span>
+<span class="co"># devtools::session_info()</span></pre></body></html></div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
@@ -538,7 +517,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

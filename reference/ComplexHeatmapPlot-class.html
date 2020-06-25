@@ -249,32 +249,29 @@ This will also call the equivalent Panel method.</p></li>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Panel, for the immediate parent class.</p></div>
-    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
-
-    <p>Kevin Rue-Albrecht</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>#################</span>
 <span class='co'># For end-users #</span>
 <span class='co'>#################</span>
 
-<span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'>ComplexHeatmapPlot</span>()
-<span class='kw'>x</span>[[<span class='st'>"ShowDimNames"</span>]]</div><div class='output co'>#&gt; [1] "Rows"</div><div class='input'><span class='kw'>x</span>[[<span class='st'>"ShowDimNames"</span>]] <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Rows"</span>, <span class='st'>"Columns"</span>)
+<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>ComplexHeatmapPlot</span>()
+<span class='no'>x</span><span class='kw'>[[</span><span class='st'>"ShowDimNames"</span>]]</div><div class='output co'>#&gt; [1] "Rows"</div><div class='input'><span class='no'>x</span><span class='kw'>[[</span><span class='st'>"ShowDimNames"</span>]] <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Rows"</span>, <span class='st'>"Columns"</span>)
 
 <span class='co'>##################</span>
 <span class='co'># For developers #</span>
 <span class='co'>##################</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://bioconductor.org/packages/scater'>scater</a></span>)
-<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/mockSCE.html'>mockSCE</a></span>()
-<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/logNormCounts.html'>logNormCounts</a></span>(<span class='kw'>sce</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scater</span>)
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/reexports.html'>mockSCE</a></span>()
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/reexports.html'>logNormCounts</a></span>(<span class='no'>sce</span>)
 
-<span class='kw'>old_cd</span> <span class='op'>&lt;-</span> <span class='fu'>colData</span>(<span class='kw'>sce</span>)
-<span class='fu'>colData</span>(<span class='kw'>sce</span>) <span class='op'>&lt;-</span> <span class='kw'>NULL</span>
+<span class='no'>old_cd</span> <span class='kw'>&lt;-</span> <span class='fu'>colData</span>(<span class='no'>sce</span>)
+<span class='fu'>colData</span>(<span class='no'>sce</span>) <span class='kw'>&lt;-</span> <span class='kw'>NULL</span>
 
 <span class='co'># Spits out a NULL and a warning if there is nothing to plot.</span>
-<span class='kw'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'>.cacheCommonInfo</span>(<span class='kw'>x</span>, <span class='kw'>sce</span>)
-<span class='fu'>.refineParameters</span>(<span class='kw'>x</span>, <span class='kw'>sce0</span>)</div><div class='output co'>#&gt; An object of class "ComplexHeatmapPlot"
+<span class='no'>sce0</span> <span class='kw'>&lt;-</span> <span class='fu'>.cacheCommonInfo</span>(<span class='no'>x</span>, <span class='no'>sce</span>)
+<span class='fu'>.refineParameters</span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; An object of class "ComplexHeatmapPlot"
 #&gt; Slot "Assay":
 #&gt; [1] "logcounts"
 #&gt; 
@@ -381,9 +378,9 @@ This will also call the equivalent Panel method.</p></li>
 #&gt; list()
 #&gt; </div><div class='input'>
 <span class='co'># Replaces the default with something sensible.</span>
-<span class='fu'>colData</span>(<span class='kw'>sce</span>) <span class='op'>&lt;-</span> <span class='kw'>old_cd</span>
-<span class='kw'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'>.cacheCommonInfo</span>(<span class='kw'>x</span>, <span class='kw'>sce</span>)
-<span class='fu'>.refineParameters</span>(<span class='kw'>x</span>, <span class='kw'>sce0</span>)</div><div class='output co'>#&gt; An object of class "ComplexHeatmapPlot"
+<span class='fu'>colData</span>(<span class='no'>sce</span>) <span class='kw'>&lt;-</span> <span class='no'>old_cd</span>
+<span class='no'>sce0</span> <span class='kw'>&lt;-</span> <span class='fu'>.cacheCommonInfo</span>(<span class='no'>x</span>, <span class='no'>sce</span>)
+<span class='fu'>.refineParameters</span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; An object of class "ComplexHeatmapPlot"
 #&gt; Slot "Assay":
 #&gt; [1] "logcounts"
 #&gt; 
@@ -488,7 +485,8 @@ This will also call the equivalent Panel method.</p></li>
 #&gt; 
 #&gt; Slot "SelectionHistory":
 #&gt; list()
-#&gt; </div><div class='input'></div></pre>
+#&gt; </div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -504,7 +502,7 @@ This will also call the equivalent Panel method.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
 </div>
 
       </footer>

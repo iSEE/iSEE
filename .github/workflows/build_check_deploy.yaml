@@ -42,6 +42,7 @@ jobs:
         run: |
           remotes::install_deps(dependencies = TRUE, repos = BiocManager::repositories(), Ncpu = 2L)
           remotes::install_cran("rcmdcheck")
+          BiocManager::install("Rtsne", Ncpu = 2L)
         shell: Rscript {0}
 
       - name: Check

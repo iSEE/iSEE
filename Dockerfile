@@ -4,27 +4,11 @@ MAINTAINER kevinrue67@gmail.com
 LABEL authors="kevinrue67@gmail.com" \
     description="Docker image containing the iSEE package in a bioconductor/bioconductor_docker:devel container."
 
-# Set the working directory to /app
-WORKDIR /app
+WORKDIR /home/rstudio/isee
 
-# Copy the current directory contents into the container at /app
-ADD . /app
+COPY --chown=rstudio:rstudio . /home/rstudio/isee
 
-# install libglpk-dev in the Docker image
-RUN apt-get update && \
-    apt-get install -y libglpk-dev && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y libglpk-dev && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install iSEE and dependencies
-RUN Rscript -e "BiocManager::install('iSEE', version = 'devel')"
-
-# Add additional dependencies for the GitHub version
-RUN Rscript -e "BiocManager::install(c('shinyWidgets', 'ComplexHeatmap', 'circlize'), version = 'devel')"
-
-# Reinstall the latest iSEE from GitHub branch master.
-WORKDIR /isee
-RUN git clone https://github.com/iSEE/iSEE.git
-RUN R CMD INSTALL iSEE
-
-CMD R
+RUN Rscript -e "install.packages('Rtsne')"
+RUN Rscript -e "devtools::install('.', dependencies=TRUE, repos = BiocManager::repositories(), build_vignettes = TRUE)"

@@ -781,25 +781,24 @@ setGeneric(".singleSelectionSlots", function(x) standardGeneric(".singleSelectio
 
 #' Generics for row/column metadata plots
 #'
-#' These generics allow subclasses to refine the choices of allowable variables on the x- and y-axes
-#' of a \linkS4class{ColumnDataPlot} or \linkS4class{RowDataPlot}.
-#' This is most useful for restricting the visualization to a subset of variables, e.g.,
-#' only taking log-fold changes in a y-axis of a MA plot.
+#' These generics allow subclasses to refine the choices of allowable variables on the x- and y-axes of a \linkS4class{ColumnDataPlot} or \linkS4class{RowDataPlot}.
+#' This is most useful for restricting the visualization to a subset of variables, e.g., only taking log-fold changes in a y-axis of a MA plot.
 #'
 #' @section Allowable y-axis choices:
-#' \code{.allowableYAxisChoices(x, se)} takes \code{x}, a \linkS4class{Panel} instance,
-#' and \code{se}, the \linkS4class{SummarizedExperiment} object.
+#' \code{.allowableYAxisChoices(x, se)} takes \code{x}, a \linkS4class{Panel} instance; and \code{se}, the \linkS4class{SummarizedExperiment} object.
 #' It is expected to return a character vector containing the names of acceptable variables to show on the y-axis.
-#' For \linkS4class{ColumnDataPlot}s, these should be a subset of the variables in \code{\link{colData}(se)},
-#' while for \linkS4class{RowDataPlot}s, these should be a subset of the variables in \code{\link{rowData}(se)}.
+#' For \linkS4class{ColumnDataPlot}s, these should be a subset of the variables in \code{\link{colData}(se)}, while for \linkS4class{RowDataPlot}s, these should be a subset of the variables in \code{\link{rowData}(se)}.
 #'
 #' In practice, it is a good idea to make use of information precomputed by \code{\link{.cacheCommonInfo}}.
 #' For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link{colData}} is valid and discrete or continuous.
 #' This can be intersected with additional requirements in this function.
 #'
+#' Given a constant \code{se}, the output of this function should be constant for all instances of the same panel class.
+#'
 #' @section Allowable x-axis choices:
-#' \code{.allowableXAxisChoices(x, se)} is the same as above but for the variables to show on the x-axis.
+#' \code{.allowableXAxisChoices(x, se)} is the same as above but controls the variables that can be shown on the x-axis.
 #' This need not return the same subset of variables as \code{.allowableYAxisChoices}.
+#' However, again, the output of this function should be constant for all instances of the same class and a constant \code{se}.
 #'
 #' @author Aaron Lun
 #'

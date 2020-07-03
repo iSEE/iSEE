@@ -166,7 +166,8 @@ For generating the output:
 \itemize{
 \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the plot;
 \code{plot}, a \link{ggplot} object;
-and \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot}.
+\code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot};
+and \code{varname}, a string containing the name of the variable in \code{commands} that was used to obtain \code{contents}.
 \item \code{\link{.generateDotPlot}(x, labels, envir)} returns a list containing \code{plot} and \code{commands}, as described above.
 This is called within \code{\link{.generateOutput}} for all \linkS4class{DotPlot} instances by default.
 Methods are also guaranteed to generate a \code{dot.plot} variable in \code{envir} containing the \link{ggplot} object corresponding to \code{plot}.

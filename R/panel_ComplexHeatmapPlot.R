@@ -437,7 +437,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     annotation_legend_side <- sprintf('annotation_legend_side=%s', deparse(tolower(x[[.plotLegendPosition]])))
     all_cmds[["draw"]] <- sprintf("ComplexHeatmap::draw(hm, %s, %s)", heatmap_legend_side, annotation_legend_side)
 
-    list(commands=all_cmds, contents=plot_env$plot.data, plot=plot_out)
+    list(commands=all_cmds, contents=plot_env$plot.data, plot=plot_out, varname="plot.data")
 })
 
 #' @export
@@ -450,8 +450,6 @@ setMethod(".renderOutput", "ComplexHeatmapPlot", function(x, se, output, pObject
     # nocov start
     output[[plot_name]] <- renderPlot({
         p.out <- .retrieveOutput(plot_name, se, pObjects, rObjects)
-        pObjects$varname[[plot_name]] <- "plot.data"
-
         tmp.env <- new.env()
         tmp.env$hm <- p.out$plot
         eval(parse(text=p.out$commands[["draw"]]), envir=tmp.env)

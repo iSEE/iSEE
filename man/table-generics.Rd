@@ -10,7 +10,8 @@ Generic to control the creation of a data.frame to show in the \code{\link{datat
 }
 \section{Constructing the table}{
 
-In \code{.generateTable(x, envir)}, the following arguments are required:
+\code{.generateTable(x, envir)} generates the data.frame to use in the \code{\link{datatable}} widget.
+The following arguments are required:
 \itemize{
 \item \code{x}, an instance of a Table subclass.
 \item \code{envir}, the evaluation environment in which the data.frame is to be constructed.

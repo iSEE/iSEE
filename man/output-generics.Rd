@@ -61,8 +61,8 @@ for plotting panels, the vector should also include code to create the plot.
 This is used for code reporting, and again, is only strictly necessary if the panel is a potential transmitter.
 }
 
-We strongly recommend calling \code{\link{.retrieveOutput}} within the rendering expression, which will automatically perform tasks 1-4 above, rather than calling \code{\link{.generateOutput}} manually.
-This means that the only extra work required in the implementation of \code{\link{.renderOutput}} is to perform task 5 and to choose an appropriate rendering function.
+We strongly recommend calling \code{\link{.retrieveOutput}} within the rendering expression, which will automatically perform all of the tasks above, rather than calling \code{\link{.generateOutput}} manually.
+This means that the only extra work required in the implementation of \code{\link{.renderOutput}} is to choose an appropriate rendering function to encapsulate the rendering expression and assign the output of that function to \code{output}.
 }
 
 \section{Generating content}{

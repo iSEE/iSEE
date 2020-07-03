@@ -93,7 +93,7 @@ setGeneric(".hideInterface", function(x, field) standardGeneric(".hideInterface"
 
 #' Generic for the panel observers
 #'
-#' An overview of the generic for defining the panel observers, along with recommendations on its implementation.
+#' The workhorse generic for defining the Shiny observers for a given panel, along with recommendations on its implementation.
 #'
 #' @section Creating parameter observers:
 #' In \code{.createObservers(x, se, input, session, pObjects, rObjects)}, the required arguments are:
@@ -108,7 +108,8 @@ setGeneric(".hideInterface", function(x, field) standardGeneric(".hideInterface"
 #' }
 #'
 #' Methods for this generic are expected to set up all observers required to respond to changes in the interface elements set up by \code{\link{.defineInterface}}.
-#' Recall that each interface element has an ID of the form of \code{PANEL_SLOT}, where \code{PANEL} is the panel name and \code{SLOT} is the name of the slot modified by the interface element; so observers should respond to those names in \code{input}.
+#' Recall that each interface element has an ID of the form of \code{PANEL_SLOT}, where \code{PANEL} is the panel name (from \code{\link{.getEncodedName}}) and \code{SLOT} is the name of the slot modified by the interface element.
+#' Thus, observers should respond to changes in those elements in \code{input}.
 #' The return value of this generic is not used; only the side-effect of observer set-up is relevant.
 #'
 #' It is the developer's responsibility to call \code{\link{callNextMethod}} to set up the observers required by the parent class.
@@ -127,15 +128,14 @@ setGeneric(".hideInterface", function(x, field) standardGeneric(".hideInterface"
 #' In fact, any changes must go through \code{pObjects$memory} before they change the output in \code{\link{.renderOutput}};
 #' there is no direct interaction between \code{input} and \code{output} in this framework.
 #'
+#' We suggest using \code{\link{createProtectedParameterObservers}} and \code{\link{createUnprotectedParameterObservers}}, which create simple observers that will update the memory in response to changes in the UI elements.
+#'
 #' @section Triggering re-rendering:
-#' To trigger re-rendering of an output, observers should call \code{\link{.requestUpdate}(PANEL, rObjects)},
-#' where \code{PANEL} is the name of the current panel.
+#' To trigger re-rendering of an output, observers should call \code{\link{.requestUpdate}(PANEL, rObjects)} where \code{PANEL} is the name of the current panel
 #' This will request a re-rendering of the output with no additional side effects and is most useful for responding to aesthetic parameters.
 #'
-#' In some cases, changes to some parameters may invalidate existing multiple selections,
-#' e.g., brushes and lassos are no longer valid if the variable on the axes are altered.
-#' Observers responding to such changes should instead call \code{\link{.requestCleanUpdate}},
-#' which will destroy all existing selections in order to avoid misleading conclusions.
+#' In some cases, changes to some parameters may invalidate existing multiple selections, e.g., brushes and lassos are no longer valid if the variable on the axes are altered.
+#' Observers responding to such changes should instead call \code{\link{.requestCleanUpdate}(PANEL, pObjects, rObjects)}, which will destroy all existing selections in order to avoid misleading conclusions.
 #'
 #' @aliases .createObservers
 #' @author Aaron Lun

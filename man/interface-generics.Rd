@@ -44,8 +44,7 @@ Each element's ID should still follow the \code{PANEL_SLOT} pattern described ab
 
 This generic aims to provide a simpler alternative to specializing \code{.defineInterface} for the most common use case.
 New panels can write methods for this generic to add their own interface elements for altering the contents of the panel, without needing to reimplement other UI elements in the parent class' \code{.defineInterface} method.
-Indeed, \code{\link{.defineInterface,Panel-method}} will simply call \code{.defineDataInterface} to populate the data parameter box.
-However, there is no obligation to write a method for this generic if one is planning to write a method for the more general \code{.defineInterface}.
+Conversely, there is no obligation to write a method for this generic if one is planning to specialize \code{.defineInterface}.
 
 It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
 }

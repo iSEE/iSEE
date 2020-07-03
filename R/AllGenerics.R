@@ -617,8 +617,7 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' @title Generics for controlling multiple selections
 #'
 #' @description
-#' A panel can create a multiple selection on either the rows or columns
-#' and transmit this selection to another panel to affect its set of displayed points.
+#' A panel can create a multiple selection on either the rows or columns and transmit this selection to another panel to affect its set of displayed points.
 #' For example, users can brush on a \linkS4class{DotPlot}s to select a set of points, and then the panel can transmit the identities of those points to another panel for highlighting.
 #'
 #' This suite of generics controls the behavior of these multiple selections.
@@ -630,12 +629,11 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #'
 #' @section Specifying the active selection:
 #' \code{.multiSelectionActive(x)} should return some structure containing all parameters required to identify all points in the active multiple selection of \code{x}.
+#' For example, the \linkS4class{DotPlot} method for this generic would return the contents of the \code{BrushData} slot, usually a list containing a Shiny brush or lasso waypoints for \linkS4class{DotPlot} classes.
 #' If \code{.multiSelectionActive(x)} returns \code{NULL}, \code{x} is assumed to have no active multiple selection.
 #'
 #' The active selection is considered to be the one that can be directly changed by the user, as compared to saved selections that are not modifiable (other than being deleted on a first-in-last-out basis).
 #' This generic is primarily used to bundle up selection parameters to be stored in the \code{SelectionHistory} slot when the user saves the current active selection.
-#'
-#' As an example, in \linkS4class{DotPlot}s, the method for this generic would return the contents of the \code{BrushData} slot.
 #'
 #' @section Evaluating the selection:
 #' \code{.multiSelectionCommands(x, index)} is expected to return a character vector of commands to generate a character vector of row or column names in the desired multiple selection of \code{x}.
@@ -658,10 +656,10 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #'
 #' @section Determining the available points for selection:
 #' \code{.multiSelectionAvailable(x, contents)} is expected to return an integer scalar specifying the number of points available for selection in the the current instance of the panel \code{x}.
-#' This defaults to \code{nrow(contents)} for all \linkS4class{Panel} subclasses,
-#' assuming that \code{contents} is a data.frame where each row represents a point.
-#' If not, this method needs to be specialized in order to return an accurate total of available points,
-#' which is ultimately used to compute the percentage selected in the multiple selection information panels.
+#' The \code{contents} field in the output of \code{\link{.generateOutput}} is passed to the \code{contents} argument of this generic.
+#'
+#' The default method for this generic returns \code{nrow(contents)} for all \linkS4class{Panel} subclasses, assuming that \code{contents} is a data.frame where each row represents a point.
+#' If not, this method needs to be specialized in order to return an accurate total of available points, which is ultimately used to compute the percentage selected in the multiple selection information panels.
 #'
 #' @section Destroying selections:
 #' \code{.multiSelectionClear(x)} should return \code{x} after removing the active selection, i.e., so that nothing is selected.
@@ -669,7 +667,7 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' For example, a brush or lasso made on a PCA plot in \linkS4class{ReducedDimensionPlot}s would not make sense after switching to t-SNE coordinates, so the application will automatically erase those selections to avoid misleading conclusions.
 #'
 #' @section Responding to selections:
-#' These generics pertain to how \code{x} responds to a transmitted selection, not how \code{x} itself transmits selections.
+#' These generics control how \code{x} responds to a transmitted multiple selection, not how \code{x} itself transmits selections.
 #'
 #' \code{.multiSelectionRestricted(x)} should return a logical scalar indicating whether \code{x}'s displayed contents will be restricted to the selection transmitted from \emph{another panel}.
 #' This is used to determine whether child panels of \code{x} need to be re-rendered when \code{x}'s transmitter changes its multiple selection.

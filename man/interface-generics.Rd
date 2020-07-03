@@ -12,7 +12,8 @@ An overview of the generics for defining the user interface (UI) for each panel 
 }
 \section{Defining the parameter interface}{
 
-In \code{.defineInterface(x, se, select_info)}, the required arguments are:
+\code{.defineInterface(x, se, select_info)} defines the UI for modifying all parameters for a given panel.
+The required arguments are:
 \itemize{
 \item \code{x}, an instance of a \linkS4class{Panel} class.
 \item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
@@ -27,43 +28,41 @@ Methods for this generic are expected to return a list of \code{\link{collapseBo
 Each parameter box can contain arbitrary numbers of additional UI elements,
 each of which is expected to modify one slot of \code{x} upon user interaction.
 
-The ID of each interface element should follow the form of \code{PANEL_SLOT} where \code{PANEL} is the panel name (from \code{\link{.getEncodedName}(x)}) and \code{SLOT} is the name of the slot modified by the interface element,
-e.g., \code{"ReducedDimensionPlot1_Type"}.
+The ID of each interface element should follow the form of \code{PANEL_SLOT} where \code{PANEL} is the panel name (from \code{\link{.getEncodedName}(x)}) and \code{SLOT} is the name of the slot modified by the interface element, e.g., \code{"ReducedDimensionPlot1_Type"}.
 Each interface element should have an equivalent observer in \code{\link{.createObservers}} unless they are hidden by \code{\link{.hideInterface}} (see below).
 
 It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
-Refer to the contract for each \linkS4class{Panel} class to determine what is already provided by each parent.
 }
 
 \section{Defining the data parameter interface}{
 
-In \code{.defineDataInterface(x, se, select_info)}, the required arguments are the same as those for \code{.defineInterface}.
+\code{.defineDataInterface(x, se, select_info)} defines the UI for data-related (i.e., non-aesthetic) parameters.
+The required arguments are the same as those for \code{.defineInterface}.
 Methods for this generic are expected to return a list of UI elements for altering data-related parameters,
 which are automatically placed inside the \dQuote{Data parameters} collapsible box.
 Each element's ID should still follow the \code{PANEL_SLOT} pattern described above.
 
-This method aims to provide a simpler alternative to specializing \code{.defineInterface} for the most common use case,
-where new panels wish to add their own interface elements for altering the contents of the panel.
-In fact, \code{\link{.defineInterface,Panel-method}} will simply call \code{.defineDataInterface} to populate the data parameter box.
+This generic aims to provide a simpler alternative to specializing \code{.defineInterface} for the most common use case.
+New panels can write methods for this generic to add their own interface elements for altering the contents of the panel, without needing to reimplement other UI elements in the parent class' \code{.defineInterface} method.
+Conversely, there is no obligation to write a method for this generic if one is planning to specialize \code{.defineInterface}.
 
 It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
-Refer to the contract for each \linkS4class{Panel} class to determine what is already provided by each parent.
 }
 
 \section{Hiding interface elements}{
 
-In \code{.hideInterface(x, field)}, the required arguments are:
+\code{.hideInterface(x, field)} determines whether certain UI elements should be hidden from the user.
+The required arguments are:
 \itemize{
 \item \code{x}, an instance of a \linkS4class{Panel} class.
 \item \code{field}, string containing the name of a slot of \code{x}.
 }
 
 Methods for this generic are expected to return a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden from the user.
-This is useful for hiding UI elements that cannot be changed or have no effect.
+This is useful for hiding UI elements that cannot be changed or have no effect, especially in highly specialized subclasses where some concepts in the parent class may no longer be relevant.
 
 It is the developer's responsibility to call \code{\link{callNextMethod}} to hide the same interface elements as parent classes.
 This is not strictly required if one wishes to expose previously hidden elements.
-Refer to the contract for each \linkS4class{Panel} class to determine what is already provided by each parent.
 }
 
 \author{

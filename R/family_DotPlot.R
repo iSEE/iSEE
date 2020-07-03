@@ -137,7 +137,8 @@
 #' \itemize{
 #' \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the plot;
 #' \code{plot}, a \link{ggplot} object;
-#' and \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot}.
+#' \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot};
+#' and \code{varname}, a string containing the name of the variable in \code{commands} that was used to obtain \code{contents}.
 #' \item \code{\link{.generateDotPlot}(x, labels, envir)} returns a list containing \code{plot} and \code{commands}, as described above.
 #' This is called within \code{\link{.generateOutput}} for all \linkS4class{DotPlot} instances by default.
 #' Methods are also guaranteed to generate a \code{dot.plot} variable in \code{envir} containing the \link{ggplot} object corresponding to \code{plot}.
@@ -409,9 +410,7 @@ setMethod(".renderOutput", "DotPlot", function(x, se, output, pObjects, rObjects
 
     # nocov start
     output[[plot_name]] <- renderPlot({
-        p.out <- .retrieveOutput(plot_name, se, pObjects, rObjects)
-        pObjects$varname[[plot_name]] <- "plot.data"
-        p.out$plot
+        .retrieveOutput(plot_name, se, pObjects, rObjects)$plot
     })
     # nocov end
 
@@ -561,7 +560,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
     plot_out <- .generateDotPlot(x, all_labels, plot_env)
     all_cmds$plot <- plot_out$commands
 
-    list(commands=all_cmds, contents=panel_data, plot=plot_out$plot)
+    list(commands=all_cmds, contents=panel_data, plot=plot_out$plot, varname="plot.data")
 })
 
 #' @export

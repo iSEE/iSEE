@@ -32,7 +32,8 @@
 #' \item \code{\link{.renderOutput}(x, se, output, pObjects, rObjects)} will add a rendered \code{\link{datatable}} object to \code{output}.
 #' This will also call the equivalent \linkS4class{Panel} method to render the panel information testboxes.
 #' \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the table;
-#' and \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot}.
+#' \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot};
+#' and \code{varname}, a string specifying the name of the variable in \code{commands} used to generate \code{contents}.
 #' \item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} will create a CSV file containing the current table, and return a string containing the path to that file. 
 #' This assumes that the \code{contents} field returned by \code{\link{.generateOutput}} is a data.frame or can be coerced into one.
 #' }

@@ -41,17 +41,19 @@
 #' @rdname retrieveOutput
 .retrieveOutput <- function(panel_name, se, pObjects, rObjects) {
     .trackUpdate(panel_name, rObjects)
+    curpanel <- pObjects$memory[[panel_name]]
 
     if (length(pObjects$cached[[panel_name]])!=0L) {
         output <- pObjects$cached[[panel_name]]
         pObjects$cached[panel_name] <- list(NULL)
     } else {
-        output <- .generateOutput(pObjects$memory[[panel_name]], se, 
+        output <- .generateOutput(curpanel, se, 
             all_memory=pObjects$memory, all_contents=pObjects$contents)
     }
 
     pObjects$commands[[panel_name]] <- output$commands
     pObjects$contents[[panel_name]] <- output$contents
+    pObjects$varname[[panel_name]] <- output$varname # can be NULL for non-transmitting panels.
 
     output
 }

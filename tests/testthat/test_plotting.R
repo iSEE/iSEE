@@ -27,7 +27,7 @@ test_that(".make_redDimPlot/.scatter_plot produce a valid list",{
 
     # return value is a named list
     expect_type(p.out, "list")
-    expect_named(p.out, c("commands", "contents", "plot"))
+    expect_named(p.out, c("commands", "contents", "plot", "varname"))
 
     # cmd value is a named list
     expect_type(p.out$commands, "list")
@@ -65,7 +65,7 @@ test_that(".make_colDataPlot/.scatter_plot produce a valid list",{
 
     # return value is a named list
     expect_type(p.out, "list")
-    expect_named(p.out, c("commands", "contents", "plot"))
+    expect_named(p.out, c("commands", "contents", "plot", "varname"))
 
     # cmd value is a named list
     expect_type(p.out$commands, "list")
@@ -100,7 +100,7 @@ test_that(".make_colDataPlot/.violin_plot produce a valid list",{
 
     # return value is a named list
     expect_type(p.out, "list")
-    expect_named(p.out, c("commands", "contents", "plot"))
+    expect_named(p.out, c("commands", "contents", "plot", "varname"))
 
     # cmd value is a named list
     expect_type(p.out$commands, "list")
@@ -138,7 +138,7 @@ test_that(".make_colDataPlot/.square_plot produce a valid list",{
 
     # return value is a named list
     expect_type(p.out, "list")
-    expect_named(p.out, c("commands", "contents", "plot"))
+    expect_named(p.out, c("commands", "contents", "plot", "varname"))
 
     # cmd value is a named list
     expect_type(p.out$commands, "list")
@@ -179,7 +179,7 @@ test_that(".make_rowDataPlot/.scatter_plot produce a valid list",{
 
     # return value is a named list
     expect_type(p.out, "list")
-    expect_named(p.out, c("commands", "contents", "plot"))
+    expect_named(p.out, c("commands", "contents", "plot", "varname"))
 
     # cmd value is a named list
     expect_type(p.out$commands, "list")
@@ -223,7 +223,7 @@ test_that(".make_rowDataPlot/.violin_plot produce a valid list",{
 
     # return value is a named list
     expect_type(p.out, "list")
-    expect_named(p.out, c("commands", "contents", "plot"))
+    expect_named(p.out, c("commands", "contents", "plot", "varname"))
 
     # cmd value is a named list
     expect_type(p.out$commands, "list")
@@ -271,7 +271,7 @@ test_that(".make_rowDataPlot/.square_plot produce a valid list",{
 
     # return value is a named list
     expect_type(p.out, "list")
-    expect_named(p.out, c("commands", "contents", "plot"))
+    expect_named(p.out, c("commands", "contents", "plot", "varname"))
 
     # cmd value is a named list
     expect_type(p.out$commands, "list")
@@ -300,7 +300,7 @@ test_that(".make_rowDataPlot/.square_plot produce a valid xy with color",{
 
     # return value is a named list
     expect_type(p.out, "list")
-    expect_named(p.out, c("commands", "contents", "plot"))
+    expect_named(p.out, c("commands", "contents", "plot", "varname"))
 
     # cmd value is a named list
     expect_type(p.out$commands, "list")
@@ -332,7 +332,7 @@ test_that(".make_featAssayPlot/.violin_plot produce a valid list",{
 
     # return value is a named list
     expect_type(p.out, "list")
-    expect_named(p.out, c("commands", "contents", "plot"))
+    expect_named(p.out, c("commands", "contents", "plot", "varname"))
 
     # cmd value is a named list
     expect_type(p.out$commands, "list")
@@ -404,7 +404,7 @@ test_that(".make_sampAssayPlot works with X covariate set to None", {
 
     # return value is a named list
     expect_type(p.out, "list")
-    expect_named(p.out, c("commands", "contents", "plot"))
+    expect_named(p.out, c("commands", "contents", "plot", "varname"))
 
     # cmd value is a named list
     expect_type(p.out$commands, "list")

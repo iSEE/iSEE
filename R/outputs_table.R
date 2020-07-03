@@ -36,7 +36,6 @@
 
         t.out <- .retrieveOutput(panel_name, se, pObjects, rObjects)
         full_tab <- t.out$contents
-        pObjects$varname[[panel_name]] <- "tab"
 
         chosen <- param_choices[[.TableSelected]]
         search <- param_choices[[.TableSearch]]
@@ -107,7 +106,8 @@
 #'
 #' @return
 #' A list containing \code{commands}, a list of the commands required to produce the data.frame;
-#' and \code{contents}, a data.frame of the current contents of the Table.
+#' \code{contents}, a data.frame of the current contents of the Table;
+#' and \code{varname}, a string containing the name of the variable in \code{commands} used to generate \code{contents}.
 #'
 #' @author Aaron Lun
 #'
@@ -122,5 +122,5 @@
     # Creating the table and storing it.
     tab_cmds <- .generateTable(x, eval_env)
 
-    list(commands=list(select_cmds, tab_cmds), contents=eval_env$tab)
+    list(commands=list(select_cmds, tab_cmds), contents=eval_env$tab, varname="tab")
 }

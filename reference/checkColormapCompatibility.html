@@ -208,10 +208,22 @@ in the ExperimentColorMap object exist in the SingleCellExperiment object.</p>
 <span class='co'># Example SingleCellExperiment ----</span>
 
 <span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scRNAseq</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span>(<span class='kw'>assays</span><span class='kw'>=</span><span class='st'>"tophat_counts"</span>)</div><div class='output co'>#&gt; <span class='message'>using temporary cache /tmp/RtmpxfiM9a/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2020-06-26</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='input'>
+<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span>(<span class='kw'>assays</span><span class='kw'>=</span><span class='st'>"tophat_counts"</span>)</div><div class='output co'>#&gt; <span class='message'>using temporary cache /tmp/RtmpWfVDnH/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2020-07-02</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='warning'>Warning: download failed</span>
+#&gt; <span class='warning'>  web resource path: ‘https://experimenthub.bioconductor.org/fetch/2573’</span>
+#&gt; <span class='warning'>  local file path: ‘/tmp/RtmpWfVDnH/BiocFileCache/669832308b44_2573’</span>
+#&gt; <span class='warning'>  reason: Internal Server Error (HTTP 500).</span></div><div class='output co'>#&gt; <span class='warning'>Warning: bfcadd() failed; resource removed</span>
+#&gt; <span class='warning'>  rid: BFC3</span>
+#&gt; <span class='warning'>  fpath: ‘https://experimenthub.bioconductor.org/fetch/2573’</span>
+#&gt; <span class='warning'>  reason: download failed</span></div><div class='output co'>#&gt; <span class='warning'>Warning: download failed</span>
+#&gt; <span class='warning'>  hub path: ‘https://experimenthub.bioconductor.org/fetch/2573’</span>
+#&gt; <span class='warning'>  cache resource: ‘EH2557 : 2573’</span>
+#&gt; <span class='warning'>  reason: bfcadd() failed; see warnings()</span></div><div class='output co'>#&gt; <span class='error'>Error: failed to load resource</span>
+#&gt; <span class='error'>  name: EH2557</span>
+#&gt; <span class='error'>  title: Allen brain Tophat counts</span>
+#&gt; <span class='error'>  reason: 1 resources failed to download</span></div><div class='input'>
 <span class='co'># Test for compatibility ----</span>
 
-<span class='fu'>checkColormapCompatibility</span>(<span class='no'>ecm</span>, <span class='no'>sce</span>)</div><div class='output co'>#&gt; NULL</div><div class='input'>
+<span class='fu'>checkColormapCompatibility</span>(<span class='no'>ecm</span>, <span class='no'>sce</span>)</div><div class='output co'>#&gt; <span class='error'>Error in checkColormapCompatibility(ecm, sce): object 'sce' not found</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -284,7 +284,8 @@ This will also call the equivalent Panel method.</p></li>
 <p>For generating the output:</p><ul>
 <li><p><code>.generateOutput(x, se, all_memory, all_contents)</code> returns a list containing <code>contents</code>, a data.frame with one row per point currently present in the plot;
 <code>plot</code>, a ggplot object;
-and <code>commands</code>, a list of character vector containing the R commands required to generate <code>contents</code> and <code>plot</code>.</p></li>
+<code>commands</code>, a list of character vector containing the R commands required to generate <code>contents</code> and <code>plot</code>;
+and <code>varname</code>, a string containing the name of the variable in <code>commands</code> that was used to obtain <code>contents</code>.</p></li>
 <li><p><code>.generateDotPlot(x, labels, envir)</code> returns a list containing <code>plot</code> and <code>commands</code>, as described above.
 This is called within <code>.generateOutput</code> for all DotPlot instances by default.
 Methods are also guaranteed to generate a <code>dot.plot</code> variable in <code>envir</code> containing the ggplot object corresponding to <code>plot</code>.</p></li>

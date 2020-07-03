@@ -188,7 +188,8 @@ This will also call the equivalent Panel method.</p></li>
 <li><p><code>.renderOutput(x, se, output, pObjects, rObjects)</code> will add a rendered <code>datatable</code> object to <code>output</code>.
 This will also call the equivalent Panel method to render the panel information testboxes.</p></li>
 <li><p><code>.generateOutput(x, se, all_memory, all_contents)</code> returns a list containing <code>contents</code>, a data.frame with one row per point currently present in the table;
-and <code>commands</code>, a list of character vector containing the R commands required to generate <code>contents</code> and <code>plot</code>.</p></li>
+<code>commands</code>, a list of character vector containing the R commands required to generate <code>contents</code> and <code>plot</code>;
+and <code>varname</code>, a string specifying the name of the variable in <code>commands</code> used to generate <code>contents</code>.</p></li>
 <li><p><code>.exportOutput(x, se, all_memory, all_contents)</code> will create a CSV file containing the current table, and return a string containing the path to that file. 
 This assumes that the <code>contents</code> field returned by <code>.generateOutput</code> is a data.frame or can be coerced into one.</p></li>
 </ul>

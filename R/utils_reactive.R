@@ -4,10 +4,8 @@
 #'
 #' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
 #' @param panel_name String containing the panel name.
-#' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
-#' @param update_output A logical scalar indicating whether to call \code{.requestUpdate} as well.
 #'
 #' @return
 #' The output of running \code{\link{.generateOutput}} for the current panel.
@@ -53,7 +51,6 @@
 #'
 #' Request a re-rendering of the \linkS4class{Panel} output via reactive variables.
 #'
-#' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
 #' @param panel_name String containing the panel name.
 #' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.

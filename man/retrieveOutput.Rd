@@ -14,10 +14,6 @@
 \item{pObjects}{An environment containing global parameters generated in the \code{\link{iSEE}} app.}
 
 \item{rObjects}{A reactive list of values generated in the \code{\link{iSEE}} app.}
-
-\item{session}{The Shiny session object from the server function.}
-
-\item{update_output}{A logical scalar indicating whether to call \code{.requestUpdate} as well.}
 }
 \value{
 The output of running \code{\link{.generateOutput}} for the current panel.

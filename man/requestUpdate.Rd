@@ -28,8 +28,6 @@
 \item{session}{The Shiny session object from the server function.}
 
 \item{update_output}{A logical scalar indicating whether to call \code{.requestUpdate} as well.}
-
-\item{se}{A \linkS4class{SummarizedExperiment} object containing the current dataset.}
 }
 \value{
 \code{.requestUpdate} will modify \code{rObjects} to request a re-rendering of the specified panel.

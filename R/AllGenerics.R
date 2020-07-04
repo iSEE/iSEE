@@ -233,7 +233,11 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' The output list may contain any number of other fields that can be used by \code{\link{.renderOutput}} but are otherwise ignored.
 #'
 #' We suggest implementing this method using \code{\link{eval}(\link{parse}(text=...))} calls, which enables easy construction and evaluation of the commands and contents at the same time.
-#' We also strongly recommend the use of the \code{\link{.processMultiSelections}} function for easily processing the multiple selection parameters.
+#' A convenient wrapper for this call is provided by the \code{\link{.textEval}} utility.
+#'
+#' The \code{all_memory} and \code{all_contents} arguments are provided for the sole purpose of determining what multiple selections are being received by \code{x}.
+#' We strongly recommend passing them onto \code{\link{.processMultiSelections}} to do the heavy lifting.
+#' It would be unusual and inadvisable to use these arguments for any other information sharing across panels.
 #'
 #' @section Exporting content:
 #' \code{.exportOutput(x, se, all_memory, all_contents)} converts the panel output into a downloadable form.

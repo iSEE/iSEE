@@ -1,6 +1,7 @@
 #' The RowDataTable panel
 #'
 #' The RowDataTable is a panel class for creating a \linkS4class{ColumnTable} where the value of the table is defined as the \code{\link{rowData}} of the \linkS4class{SummarizedExperiment}.
+#' It provides functionality to extract the \code{\link{rowData}} to coerce it into an appropriate data.frame in preparation for rendering.
 #'
 #' @section Slot overview:
 #' This class inherits all slots from its parent \linkS4class{ColumnTable} and \linkS4class{Table} classes.

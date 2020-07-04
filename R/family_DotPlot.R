@@ -1,7 +1,7 @@
 #' The DotPlot virtual class
 #'
 #' The DotPlot is a virtual class for all panels where each row or column in the \linkS4class{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link{ggplot} plot.
-#' It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection.
+#' It provides slots and methods to create the plot, to control various aesthetics of the dots, and to store the brush or lasso selection.
 #'
 #' @section Slot overview:
 #' The following slots are relevant to coloring of the points:

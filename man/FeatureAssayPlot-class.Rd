@@ -15,7 +15,7 @@
 \title{The FeatureAssayPlot panel}
 \description{
 The FeatureAssayPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents the expression of a feature of interest, using the \code{\link{assay}} values of the \linkS4class{SummarizedExperiment}.
-It provides slots and methods for specifying which feature to use and what to plot on the x-axis.
+It provides slots and methods to specify the feature and what to plot on the x-axis, as well as a method to actually create a data.frame containing those pieces of data in preparation for plotting.
 }
 \section{Slot overview}{
 

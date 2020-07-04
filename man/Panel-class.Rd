@@ -27,9 +27,7 @@
 \title{The Panel virtual class}
 \description{
 The Panel is a virtual base class for all \pkg{iSEE} panels.
-It provides slots and methods to control the height and width of each panel,
-as well as to control the choice of transmitting panels from which to receive a multiple selection
-(i.e., a selection of multiple rows or columns from a \linkS4class{SingleCellExperiment}).
+It provides slots and methods to control the height and width of each panel, as well as functionality to control the choice of \dQuote{transmitting} panels from which to receive a multiple row/column selection.
 }
 \section{Slot overview}{
 

@@ -19,7 +19,8 @@
 \title{The RowDotPlot virtual class}
 \description{
 The RowDotPlot is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link{ggplot} plot.
-It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection.
+It provides slots and methods to extract \code{\link{rowData}} fields to control the per-point aesthetics on the plot.
+This panel will transmit row identities in both its single and multiple selections, and it can receive multiple row selections but not multiple column selections.
 }
 \section{Slot overview}{
 
@@ -89,7 +90,7 @@ Unless explicitly specialized above, all methods from the parent classes \linkS4
 
 \section{Subclass expectations}{
 
-Subclasses are expected to implement methods for:
+Subclasses are expected to implement methods for, at least:
 \itemize{
 \item \code{\link{.generateDotPlotData}}
 \item \code{\link{.fullName}}

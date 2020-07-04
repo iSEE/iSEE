@@ -1,7 +1,7 @@
 #' The ComplexHeatmapPlot panel
 #'
 #' The ComplexHeatmapPlot is a panel class for creating a \linkS4class{Panel} that displays an assay of a \linkS4class{SummarizedExperiment} object as a \code{\link{Heatmap}} with features as rows and samples and columns, respectively.
-#' It provides slots and methods for specifying which assay to display in the main heatmap, and which metadata variables to display as row and column heatmap annotations.
+#' It provides slots and methods for specifying the features of interest, which assay to display in the main heatmap, any transformations to perform on the data, and which metadata variables to display as row and column heatmap annotations.
 #'
 #' @section Slot overview:
 #' The following slots control the assay that is used:

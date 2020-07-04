@@ -1,6 +1,6 @@
-#' Reactive manipulations for Panel output
+#' Retrieve the panel output
 #'
-#' Respond to or request a re-rendering of the \linkS4class{Panel} output via reactive variables.
+#' Retrieve the results of a previous \code{\link{.generateOutput}} call on this panel.
 #'
 #' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
 #' @param panel_name String containing the panel name.
@@ -10,32 +10,23 @@
 #' @param update_output A logical scalar indicating whether to call \code{.requestUpdate} as well.
 #'
 #' @return
-#' \code{.retrieveOutput} will return the output of running \code{\link{.generateOutput}} for the current panel.
-#'
-#' \code{.requestUpdate} will modify \code{rObjects} to request a re-rendering of the specified panel.
-#' \code{.requestCleanUpdate} will also remove all active/saved selections in the chosen panel.
-#'
-#' \code{.requestActiveSelectionUpdate} will modify \code{rObjects} to indicate that the active multiple selection for \code{panel_name} has changed.
-#' If \code{update_output=TRUE}, it will also call request a re-rendering of the panel.
-#' 
-#' All \code{.request*} functions will invisibly return \code{NULL}.
+#' The output of running \code{\link{.generateOutput}} for the current panel.
+#' Several fields in \code{pObjects} are also modified as a side-effect.
 #'
 #' @details
-#' \code{.retrieveOutput} should be used in the expression for rendering output, e.g., in \code{\link{.renderOutput}}.
-#' This takes care of a number of house-keeping tasks required to satisfy \code{\link{.renderOutput}}'s requirements
-#' with respect to updating various fields in \code{pObjects}.
-#' It also improves efficiency by retrieving cached outputs that were used elsewhere in the app.
+#' This function should be used in the rendering expression in \code{\link{.renderOutput}}.
+#' It takes care of a number of house-keeping tasks required to satisfy \code{\link{.renderOutput}}'s requirements, e.g., responding to \code{\link{.requestUpdate}} modifictions to \code{rObjects}, setting the \code{commands} and \code{contents} and \code{varname} in \code{pObjects}.
 #'
-#' \code{.requestUpdate} should be used in various observers to request a re-rendering of the panel,
-#' usually in response to user-driven parameter changes in \code{\link{.createObservers}}.
-#'
-#' \code{.requestCleanUpdate} is used for changes to protected parameters that invalidate existing multiple selections,
-#' e.g., if the coordinates change in a \linkS4class{DotPlot}, existing brushes and lassos are usually not applicable.
+#' This function will attempt to retrieve the cached output of \code{\link{.generateOutput}} if it was used elsewhere in the app.
+#' After retrieval, the cached value is wiped to ensure that it does not go stale.
+#' If no cached value is found, \code{\link{.generateOutput}} is called directly.
 #'
 #' @author Aaron Lun
 #'
 #' @seealso
-#' \code{\link{.createProtectedParameterObservers}}, for examples where the update-requesting functions are used.
+#' \code{\link{.renderOutput}}, where this function should be called.
+#'
+#' \code{\link{.generateOutput}}, which is called by this function.
 #'
 #' @export
 #' @rdname retrieveOutput
@@ -58,15 +49,50 @@
     output
 }
 
+#' Request Panel updates
+#'
+#' Request a re-rendering of the \linkS4class{Panel} output via reactive variables.
+#'
+#' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' @param panel_name String containing the panel name.
+#' @param session The Shiny session object from the server function.
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#' @param update_output A logical scalar indicating whether to call \code{.requestUpdate} as well.
+#'
+#' @return
+#' \code{.requestUpdate} will modify \code{rObjects} to request a re-rendering of the specified panel.
+#'
+#' \code{.requestCleanUpdate} will also remove all active/saved selections in the chosen panel.
+#'
+#' \code{.requestActiveSelectionUpdate} will modify \code{rObjects} to indicate that the active multiple selection for \code{panel_name} has changed.
+#' If \code{update_output=TRUE}, it will also request a re-rendering of the panel.
+#' 
+#' All functions will invisibly return \code{NULL}.
+#'
+#' @details
+#' \code{.requestUpdate} should be used in various observers to request a re-rendering of the panel,
+#' usually in response to user-driven parameter changes in \code{\link{.createObservers}}.
+#'
+#' \code{.requestCleanUpdate} is used for changes to protected parameters that invalidate existing multiple selections,
+#' e.g., if the coordinates change in a \linkS4class{DotPlot}, existing brushes and lassos are usually not applicable.
+#'
+#' \code{.requestActiveSelectionUpdate} should be used in the observer expression that implements the panel's multiple selection mechanism.
+#'
+#' @author Aaron Lun
+#'
+#' @seealso
+#' \code{\link{.createProtectedParameterObservers}}, for examples where the update-requesting functions are used.
+#'
 #' @export
-#' @rdname retrieveOutput
+#' @rdname requestUpdate
 .requestUpdate <- function(panel_name, rObjects) {
     .mark_panel_as_modified(panel_name, character(0), rObjects)
     invisible(NULL)
 }
 
 #' @export
-#' @rdname retrieveOutput
+#' @rdname requestUpdate
 .requestCleanUpdate <- function(panel_name, pObjects, rObjects) {
     accumulated <- character(0)
     if (.multiSelectionHasActive(pObjects$memory[[panel_name]])) {
@@ -82,7 +108,7 @@
 
 
 #' @export
-#' @rdname retrieveOutput
+#' @rdname requestUpdate
 .requestActiveSelectionUpdate <- function(panel_name, session, pObjects, rObjects, update_output=TRUE) {
     .safe_reactive_bump(rObjects, paste0(panel_name, "_", .flagMultiSelect))
 

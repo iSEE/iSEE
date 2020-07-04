@@ -43,7 +43,7 @@ The following arguments are required:
 }
 
 It is expected to attach one or more reactive expressions to \code{output} to render the output element(s) defined by \code{.defineOutput}.
-This is typically done by calling rendering functions like \code{\link{renderPlotOutput}} or the most appropriate equivalent for the panel's output. 
+This is typically done by calling rendering functions like \code{\link{.renderOutput}} or the most appropriate equivalent for the panel's output. 
 The return value of this generic is not used; only the side-effect of the output set-up is relevant.
 
 The rendering expression inside the chosen rendering function is expected to:

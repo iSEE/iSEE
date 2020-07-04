@@ -172,6 +172,8 @@ Here, <code>select_info</code> is a list of two character vectors named <code>ro
 </ul>
 
 <p>A method for any of these generics may also return <code>NULL</code>, in which case the corresponding section of the visual parameter box is completely hidden.</p>
+<p>All of these generics are called by <code>.defineInterface</code> for DotPlot subclasses.
+Developers of subclasses can simply specialize these generics to change the UI instead of reimplementing <code>.defineInterface</code> itself.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

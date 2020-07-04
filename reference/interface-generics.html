@@ -187,7 +187,7 @@ Methods for this generic are expected to return a list of UI elements for alteri
 which are automatically placed inside the &#8220;Data parameters&#8221; collapsible box.
 Each element's ID should still follow the <code>PANEL_SLOT</code> pattern described above.</p>
 <p>This generic aims to provide a simpler alternative to specializing <code>.defineInterface</code> for the most common use case.
-New panels can write methods for this generic to add their own interface elements for altering the contents of the panel, without needing to reimplement other UI elements in the parent class' <code>.defineInterface</code> method.
+New panels can write methods for this generic to add their own interface elements for altering the contents of the panel, without needing to reimplement other UI elements in the parent class's <code>.defineInterface</code> method.
 Conversely, there is no obligation to write a method for this generic if one is planning to specialize <code>.defineInterface</code>.</p>
 <p>It is the developer's responsibility to call <code>callNextMethod</code> to obtain interface elements for parent classes.</p>
     <h2 class="hasAnchor" id="hiding-interface-elements"><a class="anchor" href="#hiding-interface-elements"></a>Hiding interface elements</h2>
@@ -201,7 +201,8 @@ The required arguments are:</p><ul>
 </ul>
 
 <p>Methods for this generic are expected to return a logical scalar indicating whether the interface element corresponding to <code>field</code> should be hidden from the user.
-This is useful for hiding UI elements that cannot be changed or have no effect, especially in highly specialized subclasses where some concepts in the parent class may no longer be relevant.</p>
+This is useful for hiding UI elements that cannot be changed or have no effect, especially in highly specialized subclasses where some concepts in the parent class may no longer be relevant.
+(The alternative would be to reimplement all of the parent's <code>.defineInterface</code> method just to omit a handful of UI elements!)</p>
 <p>It is the developer's responsibility to call <code>callNextMethod</code> to hide the same interface elements as parent classes.
 This is not strictly required if one wishes to expose previously hidden elements.</p>
 

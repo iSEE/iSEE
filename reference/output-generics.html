@@ -187,7 +187,7 @@ The following arguments are required:</p><ul>
 </ul>
 
 <p>It is expected to attach one or more reactive expressions to <code>output</code> to render the output element(s) defined by <code>.defineOutput</code>.
-This is typically done by calling rendering functions like <code>renderPlotOutput</code> or the most appropriate equivalent for the panel's output. 
+This is typically done by calling rendering functions like <code>.renderOutput</code> or the most appropriate equivalent for the panel's output. 
 The return value of this generic is not used; only the side-effect of the output set-up is relevant.</p>
 <p>The rendering expression inside the chosen rendering function is expected to:</p><ol>
 <li><p>Call <code><a href='https://rdrr.io/r/base/force.html'>force(rObjects[[PANEL]])</a></code>, where <code>PANEL</code> is the output of <code>.getEncodedName(x)</code>.

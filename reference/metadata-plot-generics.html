@@ -165,10 +165,11 @@ This is most useful for restricting the visualization to a subset of variables, 
 <p><code>.allowableYAxisChoices(x, se)</code> takes <code>x</code>, a Panel instance; and <code>se</code>, the SummarizedExperiment object.
 It is expected to return a character vector containing the names of acceptable variables to show on the y-axis.
 For ColumnDataPlots, these should be a subset of the variables in <code>colData(se)</code>, while for RowDataPlots, these should be a subset of the variables in <code>rowData(se)</code>.</p>
-<p>In practice, it is a good idea to make use of information precomputed by <code>.cacheCommonInfo</code>.
-For example, <code>.cacheCommonInfo,ColumnDotPlot-method</code> will add vectors specifying whether a variable in the <code>colData</code> is valid and discrete or continuous.
-This can be intersected with additional requirements in this function.</p>
-<p>Given a constant <code>se</code>, the output of this function should be constant for all instances of the same panel class.</p>
+<p>Given a constant <code>se</code>, the output of this function should be constant for all instances of the same panel class.
+As such, it is a good idea to make use of information precomputed by <code>.cacheCommonInfo</code>.
+For example, <code>.cacheCommonInfo,ColumnDotPlot-method</code> will add vectors specifying whether a variable in the <code>colData</code> is valid and discrete or continuous, which can be intersected with any additional requirements in a subclass's method for this generic.</p>
+<p>This generic is called by <code>.defineDataInterface</code> for ColumnDataPlots and RowDataPlots.
+Thus, developers wanting to restrict those choices for subclasses can simply specialize <code>.allowableYAxisChoices</code> rather than reimplementing <code>.defineDataInterface</code>.</p>
     <h2 class="hasAnchor" id="allowable-x-axis-choices"><a class="anchor" href="#allowable-x-axis-choices"></a>Allowable x-axis choices</h2>
 
     

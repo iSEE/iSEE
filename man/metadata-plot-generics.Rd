@@ -15,11 +15,12 @@ This is most useful for restricting the visualization to a subset of variables, 
 It is expected to return a character vector containing the names of acceptable variables to show on the y-axis.
 For \linkS4class{ColumnDataPlot}s, these should be a subset of the variables in \code{\link{colData}(se)}, while for \linkS4class{RowDataPlot}s, these should be a subset of the variables in \code{\link{rowData}(se)}.
 
-In practice, it is a good idea to make use of information precomputed by \code{\link{.cacheCommonInfo}}.
-For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link{colData}} is valid and discrete or continuous.
-This can be intersected with additional requirements in this function.
-
 Given a constant \code{se}, the output of this function should be constant for all instances of the same panel class.
+As such, it is a good idea to make use of information precomputed by \code{\link{.cacheCommonInfo}}.
+For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link{colData}} is valid and discrete or continuous, which can be intersected with any additional requirements in a subclass's method for this generic.
+
+This generic is called by \code{\link{.defineDataInterface}} for \linkS4class{ColumnDataPlot}s and \linkS4class{RowDataPlot}s.
+Thus, developers wanting to restrict those choices for subclasses can simply specialize \code{.allowableYAxisChoices} rather than reimplementing \code{.defineDataInterface}.
 }
 
 \section{Allowable x-axis choices}{

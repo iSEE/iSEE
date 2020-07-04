@@ -43,7 +43,7 @@ which are automatically placed inside the \dQuote{Data parameters} collapsible b
 Each element's ID should still follow the \code{PANEL_SLOT} pattern described above.
 
 This generic aims to provide a simpler alternative to specializing \code{.defineInterface} for the most common use case.
-New panels can write methods for this generic to add their own interface elements for altering the contents of the panel, without needing to reimplement other UI elements in the parent class' \code{.defineInterface} method.
+New panels can write methods for this generic to add their own interface elements for altering the contents of the panel, without needing to reimplement other UI elements in the parent class's \code{.defineInterface} method.
 Conversely, there is no obligation to write a method for this generic if one is planning to specialize \code{.defineInterface}.
 
 It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
@@ -60,6 +60,7 @@ The required arguments are:
 
 Methods for this generic are expected to return a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden from the user.
 This is useful for hiding UI elements that cannot be changed or have no effect, especially in highly specialized subclasses where some concepts in the parent class may no longer be relevant.
+(The alternative would be to reimplement all of the parent's \code{.defineInterface} method just to omit a handful of UI elements!)
 
 It is the developer's responsibility to call \code{\link{callNextMethod}} to hide the same interface elements as parent classes.
 This is not strictly required if one wishes to expose previously hidden elements.

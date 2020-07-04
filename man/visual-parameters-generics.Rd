@@ -30,6 +30,9 @@ Here, \code{select_info} is a list of two character vectors named \code{row} and
 }
 
 A method for any of these generics may also return \code{NULL}, in which case the corresponding section of the visual parameter box is completely hidden.
+
+All of these generics are called by \code{\link{.defineInterface}} for DotPlot subclasses.
+Developers of subclasses can simply specialize these generics to change the UI instead of reimplementing \code{.defineInterface} itself.
 }
 \author{
 Kevin Rue-Albrecht

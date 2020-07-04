@@ -41,7 +41,8 @@
 
 <meta property="og:title" content="The RowDotPlot virtual class — RowDotPlot-class" />
 <meta property="og:description" content="The RowDotPlot is a virtual class where each row in the SummarizedExperiment is represented by no more than one point (i.e., a &amp;#8220;dot&amp;#8221;) in a brushable ggplot plot.
-It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection." />
+It provides slots and methods to extract rowData fields to control the per-point aesthetics on the plot.
+This panel will transmit row identities in both its single and multiple selections, and it can receive multiple row selections but not multiple column selections." />
 
 
 
@@ -153,7 +154,8 @@ It provides slots and methods to control various aesthetics of the dots and to s
 
     <div class="ref-description">
     <p>The RowDotPlot is a virtual class where each row in the SummarizedExperiment is represented by no more than one point (i.e., a &#8220;dot&#8221;) in a brushable ggplot plot.
-It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection.</p>
+It provides slots and methods to extract <code>rowData</code> fields to control the per-point aesthetics on the plot.
+This panel will transmit row identities in both its single and multiple selections, and it can receive multiple row selections but not multiple column selections.</p>
     </div>
 
 
@@ -221,7 +223,7 @@ This will also call the equivalent DotPlot method.</p></li>
 
     
 
-<p>Subclasses are expected to implement methods for:</p><ul>
+<p>Subclasses are expected to implement methods for, at least:</p><ul>
 <li><p><code>.generateDotPlotData</code></p></li>
 <li><p><code>.fullName</code></p></li>
 <li><p><code>.panelColor</code></p></li>

@@ -41,7 +41,7 @@
 
 <meta property="og:title" content="The RowDataPlot panel — RowDataPlot-class" />
 <meta property="og:description" content="The RowDataPlot is a panel class for creating a RowDotPlot where the y-axis represents a variable from the rowData of a SummarizedExperiment object.
-It provides slots and methods for specifying which row metadata variable to use and what to plot on the x-axis." />
+It provides slots and methods for specifying which variable to use on the y-axis (and, optionally, also the x-axis), as well as a method to create the data.frame in preparation for plotting." />
 
 
 
@@ -153,7 +153,7 @@ It provides slots and methods for specifying which row metadata variable to use 
 
     <div class="ref-description">
     <p>The RowDataPlot is a panel class for creating a RowDotPlot where the y-axis represents a variable from the <code>rowData</code> of a SummarizedExperiment object.
-It provides slots and methods for specifying which row metadata variable to use and what to plot on the x-axis.</p>
+It provides slots and methods for specifying which variable to use on the y-axis (and, optionally, also the x-axis), as well as a method to create the data.frame in preparation for plotting.</p>
     </div>
 
 
@@ -193,8 +193,10 @@ If no valid row metadata variables are available, <code>NULL</code> is returned 
 <p>For defining the interface:</p><ul>
 <li><p><code>.defineDataInterface(x, se, select_info)</code> returns a list of interface elements for manipulating all slots described above.</p></li>
 <li><p><code>.panelColor(x)</code> will return the specified default color for this panel class.</p></li>
-<li><p><code>.allowableXAxisChoices(x, se)</code> returns a character vector specifying the acceptable variables in <code>rowData(se)</code> that can be used as choices for the x-axis.</p></li>
-<li><p><code>.allowableYAxisChoices(x, se)</code> returns a character vector specifying the acceptable variables in <code>rowData(se)</code> that can be used as choices for the y-axis.</p></li>
+<li><p><code>.allowableXAxisChoices(x, se)</code> returns a character vector specifying the acceptable variables in <code>rowData(se)</code> that can be used as choices for the x-axis. 
+This consists of all variables with atomic values.</p></li>
+<li><p><code>.allowableYAxisChoices(x, se)</code> returns a character vector specifying the acceptable variables in <code>rowData(se)</code> that can be used as choices for the y-axis. 
+This consists of all variables with atomic values.</p></li>
 </ul>
 
 <p>For monitoring reactive expressions:</p><ul>

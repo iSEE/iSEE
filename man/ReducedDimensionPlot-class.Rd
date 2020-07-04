@@ -15,7 +15,7 @@
 \title{The ReducedDimensionPlot panel}
 \description{
 The ReducedDimensionPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the coordinates of each column/sample are taken from the \code{\link{reducedDims}} of a \linkS4class{SingleCellExperiment} object.
-It provides slots and methods for specifying which dimensionality reduction result to use.
+It provides slots and methods to specify which dimensionality reduction result to use and to create the data.frame with the coordinates of the specified results for plotting.
 }
 \section{ReducedDimensionPlot slot overview}{
 

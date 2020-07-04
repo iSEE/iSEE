@@ -1,7 +1,7 @@
 #' The Table class
 #'
 #' The Table is a virtual class for all panels containing a \code{\link{datatable}} widget from the \pkg{DT} package, where each row \emph{usually} corresponds to a row or column of the \linkS4class{SummarizedExperiment} object.
-#' It provides observers for monitoring table selection, global search and column-specific search.
+#' It provides observers for rendering the table widget, monitoring single selections, and applying global and column-specific searches (which serve as multiple selections).
 #'
 #' @section Slot overview:
 #' The following slots control aspects of the \code{DT::datatable} interface:

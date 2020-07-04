@@ -13,7 +13,7 @@
 \title{The ColumnTable class}
 \description{
 The ColumnTable is a virtual class where each column in the \linkS4class{SummarizedExperiment} is represented by no more than row in a \code{\link{datatable}} widget.
-It provides observers for monitoring table selection, global search and column-specific search.
+In panels of this class, single and multiple selections can only be transmitted on the samples.
 }
 \section{Slot overview}{
 

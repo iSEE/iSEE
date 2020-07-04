@@ -1,7 +1,7 @@
 #' The SampleAssayPlot panel
 #'
-#' The SampleAssayPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents the expression of a sample of interest, using the \code{\link{assay}} values of the \linkS4class{SummarizedExperiment}.
-#' It provides slots and methods for specifying which sample to use and what to plot on the x-axis.
+#' The SampleAssayPlot is a panel class for creating a \linkS4class{RowDotPlot} where the y-axis represents the expression of a sample of interest, using the \code{\link{assay}} values of the \linkS4class{SummarizedExperiment}.
+#' It provides slots and methods for specifying the sample and what to plot on the x-axis, as well as a method to actually create a data.frame containing those pieces of data in preparation for plotting.
 #'
 #' @section Slot overview:
 #' The following slots control the values on the y-axis:

@@ -1,7 +1,7 @@
 #' The RowTable class
 #'
 #' The RowTable is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by no more than one row in a \code{\link{datatable}} widget.
-#' It provides observers for monitoring table selection, global search and column-specific search.
+#' In panels of this class, single and multiple selections can only be transmitted on the features.
 #' 
 #' @section Slot overview:
 #' No new slots are added.

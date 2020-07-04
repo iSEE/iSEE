@@ -131,6 +131,9 @@ setGeneric(".hideInterface", function(x, field) standardGeneric(".hideInterface"
 #'
 #' We suggest using \code{\link{.createProtectedParameterObservers}} and \code{\link{.createUnprotectedParameterObservers}}, which create simple observers that will update the memory in response to changes in the UI elements.
 #'
+#' Developers should not attempt to modify \code{x} in any observer expression.
+#' This value does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.
+#' 
 #' @section Triggering re-rendering:
 #' To trigger re-rendering of an output, observers should call \code{\link{.requestUpdate}(PANEL, rObjects)} where \code{PANEL} is the name of the current panel
 #' This will request a re-rendering of the output with no additional side effects and is most useful for responding to aesthetic parameters.
@@ -201,6 +204,11 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #'
 #' We strongly recommend calling \code{\link{.retrieveOutput}} within the rendering expression, which will automatically perform all of the tasks above, rather than calling \code{\link{.generateOutput}} manually.
 #' This means that the only extra work required in the implementation of \code{\link{.renderOutput}} is to choose an appropriate rendering function to encapsulate the rendering expression and assign the output of that function to \code{output}.
+#'
+#' Developers should not attempt to modify \code{x} in any rendering expression.
+#' This does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.
+#' Similarly, the rendering expression should treat \code{pObjects$memory} as read-only.
+#' Any adjustment of parameters should be handled elsewhere, e.g., by the observer expressions in \code{\link{.createObservers}}.
 #'
 #' @section Generating content:
 #' \code{.generateOutput(x, se, all_memory, all_contents)} actually generates the panel's output to be used in the rendering expression.

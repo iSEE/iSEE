@@ -160,12 +160,13 @@
 
     
 
-<p>In <code>.cacheCommonInfo(x, se)</code>, the following arguments are required:</p><ul>
+<p><code>.cacheCommonInfo(x, se)</code> computes common values that will be re-used for all panels with the same class as <code>x</code>.
+The following arguments are required:</p><ul>
 <li><p><code>x</code>, an instance of a Panel class.</p></li>
 <li><p><code>se</code>, the SummarizedExperiment object containing the current dataset.</p></li>
 </ul>
 
-<p>It is expected to return <code>se</code> with (optionally) extra fields added to <code>metadata(se)$iSEE</code>.
+<p>It is expected to return <code>se</code> with (optionally) extra fields added to <code>int_metadata(se)$iSEE</code>.
 Each field should be named according to the class name and contain some common information that is constant for all instances of the class of <code>x</code> - see <code>.setCachedCommonInfo</code> for an appropriate setter utility.
 The goal is to avoid repeated recomputation of required values when creating user interface elements or observers.</p>
 <p>Methods for this generic should start by checking whether the metadata already contains the class name, and returning <code>se</code> without modification if this is the case.
@@ -177,7 +178,8 @@ as the code tracker does not capture the code used to construct the cache.</p>
 
     
 
-<p>In <code>.refineParameters(x, se)</code>, the following arguments are required:</p><ul>
+<p><code>.refineParameters(x, se)</code> enforces appropriate settings for each parameter in <code>x</code>.
+The following arguments are required:</p><ul>
 <li><p><code>x</code>, an instance of a Panel class.</p></li>
 <li><p><code>se</code>, the SummarizedExperiment object containing the current dataset.</p></li>
 </ul>

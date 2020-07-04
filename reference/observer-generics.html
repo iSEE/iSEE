@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Generic for the panel observers — observer-generics" />
-<meta property="og:description" content="An overview of the generic for defining the panel observers, along with recommendations on its implementation." />
+<meta property="og:description" content="The workhorse generic for defining the Shiny observers for a given panel, along with recommendations on its implementation." />
 
 
 
@@ -151,7 +151,7 @@
     </div>
 
     <div class="ref-description">
-    <p>An overview of the generic for defining the panel observers, along with recommendations on its implementation.</p>
+    <p>The workhorse generic for defining the Shiny observers for a given panel, along with recommendations on its implementation.</p>
     </div>
 
 
@@ -171,7 +171,8 @@ This can be assumed to have been produced by running <code>.refineParameters(x, 
 </ul>
 
 <p>Methods for this generic are expected to set up all observers required to respond to changes in the interface elements set up by <code>.defineInterface</code>.
-Recall that each interface element has an ID of the form of <code>PANEL_SLOT</code>, where <code>PANEL</code> is the panel name and <code>SLOT</code> is the name of the slot modified by the interface element; so observers should respond to those names in <code>input</code>.
+Recall that each interface element has an ID of the form of <code>PANEL_SLOT</code>, where <code>PANEL</code> is the panel name (from <code>.getEncodedName</code>) and <code>SLOT</code> is the name of the slot modified by the interface element.
+Thus, observers should respond to changes in those elements in <code>input</code>.
 The return value of this generic is not used; only the side-effect of observer set-up is relevant.</p>
 <p>It is the developer's responsibility to call <code>callNextMethod</code> to set up the observers required by the parent class.
 This is best done by calling <code>callNextMethod</code> at the top of the method before defining up additional observers.
@@ -188,17 +189,15 @@ The code within this observer is expected to modify the &#8220;memory&#8221; of 
 <p>This enables <span class="pkg">iSEE</span> to keep a record of the current state of the application.
 In fact, any changes must go through <code>pObjects$memory</code> before they change the output in <code>.renderOutput</code>;
 there is no direct interaction between <code>input</code> and <code>output</code> in this framework.</p>
+<p>We suggest using <code>createProtectedParameterObservers</code> and <code>createUnprotectedParameterObservers</code>, which create simple observers that will update the memory in response to changes in the UI elements.</p>
     <h2 class="hasAnchor" id="triggering-re-rendering"><a class="anchor" href="#triggering-re-rendering"></a>Triggering re-rendering</h2>
 
     
 
-<p>To trigger re-rendering of an output, observers should call <code>.requestUpdate(PANEL, rObjects)</code>,
-where <code>PANEL</code> is the name of the current panel.
+<p>To trigger re-rendering of an output, observers should call <code>.requestUpdate(PANEL, rObjects)</code> where <code>PANEL</code> is the name of the current panel
 This will request a re-rendering of the output with no additional side effects and is most useful for responding to aesthetic parameters.</p>
-<p>In some cases, changes to some parameters may invalidate existing multiple selections,
-e.g., brushes and lassos are no longer valid if the variable on the axes are altered.
-Observers responding to such changes should instead call <code>.requestCleanUpdate</code>,
-which will destroy all existing selections in order to avoid misleading conclusions.</p>
+<p>In some cases, changes to some parameters may invalidate existing multiple selections, e.g., brushes and lassos are no longer valid if the variable on the axes are altered.
+Observers responding to such changes should instead call <code>.requestCleanUpdate(PANEL, pObjects, rObjects)</code>, which will destroy all existing selections in order to avoid misleading conclusions.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

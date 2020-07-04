@@ -160,7 +160,8 @@
 
     
 
-<p>In <code>.defineInterface(x, se, select_info)</code>, the required arguments are:</p><ul>
+<p><code>.defineInterface(x, se, select_info)</code> defines the UI for modifying all parameters for a given panel.
+The required arguments are:</p><ul>
 <li><p><code>x</code>, an instance of a Panel class.</p></li>
 <li><p><code>se</code>, a SummarizedExperiment object containing the current dataset.
 This can be assumed to have been produced by running <code>.refineParameters(x, se)</code>.</p></li>
@@ -173,38 +174,36 @@ see <code>?.multiSelectionDimension</code> and <code>?.singleSelectionDimension<
 <p>Methods for this generic are expected to return a list of <code>collapseBox</code> elements.
 Each parameter box can contain arbitrary numbers of additional UI elements,
 each of which is expected to modify one slot of <code>x</code> upon user interaction.</p>
-<p>The ID of each interface element should follow the form of <code>PANEL_SLOT</code> where <code>PANEL</code> is the panel name (from <code>.getEncodedName(x)</code>) and <code>SLOT</code> is the name of the slot modified by the interface element,
-e.g., <code>"ReducedDimensionPlot1_Type"</code>.
+<p>The ID of each interface element should follow the form of <code>PANEL_SLOT</code> where <code>PANEL</code> is the panel name (from <code>.getEncodedName(x)</code>) and <code>SLOT</code> is the name of the slot modified by the interface element, e.g., <code>"ReducedDimensionPlot1_Type"</code>.
 Each interface element should have an equivalent observer in <code>.createObservers</code> unless they are hidden by <code>.hideInterface</code> (see below).</p>
-<p>It is the developer's responsibility to call <code>callNextMethod</code> to obtain interface elements for parent classes.
-Refer to the contract for each Panel class to determine what is already provided by each parent.</p>
+<p>It is the developer's responsibility to call <code>callNextMethod</code> to obtain interface elements for parent classes.</p>
     <h2 class="hasAnchor" id="defining-the-data-parameter-interface"><a class="anchor" href="#defining-the-data-parameter-interface"></a>Defining the data parameter interface</h2>
 
     
 
-<p>In <code>.defineDataInterface(x, se, select_info)</code>, the required arguments are the same as those for <code>.defineInterface</code>.
+<p><code>.defineDataInterface(x, se, select_info)</code> defines the UI for data-related (i.e., non-aesthetic) parameters.
+The required arguments are the same as those for <code>.defineInterface</code>.
 Methods for this generic are expected to return a list of UI elements for altering data-related parameters,
 which are automatically placed inside the &#8220;Data parameters&#8221; collapsible box.
 Each element's ID should still follow the <code>PANEL_SLOT</code> pattern described above.</p>
-<p>This method aims to provide a simpler alternative to specializing <code>.defineInterface</code> for the most common use case,
-where new panels wish to add their own interface elements for altering the contents of the panel.
-In fact, <code>.defineInterface,Panel-method</code> will simply call <code>.defineDataInterface</code> to populate the data parameter box.</p>
-<p>It is the developer's responsibility to call <code>callNextMethod</code> to obtain interface elements for parent classes.
-Refer to the contract for each Panel class to determine what is already provided by each parent.</p>
+<p>This generic aims to provide a simpler alternative to specializing <code>.defineInterface</code> for the most common use case.
+New panels can write methods for this generic to add their own interface elements for altering the contents of the panel, without needing to reimplement other UI elements in the parent class' <code>.defineInterface</code> method.
+Conversely, there is no obligation to write a method for this generic if one is planning to specialize <code>.defineInterface</code>.</p>
+<p>It is the developer's responsibility to call <code>callNextMethod</code> to obtain interface elements for parent classes.</p>
     <h2 class="hasAnchor" id="hiding-interface-elements"><a class="anchor" href="#hiding-interface-elements"></a>Hiding interface elements</h2>
 
     
 
-<p>In <code>.hideInterface(x, field)</code>, the required arguments are:</p><ul>
+<p><code>.hideInterface(x, field)</code> determines whether certain UI elements should be hidden from the user.
+The required arguments are:</p><ul>
 <li><p><code>x</code>, an instance of a Panel class.</p></li>
 <li><p><code>field</code>, string containing the name of a slot of <code>x</code>.</p></li>
 </ul>
 
 <p>Methods for this generic are expected to return a logical scalar indicating whether the interface element corresponding to <code>field</code> should be hidden from the user.
-This is useful for hiding UI elements that cannot be changed or have no effect.</p>
+This is useful for hiding UI elements that cannot be changed or have no effect, especially in highly specialized subclasses where some concepts in the parent class may no longer be relevant.</p>
 <p>It is the developer's responsibility to call <code>callNextMethod</code> to hide the same interface elements as parent classes.
-This is not strictly required if one wishes to expose previously hidden elements.
-Refer to the contract for each Panel class to determine what is already provided by each parent.</p>
+This is not strictly required if one wishes to expose previously hidden elements.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -162,7 +162,8 @@ Table subclasses can specialize methods to modify the behavior of <code>.generat
 
     
 
-<p>In <code>.generateTable(x, envir)</code>, the following arguments are required:</p><ul>
+<p><code>.generateTable(x, envir)</code> generates the data.frame to use in the <code>datatable</code> widget.
+The following arguments are required:</p><ul>
 <li><p><code>x</code>, an instance of a Table subclass.</p></li>
 <li><p><code>envir</code>, the evaluation environment in which the data.frame is to be constructed.
 This can be assumed to have <code>se</code>, the SummarizedExperiment object containing the current dataset;

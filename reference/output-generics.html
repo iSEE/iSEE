@@ -160,12 +160,14 @@
 
     
 
-<p>In <code>.defineOutput(x, ...)</code>, the following arguments are required:</p><ul>
+<p><code>.defineOutput(x, ...)</code> defines the output element of the panel, e.g., a plot or table widget.
+The following arguments are required:</p><ul>
 <li><p><code>x</code>, an instance of a Panel subclass.</p></li>
 <li><p><code>...</code>, further arguments that are not currently used.</p></li>
 </ul>
 
-<p>Methods for this generic are expected to return an output element for inclusion into the <span class="pkg">iSEE</span> interface, such as the output of <code>plotOutput</code>.
+<p>Methods for this generic are expected to return a HTML element containing the visual output of the panel, such as the return value of <code>plotOutput</code> or <code>dataTableOutput</code>.
+This element will be shown in the <span class="pkg">iSEE</span> interface above the parameter boxes for <code>x</code>.
 Multiple elements can be provided via a <code>tagList</code>.</p>
 <p>The IDs of the output elements are expected to be prefixed with the panel name from <code>.getEncodedName(x)</code> and an underscore, e.g., <code>"ReducedDimensionPlot1_someOutput"</code>.
 One of the output elements may simply have the ID set to <code>PANEL</code> alone;
@@ -174,7 +176,8 @@ this is usually the case for simple panels with one primary output like a DotPlo
 
     
 
-<p>In <code>.renderOutput(x, se, ..., output, pObjects, rObjects)</code>, the following arguments are required:</p><ul>
+<p><code>.renderOutput(x, se, ..., output, pObjects, rObjects)</code> will create an expression to render the panel's output.
+The following arguments are required:</p><ul>
 <li><p><code>x</code>, an instance of a Panel class.</p></li>
 <li><p><code>se</code>, a SummarizedExperiment object containing the current dataset.</p></li>
 <li><p><code>...</code>, further arguments that may be used by specific methods.</p></li>
@@ -183,11 +186,13 @@ this is usually the case for simple panels with one primary output like a DotPlo
 <li><p><code>rObjects</code>, a reactive list of values generated in the <code>iSEE</code> app.</p></li>
 </ul>
 
-<p>It is expected to attach a reactive expression to <code>output</code> to render the output elements created by <code>.defineOutput</code>.
+<p>It is expected to attach one or more reactive expressions to <code>output</code> to render the output element(s) defined by <code>.defineOutput</code>.
+This is typically done by calling rendering functions like <code>renderPlotOutput</code> or the most appropriate equivalent for the panel's output. 
 The return value of this generic is not used; only the side-effect of the output set-up is relevant.</p>
-<p>The rendering expression defined in <code>.renderOutput</code> is also expected to:</p><ol>
+<p>The rendering expression inside the chosen rendering function is expected to:</p><ol>
 <li><p>Call <code><a href='https://rdrr.io/r/base/force.html'>force(rObjects[[PANEL]])</a></code>, where <code>PANEL</code> is the output of <code>.getEncodedName(x)</code>.
 This ensures that the output is rerendered upon requesting changes in <code>.requestUpdate</code>.</p></li>
+<li><p>Call <code>.generateOutput</code> to generate the output content to be rendered.</p></li>
 <li><p>Fill <code>pObjects$contents[[PANEL]]</code> with some content related to the displayed output that allows cross-referencing with single/multiple selection structures.
 This will be used in other generics like <code>.multiSelectionCommands</code> and <code>.singleSelectionValue</code> to determine the identity of the selected point(s).
 As a result, it is only strictly necessary if the panel is a potential transmitter, as determined by the return value of <code>.multiSelectionDimension</code>.</p></li>
@@ -198,15 +203,14 @@ for plotting panels, the vector should also include code to create the plot.</p>
 This is used for code reporting, and again, is only strictly necessary if the panel is a potential transmitter.</p></li>
 </ol>
 
-<p>We strongly recommend calling <code>.retrieveOutput</code> within the rendering expression,
-which will automatically perform tasks 1-3 above, rather than calling <code>.generateOutput</code> manually.
-This means that the only extra work required in the implementation of <code>.renderOutput</code> is to perform task 4 and
-to choose an appropriate rendering function.</p>
+<p>We strongly recommend calling <code>.retrieveOutput</code> within the rendering expression, which will automatically perform all of the tasks above, rather than calling <code>.generateOutput</code> manually.
+This means that the only extra work required in the implementation of <code>.renderOutput</code> is to choose an appropriate rendering function to encapsulate the rendering expression and assign the output of that function to <code>output</code>.</p>
     <h2 class="hasAnchor" id="generating-content"><a class="anchor" href="#generating-content"></a>Generating content</h2>
 
     
 
-<p>In <code>.generateOutput(x, se, all_memory, all_contents)</code>, the following arguments are required:</p><ul>
+<p><code>.generateOutput(x, se, all_memory, all_contents)</code> actually generates the panel's output to be used in the rendering expression.
+The following arguments are required:</p><ul>
 <li><p><code>x</code>, an instance of a Panel class.</p></li>
 <li><p><code>se</code>, a SummarizedExperiment object containing the current dataset.</p></li>
 <li><p><code>all_memory</code>, a named list containing Panel objects parameterizing the current state of the app.</p></li>
@@ -219,15 +223,15 @@ This is used during app initialization to ensure that <code>pObjects$contents</c
 It should be of a structure that allows it to be cross-referenced against the output of <code>.multiSelectionActive</code> to determine the selected rows/columns.</p></li>
 <li><p><code>commands</code>, a list of character vectors of R commands that, when executed, produces the contents of the panel and any displayed output (e.g., a ggplot object).
 Developers should write these commands as if the evaluation environment only contains the SummarizedExperiment <code>se</code> and ExperimentColorMap <code>colormap</code>.</p></li>
-</ul><p>The output list may contain any number of other fields that will be ignored.</p>
-<p>We suggest implementing this method using <code><a href='https://rdrr.io/r/base/eval.html'>eval</a>(<a href='https://rdrr.io/r/base/parse.html'>parse</a>(text=...))</code> calls,
-which enables easy construction and evaluation of the commands and contents at the same time.
-Developers should consider using the <code>.processMultiSelections</code> function for easily processing the multiple selection parameters.</p>
+</ul><p>The output list may contain any number of other fields that can be used by <code>.renderOutput</code> but are otherwise ignored.</p>
+<p>We suggest implementing this method using <code><a href='https://rdrr.io/r/base/eval.html'>eval</a>(<a href='https://rdrr.io/r/base/parse.html'>parse</a>(text=...))</code> calls, which enables easy construction and evaluation of the commands and contents at the same time.
+We also strongly recommend the use of the <code>.processMultiSelections</code> function for easily processing the multiple selection parameters.</p>
     <h2 class="hasAnchor" id="exporting-content"><a class="anchor" href="#exporting-content"></a>Exporting content</h2>
 
     
 
-<p>In <code>.exportOutput(x, se, all_memory, all_contents)</code>, the following arguments are required:</p><ul>
+<p><code>.exportOutput(x, se, all_memory, all_contents)</code> converts the panel output into a downloadable form.
+The following arguments are required:</p><ul>
 <li><p><code>x</code>, an instance of a Panel class.</p></li>
 <li><p><code>se</code>, a SummarizedExperiment object containing the current dataset.</p></li>
 <li><p><code>all_memory</code>, a named list containing Panel objects parameterizing the current state of the app.</p></li>
@@ -239,8 +243,7 @@ Developers should consider using the <code>.processMultiSelections</code> functi
 All files should be created in the working directory at the time of the function call, possibly in further subdirectories.
 Each file name should be prefixed with the <code>.getEncodedName</code>.
 The method itself should return a character vector containing <em>relative</em> paths to all newly created files.</p>
-<p>To implement this method, we suggest simply passing all arguments onto <code>.generateOutput</code>
-and then handling the contents appropriately.</p>
+<p>To implement this method, we suggest simply passing all arguments onto <code>.generateOutput</code> and then converting the output into an appropriate file.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

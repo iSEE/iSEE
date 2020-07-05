@@ -386,7 +386,7 @@ test_that(".exportOutput handles Panel", {
     metadata(sce)$colormap <- ExperimentColorMap()
 
     out <- .exportOutput(memory$ComplexHeatmapPlot1, sce, memory, pObjects$contents)
-    expect_identical(out, character(0))
+    expect_identical(out, "ComplexHeatmapPlot1.pdf")
 
 })
 

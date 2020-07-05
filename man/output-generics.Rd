@@ -63,6 +63,11 @@ This is used for code reporting, and again, is only strictly necessary if the pa
 
 We strongly recommend calling \code{\link{.retrieveOutput}} within the rendering expression, which will automatically perform all of the tasks above, rather than calling \code{\link{.generateOutput}} manually.
 This means that the only extra work required in the implementation of \code{\link{.renderOutput}} is to choose an appropriate rendering function to encapsulate the rendering expression and assign the output of that function to \code{output}.
+
+Developers should not attempt to modify \code{x} in any rendering expression.
+This does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.
+Similarly, the rendering expression should treat \code{pObjects$memory} as read-only.
+Any adjustment of parameters should be handled elsewhere, e.g., by the observer expressions in \code{\link{.createObservers}}.
 }
 
 \section{Generating content}{

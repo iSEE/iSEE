@@ -10,7 +10,7 @@ These generics are related to the initial setup of the \pkg{iSEE} application.
 }
 \section{Caching common information}{
 
-\code{.cacheCommonInfo(x, se)} computes common values that will be re-used for all panels with the same class as \code{x}.
+\code{.cacheCommonInfo(x, se)} computes common values that can be re-used for all panels with the same class as \code{x}.
 The following arguments are required:
 \itemize{
 \item \code{x}, an instance of a \linkS4class{Panel} class.
@@ -23,10 +23,10 @@ The goal is to avoid repeated recomputation of required values when creating use
 
 Methods for this generic should start by checking whether the metadata already contains the class name, and returning \code{se} without modification if this is the case.
 Otherwise, it should \code{\link{callNextMethod}} to fill in the cache values from the parent classes, before adding cached values under the class name for \code{x}.
+This means that any modification to \code{se} will only be performed once per class, so any cached values should be constant for all instances of the same class.
 
-Remember, the cache is strictly for use in defining interface elements and in observers.
-Developers should not expect to be able to retrieve cached values when rendering the output for a panel,
-as the code tracker does not capture the code used to construct the cache.
+Practically, the cache should only be used to define interface elements and in observers that respond to those elements.
+Developers should not expect to be able to retrieve cached values when rendering the output for a panel, as the code tracker does not capture the code used to construct the cache.
 }
 
 \section{Refining parameters}{

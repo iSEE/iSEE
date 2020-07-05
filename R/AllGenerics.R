@@ -131,6 +131,9 @@ setGeneric(".hideInterface", function(x, field) standardGeneric(".hideInterface"
 #'
 #' We suggest using \code{\link{.createProtectedParameterObservers}} and \code{\link{.createUnprotectedParameterObservers}}, which create simple observers that will update the memory in response to changes in the UI elements.
 #'
+#' Developers should not attempt to modify \code{x} in any observer expression.
+#' This value does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.
+#' 
 #' @section Triggering re-rendering:
 #' To trigger re-rendering of an output, observers should call \code{\link{.requestUpdate}(PANEL, rObjects)} where \code{PANEL} is the name of the current panel
 #' This will request a re-rendering of the output with no additional side effects and is most useful for responding to aesthetic parameters.
@@ -202,6 +205,11 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' We strongly recommend calling \code{\link{.retrieveOutput}} within the rendering expression, which will automatically perform all of the tasks above, rather than calling \code{\link{.generateOutput}} manually.
 #' This means that the only extra work required in the implementation of \code{\link{.renderOutput}} is to choose an appropriate rendering function to encapsulate the rendering expression and assign the output of that function to \code{output}.
 #'
+#' Developers should not attempt to modify \code{x} in any rendering expression.
+#' This does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.
+#' Similarly, the rendering expression should treat \code{pObjects$memory} as read-only.
+#' Any adjustment of parameters should be handled elsewhere, e.g., by the observer expressions in \code{\link{.createObservers}}.
+#'
 #' @section Generating content:
 #' \code{.generateOutput(x, se, all_memory, all_contents)} actually generates the panel's output to be used in the rendering expression.
 #' The following arguments are required:
@@ -215,15 +223,21 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' Methods for this generic should return a list containing:
 #' \itemize{
 #' \item \code{contents}, some arbitrary content for the panel (usually a data.frame).
-#' This is used during app initialization to ensure that \code{pObjects$contents} of transmitter panels is filled before rendering their children.
 #' It should be of a structure that allows it to be cross-referenced against the output of \code{\link{.multiSelectionActive}} to determine the selected rows/columns.
+#' This is used to ensure that the \code{pObjects$contents} of a panel is populated before attempting to render their children (i.e., those that receive a multiple selection from the current panel).
 #' \item \code{commands}, a list of character vectors of R commands that, when executed, produces the contents of the panel and any displayed output (e.g., a \link{ggplot} object).
 #' Developers should write these commands as if the evaluation environment only contains the SummarizedExperiment \code{se} and ExperimentColorMap \code{colormap}.
+#' \item \code{varname}, a string specifying the name of the variable in \code{commands} used to generate \code{contents}.
+#' This is used to fulfill code tracking obligations.
 #' }
 #' The output list may contain any number of other fields that can be used by \code{\link{.renderOutput}} but are otherwise ignored.
 #'
 #' We suggest implementing this method using \code{\link{eval}(\link{parse}(text=...))} calls, which enables easy construction and evaluation of the commands and contents at the same time.
-#' We also strongly recommend the use of the \code{\link{.processMultiSelections}} function for easily processing the multiple selection parameters.
+#' A convenient wrapper for this call is provided by the \code{\link{.textEval}} utility.
+#'
+#' The \code{all_memory} and \code{all_contents} arguments are provided for the sole purpose of determining what multiple selections are being received by \code{x}.
+#' We strongly recommend passing them onto \code{\link{.processMultiSelections}} to do the heavy lifting.
+#' It would be unusual and inadvisable to use these arguments for any other information sharing across panels.
 #'
 #' @section Exporting content:
 #' \code{.exportOutput(x, se, all_memory, all_contents)} converts the panel output into a downloadable form.
@@ -579,7 +593,7 @@ setGeneric(".generateTable", function(x, envir) standardGeneric(".generateTable"
 #' These generics are related to the initial setup of the \pkg{iSEE} application.
 #'
 #' @section Caching common information:
-#' \code{.cacheCommonInfo(x, se)} computes common values that will be re-used for all panels with the same class as \code{x}.
+#' \code{.cacheCommonInfo(x, se)} computes common values that can be re-used for all panels with the same class as \code{x}.
 #' The following arguments are required:
 #' \itemize{
 #' \item \code{x}, an instance of a \linkS4class{Panel} class.
@@ -592,10 +606,10 @@ setGeneric(".generateTable", function(x, envir) standardGeneric(".generateTable"
 #'
 #' Methods for this generic should start by checking whether the metadata already contains the class name, and returning \code{se} without modification if this is the case.
 #' Otherwise, it should \code{\link{callNextMethod}} to fill in the cache values from the parent classes, before adding cached values under the class name for \code{x}.
+#' This means that any modification to \code{se} will only be performed once per class, so any cached values should be constant for all instances of the same class.
 #'
-#' Remember, the cache is strictly for use in defining interface elements and in observers.
-#' Developers should not expect to be able to retrieve cached values when rendering the output for a panel,
-#' as the code tracker does not capture the code used to construct the cache.
+#' Practically, the cache should only be used to define interface elements and in observers that respond to those elements.
+#' Developers should not expect to be able to retrieve cached values when rendering the output for a panel, as the code tracker does not capture the code used to construct the cache.
 #'
 #' @section Refining parameters:
 #' \code{.refineParameters(x, se)} enforces appropriate settings for each parameter in \code{x}.

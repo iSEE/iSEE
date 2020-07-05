@@ -1,21 +1,17 @@
 #' Set and get cached commons
 #'
 #' Get and set common cached information for each class.
-#' The setter is usually called in \code{\link{.cacheCommonInfo}}
-#' while the getter is usually called in \code{\link{.defineInterface}}.
+#' The setter should only ever be called in \code{\link{.cacheCommonInfo}}.
+#' The getter can be called anywhere but most usually in \code{\link{.defineInterface}}.
 #'
 #' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
 #' @param cls String containing the name of the class for which this information is cached.
 #' @param ... Any number of named R objects to cache.
 #'
 #' @return
-#' \code{.setCachedCommonInfo} returns \code{se} with \code{...} added to its \code{\link{metadata}}.
+#' \code{.setCachedCommonInfo} returns \code{se} with \code{...} added to its \code{\link{int_metadata}}.
 #'
 #' \code{.getCachedCommonInfo} retrieves the cached common information for class \code{cls}.
-#'
-#' @details
-#' This function is intended for use by developers of \linkS4class{Panel} classes.
-#' If you're an end-user and you're reading this, you probably took a wrong turn somewhere.
 #'
 #' @author Aaron Lun
 #'
@@ -24,6 +20,9 @@
 #' se <- .setCachedCommonInfo(se, "SomePanelClass",
 #'     something=1, more_things=TRUE, something_else="A")
 #' .getCachedCommonInfo(se, "SomePanelClass")
+#'
+#' @seealso
+#' \code{?"\link{dataframe-utils}"}, for utilities to define some cached variables.
 #'
 #' @export
 #' @rdname setCachedCommonInfo

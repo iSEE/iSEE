@@ -29,8 +29,7 @@ All functions will cause the current reactive context to respond to the designat
 Utility functions to track internal events for a panel by monitoring the status of reactive variables in \code{rObjects}.
 }
 \details{
-\code{.trackUpdate} will track whether an update has been requested to the current panel
-(see also \code{\link{.requestUpdate}}).
+\code{.trackUpdate} will track whether an update has been requested to the current panel via \code{\link{.requestUpdate}}.
 
 \code{.trackSingleSelection} will track whether the single selection in the current panel has changed.
 Note that this will not cause a reaction if the change involves cancelling a single selection.
@@ -39,6 +38,10 @@ Note that this will not cause a reaction if the change involves cancelling a sin
 This will respond for both active and saved selections.
 
 \code{.trackRelinkedSelection} will track whether the single or multiple selection sources have changed.
+
+These functions should be called within observer or rendering expressions to trigger their evaluation upon panel updates.
+It is only safe to call these functions within expressions for the same panel, e.g., to synchronize multiple output elements.
+Calling them with another \code{panel_name} would be unusual, not least because communication between panels is managed by the \code{\link{iSEE}} framework and is outside of the scope of the per-panel observers.
 }
 \author{
 Aaron Lun

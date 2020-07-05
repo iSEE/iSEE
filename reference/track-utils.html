@@ -181,13 +181,15 @@
 <code>NULL</code> is returned invisibly.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>.trackUpdate</code> will track whether an update has been requested to the current panel
-(see also <code>.requestUpdate</code>).</p>
+    <p><code>.trackUpdate</code> will track whether an update has been requested to the current panel via <code>.requestUpdate</code>.</p>
 <p><code>.trackSingleSelection</code> will track whether the single selection in the current panel has changed.
 Note that this will not cause a reaction if the change involves cancelling a single selection.</p>
 <p><code>.trackMultiSelection</code> will track whether the multiple selections in the current panel have changed.
 This will respond for both active and saved selections.</p>
 <p><code>.trackRelinkedSelection</code> will track whether the single or multiple selection sources have changed.</p>
+<p>These functions should be called within observer or rendering expressions to trigger their evaluation upon panel updates.
+It is only safe to call these functions within expressions for the same panel, e.g., to synchronize multiple output elements.
+Calling them with another <code>panel_name</code> would be unusual, not least because communication between panels is managed by the <code>iSEE</code> framework and is outside of the scope of the per-panel observers.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

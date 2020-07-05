@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Reactive manipulations for Panel output — .retrieveOutput • iSEE</title>
+<title>Retrieve the panel output — .retrieveOutput • iSEE</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Reactive manipulations for Panel output — .retrieveOutput" />
-<meta property="og:description" content="Respond to or request a re-rendering of the Panel output via reactive variables." />
+<meta property="og:title" content="Retrieve the panel output — .retrieveOutput" />
+<meta property="og:description" content="Retrieve the results of a previous .generateOutput call on this panel." />
 
 
 
@@ -145,28 +145,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Reactive manipulations for Panel output</h1>
+    <h1>Retrieve the panel output</h1>
     <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/utils_reactive.R'><code>R/utils_reactive.R</code></a></small>
     <div class="hidden name"><code>retrieveOutput.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Respond to or request a re-rendering of the Panel output via reactive variables.</p>
+    <p>Retrieve the results of a previous <code>.generateOutput</code> call on this panel.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.retrieveOutput</span>(<span class='no'>panel_name</span>, <span class='no'>se</span>, <span class='no'>pObjects</span>, <span class='no'>rObjects</span>)
-
-<span class='fu'>.requestUpdate</span>(<span class='no'>panel_name</span>, <span class='no'>rObjects</span>)
-
-<span class='fu'>.requestCleanUpdate</span>(<span class='no'>panel_name</span>, <span class='no'>pObjects</span>, <span class='no'>rObjects</span>)
-
-<span class='fu'>.requestActiveSelectionUpdate</span>(
-  <span class='no'>panel_name</span>,
-  <span class='no'>session</span>,
-  <span class='no'>pObjects</span>,
-  <span class='no'>rObjects</span>,
-  <span class='kw'>update_output</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
-)</pre>
+    <pre class="usage"><span class='fu'>.retrieveOutput</span>(<span class='no'>panel_name</span>, <span class='no'>se</span>, <span class='no'>pObjects</span>, <span class='no'>rObjects</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -187,37 +175,23 @@
       <th>rObjects</th>
       <td><p>A reactive list of values generated in the <code>iSEE</code> app.</p></td>
     </tr>
-    <tr>
-      <th>session</th>
-      <td><p>The Shiny session object from the server function.</p></td>
-    </tr>
-    <tr>
-      <th>update_output</th>
-      <td><p>A logical scalar indicating whether to call <code>.requestUpdate</code> as well.</p></td>
-    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>.retrieveOutput</code> will return the output of running <code>.generateOutput</code> for the current panel.</p>
-<p><code>.requestUpdate</code> will modify <code>rObjects</code> to request a re-rendering of the specified panel.
-<code>.requestCleanUpdate</code> will also remove all active/saved selections in the chosen panel.</p>
-<p><code>.requestActiveSelectionUpdate</code> will modify <code>rObjects</code> to indicate that the active multiple selection for <code>panel_name</code> has changed.
-If <code>update_output=TRUE</code>, it will also call request a re-rendering of the panel.</p>
-<p>All <code>.request*</code> functions will invisibly return <code>NULL</code>.</p>
+    <p>The output of running <code>.generateOutput</code> for the current panel.
+Several fields in <code>pObjects</code> are also modified as a side-effect.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>.retrieveOutput</code> should be used in the expression for rendering output, e.g., in <code>.renderOutput</code>.
-This takes care of a number of house-keeping tasks required to satisfy <code>.renderOutput</code>'s requirements
-with respect to updating various fields in <code>pObjects</code>.
-It also improves efficiency by retrieving cached outputs that were used elsewhere in the app.</p>
-<p><code>.requestUpdate</code> should be used in various observers to request a re-rendering of the panel,
-usually in response to user-driven parameter changes in <code>.createObservers</code>.</p>
-<p><code>.requestCleanUpdate</code> is used for changes to protected parameters that invalidate existing multiple selections,
-e.g., if the coordinates change in a DotPlot, existing brushes and lassos are usually not applicable.</p>
+    <p>This function should be used in the rendering expression in <code>.renderOutput</code>.
+It takes care of a number of house-keeping tasks required to satisfy <code>.renderOutput</code>'s requirements, e.g., responding to <code>.requestUpdate</code> modifictions to <code>rObjects</code>, setting the <code>commands</code> and <code>contents</code> and <code>varname</code> in <code>pObjects</code>.</p>
+<p>This function will attempt to retrieve the cached output of <code>.generateOutput</code> if it was used elsewhere in the app.
+After retrieval, the cached value is wiped to ensure that it does not go stale.
+If no cached value is found, <code>.generateOutput</code> is called directly.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code>.createProtectedParameterObservers</code>, for examples where the update-requesting functions are used.</p></div>
+    <div class='dont-index'><p><code>.renderOutput</code>, where this function should be called.</p>
+<p><code>.generateOutput</code>, which is called by this function.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

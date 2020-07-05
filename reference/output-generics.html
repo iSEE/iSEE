@@ -205,6 +205,10 @@ This is used for code reporting, and again, is only strictly necessary if the pa
 
 <p>We strongly recommend calling <code>.retrieveOutput</code> within the rendering expression, which will automatically perform all of the tasks above, rather than calling <code>.generateOutput</code> manually.
 This means that the only extra work required in the implementation of <code>.renderOutput</code> is to choose an appropriate rendering function to encapsulate the rendering expression and assign the output of that function to <code>output</code>.</p>
+<p>Developers should not attempt to modify <code>x</code> in any rendering expression.
+This does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.
+Similarly, the rendering expression should treat <code>pObjects$memory</code> as read-only.
+Any adjustment of parameters should be handled elsewhere, e.g., by the observer expressions in <code>.createObservers</code>.</p>
     <h2 class="hasAnchor" id="generating-content"><a class="anchor" href="#generating-content"></a>Generating content</h2>
 
     

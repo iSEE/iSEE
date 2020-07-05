@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Generic for the panel observers — observer-generics • iSEE</title>
+<title>Request Panel updates — .requestUpdate • iSEE</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Generic for the panel observers — observer-generics" />
-<meta property="og:description" content="The workhorse generic for defining the Shiny observers for a given panel, along with recommendations on its implementation." />
+<meta property="og:title" content="Request Panel updates — .requestUpdate" />
+<meta property="og:description" content="Request a re-rendering of the Panel output via reactive variables." />
 
 
 
@@ -145,61 +145,69 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Generic for the panel observers</h1>
-    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/AllGenerics.R'><code>R/AllGenerics.R</code></a></small>
-    <div class="hidden name"><code>observer-generics.Rd</code></div>
+    <h1>Request Panel updates</h1>
+    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/utils_reactive.R'><code>R/utils_reactive.R</code></a></small>
+    <div class="hidden name"><code>requestUpdate.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>The workhorse generic for defining the Shiny observers for a given panel, along with recommendations on its implementation.</p>
+    <p>Request a re-rendering of the Panel output via reactive variables.</p>
     </div>
 
+    <pre class="usage"><span class='fu'>.requestUpdate</span>(<span class='no'>panel_name</span>, <span class='no'>rObjects</span>)
 
+<span class='fu'>.requestCleanUpdate</span>(<span class='no'>panel_name</span>, <span class='no'>pObjects</span>, <span class='no'>rObjects</span>)
 
-    <h2 class="hasAnchor" id="creating-parameter-observers"><a class="anchor" href="#creating-parameter-observers"></a>Creating parameter observers</h2>
+<span class='fu'>.requestActiveSelectionUpdate</span>(
+  <span class='no'>panel_name</span>,
+  <span class='no'>session</span>,
+  <span class='no'>pObjects</span>,
+  <span class='no'>rObjects</span>,
+  <span class='kw'>update_output</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>
+)</pre>
 
-    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>panel_name</th>
+      <td><p>String containing the panel name.</p></td>
+    </tr>
+    <tr>
+      <th>rObjects</th>
+      <td><p>A reactive list of values generated in the <code>iSEE</code> app.</p></td>
+    </tr>
+    <tr>
+      <th>pObjects</th>
+      <td><p>An environment containing global parameters generated in the <code>iSEE</code> app.</p></td>
+    </tr>
+    <tr>
+      <th>session</th>
+      <td><p>The Shiny session object from the server function.</p></td>
+    </tr>
+    <tr>
+      <th>update_output</th>
+      <td><p>A logical scalar indicating whether to call <code>.requestUpdate</code> as well.</p></td>
+    </tr>
+    </table>
 
-<p>In <code>.createObservers(x, se, input, session, pObjects, rObjects)</code>, the required arguments are:</p><ul>
-<li><p><code>x</code>, an instance of a Panel class.</p></li>
-<li><p><code>se</code>, a SummarizedExperiment object containing the current dataset.
-This can be assumed to have been produced by running <code>.refineParameters(x, se)</code>.</p></li>
-<li><p><code>input</code>, the Shiny input object from the server function.</p></li>
-<li><p><code>session</code>, the Shiny session object from the server function.</p></li>
-<li><p><code>pObjects</code>, an environment containing global parameters generated in the <code>iSEE</code> app.</p></li>
-<li><p><code>rObjects</code>, a reactive list of values generated in the <code>iSEE</code> app.</p></li>
-</ul>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-<p>Methods for this generic are expected to set up all observers required to respond to changes in the interface elements set up by <code>.defineInterface</code>.
-Recall that each interface element has an ID of the form of <code>PANEL_SLOT</code>, where <code>PANEL</code> is the panel name (from <code>.getEncodedName</code>) and <code>SLOT</code> is the name of the slot modified by the interface element.
-Thus, observers should respond to changes in those elements in <code>input</code>.
-The return value of this generic is not used; only the side-effect of observer set-up is relevant.</p>
-<p>It is the developer's responsibility to call <code>callNextMethod</code> to set up the observers required by the parent class.
-This is best done by calling <code>callNextMethod</code> at the top of the method before defining up additional observers.
-Each parent class should implement observers for its slots, so it is usually only necessary to implement observers for any newly added slots in a particular class.</p>
-    <h2 class="hasAnchor" id="modifying-the-memory"><a class="anchor" href="#modifying-the-memory"></a>Modifying the memory</h2>
+    <p><code>.requestUpdate</code> will modify <code>rObjects</code> to request a re-rendering of the specified panel.</p>
+<p><code>.requestCleanUpdate</code> will also remove all active/saved selections in the chosen panel.</p>
+<p><code>.requestActiveSelectionUpdate</code> will modify <code>rObjects</code> to indicate that the active multiple selection for <code>panel_name</code> has changed.
+If <code>update_output=TRUE</code>, it will also request a re-rendering of the panel.</p>
+<p>All functions will invisibly return <code>NULL</code>.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    
+    <p><code>.requestUpdate</code> should be used in various observers to request a re-rendering of the panel,
+usually in response to user-driven parameter changes in <code>.createObservers</code>.</p>
+<p><code>.requestCleanUpdate</code> is used for changes to protected parameters that invalidate existing multiple selections,
+e.g., if the coordinates change in a DotPlot, existing brushes and lassos are usually not applicable.</p>
+<p><code>.requestActiveSelectionUpdate</code> should be used in the observer expression that implements the panel's multiple selection mechanism.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-<p>Consider an observer for an interface element that modifies a slot of <code>x</code>.
-The code within this observer is expected to modify the &#8220;memory&#8221; of the app state in <code>pObjects</code>, via:</p><pre>
-<span class='no'>new_value</span> <span class='kw'>&amp;</span><span class='no'>lt</span>;- <span class='no'>input</span><span class='kw'>[[</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='no'>PANEL</span>, <span class='st'>"_"</span>, <span class='no'>SLOT</span>)]]
-<span class='no'>pObjects</span>$<span class='no'>memory</span><span class='kw'>[[</span><span class='no'>PANEL</span>]]<span class='kw'>[[</span><span class='no'>SLOT</span>]] <span class='kw'>&amp;</span><span class='no'>lt</span>;- <span class='no'>new_value</span></pre>
-
-<p>This enables <span class="pkg">iSEE</span> to keep a record of the current state of the application.
-In fact, any changes must go through <code>pObjects$memory</code> before they change the output in <code>.renderOutput</code>;
-there is no direct interaction between <code>input</code> and <code>output</code> in this framework.</p>
-<p>We suggest using <code>.createProtectedParameterObservers</code> and <code>.createUnprotectedParameterObservers</code>, which create simple observers that will update the memory in response to changes in the UI elements.</p>
-<p>Developers should not attempt to modify <code>x</code> in any observer expression.
-This value does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.</p>
-    <h2 class="hasAnchor" id="triggering-re-rendering"><a class="anchor" href="#triggering-re-rendering"></a>Triggering re-rendering</h2>
-
-    
-
-<p>To trigger re-rendering of an output, observers should call <code>.requestUpdate(PANEL, rObjects)</code> where <code>PANEL</code> is the name of the current panel
-This will request a re-rendering of the output with no additional side effects and is most useful for responding to aesthetic parameters.</p>
-<p>In some cases, changes to some parameters may invalidate existing multiple selections, e.g., brushes and lassos are no longer valid if the variable on the axes are altered.
-Observers responding to such changes should instead call <code>.requestCleanUpdate(PANEL, pObjects, rObjects)</code>, which will destroy all existing selections in order to avoid misleading conclusions.</p>
+    <div class='dont-index'><p><code>.createProtectedParameterObservers</code>, for examples where the update-requesting functions are used.</p></div>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

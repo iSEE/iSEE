@@ -41,8 +41,8 @@
 
 <meta property="og:title" content="Set and get cached commons — .setCachedCommonInfo" />
 <meta property="og:description" content="Get and set common cached information for each class.
-The setter is usually called in .cacheCommonInfo
-while the getter is usually called in .defineInterface." />
+The setter should only ever be called in .cacheCommonInfo.
+The getter can be called anywhere but most usually in .defineInterface." />
 
 
 
@@ -154,8 +154,8 @@ while the getter is usually called in .defineInterface." />
 
     <div class="ref-description">
     <p>Get and set common cached information for each class.
-The setter is usually called in <code>.cacheCommonInfo</code>
-while the getter is usually called in <code>.defineInterface</code>.</p>
+The setter should only ever be called in <code>.cacheCommonInfo</code>.
+The getter can be called anywhere but most usually in <code>.defineInterface</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>.setCachedCommonInfo</span>(<span class='no'>se</span>, <span class='no'>cls</span>, <span class='no'>...</span>)
@@ -181,12 +181,11 @@ while the getter is usually called in <code>.defineInterface</code>.</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>.setCachedCommonInfo</code> returns <code>se</code> with <code>...</code> added to its <code>metadata</code>.</p>
+    <p><code>.setCachedCommonInfo</code> returns <code>se</code> with <code>...</code> added to its <code>int_metadata</code>.</p>
 <p><code>.getCachedCommonInfo</code> retrieves the cached common information for class <code>cls</code>.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>This function is intended for use by developers of Panel classes.
-If you're an end-user and you're reading this, you probably took a wrong turn somewhere.</p>
+    <div class='dont-index'><p><code>?"dataframe-utils"</code>, for utilities to define some cached variables.</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>se</span> <span class='kw'>&lt;-</span> <span class='fu'>SummarizedExperiment</span>()

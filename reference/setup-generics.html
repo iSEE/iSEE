@@ -160,7 +160,7 @@
 
     
 
-<p><code>.cacheCommonInfo(x, se)</code> computes common values that will be re-used for all panels with the same class as <code>x</code>.
+<p><code>.cacheCommonInfo(x, se)</code> computes common values that can be re-used for all panels with the same class as <code>x</code>.
 The following arguments are required:</p><ul>
 <li><p><code>x</code>, an instance of a Panel class.</p></li>
 <li><p><code>se</code>, the SummarizedExperiment object containing the current dataset.</p></li>
@@ -170,10 +170,10 @@ The following arguments are required:</p><ul>
 Each field should be named according to the class name and contain some common information that is constant for all instances of the class of <code>x</code> - see <code>.setCachedCommonInfo</code> for an appropriate setter utility.
 The goal is to avoid repeated recomputation of required values when creating user interface elements or observers.</p>
 <p>Methods for this generic should start by checking whether the metadata already contains the class name, and returning <code>se</code> without modification if this is the case.
-Otherwise, it should <code>callNextMethod</code> to fill in the cache values from the parent classes, before adding cached values under the class name for <code>x</code>.</p>
-<p>Remember, the cache is strictly for use in defining interface elements and in observers.
-Developers should not expect to be able to retrieve cached values when rendering the output for a panel,
-as the code tracker does not capture the code used to construct the cache.</p>
+Otherwise, it should <code>callNextMethod</code> to fill in the cache values from the parent classes, before adding cached values under the class name for <code>x</code>.
+This means that any modification to <code>se</code> will only be performed once per class, so any cached values should be constant for all instances of the same class.</p>
+<p>Practically, the cache should only be used to define interface elements and in observers that respond to those elements.
+Developers should not expect to be able to retrieve cached values when rendering the output for a panel, as the code tracker does not capture the code used to construct the cache.</p>
     <h2 class="hasAnchor" id="refining-parameters"><a class="anchor" href="#refining-parameters"></a>Refining parameters</h2>
 
     

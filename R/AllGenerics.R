@@ -802,7 +802,7 @@ NULL
 setGeneric(".singleSelectionDimension", function(x) standardGeneric(".singleSelectionDimension"))
 
 #' @export
-setGeneric(".singleSelectionValue", function(x, pObjects) standardGeneric(".singleSelectionValue"))
+setGeneric(".singleSelectionValue", function(x, contents) standardGeneric(".singleSelectionValue"))
 
 #' @export
 setGeneric(".singleSelectionSlots", function(x) standardGeneric(".singleSelectionSlots"))

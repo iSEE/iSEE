@@ -34,7 +34,7 @@
     observeEvent(rObjects[[dimname_name]], {
         instance <- pObjects$memory[[panel_name]]
 
-        chosen <- .singleSelectionValue(instance, pObjects)
+        chosen <- .singleSelectionValue(instance, pObjects$contents[[panel_name]])
         if (is.null(chosen)) {
             return(NULL)
         }
@@ -159,7 +159,7 @@
         # Updating the selection, based on the currently selected row.
         if (tab!=.noSelection) {
             old_selected <- pObjects$memory[[panel_name]][[name_field]]
-            new_selected <- .singleSelectionValue(pObjects$memory[[tab]], pObjects)
+            new_selected <- .singleSelectionValue(pObjects$memory[[tab]], pObjects$contents[[tab]])
 
             if (!is.null(new_selected) && new_selected != old_selected) {
                 all_choices <- rownames(pObjects$contents[[tab]])

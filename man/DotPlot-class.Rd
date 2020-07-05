@@ -194,7 +194,7 @@ For controlling selections:
 The active selection is returned if \code{index=NA}, otherwise one of the saved selection is returned.
 \item \code{\link{.multiSelectionActive}(x)} returns \code{x[["BrushData"]]} or \code{NULL} if there is no brush or closed lasso.
 \item \code{\link{.multiSelectionClear}(x)} returns \code{x} after setting the \code{BrushData} slot to an empty list.
-\item \code{\link{.singleSelectionValue}(x)} returns the name of the first selected element in the active brush.
+\item \code{\link{.singleSelectionValue}(x, contents)} returns the name of the first selected element in the active brush.
 If no brush is active, \code{NULL} is returned instead.
 \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of coloring parameters.
 This includes the output of \code{callNextMethod}.

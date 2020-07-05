@@ -84,15 +84,21 @@ The following arguments are required:
 Methods for this generic should return a list containing:
 \itemize{
 \item \code{contents}, some arbitrary content for the panel (usually a data.frame).
-This is used during app initialization to ensure that \code{pObjects$contents} of transmitter panels is filled before rendering their children.
 It should be of a structure that allows it to be cross-referenced against the output of \code{\link{.multiSelectionActive}} to determine the selected rows/columns.
+This is used to ensure that the \code{pObjects$contents} of a panel is populated before attempting to render their children (i.e., those that receive a multiple selection from the current panel).
 \item \code{commands}, a list of character vectors of R commands that, when executed, produces the contents of the panel and any displayed output (e.g., a \link{ggplot} object).
 Developers should write these commands as if the evaluation environment only contains the SummarizedExperiment \code{se} and ExperimentColorMap \code{colormap}.
+\item \code{varname}, a string specifying the name of the variable in \code{commands} used to generate \code{contents}.
+This is used to fulfill code tracking obligations.
 }
 The output list may contain any number of other fields that can be used by \code{\link{.renderOutput}} but are otherwise ignored.
 
 We suggest implementing this method using \code{\link{eval}(\link{parse}(text=...))} calls, which enables easy construction and evaluation of the commands and contents at the same time.
-We also strongly recommend the use of the \code{\link{.processMultiSelections}} function for easily processing the multiple selection parameters.
+A convenient wrapper for this call is provided by the \code{\link{.textEval}} utility.
+
+The \code{all_memory} and \code{all_contents} arguments are provided for the sole purpose of determining what multiple selections are being received by \code{x}.
+We strongly recommend passing them onto \code{\link{.processMultiSelections}} to do the heavy lifting.
+It would be unusual and inadvisable to use these arguments for any other information sharing across panels.
 }
 
 \section{Exporting content}{

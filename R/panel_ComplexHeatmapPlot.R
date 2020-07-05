@@ -3,7 +3,7 @@
 #' The ComplexHeatmapPlot is a panel class for creating a \linkS4class{Panel} that displays an assay of a \linkS4class{SummarizedExperiment} object as a \code{\link{Heatmap}} with features as rows and samples and columns, respectively.
 #' It provides slots and methods for specifying the features of interest, which assay to display in the main heatmap, any transformations to perform on the data, and which metadata variables to display as row and column heatmap annotations.
 #'
-#' @section Slot overview:
+#' @section ComplexHeatmapPlot slot overview:
 #' The following slots control the assay that is used:
 #' \itemize{
 #' \item \code{Assay}, string specifying the name of the assay to use for obtaining expression values.
@@ -32,6 +32,23 @@
 #' \item \code{ClusterRowsMethod}, string specifying a linkage method to use.
 #' This can be any one of \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{"complete"}, \code{"average"}, \code{"mcquitty"}, \code{"median"}, or \code{"centroid"}.
 #' Defaults to \code{"ward.D2"}.
+#' }
+#' 
+#' The following control transformations applied to rows:
+#' \itemize{
+#' \item \code{AssayCenterRows} is a logical scalar indicating whether assay values should be centered for each row.
+#' \item \code{AssayScaleRows} is a logical scalar indicating whether assay values should be scaled for each row.
+#' This transformation is only applicable if \code{AssayCenterRows} is \code{TRUE}. 
+#' }
+#' 
+#' The following slots control the color scale:
+#' \itemize{
+#' \item \code{CustomBounds} is logical scale indicating whether the color scale should be constrained by an upper and/or a lower bounds.
+#' \item \code{LowerBound} is a numerical value setting the lower bound of the color scale;
+#' or \code{NA} to disable the lower bound when \code{CustomBounds} is \code{TRUE}.
+#' \item \code{UpperBound} is a numerical value setting the lower bound of the color scale;
+#' or \code{NA} to disable the upper bound when \code{CustomBounds} is \code{TRUE}.
+#' \item \code{DivergentColormap} is a character scalar indicating a 3-color divergent colormap to use when \code{AssayCenterRows} is \code{TRUE}.
 #' }
 #'
 #' The following slots refer to general plotting parameters:

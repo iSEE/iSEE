@@ -201,7 +201,7 @@ Transmission of a selection to a Table will manifest as a subsetting of the rows
 If both contain only empty strings, a <code>NULL</code> is returned instead.</p></li>
 <li><p><code>.multiSelectionCommands(x, index)</code> returns a character vector of R expressions that - when evaluated - return a character vector of the row names of the table after applying all search filters.
 The value of <code>index</code> is ignored.</p></li>
-<li><p><code>.singleSelectionValue(x, pObjects)</code> returns the name of the row that was last selected in the <code>datatable</code> widget.</p></li>
+<li><p><code>.singleSelectionValue(x, contents)</code> returns the name of the row that was last selected in the <code>datatable</code> widget.</p></li>
 </ul>
 
 <p>Unless explicitly specialized above, all methods from the parent class Panel are also available.</p>

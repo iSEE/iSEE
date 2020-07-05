@@ -460,6 +460,22 @@ setMethod(".renderOutput", "ComplexHeatmapPlot", function(x, se, output, pObject
 })
 
 #' @export
+#' @importFrom grDevices pdf dev.off
+setMethod(".exportOutput", "ComplexHeatmapPlot", function(x, se, all_memory, all_contents) {
+    contents <- .generateOutput(x, se, all_memory=all_memory, all_contents=all_contents)
+    newpath <- paste0(.getEncodedName(x), ".pdf")
+    
+    # These are reasonably satisfactory heuristics:
+    # Width = Pixels -> Inches, Height = Bootstrap -> Inches.
+    pdf(newpath, width=x[[.organizationHeight]]/75, height=x[[.organizationWidth]]*2)
+    # print(contents$plot)
+    draw(contents$plot)
+    dev.off()
+    
+    newpath
+})
+
+#' @export
 setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info) {
     list(
         .create_data_param_box(x, se, select_info),

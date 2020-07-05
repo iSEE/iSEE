@@ -296,8 +296,7 @@ context(".singleSelectionValue")
 test_that(".singleSelectionValue handles DotPlot", {
 
     x <- ReducedDimensionPlot(PanelId=1L)
-    pObjects <- new.env()
-    pObjects$contents[["ReducedDimensionPlot1"]] <- data.frame(X=1, Y=seq_len(100), row.names = paste0("X", seq_len(100)))
+    contents <- data.frame(X=1, Y=seq_len(100), row.names = paste0("X", seq_len(100)))
 
     x[[iSEE:::.brushData]] <- list(
         xmin = 0.7, xmax = 1.3, ymin = 1, ymax = 50,
@@ -306,7 +305,7 @@ test_that(".singleSelectionValue handles DotPlot", {
         brushId = "ReducedDimensionPlot1_Brush",
         outputId = "ReducedDimensionPlot1")
 
-    out <- .singleSelectionValue(x, pObjects)
+    out <- .singleSelectionValue(x, contents)
     expect_identical(out, "X1")
 
     # Brush does not include any data point
@@ -317,7 +316,7 @@ test_that(".singleSelectionValue handles DotPlot", {
         brushId = "ReducedDimensionPlot1_Brush",
         outputId = "ReducedDimensionPlot1")
 
-    out <- .singleSelectionValue(x, pObjects)
+    out <- .singleSelectionValue(x, contents)
     expect_null(out)
 })
 

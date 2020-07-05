@@ -46,7 +46,7 @@
 #' If both contain only empty strings, a \code{NULL} is returned instead.
 #' \item \code{\link{.multiSelectionCommands}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the row names of the table after applying all search filters.
 #' The value of \code{index} is ignored.
-#' \item \code{\link{.singleSelectionValue}(x, pObjects)} returns the name of the row that was last selected in the \code{\link{datatable}} widget.
+#' \item \code{\link{.singleSelectionValue}(x, contents)} returns the name of the row that was last selected in the \code{\link{datatable}} widget.
 #' }
 #'
 #' Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.
@@ -114,7 +114,7 @@ setMethod(".multiSelectionActive", "Table", function(x) {
 })
 
 #' @export
-setMethod(".singleSelectionValue", "Table", function(x, pObjects) {
+setMethod(".singleSelectionValue", "Table", function(x, contents) {
     x[[.TableSelected]]
 })
 

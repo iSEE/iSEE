@@ -1,6 +1,7 @@
 # iSEE 2.1.9
 
-* Defined `.exportOutput` method for `ComplexHeatmapPlot` class.
+* Defined `.exportOutput` method for the `ComplexHeatmapPlot` class.
+* Added missing documentation for slots and methods in the `ComplexHeatmapPlot` class.
 
 # iSEE 2.1.8
 

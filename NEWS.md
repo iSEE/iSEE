@@ -1,3 +1,8 @@
+# iSEE 2.1.9
+
+* Defined `.exportOutput` method for the `ComplexHeatmapPlot` class.
+* Added missing documentation for slots and methods in the `ComplexHeatmapPlot` class.
+
 # iSEE 2.1.8
 
 * Fixed control of legend point size for continuous covariates.

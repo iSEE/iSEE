@@ -155,7 +155,7 @@
 #' This will also call the equivalent \linkS4class{Panel} method.
 #' \item \code{\link{.renderOutput}(x, se, output, pObjects, rObjects)} will add a rendered plot element to \code{output}.
 #' The reactive expression will add the contents of the plot to \code{pObjects$contents} and the relevant commands to \code{pObjects$commands}.
-#' This will also call the equivalent \linkS4class{Panel} method to render the panel information testboxes.
+#' This will also call the equivalent \linkS4class{Panel} method to render the panel information text boxes.
 #' }
 #'
 #' For controlling selections:

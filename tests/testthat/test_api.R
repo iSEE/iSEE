@@ -1,5 +1,5 @@
 # This tests the various class set-up methods.
-# library(testthat); library(iSEE); source('setup_sce.R'); source('test_api.R')
+# library(testthat); library(iSEE); source('setup_sce.R'); source('setup_other.R'); source('test_api.R')
 
 # .refineParameters ----
 context(".refineParameters")

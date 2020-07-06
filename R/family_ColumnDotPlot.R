@@ -111,6 +111,10 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ...) {
 
     args <- .emptyDefault(args, .sizeByColData, NA_character_)
 
+    # Defensive measure to avoid problems with cyclic graphs 
+    # that the user doesn't have permissions to change!
+    args <- .emptyDefault(args, .selectRowDynamic, FALSE)
+
     do.call(callNextMethod, c(list(.Object), args))
 })
 

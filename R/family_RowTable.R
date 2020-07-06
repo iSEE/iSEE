@@ -66,6 +66,18 @@
 NULL
 
 #' @export
+#' @importFrom methods callNextMethod
+setMethod("initialize", "RowTable", function(.Object, ...) {
+    args <- list(...)
+
+    # Defensive measure to avoid problems with cyclic graphs 
+    # that the user doesn't have permissions to change!
+    args <- .emptyDefault(args, .selectColDynamic, FALSE)
+
+    do.call(callNextMethod, c(list(.Object), args))
+})
+
+#' @export
 setMethod(".refineParameters", "RowTable", function(x, se) {
     x <- callNextMethod()
     if (is.null(x)) {

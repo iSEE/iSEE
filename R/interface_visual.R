@@ -193,7 +193,7 @@
 #' @importFrom shiny checkboxGroupInput selectizeInput checkboxInput numericInput radioButtons
 #' @importFrom shinyjs disabled
 #'
-#' @rdname INTERNAL_create_visual_box
+#' @rdname INTERNAL_create_visual_box_for_complexheatmap
 .create_visual_box_for_complexheatmap <- function(x, se) {
     plot_name <- .getEncodedName(x)
 

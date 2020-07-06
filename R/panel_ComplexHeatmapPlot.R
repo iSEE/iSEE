@@ -149,12 +149,6 @@
 #' \item \code{\link{.fullName}(x)} will return \code{"Complex heatmap"}.
 #' }
 #'
-#' For creating the plot:
-#' \itemize{
-#' TODO
-
-#' }
-#'
 #' @author Kevin Rue-Albrecht
 #'
 #' @seealso

@@ -171,11 +171,6 @@ For defining the panel name:
 \itemize{
 \item \code{\link{.fullName}(x)} will return \code{"Complex heatmap"}.
 }
-
-For creating the plot:
-\itemize{
-TODO
-}
 }
 
 \examples{

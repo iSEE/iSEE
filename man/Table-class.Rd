@@ -47,7 +47,7 @@ For defining reactive expressions:
 \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all of the slots.
 This will also call the equivalent \linkS4class{Panel} method.
 \item \code{\link{.renderOutput}(x, se, output, pObjects, rObjects)} will add a rendered \code{\link{datatable}} object to \code{output}.
-This will also call the equivalent \linkS4class{Panel} method to render the panel information testboxes.
+This will also call the equivalent \linkS4class{Panel} method to render the panel information text boxes.
 \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the table;
 \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot};
 and \code{varname}, a string specifying the name of the variable in \code{commands} used to generate \code{contents}.

@@ -90,26 +90,69 @@
 #'
 #' For setting up data values:
 #' \itemize{
-#' \item \code{\link{.refineParameters}(x, se)} returns \code{x} after replacing \code{NA} values in \code{"Assay"} with the first valid assay name; and \code{NA} values in \code{CustomRowsText} with the first row name.
+#' \item \code{\link{.cacheCommonInfo}(x)} adds a \code{"ComplexHeatmapPlot"} entry containing
+#' \code{valid.assay.names}, a character vector of valid assay names;
+#' \code{discrete.assay.names}, a character vector of valid assay names with discrete atomic values;
+#' \code{continuous.assay.names}, a character vector of valid assay names with continuous atomic values;
+#' \code{valid.colData.names}, a character vector of names of columns in \code{colData} that are valid;
+#' \code{discrete.colData.names}, a character vector of names for columns in \code{colData} with discrete atomic values;
+#' \code{continuous.colData.names}, a character vector of names of columns in \code{colData} with continuous atomic values;
+#' \code{valid.rowData.names}, a character vector of names of columns in \code{rowData} that are valid;
+#' \code{discrete.rowData.names}, a character vector of names for columns in \code{rowData} with discrete atomic values;
+#' \code{continuous.rowData.names}, a character vector of names of columns in \code{rowData} with continuous atomic values.
+#' Valid assay names are defined as those that are non-empty, i.e., not \code{""};
+#' valid columns in \code{colData} and \code{rowData} are defined as those that contain atomic values.
+#' This will also call the equivalent \linkS4class{Panel} method.
+#' \item \code{\link{.refineParameters}(x, se)} replaces
+#' any \code{NA} value in \code{"Assay"} with the first valid assay name;
+#' and \code{NA} value in \code{"CustomRowsText"} with the first row name.
 #' This will also call the equivalent \linkS4class{Panel} method for further refinements to \code{x}.
 #' If no valid column metadata fields are available, \code{NULL} is returned instead.
 #' }
 #'
 #' For defining the interface:
 #' \itemize{
+#' \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
+#' TODO
+#' It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}},
+#' and a visual parameter box and a selection parameter box both specific to the \code{ComplexHeatmapPlot} panel.
+#' This will \emph{override} the \linkS4class{Panel} method.
 #' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+#' \item \code{\link{.defineOutput}(x)} returns a UI element for a brushable plot.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
+#' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+#' This returns \code{TRUE} for the selection history (\code{"SelectionHistory"}),
+#' otherwise it dispatches to the \linkS4class{Panel} method.
+#' }
+#' 
+#' For generating the output:
+#' \itemize{
+#' \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the plot;
+#' \code{plot}, a \link{ggplot} object;
+#' \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot};
+#' and \code{varname}, a string containing the name of the variable in \code{commands} that was used to obtain \code{contents}.
+#' \item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} will create a PDF file containing the current plot, and return a string containing the path to that PDF.
+#' This assumes that the \code{plot} field returned by \code{\link{.generateOutput}} is a \link{Heatmap} object.
 #' }
 #'
 #' For monitoring reactive expressions:
 #' \itemize{
 #' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
 #' This will also call the equivalent \linkS4class{Panel} method.
+#' \item \code{\link{.renderOutput}(x, se, output, pObjects, rObjects)} will add a rendered plot element to \code{output}.
+#' The reactive expression will add the contents of the plot to \code{pObjects$contents} and the relevant commands to \code{pObjects$commands}.
+#' This will also call the equivalent \linkS4class{Panel} method to render the panel information text boxes.
 #' }
 #'
 #' For defining the panel name:
 #' \itemize{
 #' \item \code{\link{.fullName}(x)} will return \code{"Complex heatmap"}.
+#' }
+#'
+#' For creating the plot:
+#' \itemize{
+#' TODO
+
 #' }
 #'
 #' @author Kevin Rue-Albrecht

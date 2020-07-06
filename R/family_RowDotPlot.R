@@ -110,6 +110,10 @@ setMethod("initialize", "RowDotPlot", function(.Object, ...) {
 
     args <- .emptyDefault(args, .sizeByRowData, NA_character_)
 
+    # Defensive measure to avoid problems with cyclic graphs
+    # that the user doesn't have permissions to change!
+    args <- .emptyDefault(args, .selectColDynamic, FALSE)
+
     do.call(callNextMethod, c(list(.Object), args))
 })
 

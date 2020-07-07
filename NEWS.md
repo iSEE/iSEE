@@ -1,7 +1,10 @@
 # iSEE 2.1.9
 
+* Improved documentation for generics and classes.
 * Defined `.exportOutput` method for the `ComplexHeatmapPlot` class.
 * Added missing documentation for slots and methods in the `ComplexHeatmapPlot` class.
+* Enforced sensible defaults for the dynamic selection setting.
+* Extract assays with dimnames for correct indexing.
 
 # iSEE 2.1.8
 

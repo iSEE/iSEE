@@ -400,7 +400,7 @@ setMethod(".addDotPlotDataColor", "ColumnDotPlot", function(x, envir) {
         chosen_gene <- x[[.colorByFeatName]]
         assay_choice <- x[[.colorByFeatNameAssay]]
         label <- sprintf("%s\n(%s)", chosen_gene, assay_choice)
-        cmds <- sprintf("plot.data$ColorBy <- assay(se, %s, withDimnames=FALSE)[%s, ];",
+        cmds <- sprintf("plot.data$ColorBy <- assay(se, %s)[%s, ];",
             deparse(assay_choice), deparse(chosen_gene))
 
     } else if (color_choice == .colorBySampNameTitle) {

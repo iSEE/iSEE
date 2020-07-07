@@ -1,3 +1,8 @@
+# iSEE 2.1.10
+
+* Avoid transmitting multiple selections for Tables when the number of columns change.
+* Hide irrelevant UI elements for Table multiple selections.
+
 # iSEE 2.1.9
 
 * Improved documentation for generics and classes.

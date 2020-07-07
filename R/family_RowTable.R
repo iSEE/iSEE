@@ -99,7 +99,7 @@ setMethod(".createObservers", "RowTable", function(x, se, input, session, pObjec
 
 #' @export
 setMethod(".hideInterface", "RowTable", function(x, field) {
-    if (field %in% c(.selectColSource, .selectColType, .selectColSaved)) {
+    if (field %in% c(.selectColSource, .selectColType, .selectColSaved, .selectColDynamic)) {
         TRUE
     } else {
         callNextMethod()

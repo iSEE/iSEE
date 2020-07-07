@@ -69,11 +69,19 @@
     # nocov start
     observeEvent(input[[colsearch_field]], {
         search <- input[[colsearch_field]]
-        if (identical(search, pObjects$memory[[panel_name]][[.TableColSearch]])) {
+        past <- pObjects$memory[[panel_name]][[.TableColSearch]]
+        if (identical(search, past)) {
             return(NULL)
         }
 
         pObjects$memory[[panel_name]][[.TableColSearch]] <- search
+
+        if (all(search=="") && all(past=="")) {
+            # No update in cases with variable numbers of columns where no
+            # selection was performed (assuming rows were the same).
+            return(NULL)
+        }
+
         .requestActiveSelectionUpdate(panel_name, session, pObjects, rObjects, update_output=FALSE)
     }, ignoreInit=TRUE)
     # nocov end

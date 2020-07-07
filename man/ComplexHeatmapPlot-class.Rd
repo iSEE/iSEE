@@ -15,6 +15,7 @@
 \alias{.panelColor,ComplexHeatmapPlot-method}
 \alias{.refineParameters,ComplexHeatmapPlot-method}
 \alias{.renderOutput,ComplexHeatmapPlot-method}
+\alias{.exportOutput,ComplexHeatmapPlot-method}
 \alias{initialize,ComplexHeatmapPlot-method}
 \title{The ComplexHeatmapPlot panel}
 \description{

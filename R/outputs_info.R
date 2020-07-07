@@ -43,8 +43,8 @@
             all_output <- append(all_output,
                 list(
                     sprintf(
-                        "%i of %i points in active selection (%.1f%%)",
-                        n_brushed, n_total, 100*n_brushed/n_total
+                        "%i of %i %ss in active selection (%.1f%%)",
+                        n_brushed, n_total, .multiSelectionDimension(instance), 100*n_brushed/n_total
                     ),
                     br()
                 )

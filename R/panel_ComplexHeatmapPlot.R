@@ -197,6 +197,7 @@
 #' .panelColor,ComplexHeatmapPlot-method
 #' .refineParameters,ComplexHeatmapPlot-method
 #' .renderOutput,ComplexHeatmapPlot-method
+#' .exportOutput,ComplexHeatmapPlot-method
 #' initialize,ComplexHeatmapPlot-method
 #'
 #' @name ComplexHeatmapPlot-class

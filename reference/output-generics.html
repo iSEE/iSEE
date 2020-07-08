@@ -160,15 +160,11 @@
 
     
 
-<p><code>.defineOutput(x, ...)</code> defines the output element of the panel, e.g., a plot or table widget.
-The following arguments are required:</p><ul>
-<li><p><code>x</code>, an instance of a Panel subclass.</p></li>
-<li><p><code>...</code>, further arguments that are not currently used.</p></li>
-</ul>
-
+<p><code>.defineOutput(x)</code> defines the output element of the panel (e.g., a plot or table widget),
+given an instance of a Panel subclass in <code>x</code>.</p>
 <p>Methods for this generic are expected to return a HTML element containing the visual output of the panel, such as the return value of <code>plotOutput</code> or <code>dataTableOutput</code>.
 This element will be shown in the <span class="pkg">iSEE</span> interface above the parameter boxes for <code>x</code>.
-Multiple elements can be provided via a <code>tagList</code>.</p>
+Multiple elements can be returned via a <code>tagList</code>.</p>
 <p>The IDs of the output elements are expected to be prefixed with the panel name from <code>.getEncodedName(x)</code> and an underscore, e.g., <code>"ReducedDimensionPlot1_someOutput"</code>.
 One of the output elements may simply have the ID set to <code>PANEL</code> alone;
 this is usually the case for simple panels with one primary output like a DotPlot.</p>

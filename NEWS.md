@@ -1,8 +1,9 @@
 # iSEE 2.1.10
 
-* Avoid transmitting multiple selections for Tables when the number of columns change.
-* Hide irrelevant UI elements for Table multiple selections.
+* Avoid transmitting multiple selections for `Table`s when the number of columns change.
+* Hide irrelevant UI elements for `Table` multiple selections.
 * Generalize information about the number of selected rows/columns in each panel.
+* Streamlined the `.defineOutput` signature.
 
 # iSEE 2.1.9
 

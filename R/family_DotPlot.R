@@ -130,7 +130,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineOutput}(x, id)} returns a UI element for a brushable plot.
+#' \item \code{\link{.defineOutput}(x)} returns a UI element for a brushable plot.
 #' }
 #'
 #' For generating the output:
@@ -391,7 +391,7 @@ setMethod(".defineVisualOtherInterface", "DotPlot", function(x) {
 })
 
 #' @export
-setMethod(".defineOutput", "DotPlot", function(x, id) {
+setMethod(".defineOutput", "DotPlot", function(x) {
     plot_name <- .getEncodedName(x)
     col <- .getPanelColor(x)
 

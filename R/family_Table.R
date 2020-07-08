@@ -22,7 +22,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineOutput}(x, id)} returns a UI element for a \code{\link[DT]{dataTableOutput}} widget.
+#' \item \code{\link{.defineOutput}(x)} returns a UI element for a \code{\link[DT]{dataTableOutput}} widget.
 #' }
 #'
 #' For defining reactive expressions:
@@ -120,7 +120,7 @@ setMethod(".singleSelectionValue", "Table", function(x, contents) {
 
 #' @export
 #' @importFrom DT dataTableOutput
-setMethod(".defineOutput", "Table", function(x, ...) {
+setMethod(".defineOutput", "Table", function(x) {
     tagList(dataTableOutput(.getEncodedName(x)), hr())
 })
 

@@ -13,16 +13,12 @@ An overview of the generics for defining the panel outputs, along with recommend
 }
 \section{Defining the output element}{
 
-\code{.defineOutput(x, ...)} defines the output element of the panel, e.g., a plot or table widget.
-The following arguments are required:
-\itemize{
-\item \code{x}, an instance of a \linkS4class{Panel} subclass.
-\item \code{...}, further arguments that are not currently used.
-}
+\code{.defineOutput(x)} defines the output element of the panel (e.g., a plot or table widget),
+given an instance of a \linkS4class{Panel} subclass in \code{x}.
 
 Methods for this generic are expected to return a HTML element containing the visual output of the panel, such as the return value of \code{\link{plotOutput}} or \code{\link{dataTableOutput}}.
 This element will be shown in the \pkg{iSEE} interface above the parameter boxes for \code{x}.
-Multiple elements can be provided via a \code{\link{tagList}}.
+Multiple elements can be returned via a \code{\link{tagList}}.
 
 The IDs of the output elements are expected to be prefixed with the panel name from \code{\link{.getEncodedName}(x)} and an underscore, e.g., \code{"ReducedDimensionPlot1_someOutput"}.
 One of the output elements may simply have the ID set to \code{PANEL} alone;

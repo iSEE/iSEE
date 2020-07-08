@@ -39,7 +39,7 @@ Refer to the documentation for each method for more details on the remaining arg
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineOutput}(x, id)} returns a UI element for a \code{\link[DT]{dataTableOutput}} widget.
+\item \code{\link{.defineOutput}(x)} returns a UI element for a \code{\link[DT]{dataTableOutput}} widget.
 }
 
 For defining reactive expressions:

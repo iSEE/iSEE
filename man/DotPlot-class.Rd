@@ -159,7 +159,7 @@ This will also call the equivalent \linkS4class{Panel} method.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineOutput}(x, id)} returns a UI element for a brushable plot.
+\item \code{\link{.defineOutput}(x)} returns a UI element for a brushable plot.
 }
 
 For generating the output:

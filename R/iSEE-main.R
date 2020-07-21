@@ -391,6 +391,26 @@ iSEE <- function(se,
     reservoir <- res_out$reservoir
     counter <- res_out$counter
 
+    # Validating the multiple selection sources to avoid invalid app state
+    # downstream. We also clean out the selection sources in the reservoir,
+    # given that there is no guarantee that the panel is still present. 
+    all_names <- vapply(memory, .getEncodedName, "")
+    multi_sources <- .get_selection_sources(memory, all_names)
+
+    for (x in seq_along(memory)) {
+        if (!memory[[x]][[.selectRowSource]] %in% multi_sources$row) {
+            memory[[x]][[.selectRowSource]] <- .noSelection
+        }
+        if (!memory[[x]][[.selectColSource]] %in% multi_sources$column) {
+            memory[[x]][[.selectColSource]] <- .noSelection
+        }
+    }
+
+    for (r in seq_along(reservoir)) {
+        reservoir[[r]][[.selectRowSource]] <- .noSelection
+        reservoir[[r]][[.selectColSource]] <- .noSelection
+    }
+
     pObjects <- .create_persistent_objects(memory, reservoir, counter)
 
     # Evaluating certain plots to fill the coordinate list, if there are any

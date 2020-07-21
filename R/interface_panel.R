@@ -90,17 +90,8 @@ height_limits <- c(400L, 1000L)
     all_names <- vapply(all_memory, .getEncodedName, "")
     names(all_names) <- vapply(all_memory, .getFullName, "")
 
-    mdims <- vapply(all_memory, FUN=.multiSelectionDimension, "")
-    multi_sources <- list(
-        row=c(.noSelection, all_names[mdims=="row"]),
-        column=c(.noSelection, all_names[mdims=="column"])
-    )
-
-    sdims <- vapply(all_memory, FUN=.singleSelectionDimension, "")
-    single_sources <- list(
-        row=c(.noSelection, all_names[sdims=="feature"]),
-        column=c(.noSelection, all_names[sdims=="sample"])
-    )
+    multi_sources <- .get_selection_sources(all_memory, all_names)
+    single_sources <- .get_selection_sources(all_memory, all_names, multiple=FALSE)
 
     for (i in seq_along(all_memory)) {
         instance <- all_memory[[i]]

@@ -125,7 +125,7 @@
                   <a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       
                   
-            <h4 class="date">21 July 2020</h4>
+            <h4 class="date">24 July 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/bigdata.Rmd"><code>vignettes/bigdata.Rmd</code></a></small>
       <div class="hidden name"><code>bigdata.Rmd</code></div>
@@ -134,7 +134,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-07-21</p>
+<p><strong>Compiled date</strong>: 2020-07-24</p>
 <p><strong>Last edited</strong>: 2018-03-08</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="overview" class="section level1">
@@ -157,9 +157,9 @@
 <span class="co">#&gt; reducedDimNames(0):</span>
 <span class="co">#&gt; altExpNames(0):</span></pre></body></html></div>
 </div>
-<div id="using-out-of-memory-matrices" class="section level1">
+<div id="out-of-memory" class="section level1">
 <h1 class="hasAnchor">
-<a href="#using-out-of-memory-matrices" class="anchor"></a>Using out of memory matrices</h1>
+<a href="#out-of-memory" class="anchor"></a>Using out-of-memory matrices</h1>
 <p>Many <code>SummarizedExperiment</code> objects store assay matrices as in-memory matrix-like objects, be they ordinary matrices or alternative representations such as sparse matrices from the <em><a href="https://CRAN.R-project.org/package=Matrix">Matrix</a></em> package. For example, if we looked at the Allen data, we would see that the counts are stored as an ordinary matrix.</p>
 <div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">scRNAseq</span>)
 <span class="no">sce.allen</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html">ReprocessedAllenData</a></span>(<span class="st">"tophat_counts"</span>)
@@ -221,9 +221,9 @@
 <span class="co">#&gt; character(0)</span></pre></body></html></div>
 <p>It is worth noting that <code><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE()</a></code> does not know or care that the data is stored in a HDF5 file. The app is fully compatible with any matrix-like representation of the assay data that supports <code><a href="https://rdrr.io/r/base/dim.html">dim()</a></code> and <code>[,</code>. As such, <code><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE()</a></code> can be directly used with other memory-efficient objects like the <code>DeferredMatrix</code> and <code>LowRankMatrix</code> from the <em><a href="https://bioconductor.org/packages/3.12/BiocSingular">BiocSingular</a></em> package, or perhaps the <code>ResidualMatrix</code> from the <em><a href="https://bioconductor.org/packages/3.12/batchelor">batchelor</a></em> package.</p>
 </div>
-<div id="downsampling-points" class="section level1">
+<div id="downsampling" class="section level1">
 <h1 class="hasAnchor">
-<a href="#downsampling-points" class="anchor"></a>Downsampling points</h1>
+<a href="#downsampling" class="anchor"></a>Downsampling points</h1>
 <p>It is also possible to downsample points to reduce the time required to generate the plot. This involves subsetting the dataset so that only the most recently plotted point for an overlapping set of points is shown. In this manner, we avoid wasting time in plotting many points that would not be visible anyway. To demonstrate, we will re-use the 68K PBMC example and perform downsampling on the feature assay plot; we can see that its aesthetics are largely similar to the non-downsampled counterpart above.</p>
 <div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">iSEE</span>)
 <span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce.pbmc</span>, <span class="kw">initial</span><span class="kw">=</span>
@@ -243,10 +243,17 @@
 <p>The downsampling resolution determines the degree to which points are considered to be overlapping. Decreasing the resolution will downsample more aggressively, improving plotting speed but potentially affecting the fidelity of the visualization. This may compromise the aesthetics of the plot when the size of the points is small, in which case an increase in resolution may be required at the cost of speed.</p>
 <p>Obviously, downsampling will not preserve overlays for partially transparent points, but any reliance on partial transparency is probably not a good idea in the first place when there are many points.</p>
 </div>
-<div id="alternative-visualizations" class="section level1">
+<div id="changing-the-interface" class="section level1">
 <h1 class="hasAnchor">
-<a href="#alternative-visualizations" class="anchor"></a>Alternative visualizations</h1>
-<p>The <code>ReducedDimensionHexPlot</code> class from the <em><a href="https://bioconductor.org/packages/3.12/iSEEu">iSEEu</a></em> package will create a hexplot rather than a scatter plot, thus avoiding the need to render each point in the reduced dimension plot.</p>
+<a href="#changing-the-interface" class="anchor"></a>Changing the interface</h1>
+<p>One can generally improve the speed of the <code><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE()</a></code> interface by only initializing the app with the desired panels. For example, it makes little sense to spend time rendering a <code>RowDataPlot</code> when only the <code>ReducedDimensionPlot</code> is of interest. Specification of the initial state is straightforward with the <code>initial=</code> argument, as described in a <a href="https://bioconductor.org/packages/3.12/iSEE/vignettes/configure.html">previous vignette</a>.</p>
+<p>On occasion, there may be alternative panels with more efficient visualizations for the same data. The prime example is the <code>ReducedDimensionHexPlot</code> class from the <em><a href="https://bioconductor.org/packages/3.12/iSEEu">iSEEu</a></em> package; this will create a hexplot rather than a scatter plot, thus avoiding the need to render each point in the latter.</p>
+</div>
+<div id="comments-on-deployment" class="section level1">
+<h1 class="hasAnchor">
+<a href="#comments-on-deployment" class="anchor"></a>Comments on deployment</h1>
+<p>It is straightforward to host <em><a href="https://bioconductor.org/packages/3.12/iSEE">iSEE</a></em> applications on hosting platforms like <a href="https://rstudio.com/products/shiny/shiny-server/">Shiny Server</a> or <a href="https://rstudio.com/products/connect/">Rstudio Connect</a>. All one needs to do is to create an <code>app.R</code> file that calls <code><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE()</a></code> with the desired parameters, and then follow the instructions for the target platform. For a better user experience, we suggest setting a minimum number of processes to avoid the initial delay from R start-up.</p>
+<p>It is also possible to deploy and host Shiny app on <a href="https://www.shinyapps.io/">shinyapps.io</a>, a platform as a service (PaaS) provided by RStudio. In many cases, users will need to configure the settings of their deployed apps, in particular selecting larger instances to provide sufficient memory for the app. The maximum amount of 1GB available to free accounts may not be sufficient to deploy large datasets; in which case you may consider <a href="#out-of-memory">using out-of-memory matrices</a>, filtering your dataset (e.g., removing lowly detected features), or going for a paid account. Detailed instructions to get started are available at <a href="https://shiny.rstudio.com/articles/shinyapps.html" class="uri">https://shiny.rstudio.com/articles/shinyapps.html</a>. For example, see the <a href="https://rstudio.cloud/project/230765">isee-shiny-contest</a> app, <a href="https://blog.rstudio.com/2019/04/05/first-shiny-contest-winners/">winner of the 1st Shiny Contest</a>.</p>
 </div>
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">

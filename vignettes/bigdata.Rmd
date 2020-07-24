@@ -72,7 +72,7 @@ sce.pbmc$Library <- factor(sce.pbmc$Library)
 sce.pbmc
 ```
 
-# Using out of memory matrices
+# Using out-of-memory matrices
 
 Many `SummarizedExperiment` objects store assay matrices as in-memory matrix-like objects,
 be they ordinary matrices or alternative representations such as sparse matrices from the `r CRANpkg("Matrix")` package.
@@ -222,10 +222,23 @@ in which case an increase in resolution may be required at the cost of speed.
 Obviously, downsampling will not preserve overlays for partially transparent points,
 but any reliance on partial transparency is probably not a good idea in the first place when there are many points.
 
-# Alternative visualizations
+# Changing the interface
 
-The `ReducedDimensionHexPlot` class from the `r Biocpkg("iSEEu")` package will create a hexplot rather than a scatter plot,
-thus avoiding the need to render each point in the reduced dimension plot.
+One can generally improve the speed of the `iSEE()` interface by only initializing the app with the desired panels.
+For example, it makes little sense to spend time rendering a `RowDataPlot` when only the `ReducedDimensionPlot` is of interest.
+Specification of the initial state is straightforward with the `initial=` argument, 
+as described in a `r Biocpkg("iSEE", "configure.html", "previous vignette")`.
+
+On occasion, there may be alternative panels with more efficient visualizations for the same data.
+The prime example is the `ReducedDimensionHexPlot` class from the `r Biocpkg("iSEEu")` package;
+this will create a hexplot rather than a scatter plot, thus avoiding the need to render each point in the latter.
+
+# Comments on deployment
+
+It is straightforward to host `r Biocpkg("iSEE")` applications on hosting platforms like Shiny Server or Rstudio Connect.
+All one needs to do is to create an `app.R` file that calls `iSEE()` with the desired parameters,
+and then follow the instructions for the target platform.
+For a better user experience, we suggest setting a minimum number of processes to avoid the initial delay from R start-up.
 
 # Session Info {.unnumbered}
 

@@ -72,7 +72,7 @@ sce.pbmc$Library <- factor(sce.pbmc$Library)
 sce.pbmc
 ```
 
-# Using out-of-memory matrices
+# Using out-of-memory matrices {#out-of-memory}
 
 Many `SummarizedExperiment` objects store assay matrices as in-memory matrix-like objects,
 be they ordinary matrices or alternative representations such as sparse matrices from the `r CRANpkg("Matrix")` package.
@@ -147,7 +147,7 @@ As such, `iSEE()` can be directly used with other memory-efficient objects like 
 unlink("assay.h5")
 ```
 
-# Downsampling points
+# Downsampling points {#downsampling}
 
 It is also possible to downsample points to reduce the time required to generate the plot.
 This involves subsetting the dataset so that only the most recently plotted point for an overlapping set of points is shown.
@@ -241,8 +241,9 @@ and then follow the instructions for the target platform.
 For a better user experience, we suggest setting a minimum number of processes to avoid the initial delay from R start-up.
 
 It is also possible to deploy and host Shiny app on [shinyapps.io](https://www.shinyapps.io/), a platform as a service (PaaS) provided by RStudio.
-Users may create free or paid account, and deploy apps using `rsconnect::deployApp()`.
-Paid accounts provide additional resources and support, including additional active hours, performance boost, authentication, and custom domains.
+In many cases, users will need to configure the settings of their deployed apps, in particular selecting larger instances to provide sufficient memory for the app.
+The maximum amount of 1GB available to free accounts may not be sufficient to deploy large datasets;
+in which case you may consider [using out-of-memory matrices](#out-of-memory), filtering your dataset (e.g., removing lowly detected features), or going for a paid account.
 Detailed instructions to get started are available at <https://shiny.rstudio.com/articles/shinyapps.html>.
 For example, see the [isee-shiny-contest](https://rstudio.cloud/project/230765) app, [winner of the 1st Shiny Contest](https://blog.rstudio.com/2019/04/05/first-shiny-contest-winners/).
 

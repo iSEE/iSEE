@@ -235,10 +235,16 @@ this will create a hexplot rather than a scatter plot, thus avoiding the need to
 
 # Comments on deployment
 
-It is straightforward to host `r Biocpkg("iSEE")` applications on hosting platforms like Shiny Server or Rstudio Connect.
+It is straightforward to host `r Biocpkg("iSEE")` applications on hosting platforms like [Shiny Server](https://rstudio.com/products/shiny/shiny-server/) or [Rstudio Connect](https://rstudio.com/products/connect/).
 All one needs to do is to create an `app.R` file that calls `iSEE()` with the desired parameters,
 and then follow the instructions for the target platform.
 For a better user experience, we suggest setting a minimum number of processes to avoid the initial delay from R start-up.
+
+It is also possible to deploy and host Shiny app on [shinyapps.io](https://www.shinyapps.io/), a platform as a service (PaaS) provided by RStudio.
+Users may create free or paid account, and deploy apps using `rsconnect::deployApp()`.
+Paid accounts provide additional resources and support, including additional active hours, performance boost, authentication, and custom domains.
+Detailed instructions to get started are available at <https://shiny.rstudio.com/articles/shinyapps.html>.
+For example, see the [isee-shiny-contest](https://rstudio.cloud/project/230765) app, [winner of the 1st Shiny Contest](https://blog.rstudio.com/2019/04/05/first-shiny-contest-winners/).
 
 # Session Info {.unnumbered}
 

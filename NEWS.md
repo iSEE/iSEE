@@ -1,3 +1,7 @@
+# iSEE 2.1.11
+
+* Add `HiddenColumns` slot to hide columns in `ColumnDataTable`s and `RowDataTable`s.
+
 # iSEE 2.1.10
 
 * Avoid transmitting multiple selections for `Table`s when the number of columns change.

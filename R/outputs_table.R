@@ -71,10 +71,18 @@
         selectRows(dataTableProxy(panel_name, deferUntilFlush=FALSE), NULL)
 
         # Dummying up a variable and hiding it to force datatable to show something.
-        # when there are no columns.
+        # when there are no columns. Otherwise looking at the set of HiddenColumns.
         if (ncol(full_tab)==0L) {
             full_tab$DUMMY <- integer(nrow(full_tab))
             columnDefs <- list(list(targets=1L, visible=FALSE))
+
+        } else if (length(param_choices[[.TableHidden]])) {
+            m <- which(colnames(full_tab) %in% param_choices[[.TableHidden]])
+            columnDefs <- list()
+            for (i in seq_along(m)) {
+                columnDefs[[i]] <- list(targets=as.integer(m[i]), visible=FALSE)
+            }
+
         } else {
             columnDefs <- NULL
         }

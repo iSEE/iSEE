@@ -403,11 +403,15 @@ setClass("RowTable", contains="Table", representation("VIRTUAL"))
 #' @export
 setClass("ColumnTable", contains="Table", representation("VIRTUAL"))
 
-#' @export
-setClass("RowDataTable", contains="RowTable")
+.TableHidden <- "HiddenColumns"
+collated <- character(0)
+collated[.TableHidden] <- "character"
 
 #' @export
-setClass("ColumnDataTable", contains="ColumnTable")
+setClass("RowDataTable", contains="RowTable", slots=collated)
+
+#' @export
+setClass("ColumnDataTable", contains="ColumnTable", slots=collated)
 
 ####################################################
 

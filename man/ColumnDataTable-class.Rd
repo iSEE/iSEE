@@ -24,7 +24,7 @@ The following slots control the appearance of the table:
 Defaults to an empty vector.
 }
 
-This class inherits all slots from its parent \linkS4class{ColumnTable} and \linkS4class{Table} classes.
+This class also inherits all slots from its parent \linkS4class{ColumnTable} and \linkS4class{Table} classes.
 }
 
 \section{Constructor}{

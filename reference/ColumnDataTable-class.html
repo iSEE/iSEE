@@ -73,7 +73,7 @@ It provides functionality to extract the colData to coerce it into an appropriat
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.10</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.11</span>
       </span>
     </div>
 
@@ -162,7 +162,12 @@ It provides functionality to extract the <code>colData</code> to coerce it into 
 
     
 
-<p>This class inherits all slots from its parent ColumnTable and Table classes.</p>
+<p>The following slots control the appearance of the table:</p><ul>
+<li><p><code>HiddenColumns</code>, a character vector containing names of <code>colData</code> columns to hide.
+Defaults to an empty vector.</p></li>
+</ul>
+
+<p>This class also inherits all slots from its parent ColumnTable and Table classes.</p>
     <h2 class="hasAnchor" id="constructor"><a class="anchor" href="#constructor"></a>Constructor</h2>
 
     
@@ -183,20 +188,21 @@ This will also call the equivalent ColumnTable method for further refinements to
 </ul>
 
 <p>For defining the interface:</p><ul>
-<li><p><code>.hideInterface(x, field)</code> returns <code>TRUE</code> if <code>field="DataBoxOpen"</code>,
-otherwise it calls <code>.hideInterface,Table-method</code></p></li>
-<li><p><code>.fullName(x)</code> will return the full name of the panel class.</p></li>
-<li><p><code>.panelColor(x)</code> will return the specified default color for this panel class.</p></li>
-</ul>
-
-<p>For defining the panel name:</p><ul>
 <li><p><code>.fullName(x)</code> will return <code>"Column data table"</code>.</p></li>
+<li><p><code>.panelColor(x)</code> will return the specified default color for this panel class.</p></li>
+<li><p><code>.defineDataInterface(x)</code> will create interface elements for modifying the table,
+namely to choose which columns to hide.</p></li>
 </ul>
 
 <p>For creating the output:</p><ul>
 <li><p><code>.generateTable(x, envir)</code> will modify <code>envir</code> to contain the relevant data.frame for display,
 while returning a character vector of commands required to produce that data.frame.
 Each row of the data.frame should correspond to a column of the SummarizedExperiment.</p></li>
+</ul>
+
+<p>For monitoring reactive expressions:</p><ul>
+<li><p><code>.createObservers(x, se, input, session, pObjects, rObjects)</code> sets up observers to track the hidden columns.
+This will also call the equivalent ColumnTable method.</p></li>
 </ul>
 
 
@@ -218,6 +224,9 @@ Each row of the data.frame should correspond to a column of the SummarizedExperi
 <span class='co'># Search column refinement works as expected.</span>
 <span class='no'>sce0</span> <span class='kw'>&lt;-</span> <span class='fu'>.cacheCommonInfo</span>(<span class='no'>x</span>, <span class='no'>sce</span>)
 <span class='fu'>.refineParameters</span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; An object of class "ColumnDataTable"
+#&gt; Slot "HiddenColumns":
+#&gt; character(0)
+#&gt; 
 #&gt; Slot "Selected":
 #&gt; [1] "Cell_001"
 #&gt; 

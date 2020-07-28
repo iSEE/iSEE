@@ -153,7 +153,7 @@ setMethod(".defineDataInterface", "RowDataTable", function(x, se, select_info) {
 })
 
 #' @export
-setMethod(".createObservers", "RowTable", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "RowDataTable", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     .createUnprotectedParameterObservers(.getEncodedName(x), .TableHidden, input,

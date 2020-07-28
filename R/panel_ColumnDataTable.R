@@ -153,7 +153,7 @@ setMethod(".defineDataInterface", "ColumnDataTable", function(x, se, select_info
 })
 
 #' @export
-setMethod(".createObservers", "ColumnTable", function(x, se, input, session, pObjects, rObjects) {
+setMethod(".createObservers", "ColumnDataTable", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
     .createUnprotectedParameterObservers(.getEncodedName(x), .TableHidden, input,

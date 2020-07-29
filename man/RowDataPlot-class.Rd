@@ -20,7 +20,7 @@ It provides slots and methods for specifying which variable to use on the y-axis
 }
 \section{Slot overview}{
 
-The following slots control the dimensionality reduction result that is used:
+The following slots control the vaariables to show:
 \itemize{
 \item \code{YAxis}, a string specifying the row of the \code{\link{rowData}} to show on the y-axis.
 If \code{NA}, defaults to the first valid field (see \code{?"\link{.refineParameters,RowDotPlot-method}"}).

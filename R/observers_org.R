@@ -117,6 +117,7 @@
 
                 .create_width_height_observers(latest, input, org_pObjects)
             }
+
             updated_names <- .define_memory_panel_choices(adjusted)
             updateSelectizeInput(session, 'panel_order',
                 choices=c(updated_names, available_enc), selected=updated_names)
@@ -124,8 +125,9 @@
 
         org_pObjects$memory <- adjusted
         org_rObjects$rerender <- .increment_counter(org_rObjects$rerender)
+
     }, ignoreInit=TRUE,
-    ignoreNULL=FALSE) # necessary when users remove the last panel from the UI
+        ignoreNULL=FALSE) # necessary when users remove the last panel from the UI
     # nocov end
 
     # nocov start
@@ -144,6 +146,9 @@
 
         pObjects$selection_links <- .spawn_multi_selection_graph(pObjects$memory)
         pObjects$aesthetics_links <- .spawn_single_selection_graph(pObjects$memory)
+
+        pObjects$dynamic_multi_selections <- .spawn_dynamic_multi_selection_list(pObjects$memory)
+        pObjects$dynamic_single_selections <- .spawn_dynamic_single_selection_list(pObjects$memory)
 
         # NOTE: there should be no need to updateSelectize on the choice of
         # linkable panels; this should be handled by the rerendering of the UI.

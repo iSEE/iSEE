@@ -295,6 +295,11 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
             }
         }
     }
+
+    shinyjs::onclick(paste0(.getEncodedName(x), "_INTERNAL_help"), {
+        tour <- .assemble_tour(se, pObjects$memory)
+        introjs(session, options=list(steps=tour))
+    })
 })
 
 #' @export

@@ -119,21 +119,17 @@ height_limits <- c(400L, 1000L)
         }
 
         # Aggregating together everything into a box, and then into a column.
-        cur_box <- do.call(box, c(
-            list(.defineOutput(instance), param),
-            list(uiOutput(.input_FUN(.panelMultiSelectInfo)), uiOutput(.input_FUN(.panelSelectLinkInfo))),
-            list(
-                title=shiny::div(
-                    .getFullName(instance),
-                    shiny::div(
-                        id=paste0(.getEncodedName(instance), "_INTERNAL_help"), 
-                        style="display: inline-block;", 
-                        icon("external-link fa-xs")
-                    )
-                ),
-                solidHeader=TRUE, width=NULL, status="danger"
-            )
-        ))
+        cur_box <- box(
+            .defineOutput(instance), 
+            param,
+            uiOutput(.input_FUN(.panelMultiSelectInfo)), 
+            uiOutput(.input_FUN(.panelSelectLinkInfo)),
+            title=shiny::div(
+                .getFullName(instance),
+                shiny::div(id=.input_FUN(.panelHelpTour), style="display: inline-block;", icon("external-link fa-xs"))
+            ),
+            solidHeader=TRUE, width=NULL, status="danger"
+        )
 
         cur_box <- .coerce_box_status(cur_box, .encodedName(instance))
 

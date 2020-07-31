@@ -94,6 +94,11 @@
 #' i.e., it will return an empty character vector and create no files.
 #' }
 #'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an empty data.frame.
+#' }
+#'
 #' For controlling selections:
 #' \itemize{
 #' \item \code{\link{.multiSelectionRestricted}(x)} will always return \code{TRUE}.
@@ -147,6 +152,7 @@
 #' .singleSelectionDimension,Panel-method
 #' .singleSelectionValue,Panel-method
 #' .singleSelectionSlots,Panel-method
+#' .definePanelTour,Panel-method
 NULL
 
 #' @export
@@ -296,9 +302,11 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
         }
     }
 
-    shinyjs::onclick(paste0(.getEncodedName(x), "_INTERNAL_help"), {
-        tour <- .assemble_tour(se, pObjects$memory)
-        introjs(session, options=list(steps=tour))
+    shinyjs::onclick(.input_FUN(.panelHelpTour), {
+        ptour <- .definePanelTour(pObjects$memory[[panel_name]])
+        if (nrow(ptour)) {
+            introjs(session, options=list(steps=ptour))
+        }
     })
 })
 
@@ -344,3 +352,7 @@ setMethod(".singleSelectionDimension", "Panel", function(x) "none")
 
 #' @export
 setMethod(".singleSelectionSlots", "Panel", function(x) list())
+
+#' @export
+setMethod(".definePanelTour", "Panel", function(x) 
+    data.frame(element=character(0), intro=character(0)))

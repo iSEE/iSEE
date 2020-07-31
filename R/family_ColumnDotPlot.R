@@ -525,3 +525,31 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
         .colorByNoneDotPlotScale(x)
     }
 })
+
+###############################################################
+
+#' @export
+setMethod(".definePanelTour", "ColumnDotPlot", function(x) {
+    collated <- rbind(
+        .add_tour_step(x, .visualParamBoxOpen,  "The <font color=\"#402ee8\">Visual parameters</font> box contains parameters related to visual aspects like the color, shape, size and so on.<br /><br /><strong>Action:</strong> click on the header of this box to see the available options."),
+        .add_tour_step(x, .colorByField, "We can choose to color by different per-column values - from the column metadata, across a specific feature of an assay, or by a chosen sample. Some of these choices may not be available if, e.g., the <code>SummarizedExperiment</code> did not have any column metadata.<br /><br /><strong>Action:</strong> try out some of the different options. Note how further options become available when each choice is selected."),
+        .add_tour_step(x, .visualParamChoice, "There are a lot of options so not all of them are shown by default. More settings are available by checking some of the boxes here; conversely, options can be hidden by unchecking some of these boxes.<br /><br /><strong>Action:</strong> check the <code>Text</code> box here to see text-related options."),
+        .add_tour_step(x, .plotFontSize, "For example, we might want to increase the size of the font used for the axis labels.<br /><br /><strong>Action:</strong> try increasing or decreasing the font size."),
+        .add_tour_step(x, .selectParamBoxOpen, "Users can also control how the plot reacts to multiple column selections being transmitted from other panels.<br /><br /><strong>Action:</strong> click on the header of this box to see the available options."),
+        .add_tour_step(x, .selectColSource, "Here we can choose different sources from which to receive a multiple column selection; that is to say, any interaction with the chosen source panel to select multiple columns would have an effect on this panel. (Turning on dynamic selection means that any selection in <emph>any</emph> column-based panel would have an effect on this panel.)",
+            element=paste0("#", .getEncodedName(x), "_", .selectColSource, " + .selectize-control")),
+        .add_tour_step(x, .selectEffect, "Here, we can choose the effect of the multiple column selection that was transmitted from the chosen source panel - should the unselected columns be made transparent? Should the selected columns be colored? Or should the plot be explicitly restricted to only the selected columns?"),
+        c(paste0("#", .getEncodedName(x)), "At the other end of the spectrum, brushing or creating a lasso on this plot will create a selection of multiple columns, to be transmitted to other panels that choose this one as the source. It can also be used to transmit single column selections in which case one column is arbitrarily chosen from the selection."),
+        .add_tour_step(x, .multiSelectSave, "Advanced users can also save their selections for later use. Brushes or lassos are saved using a first-in-last-out scheme where you can only delete the last saved selection.")
+    )
+
+    data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
+})
+
+.add_tour_step <- function(x, field, text, element=paste0("#", .getEncodedName(x), "_", field)) {
+    if (!.hideInterface(x, field)) {
+        c(element, text)
+    } else {
+        NULL
+    }
+}

@@ -4,13 +4,7 @@
 #' It provides functionality to extract the \code{\link{colData}} to coerce it into an appropriate data.frame in preparation for rendering.
 #'
 #' @section Slot overview:
-#' The following slots control the appearance of the table:
-#' \itemize{
-#' \item \code{HiddenColumns}, a character vector containing names of \code{\link{colData}} columns to hide.
-#' Defaults to an empty vector.
-#' }
-#'
-#' This class also inherits all slots from its parent \linkS4class{ColumnTable} and \linkS4class{Table} classes.
+#' This class inherits all slots from its parent \linkS4class{ColumnTable} and \linkS4class{Table} classes.
 #'
 #' @section Constructor:
 #' \code{ColumnDataTable(...)} creates an instance of a ColumnDataTable class, where any slot and its value can be passed to \code{...} as a named argument.
@@ -33,8 +27,6 @@
 #' \itemize{
 #' \item \code{\link{.fullName}(x)} will return \code{"Column data table"}.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
-#' \item \code{\link{.defineDataInterface}(x)} will create interface elements for modifying the table,
-#' namely to choose which columns to hide.
 #' }
 #'
 #' For creating the output:
@@ -42,12 +34,6 @@
 #' \item \code{\link{.generateTable}(x, envir)} will modify \code{envir} to contain the relevant data.frame for display,
 #' while returning a character vector of commands required to produce that data.frame.
 #' Each row of the data.frame should correspond to a column of the SummarizedExperiment.
-#' }
-#'
-#' For monitoring reactive expressions:
-#' \itemize{
-#' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers to track the hidden columns.
-#' This will also call the equivalent \linkS4class{ColumnTable} method.
 #' }
 #'
 #' @author Aaron Lun
@@ -77,8 +63,6 @@
 #' initialize,ColumnDataTable-method
 #' .cacheCommonInfo,ColumnDataTable-method
 #' .refineParameters,ColumnDataTable-method
-#' .defineDataInterface,ColumnDataTable-method
-#' .createObservers,ColumnDataTable-method
 #' .generateTable,ColumnDataTable-method
 #' .panelColor,ColumnDataTable-method
 #' .fullName,ColumnDataTable-method
@@ -135,29 +119,7 @@ setMethod(".refineParameters", "ColumnDataTable", function(x, se) {
     search_vals <- search_vals[keep]
     x[[.TableColSearch]] <- search_vals
 
-    x[[.TableHidden]] <- intersect(x[[.TableHidden]], valid.names)
-
     x
-})
-
-#' @export
-setMethod(".defineDataInterface", "ColumnDataTable", function(x, se, select_info) {
-    c(
-        callNextMethod(),
-        list(
-            selectInput(paste0(.getEncodedName(x), "_", .TableHidden),
-                label="Hidden columns:", selected=x[[.TableHidden]], multiple=TRUE,
-                choices=.getCachedCommonInfo(se, "ColumnDataTable")$valid.colData.names)
-        )
-    )
-})
-
-#' @export
-setMethod(".createObservers", "ColumnDataTable", function(x, se, input, session, pObjects, rObjects) {
-    callNextMethod()
-
-    .createUnprotectedParameterObservers(.getEncodedName(x), .TableHidden, input,
-        pObjects, rObjects, ignoreNULL=FALSE)
 })
 
 #' @export

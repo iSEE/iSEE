@@ -4,7 +4,7 @@
 #' It provides observers for rendering the table widget, monitoring single selections, and applying global and column-specific searches (which serve as multiple selections).
 #'
 #' @section Slot overview:
-#' The following slots control aspects of the \code{DT::datatable} interface:
+#' The following slots control aspects of the \code{DT::datatable} selection:
 #' \itemize{
 #' \item \code{Selected}, a string containing the name of the currently selected row of the data.frame.
 #' Defaults to \code{NA}, in which case the value should be chosen by the subclass' \code{\link{.refineParameters}} method.
@@ -12,6 +12,12 @@
 #' Defaults to \code{""}, i.e., no search.
 #' \item \code{SearchColumns}, a character vector where each entry contains the search string for each column.
 #' Defaults to an empty character vector, i.e., no search.
+#' }
+#'
+#' The following slots control the appearance of the table:
+#' \itemize{
+#' \item \code{HiddenColumns}, a character vector containing names of columns to hide.
+#' Defaults to an empty vector.
 #' }
 #'
 #' In addition, this class inherits all slots from its parent \linkS4class{Panel} class.
@@ -23,6 +29,10 @@
 #' For defining the interface:
 #' \itemize{
 #' \item \code{\link{.defineOutput}(x)} returns a UI element for a \code{\link[DT]{dataTableOutput}} widget.
+#' \item \code{\link{.defineDataInterface}(x)} will create interface elements for modifying the table,
+#' namely to choose which columns to hide.
+#' Note that this is populated by \code{\link{.generateOutput}} upon table rendering,
+#' as we do not know the available columns before that point.
 #' }
 #'
 #' For defining reactive expressions:
@@ -133,6 +143,9 @@ setMethod(".createObservers", "Table", function(x, se, input, session, pObjects,
 
     .create_table_observers(panel_name, input=input,
         session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .createUnprotectedParameterObservers(.getEncodedName(x), .TableHidden, input,
+        pObjects, rObjects, ignoreNULL=FALSE)
 })
 
 #' @export
@@ -155,6 +168,20 @@ setMethod(".exportOutput", "Table", function(x, se, all_memory, all_contents) {
     newpath <- paste0(.getEncodedName(x), ".csv")
     write.csv(file=newpath, contents$contents)
     newpath
+})
+
+#' @export
+setMethod(".defineDataInterface", "Table", function(x, se, select_info) {
+    c(
+        callNextMethod(),
+        list(
+            # Needs to be initialized with the current values,
+            # even if it is updated later by table initialization.
+            selectInput(paste0(.getEncodedName(x), "_", .TableHidden),
+                choices=x[[.TableHidden]], selected=x[[.TableHidden]],
+                label="Hidden columns:", multiple=TRUE)
+        )
+    )
 })
 
 #' @export

@@ -394,6 +394,9 @@ collated[.TableSelected] <- "character"
 collated[.TableSearch] <- "character"
 collated[.TableColSearch] <- "character"
 
+.TableHidden <- "HiddenColumns"
+collated[.TableHidden] <- "character"
+
 #' @export
 setClass("Table", contains=c("Panel", "VIRTUAL"), slots=collated)
 
@@ -403,15 +406,11 @@ setClass("RowTable", contains="Table", representation("VIRTUAL"))
 #' @export
 setClass("ColumnTable", contains="Table", representation("VIRTUAL"))
 
-.TableHidden <- "HiddenColumns"
-collated <- character(0)
-collated[.TableHidden] <- "character"
+#' @export
+setClass("RowDataTable", contains="RowTable")
 
 #' @export
-setClass("RowDataTable", contains="RowTable", slots=collated)
-
-#' @export
-setClass("ColumnDataTable", contains="ColumnTable", slots=collated)
+setClass("ColumnDataTable", contains="ColumnTable")
 
 ####################################################
 

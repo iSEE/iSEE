@@ -77,6 +77,12 @@
 #' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of sample on the x- and y-axes.
 #' This includes the output of \code{callNextMethod}.
 #' }
+#'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
+#' }
+#'
 #' @author Aaron Lun
 #'
 #' @seealso
@@ -122,6 +128,7 @@
 #' .fullName,SampleAssayPlot-method
 #' .panelColor,SampleAssayPlot-method
 #' .generateDotPlotData,SampleAssayPlot-method
+#' .definePanelTour,SampleAssayPlot-method
 #'
 #' @name SampleAssayPlot-class
 NULL

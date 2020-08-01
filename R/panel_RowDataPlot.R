@@ -58,6 +58,11 @@
 #' It will return the commands required to do so as well as a list of labels.
 #' }
 #'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
+#' }
+#'
 #' @section Subclass expectations:
 #' Subclasses do not have to provide any methods, as this is a concrete class.
 #' 
@@ -103,6 +108,7 @@
 #' .generateDotPlotData,RowDataPlot-method
 #' .allowableXAxisChoices,RowDataPlot-method
 #' .allowableYAxisChoices,RowDataPlot-method
+#' .definePanelTour,RowDataPlot-method
 #'
 #' @name RowDataPlot-class
 NULL

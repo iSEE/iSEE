@@ -104,6 +104,8 @@
 .panelMultiSelectInfo <- "INTERNAL_PanelMultiSelectInfo"
 .panelSelectLinkInfo <- "INTERNAL_PanelSelectLinkInfo"
 
+.flagTableUpdate <- "INTERNAL_table_update"
+
 # Voice parameters ----
 
 .voiceActivePanel <- "voiceActivePanel"

@@ -64,6 +64,11 @@
 #' \item \code{\link{.singleSelectionDimension}(x)} returns \code{"sample"} to indicate that a sample identity is being transmitted.
 #' }
 #'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses.
+#' }
+#'
 #' Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.
 #'
 #' @section Subclass expectations:
@@ -95,6 +100,7 @@
 #' .defineVisualSizeInterface,ColumnDotPlot-method
 #' .defineVisualFacetInterface,ColumnDotPlot-method
 #' .defineVisualPointInterface,ColumnDotPlot-method
+#' .definePanelTour,ColumnDotPlot-method
 #'
 #' @name ColumnDotPlot-class
 NULL

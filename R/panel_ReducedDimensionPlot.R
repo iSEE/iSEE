@@ -55,6 +55,11 @@
 #' It will return the commands required to do so as well as a list of labels.
 #' }
 #'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
+#' }
+#'
 #' Subclasses do not have to provide any methods, as this is a concrete class.
 #'
 #' @author Aaron Lun

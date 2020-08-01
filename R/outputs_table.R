@@ -41,6 +41,11 @@
         search <- param_choices[[.TableSearch]]
         search_col <- param_choices[[.TableColSearch]]
 
+        # Indicating to downstream observers that the table has been re-rendered;
+        # required for UI elements that depend on, e.g., the table column names.
+        tabupdate_field <- paste0(panel_name, "_", .flagTableUpdate)
+        .safe_reactive_bump(rObjects, tabupdate_field)
+
         # Protection against a change in the number of columns from .generateOutput.
         # .generate_table_filter protects against a mismatch in use by children,
         #  so there's no need to edit the memory here (and in fact that won't work

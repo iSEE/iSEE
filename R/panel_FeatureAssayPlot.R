@@ -359,8 +359,9 @@ setMethod(".definePanelTour", "FeatureAssayPlot", function(x) {
             element=paste0("#", .getEncodedName(x), "_", .featAssayYAxisFeatName, " + .selectize-control")),
         .add_tour_step(x, .featAssayYAxisRowTable, "Alternatively, we can link the choice of feature to a single selection from another panel such as a <code>RowDataTable</code>.",
             element=paste0("#", .getEncodedName(x), "_", .featAssayYAxisRowTable, " + .selectize-control")),
-        .add_tour_step(x, .featAssayXAxis, "A variety of choices are available to change the variable to be plotted on the x-axis.<br/><br/><strong>Action:</strong> click on <font color=\"#402ee8\">Column data</font> to stratify values by a column metadata field."),
-        .add_tour_step(x, .featAssayXAxisColData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis. Similar logic applies for plotting against the expression of another gene with the <font color=\"#402ee8\">Feature name</font> choice.",
+        .add_tour_step(x, .featAssayYAxisFeatDynamic, "The upstream panel can even be chosen dynamically, where a single selection of a feature from any panel in the current instance can be used to specify the feature to be shown on the y-axis in this pane."),
+        .add_tour_step(x, .featAssayXAxis, "A variety of choices are available for the variable to be plotted on the x-axis.<br/><br/><strong>Action:</strong> click on <font color=\"#402ee8\">Column data</font> to stratify values by a column metadata field."),
+        .add_tour_step(x, .featAssayXAxisColData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis. Similar logic applies for plotting against the assay values of another feature with the <font color=\"#402ee8\">Feature name</font> choice.",
             element=paste0("#", .getEncodedName(x), "_", .featAssayXAxisColData, " + .selectize-control"))
     )
 

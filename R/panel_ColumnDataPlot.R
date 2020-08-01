@@ -272,7 +272,7 @@ setMethod(".definePanelTour", "ColumnDataPlot", function(x) {
         .add_tour_step(x, .colDataYAxis, "We can manually choose the variable to show on the y-axis.",
             element=paste0("#", .getEncodedName(x), "_", .colDataYAxis, " + .selectize-control")),
         .add_tour_step(x, .colDataXAxis, "We can also specify what should be shown on the x-axis.<br/><br/><strong>Action:</strong> click on <font color=\"#402ee8\">Column data</font> to stratify values by a column metadata field."),
-        .add_tour_step(x, .colDataXAxisColData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis..",
+        .add_tour_step(x, .colDataXAxisColData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis.",
             element=paste0("#", .getEncodedName(x), "_", .colDataXAxisColData, " + .selectize-control"))
     )
 

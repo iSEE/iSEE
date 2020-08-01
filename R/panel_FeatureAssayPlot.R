@@ -77,6 +77,12 @@
 #' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of feature on the x- and y-axes.
 #' This includes the output of \code{callNextMethod}.
 #' }
+#'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
+#' }
+#'
 #' @author Aaron Lun
 #'
 #' @seealso
@@ -122,6 +128,7 @@
 #' .fullName,FeatureAssayPlot-method
 #' .panelColor,FeatureAssayPlot-method
 #' .generateDotPlotData,FeatureAssayPlot-method
+#' .definePanelTour,FeatureAssayPlot-method
 #'
 #' @name FeatureAssayPlot-class
 NULL
@@ -339,4 +346,26 @@ setMethod(".generateDotPlotData", "FeatureAssayPlot", function(x, envir) {
     .textEval(data_cmds, envir)
 
     list(commands=data_cmds, labels=list(title=plot_title, X=x_lab, Y=y_lab))
+})
+
+#' @export
+setMethod(".definePanelTour", "FeatureAssayPlot", function(x) {
+    collated <- character(0)
+
+    collated <- rbind(
+        c(paste0("#", .getEncodedName(x)), "The <font color=\"#402ee8\">Feature assay plot</font> shows assay values for a particular feature (i.e., row) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a column (usually a sample) of the <code>SummarizedExperiment</code>, and the y-axis represents the assay values."),
+        .add_tour_step(x, .dataParamBoxOpen, "The <font color=\"#402ee8\">Data parameters</font> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
+        .add_tour_step(x, .featAssayYAxisFeatName, "We can manually choose the feature of interest based on the row names of our <code>SummarizedExperiment</code>.",
+            element=paste0("#", .getEncodedName(x), "_", .featAssayYAxisFeatName, " + .selectize-control")),
+        .add_tour_step(x, .featAssayYAxisRowTable, "Alternatively, we can link the choice of feature to a single selection from another panel such as a <code>RowDataTable</code>.",
+            element=paste0("#", .getEncodedName(x), "_", .featAssayYAxisRowTable, " + .selectize-control")),
+        .add_tour_step(x, .featAssayXAxis, "A variety of choices are available to change the variable to be plotted on the x-axis.<br/><br/><strong>Action:</strong> click on <font color=\"#402ee8\">Column data</font> to stratify values by a column metadata field."),
+        .add_tour_step(x, .featAssayXAxisColData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis. Similar logic applies for plotting against the expression of another gene with the <font color=\"#402ee8\">Feature name</font> choice.",
+            element=paste0("#", .getEncodedName(x), "_", .featAssayXAxisColData, " + .selectize-control"))
+    )
+
+    rbind(
+        data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE),
+        callNextMethod()
+    )
 })

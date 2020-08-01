@@ -162,13 +162,18 @@ It provides observers for rendering the table widget, monitoring single selectio
 
     
 
-<p>The following slots control aspects of the <code><a href='https://rdrr.io/pkg/DT/man/datatable.html'>DT::datatable</a></code> interface:</p><ul>
+<p>The following slots control aspects of the <code><a href='https://rdrr.io/pkg/DT/man/datatable.html'>DT::datatable</a></code> selection:</p><ul>
 <li><p><code>Selected</code>, a string containing the name of the currently selected row of the data.frame.
 Defaults to <code>NA</code>, in which case the value should be chosen by the subclass' <code>.refineParameters</code> method.</p></li>
 <li><p><code>Search</code>, a string containing the regular expression for the global search.
 Defaults to <code>""</code>, i.e., no search.</p></li>
 <li><p><code>SearchColumns</code>, a character vector where each entry contains the search string for each column.
 Defaults to an empty character vector, i.e., no search.</p></li>
+</ul>
+
+<p>The following slots control the appearance of the table:</p><ul>
+<li><p><code>HiddenColumns</code>, a character vector containing names of columns to hide.
+Defaults to an empty vector.</p></li>
 </ul>
 
 <p>In addition, this class inherits all slots from its parent Panel class.</p>
@@ -180,6 +185,10 @@ Defaults to an empty character vector, i.e., no search.</p></li>
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For defining the interface:</p><ul>
 <li><p><code>.defineOutput(x)</code> returns a UI element for a <code><a href='https://rdrr.io/pkg/DT/man/dataTableOutput.html'>dataTableOutput</a></code> widget.</p></li>
+<li><p><code>.defineDataInterface(x)</code> will create interface elements for modifying the table,
+namely to choose which columns to hide.
+Note that this is populated by <code>.generateOutput</code> upon table rendering,
+as we do not know the available columns before that point.</p></li>
 </ul>
 
 <p>For defining reactive expressions:</p><ul>

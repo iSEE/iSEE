@@ -162,12 +162,7 @@ It provides functionality to extract the <code>rowData</code> to coerce it into 
 
     
 
-<p>The following slots control the appearance of the table:</p><ul>
-<li><p><code>HiddenColumns</code>, a character vector containing names of <code>rowData</code> columns to hide.
-Defaults to an empty vector.</p></li>
-</ul>
-
-<p>This class also inherits all slots from its parent ColumnTable and Table classes.</p>
+<p>This class inherits all slots from its parent ColumnTable and Table classes.</p>
     <h2 class="hasAnchor" id="constructor"><a class="anchor" href="#constructor"></a>Constructor</h2>
 
     
@@ -190,19 +185,12 @@ This will also call the equivalent ColumnTable method for further refinements to
 <p>For defining the interface:</p><ul>
 <li><p><code>.fullName(x)</code> will return <code>"Row data table"</code>.</p></li>
 <li><p><code>.panelColor(x)</code> will return the specified default color for this panel class.</p></li>
-<li><p><code>.defineDataInterface(x)</code> will create interface elements for modifying the table,
-namely to choose which columns to hide.</p></li>
 </ul>
 
 <p>For creating the output:</p><ul>
 <li><p><code>.generateTable(x, envir)</code> will modify <code>envir</code> to contain the relevant data.frame for display,
 while returning a character vector of commands required to produce that data.frame.
 Each row of the data.frame should correspond to a row of the SummarizedExperiment.</p></li>
-</ul>
-
-<p>For monitoring reactive expressions:</p><ul>
-<li><p><code>.createObservers(x, se, input, session, pObjects, rObjects)</code> sets up observers to track the hidden columns.
-This will also call the equivalent RowTable method.</p></li>
 </ul>
 
 
@@ -224,9 +212,6 @@ This will also call the equivalent RowTable method.</p></li>
 <span class='co'># Sets the search columns appropriately.</span>
 <span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'>.cacheCommonInfo</span>(<span class='no'>x</span>, <span class='no'>sce</span>)
 <span class='fu'>.refineParameters</span>(<span class='no'>x</span>, <span class='no'>sce</span>)</div><div class='output co'>#&gt; An object of class "RowDataTable"
-#&gt; Slot "HiddenColumns":
-#&gt; character(0)
-#&gt; 
 #&gt; Slot "Selected":
 #&gt; [1] "Gene_0001"
 #&gt; 
@@ -234,6 +219,9 @@ This will also call the equivalent RowTable method.</p></li>
 #&gt; [1] ""
 #&gt; 
 #&gt; Slot "SearchColumns":
+#&gt; character(0)
+#&gt; 
+#&gt; Slot "HiddenColumns":
 #&gt; character(0)
 #&gt; 
 #&gt; Slot "PanelId":

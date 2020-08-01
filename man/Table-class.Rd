@@ -19,7 +19,7 @@ It provides observers for rendering the table widget, monitoring single selectio
 }
 \section{Slot overview}{
 
-The following slots control aspects of the \code{DT::datatable} interface:
+The following slots control aspects of the \code{DT::datatable} selection:
 \itemize{
 \item \code{Selected}, a string containing the name of the currently selected row of the data.frame.
 Defaults to \code{NA}, in which case the value should be chosen by the subclass' \code{\link{.refineParameters}} method.
@@ -27,6 +27,12 @@ Defaults to \code{NA}, in which case the value should be chosen by the subclass'
 Defaults to \code{""}, i.e., no search.
 \item \code{SearchColumns}, a character vector where each entry contains the search string for each column.
 Defaults to an empty character vector, i.e., no search.
+}
+
+The following slots control the appearance of the table:
+\itemize{
+\item \code{HiddenColumns}, a character vector containing names of columns to hide.
+Defaults to an empty vector.
 }
 
 In addition, this class inherits all slots from its parent \linkS4class{Panel} class.
@@ -40,6 +46,10 @@ Refer to the documentation for each method for more details on the remaining arg
 For defining the interface:
 \itemize{
 \item \code{\link{.defineOutput}(x)} returns a UI element for a \code{\link[DT]{dataTableOutput}} widget.
+\item \code{\link{.defineDataInterface}(x)} will create interface elements for modifying the table,
+namely to choose which columns to hide.
+Note that this is populated by \code{\link{.generateOutput}} upon table rendering,
+as we do not know the available columns before that point.
 }
 
 For defining reactive expressions:

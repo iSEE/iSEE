@@ -171,6 +171,12 @@
 #' This includes the output of \code{callNextMethod}.
 #' }
 #'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
+#' mostly describing the specification of visual effects and the creation of a brush or lasso.
+#' }
+#'
 #' Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.
 #'
 #' @section Subclass expectations:
@@ -206,6 +212,7 @@
 #' .colorByNoneDotPlotScale,DotPlot-method
 #' .defineVisualTextInterface,DotPlot-method
 #' .defineVisualOtherInterface,DotPlot-method
+#' .definePanelTour,DotPlot-method
 NULL
 
 #' @export
@@ -612,3 +619,21 @@ setMethod(".colorByNoneDotPlotField", "DotPlot", function(x) NULL)
 
 #' @export
 setMethod(".colorByNoneDotPlotScale", "DotPlot", function(x) NULL)
+
+#' @export
+setMethod(".definePanelTour", "DotPlot", function(x) {
+    mdim <- .multiSelectionDimension(x)
+
+    collated <- rbind(
+        .add_tour_step(x, .visualParamBoxOpen,  "The <font color=\"#402ee8\">Visual parameters</font> box contains parameters related to visual aspects like the color, shape, size and so on.<br /><br /><strong>Action:</strong> click on the header of this box to see the available options."),
+        .add_tour_step(x, .colorByField, "PLACEHOLDER_COLOR"), # To be filled in by subclasses.
+        .add_tour_step(x, .visualParamChoice, "There are a lot of options so not all of them are shown by default. More settings are available by checking some of the boxes here; conversely, options can be hidden by unchecking some of these boxes.<br /><br /><strong>Action:</strong> check the <font color=\"#402ee8\">Text</font> box here to see text-related options."),
+        .add_tour_step(x, .plotFontSize, "For example, we might want to increase the size of the font used for the axis labels"),
+        callNextMethod(),
+        .add_tour_step(x, .selectEffect, sprintf("Here, we can choose the effect of the multiple %s selection that was transmitted from the chosen source panel - should the unselected %ss be made transparent? Should the selected %ss be colored? Or should the plot be explicitly restricted to only the selected %s?", mdim, mdim, mdim, mdim)),
+        c(paste0("#", .getEncodedName(x)), sprintf("At the other end of the spectrum, brushing or creating a lasso on this plot will create a selection of multiple %ss, to be transmitted to other panels that choose this one as the selection source.<br/><br/>Drag-and-dropping will create a rectangular brush while a single click will lay down a lasso waypoint for non-rectanular selections.<br/><br/>Brushing/lassoing can also be used to transmit single %s selections in which case one %s is arbitrarily chosen from the selection.", mdim, mdim, mdim)),
+        .add_tour_step(x, .multiSelectSave, "Advanced users can also save their selections for later use. Brushes or lassos are saved using a first-in-last-out scheme where you can only delete the last saved selection.")
+    )
+
+    data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
+})

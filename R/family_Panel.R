@@ -96,7 +96,7 @@
 #'
 #' For documentation:
 #' \itemize{
-#' \item \code{\link{.definePanelTour}(x)} returns an empty data.frame.
+#' \item \code{\link{.definePanelTour}(x)} returns a data.frame containing the selection-related steps of the tour.
 #' }
 #'
 #' For controlling selections:
@@ -354,5 +354,33 @@ setMethod(".singleSelectionDimension", "Panel", function(x) "none")
 setMethod(".singleSelectionSlots", "Panel", function(x) list())
 
 #' @export
-setMethod(".definePanelTour", "Panel", function(x) 
-    data.frame(element=character(0), intro=character(0)))
+setMethod(".definePanelTour", "Panel", function(x) {
+    collated <- list(
+        .add_tour_step(x, .selectParamBoxOpen, "Users can also control how the plot reacts to multiple selections being transmitted from other panels.<br /><br /><strong>Action:</strong> click on the header of this box to see the available options.")
+    )
+
+    for (mdim in c("row", "column")) {
+        if (mdim=="row") {
+            src_field <- .selectRowSource
+            dyn_field <- .selectRowDynamic
+            typ_field <- .selectRowType
+        } else {
+            src_field <- .selectColSource
+            dyn_field <- .selectColDynamic
+            typ_field <- .selectColType
+        }
+
+        collated <- c(collated, list(
+            .add_tour_step(x, src_field, sprintf("Here we can choose the panel from which to receive a multiple %s selection; that is to say, if we selected some %ss in the chosen panel, that would have an effect on this panel.", mdim, mdim),
+                element=paste0("#", .getEncodedName(x), "_", src_field, " + .selectize-control")),
+            .add_tour_step(x, dyn_field, sprintf("Alternatively, we could turn on dynamic selection. This means that any selection in <emph>any</emph> %s-based panel would have an effect on this panel.", mdim)),
+            .add_tour_step(x, typ_field, "We can choose to receive the current <font color=\"#402ee8\">Active</font> selection from the chosen source panel; or one of the <font color=\"#402ee8\">Saved</font> selections; or the <font color=\"#402ee8\">Union</font> of all of the selections, if more than one active/saved selection is present.",
+                element=paste0("#", .getEncodedName(x), "_", typ_field, " + .selectize-control"))
+            )
+        )
+    }
+
+    collated <- do.call(rbind, collated)
+    data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
+})
+

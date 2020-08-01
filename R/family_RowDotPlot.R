@@ -64,6 +64,12 @@
 #' \item \code{\link{.singleSelectionDimension}(x)} returns \code{"feature"} to indicate that a feature identity is being transmitted.
 #' }
 #'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
+#' mostly tuning the more generic descriptions from the same method of the parent \linkS4class{DotPlot}.
+#' }
+#'
 #' Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.
 #'
 #' @section Subclass expectations:
@@ -95,6 +101,8 @@
 #' .defineVisualSizeInterface,RowDotPlot-method
 #' .defineVisualFacetInterface,RowDotPlot-method
 #' .defineVisualPointInterface,RowDotPlot-method
+#' .definePanelTour,RowDotPlot-method
+#'
 #' @name RowDotPlot-class
 NULL
 
@@ -529,4 +537,15 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
     } else {
         .colorByNoneDotPlotScale(x)
     }
+})
+
+###############################################################
+
+#' @export
+setMethod(".definePanelTour", "RowDotPlot", function(x) {
+    collated <- callNextMethod()
+
+    collated$intro[collated$intro=="PLACEHOLDER_COLOR"] <- "We can choose to color by different per-row attributes - from the row metadata, across a specific sample of an assay, or to identify a chosen feature.<br /><br /><strong>Action:</strong> try out some of the different choices. Note how further options become available when each choice is selected."
+
+    data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
 })

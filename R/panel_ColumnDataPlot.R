@@ -111,7 +111,7 @@
 #' .generateDotPlotData,ColumnDataPlot-method
 #' .allowableXAxisChoices,ColumnDataPlot-method
 #' .allowableYAxisChoices,ColumnDataPlot-method
-#' .definePanelTour,FeatureAssayPlot-method
+#' .definePanelTour,ColumnDataPlot-method
 #'
 #' @name ColumnDataPlot-class
 NULL

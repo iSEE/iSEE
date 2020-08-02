@@ -103,6 +103,8 @@
 #' .fullName,ReducedDimensionPlot-method
 #' .panelColor,ReducedDimensionPlot-method
 #' .generateDotPlotData,ReducedDimensionPlot-method
+#' .definePanelTour,ReducedDimensionPlot-method
+#'
 #' @name ReducedDimensionPlot-class
 NULL
 

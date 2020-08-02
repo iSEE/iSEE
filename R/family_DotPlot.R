@@ -631,7 +631,7 @@ setMethod(".definePanelTour", "DotPlot", function(x) {
         callNextMethod(),
         .add_tour_step(x, .selectEffect, sprintf("Here, we can choose the effect of the multiple %s selection that was transmitted from the chosen source panel - should the unselected %ss be made transparent? Should the selected %ss be colored? Or should the plot be explicitly restricted to only the selected %s?", mdim, mdim, mdim, mdim)),
         c(paste0("#", .getEncodedName(x)), sprintf("At the other end of the spectrum, brushing or creating a lasso on this plot will create a selection of multiple %ss, to be transmitted to other panels that choose this one as their selection source.<br/><br/>Drag-and-dropping will create a rectangular brush while a single click will lay down a lasso waypoint for non-rectangular selections.<br/><br/>Brushes and lassos can also be used to transmit single %s selections in which case one %s is arbitrarily chosen from the selection.", mdim, mdim, mdim)),
-        .add_tour_step(x, .multiSelectSave, "Advanced users can also save their selections for later use. Brushes or lassos are saved using a first-in-last-out scheme where you can only delete the last saved selection.")
+        .add_tour_step(x, .multiSelectSave, "Advanced users can also save their selections for later use. Brushes and lassos are saved using a first-in-last-out scheme where you can only delete the last saved selection.")
     )
 
     for (mdim in c("row", "column")) {

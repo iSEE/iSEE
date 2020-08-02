@@ -126,7 +126,8 @@ height_limits <- c(400L, 1000L)
             uiOutput(.input_FUN(.panelSelectLinkInfo)),
             title=shiny::div(
                 .getFullName(instance),
-                shiny::div(id=.input_FUN(.panelHelpTour), style="display: inline-block;", icon("external-link fa-xs"))
+                HTML("&nbsp;"),
+                shiny::div(id=.input_FUN(.panelHelpTour), style="display: inline-block;", icon("question-circle fa-1g"))
             ),
             solidHeader=TRUE, width=NULL, status="danger"
         )

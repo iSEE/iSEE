@@ -267,7 +267,7 @@ setMethod(".definePanelTour", "ColumnDataPlot", function(x) {
     collated <- character(0)
 
     collated <- rbind(
-        c(paste0("#", .getEncodedName(x)), "The <font color=\"#402ee8\">Column data plot</font> panel shows variables from the column metadata (i.e., <code>colData</code>) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a column (usually a sample) of the <code>SummarizedExperiment</code>, and the y-axis represents a chosen variable."),
+        c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Column data plot</font> panel shows variables from the column metadata (i.e., <code>colData</code>) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a column (usually a sample) of the <code>SummarizedExperiment</code>, and the y-axis represents a chosen variable.", .getPanelColor(x))),
         .add_tour_step(x, .dataParamBoxOpen, "The <font color=\"#402ee8\">Data parameters</font> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
         .add_tour_step(x, .colDataYAxis, "We can manually choose the variable to show on the y-axis.",
             element=paste0("#", .getEncodedName(x), "_", .colDataYAxis, " + .selectize-control")),

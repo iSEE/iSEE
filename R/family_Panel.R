@@ -360,7 +360,7 @@ setMethod(".singleSelectionSlots", "Panel", function(x) list())
 #' @export
 setMethod(".definePanelTour", "Panel", function(x) {
     collated <- list(
-        .add_tour_step(x, .selectParamBoxOpen, "Users can also control how this panel reacts to multiple selections being transmitted from other panels.<br /><br /><strong>Action:</strong> click on the header of this box to see the available options.")
+        .add_tour_step(x, .selectParamBoxOpen, "Users can also control how this panel reacts to multiple selections being transmitted from other panels.<br/><br/><strong>Action:</strong> click on the header of this box to see the available options.")
     )
 
     for (mdim in c("row", "column")) {
@@ -378,7 +378,7 @@ setMethod(".definePanelTour", "Panel", function(x) {
             .add_tour_step(x, src_field, paste0("PLACEHOLDER_", toupper(mdim), "_SELECT"),
                 element=paste0("#", .getEncodedName(x), "_", src_field, " + .selectize-control")),
             .add_tour_step(x, dyn_field, sprintf("Alternatively, we could turn on dynamic selection. This means that any selection in <emph>any</emph> %s-based panel would have an effect on this panel.", mdim)),
-            .add_tour_step(x, typ_field, "We can choose to receive the current <font color=\"#402ee8\">Active</font> selection from the chosen source panel; or one of the <font color=\"#402ee8\">Saved</font> selections; or the <font color=\"#402ee8\">Union</font> of all of the selections, if more than one active/saved selection is present.")
+            .add_tour_step(x, typ_field, "We can choose to receive the current <i>Active</i> selection from the chosen source panel; or one of the <i>Saved</i> selections; or the <i>Union</i> of all of the selections, if more than one active/saved selection is present.")
             )
         )
     }

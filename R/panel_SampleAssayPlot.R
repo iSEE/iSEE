@@ -362,15 +362,15 @@ setMethod(".definePanelTour", "SampleAssayPlot", function(x) {
     collated <- character(0)
 
     collated <- rbind(
-        c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Sample assay plot</font> panel shows assay values for a particular sample (i.e., column) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a row (usually a feature) of the <code>SummarizedExperiment</code>, and the y-axis represents the assay values.", .getPanelColor(x))),
-        .add_tour_step(x, .dataParamBoxOpen, "The <font color=\"#402ee8\">Data parameters</font> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
-        .add_tour_step(x, .sampAssayYAxisSampName, "We can manually choose the sample of interest based on the column names of our <code>SummarizedExperiment</code>.",
+        c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Sample assay plot</font> panel shows assay values for a particular sample (i.e., column) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a row (usually a feature) of the <code>SummarizedExperiment</code> object, and the y-axis represents the assay values.", .getPanelColor(x))),
+        .add_tour_step(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
+        .add_tour_step(x, .sampAssayYAxisSampName, "We can manually choose the sample of interest based on the column names of our <code>SummarizedExperiment</code> object.",
             element=paste0("#", .getEncodedName(x), "_", .sampAssayYAxisSampName, " + .selectize-control")),
-        .add_tour_step(x, .sampAssayYAxisColTable, "Alternatively, we can link the choice of sample to a single selection from another panel such as a <code>ColumnDataTable</code>.",
+        .add_tour_step(x, .sampAssayYAxisColTable, sprintf("Alternatively, we can link the choice of sample to a single selection from another panel such as a <font color=\"%s\">Column data table</font>.", .getPanelColor(ColumnDataTable())),
             element=paste0("#", .getEncodedName(x), "_", .sampAssayYAxisColTable, " + .selectize-control")),
         .add_tour_step(x, .sampAssayYAxisSampDynamic, "The upstream panel can even be chosen dynamically, where a single selection of a sample from any panel in the current instance can be used to specify the sample to be shown on the y-axis in this pane."),
-        .add_tour_step(x, .sampAssayXAxis, "A variety of choices are available to change the variable to be plotted on the x-axis.<br/><br/><strong>Action:</strong> click on <font color=\"#402ee8\">Row data</font> to stratify values by a row metadata field."),
-        .add_tour_step(x, .sampAssayXAxisRowData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis. Similar logic applies for plotting against the assay values of another sample with the <font color=\"#402ee8\">Sample name</font> choice.",
+        .add_tour_step(x, .sampAssayXAxis, "A variety of choices are available to change the variable to be plotted on the x-axis.<br/><br/><strong>Action:</strong> click on <i>Row data</i> to stratify values by a row metadata field."),
+        .add_tour_step(x, .sampAssayXAxisRowData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis. Similar logic applies for plotting against the assay values of another sample with the <i>Sample name</i> choice.",
             element=paste0("#", .getEncodedName(x), "_", .sampAssayXAxisRowData, " + .selectize-control"))
     )
 

@@ -262,11 +262,11 @@ setMethod(".definePanelTour", "RowDataPlot", function(x) {
     collated <- character(0)
 
     collated <- rbind(
-        c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Row data plot</font> panel shows variables from the row metadata (i.e., <code>rowData</code>) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a row (usually a feature) of the <code>SummarizedExperiment</code>, and the y-axis represents a chosen variable.", .getPanelColor(x))),
-        .add_tour_step(x, .dataParamBoxOpen, "The <font color=\"#402ee8\">Data parameters</font> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
+        c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Row data plot</font> panel shows variables from the row metadata (i.e., <code>rowData</code>) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a row (usually a feature) of the <code>SummarizedExperiment</code> object, and the y-axis represents a chosen variable.", .getPanelColor(x))),
+        .add_tour_step(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
         .add_tour_step(x, .rowDataYAxis, "We can manually choose the variable to show on the y-axis.",
             element=paste0("#", .getEncodedName(x), "_", .rowDataYAxis, " + .selectize-control")),
-        .add_tour_step(x, .rowDataXAxis, "We can also specify what should be shown on the x-axis.<br/><br/><strong>Action:</strong> click on <font color=\"#402ee8\">Row data</font> to stratify values by a row metadata field."),
+        .add_tour_step(x, .rowDataXAxis, "We can also specify what should be shown on the x-axis.<br/><br/><strong>Action:</strong> click on <i>Row data</i> to stratify values by a row metadata field."),
         .add_tour_step(x, .rowDataXAxisRowData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis.",
             element=paste0("#", .getEncodedName(x), "_", .rowDataXAxisRowData, " + .selectize-control"))
     )

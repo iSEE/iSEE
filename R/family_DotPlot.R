@@ -625,19 +625,19 @@ setMethod(".definePanelTour", "DotPlot", function(x) {
     mdim <- .multiSelectionDimension(x)
 
     collated <- rbind(
-        .add_tour_step(x, .visualParamBoxOpen,  "The <font color=\"#402ee8\">Visual parameters</font> box contains parameters related to visual aspects like the color, shape, size and so on.<br /><br /><strong>Action:</strong> click on the header of this box to see the available options."),
+        .add_tour_step(x, .visualParamBoxOpen,  "The <i>Visual parameters</i> box contains parameters related to visual aspects like the color, shape, size and so on.<br/><br/><strong>Action:</strong> click on the header of this box to see the available options."),
         .add_tour_step(x, .colorByField, "PLACEHOLDER_COLOR"), # To be filled in by subclasses.
-        .add_tour_step(x, .visualParamChoice, "There are a lot of options so not all of them are shown by default. More settings are available by checking some of the boxes here; conversely, options can be hidden by unchecking some of these boxes.<br /><br />Most of these parameters here are fairly self-explanatory and can be explored at leisure."),
+        .add_tour_step(x, .visualParamChoice, "There are a lot of options so not all of them are shown by default. More settings are available by checking some of the boxes here; conversely, options can be hidden by unchecking some of these boxes.<br/><br/>Most of these parameters here are fairly self-explanatory and can be explored at leisure."),
         callNextMethod(),
         .add_tour_step(x, .selectEffect, sprintf("Here, we can choose the effect of the multiple %s selection that was transmitted from the chosen source panel - should the unselected %ss be made transparent? Should the selected %ss be colored? Or should the plot be explicitly restricted to only the selected %s?", mdim, mdim, mdim, mdim)),
-        c(paste0("#", .getEncodedName(x)), sprintf("At the other end of the spectrum, brushing or creating a lasso on this plot will create a selection of multiple %ss, to be transmitted to other panels that choose this one as the selection source.<br/><br/>Drag-and-dropping will create a rectangular brush while a single click will lay down a lasso waypoint for non-rectanular selections.<br/><br/>Brushing/lassoing can also be used to transmit single %s selections in which case one %s is arbitrarily chosen from the selection.", mdim, mdim, mdim)),
+        c(paste0("#", .getEncodedName(x)), sprintf("At the other end of the spectrum, brushing or creating a lasso on this plot will create a selection of multiple %ss, to be transmitted to other panels that choose this one as their selection source.<br/><br/>Drag-and-dropping will create a rectangular brush while a single click will lay down a lasso waypoint for non-rectangular selections.<br/><br/>Brushes and lassos can also be used to transmit single %s selections in which case one %s is arbitrarily chosen from the selection.", mdim, mdim, mdim)),
         .add_tour_step(x, .multiSelectSave, "Advanced users can also save their selections for later use. Brushes or lassos are saved using a first-in-last-out scheme where you can only delete the last saved selection.")
     )
 
     for (mdim in c("row", "column")) {
         edit <- paste0("PLACEHOLDER_", toupper(mdim), "_SELECT")
         i <- which(collated$intro==edit)
-        collated[i,"intro"] <- sprintf("Here we can choose the \"source\" panel from which to receive a multiple %s selection; that is to say, if we selected some %ss of the <code>SummarizedExperiment</code> in the chosen source panel, the corresponding points in the plot above would be highlighted in some manner.", mdim, mdim)
+        collated[i,"intro"] <- sprintf("Here we can choose the \"source\" panel from which to receive a multiple %s selection; that is to say, if we selected some %ss of the <code>SummarizedExperiment</code> object in the chosen source panel, the corresponding points in the plot above would be highlighted in some manner.", mdim, mdim)
     }
 
     collated

@@ -226,13 +226,13 @@ setMethod(".definePanelTour", "Table", function(x) {
 
     collated <- rbind(
         callNextMethod(),
-        c(paste0("#", .getEncodedName(x)), sprintf("At the other end of the spectrum, we can apply filters to the table to select rows corresponding to  %ss of the <code>SummarizedExperiment</code>; these will be transmitted to other panels that choose this one as the selection source.<br/><br/>We can filter by individual columns of the table and/or with a regular expression search to any matching string in the table.<br/><br/>We can also click on individual rows of the table to transmit a single %s selection to other panels.", mdim, mdim, .singleSelectionDimension(x)))
+        c(paste0("#", .getEncodedName(x)), sprintf("At the other end of the spectrum, we can apply filters to the table to select rows corresponding to %ss of the <code>SummarizedExperiment</code> object; these will be transmitted to other panels that choose this one as their selection source.<br/><br/>We can filter by individual columns of the table and/or with a regular expression search to any matching string in the table.<br/><br/>We can also click on individual rows of the table to transmit a single %s selection to other panels.", mdim, mdim, .singleSelectionDimension(x)))
     )
 
     for (mdim in c("row", "column")) {
         edit <- paste0("PLACEHOLDER_", toupper(mdim), "_SELECT")
         i <- which(collated$intro==edit)
-        collated[i,"intro"] <- sprintf("Here we can choose the \"source\" panel from which to receive a multiple %s selection; that is to say, if we selected some %ss of the <code>SummarizedExperiment</code> in the chosen source panel, the table above would be subsetted to only show the rows (of the table) corresponding to the selected %ss (of the <code>SummarizedExperiment</code>).", mdim, mdim, mdim)
+        collated[i,"intro"] <- sprintf("Here we can choose the \"source\" panel from which to receive a multiple %s selection; that is to say, if we selected some %ss of the <code>SummarizedExperiment</code> object in the chosen source panel, the table above would be subsetted to only show the rows (of the table) corresponding to the selected %ss (of the <code>SummarizedExperiment</code> object).", mdim, mdim, mdim)
     }
 
     collated

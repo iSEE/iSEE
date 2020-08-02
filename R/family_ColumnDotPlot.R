@@ -539,7 +539,7 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
 setMethod(".definePanelTour", "ColumnDotPlot", function(x) {
     collated <- callNextMethod()
         
-    collated$intro[collated$intro=="PLACEHOLDER_COLOR"] <- "We can choose to color by different per-column attributes - from the column metadata, across a specific feature of an assay, or to identify a chosen sample.<br /><br /><strong>Action:</strong> try out some of the different choices. Note how further options become available when each choice is selected."
+    collated$intro[collated$intro=="PLACEHOLDER_COLOR"] <- "We can choose to color by different per-column attributes - from the column metadata, across a specific feature of an assay, or to identify a chosen sample.<br/><br/><strong>Action:</strong> try out some of the different choices. Note how further options become available when each choice is selected."
 
     data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
 })

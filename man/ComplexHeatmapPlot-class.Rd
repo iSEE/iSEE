@@ -17,6 +17,7 @@
 \alias{.renderOutput,ComplexHeatmapPlot-method}
 \alias{.exportOutput,ComplexHeatmapPlot-method}
 \alias{initialize,ComplexHeatmapPlot-method}
+\alias{.definePanelTour,ComplexHeatmapPlot-method}
 \title{The ComplexHeatmapPlot panel}
 \description{
 The ComplexHeatmapPlot is a panel class for creating a \linkS4class{Panel} that displays an assay of a \linkS4class{SummarizedExperiment} object as a \code{\link{Heatmap}} with features as rows and samples and columns, respectively.
@@ -171,6 +172,11 @@ This will also call the equivalent \linkS4class{Panel} method to render the pane
 For defining the panel name:
 \itemize{
 \item \code{\link{.fullName}(x)} will return \code{"Complex heatmap"}.
+}
+
+For documentation:
+\itemize{
+\item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
 }
 }
 

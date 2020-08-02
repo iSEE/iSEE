@@ -24,6 +24,7 @@
 \alias{.singleSelectionDimension,Panel-method}
 \alias{.singleSelectionValue,Panel-method}
 \alias{.singleSelectionSlots,Panel-method}
+\alias{.definePanelTour,Panel-method}
 \title{The Panel virtual class}
 \description{
 The Panel is a virtual base class for all \pkg{iSEE} panels.
@@ -123,6 +124,11 @@ For generating output:
 \itemize{
 \item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} is a no-op,
 i.e., it will return an empty character vector and create no files.
+}
+
+For documentation:
+\itemize{
+\item \code{\link{.definePanelTour}(x)} returns a data.frame containing the selection-related steps of the tour.
 }
 
 For controlling selections:

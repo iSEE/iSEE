@@ -24,6 +24,7 @@
 \alias{.colorByNoneDotPlotScale,DotPlot-method}
 \alias{.defineVisualTextInterface,DotPlot-method}
 \alias{.defineVisualOtherInterface,DotPlot-method}
+\alias{.definePanelTour,DotPlot-method}
 \title{The DotPlot virtual class}
 \description{
 The DotPlot is a virtual class for all panels where each row or column in the \linkS4class{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link{ggplot} plot.
@@ -198,6 +199,12 @@ The active selection is returned if \code{index=NA}, otherwise one of the saved 
 If no brush is active, \code{NULL} is returned instead.
 \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of coloring parameters.
 This includes the output of \code{callNextMethod}.
+}
+
+For documentation:
+\itemize{
+\item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
+mostly describing the specification of visual effects and the creation of a brush or lasso.
 }
 
 Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.

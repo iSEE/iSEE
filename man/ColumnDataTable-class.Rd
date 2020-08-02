@@ -9,6 +9,7 @@
 \alias{.generateTable,ColumnDataTable-method}
 \alias{.panelColor,ColumnDataTable-method}
 \alias{.fullName,ColumnDataTable-method}
+\alias{.definePanelTour,ColumnDataTable-method}
 \title{The ColumnDataTable panel}
 \description{
 The ColumnDataTable is a panel class for creating a \linkS4class{ColumnTable} where the value of the table is defined as the \code{\link{colData}} of the \linkS4class{SummarizedExperiment}.
@@ -51,6 +52,13 @@ For creating the output:
 while returning a character vector of commands required to produce that data.frame.
 Each row of the data.frame should correspond to a column of the SummarizedExperiment.
 }
+
+For documentation:
+\itemize{
+\item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a panel-specific tour.
+}
+
+Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.
 }
 
 \examples{

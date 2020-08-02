@@ -12,6 +12,7 @@
 \alias{.fullName,SampleAssayPlot-method}
 \alias{.panelColor,SampleAssayPlot-method}
 \alias{.generateDotPlotData,SampleAssayPlot-method}
+\alias{.definePanelTour,SampleAssayPlot-method}
 \title{The SampleAssayPlot panel}
 \description{
 The SampleAssayPlot is a panel class for creating a \linkS4class{RowDotPlot} where the y-axis represents the expression of a sample of interest, using the \code{\link{assay}} values of the \linkS4class{SummarizedExperiment}.
@@ -95,6 +96,11 @@ For managing selections:
 \itemize{
 \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of sample on the x- and y-axes.
 This includes the output of \code{callNextMethod}.
+}
+
+For documentation:
+\itemize{
+\item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
 }
 }
 

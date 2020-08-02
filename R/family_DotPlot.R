@@ -634,5 +634,11 @@ setMethod(".definePanelTour", "DotPlot", function(x) {
         .add_tour_step(x, .multiSelectSave, "Advanced users can also save their selections for later use. Brushes or lassos are saved using a first-in-last-out scheme where you can only delete the last saved selection.")
     )
 
+    for (mdim in c("row", "column")) {
+        edit <- paste0("PLACEHOLDER_", toupper(mdim), "_SELECT")
+        i <- which(collated$intro==edit)
+        collated[i,"intro"] <- sprintf("Here we can choose the \"source\" panel from which to receive a multiple %s selection; that is to say, if we selected some %ss of the <code>SummarizedExperiment</code> in the chosen source panel, the corresponding points in the plot above would be highlighted in some manner.", mdim, mdim)
+    }
+
     data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
 })

@@ -1,3 +1,8 @@
+# iSEE 2.1.12
+
+* Added panel-specific tours via the `.definePanelTour()` generic.
+* Generalized the `HiddenColumns` mechanism to all `Table` subclasses.
+
 # iSEE 2.1.11
 
 * Add `HiddenColumns` slot to hide columns in `ColumnDataTable`s and `RowDataTable`s.

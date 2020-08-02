@@ -59,6 +59,12 @@
 #' \item \code{\link{.singleSelectionValue}(x, contents)} returns the name of the row that was last selected in the \code{\link{datatable}} widget.
 #' }
 #'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
+#' mostly describing the effect of selection from other panels and the use of row filters to transmit selections.
+#' }
+#'
 #' Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.
 #'
 #' @section Subclass expectations:
@@ -80,6 +86,7 @@
 #' .multiSelectionCommands,Table-method
 #' .multiSelectionActive,Table-method
 #' .singleSelectionValue,Table-method
+#' .definePanelTour,Table-method
 NULL
 
 #' @export
@@ -208,6 +215,6 @@ setMethod(".definePanelTour", "Table", function(x) {
         collated[i,"intro"] <- sprintf("Here we can choose the \"source\" panel from which to receive a multiple %s selection; that is to say, if we selected some %ss of the <code>SummarizedExperiment</code> in the chosen source panel, the table above would be subsetted to only show the rows (of the table) corresponding to the selected %ss (of the <code>SummarizedExperiment</code>).", mdim, mdim, mdim)
     }
 
-    data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
+    collated
 })
 

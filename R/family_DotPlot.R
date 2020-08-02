@@ -640,5 +640,5 @@ setMethod(".definePanelTour", "DotPlot", function(x) {
         collated[i,"intro"] <- sprintf("Here we can choose the \"source\" panel from which to receive a multiple %s selection; that is to say, if we selected some %ss of the <code>SummarizedExperiment</code> in the chosen source panel, the corresponding points in the plot above would be highlighted in some manner.", mdim, mdim)
     }
 
-    data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
+    collated
 })

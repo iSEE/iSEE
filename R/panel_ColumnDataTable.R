@@ -100,13 +100,6 @@ setMethod(".cacheCommonInfo", "ColumnDataTable", function(x, se) {
 #' @export
 #' @importFrom SummarizedExperiment colData
 setMethod(".refineParameters", "ColumnDataTable", function(x, se) {
-    # Backwards compatibility for new slot (added Jul 2020).
-    # nocov start
-    if (is(try(x[[.TableHidden]], silent=TRUE), "try-error")) {
-        x[[.TableHidden]] <- character(0)
-    }
-    # nocov end
-
     x <- callNextMethod()
     if (is.null(x)) {
         return(NULL)

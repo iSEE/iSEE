@@ -77,6 +77,7 @@
 #' @name Table-class
 #' @aliases
 #' initialize,Table-method
+#' .refineParameters,Table-method
 #' .createObservers,Table-method
 #' .generateOutput,Table-method
 #' .renderOutput,Table-method
@@ -110,6 +111,25 @@ setValidity2("Table", function(object) {
         return(msg)
     }
     TRUE
+})
+
+#' @export
+setMethod(".refineParameters", "Table", function(x, se) {
+    x <- callNextMethod()
+    if (is.null(x)) {
+        return(NULL)
+    }
+
+    # Backwards compatibility for new slot (added 3.12, due for removal in 3.14).
+    # nocov start
+    if (is(try(x[[.TableHidden]], silent=TRUE), "try-error")) {
+        .Deprecated(msg=sprintf("'%s' lacks the '%s' field.\nTry '<%s>[[\"%s\"]] <- character(0)'.",
+            class(x)[1], .TableHidden, class(x)[1], .TableHidden))
+        x[[.TableHidden]] <- character(0)
+    }
+    # nocov end
+
+    x
 })
 
 #' @export

@@ -303,7 +303,7 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
     }
 
     # nocov start
-    if (is.null(session)) {
+    if (!is.null(session)) {
         shinyjs::onclick(.input_FUN(.panelHelpTour), {
             ptour <- .definePanelTour(pObjects$memory[[panel_name]])
             if (nrow(ptour)) {

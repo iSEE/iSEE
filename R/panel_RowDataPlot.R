@@ -267,8 +267,8 @@ setMethod(".definePanelTour", "RowDataPlot", function(x) {
         .add_tour_step(x, .rowDataYAxis, "We can manually choose the variable to show on the y-axis.",
             element=paste0("#", .getEncodedName(x), "_", .rowDataYAxis, " + .selectize-control")),
         .add_tour_step(x, .rowDataXAxis, "We can also specify what should be shown on the x-axis.<br/><br/><strong>Action:</strong> click on <font color=\"#402ee8\">Row data</font> to stratify values by a row metadata field."),
-        .add_tour_step(x, .rowDataXAxisColData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis.",
-            element=paste0("#", .getEncodedName(x), "_", .rowDataXAxisColData, " + .selectize-control"))
+        .add_tour_step(x, .rowDataXAxisRowData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis.",
+            element=paste0("#", .getEncodedName(x), "_", .rowDataXAxisRowData, " + .selectize-control"))
     )
 
     rbind(

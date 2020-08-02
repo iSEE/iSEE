@@ -302,12 +302,16 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
         }
     }
 
-    shinyjs::onclick(.input_FUN(.panelHelpTour), {
-        ptour <- .definePanelTour(pObjects$memory[[panel_name]])
-        if (nrow(ptour)) {
-            introjs(session, options=list(steps=ptour))
-        }
-    })
+    # nocov start
+    if (is.null(session)) {
+        shinyjs::onclick(.input_FUN(.panelHelpTour), {
+            ptour <- .definePanelTour(pObjects$memory[[panel_name]])
+            if (nrow(ptour)) {
+                introjs(session, options=list(steps=ptour))
+            }
+        })
+    }
+    # nocov end
 })
 
 #' @export

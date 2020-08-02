@@ -591,7 +591,7 @@ setMethod(".hideInterface", "ComplexHeatmapPlot", function(x, field) {
 #' @export
 setMethod(".definePanelTour", "ComplexHeatmapPlot", function(x) {
     collated <- rbind(
-        c(paste0("#", .getEncodedName(x)), "The <font color=\"#402ee8\">ComplexHeatmap plot</font> contains... well, a complex heatmap, from the <strong>ComplexHeatmap</strong> package. This is quite conceptually different from the other panels as it shows assay data for multiple rows and columns at the same time. However, it is strictly an end-point panel, i.e., it cannot transmit to other panels."),
+        c(paste0("#", .getEncodedName(x)), "The <font color=\"#402ee8\">ComplexHeatmap plot</font> panel contains... well, a complex heatmap, from the <strong>ComplexHeatmap</strong> package. This is quite conceptually different from the other panels as it shows assay data for multiple rows and columns at the same time. However, it is strictly an end-point panel, i.e., it cannot transmit to other panels."),
         .add_tour_step(x, .dataParamBoxOpen, "The <font color=\"#402ee8\">Data parameters</font> box shows the available parameters that can be tweaked to control the data on the heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
         .add_tour_step(x, .featureNamesEdit, "The most relevant parameter is the choice of features to show as rows on the heatmap. This can be manually specified by entering row names of the <code>SummarizedExperiment</code> into this modal..."),
         .add_tour_step(x, .heatMapCustomFeatNames, "Or it can be chained to a multiple row selection from another panel, if the <font color=\"#402ee8\">Custom rows</font> choice is unselected - see the <font color=\"#402ee8\">Selection parameters</font> later."),

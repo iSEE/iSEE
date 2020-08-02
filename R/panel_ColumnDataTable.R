@@ -152,7 +152,7 @@ setMethod(".generateTable", "ColumnDataTable", function(x, envir) {
 #' @export
 setMethod(".definePanelTour", "ColumnDataTable", function(x) {
     rbind(
-        c(paste0("#", .getEncodedName(x)), "The <font color=\"#402ee8\">Column data table</font> contains a representation of the <code>colData</code> of our <code>SummarizedExperiment</code> object. Each row here corresponds to a column (i.e., sample) of the <code>SummarizedExperiment</code> while each column of the table is a column metadata variable."),
+        c(paste0("#", .getEncodedName(x)), "The <font color=\"#402ee8\">Column data table</font> panel contains a representation of the <code>colData</code> of our <code>SummarizedExperiment</code> object. Each row here corresponds to a column (i.e., sample) of the <code>SummarizedExperiment</code> while each column of the table is a column metadata variable."),
         .add_tour_step(x, .dataParamBoxOpen, "The <font color=\"#402ee8\">Data parameters</font> box shows the available parameters that can be tweaked in this table.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
         .add_tour_step(x, .TableHidden, "We can choose to hide any number of metadata fields if the table is too wide. Note that left-to-right scrolling is also enabled for wide tables.",
             element=paste0("#", .getEncodedName(x), "_", .TableHidden, " + .selectize-control")),

@@ -353,7 +353,7 @@ setMethod(".definePanelTour", "FeatureAssayPlot", function(x) {
     collated <- character(0)
 
     collated <- rbind(
-        c(paste0("#", .getEncodedName(x)), "The <font color=\"#402ee8\">Feature assay plot</font> shows assay values for a particular feature (i.e., row) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a column (usually a sample) of the <code>SummarizedExperiment</code>, and the y-axis represents the assay values."),
+        c(paste0("#", .getEncodedName(x)), "The <font color=\"#402ee8\">Feature assay plot</font> panel shows assay values for a particular feature (i.e., row) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a column (usually a sample) of the <code>SummarizedExperiment</code>, and the y-axis represents the assay values."),
         .add_tour_step(x, .dataParamBoxOpen, "The <font color=\"#402ee8\">Data parameters</font> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
         .add_tour_step(x, .featAssayYAxisFeatName, "We can manually choose the feature of interest based on the row names of our <code>SummarizedExperiment</code>.",
             element=paste0("#", .getEncodedName(x), "_", .featAssayYAxisFeatName, " + .selectize-control")),

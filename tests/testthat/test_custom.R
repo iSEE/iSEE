@@ -72,7 +72,7 @@ test_that("createCustomTable works as expected", {
     expect_false(.hideInterface(x, iSEE:::.TableSelected))
 
     input <- new.env()
-    session <- new.env()
+    session <- NULL
     pObjects <- new.env()
     rObjects <- new.env()
     expect_null(.createObservers(x, sce, input, session, pObjects, rObjects))

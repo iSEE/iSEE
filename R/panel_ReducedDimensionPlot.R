@@ -55,6 +55,11 @@
 #' It will return the commands required to do so as well as a list of labels.
 #' }
 #'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
+#' }
+#'
 #' Subclasses do not have to provide any methods, as this is a concrete class.
 #'
 #' @author Aaron Lun
@@ -98,6 +103,8 @@
 #' .fullName,ReducedDimensionPlot-method
 #' .panelColor,ReducedDimensionPlot-method
 #' .generateDotPlotData,ReducedDimensionPlot-method
+#' .definePanelTour,ReducedDimensionPlot-method
+#'
 #' @name ReducedDimensionPlot-class
 NULL
 
@@ -283,4 +290,21 @@ setMethod(".generateDotPlotData", "ReducedDimensionPlot", function(x, envir) {
     .textEval(data_cmds, envir)
 
     list(commands=data_cmds, labels=list(title=plot_title, X=x_lab, Y=y_lab))
+})
+
+#' @export
+setMethod(".definePanelTour", "ReducedDimensionPlot", function(x) {
+    collated <- character(0)
+
+    collated <- rbind(
+        c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Reduced dimension plot</font> panel shows reduced dimensions from a <code>SingleCellExperiment</code> object or one of its subclasses. Here, each point corresponds to a column (usually a cell) of the <code>SingleCellExperiment</code> object.", .getPanelColor(x))),
+        .add_tour_step(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
+        .add_tour_step(x, .redDimType, "We can choose from any of the dimensionality reduction results available in our <code>SingleCellExperiment</code> object. We usually also take the first and second dimensions but any pair can be specified here.",
+            element=paste0("#", .getEncodedName(x), "_", .redDimType, " + .selectize-control"))
+    )
+
+    rbind(
+        data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE),
+        callNextMethod()
+    )
 })

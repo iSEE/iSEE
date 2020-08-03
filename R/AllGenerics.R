@@ -900,3 +900,34 @@ setGeneric(".defineVisualTextInterface", function(x, se) standardGeneric(".defin
 
 #' @export
 setGeneric(".defineVisualOtherInterface", function(x) standardGeneric(".defineVisualOtherInterface"))
+
+###########################
+
+#' Documentation generics
+#'
+#' The generics power the creation of panel-specific documentation within the \code{\link{iSEE}} app.
+#' Users can click on an icon next to the panel name to open a self-guided tour for that panel's functionality. 
+#' 
+#' @details
+#' \code{.definePanelTour(x)} takes a \linkS4class{Panel} \code{x} and is expected to return a data.frame
+#' with the character fields \code{"element"} and \code{"intro"}.
+#' Each row corresponds to a step of an \pkg{rintrojs} tour;
+#' the \code{"element"} specifies the active UI element to be highlighted in that step,
+#' while the \code{"intro"} element contains the HTML-formatted text to show in the tour pop-up.
+#'
+#' A tour for a Panel \code{x} is expected to only highlight UI elements \emph{on the same panel}.
+#' This is very important as other panels cannot be assumed to exist in an arbitrary instance of \code{\link{iSEE}}.
+#' As such, these tours are not well-suited to highlighting interactions between different panels.
+#'
+#' The observer set-up for the panel tour is done in \code{\link{.createObservers}} for the base \linkS4class{Panel} class.
+#'
+#' @author 
+#' Aaron Lun
+#'
+#' @name documentation-generics
+#' @aliases
+#' .definePanelTour
+NULL
+
+#' @export
+setGeneric(".definePanelTour", function(x) standardGeneric(".definePanelTour"))

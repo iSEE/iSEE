@@ -12,6 +12,7 @@
 \alias{.multiSelectionCommands,Table-method}
 \alias{.multiSelectionActive,Table-method}
 \alias{.singleSelectionValue,Table-method}
+\alias{.definePanelTour,Table-method}
 \title{The Table class}
 \description{
 The Table is a virtual class for all panels containing a \code{\link{datatable}} widget from the \pkg{DT} package, where each row \emph{usually} corresponds to a row or column of the \linkS4class{SummarizedExperiment} object.
@@ -74,6 +75,12 @@ If both contain only empty strings, a \code{NULL} is returned instead.
 \item \code{\link{.multiSelectionCommands}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the row names of the table after applying all search filters.
 The value of \code{index} is ignored.
 \item \code{\link{.singleSelectionValue}(x, contents)} returns the name of the row that was last selected in the \code{\link{datatable}} widget.
+}
+
+For documentation:
+\itemize{
+\item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
+mostly describing the effect of selection from other panels and the use of row filters to transmit selections.
 }
 
 Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.

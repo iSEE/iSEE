@@ -13,6 +13,7 @@
 \alias{.generateDotPlotData,ColumnDataPlot-method}
 \alias{.allowableXAxisChoices,ColumnDataPlot-method}
 \alias{.allowableYAxisChoices,ColumnDataPlot-method}
+\alias{.definePanelTour,ColumnDataPlot-method}
 \title{The ColumnDataPlot panel}
 \description{
 The ColumnDataPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents a variable from the \code{\link{colData}} of a \linkS4class{SummarizedExperiment} object.
@@ -76,6 +77,11 @@ For creating the plot:
 \itemize{
 \item \code{\link{.generateDotPlotData}(x, envir)} will create a data.frame of column metadata variables in \code{envir}.
 It will return the commands required to do so as well as a list of labels.
+}
+
+For documentation:
+\itemize{
+\item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
 }
 }
 

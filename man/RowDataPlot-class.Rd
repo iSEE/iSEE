@@ -13,6 +13,7 @@
 \alias{.generateDotPlotData,RowDataPlot-method}
 \alias{.allowableXAxisChoices,RowDataPlot-method}
 \alias{.allowableYAxisChoices,RowDataPlot-method}
+\alias{.definePanelTour,RowDataPlot-method}
 \title{The RowDataPlot panel}
 \description{
 The RowDataPlot is a panel class for creating a \linkS4class{RowDotPlot} where the y-axis represents a variable from the \code{\link{rowData}} of a \linkS4class{SummarizedExperiment} object.
@@ -76,6 +77,11 @@ For creating the plot:
 \itemize{
 \item \code{\link{.generateDotPlotData}(x, envir)} will create a data.frame of row metadata variables in \code{envir}.
 It will return the commands required to do so as well as a list of labels.
+}
+
+For documentation:
+\itemize{
+\item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
 }
 }
 

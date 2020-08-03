@@ -59,6 +59,12 @@
 #' \item \code{\link{.singleSelectionValue}(x, contents)} returns the name of the row that was last selected in the \code{\link{datatable}} widget.
 #' }
 #'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
+#' mostly describing the effect of selection from other panels and the use of row filters to transmit selections.
+#' }
+#'
 #' Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.
 #'
 #' @section Subclass expectations:
@@ -81,6 +87,7 @@
 #' .multiSelectionCommands,Table-method
 #' .multiSelectionActive,Table-method
 #' .singleSelectionValue,Table-method
+#' .definePanelTour,Table-method
 NULL
 
 #' @export
@@ -212,3 +219,22 @@ setMethod(".hideInterface", "Table", function(x, field) {
         callNextMethod()
     }
 })
+
+#' @export
+setMethod(".definePanelTour", "Table", function(x) {
+    mdim <- .multiSelectionDimension(x)
+
+    collated <- rbind(
+        callNextMethod(),
+        c(paste0("#", .getEncodedName(x)), sprintf("At the other end of the spectrum, we can apply filters to the table to select rows corresponding to %ss of the <code>SummarizedExperiment</code> object; these will be transmitted to other panels that choose this one as their selection source.<br/><br/>We can filter by individual columns of the table and/or with a regular expression search to any matching string in the table.<br/><br/>We can also click on individual rows of the table to transmit a single %s selection to other panels.", mdim, mdim, .singleSelectionDimension(x)))
+    )
+
+    for (mdim in c("row", "column")) {
+        edit <- paste0("PLACEHOLDER_", toupper(mdim), "_SELECT")
+        i <- which(collated$intro==edit)
+        collated[i,"intro"] <- sprintf("Here we can choose the \"source\" panel from which to receive a multiple %s selection; that is to say, if we selected some %ss of the <code>SummarizedExperiment</code> object in the chosen source panel, the table above would be subsetted to only show the rows (of the table) corresponding to the selected %ss (of the <code>SummarizedExperiment</code> object).", mdim, mdim, mdim)
+    }
+
+    collated
+})
+

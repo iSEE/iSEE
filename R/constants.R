@@ -94,6 +94,10 @@
 .int_statTableSearch <- "_search"
 .int_statTableColSearch <- "_search_columns"
 
+# Tour parameters. ---
+
+.panelHelpTour <- "INTERNAL_help"
+
 # Reactive flags. ---
 
 .flagOutputUpdate <- "INTERNAL_output_update"

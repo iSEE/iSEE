@@ -64,6 +64,12 @@
 #' \item \code{\link{.singleSelectionDimension}(x)} returns \code{"sample"} to indicate that a sample identity is being transmitted.
 #' }
 #'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
+#' mostly tuning the more generic descriptions from the same method of the parent \linkS4class{DotPlot}.
+#' }
+#'
 #' Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.
 #'
 #' @section Subclass expectations:
@@ -95,6 +101,7 @@
 #' .defineVisualSizeInterface,ColumnDotPlot-method
 #' .defineVisualFacetInterface,ColumnDotPlot-method
 #' .defineVisualPointInterface,ColumnDotPlot-method
+#' .definePanelTour,ColumnDotPlot-method
 #'
 #' @name ColumnDotPlot-class
 NULL
@@ -525,3 +532,22 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
         .colorByNoneDotPlotScale(x)
     }
 })
+
+###############################################################
+
+#' @export
+setMethod(".definePanelTour", "ColumnDotPlot", function(x) {
+    collated <- callNextMethod()
+        
+    collated$intro[collated$intro=="PLACEHOLDER_COLOR"] <- "We can choose to color by different per-column attributes - from the column metadata, across a specific feature of an assay, or to identify a chosen sample.<br/><br/><strong>Action:</strong> try out some of the different choices. Note how further options become available when each choice is selected."
+
+    data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
+})
+
+.add_tour_step <- function(x, field, text, element=paste0("#", .getEncodedName(x), "_", field)) {
+    if (!.hideInterface(x, field)) {
+        c(element, text)
+    } else {
+        NULL
+    }
+}

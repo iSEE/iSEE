@@ -58,6 +58,11 @@
 #' It will return the commands required to do so as well as a list of labels.
 #' }
 #'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
+#' }
+#'
 #' @section Subclass expectations:
 #' Subclasses do not have to provide any methods, as this is a concrete class.
 #' 
@@ -106,6 +111,7 @@
 #' .generateDotPlotData,ColumnDataPlot-method
 #' .allowableXAxisChoices,ColumnDataPlot-method
 #' .allowableYAxisChoices,ColumnDataPlot-method
+#' .definePanelTour,ColumnDataPlot-method
 #'
 #' @name ColumnDataPlot-class
 NULL
@@ -254,4 +260,24 @@ setMethod(".generateDotPlotData", "ColumnDataPlot", function(x, envir) {
     .textEval(data_cmds, envir)
 
     list(commands=data_cmds, labels=list(title=plot_title, X=x_lab, Y=y_lab))
+})
+
+#' @export
+setMethod(".definePanelTour", "ColumnDataPlot", function(x) {
+    collated <- character(0)
+
+    collated <- rbind(
+        c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Column data plot</font> panel shows variables from the column metadata (i.e., <code>colData</code>) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a column (usually a sample) of the <code>SummarizedExperiment</code>, and the y-axis represents a chosen variable.", .getPanelColor(x))),
+        .add_tour_step(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
+        .add_tour_step(x, .colDataYAxis, "We can manually choose the variable to show on the y-axis.",
+            element=paste0("#", .getEncodedName(x), "_", .colDataYAxis, " + .selectize-control")),
+        .add_tour_step(x, .colDataXAxis, sprintf("We can also specify what should be shown on the x-axis.<br/><br/><strong>Action:</strong> click on <i>Column data</i> to stratify values by a column metadata field.", .getPanelColor(x))),
+        .add_tour_step(x, .colDataXAxisColData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis.",
+            element=paste0("#", .getEncodedName(x), "_", .colDataXAxisColData, " + .selectize-control"))
+    )
+
+    rbind(
+        data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE),
+        callNextMethod()
+    )
 })

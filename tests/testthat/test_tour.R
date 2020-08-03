@@ -52,3 +52,20 @@ test_that(".assemble_tour breaks out in every other case", {
     expect_identical(test, iSEE:::.truncated_tour)
 })
 
+test_that(".definePanelTour works for all objects", {
+    expect_s3_class(.definePanelTour(RowDataTable()), "data.frame")
+
+    expect_s3_class(.definePanelTour(RowDataPlot()), "data.frame")
+
+    expect_s3_class(.definePanelTour(ColumnDataPlot()), "data.frame")
+
+    expect_s3_class(.definePanelTour(ColumnDataTable()), "data.frame")
+
+    expect_s3_class(.definePanelTour(ReducedDimensionPlot()), "data.frame")
+
+    expect_s3_class(.definePanelTour(FeatureAssayPlot()), "data.frame")
+
+    expect_s3_class(.definePanelTour(SampleAssayPlot()), "data.frame")
+
+    expect_s3_class(.definePanelTour(ComplexHeatmapPlot()), "data.frame")
+})

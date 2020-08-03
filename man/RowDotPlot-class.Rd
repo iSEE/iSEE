@@ -16,6 +16,7 @@
 \alias{.defineVisualSizeInterface,RowDotPlot-method}
 \alias{.defineVisualFacetInterface,RowDotPlot-method}
 \alias{.defineVisualPointInterface,RowDotPlot-method}
+\alias{.definePanelTour,RowDotPlot-method}
 \title{The RowDotPlot virtual class}
 \description{
 The RowDotPlot is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link{ggplot} plot.
@@ -83,6 +84,12 @@ For controlling selections:
 \itemize{
 \item \code{\link{.multiSelectionDimension}(x)} returns \code{"row"} to indicate that a row selection is being transmitted.
 \item \code{\link{.singleSelectionDimension}(x)} returns \code{"feature"} to indicate that a feature identity is being transmitted.
+}
+
+For documentation:
+\itemize{
+\item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
+mostly tuning the more generic descriptions from the same method of the parent \linkS4class{DotPlot}.
 }
 
 Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.

@@ -73,7 +73,7 @@ It provides slots and methods to specify which dimensionality reduction result t
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.12</span>
       </span>
     </div>
 
@@ -208,6 +208,10 @@ This will also call the equivalent ColumnDotPlot method.</p></li>
 <p>For creating the plot:</p><ul>
 <li><p><code>.generateDotPlotData(x, envir)</code> will create a data.frame of reduced dimension coordinates in <code>envir</code>.
 It will return the commands required to do so as well as a list of labels.</p></li>
+</ul>
+
+<p>For documentation:</p><ul>
+<li><p><code>.definePanelTour(x)</code> returns an data.frame containing a panel-specific tour.</p></li>
 </ul>
 
 <p>Subclasses do not have to provide any methods, as this is a concrete class.</p>

@@ -74,7 +74,7 @@ This panel will transmit row identities in both its single and multiple selectio
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.12</span>
       </span>
     </div>
 
@@ -216,6 +216,11 @@ This will also call the equivalent DotPlot method.</p></li>
 <p>For controlling selections:</p><ul>
 <li><p><code>.multiSelectionDimension(x)</code> returns <code>"row"</code> to indicate that a row selection is being transmitted.</p></li>
 <li><p><code>.singleSelectionDimension(x)</code> returns <code>"feature"</code> to indicate that a feature identity is being transmitted.</p></li>
+</ul>
+
+<p>For documentation:</p><ul>
+<li><p><code>.definePanelTour(x)</code> returns an data.frame containing the steps of a tour relevant to subclasses,
+mostly tuning the more generic descriptions from the same method of the parent DotPlot.</p></li>
 </ul>
 
 <p>Unless explicitly specialized above, all methods from the parent classes DotPlot and Panel are also available.</p>

@@ -73,7 +73,7 @@ It provides slots and methods to control the height and width of each panel, as 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.12</span>
       </span>
     </div>
 
@@ -246,6 +246,10 @@ followed by a <code>callNextMethod</code> to create the textboxes.</p></li>
 <p>For generating output:</p><ul>
 <li><p><code>.exportOutput(x, se, all_memory, all_contents)</code> is a no-op,
 i.e., it will return an empty character vector and create no files.</p></li>
+</ul>
+
+<p>For documentation:</p><ul>
+<li><p><code>.definePanelTour(x)</code> returns a data.frame containing the selection-related steps of the tour.</p></li>
 </ul>
 
 <p>For controlling selections:</p><ul>

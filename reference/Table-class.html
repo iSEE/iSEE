@@ -73,7 +73,7 @@ It provides observers for rendering the table widget, monitoring single selectio
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.12</span>
       </span>
     </div>
 
@@ -211,6 +211,11 @@ If both contain only empty strings, a <code>NULL</code> is returned instead.</p>
 <li><p><code>.multiSelectionCommands(x, index)</code> returns a character vector of R expressions that - when evaluated - return a character vector of the row names of the table after applying all search filters.
 The value of <code>index</code> is ignored.</p></li>
 <li><p><code>.singleSelectionValue(x, contents)</code> returns the name of the row that was last selected in the <code>datatable</code> widget.</p></li>
+</ul>
+
+<p>For documentation:</p><ul>
+<li><p><code>.definePanelTour(x)</code> returns an data.frame containing the steps of a tour relevant to subclasses,
+mostly describing the effect of selection from other panels and the use of row filters to transmit selections.</p></li>
 </ul>
 
 <p>Unless explicitly specialized above, all methods from the parent class Panel are also available.</p>

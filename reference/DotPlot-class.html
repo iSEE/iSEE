@@ -73,7 +73,7 @@ It provides slots and methods to create the plot, to control various aesthetics 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.12</span>
       </span>
     </div>
 
@@ -314,6 +314,11 @@ The active selection is returned if <code>index=NA</code>, otherwise one of the 
 If no brush is active, <code>NULL</code> is returned instead.</p></li>
 <li><p><code>.singleSelectionSlots(x)</code> will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of coloring parameters.
 This includes the output of <code>callNextMethod</code>.</p></li>
+</ul>
+
+<p>For documentation:</p><ul>
+<li><p><code>.definePanelTour(x)</code> returns an data.frame containing the steps of a tour relevant to subclasses,
+mostly describing the specification of visual effects and the creation of a brush or lasso.</p></li>
 </ul>
 
 <p>Unless explicitly specialized above, all methods from the parent class Panel are also available.</p>

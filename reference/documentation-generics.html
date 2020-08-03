@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Default panel options — iSEEOptions • iSEE</title>
+<title>Documentation generics — documentation-generics • iSEE</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Default panel options — iSEEOptions" />
-<meta property="og:description" content="Set global options using iSEEOptions$set(), so that all relevant panels will use these default values during initialization." />
+<meta property="og:title" content="Documentation generics — documentation-generics" />
+<meta property="og:description" content="The generics power the creation of panel-specific documentation within the iSEE app.
+Users can click on an icon next to the panel name to open a self-guided tour for that panel's functionality." />
 
 
 
@@ -145,56 +146,30 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Default panel options</h1>
-    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/iSEE-options.R'><code>R/iSEE-options.R</code></a></small>
-    <div class="hidden name"><code>iSEEOptions.Rd</code></div>
+    <h1>Documentation generics</h1>
+    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/AllGenerics.R'><code>R/AllGenerics.R</code></a></small>
+    <div class="hidden name"><code>documentation-generics.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Set global options using <code>iSEEOptions$set()</code>, so that all relevant panels will use these default values during initialization.</p>
+    <p>The generics power the creation of panel-specific documentation within the <code>iSEE</code> app.
+Users can click on an icon next to the panel name to open a self-guided tour for that panel's functionality.</p>
     </div>
 
-    <pre class="usage"><span class='no'>iSEEOptions</span></pre>
 
 
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>An object of class <code>list</code> of length 4.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>See <code><a href='https://rdrr.io/r/utils/str.html'>str(iSEEOptions$get())</a></code> for a list of default panel options.</p>
-<p>Note that <code>iSEEOptions$restore()</code> can be used to reset the global options to the package default values.</p>
-    <h2 class="hasAnchor" id="available-options"><a class="anchor" href="#available-options"></a>Available options</h2>
+    <p><code>.definePanelTour(x)</code> takes a Panel <code>x</code> and is expected to return a data.frame
+with the character fields <code>"element"</code> and <code>"intro"</code>.
+Each row corresponds to a step of an <span class="pkg">rintrojs</span> tour;
+the <code>"element"</code> specifies the active UI element to be highlighted in that step,
+while the <code>"intro"</code> element contains the HTML-formatted text to show in the tour pop-up.</p>
+<p>A tour for a Panel <code>x</code> is expected to only highlight UI elements <em>on the same panel</em>.
+This is very important as other panels cannot be assumed to exist in an arbitrary instance of <code>iSEE</code>.
+As such, these tours are not well-suited to highlighting interactions between different panels.</p>
+<p>The observer set-up for the panel tour is done in <code>.createObservers</code> for the base Panel class.</p>
 
-    
-
-
-<dl'>
-<dt><code>point.color</code></dt><dd><p>Default color of data points in <code>DotPlot</code> panels (character).</p></dd>
-<dt><code>point.size</code></dt><dd><p>Default size of data points in <code>DotPlot</code> panels (numeric).</p></dd>
-<dt><code>point.alpha</code></dt><dd><p>Default alpha level controlling transparency of data points in <code>DotPlot</code> panels (numeric).</p></dd>
-<dt><code>downsample</code></dt><dd><p>Enable visual downsampling in <code>DotPlot</code> panels (logical).</p></dd>
-<dt><code>downsample.resolution</code></dt><dd><p>Resolution of the visual downsampling, if active (numeric).</p></dd>
-<dt><code>selected.color</code></dt><dd><p>Color of selected data points in <code>DotPlot</code> panels (character).</p></dd>
-<dt><code>selected.alpha</code></dt><dd><p>Alpha level controlling transparency of data points <em>not</em> selected in <code>DotPlot</code> panels (numeric).</p></dd>
-<dt><code>selection.dynamic.single</code></dt><dd><p>Toggle dynamic single selections for all panels (logical).</p></dd>
-<dt><code>selection.dynamic.multiple</code></dt><dd><p>Toggle dynamic multiple selections for all panels (logical).</p></dd>
-<dt><code>contour.color</code></dt><dd><p>Color of the 2d density estimation contour in <code>DotPlot</code> panels (character).</p></dd>
-<dt><code>font.size</code></dt><dd><p>Global multiplier controlling the magnification of plot title and text elements in <code>DotPlot</code> panels (numeric).</p></dd>
-<dt><code>legend.position</code></dt><dd><p>Position of the legend in <code>DotPlot</code> and <code>ComplexHeatmapPlot</code> panels (one of <code>"Bottom"</code>, <code>"Right"</code>).</p></dd>
-<dt><code>legend.direction</code></dt><dd><p>Position of the legend in <code>DotPlot</code> and <code>ComplexHeatmapPlot</code> panels (one of <code>"Horizontal"</code>, <code>"Vertical"</code>).</p></dd>
-<dt><code>panel.width</code></dt><dd><p>Default panel grid width (must be between 1 and 12).</p></dd>
-<dt><code>panel.height</code></dt><dd><p>Default panel height (in pixels).</p></dd>
-<dt><code>panel.color</code></dt><dd><p>Named character vector of colors.
-The names of the vector should be set to the name of class to be overridden; if a class is not named here, its default color is used.
-It is highly recommended to define colors as hex color codes (e.g., <code>"#1e90ff"</code>), for full compatibility with both HTML elements and R plots.</p></dd>
-<dt><code>assay</code></dt><dd><p>Character vector of assay names to use if available, in order of preference.</p></dd>
-
-</dl>
-
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>iSEEOptions</span>$<span class='fu'><a href='https://rdrr.io/r/base/get.html'>get</a></span>(<span class='st'>'downsample'</span>); <span class='no'>iSEEOptions</span>$<span class='fu'><a href='https://rdrr.io/r/base/get.html'>get</a></span>(<span class='st'>'selected.color'</span>)</div><div class='output co'>#&gt; [1] FALSE</div><div class='output co'>#&gt; [1] "red"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

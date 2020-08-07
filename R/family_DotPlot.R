@@ -588,7 +588,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
 #' @export
 setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
     plot_data <- envir$plot.data
-    print(head(plot_data))
+    
     is_subsetted <- exists("plot.data.all", envir=envir, inherits=FALSE)
     is_downsampled <- exists("plot.data.pre", envir=envir, inherits=FALSE)
     plot_type <- envir$plot.type
@@ -618,8 +618,6 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
         label_cmd <- sprintf('ggrepel::geom_text_repel(aes(x=X, y=Y, label=Label), subset(plot.data, Label %%in%% %s), min.segment.length = unit(0, "mm"))', .deparse_for_viewing(dn))
         plot_cmds <- c(plot_cmds, label_cmd)
     }
-    
-    cat(plot_cmds, sep = "\n")
 
     # Adding a faceting command, if applicable.
     facet_cmd <- .addFacets(x)

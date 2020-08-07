@@ -4,8 +4,7 @@ title: >
 author:
 - name: Kevin Rue-Albrecht
   affiliation: 
-  - &id4 Kennedy Institute of Rheumatology, University of Oxford,
-    Headington, Oxford OX3 7FY, UK.
+  - &id4 MRC WIMM Centre for Computational Biology, University of Oxford, Oxford, OX3 9DS, UK
   email: kevinrue67@gmail.com
 - name: Federico Marini
   affiliation: 
@@ -25,7 +24,7 @@ output:
   BiocStyle::html_document:
     toc_float: true
 vignette: >
-  %\VignetteIndexEntry{6. Using iSEE with HDF5}
+  %\VignetteIndexEntry{6. Using iSEE with big data}
   %\VignetteEncoding{UTF-8}  
   %\VignettePackage{iSEE}
   %\VignetteKeywords{GeneExpression, RNASeq, Sequencing, Visualization, QualityControl, GUI}

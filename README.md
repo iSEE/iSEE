@@ -2,19 +2,20 @@
 
 # _iSEE_ - The interactive SummarizedExperiment Explorer 
 
-## Software status
-
-| Platforms |  OS  | R CMD check | Coverage | 
-|:----------------:|:----------------:|:----------------:|:----------------:|
-| Travis CI | Linux | [![Travis CI build status](https://travis-ci.com/iSEE/iSEE.svg?branch=master)](https://travis-ci.com/iSEE/iSEE) | [![Codecov.io coverage status](https://codecov.io/github/iSEE/iSEE/coverage.svg?branch=master)](https://codecov.io/github/iSEE/iSEE) |
-| Bioc ([_devel_](http://bioconductor.org/packages/devel/bioc/html/iSEE.html)) | Multiple | [![Bioconductor-devel Build Status](http://bioconductor.org/shields/build/devel/bioc/iSEE.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/iSEE) | `NA` |
-| Bioc ([_release_](http://bioconductor.org/packages/release/bioc/html/iSEE.html)) | Multiple | [![Bioconductor-release Build Status](http://bioconductor.org/shields/build/release/bioc/iSEE.svg)](http://bioconductor.org/checkResults/release/bioc-LATEST/iSEE) | `NA` |
-
 <!-- badges: start -->
 [![R build status](https://github.com/iSEE/iSEEu/workflows/build_check_deploy/badge.svg)](https://github.com/iSEE/iSEEu/actions)
-![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/iseedevelopers/isee)
-![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/iseedevelopers/isee)
+[![Codecov.io coverage status](https://codecov.io/github/iSEE/iSEE/coverage.svg?branch=master)](https://codecov.io/github/iSEE/iSEE)
+[![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/iseedevelopers/isee)](https://hub.docker.com/r/iseedevelopers/isee)
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/iseedevelopers/isee)](https://hub.docker.com/r/iseedevelopers/isee)
+[![Travis CI build status](https://travis-ci.com/iSEE/iSEE.svg?branch=master)](https://travis-ci.com/iSEE/iSEE)
 <!-- badges: end -->
+
+## Bioconductor release status
+
+|      Branch      |    R CMD check   | Last updated |
+|:----------------:|:----------------:|:------------:|
+| [_devel_](http://bioconductor.org/packages/devel/bioc/html/iSEE.html) | [![Bioconductor-devel Build Status](http://bioconductor.org/shields/build/devel/bioc/iSEE.svg)](http://bioconductor.org/checkResults/devel/bioc-LATEST/iSEE) | ![](http://bioconductor.org/shields/lastcommit/devel/bioc/iSEE.svg) |
+| [_release_](http://bioconductor.org/packages/release/bioc/html/iSEE.html) | [![Bioconductor-release Build Status](http://bioconductor.org/shields/build/release/bioc/iSEE.svg)](http://bioconductor.org/checkResults/release/bioc-LATEST/iSEE) | ![](http://bioconductor.org/shields/lastcommit/release/bioc/iSEE.svg) |
 
 ## Overview
 

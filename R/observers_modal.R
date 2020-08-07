@@ -22,7 +22,7 @@
 #' @importFrom shinyAce aceEditor updateAceEditor
 #' @importFrom shinyjs disabled
 #' @rdname INTERNAL_create_modal_observers_for_features
-.create_modal_observers_for_dimnames <- function(plot_name, button_name, se, input, session, pObjects, rObjects, source_type) {
+.create_modal_observers_for_dimnames <- function(plot_name, slot_name, button_name, se, input, session, pObjects, rObjects, source_type) {
   apply_field <- "INTERNAL_ApplyFeatNameChanges"
   order_field <- "INTERNAL_OrderFeatNames"
   import_field <- "INTERNAL_ImportFeatNames"
@@ -52,11 +52,11 @@
       footer=NULL, easyClose=TRUE,
       fluidRow(
         column(width = 8,
-               aceEditor(.input_FUN(.heatMapFeatNameText),
+               aceEditor(.input_FUN(slot_name),
                          mode="text",
                          theme="xcode",
                          autoComplete="disabled",
-                         value=instance[[.heatMapFeatNameText]],
+                         value=instance[[slot_name]],
                          height="500px")
         ),
         column(width = 4,
@@ -88,21 +88,21 @@
       incoming_names <- NULL
     }
     
-    editor_text <- input[[.input_FUN(.heatMapFeatNameText)]]
+    editor_text <- input[[.input_FUN(slot_name)]]
     if (!is.null(incoming_names)) {
       editor_names <- strsplit(gsub("\n$", "", editor_text), split="\n")[[1]]
       editor_names <- union(editor_names, incoming_names)
       editor_text <- paste0(editor_names, collapse = "\n")
     }
     
-    updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = editor_text)
+    updateAceEditor(session, editorId = .input_FUN(slot_name), value = editor_text)
   }, ignoreInit=TRUE)
   # nocov end
   
   # Button to clear the editor
   # nocov start
   observeEvent(input[[.input_FUN(clear_field)]], {
-    updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = "")
+    updateAceEditor(session, editorId = .input_FUN(slot_name), value = "")
   }, ignoreInit=TRUE)
   # nocov end
   
@@ -111,12 +111,12 @@
   observeEvent(input[[.input_FUN(validate_field)]], {
     instance <- pObjects$memory[[plot_name]]
     
-    editor_text <- input[[.input_FUN(.heatMapFeatNameText)]]
+    editor_text <- input[[.input_FUN(slot_name)]]
     editor_lines <- strsplit(editor_text, split="\n")[[1]]
     invalid_idx <- !editor_lines %in% rownames(se) & !grepl("^[ ]*#", editor_lines)
     editor_lines[invalid_idx] <- paste0("# ", editor_lines[invalid_idx])
     editor_text <- paste0(editor_lines, collapse = "\n")
-    updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = editor_text)
+    updateAceEditor(session, editorId = .input_FUN(slot_name), value = editor_text)
   }, ignoreInit=TRUE)
   # nocov end
   
@@ -125,18 +125,18 @@
   observeEvent(input[[.input_FUN(order_field)]], {
     instance <- pObjects$memory[[plot_name]]
     
-    editor_text <- input[[.input_FUN(.heatMapFeatNameText)]]
+    editor_text <- input[[.input_FUN(slot_name)]]
     editor_lines <- strsplit(editor_text, split="\n")[[1]]
     editor_lines <- sort(editor_lines)
     editor_text <- paste0(editor_lines, collapse = "\n")
-    updateAceEditor(session, editorId = .input_FUN(.heatMapFeatNameText), value = editor_text)
+    updateAceEditor(session, editorId = .input_FUN(slot_name), value = editor_text)
   }, ignoreInit=TRUE)
   # nocov end
   
   # The button that actually updates the FeatNameText field.
   # nocov start
   observeEvent(input[[.input_FUN(apply_field)]], {
-    pObjects$memory[[plot_name]][[.heatMapFeatNameText]] <- input[[.input_FUN(.heatMapFeatNameText)]]
+    pObjects$memory[[plot_name]][[slot_name]] <- input[[.input_FUN(slot_name)]]
     # ComplexHeatmapPlot cannot send selections, thus a simple update is enough
     .requestUpdate(plot_name,rObjects)
     removeModal()

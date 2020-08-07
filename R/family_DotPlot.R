@@ -359,7 +359,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
             .shapeByField, .sizeByField,
             .plotPointSize, .plotPointAlpha, .plotFontSize, .legendPointSize, .plotLegendPosition,
             .plotPointDownsample, .plotPointSampleRes, .contourAdd,
-            .contourColor),
+            .contourColor, .plotCustomLabels),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     # Filling the plot interaction observers:
@@ -385,7 +385,7 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x) {
 
     tagList(
         checkboxInput(.input_FUN(.plotCustomLabels),
-                      label="Label custom samples", # TODO generic to replace "samples" by a value for each panel
+                      label=sprintf("Label custom %ss", .singleSelectionDimension(x)),
                       value=x[[.plotCustomLabels]]),
         .conditional_on_check_solo(
             .input_FUN(.plotCustomLabels),
@@ -524,6 +524,7 @@ setMethod(".singleSelectionSlots", "DotPlot", function(x) {
 
 #' @export
 #' @importFrom S4Vectors metadata
+#' @importFrom ggrepel geom_text_repel
 setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents) {
     # Initialize an environment storing information for generating ggplot commands
     plot_env <- new.env()
@@ -587,6 +588,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
 #' @export
 setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
     plot_data <- envir$plot.data
+    print(head(plot_data))
     is_subsetted <- exists("plot.data.all", envir=envir, inherits=FALSE)
     is_downsampled <- exists("plot.data.pre", envir=envir, inherits=FALSE)
     plot_type <- envir$plot.type
@@ -608,6 +610,16 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
         violin_horizontal=do.call(.violin_plot, c(args, list(horizontal=TRUE))),
         scatter=do.call(.scatter_plot, args)
     )
+    
+    if (x[[.plotCustomLabels]]) {
+        N <- length(plot_cmds)
+        plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")
+        dn <- .convert_text_to_names(x[[.plotCustomLabelsText]])
+        label_cmd <- sprintf('ggrepel::geom_text_repel(aes(x=X, y=Y, label=Label), subset(plot.data, Label %%in%% %s), min.segment.length = unit(0, "mm"))', .deparse_for_viewing(dn))
+        plot_cmds <- c(plot_cmds, label_cmd)
+    }
+    
+    cat(plot_cmds, sep = "\n")
 
     # Adding a faceting command, if applicable.
     facet_cmd <- .addFacets(x)
@@ -633,6 +645,17 @@ setMethod(".colorByNoneDotPlotField", "DotPlot", function(x) NULL)
 
 #' @export
 setMethod(".colorByNoneDotPlotScale", "DotPlot", function(x) NULL)
+
+#' @export
+setMethod(".addDotPlotDataLabel", "DotPlot", function(x, envir) {
+    if (x[[.plotCustomLabels]]) {
+        cmds <- "plot.data$Label <- rownames(plot.data);"
+    } else {
+        return(NULL)
+    }
+    .textEval(cmds, envir)
+    list(commands = cmds, labels = list())
+})
 
 #' @export
 setMethod(".definePanelTour", "DotPlot", function(x) {

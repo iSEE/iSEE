@@ -73,6 +73,9 @@
     out_facets <- .addDotPlotDataFacets(x, envir)
     collected$facets <- out_facets$commands
     labels <- c(labels, out_facets$labels)
+    
+    out_labels <- .addDotPlotDataLabel(x, envir) # TODO (signature DotPlot)
+    collected$label <- out_labels$commands
 
     list(commands=collected, labels=labels)
 }

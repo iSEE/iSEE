@@ -535,6 +535,8 @@ setGeneric(".addDotPlotDataSize", function(x, envir) standardGeneric(".addDotPlo
 
 setGeneric(".addDotPlotDataFacets", function(x, envir) standardGeneric(".addDotPlotDataFacets"))
 
+setGeneric(".addDotPlotDataLabel", function(x, envir) standardGeneric(".addDotPlotDataLabel"))
+
 setGeneric(".addDotPlotDataSelected", function(x, envir) standardGeneric(".addDotPlotDataSelected"))
 
 setGeneric(".colorDotPlot", function(x, colorby, x_aes="X", y_aes="Y") standardGeneric(".colorDotPlot"))

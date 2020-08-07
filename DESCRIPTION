@@ -30,6 +30,7 @@ Imports:
     DT,
     rintrojs, 
     ggplot2,
+    ggrepel,
     colourpicker,
     igraph,
     vipor,

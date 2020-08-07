@@ -197,6 +197,8 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 
     continuous <- cdp_cached$continuous.colData.names
     x <- .replace_na_with_first(x, .sizeByColData, continuous)
+    
+    x <- .replace_na_with_first(x, .plotCustomLabelsText, colnames(se)[1])
 
     x
 })

@@ -252,6 +252,8 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     args <- .emptyDefault(args, .plotPointDownsample, iSEEOptions$get("downsample"))
     args <- .emptyDefault(args, .plotPointSampleRes, iSEEOptions$get("downsample.resolution"))
 
+    args <- .emptyDefault(args, .plotCustomLabels, TRUE)
+    args <- .emptyDefault(args, .plotCustomLabelsText, NA_character_)
     args <- .emptyDefault(args, .plotFontSize, iSEEOptions$get("font.size"))
     args <- .emptyDefault(args, .legendPointSize, iSEEOptions$get("legend.point.size"))
     args <- .emptyDefault(args, .plotLegendPosition, iSEEOptions$get("legend.position"))
@@ -264,10 +266,10 @@ setValidity2("DotPlot", function(object) {
     msg <- character(0)
 
     msg <- .valid_logical_error(msg, object,
-        c(.visualParamBoxOpen, .contourAdd, .plotPointDownsample))
+        c(.plotCustomLabels, .visualParamBoxOpen, .contourAdd, .plotPointDownsample))
 
     msg <- .single_string_error(msg, object,
-        c(.colorByField, .colorByFeatName, .colorByRowTable, .colorBySampName, .colorByColTable,
+        c(.plotCustomLabelsText, .colorByField, .colorByFeatName, .colorByRowTable, .colorBySampName, .colorByColTable,
             .shapeByField,
             .sizeByField,
             .selectEffect))
@@ -341,6 +343,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
     callNextMethod()
 
     plot_name <- .getEncodedName(x)
+    plot_dimension <- ifelse(is(x, "ColumnDotPlot"), "column", "row") # TODO: possibly more elegant way to switch between row and column
 
     .create_box_observers(plot_name, .visualParamBoxOpen, input, pObjects)
 
@@ -368,6 +371,9 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 
     .create_zoom_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
+    
+    .create_modal_observers_for_dimnames(plot_name, .plotCustomLabelsText, .dimnamesModalOpen,
+        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, plot_dimension)
 })
 
 # Interface ----
@@ -375,8 +381,16 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 #' @export
 setMethod(".defineVisualTextInterface", "DotPlot", function(x) {
     plot_name <- .getEncodedName(x)
+    .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
     tagList(
+        checkboxInput(.input_FUN(.plotCustomLabels),
+                      label="Label custom samples", # TODO generic to replace "samples" by a value for each panel
+                      value=x[[.plotCustomLabels]]),
+        .conditional_on_check_solo(
+            .input_FUN(.plotCustomLabels),
+            on_select=TRUE,
+            actionButton(.input_FUN(.dimnamesModalOpen), label=sprintf("Edit %s names", .singleSelectionDimension(x)))),
         numericInput(
             paste0(plot_name, "_", .plotFontSize), label="Font size:",
             min=0, value=x[[.plotFontSize]]),
@@ -523,6 +537,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
     all_cmds$select <- .processMultiSelections(x, all_memory, all_contents, plot_env)
 
     xy_out <- .generateDotPlotData(x, plot_env)
+    print(str(xy_out))
     all_cmds$xy <- xy_out$commands
     all_labels <- c(all_labels, xy_out$labels)
 

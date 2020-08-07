@@ -400,7 +400,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         .conditional_on_check_solo(
             .input_FUN(.heatMapCustomFeatNames),
             on_select=TRUE,
-            actionButton(.input_FUN(.featureNamesEdit), label=.buttonEditFeatureNamesLabel)),
+            actionButton(.input_FUN(.dimnamesModalOpen), label="Edit feature names")),
         ABLEFUN(checkboxInput(.input_FUN(.heatMapClusterFeatures), label="Cluster rows",
             value=x[[.heatMapClusterFeatures]])),
         .conditional_on_check_solo(
@@ -573,7 +573,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     .create_heatmap_extra_observers(plot_name,
         se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_modal_observers_for_dimnames(plot_name, .heatMapFeatNameText, .featureNamesEdit,
+    .create_modal_observers_for_dimnames(plot_name, .heatMapFeatNameText, .dimnamesModalOpen,
         se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, "row")
 
     invisible(NULL)
@@ -593,7 +593,7 @@ setMethod(".definePanelTour", "ComplexHeatmapPlot", function(x) {
     collated <- rbind(
         c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">ComplexHeatmap plot</font> panel contains... well, a complex heatmap, from the <i><a href='https://bioconductor.org/packages/ComplexHeatmap/'>ComplexHeatmap</a></i> package. This is quite conceptually different from the other panels as it shows assay data for multiple rows and columns at the same time. However, it is strictly an end-point panel, i.e., it cannot transmit to other panels.", .getPanelColor(x))),
         .add_tour_step(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked to control the data on the heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
-        .add_tour_step(x, .featureNamesEdit, "The most relevant parameter is the choice of features to show as rows on the heatmap. This can be manually specified by entering row names of the <code>SummarizedExperiment</code> object into this modal..."),
+        .add_tour_step(x, .dimnamesModalOpen, "The most relevant parameter is the choice of features to show as rows on the heatmap. This can be manually specified by entering row names of the <code>SummarizedExperiment</code> object into this modal..."),
         .add_tour_step(x, .heatMapCustomFeatNames, "Or it can be chained to a multiple row selection from another panel, if the <i>Custom rows</i> choice is unselected - see the <i>Selection parameters</i> later."),
         .add_tour_step(x, .heatMapClusterFeatures, "We can also choose whether to cluster the features for better visibility."),
        

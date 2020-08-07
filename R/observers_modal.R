@@ -111,9 +111,11 @@
   observeEvent(input[[.input_FUN(validate_field)]], {
     instance <- pObjects$memory[[plot_name]]
     
+    dimnamesFUN <- if (source_type == "row") rownames else colnames # TODO: generic mapping "row" and "column" to labels depending on the panel class
+    
     editor_text <- input[[.input_FUN(slot_name)]]
     editor_lines <- strsplit(editor_text, split="\n")[[1]]
-    invalid_idx <- !editor_lines %in% rownames(se) & !grepl("^[ ]*#", editor_lines)
+    invalid_idx <- !editor_lines %in% dimnamesFUN(se) & !grepl("^[ ]*#", editor_lines) # TODO switch dimnames function
     editor_lines[invalid_idx] <- paste0("# ", editor_lines[invalid_idx])
     editor_text <- paste0(editor_lines, collapse = "\n")
     updateAceEditor(session, editorId = .input_FUN(slot_name), value = editor_text)

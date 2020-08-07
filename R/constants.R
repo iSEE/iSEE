@@ -55,9 +55,8 @@
 .buttonDeleteLabel <- "Delete"
 .buttonNoSelectionLabel <- "No selection"
 .buttonSaveLabel <- "Save"
-.buttonEditFeatureNamesLabel <- "Edit feature names"
 
-.featureNamesEdit <- "INTERNAL_RowNamesEdit"
+.dimnamesModalOpen <- "INTERNAL_DimNamesEdit"
 
 # Other plot parameters. ----
 

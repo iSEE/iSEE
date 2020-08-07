@@ -102,7 +102,7 @@
 
       
 
-      </header><link href="basic_files/font-awesome-5.1.0/css/all.css" rel="stylesheet">
+      </header><script src="basic_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="basic_files/font-awesome-5.1.0/css/all.css" rel="stylesheet">
 <link href="basic_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
@@ -111,7 +111,7 @@
 <p>An introduction to the <em><a href="https://bioconductor.org/packages/3.12/iSEE">iSEE</a></em> interface</p>
                         <h4 class="author">Kevin Rue-Albrecht</h4>
             <address class="author_afil">
-      Kennedy Institute of Rheumatology, University of Oxford, Headington, Oxford OX3 7FY, UK.<br><a class="author_email" href="mailto:#"></a><a href="mailto:kevinrue67@gmail.com" class="email">kevinrue67@gmail.com</a>
+      MRC WIMM Centre for Computational Biology, University of Oxford, Oxford, OX3 9DS, UK<br><a class="author_email" href="mailto:#"></a><a href="mailto:kevinrue67@gmail.com" class="email">kevinrue67@gmail.com</a>
       </address>
                               <h4 class="author">Federico Marini</h4>
             <address class="author_afil">
@@ -125,7 +125,7 @@
                   <a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       
                   
-            <h4 class="date">3 August 2020</h4>
+            <h4 class="date">7 August 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/basic.Rmd"><code>vignettes/basic.Rmd</code></a></small>
       <div class="hidden name"><code>basic.Rmd</code></div>
@@ -134,10 +134,10 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-08-03</p>
+<p><strong>Compiled date</strong>: 2020-08-07</p>
 <p><strong>Last edited</strong>: 2020-04-20</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
-<p><img src="../../../../tmp/Rtmpo4m9mK/temp_libpath66a73d89be7/iSEE/www/iSEE.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="../../../../tmp/RtmpvVhJbd/temp_libpath64461a2c9bd0/iSEE/www/iSEE.png" width="50%" style="display: block; margin: auto;"></p>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -198,7 +198,7 @@
 <p>To begin the exploration, we create an <code>iSEE</code> app with the <code>SingleCellExperiment</code> object generated above. In its simplest form, the <code>iSEE</code> function only requires the input object. However, <em><a href="https://bioconductor.org/packages/3.12/iSEE">iSEE</a></em> applications can be extensively <a href="https://bioconductor.org/packages/3.12/iSEE/vignettes/configure.html">reconfigured</a> using a number of optional arguments to the <code>iSEE</code> function.</p>
 <div class="sourceCode" id="cb9"><html><body><pre class="r"><span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>)</pre></body></html></div>
 <p>The <code>runApp</code> function launches the app in our browser.</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="kw pkg">shiny</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html">runApp</a></span>(<span class="no">app</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="kw pkg">shiny</span><span class="kw ns">::</span><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/runApp.html">runApp</a></span>(<span class="no">app</span>)</pre></body></html></div>
 <p><img src="screenshots/basic-demo.png" width="488"></p>
 <p>By default, the app starts with a dashboard that contains one panel or table of each type. By opening the collapsible panels named “Data parameters”, “Visual parameters”, and “Selection parameters” under each plot, we can control the content and appearance of each panel.</p>
 <p>Now, look in the upper right corner for a question mark icon (<i class="fa fa-question-circle"></i>), and click on the hand button (<i class="fa fa-hand-o-right"></i>) for an introductory tour. This will perform an interactive tour of the app, based on the <em><a href="https://CRAN.R-project.org/package=rintrojs">rintrojs</a></em> package <span class="citation">(Ganz 2016)</span>. During this tour, you will be taken through the different components of the <em><a href="https://bioconductor.org/packages/3.12/iSEE">iSEE</a></em> user interface and learn the basic usage mechanisms by doing small actions guided by the tutorial: the highlighted elements will be responding to your actions, while the rest of the UI will be shaded. You can move forward and backward along the tour by clicking on the “Next”/“Back” buttons, or also using the arrow keys. You can even jump to a particular step by clicking on its circle. To exit the tour, either click on “Skip”, or simply click outside of the highlighted UI element.</p>
@@ -216,7 +216,7 @@
 <li>The “Organize panels” button. Click on this button to open a modal window that contains:
 <ul>
 <li>A selectize input to add, remove, and reorder panels in the main interface.</li>
-<li>Two inputs to control the width and height, respectively, of each panel selected above. Note that panel width is defined in integer grid units between 1 and 12 (see <code><a href="https://rdrr.io/pkg/shiny/man/column.html">?shiny::column</a></code>). In contrast, panel height is defined in pixels (see <code><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html">?shiny::plotOutput</a></code>).</li>
+<li>Two inputs to control the width and height, respectively, of each panel selected above. Note that panel width is defined in integer grid units between 1 and 12 (see <code><a href="https://shiny.rstudio.com/reference/shiny/latest/column.html">?shiny::column</a></code>). In contrast, panel height is defined in pixels (see <code><a href="https://shiny.rstudio.com/reference/shiny/latest/plotOutput.html">?shiny::plotOutput</a></code>).</li>
 </ul>
 </li>
 <li>The “Examine panel chart” functionality, identified by a chain icon (<i class="fa fa-chain"></i>). Click on this button to obtain a graph representation of the existing links and point selections among your visible plot and table panels. Every panel is represented by a node coded with the same color as in the app. This can be very useful in sessions that include a large number of panels, to visualize the relationship structure between the various panels that send and receive selections of data points.</li>
@@ -408,12 +408,12 @@
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
 <div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
-<span class="co">#&gt; R version 4.0.0 (2020-04-24)</span>
+<span class="co">#&gt; R version 4.0.2 (2020-06-22)</span>
 <span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span>
-<span class="co">#&gt; Running under: Ubuntu 18.04.4 LTS</span>
+<span class="co">#&gt; Running under: Ubuntu 20.04 LTS</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Matrix products: default</span>
-<span class="co">#&gt; BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/libopenblasp-r0.2.20.so</span>
+<span class="co">#&gt; BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/openblas-openmp/libopenblasp-r0.3.8.so</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; locale:</span>
 <span class="co">#&gt;  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span>
@@ -428,8 +428,8 @@
 <span class="co">#&gt; [8] methods   base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt;  [1] scater_1.17.4               ggplot2_3.3.1              </span>
-<span class="co">#&gt;  [3] scRNAseq_2.3.10             iSEE_2.1.12                </span>
+<span class="co">#&gt;  [1] scater_1.17.4               ggplot2_3.3.2              </span>
+<span class="co">#&gt;  [3] scRNAseq_2.3.12             iSEE_2.1.12                </span>
 <span class="co">#&gt;  [5] SingleCellExperiment_1.11.6 SummarizedExperiment_1.19.6</span>
 <span class="co">#&gt;  [7] DelayedArray_0.15.7         matrixStats_0.56.0         </span>
 <span class="co">#&gt;  [9] Matrix_1.2-18               Biobase_2.49.0             </span>
@@ -441,53 +441,53 @@
 <span class="co">#&gt;   [1] Rtsne_0.15                    ggbeeswarm_0.6.0             </span>
 <span class="co">#&gt;   [3] colorspace_1.4-1              rjson_0.2.20                 </span>
 <span class="co">#&gt;   [5] ellipsis_0.3.1                rprojroot_1.3-2              </span>
-<span class="co">#&gt;   [7] circlize_0.4.9                scuttle_0.99.11              </span>
+<span class="co">#&gt;   [7] circlize_0.4.10               scuttle_0.99.11              </span>
 <span class="co">#&gt;   [9] XVector_0.29.3                BiocNeighbors_1.7.0          </span>
-<span class="co">#&gt;  [11] GlobalOptions_0.1.1           fs_1.4.1                     </span>
-<span class="co">#&gt;  [13] clue_0.3-57                   DT_0.13                      </span>
-<span class="co">#&gt;  [15] bit64_0.9-7                   interactiveDisplayBase_1.27.5</span>
-<span class="co">#&gt;  [17] AnnotationDbi_1.51.3          splines_4.0.0                </span>
-<span class="co">#&gt;  [19] knitr_1.28                    jsonlite_1.6.1               </span>
+<span class="co">#&gt;  [11] GlobalOptions_0.1.2           fs_1.5.0                     </span>
+<span class="co">#&gt;  [13] clue_0.3-57                   DT_0.15                      </span>
+<span class="co">#&gt;  [15] bit64_4.0.2                   interactiveDisplayBase_1.27.5</span>
+<span class="co">#&gt;  [17] AnnotationDbi_1.51.3          splines_4.0.2                </span>
+<span class="co">#&gt;  [19] knitr_1.29                    jsonlite_1.7.0               </span>
 <span class="co">#&gt;  [21] cluster_2.1.0                 dbplyr_1.4.4                 </span>
 <span class="co">#&gt;  [23] png_0.1-7                     shinydashboard_0.7.1         </span>
-<span class="co">#&gt;  [25] shiny_1.4.0.2                 BiocManager_1.30.10          </span>
-<span class="co">#&gt;  [27] compiler_4.0.0                httr_1.4.1                   </span>
-<span class="co">#&gt;  [29] backports_1.1.7               assertthat_0.2.1             </span>
+<span class="co">#&gt;  [25] shiny_1.5.0                   BiocManager_1.30.10          </span>
+<span class="co">#&gt;  [27] compiler_4.0.2                httr_1.4.2                   </span>
+<span class="co">#&gt;  [29] backports_1.1.8               assertthat_0.2.1             </span>
 <span class="co">#&gt;  [31] fastmap_1.0.1                 BiocSingular_1.5.0           </span>
-<span class="co">#&gt;  [33] later_1.1.0.1                 htmltools_0.4.0              </span>
-<span class="co">#&gt;  [35] tools_4.0.0                   rsvd_1.0.3                   </span>
+<span class="co">#&gt;  [33] later_1.1.0.1                 htmltools_0.5.0              </span>
+<span class="co">#&gt;  [35] tools_4.0.2                   rsvd_1.0.3                   </span>
 <span class="co">#&gt;  [37] igraph_1.2.5                  gtable_0.3.0                 </span>
 <span class="co">#&gt;  [39] glue_1.4.1                    GenomeInfoDbData_1.2.3       </span>
-<span class="co">#&gt;  [41] dplyr_1.0.0                   rappdirs_0.3.1               </span>
-<span class="co">#&gt;  [43] Rcpp_1.0.4.6                  pkgdown_1.5.1                </span>
-<span class="co">#&gt;  [45] vctrs_0.3.1                   nlme_3.1-147                 </span>
-<span class="co">#&gt;  [47] ExperimentHub_1.15.0          DelayedMatrixStats_1.11.1    </span>
-<span class="co">#&gt;  [49] rintrojs_0.2.2                xfun_0.14                    </span>
+<span class="co">#&gt;  [41] dplyr_1.0.1                   rappdirs_0.3.1               </span>
+<span class="co">#&gt;  [43] Rcpp_1.0.5                    pkgdown_1.5.1                </span>
+<span class="co">#&gt;  [45] vctrs_0.3.2                   nlme_3.1-148                 </span>
+<span class="co">#&gt;  [47] ExperimentHub_1.15.1          DelayedMatrixStats_1.11.1    </span>
+<span class="co">#&gt;  [49] rintrojs_0.2.2                xfun_0.16                    </span>
 <span class="co">#&gt;  [51] stringr_1.4.0                 irlba_2.3.3                  </span>
 <span class="co">#&gt;  [53] mime_0.9                      miniUI_0.1.1.1               </span>
 <span class="co">#&gt;  [55] lifecycle_0.2.0               shinyAce_0.4.1               </span>
-<span class="co">#&gt;  [57] AnnotationHub_2.21.1          zlibbioc_1.35.0              </span>
-<span class="co">#&gt;  [59] MASS_7.3-51.5                 scales_1.1.1                 </span>
-<span class="co">#&gt;  [61] colourpicker_1.0              promises_1.1.0               </span>
+<span class="co">#&gt;  [57] AnnotationHub_2.21.2          zlibbioc_1.35.0              </span>
+<span class="co">#&gt;  [59] MASS_7.3-51.6                 scales_1.1.1                 </span>
+<span class="co">#&gt;  [61] colourpicker_1.0              promises_1.1.1               </span>
 <span class="co">#&gt;  [63] RColorBrewer_1.1-2            ComplexHeatmap_2.5.3         </span>
 <span class="co">#&gt;  [65] yaml_2.2.1                    curl_4.3                     </span>
 <span class="co">#&gt;  [67] gridExtra_2.3                 memoise_1.1.0                </span>
 <span class="co">#&gt;  [69] stringi_1.4.6                 RSQLite_2.2.0                </span>
 <span class="co">#&gt;  [71] BiocVersion_3.12.0            desc_1.2.0                   </span>
 <span class="co">#&gt;  [73] BiocParallel_1.23.2           shape_1.4.4                  </span>
-<span class="co">#&gt;  [75] rlang_0.4.6                   pkgconfig_2.0.3              </span>
+<span class="co">#&gt;  [75] rlang_0.4.7                   pkgconfig_2.0.3              </span>
 <span class="co">#&gt;  [77] bitops_1.0-6                  evaluate_0.14                </span>
 <span class="co">#&gt;  [79] lattice_0.20-41               purrr_0.3.4                  </span>
-<span class="co">#&gt;  [81] htmlwidgets_1.5.1             bit_1.1-15.2                 </span>
+<span class="co">#&gt;  [81] htmlwidgets_1.5.1             bit_4.0.4                    </span>
 <span class="co">#&gt;  [83] tidyselect_1.1.0              magrittr_1.5                 </span>
-<span class="co">#&gt;  [85] bookdown_0.19                 R6_2.4.1                     </span>
+<span class="co">#&gt;  [85] bookdown_0.20                 R6_2.4.1                     </span>
 <span class="co">#&gt;  [87] generics_0.0.2                DBI_1.1.0                    </span>
-<span class="co">#&gt;  [89] pillar_1.4.4                  withr_2.2.0                  </span>
+<span class="co">#&gt;  [89] pillar_1.4.6                  withr_2.2.0                  </span>
 <span class="co">#&gt;  [91] mgcv_1.8-31                   RCurl_1.98-1.2               </span>
-<span class="co">#&gt;  [93] tibble_3.0.1                  crayon_1.3.4                 </span>
-<span class="co">#&gt;  [95] shinyWidgets_0.5.3            BiocFileCache_1.13.0         </span>
-<span class="co">#&gt;  [97] rmarkdown_2.2                 viridis_0.5.1                </span>
-<span class="co">#&gt;  [99] GetoptLong_0.1.8              grid_4.0.0                   </span>
+<span class="co">#&gt;  [93] tibble_3.0.3                  crayon_1.3.4                 </span>
+<span class="co">#&gt;  [95] shinyWidgets_0.5.3            BiocFileCache_1.13.1         </span>
+<span class="co">#&gt;  [97] rmarkdown_2.3                 viridis_0.5.1                </span>
+<span class="co">#&gt;  [99] GetoptLong_1.0.2              grid_4.0.2                   </span>
 <span class="co">#&gt; [101] blob_1.2.1                    digest_0.6.25                </span>
 <span class="co">#&gt; [103] xtable_1.8-4                  httpuv_1.5.4                 </span>
 <span class="co">#&gt; [105] munsell_0.5.0                 beeswarm_0.2.3               </span>

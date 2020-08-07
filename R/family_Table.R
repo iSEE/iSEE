@@ -88,6 +88,7 @@
 #' .multiSelectionActive,Table-method
 #' .singleSelectionValue,Table-method
 #' .definePanelTour,Table-method
+#' .defineDataInterface,Table-method
 NULL
 
 #' @export

@@ -573,8 +573,8 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     .create_heatmap_extra_observers(plot_name,
         se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_heatmap_modal_observers(plot_name,
-        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+    .create_modal_observers_for_dimnames(plot_name, button_name=.featureNamesEdit,
+        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, "row")
 
     invisible(NULL)
 })

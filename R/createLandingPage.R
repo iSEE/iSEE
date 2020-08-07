@@ -37,15 +37,20 @@
 #' In \code{\link{iSEE}}, \code{landingPage} can be any function that accepts the following arguments:
 #' \itemize{
 #' \item \code{FUN}, a function to initialize the \code{\link{iSEE}} observer architecture.
-#' This function expects to be passed \code{SE}, a SummarizedExperiment object;
-#' and \code{INITIAL}, a list of \linkS4class{Panel} objects describing the initial application state.
-#' If \code{INITIAL=NULL}, the initial state from \code{initial} is used instead.
+#' This function expects to be passed:
+#'   \itemize{
+#'   \item \code{SE}, a SummarizedExperiment object.
+#'   \item \code{INITIAL}, a list of \linkS4class{Panel} objects describing the initial application state.
+#'   If \code{NULL}, the initial state from \code{initial} in the top-level \code{\link{iSEE}} call is used instead.
+#'   \item \code{TOUR}, a data.frame containing a tour to be attached to the app - see \code{\link{defaultTour}} for an example.
+#'   If \code{NULL} (the default), no tour is added.
+#'   }
 #' \item \code{input}, the Shiny input list.
 #' \item \code{output}, the Shiny output list.
 #' \item \code{session}, the Shiny session object.
 #' }
 #'
-#' The function should define a \code{\link{renderUI}} expression that is assigned to \code{output$allPanels}.
+#' The \code{landingPage} function should define a \code{\link{renderUI}} expression that is assigned to \code{output$allPanels}.
 #' This should define a UI that contains all widgets necessary for a user to set up an \code{\link{iSEE}} session interactively.
 #' We suggest that all UI elements have IDs prefixed with \code{"initialize_INTERNAL"} to avoid conflicts.
 #'
@@ -68,12 +73,12 @@
 #' all.data <- ls("package:scRNAseq")
 #' all.data <- all.data[grep("Data$", all.data)]
 #'
-#' FUN <- createLandingPage(
+#' lpfun <- createLandingPage(
 #'     seUI=function(id) selectInput(id, "Dataset:", choices=all.data),
 #'     seLoad=function(x) get(x, as.environment("package:scRNAseq"))()
 #' )
 #'
-#' app <- iSEE(landingPage=FUN)
+#' app <- iSEE(landingPage=lpfun)
 #' if (interactive()) {
 #'   shiny::runApp(app, port=1234)
 #' }

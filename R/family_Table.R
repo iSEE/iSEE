@@ -1,10 +1,10 @@
 #' The Table class
 #'
 #' The Table is a virtual class for all panels containing a \code{\link{datatable}} widget from the \pkg{DT} package, where each row \emph{usually} corresponds to a row or column of the \linkS4class{SummarizedExperiment} object.
-#' It provides observers for monitoring table selection, global search and column-specific search.
+#' It provides observers for rendering the table widget, monitoring single selections, and applying global and column-specific searches (which serve as multiple selections).
 #'
 #' @section Slot overview:
-#' The following slots control aspects of the \code{DT::datatable} interface:
+#' The following slots control aspects of the \code{DT::datatable} selection:
 #' \itemize{
 #' \item \code{Selected}, a string containing the name of the currently selected row of the data.frame.
 #' Defaults to \code{NA}, in which case the value should be chosen by the subclass' \code{\link{.refineParameters}} method.
@@ -12,6 +12,12 @@
 #' Defaults to \code{""}, i.e., no search.
 #' \item \code{SearchColumns}, a character vector where each entry contains the search string for each column.
 #' Defaults to an empty character vector, i.e., no search.
+#' }
+#'
+#' The following slots control the appearance of the table:
+#' \itemize{
+#' \item \code{HiddenColumns}, a character vector containing names of columns to hide.
+#' Defaults to an empty vector.
 #' }
 #'
 #' In addition, this class inherits all slots from its parent \linkS4class{Panel} class.
@@ -22,7 +28,11 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineOutput}(x, id)} returns a UI element for a \code{\link[DT]{dataTableOutput}} widget.
+#' \item \code{\link{.defineOutput}(x)} returns a UI element for a \code{\link[DT]{dataTableOutput}} widget.
+#' \item \code{\link{.defineDataInterface}(x)} will create interface elements for modifying the table,
+#' namely to choose which columns to hide.
+#' Note that this is populated by \code{\link{.generateOutput}} upon table rendering,
+#' as we do not know the available columns before that point.
 #' }
 #'
 #' For defining reactive expressions:
@@ -30,9 +40,10 @@
 #' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all of the slots.
 #' This will also call the equivalent \linkS4class{Panel} method.
 #' \item \code{\link{.renderOutput}(x, se, output, pObjects, rObjects)} will add a rendered \code{\link{datatable}} object to \code{output}.
-#' This will also call the equivalent \linkS4class{Panel} method to render the panel information testboxes.
+#' This will also call the equivalent \linkS4class{Panel} method to render the panel information text boxes.
 #' \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the table;
-#' and \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot}.
+#' \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot};
+#' and \code{varname}, a string specifying the name of the variable in \code{commands} used to generate \code{contents}.
 #' \item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} will create a CSV file containing the current table, and return a string containing the path to that file. 
 #' This assumes that the \code{contents} field returned by \code{\link{.generateOutput}} is a data.frame or can be coerced into one.
 #' }
@@ -45,7 +56,13 @@
 #' If both contain only empty strings, a \code{NULL} is returned instead.
 #' \item \code{\link{.multiSelectionCommands}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the row names of the table after applying all search filters.
 #' The value of \code{index} is ignored.
-#' \item \code{\link{.singleSelectionValue}(x, pObjects)} returns the name of the row that was last selected in the \code{\link{datatable}} widget.
+#' \item \code{\link{.singleSelectionValue}(x, contents)} returns the name of the row that was last selected in the \code{\link{datatable}} widget.
+#' }
+#'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
+#' mostly describing the effect of selection from other panels and the use of row filters to transmit selections.
 #' }
 #'
 #' Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.
@@ -60,6 +77,7 @@
 #' @name Table-class
 #' @aliases
 #' initialize,Table-method
+#' .refineParameters,Table-method
 #' .createObservers,Table-method
 #' .generateOutput,Table-method
 #' .renderOutput,Table-method
@@ -69,6 +87,7 @@
 #' .multiSelectionCommands,Table-method
 #' .multiSelectionActive,Table-method
 #' .singleSelectionValue,Table-method
+#' .definePanelTour,Table-method
 NULL
 
 #' @export
@@ -95,6 +114,25 @@ setValidity2("Table", function(object) {
 })
 
 #' @export
+setMethod(".refineParameters", "Table", function(x, se) {
+    x <- callNextMethod()
+    if (is.null(x)) {
+        return(NULL)
+    }
+
+    # Backwards compatibility for new slot (added 3.12, due for removal in 3.14).
+    # nocov start
+    if (is(try(x[[.TableHidden]], silent=TRUE), "try-error")) {
+        .Deprecated(msg=sprintf("'%s' lacks the '%s' field.\nTry '<%s>[[\"%s\"]] <- character(0)'.",
+            class(x)[1], .TableHidden, class(x)[1], .TableHidden))
+        x[[.TableHidden]] <- character(0)
+    }
+    # nocov end
+
+    x
+})
+
+#' @export
 setMethod(".multiSelectionCommands", "Table", function(x, index) {
     search <- x[[.TableSearch]]
     searchcols <- x[[.TableColSearch]]
@@ -113,13 +151,13 @@ setMethod(".multiSelectionActive", "Table", function(x) {
 })
 
 #' @export
-setMethod(".singleSelectionValue", "Table", function(x, pObjects) {
+setMethod(".singleSelectionValue", "Table", function(x, contents) {
     x[[.TableSelected]]
 })
 
 #' @export
 #' @importFrom DT dataTableOutput
-setMethod(".defineOutput", "Table", function(x, ...) {
+setMethod(".defineOutput", "Table", function(x) {
     tagList(dataTableOutput(.getEncodedName(x)), hr())
 })
 
@@ -132,6 +170,9 @@ setMethod(".createObservers", "Table", function(x, se, input, session, pObjects,
 
     .create_table_observers(panel_name, input=input,
         session=session, pObjects=pObjects, rObjects=rObjects)
+
+    .createUnprotectedParameterObservers(.getEncodedName(x), .TableHidden, input,
+        pObjects, rObjects, ignoreNULL=FALSE)
 })
 
 #' @export
@@ -157,6 +198,20 @@ setMethod(".exportOutput", "Table", function(x, se, all_memory, all_contents) {
 })
 
 #' @export
+setMethod(".defineDataInterface", "Table", function(x, se, select_info) {
+    c(
+        callNextMethod(),
+        list(
+            # Needs to be initialized with the current values,
+            # even if it is updated later by table initialization.
+            selectInput(paste0(.getEncodedName(x), "_", .TableHidden),
+                choices=x[[.TableHidden]], selected=x[[.TableHidden]],
+                label="Hidden columns:", multiple=TRUE)
+        )
+    )
+})
+
+#' @export
 setMethod(".hideInterface", "Table", function(x, field) {
     if (field %in% .multiSelectHistory) {
         TRUE
@@ -164,3 +219,22 @@ setMethod(".hideInterface", "Table", function(x, field) {
         callNextMethod()
     }
 })
+
+#' @export
+setMethod(".definePanelTour", "Table", function(x) {
+    mdim <- .multiSelectionDimension(x)
+
+    collated <- rbind(
+        callNextMethod(),
+        c(paste0("#", .getEncodedName(x)), sprintf("At the other end of the spectrum, we can apply filters to the table to select rows corresponding to %ss of the <code>SummarizedExperiment</code> object; these will be transmitted to other panels that choose this one as their selection source.<br/><br/>We can filter by individual columns of the table and/or with a regular expression search to any matching string in the table.<br/><br/>We can also click on individual rows of the table to transmit a single %s selection to other panels.", mdim, mdim, .singleSelectionDimension(x)))
+    )
+
+    for (mdim in c("row", "column")) {
+        edit <- paste0("PLACEHOLDER_", toupper(mdim), "_SELECT")
+        i <- which(collated$intro==edit)
+        collated[i,"intro"] <- sprintf("Here we can choose the \"source\" panel from which to receive a multiple %s selection; that is to say, if we selected some %ss of the <code>SummarizedExperiment</code> object in the chosen source panel, the table above would be subsetted to only show the rows (of the table) corresponding to the selected %ss (of the <code>SummarizedExperiment</code> object).", mdim, mdim, mdim)
+    }
+
+    collated
+})
+

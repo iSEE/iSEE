@@ -391,9 +391,7 @@ On servers, sometimes the tour does not recognize the UI elements at start-up an
 The data frame should have two columns, `element` and `intro`:
 
 ```{r}
-introtour <- read.delim(
-	system.file("extdata/intro_firststeps.txt", package = "iSEE"), 
-    sep = ";", header = TRUE)
+introtour <- defaultTour()
 head(introtour)
 ```
 

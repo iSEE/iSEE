@@ -10,10 +10,11 @@
 #' Defaults to one instance of each panel class available from \pkg{iSEE}.
 #' @param extra A list of additional \linkS4class{Panel} objects that might be added after the app has started.
 #' Defaults to one instance of each panel class available from \pkg{iSEE}.
-#' @param landingPage A function that renders a landing page when \code{se} is started without any specified \code{se}.
-#' See \code{\link{createLandingPage}} for more details.
+#' @param landingPage A function that renders a landing page when \code{iSEE} is started without any specified \code{se}.
+#' Ignored if \code{se} is supplied.
 #' @param colormap An \linkS4class{ExperimentColorMap} object that defines custom colormaps to apply to individual \code{assays}, \code{colData} and \code{rowData} covariates.
 #' @param tour A data.frame with the content of the interactive tour to be displayed after starting up the app.
+#' Ignored if \code{se} is not supplied.
 #' @param appTitle A string indicating the title to be displayed in the app.
 #' If not provided, the app displays the version info of \code{\link{iSEE}}.
 #' @param runLocal A logical indicating whether the app is to be run locally or remotely on a server, which determines how documentation will be accessed.
@@ -36,16 +37,17 @@
 #' (unless we want the parameters of newly created panels to be different from those at initialization).
 #'
 #' The \code{tour} argument needs to be provided in a form compatible with the format expected by the \code{rintrojs} package.
-#' There should be two columns, \code{element} and \code{intro}, with the former describing the element to highlight and the latter providing some descriptive text.
-#' See \url{https://github.com/carlganz/rintrojs#usage} for more information.
+#' There should be two columns, \code{element} and \code{intro}, with the former describing the element to highlight and the latter providing some descriptive text - see \url{https://github.com/carlganz/rintrojs#usage} for more information.
+#' The \code{\link{defaultTour}} also provides the default tour that is used in the Examples below.
 #'
 #' By default, categorical data types such as factor and character are limited to 24 levels, beyond which they are coerced to numeric variables for faster plotting.
 #' This limit may be set to a different value as a global option, e.g. \code{options(iSEE.maxlevels=30)}.
 #'
-#' The default landing page allows users to upload their own RDS files to initialize the app.
+#' If \code{se} is not supplied, a landing page is generated that allows users to upload their own RDS file to initialize the app.
 #' By default, the maximum request size for file uploads defaults to 5MB
 #' (\url{https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html}).
 #' To raise the limit (e.g., 50MB), run \code{options(shiny.maxRequestSize=50*1024^2)}.
+#' The \code{landingPage} argument can be used to alter the landing page, see \code{\link{createLandingPage}} for more details.
 #'
 #' @return A Shiny app object is returned for interactive data exploration of \code{se},
 #' either by simply printing the object or by explicitly running it with \code{\link{runApp}}.
@@ -292,7 +294,7 @@ iSEE <- function(se,
         rObjects <- reactiveValues(rerender=1L, rerendered=1L, modified=list())
 
         if (!has_se) {
-            FUN <- function(SE, INITIAL) {
+            FUN <- function(SE, INITIAL, TOUR=NULL) {
                 if (is.null(INITIAL)) {
                     INITIAL <- initial
                 } else {
@@ -300,12 +302,13 @@ iSEE <- function(se,
                     available <- c(vapply(initial, .encodedName, ""), vapply(extra, .encodedName, ""))
                     keep <- requested %in% available
                     if (!all(keep)) {
+                        # We need this ahead of time to set the box colors above.
                         showNotification("not all requested Panels exist in 'initial' or 'extra'", type="warning")
                     }
                     INITIAL <- INITIAL[keep]
                 }
                 .initialize_server(SE, initial=INITIAL, extra=extra, colormap=colormap,
-                    tour=tour, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name,
+                    tour=TOUR, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name,
                     input=input, output=output, session=session, rObjects=rObjects)
                 rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
             }
@@ -388,6 +391,26 @@ iSEE <- function(se,
     reservoir <- res_out$reservoir
     counter <- res_out$counter
 
+    # Validating the multiple selection sources to avoid invalid app state
+    # downstream. We also clean out the selection sources in the reservoir,
+    # given that there is no guarantee that the panel is still present. 
+    all_names <- vapply(memory, .getEncodedName, "")
+    multi_sources <- .get_selection_sources(memory, all_names)
+
+    for (x in seq_along(memory)) {
+        if (!memory[[x]][[.selectRowSource]] %in% multi_sources$row) {
+            memory[[x]][[.selectRowSource]] <- .noSelection
+        }
+        if (!memory[[x]][[.selectColSource]] %in% multi_sources$column) {
+            memory[[x]][[.selectColSource]] <- .noSelection
+        }
+    }
+
+    for (r in seq_along(reservoir)) {
+        reservoir[[r]][[.selectRowSource]] <- .noSelection
+        reservoir[[r]][[.selectColSource]] <- .noSelection
+    }
+
     pObjects <- .create_persistent_objects(memory, reservoir, counter)
 
     # Evaluating certain plots to fill the coordinate list, if there are any
@@ -406,12 +429,12 @@ iSEE <- function(se,
     }
 
     # Observer set-up.
-    .create_general_observers(tour, runLocal, 
-        se_name=se_name, ecm_name=ecm_name, mod_commands=mod_commands,
+    .create_general_observers(runLocal, se_name=se_name, ecm_name=ecm_name, mod_commands=mod_commands,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_organization_observers(se=se,
-        input=input, output=output, session=session,
+    .create_tour_observer(se, memory=pObjects$memory, tour=tour, input=input, session=session)
+
+    .create_organization_observers(se=se, input=input, output=output, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
     .create_child_propagation_observer(se, pObjects, rObjects)

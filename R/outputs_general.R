@@ -12,11 +12,11 @@
 #' @return A \linkS4class{NULL} is invisibly returned
 #' and rendering expressions for general app features are added to \code{output}.
 #'
-#' @author Aaron Lun
+#' @author Aaron Lun, Kevin Rue-Albrecht
 #'
 #' @rdname INTERNAL_create_general_output
 #' @importFrom utils zip
-#' @importFrom shiny downloadHandler renderPlot checkboxGroupInput actionButton downloadButton
+#' @importFrom shiny downloadHandler renderPlot checkboxGroupInput actionButton downloadButton withProgress incProgress
 .create_general_output <- function(se, input, output, session, pObjects, rObjects) {
     # nocov start
     output[[.generalLinkGraphPlot]] <- renderPlot({
@@ -63,10 +63,17 @@
             # Loops through all panels, asks them for how they wish
             # to be summarized, and then saves their gunk to file.
             all.files <- list()
-            for (i in input[[.generalExportOutputChoices]]) {
-                all.files[[i]] <- .exportOutput(pObjects$memory[[i]], se=se,
-                    all_memory=pObjects$memory, all_contents=pObjects$contents)
-            }
+            n_plots <- length(input[[.generalExportOutputChoices]])
+            withProgress(message = 'Generating plots', value = 0, max = n_plots, {
+                for (i in input[[.generalExportOutputChoices]]) {
+                    i_object <- pObjects$memory[[i]]
+                    incProgress(1, detail = sprintf("Making '%s'", .getFullName(i_object)))
+                    
+                    all.files[[i]] <- .exportOutput(i_object, se=se,
+                        all_memory=pObjects$memory, all_contents=pObjects$contents)
+                }
+                
+            }, session = session)
 
             zip(file, files=unlist(all.files))
         }

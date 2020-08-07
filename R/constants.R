@@ -94,6 +94,10 @@
 .int_statTableSearch <- "_search"
 .int_statTableColSearch <- "_search_columns"
 
+# Tour parameters. ---
+
+.panelHelpTour <- "INTERNAL_help"
+
 # Reactive flags. ---
 
 .flagOutputUpdate <- "INTERNAL_output_update"
@@ -103,6 +107,8 @@
 
 .panelMultiSelectInfo <- "INTERNAL_PanelMultiSelectInfo"
 .panelSelectLinkInfo <- "INTERNAL_PanelSelectLinkInfo"
+
+.flagTableUpdate <- "INTERNAL_table_update"
 
 # Voice parameters ----
 

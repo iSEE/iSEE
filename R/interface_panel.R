@@ -90,17 +90,8 @@ height_limits <- c(400L, 1000L)
     all_names <- vapply(all_memory, .getEncodedName, "")
     names(all_names) <- vapply(all_memory, .getFullName, "")
 
-    mdims <- vapply(all_memory, FUN=.multiSelectionDimension, "")
-    multi_sources <- list(
-        row=c(.noSelection, all_names[mdims=="row"]),
-        column=c(.noSelection, all_names[mdims=="column"])
-    )
-
-    sdims <- vapply(all_memory, FUN=.singleSelectionDimension, "")
-    single_sources <- list(
-        row=c(.noSelection, all_names[sdims=="feature"]),
-        column=c(.noSelection, all_names[sdims=="sample"])
-    )
+    multi_sources <- .get_selection_sources(all_memory, all_names)
+    single_sources <- .get_selection_sources(all_memory, all_names, multiple=FALSE)
 
     for (i in seq_along(all_memory)) {
         instance <- all_memory[[i]]
@@ -128,11 +119,18 @@ height_limits <- c(400L, 1000L)
         }
 
         # Aggregating together everything into a box, and then into a column.
-        cur_box <- do.call(box, c(
-            list(.defineOutput(instance), param),
-            list(uiOutput(.input_FUN(.panelMultiSelectInfo)), uiOutput(.input_FUN(.panelSelectLinkInfo))),
-            list(title=.getFullName(instance), solidHeader=TRUE, width=NULL, status="danger")
-        ))
+        cur_box <- box(
+            .defineOutput(instance), 
+            param,
+            uiOutput(.input_FUN(.panelMultiSelectInfo)), 
+            uiOutput(.input_FUN(.panelSelectLinkInfo)),
+            title=shiny::div(
+                .getFullName(instance),
+                HTML("&nbsp;"),
+                shiny::div(id=.input_FUN(.panelHelpTour), style="display: inline-block;", icon("question-circle fa-1g"))
+            ),
+            solidHeader=TRUE, width=NULL, status="danger"
+        )
 
         cur_box <- .coerce_box_status(cur_box, .encodedName(instance))
 

@@ -1,9 +1,9 @@
 #' The ComplexHeatmapPlot panel
 #'
 #' The ComplexHeatmapPlot is a panel class for creating a \linkS4class{Panel} that displays an assay of a \linkS4class{SummarizedExperiment} object as a \code{\link{Heatmap}} with features as rows and samples and columns, respectively.
-#' It provides slots and methods for specifying which assay to display in the main heatmap, and which metadata variables to display as row and column heatmap annotations.
+#' It provides slots and methods for specifying the features of interest, which assay to display in the main heatmap, any transformations to perform on the data, and which metadata variables to display as row and column heatmap annotations.
 #'
-#' @section Slot overview:
+#' @section ComplexHeatmapPlot slot overview:
 #' The following slots control the assay that is used:
 #' \itemize{
 #' \item \code{Assay}, string specifying the name of the assay to use for obtaining expression values.
@@ -32,6 +32,23 @@
 #' \item \code{ClusterRowsMethod}, string specifying a linkage method to use.
 #' This can be any one of \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{"complete"}, \code{"average"}, \code{"mcquitty"}, \code{"median"}, or \code{"centroid"}.
 #' Defaults to \code{"ward.D2"}.
+#' }
+#' 
+#' The following control transformations applied to rows:
+#' \itemize{
+#' \item \code{AssayCenterRows} is a logical scalar indicating whether assay values should be centered for each row.
+#' \item \code{AssayScaleRows} is a logical scalar indicating whether assay values should be scaled for each row.
+#' This transformation is only applicable if \code{AssayCenterRows} is \code{TRUE}. 
+#' }
+#' 
+#' The following slots control the color scale:
+#' \itemize{
+#' \item \code{CustomBounds} is logical scale indicating whether the color scale should be constrained by an upper and/or a lower bounds.
+#' \item \code{LowerBound} is a numerical value setting the lower bound of the color scale;
+#' or \code{NA} to disable the lower bound when \code{CustomBounds} is \code{TRUE}.
+#' \item \code{UpperBound} is a numerical value setting the lower bound of the color scale;
+#' or \code{NA} to disable the upper bound when \code{CustomBounds} is \code{TRUE}.
+#' \item \code{DivergentColormap} is a character scalar indicating a 3-color divergent colormap to use when \code{AssayCenterRows} is \code{TRUE}.
 #' }
 #'
 #' The following slots refer to general plotting parameters:
@@ -73,26 +90,68 @@
 #'
 #' For setting up data values:
 #' \itemize{
-#' \item \code{\link{.refineParameters}(x, se)} returns \code{x} after replacing \code{NA} values in \code{"Assay"} with the first valid assay name; and \code{NA} values in \code{CustomRowsText} with the first row name.
+#' \item \code{\link{.cacheCommonInfo}(x)} adds a \code{"ComplexHeatmapPlot"} entry containing
+#' \code{valid.assay.names}, a character vector of valid assay names;
+#' \code{discrete.assay.names}, a character vector of valid assay names with discrete atomic values;
+#' \code{continuous.assay.names}, a character vector of valid assay names with continuous atomic values;
+#' \code{valid.colData.names}, a character vector of names of columns in \code{colData} that are valid;
+#' \code{discrete.colData.names}, a character vector of names for columns in \code{colData} with discrete atomic values;
+#' \code{continuous.colData.names}, a character vector of names of columns in \code{colData} with continuous atomic values;
+#' \code{valid.rowData.names}, a character vector of names of columns in \code{rowData} that are valid;
+#' \code{discrete.rowData.names}, a character vector of names for columns in \code{rowData} with discrete atomic values;
+#' \code{continuous.rowData.names}, a character vector of names of columns in \code{rowData} with continuous atomic values.
+#' Valid assay names are defined as those that are non-empty, i.e., not \code{""};
+#' valid columns in \code{colData} and \code{rowData} are defined as those that contain atomic values.
+#' This will also call the equivalent \linkS4class{Panel} method.
+#' \item \code{\link{.refineParameters}(x, se)} replaces
+#' any \code{NA} value in \code{"Assay"} with the first valid assay name;
+#' and \code{NA} value in \code{"CustomRowsText"} with the first row name.
 #' This will also call the equivalent \linkS4class{Panel} method for further refinements to \code{x}.
 #' If no valid column metadata fields are available, \code{NULL} is returned instead.
 #' }
 #'
 #' For defining the interface:
 #' \itemize{
+#' \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
+#' TODO
+#' It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}},
+#' and a visual parameter box and a selection parameter box both specific to the \code{ComplexHeatmapPlot} panel.
+#' This will \emph{override} the \linkS4class{Panel} method.
 #' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+#' \item \code{\link{.defineOutput}(x)} returns a UI element for a brushable plot.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
+#' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+#' This returns \code{TRUE} for the selection history (\code{"SelectionHistory"}),
+#' otherwise it dispatches to the \linkS4class{Panel} method.
+#' }
+#' 
+#' For generating the output:
+#' \itemize{
+#' \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the plot;
+#' \code{plot}, a \link{ggplot} object;
+#' \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot};
+#' and \code{varname}, a string containing the name of the variable in \code{commands} that was used to obtain \code{contents}.
+#' \item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} will create a PDF file containing the current plot, and return a string containing the path to that PDF.
+#' This assumes that the \code{plot} field returned by \code{\link{.generateOutput}} is a \link{Heatmap} object.
 #' }
 #'
 #' For monitoring reactive expressions:
 #' \itemize{
 #' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
 #' This will also call the equivalent \linkS4class{Panel} method.
+#' \item \code{\link{.renderOutput}(x, se, output, pObjects, rObjects)} will add a rendered plot element to \code{output}.
+#' The reactive expression will add the contents of the plot to \code{pObjects$contents} and the relevant commands to \code{pObjects$commands}.
+#' This will also call the equivalent \linkS4class{Panel} method to render the panel information text boxes.
 #' }
 #'
 #' For defining the panel name:
 #' \itemize{
 #' \item \code{\link{.fullName}(x)} will return \code{"Complex heatmap"}.
+#' }
+#'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
 #' }
 #'
 #' @author Kevin Rue-Albrecht
@@ -143,7 +202,9 @@
 #' .panelColor,ComplexHeatmapPlot-method
 #' .refineParameters,ComplexHeatmapPlot-method
 #' .renderOutput,ComplexHeatmapPlot-method
+#' .exportOutput,ComplexHeatmapPlot-method
 #' initialize,ComplexHeatmapPlot-method
+#' .definePanelTour,ComplexHeatmapPlot-method
 #'
 #' @name ComplexHeatmapPlot-class
 NULL
@@ -161,7 +222,9 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- .emptyDefault(args, .heatMapAssay, NA_character_)
     args <- .emptyDefault(args, .heatMapCustomFeatNames, TRUE)
     args <- .emptyDefault(args, .heatMapFeatNameText, NA_character_)
-    if (!is.na(vals <- args[[.heatMapFeatNameText]])) {
+
+    vals <- args[[.heatMapFeatNameText]]
+    if (length(vals)!=1L) {
         args[[.heatMapFeatNameText]] <- paste(vals, collapse="\n")
     }
 
@@ -435,7 +498,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     annotation_legend_side <- sprintf('annotation_legend_side=%s', deparse(tolower(x[[.plotLegendPosition]])))
     all_cmds[["draw"]] <- sprintf("ComplexHeatmap::draw(hm, %s, %s)", heatmap_legend_side, annotation_legend_side)
 
-    list(commands=all_cmds, contents=plot_env$plot.data, plot=plot_out)
+    list(commands=all_cmds, contents=plot_env$plot.data, plot=plot_out, varname="plot.data")
 })
 
 #' @export
@@ -448,8 +511,6 @@ setMethod(".renderOutput", "ComplexHeatmapPlot", function(x, se, output, pObject
     # nocov start
     output[[plot_name]] <- renderPlot({
         p.out <- .retrieveOutput(plot_name, se, pObjects, rObjects)
-        pObjects$varname[[plot_name]] <- "plot.data"
-
         tmp.env <- new.env()
         tmp.env$hm <- p.out$plot
         eval(parse(text=p.out$commands[["draw"]]), envir=tmp.env)
@@ -457,6 +518,22 @@ setMethod(".renderOutput", "ComplexHeatmapPlot", function(x, se, output, pObject
     # nocov end
 
     callNextMethod()
+})
+
+#' @export
+#' @importFrom grDevices pdf dev.off
+setMethod(".exportOutput", "ComplexHeatmapPlot", function(x, se, all_memory, all_contents) {
+    contents <- .generateOutput(x, se, all_memory=all_memory, all_contents=all_contents)
+    newpath <- paste0(.getEncodedName(x), ".pdf")
+    
+    # These are reasonably satisfactory heuristics:
+    # Width = Pixels -> Inches, Height = Bootstrap -> Inches.
+    pdf(newpath, width=x[[.organizationHeight]]/75, height=x[[.organizationWidth]]*2)
+    # print(contents$plot)
+    draw(contents$plot)
+    dev.off()
+    
+    newpath
 })
 
 #' @export
@@ -509,4 +586,30 @@ setMethod(".hideInterface", "ComplexHeatmapPlot", function(x, field) {
     } else {
         callNextMethod()
     }
+})
+
+#' @export
+setMethod(".definePanelTour", "ComplexHeatmapPlot", function(x) {
+    collated <- rbind(
+        c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">ComplexHeatmap plot</font> panel contains... well, a complex heatmap, from the <i><a href='https://bioconductor.org/packages/ComplexHeatmap/'>ComplexHeatmap</a></i> package. This is quite conceptually different from the other panels as it shows assay data for multiple rows and columns at the same time. However, it is strictly an end-point panel, i.e., it cannot transmit to other panels.", .getPanelColor(x))),
+        .add_tour_step(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked to control the data on the heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
+        .add_tour_step(x, .featureNamesEdit, "The most relevant parameter is the choice of features to show as rows on the heatmap. This can be manually specified by entering row names of the <code>SummarizedExperiment</code> object into this modal..."),
+        .add_tour_step(x, .heatMapCustomFeatNames, "Or it can be chained to a multiple row selection from another panel, if the <i>Custom rows</i> choice is unselected - see the <i>Selection parameters</i> later."),
+        .add_tour_step(x, .heatMapClusterFeatures, "We can also choose whether to cluster the features for better visibility."),
+       
+        .add_tour_step(x, .visualParamBoxOpen, "The <i>Visual parameters</i> box shows the available visual parameters that can be tweaked in this heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
+        .add_tour_step(x, .visualParamChoice, "A large number of options are available here, so not all of them are shown by default. We can check some of the boxes here to show or hide some classes of parameters.<br/><br/><strong>Action:</strong> check the <i>Transform</i> box to expose some transformation options."),
+        .add_tour_step(x, .heatMapColData, "One key parameter is to select the column annotations to show as color bars on the top of the heatmap. This will also order the columns by the values of the selected annotations (in the specified order, if multiple annotations are specified). This is useful for providing some structure to the heatmap.",
+            element=paste0("#", .getEncodedName(x), "_", .heatMapColData, " + .selectize-control")),
+        .add_tour_step(x, .assayCenterRows, "Another useful setting is to center the heatmap by row so that the colors represent deviations from the average. This better handles differences in assay values "),
+
+        callNextMethod(),
+        .add_tour_step(x, .selectEffect, "Here, we can choose the effect of the multiple column selection that was transmitted from the chosen source panel - should the unselected columns be colored with a separate annotation bar? Or should the heatmap be explicitly restricted to only the selected columns?")
+    )
+
+    collated[which(collated$intro=="PLACEHOLDER_ROW_SELECT"), "intro"] <- "We can choose the \"source\" panel from which to receive a multiple row selection, which is used to control the features on the heatmap when <i>Custom rows</i> checkbox is unselected. In other words, if we selected some rows of the <code>SummarizedExperiment</code> object in the chosen source panel, those rows would make up the rows of the heatmap."
+
+    collated[which(collated$intro=="PLACEHOLDER_COLUMN_SELECT"), "intro"] <- "We can choose the \"source\" panel from which to receive a multiple column selection. That is to say, if we selected some columns of the <code>SummarizedExperiment</code> object in the chosen source panel, that selection would manifest in the appearance of the heatmap."
+
+    collated
 })

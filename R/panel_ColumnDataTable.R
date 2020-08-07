@@ -1,6 +1,7 @@
 #' The ColumnDataTable panel
 #'
 #' The ColumnDataTable is a panel class for creating a \linkS4class{ColumnTable} where the value of the table is defined as the \code{\link{colData}} of the \linkS4class{SummarizedExperiment}.
+#' It provides functionality to extract the \code{\link{colData}} to coerce it into an appropriate data.frame in preparation for rendering.
 #'
 #' @section Slot overview:
 #' This class inherits all slots from its parent \linkS4class{ColumnTable} and \linkS4class{Table} classes.
@@ -24,23 +25,23 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.hideInterface}(x, field)} returns \code{TRUE} if \code{field="DataBoxOpen"},
-#' otherwise it calls \code{\link{.hideInterface,Table-method}}
-#' \item \code{\link{.fullName}(x)} will return the full name of the panel class.
+#' \item \code{\link{.fullName}(x)} will return \code{"Column data table"}.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 #' }
 #'
-#' For defining the panel name:
-#' \itemize{
-#' \item \code{\link{.fullName}(x)} will return \code{"Column data table"}.
-#' }
-#' 
 #' For creating the output:
 #' \itemize{
 #' \item \code{\link{.generateTable}(x, envir)} will modify \code{envir} to contain the relevant data.frame for display,
 #' while returning a character vector of commands required to produce that data.frame.
 #' Each row of the data.frame should correspond to a column of the SummarizedExperiment.
 #' }
+#'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a panel-specific tour.
+#' }
+#'
+#' Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.
 #'
 #' @author Aaron Lun
 #'
@@ -69,11 +70,11 @@
 #' initialize,ColumnDataTable-method
 #' .cacheCommonInfo,ColumnDataTable-method
 #' .refineParameters,ColumnDataTable-method
-#' .hideInterface,ColumnDataTable-method
 #' .generateTable,ColumnDataTable-method
 #' .panelColor,ColumnDataTable-method
 #' .fullName,ColumnDataTable-method
 #' .generateTable,ColumnDataTable-method
+#' .definePanelTour,ColumnDataTable-method
 NULL
 
 #' @export
@@ -129,15 +130,6 @@ setMethod(".fullName", "ColumnDataTable", function(x) "Column data table")
 setMethod(".panelColor", "ColumnDataTable", function(x) "#B00258")
 
 #' @export
-setMethod(".hideInterface", "ColumnDataTable", function(x, field) {
-    if (field %in% .dataParamBoxOpen) {
-        TRUE
-    } else {
-        callNextMethod()
-    }
-})
-
-#' @export
 #' @importFrom SummarizedExperiment colData
 setMethod(".generateTable", "ColumnDataTable", function(x, envir) {
     cmds <-"tab <- as.data.frame(colData(se));"
@@ -155,4 +147,15 @@ setMethod(".generateTable", "ColumnDataTable", function(x, envir) {
     .textEval(cmds, envir)
 
     cmds
+})
+
+#' @export
+setMethod(".definePanelTour", "ColumnDataTable", function(x) {
+    rbind(
+        c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Column data table</font> panel contains a representation of the <code>colData</code> of our <code>SummarizedExperiment</code> object. Each row here corresponds to a column (i.e., sample) of the <code>SummarizedExperiment</code> while each column of the table is a column metadata variable.", .getPanelColor(x))),
+        .add_tour_step(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this table.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
+        .add_tour_step(x, .TableHidden, "We can choose to hide any number of metadata fields if the table is too wide. Note that left-to-right scrolling is also enabled for wide tables.",
+            element=paste0("#", .getEncodedName(x), "_", .TableHidden, " + .selectize-control")),
+        callNextMethod()
+    )
 })

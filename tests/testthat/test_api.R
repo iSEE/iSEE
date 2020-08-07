@@ -1,5 +1,5 @@
 # This tests the various class set-up methods.
-# library(testthat); library(iSEE); source('setup_sce.R'); source('test_api.R')
+# library(testthat); library(iSEE); source('setup_sce.R'); source('setup_other.R'); source('test_api.R')
 
 # .refineParameters ----
 context(".refineParameters")
@@ -296,8 +296,7 @@ context(".singleSelectionValue")
 test_that(".singleSelectionValue handles DotPlot", {
 
     x <- ReducedDimensionPlot(PanelId=1L)
-    pObjects <- new.env()
-    pObjects$contents[["ReducedDimensionPlot1"]] <- data.frame(X=1, Y=seq_len(100), row.names = paste0("X", seq_len(100)))
+    contents <- data.frame(X=1, Y=seq_len(100), row.names = paste0("X", seq_len(100)))
 
     x[[iSEE:::.brushData]] <- list(
         xmin = 0.7, xmax = 1.3, ymin = 1, ymax = 50,
@@ -306,7 +305,7 @@ test_that(".singleSelectionValue handles DotPlot", {
         brushId = "ReducedDimensionPlot1_Brush",
         outputId = "ReducedDimensionPlot1")
 
-    out <- .singleSelectionValue(x, pObjects)
+    out <- .singleSelectionValue(x, contents)
     expect_identical(out, "X1")
 
     # Brush does not include any data point
@@ -317,7 +316,7 @@ test_that(".singleSelectionValue handles DotPlot", {
         brushId = "ReducedDimensionPlot1_Brush",
         outputId = "ReducedDimensionPlot1")
 
-    out <- .singleSelectionValue(x, pObjects)
+    out <- .singleSelectionValue(x, contents)
     expect_null(out)
 })
 
@@ -377,18 +376,27 @@ test_that(".exportOutput handles Table", {
 
 })
 
-test_that(".exportOutput handles Panel", {
-
+test_that(".exportOutput handles ComplexHeatmapPlot", {
+    
     ComplexHeatmapPlot1 <- ComplexHeatmapPlot(PanelId=1L)
     sce <- .cacheCommonInfo(ComplexHeatmapPlot1, sce)
     ComplexHeatmapPlot1 <- .refineParameters(ComplexHeatmapPlot1, sce)
     memory <- list(ComplexHeatmapPlot1=ComplexHeatmapPlot1)
     pObjects <- mimic_live_app(sce, memory)
     metadata(sce)$colormap <- ExperimentColorMap()
-
+    
     out <- .exportOutput(memory$ComplexHeatmapPlot1, sce, memory, pObjects$contents)
-    expect_identical(out, character(0))
+    expect_identical(out, "ComplexHeatmapPlot1.pdf")
+    
+})
 
+test_that(".exportOutput handles Panel", {
+    
+    panel1 <- new("PanelChildClass")
+    
+    out <- .exportOutput(panel1, sce, list(), list())
+    expect_identical(out, character(0))
+    
 })
 
 # .defineVisualShapeInterface ----

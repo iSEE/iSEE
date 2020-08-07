@@ -1,7 +1,7 @@
 #' The DotPlot virtual class
 #'
 #' The DotPlot is a virtual class for all panels where each row or column in the \linkS4class{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link{ggplot} plot.
-#' It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection.
+#' It provides slots and methods to create the plot, to control various aesthetics of the dots, and to store the brush or lasso selection.
 #'
 #' @section Slot overview:
 #' The following slots are relevant to coloring of the points:
@@ -107,6 +107,8 @@
 #' \itemize{
 #' \item \code{FontSize}, positive numeric scalar specifying the relative font size.
 #' Defaults to 1.
+#' \item \code{PointSize}, positive numeric scalar specifying the relative point size.
+#' Defaults to 1.
 #' \item \code{LegendPosition}, string specifying the position of the legend on the plot.
 #' Defaults to \code{"Right"} but can also be \code{"Bottom"}.
 #' }
@@ -128,14 +130,15 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineOutput}(x, id)} returns a UI element for a brushable plot.
+#' \item \code{\link{.defineOutput}(x)} returns a UI element for a brushable plot.
 #' }
 #'
 #' For generating the output:
 #' \itemize{
 #' \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the plot;
 #' \code{plot}, a \link{ggplot} object;
-#' and \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot}.
+#' \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot};
+#' and \code{varname}, a string containing the name of the variable in \code{commands} that was used to obtain \code{contents}.
 #' \item \code{\link{.generateDotPlot}(x, labels, envir)} returns a list containing \code{plot} and \code{commands}, as described above.
 #' This is called within \code{\link{.generateOutput}} for all \linkS4class{DotPlot} instances by default.
 #' Methods are also guaranteed to generate a \code{dot.plot} variable in \code{envir} containing the \link{ggplot} object corresponding to \code{plot}.
@@ -152,7 +155,7 @@
 #' This will also call the equivalent \linkS4class{Panel} method.
 #' \item \code{\link{.renderOutput}(x, se, output, pObjects, rObjects)} will add a rendered plot element to \code{output}.
 #' The reactive expression will add the contents of the plot to \code{pObjects$contents} and the relevant commands to \code{pObjects$commands}.
-#' This will also call the equivalent \linkS4class{Panel} method to render the panel information testboxes.
+#' This will also call the equivalent \linkS4class{Panel} method to render the panel information text boxes.
 #' }
 #'
 #' For controlling selections:
@@ -162,10 +165,16 @@
 #' The active selection is returned if \code{index=NA}, otherwise one of the saved selection is returned.
 #' \item \code{\link{.multiSelectionActive}(x)} returns \code{x[["BrushData"]]} or \code{NULL} if there is no brush or closed lasso.
 #' \item \code{\link{.multiSelectionClear}(x)} returns \code{x} after setting the \code{BrushData} slot to an empty list.
-#' \item \code{\link{.singleSelectionValue}(x)} returns the name of the first selected element in the active brush.
+#' \item \code{\link{.singleSelectionValue}(x, contents)} returns the name of the first selected element in the active brush.
 #' If no brush is active, \code{NULL} is returned instead.
 #' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of coloring parameters.
 #' This includes the output of \code{callNextMethod}.
+#' }
+#'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
+#' mostly describing the specification of visual effects and the creation of a brush or lasso.
 #' }
 #'
 #' Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.
@@ -203,6 +212,7 @@
 #' .colorByNoneDotPlotScale,DotPlot-method
 #' .defineVisualTextInterface,DotPlot-method
 #' .defineVisualOtherInterface,DotPlot-method
+#' .definePanelTour,DotPlot-method
 NULL
 
 #' @export
@@ -243,6 +253,7 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     args <- .emptyDefault(args, .plotPointSampleRes, iSEEOptions$get("downsample.resolution"))
 
     args <- .emptyDefault(args, .plotFontSize, iSEEOptions$get("font.size"))
+    args <- .emptyDefault(args, .legendPointSize, iSEEOptions$get("legend.point.size"))
     args <- .emptyDefault(args, .plotLegendPosition, iSEEOptions$get("legend.position"))
 
     do.call(callNextMethod, c(list(.Object), args))
@@ -283,6 +294,8 @@ setValidity2("DotPlot", function(object) {
     msg <- .valid_number_error(msg, object, .plotPointSampleRes, lower=1, upper=Inf)
 
     msg <- .valid_number_error(msg, object, .plotFontSize, lower=0, upper=Inf)
+    
+    msg <- .valid_number_error(msg, object, .legendPointSize, lower=0, upper=Inf)
 
     msg <- .allowable_choice_error(msg, object, .plotLegendPosition,
         c(.plotLegendRightTitle, .plotLegendBottomTitle))
@@ -341,7 +354,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
         fields=c(
             .colorByDefaultColor, .selectColor, .selectTransAlpha,
             .shapeByField, .sizeByField,
-            .plotPointSize, .plotPointAlpha, .plotFontSize, .plotLegendPosition,
+            .plotPointSize, .plotPointAlpha, .plotFontSize, .legendPointSize, .plotLegendPosition,
             .plotPointDownsample, .plotPointSampleRes, .contourAdd,
             .contourColor),
         input=input, pObjects=pObjects, rObjects=rObjects)
@@ -367,6 +380,9 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x) {
         numericInput(
             paste0(plot_name, "_", .plotFontSize), label="Font size:",
             min=0, value=x[[.plotFontSize]]),
+        numericInput(
+            paste0(plot_name, "_", .legendPointSize), label="Legend point size:",
+            min=0, value=x[[.legendPointSize]]),
         radioButtons(
             paste0(plot_name, "_", .plotLegendPosition), label="Legend position:", inline=TRUE,
             choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
@@ -382,7 +398,7 @@ setMethod(".defineVisualOtherInterface", "DotPlot", function(x) {
 })
 
 #' @export
-setMethod(".defineOutput", "DotPlot", function(x, id) {
+setMethod(".defineOutput", "DotPlot", function(x) {
     plot_name <- .getEncodedName(x)
     col <- .getPanelColor(x)
 
@@ -401,9 +417,7 @@ setMethod(".renderOutput", "DotPlot", function(x, se, output, pObjects, rObjects
 
     # nocov start
     output[[plot_name]] <- renderPlot({
-        p.out <- .retrieveOutput(plot_name, se, pObjects, rObjects)
-        pObjects$varname[[plot_name]] <- "plot.data"
-        p.out$plot
+        .retrieveOutput(plot_name, se, pObjects, rObjects)$plot
     })
     # nocov end
 
@@ -464,9 +478,9 @@ setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
 })
 
 #' @export
-setMethod(".singleSelectionValue", "DotPlot", function(x, pObjects) {
+setMethod(".singleSelectionValue", "DotPlot", function(x, contents) {
     plot_name <- .getEncodedName(x)
-    chosen <- .get_brushed_points(pObjects$contents[[plot_name]], x[[.brushData]])
+    chosen <- .get_brushed_points(contents, x[[.brushData]])
     if (!length(chosen)) NULL else chosen[1]
 })
 
@@ -553,7 +567,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
     plot_out <- .generateDotPlot(x, all_labels, plot_env)
     all_cmds$plot <- plot_out$commands
 
-    list(commands=all_cmds, contents=panel_data, plot=plot_out$plot)
+    list(commands=all_cmds, contents=panel_data, plot=plot_out$plot, varname="plot.data")
 })
 
 #' @export
@@ -605,3 +619,26 @@ setMethod(".colorByNoneDotPlotField", "DotPlot", function(x) NULL)
 
 #' @export
 setMethod(".colorByNoneDotPlotScale", "DotPlot", function(x) NULL)
+
+#' @export
+setMethod(".definePanelTour", "DotPlot", function(x) {
+    mdim <- .multiSelectionDimension(x)
+
+    collated <- rbind(
+        .add_tour_step(x, .visualParamBoxOpen,  "The <i>Visual parameters</i> box contains parameters related to visual aspects like the color, shape, size and so on.<br/><br/><strong>Action:</strong> click on the header of this box to see the available options."),
+        .add_tour_step(x, .colorByField, "PLACEHOLDER_COLOR"), # To be filled in by subclasses.
+        .add_tour_step(x, .visualParamChoice, "There are a lot of options so not all of them are shown by default. More settings are available by checking some of the boxes here; conversely, options can be hidden by unchecking some of these boxes.<br/><br/>Most of these parameters here are fairly self-explanatory and can be explored at leisure."),
+        callNextMethod(),
+        .add_tour_step(x, .selectEffect, sprintf("Here, we can choose the effect of the multiple %s selection that was transmitted from the chosen source panel - should the unselected %ss be made transparent? Should the selected %ss be colored? Or should the plot be explicitly restricted to only the selected %s?", mdim, mdim, mdim, mdim)),
+        c(paste0("#", .getEncodedName(x)), sprintf("At the other end of the spectrum, brushing or creating a lasso on this plot will create a selection of multiple %ss, to be transmitted to other panels that choose this one as their selection source.<br/><br/>Drag-and-dropping will create a rectangular brush while a single click will lay down a lasso waypoint for non-rectangular selections.<br/><br/>Brushes and lassos can also be used to transmit single %s selections in which case one %s is arbitrarily chosen from the selection.", mdim, mdim, mdim)),
+        .add_tour_step(x, .multiSelectSave, "Advanced users can also save their selections for later use. Brushes and lassos are saved using a first-in-last-out scheme where you can only delete the last saved selection.")
+    )
+
+    for (mdim in c("row", "column")) {
+        edit <- paste0("PLACEHOLDER_", toupper(mdim), "_SELECT")
+        i <- which(collated$intro==edit)
+        collated[i,"intro"] <- sprintf("Here we can choose the \"source\" panel from which to receive a multiple %s selection; that is to say, if we selected some %ss of the <code>SummarizedExperiment</code> object in the chosen source panel, the corresponding points in the plot above would be highlighted in some manner.", mdim, mdim)
+    }
+
+    collated
+})

@@ -72,13 +72,14 @@ test_that("createCustomTable works as expected", {
     expect_false(.hideInterface(x, iSEE:::.TableSelected))
 
     input <- new.env()
-    session <- new.env()
+    session <- NULL
     pObjects <- new.env()
     rObjects <- new.env()
     expect_null(.createObservers(x, sce, input, session, pObjects, rObjects))
     expect_named(rObjects, c(
         "CustomTable1_INTERNAL_relinked_select",
         "CustomTable1_INTERNAL_saved_choices",
+        "CustomTable1_INTERNAL_table_update",
         "CustomTable1",
         "CustomTable1_INTERNAL_multi_select",
         "CustomTable1_INTERNAL_single_select"))
@@ -113,7 +114,7 @@ test_that(".execute_custom_function works with incoming selections", {
     plot_env$row_selected <- head(rownames(sce))
     plot_env$col_selected <- head(rownames(sce))
 
-    out <- .execute_custom_function(x, FUNNY,
+    out <- iSEE:::.execute_custom_function(x, FUNNY,
             fn_name="FUNNY", assigned="gg", envir=plot_env,
             fn_args=character(0))
 

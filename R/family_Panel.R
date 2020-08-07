@@ -1,9 +1,7 @@
 #' The Panel virtual class
 #'
 #' The Panel is a virtual base class for all \pkg{iSEE} panels.
-#' It provides slots and methods to control the height and width of each panel,
-#' as well as to control the choice of transmitting panels from which to receive a multiple selection
-#' (i.e., a selection of multiple rows or columns from a \linkS4class{SingleCellExperiment}).
+#' It provides slots and methods to control the height and width of each panel, as well as functionality to control the choice of \dQuote{transmitting} panels from which to receive a multiple row/column selection.
 #'
 #' @section Slot overview:
 #' The following slots are relevant to panel organization:
@@ -96,6 +94,11 @@
 #' i.e., it will return an empty character vector and create no files.
 #' }
 #'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns a data.frame containing the selection-related steps of the tour.
+#' }
+#'
 #' For controlling selections:
 #' \itemize{
 #' \item \code{\link{.multiSelectionRestricted}(x)} will always return \code{TRUE}.
@@ -149,6 +152,7 @@
 #' .singleSelectionDimension,Panel-method
 #' .singleSelectionValue,Panel-method
 #' .singleSelectionSlots,Panel-method
+#' .definePanelTour,Panel-method
 NULL
 
 #' @export
@@ -297,6 +301,17 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
             }
         }
     }
+
+    # nocov start
+    if (!is.null(session)) {
+        shinyjs::onclick(.input_FUN(.panelHelpTour), {
+            ptour <- .definePanelTour(pObjects$memory[[panel_name]])
+            if (nrow(ptour)) {
+                introjs(session, options=list(steps=ptour))
+            }
+        })
+    }
+    # nocov end
 })
 
 #' @export
@@ -341,3 +356,34 @@ setMethod(".singleSelectionDimension", "Panel", function(x) "none")
 
 #' @export
 setMethod(".singleSelectionSlots", "Panel", function(x) list())
+
+#' @export
+setMethod(".definePanelTour", "Panel", function(x) {
+    collated <- list(
+        .add_tour_step(x, .selectParamBoxOpen, "Users can also control how this panel reacts to multiple selections being transmitted from other panels.<br/><br/><strong>Action:</strong> click on the header of this box to see the available options.")
+    )
+
+    for (mdim in c("row", "column")) {
+        if (mdim=="row") {
+            src_field <- .selectRowSource
+            dyn_field <- .selectRowDynamic
+            typ_field <- .selectRowType
+        } else {
+            src_field <- .selectColSource
+            dyn_field <- .selectColDynamic
+            typ_field <- .selectColType
+        }
+
+        collated <- c(collated, list(
+            .add_tour_step(x, src_field, paste0("PLACEHOLDER_", toupper(mdim), "_SELECT"),
+                element=paste0("#", .getEncodedName(x), "_", src_field, " + .selectize-control")),
+            .add_tour_step(x, dyn_field, sprintf("Alternatively, we could turn on dynamic selection. This means that any selection in <emph>any</emph> %s-based panel would have an effect on this panel.", mdim)),
+            .add_tour_step(x, typ_field, "We can choose to receive the current <i>Active</i> selection from the chosen source panel; or one of the <i>Saved</i> selections; or the <i>Union</i> of all of the selections, if more than one active/saved selection is present.")
+            )
+        )
+    }
+
+    collated <- do.call(rbind, collated)
+    data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
+})
+

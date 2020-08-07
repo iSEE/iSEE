@@ -13,14 +13,12 @@ An overview of the generics for defining the panel outputs, along with recommend
 }
 \section{Defining the output element}{
 
-In \code{.defineOutput(x, ...)}, the following arguments are required:
-\itemize{
-\item \code{x}, an instance of a Panel subclass.
-\item \code{...}, further arguments that are not currently used.
-}
+\code{.defineOutput(x)} defines the output element of the panel (e.g., a plot or table widget),
+given an instance of a \linkS4class{Panel} subclass in \code{x}.
 
-Methods for this generic are expected to return an output element for inclusion into the \pkg{iSEE} interface, such as the output of \code{\link{plotOutput}}.
-Multiple elements can be provided via a \code{\link{tagList}}.
+Methods for this generic are expected to return a HTML element containing the visual output of the panel, such as the return value of \code{\link{plotOutput}} or \code{\link{dataTableOutput}}.
+This element will be shown in the \pkg{iSEE} interface above the parameter boxes for \code{x}.
+Multiple elements can be returned via a \code{\link{tagList}}.
 
 The IDs of the output elements are expected to be prefixed with the panel name from \code{\link{.getEncodedName}(x)} and an underscore, e.g., \code{"ReducedDimensionPlot1_someOutput"}.
 One of the output elements may simply have the ID set to \code{PANEL} alone;
@@ -29,7 +27,8 @@ this is usually the case for simple panels with one primary output like a \linkS
 
 \section{Defining the rendered output}{
 
-In \code{.renderOutput(x, se, ..., output, pObjects, rObjects)}, the following arguments are required:
+\code{.renderOutput(x, se, ..., output, pObjects, rObjects)} will create an expression to render the panel's output.
+The following arguments are required:
 \itemize{
 \item \code{x}, an instance of a \linkS4class{Panel} class.
 \item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
@@ -39,13 +38,15 @@ In \code{.renderOutput(x, se, ..., output, pObjects, rObjects)}, the following a
 \item \code{rObjects}, a reactive list of values generated in the \code{\link{iSEE}} app.
 }
 
-It is expected to attach a reactive expression to \code{output} to render the output elements created by \code{.defineOutput}.
+It is expected to attach one or more reactive expressions to \code{output} to render the output element(s) defined by \code{.defineOutput}.
+This is typically done by calling rendering functions like \code{\link{.renderOutput}} or the most appropriate equivalent for the panel's output. 
 The return value of this generic is not used; only the side-effect of the output set-up is relevant.
 
-The rendering expression defined in \code{\link{.renderOutput}} is also expected to:
+The rendering expression inside the chosen rendering function is expected to:
 \enumerate{
 \item Call \code{force(rObjects[[PANEL]])}, where \code{PANEL} is the output of \code{\link{.getEncodedName}(x)}.
 This ensures that the output is rerendered upon requesting changes in \code{\link{.requestUpdate}}.
+\item Call \code{.generateOutput} to generate the output content to be rendered.
 \item Fill \code{pObjects$contents[[PANEL]]} with some content related to the displayed output that allows cross-referencing with single/multiple selection structures.
 This will be used in other generics like \code{\link{.multiSelectionCommands}} and \code{\link{.singleSelectionValue}} to determine the identity of the selected point(s).
 As a result, it is only strictly necessary if the panel is a potential transmitter, as determined by the return value of \code{\link{.multiSelectionDimension}}.
@@ -56,15 +57,19 @@ for plotting panels, the vector should also include code to create the plot.
 This is used for code reporting, and again, is only strictly necessary if the panel is a potential transmitter.
 }
 
-We strongly recommend calling \code{\link{.retrieveOutput}} within the rendering expression,
-which will automatically perform tasks 1-3 above, rather than calling \code{\link{.generateOutput}} manually.
-This means that the only extra work required in the implementation of \code{\link{.renderOutput}} is to perform task 4 and
-to choose an appropriate rendering function.
+We strongly recommend calling \code{\link{.retrieveOutput}} within the rendering expression, which will automatically perform all of the tasks above, rather than calling \code{\link{.generateOutput}} manually.
+This means that the only extra work required in the implementation of \code{\link{.renderOutput}} is to choose an appropriate rendering function to encapsulate the rendering expression and assign the output of that function to \code{output}.
+
+Developers should not attempt to modify \code{x} in any rendering expression.
+This does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.
+Similarly, the rendering expression should treat \code{pObjects$memory} as read-only.
+Any adjustment of parameters should be handled elsewhere, e.g., by the observer expressions in \code{\link{.createObservers}}.
 }
 
 \section{Generating content}{
 
-In \code{.generateOutput(x, se, all_memory, all_contents)}, the following arguments are required:
+\code{.generateOutput(x, se, all_memory, all_contents)} actually generates the panel's output to be used in the rendering expression.
+The following arguments are required:
 \itemize{
 \item \code{x}, an instance of a \linkS4class{Panel} class.
 \item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
@@ -75,21 +80,27 @@ In \code{.generateOutput(x, se, all_memory, all_contents)}, the following argume
 Methods for this generic should return a list containing:
 \itemize{
 \item \code{contents}, some arbitrary content for the panel (usually a data.frame).
-This is used during app initialization to ensure that \code{pObjects$contents} of transmitter panels is filled before rendering their children.
 It should be of a structure that allows it to be cross-referenced against the output of \code{\link{.multiSelectionActive}} to determine the selected rows/columns.
+This is used to ensure that the \code{pObjects$contents} of a panel is populated before attempting to render their children (i.e., those that receive a multiple selection from the current panel).
 \item \code{commands}, a list of character vectors of R commands that, when executed, produces the contents of the panel and any displayed output (e.g., a \link{ggplot} object).
 Developers should write these commands as if the evaluation environment only contains the SummarizedExperiment \code{se} and ExperimentColorMap \code{colormap}.
+\item \code{varname}, a string specifying the name of the variable in \code{commands} used to generate \code{contents}.
+This is used to fulfill code tracking obligations.
 }
-The output list may contain any number of other fields that will be ignored.
+The output list may contain any number of other fields that can be used by \code{\link{.renderOutput}} but are otherwise ignored.
 
-We suggest implementing this method using \code{\link{eval}(\link{parse}(text=...))} calls,
-which enables easy construction and evaluation of the commands and contents at the same time.
-Developers should consider using the \code{\link{.processMultiSelections}} function for easily processing the multiple selection parameters.
+We suggest implementing this method using \code{\link{eval}(\link{parse}(text=...))} calls, which enables easy construction and evaluation of the commands and contents at the same time.
+A convenient wrapper for this call is provided by the \code{\link{.textEval}} utility.
+
+The \code{all_memory} and \code{all_contents} arguments are provided for the sole purpose of determining what multiple selections are being received by \code{x}.
+We strongly recommend passing them onto \code{\link{.processMultiSelections}} to do the heavy lifting.
+It would be unusual and inadvisable to use these arguments for any other information sharing across panels.
 }
 
 \section{Exporting content}{
 
-In \code{.exportOutput(x, se, all_memory, all_contents)}, the following arguments are required:
+\code{.exportOutput(x, se, all_memory, all_contents)} converts the panel output into a downloadable form.
+The following arguments are required:
 \itemize{
 \item \code{x}, an instance of a \linkS4class{Panel} class.
 \item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
@@ -103,8 +114,7 @@ All files should be created in the working directory at the time of the function
 Each file name should be prefixed with the \code{\link{.getEncodedName}}.
 The method itself should return a character vector containing \emph{relative} paths to all newly created files.
 
-To implement this method, we suggest simply passing all arguments onto \code{\link{.generateOutput}}
-and then handling the contents appropriately.
+To implement this method, we suggest simply passing all arguments onto \code{\link{.generateOutput}} and then converting the output into an appropriate file.
 }
 
 \author{

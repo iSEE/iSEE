@@ -12,10 +12,11 @@
 \alias{.fullName,FeatureAssayPlot-method}
 \alias{.panelColor,FeatureAssayPlot-method}
 \alias{.generateDotPlotData,FeatureAssayPlot-method}
+\alias{.definePanelTour,FeatureAssayPlot-method}
 \title{The FeatureAssayPlot panel}
 \description{
 The FeatureAssayPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents the expression of a feature of interest, using the \code{\link{assay}} values of the \linkS4class{SummarizedExperiment}.
-It provides slots and methods for specifying which feature to use and what to plot on the x-axis.
+It provides slots and methods to specify the feature and what to plot on the x-axis, as well as a method to actually create a data.frame containing those pieces of data in preparation for plotting.
 }
 \section{Slot overview}{
 
@@ -95,6 +96,11 @@ For managing selections:
 \itemize{
 \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of feature on the x- and y-axes.
 This includes the output of \code{callNextMethod}.
+}
+
+For documentation:
+\itemize{
+\item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
 }
 }
 

@@ -1,7 +1,8 @@
 #' The RowDotPlot virtual class
 #'
 #' The RowDotPlot is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link{ggplot} plot.
-#' It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection.
+#' It provides slots and methods to extract \code{\link{rowData}} fields to control the per-point aesthetics on the plot.
+#' This panel will transmit row identities in both its single and multiple selections, and it can receive multiple row selections but not multiple column selections.
 #'
 #' @section Slot overview:
 #' The following slots control coloring of the points:
@@ -63,10 +64,16 @@
 #' \item \code{\link{.singleSelectionDimension}(x)} returns \code{"feature"} to indicate that a feature identity is being transmitted.
 #' }
 #'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
+#' mostly tuning the more generic descriptions from the same method of the parent \linkS4class{DotPlot}.
+#' }
+#'
 #' Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.
 #'
 #' @section Subclass expectations:
-#' Subclasses are expected to implement methods for:
+#' Subclasses are expected to implement methods for, at least:
 #' \itemize{
 #' \item \code{\link{.generateDotPlotData}}
 #' \item \code{\link{.fullName}}
@@ -94,6 +101,8 @@
 #' .defineVisualSizeInterface,RowDotPlot-method
 #' .defineVisualFacetInterface,RowDotPlot-method
 #' .defineVisualPointInterface,RowDotPlot-method
+#' .definePanelTour,RowDotPlot-method
+#'
 #' @name RowDotPlot-class
 NULL
 
@@ -108,6 +117,10 @@ setMethod("initialize", "RowDotPlot", function(.Object, ...) {
     args <- .emptyDefault(args, .shapeByRowData, NA_character_)
 
     args <- .emptyDefault(args, .sizeByRowData, NA_character_)
+
+    # Defensive measure to avoid problems with cyclic graphs
+    # that the user doesn't have permissions to change!
+    args <- .emptyDefault(args, .selectColDynamic, FALSE)
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -284,7 +297,7 @@ setMethod(".defineVisualSizeInterface", "RowDotPlot", function(x, se) {
     numeric_covariates <- .getCachedCommonInfo(se, "RowDotPlot")$continuous.rowData.names
 
     plot_name <- .getEncodedName(x)
-    sizeby_field <- paste0(plot_name, "_", .shapeByField)
+    sizeby_field <- paste0(plot_name, "_", .sizeByField)
 
     tagList(
         hr(),
@@ -400,7 +413,7 @@ setMethod(".addDotPlotDataColor", "RowDotPlot", function(x, envir) {
         chosen_sample <- x[[.colorBySampName]]
         assay_choice <- x[[.colorBySampNameAssay]]
         label <- sprintf("%s\n(%s)", chosen_sample, assay_choice)
-        cmds <- sprintf("plot.data$ColorBy <- assay(se, %s, withDimnames <- FALSE)[, %s];",
+        cmds <- sprintf("plot.data$ColorBy <- assay(se, %s)[, %s];",
             deparse(assay_choice), deparse(chosen_sample))
 
     } else {
@@ -524,4 +537,15 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
     } else {
         .colorByNoneDotPlotScale(x)
     }
+})
+
+###############################################################
+
+#' @export
+setMethod(".definePanelTour", "RowDotPlot", function(x) {
+    collated <- callNextMethod()
+
+    collated$intro[collated$intro=="PLACEHOLDER_COLOR"] <- "We can choose to color by different per-row attributes - from the row metadata, across a specific sample of an assay, or to identify a chosen feature.<br/><br/><strong>Action:</strong> try out some of the different choices. Note how further options become available when each choice is selected."
+
+    data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
 })

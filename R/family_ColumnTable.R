@@ -1,7 +1,7 @@
 #' The ColumnTable class
 #'
 #' The ColumnTable is a virtual class where each column in the \linkS4class{SummarizedExperiment} is represented by no more than row in a \code{\link{datatable}} widget.
-#' It provides observers for monitoring table selection, global search and column-specific search.
+#' In panels of this class, single and multiple selections can only be transmitted on the samples.
 #' 
 #' @section Slot overview:
 #' No new slots are added.
@@ -66,6 +66,18 @@
 NULL
 
 #' @export
+#' @importFrom methods callNextMethod
+setMethod("initialize", "ColumnTable", function(.Object, ...) {
+    args <- list(...)
+
+    # Defensive measure to avoid problems with cyclic graphs 
+    # that the user doesn't have permissions to change!
+    args <- .emptyDefault(args, .selectRowDynamic, FALSE)
+
+    do.call(callNextMethod, c(list(.Object), args))
+})
+
+#' @export
 setMethod(".refineParameters", "ColumnTable", function(x, se) {
     x <- callNextMethod()
     if (is.null(x)) {
@@ -93,7 +105,7 @@ setMethod(".singleSelectionDimension", "ColumnTable", function(x) "sample")
 
 #' @export
 setMethod(".hideInterface", "ColumnTable", function(x, field) {
-    if (field %in% c(.selectRowSource, .selectRowType, .selectRowSaved)) {
+    if (field %in% c(.selectRowSource, .selectRowType, .selectRowSaved, .selectRowDynamic)) {
         TRUE
     } else {
         callNextMethod()

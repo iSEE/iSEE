@@ -1,26 +1,21 @@
+  
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 
 language: r
 r: bioc-devel
-os: linux
 
+sudo: false
 cache: packages
 
 warnings_are_errors: false
 
-env:
-  - R_REMOTES_UPGRADE="always"
-
 before_install:
-  - mkdir -p ~/.R
-  - echo -e 'MAKEFLAGS = -j2' > ~/.R/Makevars
-  - echo 'options(Ncpus = 2)' > ~/.Rprofile
-  - Rscript -e 'install.packages("devtools")'
-  - Rscript -e 'devtools::install(dependencies=TRUE)'
-  - Rscript -e 'BiocManager::install("Rtsne")'
+    - mkdir -p ~/.R
+    - echo -e 'MAKEFLAGS = -j2' > ~/.R/Makevars
+    - echo 'options(Ncpus = 2)' > ~/.Rprofile
+    - Rscript -e 'install.packages("devtools")'
+    - Rscript -e 'devtools::install(dependencies=TRUE)'
+    - Rscript -e 'BiocManager::install("Rtsne")'
 
-r_build_args: "--no-manual --no-resave-data"
-r_check_args: "--no-build-vignettes --no-manual --timings"
-
-r_packages:
-  - BiocManager
+r_build_args: ""
+r_check_args: "--as-cran"

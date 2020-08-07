@@ -284,3 +284,33 @@
 .multiSelectionHasActive <- function(x) {
     !is.null(.multiSelectionActive(x))
 }
+
+#' Get all selection sources
+#'
+#' Find all acceptable sources of single or multiple selections in each dimension.
+#'
+#' @param all_memory A named list of \linkS4class{Panel}s representing the current state of the application.
+#' @param all_names Character vector of encoded panel names.
+#' @param multiple Logical vector indicating whether sources for multiple selections should be returned.
+#' If \code{FALSE}, single selection sources are returned.
+#'
+#' @return A list containing \code{"row"} and \code{"column"}, 
+#' character vectors containing the names of the acceptable panels that can transmit on the corresponding dimension.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_get_multi_sources
+.get_selection_sources <- function(all_memory, all_names, multiple=TRUE) {
+    if (multiple) {
+        FUN <- .multiSelectionDimension
+        choices <- c("row", "column")
+    } else {
+        FUN <- .singleSelectionDimension
+        choices <- c("feature", "sample")
+    }
+
+    dims <- vapply(all_memory, FUN=FUN, "")
+    list(
+        row=c(.noSelection, all_names[dims==choices[1]]),
+        column=c(.noSelection, all_names[dims==choices[2]])
+    )
+}

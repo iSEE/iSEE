@@ -154,12 +154,13 @@ createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot",
     setMethod(".renderOutput", className, function(x, se, output, pObjects, rObjects) {
         plot_name <- .getEncodedName(x)
         force(se) # defensive programming to avoid difficult bugs due to delayed evaluation.
+
         # nocov start
         output[[plot_name]] <- renderPlot({
-            p.out <- .retrieveOutput(plot_name, se, pObjects, rObjects)
-            p.out$contents
+            .retrieveOutput(plot_name, se, pObjects, rObjects)$contents
         })
         # nocov end
+
     }, where=where)
 
     generator

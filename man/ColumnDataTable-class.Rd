@@ -6,13 +6,14 @@
 \alias{initialize,ColumnDataTable-method}
 \alias{.cacheCommonInfo,ColumnDataTable-method}
 \alias{.refineParameters,ColumnDataTable-method}
-\alias{.hideInterface,ColumnDataTable-method}
 \alias{.generateTable,ColumnDataTable-method}
 \alias{.panelColor,ColumnDataTable-method}
 \alias{.fullName,ColumnDataTable-method}
+\alias{.definePanelTour,ColumnDataTable-method}
 \title{The ColumnDataTable panel}
 \description{
 The ColumnDataTable is a panel class for creating a \linkS4class{ColumnTable} where the value of the table is defined as the \code{\link{colData}} of the \linkS4class{SummarizedExperiment}.
+It provides functionality to extract the \code{\link{colData}} to coerce it into an appropriate data.frame in preparation for rendering.
 }
 \section{Slot overview}{
 
@@ -41,15 +42,8 @@ This will also call the equivalent \linkS4class{ColumnTable} method for further 
 
 For defining the interface:
 \itemize{
-\item \code{\link{.hideInterface}(x, field)} returns \code{TRUE} if \code{field="DataBoxOpen"},
-otherwise it calls \code{\link{.hideInterface,Table-method}}
-\item \code{\link{.fullName}(x)} will return the full name of the panel class.
-\item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
-}
-
-For defining the panel name:
-\itemize{
 \item \code{\link{.fullName}(x)} will return \code{"Column data table"}.
+\item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 }
 
 For creating the output:
@@ -58,6 +52,13 @@ For creating the output:
 while returning a character vector of commands required to produce that data.frame.
 Each row of the data.frame should correspond to a column of the SummarizedExperiment.
 }
+
+For documentation:
+\itemize{
+\item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a panel-specific tour.
+}
+
+Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.
 }
 
 \examples{

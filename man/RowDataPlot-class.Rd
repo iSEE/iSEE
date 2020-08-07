@@ -13,14 +13,15 @@
 \alias{.generateDotPlotData,RowDataPlot-method}
 \alias{.allowableXAxisChoices,RowDataPlot-method}
 \alias{.allowableYAxisChoices,RowDataPlot-method}
+\alias{.definePanelTour,RowDataPlot-method}
 \title{The RowDataPlot panel}
 \description{
 The RowDataPlot is a panel class for creating a \linkS4class{RowDotPlot} where the y-axis represents a variable from the \code{\link{rowData}} of a \linkS4class{SummarizedExperiment} object.
-It provides slots and methods for specifying which row metadata variable to use and what to plot on the x-axis.
+It provides slots and methods for specifying which variable to use on the y-axis (and, optionally, also the x-axis), as well as a method to create the data.frame in preparation for plotting.
 }
 \section{Slot overview}{
 
-The following slots control the dimensionality reduction result that is used:
+The following slots control the variables to be shown:
 \itemize{
 \item \code{YAxis}, a string specifying the row of the \code{\link{rowData}} to show on the y-axis.
 If \code{NA}, defaults to the first valid field (see \code{?"\link{.refineParameters,RowDotPlot-method}"}).
@@ -56,7 +57,9 @@ For defining the interface:
 \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
 \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 \item \code{\link{.allowableXAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{rowData}(se)} that can be used as choices for the x-axis. 
+This consists of all variables with atomic values.
 \item \code{\link{.allowableYAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{rowData}(se)} that can be used as choices for the y-axis. 
+This consists of all variables with atomic values.
 }
 
 For monitoring reactive expressions:
@@ -74,6 +77,11 @@ For creating the plot:
 \itemize{
 \item \code{\link{.generateDotPlotData}(x, envir)} will create a data.frame of row metadata variables in \code{envir}.
 It will return the commands required to do so as well as a list of labels.
+}
+
+For documentation:
+\itemize{
+\item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
 }
 }
 

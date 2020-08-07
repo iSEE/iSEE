@@ -1,3 +1,54 @@
+# iSEE 2.1.12
+
+* Added panel-specific tours via the `.definePanelTour()` generic.
+* Generalized the `HiddenColumns` mechanism to all `Table` subclasses.
+
+# iSEE 2.1.11
+
+* Add `HiddenColumns` slot to hide columns in `ColumnDataTable`s and `RowDataTable`s.
+
+# iSEE 2.1.10
+
+* Avoid transmitting multiple selections for `Table`s when the number of columns change.
+* Hide irrelevant UI elements for `Table` multiple selections.
+* Generalize information about the number of selected rows/columns in each panel.
+* Streamlined the `.defineOutput` signature.
+
+# iSEE 2.1.9
+
+* Improved documentation for generics and classes.
+* Defined `.exportOutput` method for the `ComplexHeatmapPlot` class.
+* Added missing documentation for slots and methods in the `ComplexHeatmapPlot` class.
+* Enforced sensible defaults for the dynamic selection setting.
+* Extract assays with dimnames for correct indexing.
+
+# iSEE 2.1.8
+
+* Fixed control of legend point size for continuous covariates.
+* Extended control of legend point size for violin plots and Hinton plots.
+
+# iSEE 2.1.7
+
+* Added control of legend point size under the "Text" category of teh "Visual parameters" box.
+
+# iSEE 2.1.6
+
+* Fixed bug for `sizeBy` observers.
+
+# iSEE 2.1.5
+
+* Fixed initialization of panel size to current value when the "Organize panels" window is closed and re-opened.
+* Fixed removal of last panel from the interface.
+
+# iSEE 2.1.4
+
+* Add progress bar when exporting panel outputs. 
+* Fix missing section in `createLandingPage()` man page.
+
+# iSEE 2.1.3
+
+* Fixed handling of logical > 1 when processing the `CustomRowsText` slot in the `ComplexHeatmapPlot` constructor.
+
 # iSEE 2.1.2
 
 * Added a new vignette to describe panel links.
@@ -16,7 +67,7 @@
 
 # iSEE 1.99.8
 
-* Protect against transient invalid selected index; fixes #400.
+* Protected against transient invalid selected index; fixes #400.
 * Forced `renderDT` to rerun expression upon panel reorg.
 
 # iSEE 1.99.7

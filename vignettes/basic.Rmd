@@ -398,6 +398,13 @@ A: We set up an instance of iSEE running on the `allen` dataset at this address:
 A range of interactive tours showcasing a variety of data types is also available here: https://github.com/iSEE/iSEE2018.
 Please keep in mind this is only for demonstration purposes, yet those instances show how you or your system administrator can setup `r Biocpkg("iSEE")` for analyzing and/or sharing your `SummarizedExperiment`/`SingleCellExperiment` precomputed object.
 
+**Q: I would like to use `r Biocpkg("iSEE")` with my `Seurat` object, how do I do?**
+
+A: The `r BiocStyle::CRANpkg("Seurat")` package provides `as.SingleCellExperiment()` to coerce `Seurat` objects to `SingleCellExperiment` objects.
+This conversion includes assays, cell metadata, feature metadata, and dimensionality reduction results.
+You can then use the `SingleCellExperiment` object as usual.
+
+
 # Additional information
 
 Bug reports can be posted on the [Bioconductor support site](https://support.bioconductor.org) or raised as issues in the `r Githubpkg("iSEE/iSEE")` GitHub repository.

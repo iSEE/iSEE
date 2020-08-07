@@ -1,7 +1,7 @@
 #' The RowTable class
 #'
 #' The RowTable is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by no more than one row in a \code{\link{datatable}} widget.
-#' It provides observers for monitoring table selection, global search and column-specific search.
+#' In panels of this class, single and multiple selections can only be transmitted on the features.
 #' 
 #' @section Slot overview:
 #' No new slots are added.
@@ -66,6 +66,18 @@
 NULL
 
 #' @export
+#' @importFrom methods callNextMethod
+setMethod("initialize", "RowTable", function(.Object, ...) {
+    args <- list(...)
+
+    # Defensive measure to avoid problems with cyclic graphs 
+    # that the user doesn't have permissions to change!
+    args <- .emptyDefault(args, .selectColDynamic, FALSE)
+
+    do.call(callNextMethod, c(list(.Object), args))
+})
+
+#' @export
 setMethod(".refineParameters", "RowTable", function(x, se) {
     x <- callNextMethod()
     if (is.null(x)) {
@@ -87,7 +99,7 @@ setMethod(".createObservers", "RowTable", function(x, se, input, session, pObjec
 
 #' @export
 setMethod(".hideInterface", "RowTable", function(x, field) {
-    if (field %in% c(.selectColSource, .selectColType, .selectColSaved)) {
+    if (field %in% c(.selectColSource, .selectColType, .selectColSaved, .selectColDynamic)) {
         TRUE
     } else {
         callNextMethod()

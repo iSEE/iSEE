@@ -9,68 +9,30 @@
 \alias{.defineVisualFacetInterface}
 \alias{.defineVisualTextInterface}
 \alias{.defineVisualOtherInterface}
-\title{Generics for visual parameters}
+\title{Generics for visual DotPlot parameters}
 \description{
-These generics allow subclasses to override the user inputs controlling visual parameters of \linkS4class{DotPlot} panels.
+These generics allow subclasses to override the user interface elements controlling visual parameters of \linkS4class{DotPlot} panels.
 }
 \details{
-In practice, it is a good idea to make use of information precomputed by \code{\link{.cacheCommonInfo}}.
+When implementing methods for these generics, it is a good idea to make use of information precomputed by \code{\link{.cacheCommonInfo}}.
 For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link{colData}} is valid and discrete or continuous.
 
-It is possible to hide individual sections of visual parameters by returning \code{NULL}.
-}
-\section{Color parameters}{
-
-\code{.defineVisualColorInterface(x, se, select_info)} takes \code{x}, a \linkS4class{Panel} instance,
-\code{se}, the \linkS4class{SummarizedExperiment} object,
-and \code{select_info} a list of character vectors named \code{row} and \code{column} which specifies the names of panels available for transmitting single selections on the rows/columns.
-It is expected to return an HTML tag definition that contains user inputs controlling the \code{color} aesthetic of \code{ggplot} objects.
-}
-
-\section{Shape parameters}{
-
-\code{.defineVisualShapeInterface} takes \code{x}, a \linkS4class{Panel} instance,
-and \code{se}, the \linkS4class{SummarizedExperiment} object.
-It is expected to return an HTML tag definition that contains user inputs controlling the \code{shape} aesthetic of \code{ggplot} objects.
+In all of the code snippets below, \code{x} is a \linkS4class{Panel} instance and \code{se} is the \linkS4class{SummarizedExperiment} object.
+\itemize{
+\item \code{.defineVisualColorInterface(x, se, select_info)} should return a HTML tag definition that contains UI input elements controlling the \code{color} aesthetic of \code{ggplot} objects.
+Here, \code{select_info} is a list of two character vectors named \code{row} and \code{column}, which specifies the names of panels available for transmitting single selections on the rows/columns respectively.
+\item \code{.defineVisualShapeInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling the \code{shape} aesthetic of \code{ggplot} objects.
+\item \code{.defineVisualSizeInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling the \code{size} aesthetic of \code{ggplot} objects.
+\item \code{.defineVisualPointInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling other aesthetics of \code{ggplot} objects (e.g. \code{alpha}).
+\item \code{.defineVisualFacetInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling the \code{facet_grid} applied to \code{ggplot} objects.
+\item \code{.defineVisualTextInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling the appearance of non-data text elements of \code{ggplot} objects (e.g., font size, legend position).
+\item \code{.defineVisualOtherInterface(x)} should a HTML tag definition that contains UI inputs elements to display in the \code{"Other"} section of the visual parameters.
 }
 
-\section{Size parameters}{
+A method for any of these generics may also return \code{NULL}, in which case the corresponding section of the visual parameter box is completely hidden.
 
-\code{.defineVisualSizeInterface} takes \code{x}, a \linkS4class{Panel} instance,
-and \code{se}, the \linkS4class{SummarizedExperiment} object.
-It is expected to return an HTML tag definition that contains user inputs controlling the \code{size} aesthetic of \code{ggplot} objects.
-}
-
-\section{Point parameters}{
-
-\code{.defineVisualPointInterface} takes \code{x}, a \linkS4class{Panel} instance,
-and \code{se}, the \linkS4class{SummarizedExperiment} object.
-It is expected to return an HTML tag definition that contains user inputs to controlling other aesthetics of \code{ggplot} objects (e.g. \code{alpha}).
-}
-
-\section{Facet parameters}{
-
-\code{.defineVisualFacetInterface} takes \code{x}, a \linkS4class{Panel} instance,
-and \code{se}, the \linkS4class{SummarizedExperiment} object.
-It is expected to return an HTML tag definition that contains user inputs controlling the \code{facet_grid} applied to
-\code{ggplot} objects.
-}
-
-\section{Text parameters}{
-
-\code{.defineVisualTextInterface} takes \code{x}, a \linkS4class{Panel} instance,
-and \code{se}, the \linkS4class{SummarizedExperiment} object.
-It is expected to return an HTML tag definition that contains user inputs controlling the appearance of non-data text elements of \code{ggplot} objects (e.g., font size, legend position).
-}
-
-\section{Other parameters}{
-
-\code{.defineVisualOtherInterface} takes \code{x}, a \linkS4class{Panel} instance.
-It is expected to return an HTML tag definition that contains user inputs to display in the \code{"Other"} section of the visual parameters.
-}
-
-\seealso{
-\code{tagList}
+All of these generics are called by \code{\link{.defineInterface}} for DotPlot subclasses.
+Developers of subclasses can simply specialize these generics to change the UI instead of reimplementing \code{.defineInterface} itself.
 }
 \author{
 Kevin Rue-Albrecht

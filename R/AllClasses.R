@@ -225,9 +225,11 @@ collated[.plotPointDownsample] <- "logical"
 collated[.plotPointSampleRes] <- "numeric"
 
 .plotFontSize <- "FontSize"
+.legendPointSize <- "LegendPointSize"
 .plotLegendPosition <- "LegendPosition"
 
 collated[.plotFontSize] <- "numeric"
+collated[.legendPointSize] <- "numeric"
 collated[.plotLegendPosition] <- "character"
 
 #' @export
@@ -391,6 +393,9 @@ collated <- character(0)
 collated[.TableSelected] <- "character"
 collated[.TableSearch] <- "character"
 collated[.TableColSearch] <- "character"
+
+.TableHidden <- "HiddenColumns"
+collated[.TableHidden] <- "character"
 
 #' @export
 setClass("Table", contains=c("Panel", "VIRTUAL"), slots=collated)

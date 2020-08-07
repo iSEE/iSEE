@@ -18,7 +18,7 @@
 #' rather, our multiple selections correspond to the search filter.
 #'
 #' @author Aaron Lun
-#' @importFrom shiny observe observeEvent
+#' @importFrom shiny observe observeEvent updateSelectInput
 #' @rdname INTERNAL_table_observers
 .create_table_observers <- function(panel_name, input, session, pObjects, rObjects) {
     # Note that '.int' variables already have underscores, so these are not necessary.
@@ -69,12 +69,31 @@
     # nocov start
     observeEvent(input[[colsearch_field]], {
         search <- input[[colsearch_field]]
-        if (identical(search, pObjects$memory[[panel_name]][[.TableColSearch]])) {
+        past <- pObjects$memory[[panel_name]][[.TableColSearch]]
+        if (identical(search, past)) {
             return(NULL)
         }
 
         pObjects$memory[[panel_name]][[.TableColSearch]] <- search
+
+        if (all(search=="") && all(past=="")) {
+            # No update in cases with variable numbers of columns where no
+            # selection was performed (assuming rows were the same).
+            return(NULL)
+        }
+
         .requestActiveSelectionUpdate(panel_name, session, pObjects, rObjects, update_output=FALSE)
+    }, ignoreInit=TRUE)
+    # nocov end
+
+    tabupdate_field <- paste0(panel_name, "_", .flagTableUpdate)
+    .safe_reactive_init(rObjects, tabupdate_field)
+
+    # nocov start
+    observeEvent(rObjects[[tabupdate_field]], {
+        updateSelectInput(session, paste0(panel_name, "_", .TableHidden),
+            selected=pObjects$memory[[panel_name]][[.TableHidden]],
+            choices=colnames(pObjects$contents[[panel_name]]))
     }, ignoreInit=TRUE)
     # nocov end
 

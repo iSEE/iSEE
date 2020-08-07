@@ -1,7 +1,7 @@
 #' The ColumnDataPlot panel
 #'
 #' The ColumnDataPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents a variable from the \code{\link{colData}} of a \linkS4class{SummarizedExperiment} object.
-#' It provides slots and methods for specifying which column metadata variable to use on the y-axis and what to plot on the x-axis.
+#' It provides slots and methods for specifying which variable to use on the y-axis (and, optionally, also the x-axis), as well as a method to create the data.frame in preparation for plotting.
 #'
 #' @section Slot overview:
 #' The following slots control the column data information that is used:
@@ -36,7 +36,9 @@
 #' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 #' \item \code{\link{.allowableXAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{colData}(se)} that can be used as choices for the x-axis. 
+#' This consists of all variables with atomic values.
 #' \item \code{\link{.allowableYAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{colData}(se)} that can be used as choices for the y-axis. 
+#' This consists of all variables with atomic values.
 #' }
 #'
 #' For monitoring reactive expressions:
@@ -54,6 +56,11 @@
 #' \itemize{
 #' \item \code{\link{.generateDotPlotData}(x, envir)} will create a data.frame of column metadata variables in \code{envir}.
 #' It will return the commands required to do so as well as a list of labels.
+#' }
+#'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
 #' }
 #'
 #' @section Subclass expectations:
@@ -104,6 +111,7 @@
 #' .generateDotPlotData,ColumnDataPlot-method
 #' .allowableXAxisChoices,ColumnDataPlot-method
 #' .allowableYAxisChoices,ColumnDataPlot-method
+#' .definePanelTour,ColumnDataPlot-method
 #'
 #' @name ColumnDataPlot-class
 NULL
@@ -252,4 +260,24 @@ setMethod(".generateDotPlotData", "ColumnDataPlot", function(x, envir) {
     .textEval(data_cmds, envir)
 
     list(commands=data_cmds, labels=list(title=plot_title, X=x_lab, Y=y_lab))
+})
+
+#' @export
+setMethod(".definePanelTour", "ColumnDataPlot", function(x) {
+    collated <- character(0)
+
+    collated <- rbind(
+        c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Column data plot</font> panel shows variables from the column metadata (i.e., <code>colData</code>) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a column (usually a sample) of the <code>SummarizedExperiment</code>, and the y-axis represents a chosen variable.", .getPanelColor(x))),
+        .add_tour_step(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
+        .add_tour_step(x, .colDataYAxis, "We can manually choose the variable to show on the y-axis.",
+            element=paste0("#", .getEncodedName(x), "_", .colDataYAxis, " + .selectize-control")),
+        .add_tour_step(x, .colDataXAxis, sprintf("We can also specify what should be shown on the x-axis.<br/><br/><strong>Action:</strong> click on <i>Column data</i> to stratify values by a column metadata field.", .getPanelColor(x))),
+        .add_tour_step(x, .colDataXAxisColData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis.",
+            element=paste0("#", .getEncodedName(x), "_", .colDataXAxisColData, " + .selectize-control"))
+    )
+
+    rbind(
+        data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE),
+        callNextMethod()
+    )
 })

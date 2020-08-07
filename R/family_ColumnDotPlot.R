@@ -1,7 +1,8 @@
 #' The ColumnDotPlot virtual class
 #'
 #' The ColumnDotPlot is a virtual class where each column in the \linkS4class{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link{ggplot} plot.
-#' It provides slots and methods to control various aesthetics of the dots and to store the brush or lasso selection.
+#' It provides slots and methods to extract \code{\link{colData}} fields to control the per-point aesthetics on the plot.
+#' This panel will transmit column identities in both its single and multiple selections, and it can receive multiple column selections but not multiple row selections.
 #'
 #' @section Slot overview:
 #' The following slots control coloring of the points:
@@ -63,10 +64,16 @@
 #' \item \code{\link{.singleSelectionDimension}(x)} returns \code{"sample"} to indicate that a sample identity is being transmitted.
 #' }
 #'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
+#' mostly tuning the more generic descriptions from the same method of the parent \linkS4class{DotPlot}.
+#' }
+#'
 #' Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.
 #'
 #' @section Subclass expectations:
-#' Subclasses are expected to implement methods for:
+#' Subclasses are expected to implement methods for, at least:
 #' \itemize{
 #' \item \code{\link{.generateDotPlotData}}
 #' \item \code{\link{.fullName}}
@@ -94,6 +101,7 @@
 #' .defineVisualSizeInterface,ColumnDotPlot-method
 #' .defineVisualFacetInterface,ColumnDotPlot-method
 #' .defineVisualPointInterface,ColumnDotPlot-method
+#' .definePanelTour,ColumnDotPlot-method
 #'
 #' @name ColumnDotPlot-class
 NULL
@@ -109,6 +117,10 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ...) {
     args <- .emptyDefault(args, .shapeByColData, NA_character_)
 
     args <- .emptyDefault(args, .sizeByColData, NA_character_)
+
+    # Defensive measure to avoid problems with cyclic graphs 
+    # that the user doesn't have permissions to change!
+    args <- .emptyDefault(args, .selectRowDynamic, FALSE)
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -284,7 +296,7 @@ setMethod(".defineVisualSizeInterface", "ColumnDotPlot", function(x, se) {
     numeric_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$continuous.colData.names
 
     plot_name <- .getEncodedName(x)
-    sizeby_field <- paste0(plot_name, "_", .shapeByField)
+    sizeby_field <- paste0(plot_name, "_", .sizeByField)
 
     tagList(
         hr(),
@@ -395,7 +407,7 @@ setMethod(".addDotPlotDataColor", "ColumnDotPlot", function(x, envir) {
         chosen_gene <- x[[.colorByFeatName]]
         assay_choice <- x[[.colorByFeatNameAssay]]
         label <- sprintf("%s\n(%s)", chosen_gene, assay_choice)
-        cmds <- sprintf("plot.data$ColorBy <- assay(se, %s, withDimnames=FALSE)[%s, ];",
+        cmds <- sprintf("plot.data$ColorBy <- assay(se, %s)[%s, ];",
             deparse(assay_choice), deparse(chosen_gene))
 
     } else if (color_choice == .colorBySampNameTitle) {
@@ -520,3 +532,22 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
         .colorByNoneDotPlotScale(x)
     }
 })
+
+###############################################################
+
+#' @export
+setMethod(".definePanelTour", "ColumnDotPlot", function(x) {
+    collated <- callNextMethod()
+        
+    collated$intro[collated$intro=="PLACEHOLDER_COLOR"] <- "We can choose to color by different per-column attributes - from the column metadata, across a specific feature of an assay, or to identify a chosen sample.<br/><br/><strong>Action:</strong> try out some of the different choices. Note how further options become available when each choice is selected."
+
+    data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
+})
+
+.add_tour_step <- function(x, field, text, element=paste0("#", .getEncodedName(x), "_", field)) {
+    if (!.hideInterface(x, field)) {
+        c(element, text)
+    } else {
+        NULL
+    }
+}

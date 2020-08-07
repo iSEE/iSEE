@@ -1,6 +1,7 @@
 #' The RowDataTable panel
 #'
 #' The RowDataTable is a panel class for creating a \linkS4class{ColumnTable} where the value of the table is defined as the \code{\link{rowData}} of the \linkS4class{SummarizedExperiment}.
+#' It provides functionality to extract the \code{\link{rowData}} to coerce it into an appropriate data.frame in preparation for rendering.
 #'
 #' @section Slot overview:
 #' This class inherits all slots from its parent \linkS4class{ColumnTable} and \linkS4class{Table} classes.
@@ -24,14 +25,8 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.hideInterface}(x, field)} returns \code{TRUE} if \code{field="DataBoxOpen"}, 
-#' otherwise it calls \code{\link{.hideInterface,Table-method}}
-#' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
-#' }
-#'
-#' For defining the panel name:
-#' \itemize{
 #' \item \code{\link{.fullName}(x)} will return \code{"Row data table"}.
+#' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 #' }
 #' 
 #' For creating the output:
@@ -40,6 +35,13 @@
 #' while returning a character vector of commands required to produce that data.frame.
 #' Each row of the data.frame should correspond to a row of the SummarizedExperiment.
 #' }
+#'
+#' For documentation:
+#' \itemize{
+#' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a panel-specific tour.
+#' }
+#'
+#' Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.
 #'
 #' @author Aaron Lun
 #'
@@ -68,11 +70,11 @@
 #' initialize,RowDataTable-method
 #' .cacheCommonInfo,RowDataTable-method
 #' .refineParameters,RowDataTable-method
-#' .hideInterface,RowDataTable-method
 #' .generateTable,RowDataTable-method
 #' .panelColor,RowDataTable-method
 #' .fullName,RowDataTable-method
 #' .generateTable,RowDataTable-method
+#' .definePanelTour,RowDataTable-method
 NULL
 
 #' @export
@@ -128,15 +130,6 @@ setMethod(".fullName", "RowDataTable", function(x) "Row data table")
 setMethod(".panelColor", "RowDataTable", function(x) "#E47E04")
 
 #' @export
-setMethod(".hideInterface", "RowDataTable", function(x, field) {
-    if (field %in% .dataParamBoxOpen) {
-        TRUE
-    } else {
-        callNextMethod()
-    }
-})
-
-#' @export
 #' @importFrom SummarizedExperiment rowData
 setMethod(".generateTable", "RowDataTable", function(x, envir) {
     cmds <-"tab <- as.data.frame(rowData(se));"
@@ -154,4 +147,15 @@ setMethod(".generateTable", "RowDataTable", function(x, envir) {
     .textEval(cmds, envir)
 
     cmds
+})
+
+#' @export
+setMethod(".definePanelTour", "RowDataTable", function(x) {
+    rbind(
+        c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Row data table</font> panel contains a representation of the <code>rowData</code> of our <code>SummarizedExperiment</code> object. Each row here corresponds to a row (i.e., feature) of the <code>SummarizedExperiment</code> object while each column of the table is a row metadata variable.", .getPanelColor(x))),
+        .add_tour_step(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this table.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
+        .add_tour_step(x, .TableHidden, "We can choose to hide any number of metadata fields if the table is too wide. Note that left-to-right scrolling is also enabled for wide tables.",
+            element=paste0("#", .getEncodedName(x), "_", .TableHidden, " + .selectize-control")),
+        callNextMethod()
+    )
 })

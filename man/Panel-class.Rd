@@ -24,12 +24,11 @@
 \alias{.singleSelectionDimension,Panel-method}
 \alias{.singleSelectionValue,Panel-method}
 \alias{.singleSelectionSlots,Panel-method}
+\alias{.definePanelTour,Panel-method}
 \title{The Panel virtual class}
 \description{
 The Panel is a virtual base class for all \pkg{iSEE} panels.
-It provides slots and methods to control the height and width of each panel,
-as well as to control the choice of transmitting panels from which to receive a multiple selection
-(i.e., a selection of multiple rows or columns from a \linkS4class{SingleCellExperiment}).
+It provides slots and methods to control the height and width of each panel, as well as functionality to control the choice of \dQuote{transmitting} panels from which to receive a multiple row/column selection.
 }
 \section{Slot overview}{
 
@@ -125,6 +124,11 @@ For generating output:
 \itemize{
 \item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} is a no-op,
 i.e., it will return an empty character vector and create no files.
+}
+
+For documentation:
+\itemize{
+\item \code{\link{.definePanelTour}(x)} returns a data.frame containing the selection-related steps of the tour.
 }
 
 For controlling selections:

@@ -42,6 +42,7 @@
     # when observeEvent's expression actually gets executed.
     org_pObjects <- new.env()
     org_pObjects$initialized <- FALSE
+    org_pObjects$ui_updating <- FALSE
     org_rObjects <- reactiveValues(rerender=0)
 
     available_enc <- vapply(pObjects$reservoir, .encodedName, "")
@@ -59,6 +60,14 @@
             }
             org_pObjects$initialized <- TRUE
         }
+
+        # Here we disable the observers until the UI has been rerendered with
+        # the latest memory. Otherwise, we'll be stuck in a tricky situation
+        # where the modal is launched before 'panelParams' has a chance to
+        # rerender, causing the old UI elements to trigger the width/height
+        # observers to set the old defaults.
+        org_pObjects$ui_updating <- TRUE
+        org_rObjects$rerender <- .increment_counter(org_rObjects$rerender)
 
         showModal(modalDialog(
             title="Panel organization", size="m", fade=TRUE,
@@ -78,6 +87,7 @@
     # nocov start
     output$panelParams <- renderUI({
         force(org_rObjects$rerender)
+        org_pObjects$ui_updating <- FALSE
         .panel_organization(org_pObjects$memory)
     })
     # nocov end
@@ -107,6 +117,7 @@
 
                 .create_width_height_observers(latest, input, org_pObjects)
             }
+
             updated_names <- .define_memory_panel_choices(adjusted)
             updateSelectizeInput(session, 'panel_order',
                 choices=c(updated_names, available_enc), selected=updated_names)
@@ -114,14 +125,15 @@
 
         org_pObjects$memory <- adjusted
         org_rObjects$rerender <- .increment_counter(org_rObjects$rerender)
-    }, ignoreInit=TRUE)
+
+    }, ignoreInit=TRUE,
+        ignoreNULL=FALSE) # necessary when users remove the last panel from the UI
     # nocov end
 
     # nocov start
     observeEvent(input$update_ui, {
         left <- names(org_pObjects$memory)
         right <- names(pObjects$memory)
-
         pObjects$memory <- org_pObjects$memory
         pObjects$counter <- org_pObjects$counter
 
@@ -134,6 +146,9 @@
 
         pObjects$selection_links <- .spawn_multi_selection_graph(pObjects$memory)
         pObjects$aesthetics_links <- .spawn_single_selection_graph(pObjects$memory)
+
+        pObjects$dynamic_multi_selections <- .spawn_dynamic_multi_selection_list(pObjects$memory)
+        pObjects$dynamic_single_selections <- .spawn_dynamic_single_selection_list(pObjects$memory)
 
         # NOTE: there should be no need to updateSelectize on the choice of
         # linkable panels; this should be handled by the rerendering of the UI.
@@ -175,8 +190,13 @@
     panel_name <- .getEncodedName(x)
 
     width_name <- paste0(panel_name, "_", .organizationWidth)
+
     # nocov start
     observeEvent(input[[width_name]], {
+        if (org_pObjects$ui_updating) {
+            return(NULL)
+        }
+
         cur.width <- org_pObjects$memory[[panel_name]][[.organizationWidth]]
         new.width <- as.integer(input[[width_name]])
         if (!isTRUE(all.equal(new.width, cur.width))) {
@@ -186,8 +206,13 @@
     # nocov end
 
     height_name <- paste0(panel_name, "_", .organizationHeight)
+
     # nocov start
     observeEvent(input[[height_name]], {
+        if (org_pObjects$ui_updating) {
+            return(NULL)
+        }
+
         cur.height <- org_pObjects$memory[[panel_name]][[.organizationHeight]]
         new.height <- as.integer(input[[height_name]])
         if (!isTRUE(all.equal(new.height, cur.height))) {

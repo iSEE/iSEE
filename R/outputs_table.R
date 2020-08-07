@@ -36,11 +36,15 @@
 
         t.out <- .retrieveOutput(panel_name, se, pObjects, rObjects)
         full_tab <- t.out$contents
-        pObjects$varname[[panel_name]] <- "tab"
 
         chosen <- param_choices[[.TableSelected]]
         search <- param_choices[[.TableSearch]]
         search_col <- param_choices[[.TableColSearch]]
+
+        # Indicating to downstream observers that the table has been re-rendered;
+        # required for UI elements that depend on, e.g., the table column names.
+        tabupdate_field <- paste0(panel_name, "_", .flagTableUpdate)
+        .safe_reactive_bump(rObjects, tabupdate_field)
 
         # Protection against a change in the number of columns from .generateOutput.
         # .generate_table_filter protects against a mismatch in use by children,
@@ -72,10 +76,18 @@
         selectRows(dataTableProxy(panel_name, deferUntilFlush=FALSE), NULL)
 
         # Dummying up a variable and hiding it to force datatable to show something.
-        # when there are no columns.
+        # when there are no columns. Otherwise looking at the set of HiddenColumns.
         if (ncol(full_tab)==0L) {
             full_tab$DUMMY <- integer(nrow(full_tab))
             columnDefs <- list(list(targets=1L, visible=FALSE))
+
+        } else if (length(param_choices[[.TableHidden]])) {
+            m <- which(colnames(full_tab) %in% param_choices[[.TableHidden]])
+            columnDefs <- list()
+            for (i in seq_along(m)) {
+                columnDefs[[i]] <- list(targets=as.integer(m[i]), visible=FALSE)
+            }
+
         } else {
             columnDefs <- NULL
         }
@@ -107,7 +119,8 @@
 #'
 #' @return
 #' A list containing \code{commands}, a list of the commands required to produce the data.frame;
-#' and \code{contents}, a data.frame of the current contents of the Table.
+#' \code{contents}, a data.frame of the current contents of the Table;
+#' and \code{varname}, a string containing the name of the variable in \code{commands} used to generate \code{contents}.
 #'
 #' @author Aaron Lun
 #'
@@ -122,5 +135,5 @@
     # Creating the table and storing it.
     tab_cmds <- .generateTable(x, eval_env)
 
-    list(commands=list(select_cmds, tab_cmds), contents=eval_env$tab)
+    list(commands=list(select_cmds, tab_cmds), contents=eval_env$tab, varname="tab")
 }

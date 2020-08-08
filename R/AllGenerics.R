@@ -466,6 +466,9 @@ setGeneric(".colorByNoneDotPlotScale", function(x) standardGeneric(".colorByNone
 #'
 #' \code{.addDotPlotDataFacets(x, envir)} will add \code{FacetRow} and/or \code{FacetColumn} fields to \code{plot.data},
 #' representing the covariate used for faceting by row and/or column respectively.
+#' 
+#' \code{.addDotPlotDataLabel(x, envir)} will add \code{LabelBy} to \code{plot.data} in \code{envir},
+#' representing the covariate used to determine the label of each point.
 #'
 #' All methods should return a list containing:
 #' \itemize{
@@ -508,12 +511,14 @@ setGeneric(".colorByNoneDotPlotScale", function(x) standardGeneric(".colorByNone
 #' .addDotPlotDataSize
 #' .addDotPlotDataFacets
 #' .addDotPlotDataSelected
+#' .addDotPlotDataLabel
 #' .colorDotPlot
 #' .addDotPlotDataColor,ColumnDotPlot-method
 #' .addDotPlotDataShape,ColumnDotPlot-method
 #' .addDotPlotDataSize,ColumnDotPlot-method
 #' .addDotPlotDataFacets,ColumnDotPlot-method
 #' .addDotPlotDataSelected,ColumnDotPlot-method
+#' .addDotPlotDataLabel,ColumnDotPlot-method
 #' .colorDotPlot,ColumnDotPlot-method
 #' .addDotPlotDataColor,RowDotPlot-method
 #' .addDotPlotDataShape,RowDotPlot-method

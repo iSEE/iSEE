@@ -25,8 +25,8 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.cache/ExperimentHub
-          key: ${{ runner.os }}-ehub-1-${{ hashFiles('~/.cache/ExperimentHub/*') }}
-          restore-keys: ${{ runner.os }}-ehub-1-
+          key: ${{ runner.os }}-ehub
+          restore-keys: ${{ runner.os }}-ehub
 
       - name: Query dependencies
         run: |

@@ -20,6 +20,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
+        
+      - name: Cache ExperimentHub
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/ExperimentHub
+          key: ${{ runner.os }}-ehub-1-${{ hashFiles('~/.cache/ExperimentHub/*') }}
+          restore-keys: ${{ runner.os }}-ehub-1-
 
       - name: Query dependencies
         run: |

@@ -140,3 +140,14 @@ test_that(".create_child_propagation_observer returns NULL", {
     expect_null(out)
 
 })
+
+test_that(".create_heatmap_modal_observers returns NULL", {
+    input <- new.env()
+    pObjects <- new.env()
+    rObjects <- new.env()
+    
+    out <- iSEE:::.create_modal_observers_for_dimnames("ReducedDimensionPlot1",
+        iSEE:::.plotCustomLabelsText, iSEE:::.dimnamesModalOpen,
+        sce, input=input, session=NULL, pObjects=pObjects, rObjects=rObjects, "column")
+    expect_null(out)
+})

@@ -343,7 +343,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
     callNextMethod()
 
     plot_name <- .getEncodedName(x)
-    plot_dimension <- ifelse(is(x, "ColumnDotPlot"), "column", "row") # TODO: possibly more elegant way to switch between row and column
+    plot_dimension <- .multiSelectionDimension(x)
 
     .create_box_observers(plot_name, .visualParamBoxOpen, input, pObjects)
 

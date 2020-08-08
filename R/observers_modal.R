@@ -21,7 +21,7 @@
 #' @importFrom shiny modalDialog removeModal fluidRow column h4 actionButton br tagList em strong
 #' @importFrom shinyAce aceEditor updateAceEditor
 #' @importFrom shinyjs disabled
-#' @rdname INTERNAL_create_modal_observers_for_features
+#' @rdname INTERNAL_create_modal_observers_for_dimnames
 .create_modal_observers_for_dimnames <- function(plot_name, slot_name, button_name, se, input, session, pObjects, rObjects, source_type) {
   apply_field <- "INTERNAL_ApplyFeatNameChanges"
   order_field <- "INTERNAL_OrderFeatNames"

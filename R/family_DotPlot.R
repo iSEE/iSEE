@@ -252,7 +252,7 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     args <- .emptyDefault(args, .plotPointDownsample, iSEEOptions$get("downsample"))
     args <- .emptyDefault(args, .plotPointSampleRes, iSEEOptions$get("downsample.resolution"))
 
-    args <- .emptyDefault(args, .plotCustomLabels, TRUE)
+    args <- .emptyDefault(args, .plotCustomLabels, FALSE)
     args <- .emptyDefault(args, .plotCustomLabelsText, NA_character_)
     args <- .emptyDefault(args, .plotFontSize, iSEEOptions$get("font.size"))
     args <- .emptyDefault(args, .legendPointSize, iSEEOptions$get("legend.point.size"))
@@ -615,7 +615,7 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
         N <- length(plot_cmds)
         plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")
         dn <- .convert_text_to_names(x[[.plotCustomLabelsText]])
-        label_cmd <- sprintf('ggrepel::geom_text_repel(aes(x=X, y=Y, label=Label), subset(plot.data, Label %%in%% %s), min.segment.length = unit(0, "mm"))', .deparse_for_viewing(dn))
+        label_cmd <- sprintf('geom_text_repel(aes(x=X, y=Y, label=LabelBy), subset(plot.data, LabelBy %%in%% %s), min.segment.length = unit(0, "mm"))', .deparse_for_viewing(dn))
         plot_cmds <- c(plot_cmds, label_cmd)
     }
 
@@ -647,7 +647,7 @@ setMethod(".colorByNoneDotPlotScale", "DotPlot", function(x) NULL)
 #' @export
 setMethod(".addDotPlotDataLabel", "DotPlot", function(x, envir) {
     if (x[[.plotCustomLabels]]) {
-        cmds <- "plot.data$Label <- rownames(plot.data);"
+        cmds <- "plot.data$LabelBy <- rownames(plot.data);"
     } else {
         return(NULL)
     }

@@ -1,3 +1,7 @@
+# iSEE 2.1.13
+
+* Refactored the heatmap feature selection modal to be reusable for selecting rows or columns in other contexts.
+
 # iSEE 2.1.12
 
 * Added panel-specific tours via the `.definePanelTour()` generic.
@@ -5,13 +9,13 @@
 
 # iSEE 2.1.11
 
-* Add `HiddenColumns` slot to hide columns in `ColumnDataTable`s and `RowDataTable`s.
+* Added `HiddenColumns` slot to hide columns in `ColumnDataTable`s and `RowDataTable`s.
 
 # iSEE 2.1.10
 
 * Avoid transmitting multiple selections for `Table`s when the number of columns change.
 * Hide irrelevant UI elements for `Table` multiple selections.
-* Generalize information about the number of selected rows/columns in each panel.
+* Generalized information about the number of selected rows/columns in each panel.
 * Streamlined the `.defineOutput` signature.
 
 # iSEE 2.1.9

@@ -40,7 +40,8 @@ Imports:
     viridisLite,
     shinyWidgets,
     ComplexHeatmap,
-    circlize
+    circlize,
+    grid
 Suggests:
     testthat,
     BiocStyle,

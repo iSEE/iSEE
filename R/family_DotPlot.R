@@ -391,6 +391,7 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x) {
             .input_FUN(.plotCustomLabels),
             on_select=TRUE,
             actionButton(.input_FUN(.dimnamesModalOpen), label=sprintf("Edit %s names", .singleSelectionDimension(x)))),
+        br(),
         numericInput(
             paste0(plot_name, "_", .plotFontSize), label="Font size:",
             min=0, value=x[[.plotFontSize]]),

@@ -57,6 +57,7 @@
                          theme="xcode",
                          autoComplete="disabled",
                          value=instance[[slot_name]],
+                         debounce=100,
                          height="500px")
         ),
         column(width = 4,

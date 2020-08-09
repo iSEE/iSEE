@@ -384,6 +384,7 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x) {
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
     tagList(
+        hr(),
         checkboxInput(.input_FUN(.plotCustomLabels),
                       label=sprintf("Label custom %ss", .singleSelectionDimension(x)),
                       value=x[[.plotCustomLabels]]),

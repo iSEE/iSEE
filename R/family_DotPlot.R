@@ -615,7 +615,7 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
         N <- length(plot_cmds)
         plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")
         dn <- .convert_text_to_names(x[[.plotCustomLabelsText]])
-        label_cmd <- sprintf('geom_text_repel(aes(x=X, y=Y, label=LabelBy), subset(plot.data, LabelBy %%in%% %s), min.segment.length = unit(0, "mm"))', .deparse_for_viewing(dn))
+        label_cmd <- sprintf('ggrepel::geom_text_repel(aes(x=X, y=Y, label=LabelBy), subset(plot.data, LabelBy %%in%% %s), min.segment.length = unit(0, "mm"))', .deparse_for_viewing(dn))
         plot_cmds <- c(plot_cmds, label_cmd)
     }
 

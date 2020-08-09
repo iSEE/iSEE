@@ -116,3 +116,8 @@ jobs:
           pkgs <- installed.packages()[, "Package"]
           sessioninfo::session_info(pkgs, include_base = TRUE)
         shell: Rscript {0}
+      
+      - name: Show ExperimentHub cache location
+        run: |
+          print(ExperimentHub::getExperimentHubOption(arg = "CACHE"))
+        shell: Rscript {0}

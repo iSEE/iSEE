@@ -386,8 +386,8 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x) {
     tagList(
         hr(),
         checkboxInput(.input_FUN(.plotCustomLabels),
-                      label=sprintf("Label custom %ss", .singleSelectionDimension(x)),
-                      value=x[[.plotCustomLabels]]),
+            label=sprintf("Label custom %ss", .singleSelectionDimension(x)),
+            value=x[[.plotCustomLabels]]),
         .conditional_on_check_solo(
             .input_FUN(.plotCustomLabels),
             on_select=TRUE,

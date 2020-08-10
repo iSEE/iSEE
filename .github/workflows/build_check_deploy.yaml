@@ -20,6 +20,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v1
+        
+      - name: Cache ExperimentHub
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/ExperimentHub
+          key: ${{ runner.os }}-ehub
+          restore-keys: ${{ runner.os }}-ehub
 
       - name: Query dependencies
         run: |
@@ -108,4 +115,9 @@ jobs:
           options(width = 100)
           pkgs <- installed.packages()[, "Package"]
           sessioninfo::session_info(pkgs, include_base = TRUE)
+        shell: Rscript {0}
+      
+      - name: Show ExperimentHub cache location
+        run: |
+          print(ExperimentHub::getExperimentHubOption(arg = "CACHE"))
         shell: Rscript {0}

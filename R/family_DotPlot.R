@@ -252,6 +252,8 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     args <- .emptyDefault(args, .plotPointDownsample, iSEEOptions$get("downsample"))
     args <- .emptyDefault(args, .plotPointSampleRes, iSEEOptions$get("downsample.resolution"))
 
+    args <- .emptyDefault(args, .plotCustomLabels, FALSE)
+    args <- .emptyDefault(args, .plotCustomLabelsText, NA_character_)
     args <- .emptyDefault(args, .plotFontSize, iSEEOptions$get("font.size"))
     args <- .emptyDefault(args, .legendPointSize, iSEEOptions$get("legend.point.size"))
     args <- .emptyDefault(args, .plotLegendPosition, iSEEOptions$get("legend.position"))
@@ -264,10 +266,10 @@ setValidity2("DotPlot", function(object) {
     msg <- character(0)
 
     msg <- .valid_logical_error(msg, object,
-        c(.visualParamBoxOpen, .contourAdd, .plotPointDownsample))
+        c(.plotCustomLabels, .visualParamBoxOpen, .contourAdd, .plotPointDownsample))
 
     msg <- .single_string_error(msg, object,
-        c(.colorByField, .colorByFeatName, .colorByRowTable, .colorBySampName, .colorByColTable,
+        c(.plotCustomLabelsText, .colorByField, .colorByFeatName, .colorByRowTable, .colorBySampName, .colorByColTable,
             .shapeByField,
             .sizeByField,
             .selectEffect))
@@ -341,6 +343,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
     callNextMethod()
 
     plot_name <- .getEncodedName(x)
+    plot_dimension <- .multiSelectionDimension(x)
 
     .create_box_observers(plot_name, .visualParamBoxOpen, input, pObjects)
 
@@ -356,7 +359,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
             .shapeByField, .sizeByField,
             .plotPointSize, .plotPointAlpha, .plotFontSize, .legendPointSize, .plotLegendPosition,
             .plotPointDownsample, .plotPointSampleRes, .contourAdd,
-            .contourColor),
+            .contourColor, .plotCustomLabels),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     # Filling the plot interaction observers:
@@ -368,6 +371,9 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 
     .create_zoom_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
+    
+    .create_modal_observers_for_dimnames(plot_name, .plotCustomLabelsText, .dimnamesModalOpen,
+        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, plot_dimension)
 })
 
 # Interface ----
@@ -375,8 +381,17 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 #' @export
 setMethod(".defineVisualTextInterface", "DotPlot", function(x) {
     plot_name <- .getEncodedName(x)
+    .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
     tagList(
+        hr(),
+        checkboxInput(.input_FUN(.plotCustomLabels),
+            label=sprintf("Label custom %ss", .singleSelectionDimension(x)),
+            value=x[[.plotCustomLabels]]),
+        .conditional_on_check_solo(
+            .input_FUN(.plotCustomLabels),
+            on_select=TRUE,
+            actionButton(.input_FUN(.dimnamesModalOpen), label=sprintf("Edit %s names", .singleSelectionDimension(x))), br(), br()),
         numericInput(
             paste0(plot_name, "_", .plotFontSize), label="Font size:",
             min=0, value=x[[.plotFontSize]]),
@@ -510,6 +525,8 @@ setMethod(".singleSelectionSlots", "DotPlot", function(x) {
 
 #' @export
 #' @importFrom S4Vectors metadata
+#' @importFrom ggrepel geom_text_repel
+#' @importFrom grid unit
 setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents) {
     # Initialize an environment storing information for generating ggplot commands
     plot_env <- new.env()
@@ -573,6 +590,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
 #' @export
 setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
     plot_data <- envir$plot.data
+    
     is_subsetted <- exists("plot.data.all", envir=envir, inherits=FALSE)
     is_downsampled <- exists("plot.data.pre", envir=envir, inherits=FALSE)
     plot_type <- envir$plot.type
@@ -594,6 +612,14 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
         violin_horizontal=do.call(.violin_plot, c(args, list(horizontal=TRUE))),
         scatter=do.call(.scatter_plot, args)
     )
+    
+    if (x[[.plotCustomLabels]]) {
+        N <- length(plot_cmds)
+        plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")
+        dn <- .convert_text_to_names(x[[.plotCustomLabelsText]])
+        label_cmd <- sprintf('ggrepel::geom_text_repel(aes(x=X, y=Y, label=LabelBy), subset(plot.data, LabelBy %%in%% %s), min.segment.length = grid::unit(0, "mm"))', .deparse_for_viewing(dn))
+        plot_cmds <- c(plot_cmds, label_cmd)
+    }
 
     # Adding a faceting command, if applicable.
     facet_cmd <- .addFacets(x)
@@ -621,13 +647,26 @@ setMethod(".colorByNoneDotPlotField", "DotPlot", function(x) NULL)
 setMethod(".colorByNoneDotPlotScale", "DotPlot", function(x) NULL)
 
 #' @export
+setMethod(".addDotPlotDataLabel", "DotPlot", function(x, envir) {
+    if (x[[.plotCustomLabels]]) {
+        cmds <- "plot.data$LabelBy <- rownames(plot.data);"
+    } else {
+        return(NULL)
+    }
+    .textEval(cmds, envir)
+    list(commands = cmds, labels = list())
+})
+
+#' @export
 setMethod(".definePanelTour", "DotPlot", function(x) {
     mdim <- .multiSelectionDimension(x)
 
     collated <- rbind(
         .add_tour_step(x, .visualParamBoxOpen,  "The <i>Visual parameters</i> box contains parameters related to visual aspects like the color, shape, size and so on.<br/><br/><strong>Action:</strong> click on the header of this box to see the available options."),
         .add_tour_step(x, .colorByField, "PLACEHOLDER_COLOR"), # To be filled in by subclasses.
-        .add_tour_step(x, .visualParamChoice, "There are a lot of options so not all of them are shown by default. More settings are available by checking some of the boxes here; conversely, options can be hidden by unchecking some of these boxes.<br/><br/>Most of these parameters here are fairly self-explanatory and can be explored at leisure."),
+        .add_tour_step(x, .visualParamChoice, "There are a lot of options so not all of them are shown by default. More settings are available by checking some of the boxes here; conversely, options can be hidden by unchecking some of these boxes.<br/><br/>Most of these parameters here are fairly self-explanatory and can be explored at leisure. However, we will highlight one particularly useful piece of functionality.<br/><br/><strong>Action:</strong> tick the checkbox labelled \"Text\"."),
+        .add_tour_step(x, .plotCustomLabels, sprintf("Users can show the names of certain %ss alongside the locations of their data points on the plot.<br/><br/><strong>Action:</strong> tick the checkbox to enable custom labels.", mdim)),
+        .add_tour_step(x, .dimnamesModalOpen, sprintf("When custom labels are enabled, this button can launch a modal containing a text editor where users can specify the data points to label - in this case, using their %s names.", mdim)),
         callNextMethod(),
         .add_tour_step(x, .selectEffect, sprintf("Here, we can choose the effect of the multiple %s selection that was transmitted from the chosen source panel - should the unselected %ss be made transparent? Should the selected %ss be colored? Or should the plot be explicitly restricted to only the selected %s?", mdim, mdim, mdim, mdim)),
         c(paste0("#", .getEncodedName(x)), sprintf("At the other end of the spectrum, brushing or creating a lasso on this plot will create a selection of multiple %ss, to be transmitted to other panels that choose this one as their selection source.<br/><br/>Drag-and-dropping will create a rectangular brush while a single click will lay down a lasso waypoint for non-rectangular selections.<br/><br/>Brushes and lassos can also be used to transmit single %s selections in which case one %s is arbitrarily chosen from the selection.", mdim, mdim, mdim)),

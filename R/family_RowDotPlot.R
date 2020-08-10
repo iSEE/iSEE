@@ -197,6 +197,8 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 
     continuous <- rdp_cached$continuous.rowData.names
     x <- .replace_na_with_first(x, .sizeByRowData, continuous)
+    
+    x <- .replace_na_with_first(x, .plotCustomLabelsText, rownames(se)[1])
 
     x
 })

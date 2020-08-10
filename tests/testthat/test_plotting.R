@@ -1384,3 +1384,28 @@ test_that(".create_guides_command produces a command when expected", {
     expect_null(out)
 
 })
+
+test_that(".generateDotPlot handles custom labels", {
+    rdp <- pObjects$memory$ReducedDimensionPlot1
+    rdp[[iSEE:::.plotCustomLabels]] <- TRUE
+    cn <- colnames(sce)[1:3]
+    rdp[[iSEE:::.plotCustomLabelsText]] <- paste0(cn, collapse = "\n")
+    
+    p.out <- .generateOutput(rdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
+    
+    # return value is a named list
+    expect_type(p.out, "list")
+    expect_named(p.out, c("commands", "contents", "plot", "varname"))
+    
+    # cmd value is a named list
+    expect_type(p.out$commands, "list")
+    expect_true(all(vapply(p.out$commands, is.character, TRUE)))
+    
+    # xy value is a data frame
+    expect_s3_class(p.out$contents, "data.frame")
+    expect_named(p.out$contents, c("X", "Y", "LabelBy"))
+    
+    #plot
+    expect_s3_class(p.out$plot, c("gg", "ggplot"))
+})

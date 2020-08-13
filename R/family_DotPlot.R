@@ -339,6 +339,7 @@ setMethod(".refineParameters", "DotPlot", function(x, se) {
 })
 
 #' @export
+#' @importFrom shiny observeEvent insertUI removeUI
 setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObjects, rObjects) {
     callNextMethod()
 
@@ -371,7 +372,26 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 
     .create_zoom_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
-    
+
+    hover_field <- paste0(plot_name, "_", .hoverTooltip)
+    observeEvent(input[[hover_field]], { 
+        hover <- input[[hover_field]]
+        hover_field <- paste0(plot_name, "_", .hoverInfo)
+        removeUI(paste0("#", hover_field))
+
+        if (!is.null(hover)) {
+            point <- nearPoints(pObjects$contents[[plot_name]], hover, threshold = 5, maxpoints = 1)
+
+            if (nrow(point)!=0) {
+                # z-index is set so we are sure are tooltip will be on top
+                style <- paste0("position:absolute; z-index:100; background-color: rgba(245, 245, 245, 0.85); ",
+                    "left:", hover$coords_css$x + 2, "px; top:", hover$coords_css$y + 2, "px;")
+                insertUI(paste0("#", plot_name), where="beforeEnd", div(id=hover_field, style=style, rownames(point)))
+                return(NULL)
+            }
+        }
+    }, ignoreNULL=FALSE)
+
     .create_modal_observers_for_dimnames(plot_name, .plotCustomLabelsText, .dimnamesModalOpen,
         se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, plot_dimension)
 })
@@ -425,7 +445,7 @@ setMethod(".defineOutput", "DotPlot", function(x) {
 })
 
 #' @export
-#' @importFrom shiny renderPlot tagList
+#' @importFrom shiny renderPlot tagList wellPanel nearPoints renderUI
 setMethod(".renderOutput", "DotPlot", function(x, se, output, pObjects, rObjects) {
     plot_name <- .getEncodedName(x)
     force(se) # defensive programming to avoid difficult bugs due to delayed evaluation.

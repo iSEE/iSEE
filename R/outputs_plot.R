@@ -14,7 +14,7 @@
 #'
 #' @rdname INTERNAL_define_plot_ui
 #' @importFrom shinyWidgets addSpinner
-#' @importFrom shiny brushOpts plotOutput
+#' @importFrom shiny brushOpts plotOutput uiOutput tagList hoverOpts
 .define_plot_ui <- function(plot_name, height, brush_direction, brush_fill, brush_stroke) {
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
@@ -22,12 +22,14 @@
         direction=brush_direction, fill=brush_fill, stroke=brush_stroke,
         opacity=.brushFillOpacity)
 
+    hoveropt <-  hoverOpts(.input_FUN(.hoverTooltip), delay=100)
+
     dblclick <- .input_FUN(.zoomClick)
     clickopt <- .input_FUN(.lassoClick)
     panel_height <- paste0(height, "px")
 
     addSpinner(
-        plotOutput(plot_name, brush=brush.opts, dblclick=dblclick, click=clickopt, height=panel_height),
+        plotOutput(plot_name, brush=brush.opts, dblclick=dblclick, click=clickopt, hover=hoveropt, height=panel_height),
         color=brush_fill
     )
 }

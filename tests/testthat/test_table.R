@@ -1,3 +1,6 @@
+# This tests the table output functions.
+# library(iSEE); library(testthat); source('setup_sce.R'); source('test_table.R')
+
 context("Tables")
 
 test_that(".multiSelectionCommands handles tables", {
@@ -108,4 +111,20 @@ test_that(".generateTable handles ColumnDataTable", {
         "tab <- as.data.frame(colData(se));",
         "tab <- tab[unique(unlist(col_selected)),,drop=FALSE]"
     ))
+})
+
+test_that(".showSelectionDetails works as expected", {
+    x <- ColumnDataTable()
+    expect_null(.showSelectionDetails(x))
+
+    iSEEOptions$set(ColumnTable.select.details=identity)
+    expect_identical(.showSelectionDetails(x), x[["Selected"]])
+    iSEEOptions$set(ColumnTable.select.details=NULL)
+
+    x <- RowDataTable(Selected="B")
+    expect_null(.showSelectionDetails(x))
+
+    iSEEOptions$set(RowTable.select.details=identity)
+    expect_identical(.showSelectionDetails(x), x[["Selected"]])
+    iSEEOptions$set(RowTable.select.details=NULL)
 })

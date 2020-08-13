@@ -598,7 +598,7 @@ NULL
 setGeneric(".generateTable", function(x, envir) standardGeneric(".generateTable"))
 
 #' @export
-setGeneric(".showSelectionDetails", function(x) standardGeneric(".addTableSelectionDetails"))
+setGeneric(".showSelectionDetails", function(x) standardGeneric(".showSelectionDetails"))
 
 ###########################
 

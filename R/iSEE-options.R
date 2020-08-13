@@ -97,8 +97,8 @@ iSEEOptions <- new_defaults(list(
     panel.color = c(),
 
     assay = c("logcounts", "normcounts"),
-    RowTable.extra.info=NULL
-    ColumnTable.extra.info=NULL
+    RowTable.extra.info = NULL,
+    ColumnTable.extra.info = NULL
 ))
 
 # merge elements of y into x with the same names

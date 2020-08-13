@@ -104,6 +104,17 @@
     })
     # nocov end
 
+    # nocov start
+    output[[paste0(panel_name, "_", .tableExtraInfo)]] <- renderUI({
+        .trackSingleSelection(panel_name, rObjects)
+        FUN <- iSEEOptions$get("table.extra.info")
+        if (!is.null(FUN)) {
+            selected <- pObjects$memory[[panel_name]][[.TableSelected]]
+            FUN(selected)
+        }
+    })
+    # nocov end
+
     invisible(NULL)
 }
 

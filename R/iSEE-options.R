@@ -62,8 +62,8 @@ new_defaults = function(value = list()) {
 #' The names of the vector should be set to the name of class to be overridden; if a class is not named here, its default color is used.
 #' It is highly recommended to define colors as hex color codes (e.g., \code{"#1e90ff"}), for full compatibility with both HTML elements and R plots.}
 #' \item{\code{assay}}{Character vector of assay names to use if available, in order of preference.}
-#' \item{\code{RowTable.select.details}}{A function that takes a \linkS4class{RowTable} object \code{x} and returns a HTML element describing the current single selection.} 
-#' \item{\code{ColumnTable.select.details}}{A function that takes a \linkS4class{ColumnTable} object \code{x} and returns a HTML element describing the current single selection.} 
+#' \item{\code{RowTable.select.details}}{A function that takes a string containing the name of a feature (i.e., the current selection in the \linkS4class{RowTable}) and returns a HTML element with more details.} 
+#' \item{\code{ColumnTable.select.details}}{A function that takes a string containing the name of a sample (i.e., the current selection in the \linkS4class{ColumnTable}) and returns a HTML element with more details.}
 #' }
 #'
 #' @author Kevin Rue-Albrecht

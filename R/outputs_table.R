@@ -2,7 +2,6 @@
 #'
 #' Create a reactive expression to render the Table output,
 #' in a manner that satisfies all the requirements of the \code{\link{.renderOutput}} generic.
-#' This function will call \code{\link{.generateOutput}} to get the heavy lifting done.
 #'
 #' @param panel_name String containing the name of the panel.
 #' @param se A \linkS4class{SummarizedExperiment} object for the current dataset.
@@ -10,8 +9,16 @@
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
 #'
+#' @details
+#' This function will call \code{\link{.retrieveOutput}} to get the heavy lifting done,
+#' which eventually calls \code{\link{.generateTable}}.
+#'
+#' This function will also add a rendering expression to add details about the current single selection,
+#' via the \code{\link{.showSelectionDetails}} function.
+#'
 #' @return
 #' A reactive element to render the table is added to \code{output}.
+#' Another reactive element is added to render details about the current single selection.
 #' A \code{NULL} is invisibly returned.
 #'
 #' @author Aaron Lun
@@ -107,11 +114,7 @@
     # nocov start
     output[[paste0(panel_name, "_", .tableExtraInfo)]] <- renderUI({
         .trackSingleSelection(panel_name, rObjects)
-        FUN <- iSEEOptions$get("table.extra.info")
-        if (!is.null(FUN)) {
-            selected <- pObjects$memory[[panel_name]][[.TableSelected]]
-            FUN(selected)
-        }
+        .showSelectionDetails(pObjects$memory[[panel_name]])
     })
     # nocov end
 

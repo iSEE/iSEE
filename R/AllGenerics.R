@@ -580,14 +580,25 @@ setGeneric(".colorDotPlot", function(x, colorby, x_aes="X", y_aes="Y") standardG
 #' This generic is called by \code{.generateOutput} for Table subclasses.
 #' Thus, developers of such subclasses only need to specialize \code{.generateTable} to change the table contents, without needing to reimplement the entirety of \code{.generateOutput}.
 #'
+#' @section Adding details on the selection:
+#' \code{.showSelectionDetails(x)} should return a HTML element containing details on the currently selected row,
+#' given an instance of a Table subclass \code{x}.
+#' The identity of the selected row should be extracted from \code{x[["Selected"]]}.
+#' The element will only be rerendered upon a single selection in the Table.
+#' Alternatively, it may return \code{NULL} in which case no selection details are shown in the interface.
+#' 
 #' @author Aaron Lun
 #'
 #' @aliases .generateTable
+#' @aliases .showSelectionDetails
 #' @name table-generics
 NULL
 
 #' @export
 setGeneric(".generateTable", function(x, envir) standardGeneric(".generateTable"))
+
+#' @export
+setGeneric(".showSelectionDetails", function(x) standardGeneric(".addTableSelectionDetails"))
 
 ###########################
 

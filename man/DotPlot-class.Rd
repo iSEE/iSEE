@@ -91,12 +91,14 @@ Defaults to 0.1.
 Defaults to \code{"red"}.
 }
 
-The following slots control the behavior of brushes:
+The following slots control interactions with the plot image:
 \itemize{
 \item \code{ZoomData}, a named numeric vector of plot coordinates with \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"} elements parametrizing the zoom boundaries.
 Defaults to an empty vector, i.e., no zoom.
 \item \code{BrushData}, a list containing either a Shiny brush (see \code{?\link{brushedPoints}}) or an \pkg{iSEE} lasso (see \code{?\link{lassoPoints}}).
 Defaults to an empty list, i.e., no brush or lasso.
+\item \code{HoverInfo}, a logical scalar indicating whether the feature/sample name should be shown upon mouse-over of the point.
+Defaults to \code{TRUE}.
 }
 
 The following slots control some aspects of the user interface:

@@ -63,12 +63,14 @@
 #' Defaults to \code{"red"}.
 #' }
 #'
-#' The following slots control the behavior of brushes:
+#' The following slots control interactions with the plot image:
 #' \itemize{
 #' \item \code{ZoomData}, a named numeric vector of plot coordinates with \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"} elements parametrizing the zoom boundaries.
 #' Defaults to an empty vector, i.e., no zoom.
 #' \item \code{BrushData}, a list containing either a Shiny brush (see \code{?\link{brushedPoints}}) or an \pkg{iSEE} lasso (see \code{?\link{lassoPoints}}).
 #' Defaults to an empty list, i.e., no brush or lasso.
+#' \item \code{HoverInfo}, a logical scalar indicating whether the feature/sample name should be shown upon mouse-over of the point.
+#' Defaults to \code{TRUE}.
 #' }
 #'
 #' The following slots control some aspects of the user interface:
@@ -258,6 +260,8 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     args <- .emptyDefault(args, .legendPointSize, iSEEOptions$get("legend.point.size"))
     args <- .emptyDefault(args, .plotLegendPosition, iSEEOptions$get("legend.position"))
 
+    args <- .emptyDefault(args, .plotHoverInfo, TRUE)
+
     do.call(callNextMethod, c(list(.Object), args))
 })
 
@@ -266,7 +270,7 @@ setValidity2("DotPlot", function(object) {
     msg <- character(0)
 
     msg <- .valid_logical_error(msg, object,
-        c(.plotCustomLabels, .visualParamBoxOpen, .contourAdd, .plotPointDownsample))
+        c(.plotCustomLabels, .visualParamBoxOpen, .contourAdd, .plotPointDownsample, .plotHoverInfo))
 
     msg <- .single_string_error(msg, object,
         c(.plotCustomLabelsText, .colorByField, .colorByFeatName, .colorByRowTable, .colorBySampName, .colorByColTable,
@@ -332,6 +336,15 @@ setMethod(".refineParameters", "DotPlot", function(x, se) {
         return(NULL)
     }
 
+    # Backwards compatibility for new slot (added 3.12, due for removal in 3.14).
+    # nocov start
+    if (is(try(x[[.plotHoverInfo]], silent=TRUE), "try-error")) {
+        .Deprecated(msg=sprintf("'%s' lacks the '%s' field.\nTry '<%s>[[\"%s\"]] <- TRUE'.",
+            class(x)[1], .plotHoverInfo, class(x)[1], .plotHoverInfo))
+        x[[.plotHoverInfo]] <- TRUE
+    }
+    # nocov end
+
     x <- .replace_na_with_first(x, .colorByFeatName, rownames(se))
     x <- .replace_na_with_first(x, .colorBySampName, colnames(se))
 
@@ -360,7 +373,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
             .shapeByField, .sizeByField,
             .plotPointSize, .plotPointAlpha, .plotFontSize, .legendPointSize, .plotLegendPosition,
             .plotPointDownsample, .plotPointSampleRes, .contourAdd,
-            .contourColor, .plotCustomLabels),
+            .contourColor, .plotCustomLabels, .plotHoverInfo),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     # Filling the plot interaction observers:
@@ -380,6 +393,9 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
     rgb <- col2rgb(bg)
 
     observeEvent(input[[hover_field]], { 
+        if (!pObjects$memory[[plot_name]][[.plotHoverInfo]]) {
+            return(NULL)
+        }
         hover <- input[[hover_field]]
         hover_field <- paste0(plot_name, "_", .hoverInfo)
         removeUI(paste0("#", hover_field))
@@ -428,6 +444,9 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x) {
         checkboxInput(.input_FUN(.plotCustomLabels),
             label=sprintf("Label custom %ss", .singleSelectionDimension(x)),
             value=x[[.plotCustomLabels]]),
+        checkboxInput(.input_FUN(.plotHoverInfo),
+            label=sprintf("Show %s details on hover", .singleSelectionDimension(x)),
+            value=x[[.plotHoverInfo]]),
         .conditional_on_check_solo(
             .input_FUN(.plotCustomLabels),
             on_select=TRUE,
@@ -442,6 +461,7 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x) {
             paste0(plot_name, "_", .plotLegendPosition), label="Legend position:", inline=TRUE,
             choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
             selected=x[[.plotLegendPosition]])
+
     )
 
 })

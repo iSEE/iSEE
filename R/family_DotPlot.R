@@ -374,6 +374,10 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
         pObjects=pObjects, rObjects=rObjects)
 
     hover_field <- paste0(plot_name, "_", .hoverTooltip)
+    bg <- .panelColor(pObjects$memory[[plot_name]])
+    bg <- .lighten_color_for_fill(bg)
+    rgb <- col2rgb(bg)
+
     observeEvent(input[[hover_field]], { 
         hover <- input[[hover_field]]
         hover_field <- paste0(plot_name, "_", .hoverInfo)
@@ -384,10 +388,10 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 
             if (nrow(point)!=0) {
                 # z-index is set so we are sure are tooltip will be on top
-                style <- paste0("position:absolute; z-index:100; background-color: rgba(245, 245, 245, 0.85); ",
+                style <- paste0("position:absolute; z-index:100; padding: 2px; background-color:",
+                    sprintf("rgba(%i, %i, %i, 1); ", rgb[1,], rgb[2,], rgb[3,]),
                     "left:", hover$coords_css$x + 2, "px; top:", hover$coords_css$y + 2, "px;")
                 insertUI(paste0("#", plot_name), where="beforeEnd", div(id=hover_field, style=style, rownames(point)))
-                return(NULL)
             }
         }
     }, ignoreNULL=FALSE)

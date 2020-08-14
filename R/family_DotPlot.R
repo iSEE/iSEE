@@ -373,6 +373,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
     .create_zoom_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
+    # TODO: move into its own file!
     hover_field <- paste0(plot_name, "_", .hoverTooltip)
     bg <- .panelColor(pObjects$memory[[plot_name]])
     bg <- .lighten_color_for_fill(bg)
@@ -384,10 +385,25 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
         removeUI(paste0("#", hover_field))
 
         if (!is.null(hover)) {
-            point <- nearPoints(pObjects$contents[[plot_name]], hover, threshold = 5, maxpoints = 1)
+            # NOTE: a bit of a hack here to account for violin X/Y.
+            # We should probably figure out a better way to pass this 
+            # information about the 'real'point coordinates, e.g., by
+            # tucking something into the data.frame's attributes.
+            df <- pObjects$contents[[plot_name]]
+            if (!is.null(df$jitteredX)) {
+                df$X <- df$jitteredX
+                hover$mapping$group <- NULL
+                hover$domain$discrete_limits <- NULL
+            }
+            if (!is.null(df$jitteredY)) {
+                df$Y <- df$jitteredY
+                hover$mapping$group <- NULL
+                hover$domain$discrete_limits <- NULL
+            }
+            point <- nearPoints(df, hover, threshold = 5, maxpoints = 1)
 
             if (nrow(point)!=0) {
-                # z-index is set so we are sure are tooltip will be on top
+                # z-index ensures that the tooltip will be on top
                 style <- paste0("position:absolute; z-index:100; padding: 2px; background-color:",
                     sprintf("rgba(%i, %i, %i, 1); ", rgb[1,], rgb[2,], rgb[3,]),
                     "left:", hover$coords_css$x + 2, "px; top:", hover$coords_css$y + 2, "px;")

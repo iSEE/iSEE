@@ -159,7 +159,11 @@ setMethod(".singleSelectionValue", "Table", function(x, contents) {
 #' @export
 #' @importFrom DT dataTableOutput
 setMethod(".defineOutput", "Table", function(x) {
-    tagList(dataTableOutput(.getEncodedName(x)), hr())
+    tagList(
+        dataTableOutput(.getEncodedName(x)), 
+        uiOutput(paste0(.getEncodedName(x), "_", .tableExtraInfo)),
+        hr()
+    )
 })
 
 #' @export

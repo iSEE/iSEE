@@ -96,6 +96,8 @@
 .int_statTableSearch <- "_search"
 .int_statTableColSearch <- "_search_columns"
 
+.tableExtraInfo <- "INTERNAL_extra_info"
+
 # Tour parameters. ---
 
 .panelHelpTour <- "INTERNAL_help"

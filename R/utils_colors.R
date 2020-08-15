@@ -98,6 +98,7 @@
 #' primarily for use in the fill of a brush.
 #'
 #' @param col String containing the color of a panel.
+#' @param as.vector Logical scalar indicating whether the RGB values should be returned directly.
 #'
 #' @return String containing the lightened color.
 #'
@@ -105,9 +106,12 @@
 #'
 #' @rdname INTERNAL_lighten_color_for_fill
 #' @importFrom grDevices col2rgb rgb
-.lighten_color_for_fill <- function(col) {
+.lighten_color_for_fill <- function(col, as.vector=FALSE) {
     new_colors <- 255 - ((255 - col2rgb(col))/5)
-    rgb(new_colors[1,], new_colors[2,], new_colors[3,], maxColorValue=255)
+    if (!as.vector) {
+        new_colors <- rgb(new_colors[1,], new_colors[2,], new_colors[3,], maxColorValue=255)
+    }
+    new_colors
 }
 
 .brushFillOpacity <- 0.25

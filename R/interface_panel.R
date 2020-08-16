@@ -191,6 +191,7 @@ height_limits <- c(400L, 1000L)
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_insert_help_icon
+#' @importFrom shiny div
 .insert_help_icon <- function(in_box, id) { 
     title_elements <- in_box$children[[1]]$children[[1]]$children
     title_elements <- c(title_elements,     

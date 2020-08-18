@@ -87,6 +87,9 @@
 .plotFontSizeLegendTitleDefault <- 11
 .plotFontSizeTitleDefault <- 12
 
+.hoverTooltip <- "INTERNAL_hover_event"
+.hoverInfo <- "INTERNAL_hover_info"
+
 # Table parameters. ----
 
 .int_statTableSelected <- "_rows_selected"

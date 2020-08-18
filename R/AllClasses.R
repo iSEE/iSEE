@@ -236,6 +236,10 @@ collated[.plotFontSize] <- "numeric"
 collated[.legendPointSize] <- "numeric"
 collated[.plotLegendPosition] <- "character"
 
+.plotHoverInfo <- "HoverInfo"
+
+collated[.plotHoverInfo] <- "logical"
+
 #' @export
 setClass("DotPlot", contains=c("Panel", "VIRTUAL"), slots=collated)
 

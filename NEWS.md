@@ -1,3 +1,9 @@
+# iSEE 2.1.14
+
+* Right-aligned the help icon for individual panel tour.
+* Added tooltip for mouseovers on `DotPlot` panels.
+* Allowed custom annotation about selected table row to to be displayed in `Table` panels.
+
 # iSEE 2.1.13
 
 * Refactored the heatmap feature selection modal to be reusable for selecting rows or columns in other contexts.
@@ -13,8 +19,8 @@
 
 # iSEE 2.1.10
 
-* Avoid transmitting multiple selections for `Table`s when the number of columns change.
-* Hide irrelevant UI elements for `Table` multiple selections.
+* Avoided transmitting multiple selections for `Table`s when the number of columns change.
+* Hid irrelevant UI elements for `Table` multiple selections.
 * Generalized information about the number of selected rows/columns in each panel.
 * Streamlined the `.defineOutput` signature.
 
@@ -46,8 +52,8 @@
 
 # iSEE 2.1.4
 
-* Add progress bar when exporting panel outputs. 
-* Fix missing section in `createLandingPage()` man page.
+* Added progress bar when exporting panel outputs. 
+* Fixed missing section in `createLandingPage()` man page.
 
 # iSEE 2.1.3
 

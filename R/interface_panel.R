@@ -124,15 +124,12 @@ height_limits <- c(400L, 1000L)
             param,
             uiOutput(.input_FUN(.panelMultiSelectInfo)), 
             uiOutput(.input_FUN(.panelSelectLinkInfo)),
-            title=shiny::div(
-                .getFullName(instance),
-                HTML("&nbsp;"),
-                shiny::div(id=.input_FUN(.panelHelpTour), style="display: inline-block;", icon("question-circle fa-1g"))
-            ),
+            title=.getFullName(instance),
             solidHeader=TRUE, width=NULL, status="danger"
         )
 
         cur_box <- .coerce_box_status(cur_box, .encodedName(instance))
+        cur_box <- .insert_help_icon(cur_box, .input_FUN(.panelHelpTour))
 
         cur.row[[row.counter]] <- column(width=panel_width, cur_box, style='padding:3px;')
         row.counter <- row.counter + 1L
@@ -182,3 +179,24 @@ height_limits <- c(400L, 1000L)
 }
 
 .actionbutton_biocstyle <- "color: #ffffff; background-color: #0092AC; border-color: #2e6da4"
+
+#' Insert a right-aligned help icon
+#'
+#' Insert the clickable icon for the self-help tour for each panel.
+#'
+#' @param in_box A HTML tag object corresponding to a \code{box} object from the \pkg{shinydashboard} package.
+#' @param id A string containing the identifier for the element to be inserted.
+#'
+#' @return A modified \code{in_box} where a right-aligned help icon is inserted into the header.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_insert_help_icon
+#' @importFrom shiny div
+.insert_help_icon <- function(in_box, id) { 
+    title_elements <- in_box$children[[1]]$children[[1]]$children
+    title_elements <- c(title_elements,     
+        list(div(id=id, style="display: inline-block; float: right;", icon("question-circle fa-1g")))
+    )
+    in_box$children[[1]]$children[[1]]$children <- title_elements
+    in_box
+}

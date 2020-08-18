@@ -73,7 +73,7 @@ It provides slots and methods to create the plot, to control various aesthetics 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.14</span>
       </span>
     </div>
 
@@ -217,11 +217,13 @@ Defaults to 0.1.</p></li>
 Defaults to <code>"red"</code>.</p></li>
 </ul>
 
-<p>The following slots control the behavior of brushes:</p><ul>
+<p>The following slots control interactions with the plot image:</p><ul>
 <li><p><code>ZoomData</code>, a named numeric vector of plot coordinates with <code>"xmin"</code>, <code>"xmax"</code>, <code>"ymin"</code> and <code>"ymax"</code> elements parametrizing the zoom boundaries.
 Defaults to an empty vector, i.e., no zoom.</p></li>
 <li><p><code>BrushData</code>, a list containing either a Shiny brush (see <code>?brushedPoints</code>) or an <span class="pkg">iSEE</span> lasso (see <code>?lassoPoints</code>).
 Defaults to an empty list, i.e., no brush or lasso.</p></li>
+<li><p><code>HoverInfo</code>, a logical scalar indicating whether the feature/sample name should be shown upon mouse-over of the point.
+Defaults to <code>TRUE</code>.</p></li>
 </ul>
 
 <p>The following slots control some aspects of the user interface:</p><ul>

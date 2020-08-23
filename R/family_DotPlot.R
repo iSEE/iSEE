@@ -241,10 +241,12 @@
 #' .prioritizeDotPlotData,DotPlot-method
 #' .colorByNoneDotPlotField,DotPlot-method
 #' .colorByNoneDotPlotScale,DotPlot-method
+#' .defineInterface,DotPlot-method
 #' .defineVisualColorInterface,DotPlot-method
 #' .defineVisualSizeInterface,DotPlot-method
 #' .defineVisualShapeInterface,DotPlot-method
 #' .defineVisualTextInterface,DotPlot-method
+#' .defineVisualPointInterface,DotPlot-method
 #' .defineVisualOtherInterface,DotPlot-method
 #' .defineVisualFacetInterface,DotPlot-method
 #' .definePanelTour,DotPlot-method

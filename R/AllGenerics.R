@@ -498,9 +498,9 @@ setGeneric(".colorByNoneDotPlotScale", function(x) standardGeneric(".colorByNone
 #' The last two are used in case of coloring based on the identity of a single point.
 #'
 #' @section Get commands:
-#' \code{\link{.getMetadataCommand}(x)} returns a string containing the command to use to extract the relevant metadata from a SummarizedExperiment object, i.e., the \code{"rowData"} or \code{"colData"} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s respectively.
+#' \code{\link{.getDotPlotMetadataCommand}(x)} returns a string containing the command to use to extract the relevant metadata from a SummarizedExperiment object, i.e., the \code{"rowData"} or \code{"colData"} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s respectively.
 #'
-#' \code{\link{.getNamesCommand}(x)} returns a string containing the command to use to extract the relevant names of the points from a SummarizedExperiment object, i.e., the \code{"rownames"} or \code{"colnames"} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s respectively.
+#' \code{\link{.getDotPlotNamesCommand}(x)} returns a string containing the command to use to extract the relevant names of the points from a SummarizedExperiment object, i.e., the \code{"rownames"} or \code{"colnames"} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s respectively.
 #'
 #' @section Design note:
 #' We ask the modification to occur inside the method,
@@ -940,7 +940,8 @@ setGeneric(".defineVisualOtherInterface", function(x) standardGeneric(".defineVi
 #' and \code{se} is a SummarizedExperiment after running \code{\link{.cacheCommonInfo}}.
 #'
 #' @section Get metadata choices:
-#' \code{.getDiscreteMetadataChoices(x, se)} returns a character vector of possible metadata choices, usually names of columns in the \code{\link{rowData}} or \code{\link{colData}} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlots}, respectively.
+#' \code{.getMetadataChoices(x, se)} returns a character vector of possible metadata choices, usually names of columns in the \code{\link{rowData}} or \code{\link{colData}} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
+#' This should be applied on \code{se} after running \code{\link{.cacheCommonInfo}}.
 #'
 #' \code{.getDiscreteMetadataChoices(x, se)} returns a character vector of discrete metadata choices.
 #'
@@ -948,7 +949,8 @@ setGeneric(".defineVisualOtherInterface", function(x) standardGeneric(".defineVi
 #'
 #' @section Defining color choices:
 #' \code{.defineDotPlotColorChoices(x, se)} returns a character vector of names for the \code{"ColorBy"} slot in \linkS4class{DotPlot} classes.
-#' This is usually dependent on what is available in \code{se}.
+#' This is usually dependent on what is available in \code{se}, 
+#' and should be applied on \code{se} after running \code{\link{.cacheCommonInfo}}.
 #'
 #' @section Defining DotPlot constants:
 #' These functions return a list of lists containing constant strings to use as UI labels, as well as the names of slots to use as the UI identifiers (and to populate the default UI values) from a \linkS4class{DotPlot} \code{x}. 

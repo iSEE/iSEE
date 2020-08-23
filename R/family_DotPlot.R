@@ -51,6 +51,24 @@
 #' Defaults to \code{"---"}, i.e., no column faceting.
 #' }
 #'
+#' The following slots control any text to be shown on the plot:
+#' \itemize{
+#' \item \code{LabelCenters}, a logical scalar indicating whether the label the centers (technically medoids) of all cells in each group, where groups are defined by a discrete covariate in the relevant metadata field.
+#' Defaults to \code{FALSE}.
+#' \item \code{LabelCentersBy}, a string specifying the metadata field to define the groups when \code{LabelCenters} is \code{TRUE}.
+#' This should be a discrete variable in \code{\link{rowData}} or \code{\link{colData}} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
+#' Defaults to the name of the first column.
+#' \item \code{LabelCentersColor}, a string specifying the color used for the labels at the center of each group.
+#' Only used when \code{LabelCenters} is \code{TRUE}.
+#' Defaults to \code{"black"}.
+#' \item \code{CustomLabels}, a logical scalar indicating whether custom labels should be inserted on specific points.
+#' Defaults to \code{FALSE}.
+#' \item \code{CustomLabelsText}, a (possibly multi-line) string with the names of the points to label when \code{CustomLabels} is set to \code{TRUE}.
+#' Each line should contain the name of a row or column for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
+#' Leading and trailing whitespace are stripped, and all text on a line after \code{#} is ignored.
+#' Defaults to the name of the first row/column.
+#' }
+#'
 #' The following slots control the effect of the transmitted selection from another panel:
 #' \itemize{
 #' \item \code{SelectionEffect}, a string specifying the selection effect.
@@ -256,12 +274,15 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
 
     args <- .emptyDefault(args, .plotCustomLabels, FALSE)
     args <- .emptyDefault(args, .plotCustomLabelsText, NA_character_)
-    args <- .emptyDefault(args, .plotLabelCenters, .noSelection)
     args <- .emptyDefault(args, .plotFontSize, iSEEOptions$get("font.size"))
     args <- .emptyDefault(args, .legendPointSize, iSEEOptions$get("legend.point.size"))
     args <- .emptyDefault(args, .plotLegendPosition, iSEEOptions$get("legend.position"))
 
     args <- .emptyDefault(args, .plotHoverInfo, TRUE)
+
+    args <- .emptyDefault(args, .plotLabelCenters, FALSE)
+    args <- .emptyDefault(args, .plotLabelCentersBy, NA_character_)
+    args <- .emptyDefault(args, .plotLabelCentersColor, "black") 
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -271,20 +292,26 @@ setValidity2("DotPlot", function(object) {
     msg <- character(0)
 
     msg <- .valid_logical_error(msg, object,
-        c(.plotCustomLabels, .visualParamBoxOpen, .contourAdd, .plotPointDownsample, .plotHoverInfo))
+        c(.plotCustomLabels, .visualParamBoxOpen, .contourAdd, .plotPointDownsample, 
+            .plotHoverInfo,
+            .plotLabelCenters            
+        ))
 
     msg <- .single_string_error(msg, object,
         c(.plotCustomLabelsText, .colorByField, .colorByFeatName, .colorByRowTable, .colorBySampName, .colorByColTable,
             .shapeByField,
             .sizeByField,
-            .selectEffect))
+            .selectEffect,
+            .plotLabelCentersBy
+        ))
 
     msg <- .valid_string_error(msg, object,
         c(.colorByDefaultColor,
             .selectColor,
             .facetByRow, .facetByColumn,
             .contourColor,
-            .plotLabelCenters))
+            .plotLabelCentersColor
+        ))
 
     msg <- .allowable_choice_error(msg, object, .selectEffect,
         c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
@@ -344,11 +371,15 @@ setMethod(".refineParameters", "DotPlot", function(x, se) {
         .Deprecated(msg=sprintf("'%s' lacks the '%s' field.\nTry '<%s>[[\"%s\"]] <- TRUE'.",
             class(x)[1], .plotHoverInfo, class(x)[1], .plotHoverInfo))
         x[[.plotHoverInfo]] <- TRUE
+        x[[.plotLabelCenters]] <- FALSE
+        x[[.plotLabelCentersBy]] <- NA_character_
+        x[[.plotLabelCentersColor]] <- "black"
     }
     # nocov end
 
     x <- .replace_na_with_first(x, .colorByFeatName, rownames(se))
     x <- .replace_na_with_first(x, .colorBySampName, colnames(se))
+    x <- .replace_na_with_first(x, .plotLabelCentersBy, .getDiscreteMetadataChoices(x, se))
 
     x
 })
@@ -374,7 +405,8 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
             .shapeByField, .sizeByField,
             .plotPointSize, .plotPointAlpha, .plotFontSize, .legendPointSize, .plotLegendPosition,
             .plotPointDownsample, .plotPointSampleRes, .contourAdd,
-            .contourColor, .plotCustomLabels, .plotHoverInfo, .plotLabelCenters),
+            .contourColor, .plotCustomLabels, .plotHoverInfo, 
+            .plotLabelCenters, .plotLabelCentersBy, .plotLabelCentersColor),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     # Filling the plot interaction observers:
@@ -405,6 +437,7 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
         checkboxInput(.input_FUN(.plotHoverInfo),
             label=sprintf("Show %s details on hover", .singleSelectionDimension(x)),
             value=x[[.plotHoverInfo]]),
+        hr(),
         checkboxInput(.input_FUN(.plotCustomLabels),
             label=sprintf("Label custom %ss", .singleSelectionDimension(x)),
             value=x[[.plotCustomLabels]]),
@@ -412,12 +445,24 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
             .input_FUN(.plotCustomLabels),
             on_select=TRUE,
             actionButton(.input_FUN(.dimnamesModalOpen), 
-                label=sprintf("Edit %s names", .singleSelectionDimension(x))), 
-            br(), br()),
-        selectInput(.input_FUN(.plotLabelCenters),
+                label=sprintf("Edit %s names", .singleSelectionDimension(x)))
+        ), 
+        hr(),
+        checkboxInput(.input_FUN(.plotLabelCenters),
             label="Label centers",
-            choices=c(.noSelection, .getDiscreteMetadataChoices(x, se)),
-            selected=x[[.plotLabelCenters]]),
+            value=x[[.plotLabelCenters]]),
+        .conditional_on_check_solo(
+            .input_FUN(.plotLabelCenters),
+            on_select=TRUE,
+            selectInput(.input_FUN(.plotLabelCentersBy),
+                label="Label centers:",
+                choices=.getDiscreteMetadataChoices(x, se),
+                selected=x[[.plotLabelCentersBy]]),
+            colourInput(.input_FUN(.plotLabelCentersColor),
+                label=NULL,
+                value=x[[.plotLabelCentersColor]])
+        ),
+        hr(),
         numericInput(
             paste0(plot_name, "_", .plotFontSize), label="Font size:",
             min=0, value=x[[.plotFontSize]]),
@@ -656,27 +701,8 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
         plot_cmds <- c(plot_cmds, facet_cmd)
     }
 
-    # Adding centering labels, but only for scatter plots.
-    if (x[[.plotLabelCenters]]!=.noSelection && plot_type=="scatter") {
-        aggregants <- c("LabelCenters=.label_values")
-        if (x[[.facetByRow]]!=.noSelection) {
-            aggregants <- c(aggregants, "FacetRow=plot.data$FacetRow")
-        }
-        if (x[[.facetByColumn]]!=.noSelection) {
-            aggregants <- c(aggregants, "FacetColumn=plot.data$FacetColumn")
-        }
-
-        cmds <- sprintf("{
-    .label_values <- %s(se)[[%s]][match(rownames(plot.data), %s(se))]
-    .aggregated <- aggregate(plot.data[,c('X', 'Y')], FUN=median, na.rm=TRUE,
-        by=list(%s))
-    ggplot2::geom_text(aes(x=X, y=Y, label=LabelCenters), .aggregated)
-}", .getDotPlotMetadataCommand(x), deparse(x[[.plotLabelCenters]]), .getDotPlotNamesCommand(x), 
-            paste(aggregants, collapse=", "))
-
-        N <- length(plot_cmds)
-        plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")
-        plot_cmds <- c(plot_cmds, cmds)
+    if (plot_type=="scatter") {
+        plot_cmds <- .addCenteredLabelsCommands(x, commands=plot_cmds)
     }
 
     # Adding self-brushing boxes, if they exist.

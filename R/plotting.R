@@ -1385,3 +1385,47 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
     commands
 }
+
+#' Add centered label plotting commands
+#'
+#' Add \link{ggplot} instructions to label the center of each group on a scatter plot.
+#' This is a utility function that is intended for use in \code{\link{.generateDotPlot}}.
+#'
+#' @param x An instance of a \linkS4class{DotPlot} class.
+#' @param commands A character vector representing the sequence of commands to create the \link{ggplot} object.
+#' 
+#' @return A character vector containing \code{commands} plus any additional commands required to generate the labels.
+#'
+#' @author Aaron Lun
+#' @export
+#' @rdname addCenteredLabelsCommands
+.addCenteredLabelsCommands <- function(x, commands) {
+    if (x[[.plotLabelCenters]]) {
+        aggregants <- c("LabelCenters=.label_values")
+
+        # Some intelligence involved in accounting for the faceting;
+        # in this case, a label is shown on each facet if possible.
+        # Note that the same label may differ in locations across facets.
+        if (x[[.facetByRow]]!=.noSelection) {
+            aggregants <- c(aggregants, "FacetRow=plot.data$FacetRow")
+        }
+        if (x[[.facetByColumn]]!=.noSelection) {
+            aggregants <- c(aggregants, "FacetColumn=plot.data$FacetColumn")
+        }
+
+        cmds <- sprintf("{
+    .label_values <- %s(se)[[%s]][match(rownames(plot.data), %s(se))]
+    .aggregated <- aggregate(plot.data[,c('X', 'Y')], FUN=median, na.rm=TRUE,
+        by=list(%s))
+    ggplot2::geom_text(aes(x=X, y=Y, label=LabelCenters), .aggregated, color=%s, size=%s)
+}", .getDotPlotMetadataCommand(x), deparse(x[[.plotLabelCentersBy]]), .getDotPlotNamesCommand(x),
+            paste(aggregants, collapse=", "), deparse(x[[.plotLabelCentersColor]]), 
+            deparse(x[[.plotFontSize]] * 4))
+
+        N <- length(commands)
+        commands[[N]] <- paste(commands[[N]], "+")
+        commands <- c(commands, cmds)
+    }
+
+    commands
+}

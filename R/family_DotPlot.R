@@ -462,10 +462,8 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
     colorby <- .getDotPlotColorConstants(x)
     mydim_single <- .singleSelectionDimension(x)
     otherdim_single <- setdiff(c("feature", "sample"), mydim_single)
-
-    # TODO: fix this upstream. 
-    mydim_choices <- select_info[[c(feature="row", sample="column")[mydim_single]]]
-    otherdim_choices <- select_info[[c(feature="row", sample="column")[otherdim_single]]]
+    mydim_choices <- select_info[[mydim_single]]
+    otherdim_choices <- select_info[[otherdim_single]]
 
     tagList(
         hr(),

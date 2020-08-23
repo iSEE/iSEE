@@ -220,7 +220,7 @@ setMethod(".defineDataInterface", "SampleAssayPlot", function(x, se, select_info
 
     row_covariates <- .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
     all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
-    tab_by_col <- select_info$single$column
+    tab_by_col <- select_info$single$sample
 
     xaxis_choices <- c(.sampAssayXAxisNothingTitle)
     if (length(row_covariates)) { # As it is possible for this plot to be _feasible_ but for no row data to exist.

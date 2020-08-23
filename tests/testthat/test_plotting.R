@@ -1420,5 +1420,15 @@ test_that(".generateDotPlot handles centered labels", {
     expect_true(any(grepl("\\.aggregated", p.out$commands)))
 
     expect_s3_class(p.out$plot, c("gg", "ggplot"))
+
+    # Plus faceting.
+    rdp[["FacetByColumn"]] <- "dissection_s"
+    rdp[["FacetByRow"]] <- "dissection_s"
+
+    p.out <- .generateOutput(rdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
+
+    expect_true(any(grepl("LabelCenters.*FacetRow", p.out$commands)))
+    expect_true(any(grepl("LabelCenters.*FacetColumn", p.out$commands)))
 })
 

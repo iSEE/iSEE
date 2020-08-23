@@ -344,11 +344,17 @@ setMethod(".refineParameters", "DotPlot", function(x, se) {
         .Deprecated(msg=sprintf("'%s' lacks the '%s' field.\nTry '<%s>[[\"%s\"]] <- TRUE'.",
             class(x)[1], .plotHoverInfo, class(x)[1], .plotHoverInfo))
         x[[.plotHoverInfo]] <- TRUE
+        x[[.plotLabelCenters]] <- .noSelection
     }
     # nocov end
 
     x <- .replace_na_with_first(x, .colorByFeatName, rownames(se))
     x <- .replace_na_with_first(x, .colorBySampName, colnames(se))
+
+    center_lab <- x[[.plotLabelCenters]]
+    if (!center_lab %in% .getDiscreteMetadataChoices(x, se) && center_lab!=.noSelection) {
+        x[[.plotLabelCenters]] <- .noSelection
+    }
 
     x
 })
@@ -415,7 +421,7 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
                 label=sprintf("Edit %s names", .singleSelectionDimension(x))), 
             br(), br()),
         selectInput(.input_FUN(.plotLabelCenters),
-            label="Label centers",
+            label="Label centers:",
             choices=c(.noSelection, .getDiscreteMetadataChoices(x, se)),
             selected=x[[.plotLabelCenters]]),
         numericInput(

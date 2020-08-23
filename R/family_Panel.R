@@ -67,7 +67,8 @@
 #'
 #' For setting up data values:
 #' \itemize{
-#' \item \code{\link{.refineParameters}(x, se)} is a no-op, returning \code{x} without modification.
+#' \item \code{\link{.refineParameters}(x, se)} calls \code{\link{updateObject}(x)}.
+#' If \code{x} is up to date, this operation is a no-op and returns \code{x} without modification.
 #' \item \code{\link{.cacheCommonInfo}(x, se)} is a no-op, returning \code{se} without modification.
 #' }
 #'
@@ -153,6 +154,7 @@
 #' .singleSelectionValue,Panel-method
 #' .singleSelectionSlots,Panel-method
 #' .definePanelTour,Panel-method
+#' updateObject,Panel-method
 NULL
 
 #' @export
@@ -225,7 +227,7 @@ setReplaceMethod("[[", "Panel", function(x, i, j, ..., value) {
 
 #' @export
 setMethod(".refineParameters", "Panel", function(x, se) {
-    x
+    updateObject(x)
 })
 
 #' @export
@@ -387,3 +389,6 @@ setMethod(".definePanelTour", "Panel", function(x) {
     data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
 })
 
+#' @export
+#' @importFrom BiocGenerics updateObject
+setMethod("updateObject", "Panel", function(object) object)

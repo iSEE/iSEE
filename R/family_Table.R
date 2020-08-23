@@ -89,6 +89,7 @@
 #' .singleSelectionValue,Table-method
 #' .definePanelTour,Table-method
 #' .defineDataInterface,Table-method
+#' updateObject,Table-method
 NULL
 
 #' @export
@@ -121,14 +122,7 @@ setMethod(".refineParameters", "Table", function(x, se) {
         return(NULL)
     }
 
-    # Backwards compatibility for new slot (added 3.12, due for removal in 3.14).
-    # nocov start
-    if (is(try(x[[.TableHidden]], silent=TRUE), "try-error")) {
-        .Deprecated(msg=sprintf("'%s' lacks the '%s' field.\nTry '<%s>[[\"%s\"]] <- character(0)'.",
-            class(x)[1], .TableHidden, class(x)[1], .TableHidden))
-        x[[.TableHidden]] <- character(0)
-    }
-    # nocov end
+    # TODO: move HiddenColumn checks here.
 
     x
 })
@@ -243,3 +237,16 @@ setMethod(".definePanelTour", "Table", function(x) {
     collated
 })
 
+#' @export
+#' @importFrom BiocGenerics updateObject
+setMethod("updateObject", "Table", function(object) {
+    # Backwards compatibility for new slots (added 3.12).
+    # nocov start
+    if (is(try(object[[.TableHidden]], silent=TRUE), "try-error")) {
+        .Deprecated(msg=sprintf("'%s' is out of date, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
+        object[[.TableHidden]] <- character(0)
+    }
+    # nocov end
+
+    object
+})

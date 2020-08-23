@@ -497,6 +497,11 @@ setGeneric(".colorByNoneDotPlotScale", function(x) standardGeneric(".colorByNone
 #' }
 #' The last two are used in case of coloring based on the identity of a single point.
 #'
+#' @section Get commands:
+#' \code{\link{.getMetadataCommand}(x)} returns a string containing the command to use to extract the relevant metadata from a SummarizedExperiment object, i.e., the \code{"rowData"} or \code{"colData"} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s respectively.
+#'
+#' \code{\link{.getNamesCommand}(x)} returns a string containing the command to use to extract the relevant names of the points from a SummarizedExperiment object, i.e., the \code{"rownames"} or \code{"colnames"} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s respectively.
+#'
 #' @section Design note:
 #' We ask the modification to occur inside the method,
 #' rather than evaluating it ourselves in \code{\link{.add_extra_aesthetic_columns}},
@@ -526,6 +531,8 @@ setGeneric(".colorByNoneDotPlotScale", function(x) standardGeneric(".colorByNone
 #' .addDotPlotDataFacets,RowDotPlot-method
 #' .addDotPlotDataSelected,RowDotPlot-method
 #' .colorDotPlot,RowDotPlot-method
+#' .getDotPlotMetadataCommand
+#' .getDotPlotNamesCommand
 #'
 #' @author Kevin Rue-Albrecht
 #'
@@ -545,6 +552,10 @@ setGeneric(".addDotPlotDataLabel", function(x, envir) standardGeneric(".addDotPl
 setGeneric(".addDotPlotDataSelected", function(x, envir) standardGeneric(".addDotPlotDataSelected"))
 
 setGeneric(".colorDotPlot", function(x, colorby, x_aes="X", y_aes="Y") standardGeneric(".colorDotPlot"))
+
+setGeneric(".getDotPlotMetadataCommand", function(x) standardGeneric(".getDotPlotMetadataCommand"))
+
+setGeneric(".getDotPlotNamesCommand", function(x) standardGeneric(".getDotPlotNamesCommand"))
 
 ###########################
 
@@ -918,6 +929,27 @@ setGeneric(".defineVisualTextInterface", function(x, se) standardGeneric(".defin
 
 #' @export
 setGeneric(".defineVisualOtherInterface", function(x) standardGeneric(".defineVisualOtherInterface"))
+
+#' Internal generics for the DotPlot interface
+#'
+#' @description
+#' These functions are implemented as generics so as to enable differences in behavior between
+#' \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s.
+#' They are used to construct the parameter interfaces for both of these classes.
+#'
+#' In the following code snippets, \code{x} is an instance of a \linkS4class{DotPlot} class,
+#' and \code{se} is a SummarizedExperiment after running \code{\link{.cacheCommonInfo}}.
+#'
+#' @section Get discrete metadata choices:
+#' \code{\link{.getDiscreteMetadataChoices}(x, se)} specifies the discrete metadata choices on the \code{\link{rowData}} or \code{\link{colData}} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlots}, respectively.
+#' It returns a character vector containing the names of acceptable columns.
+#' 
+#' @name INTERNAL_dotplot-interface
+#' @aliases
+#' .getDiscreteMetadataChoices
+NULL
+
+setGeneric(".getDiscreteMetadataChoices", function(x, se) standardGeneric(".getDiscreteMetadataChoices"))
 
 ###########################
 

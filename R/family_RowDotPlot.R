@@ -394,6 +394,14 @@ setMethod(".multiSelectionDimension", "RowDotPlot", function(x) "row")
 #' @export
 setMethod(".singleSelectionDimension", "RowDotPlot", function(x) "feature")
 
+setMethod(".getDiscreteMetadataChoices", "RowDotPlot", function(x, se) {
+    .getCachedCommonInfo(se, "RowDotPlot")$discrete.rowData.names
+})
+
+setMethod(".getDotPlotMetadataCommand", "RowDotPlot", function(x) "rowData")
+
+setMethod(".getDotPlotNamesCommand", "RowDotPlot", function(x) "rownames")
+
 ###############################################################
 # See ?.addDotPlotDataColor for documentation on these methods.
 

@@ -393,6 +393,14 @@ setMethod(".multiSelectionDimension", "ColumnDotPlot", function(x) "column")
 #' @export
 setMethod(".singleSelectionDimension", "ColumnDotPlot", function(x) "sample")
 
+setMethod(".getDiscreteMetadataChoices", "ColumnDotPlot", function(x, se) {
+    .getCachedCommonInfo(se, "ColumnDotPlot")$discrete.colData.names
+})
+
+setMethod(".getDotPlotMetadataCommand", "ColumnDotPlot", function(x) "colData")
+
+setMethod(".getDotPlotNamesCommand", "ColumnDotPlot", function(x) "colnames")
+
 ###############################################################
 # See ?.addDotPlotDataColor for documentation on these methods.
 

@@ -150,6 +150,17 @@
 #'
 #' For defining the interface:
 #' \itemize{
+#' \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
+#' It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}}.
+#' This will \emph{override} the \linkS4class{Panel} method.
+#' \item \code{\link{.defineVisualColorInterface}(x, se, select_info)} defines the user interface subpanel for manipulating the color of the points.
+#' \item \code{\link{.defineVisualShapeInterface}(x, se)} defines the user interface subpanel for manipulating the shape of the points.
+#' \item \code{\link{.defineVisualSizeInterface}(x, se)} defines the user interface subpanel for manipulating the size of the points.
+#' \item \code{\link{.defineVisualPointInterface}(x, se)} defines the user interface subpanel for manipulating other point-related parameters.
+#' \item \code{\link{.defineVisualFacetInterface}(x, se)} defines the user interface subpanel for manipulating facet-related parameters.
+#' \item \code{\link{.defineVisualTextInterface}(x, se)} defines the user interface subpanel for manipulating text-related parameters.
+#' \item \code{\link{.defineVisualOtherInterface}(x, se)} defines the user interface subpanel for manipulating other parameters.
+#' Currently this returns \code{NULL}.
 #' \item \code{\link{.defineOutput}(x)} returns a UI element for a brushable plot.
 #' }
 #'
@@ -230,8 +241,12 @@
 #' .prioritizeDotPlotData,DotPlot-method
 #' .colorByNoneDotPlotField,DotPlot-method
 #' .colorByNoneDotPlotScale,DotPlot-method
+#' .defineVisualColorInterface,DotPlot-method
+#' .defineVisualSizeInterface,DotPlot-method
+#' .defineVisualShapeInterface,DotPlot-method
 #' .defineVisualTextInterface,DotPlot-method
 #' .defineVisualOtherInterface,DotPlot-method
+#' .defineVisualFacetInterface,DotPlot-method
 #' .definePanelTour,DotPlot-method
 NULL
 
@@ -456,7 +471,7 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
         hr(),
         radioButtons(
             colorby_field, label="Color by:", inline=TRUE,
-            choices=.defineDotPlotColorChoices(x, se, covariates, all_assays),
+            choices=.defineDotPlotColorChoices(x, se),
             selected=x[[.colorByField]]
         ),
         .conditional_on_radio(
@@ -499,6 +514,96 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
                 value=x[[.colorBySampDynamic]])
         )
     )
+})
+
+#' @export
+setMethod(".defineVisualShapeInterface", "DotPlot", function(x, se) {
+    discrete_covariates <- .getDiscreteMetadataChoices(x, se)
+
+    if (length(discrete_covariates)) {
+        plot_name <- .getEncodedName(x)
+        shapeby_field <- paste0(plot_name, "_", .shapeByField)
+        shapeby <- .getDotPlotShapeConstants(x)
+        
+        tagList(
+            hr(),
+            radioButtons(
+                shapeby_field, label="Shape by:", inline=TRUE,
+                choices=c(.shapeByNothingTitle, if (length(discrete_covariates)) shapeby$metadata$title),
+                selected=x[[.shapeByField]]
+            ),
+            .conditional_on_radio(
+                shapeby_field, shapeby$metadata$title,
+                selectInput(
+                    paste0(plot_name, "_", shapeby$metadata$field), label=NULL,
+                    choices=discrete_covariates, selected=x[[shapeby$metadata$field]])
+            )
+        )
+    } else {
+        NULL
+    }
+})
+
+#' @export
+setMethod(".defineVisualSizeInterface", "DotPlot", function(x, se) {
+    numeric_covariates <- .getContinuousMetadataChoices(x, se)
+    plot_name <- .getEncodedName(x)
+    sizeby_field <- paste0(plot_name, "_", .sizeByField)
+    sizeby <- .getDotPlotSizeConstants(x)
+
+    tagList(
+        hr(),
+        radioButtons(
+            sizeby_field, label="Size by:", inline=TRUE,
+            choices=c(.sizeByNothingTitle, if (length(numeric_covariates)) sizeby$metadata$title),
+            selected=x[[.sizeByField]]
+        ),
+        .conditional_on_radio(
+            sizeby_field, .sizeByNothingTitle,
+            numericInput(
+                paste0(plot_name, "_", .plotPointSize), label="Point size:",
+                min=0, value=x[[.plotPointSize]])
+        ),
+        .conditional_on_radio(
+            sizeby_field, sizeby$metadata$title,
+            selectInput(paste0(plot_name, "_", sizeby$metadata$field), label=NULL,
+                choices=numeric_covariates, selected=x[[sizeby$metadata$field]])
+        )
+    )
+})
+
+#' @export
+setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
+    plot_name <- .getEncodedName(x)
+    tagList(
+        hr(),
+        .add_point_UI_elements(x),
+        checkboxInput(
+            inputId=paste0(plot_name, "_", .contourAdd),
+            label="Add contour (scatter only)",
+            value=FALSE),
+        .conditional_on_check_solo(
+            paste0(plot_name, "_", .contourAdd),
+            on_select=TRUE,
+            colourInput(
+                paste0(plot_name, "_", .contourColor), label=NULL,
+                value=x[[.contourColor]]))
+    )
+})
+
+#' @export
+setMethod(".defineVisualFacetInterface", "DotPlot", function(x, se) {
+    discrete_covariates <- .getDiscreteMetadataChoices(x, se)
+
+    if (length(discrete_covariates)) {
+        tagList(
+            hr(),
+            .add_facet_UI_elements(x, discrete_covariates)
+        )
+    } else {
+        NULL
+    }
+
 })
 
 #' @export

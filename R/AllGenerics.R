@@ -930,32 +930,59 @@ setGeneric(".defineVisualTextInterface", function(x, se) standardGeneric(".defin
 #' @export
 setGeneric(".defineVisualOtherInterface", function(x) standardGeneric(".defineVisualOtherInterface"))
 
-#' Internal generics for the DotPlot interface
+#' Internal interface generics 
 #'
 #' @description
-#' These functions are implemented as generics so as to enable differences in behavior between
-#' \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s.
-#' They are used to construct the parameter interfaces for both of these classes.
+#' These functions are implemented as generics so as to enable differences in the parameter interfaces between Row/Column panels,
+#' such as \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s.
 #'
-#' In the following code snippets, \code{x} is an instance of a \linkS4class{DotPlot} class,
+#' In the following code snippets, \code{x} is an instance of a \linkS4class{Panel} class (usually a \linkS4class{DotPlot})
 #' and \code{se} is a SummarizedExperiment after running \code{\link{.cacheCommonInfo}}.
 #'
-#' @section Get discrete metadata choices:
-#' \code{\link{.getDiscreteMetadataChoices}(x, se)} specifies the discrete metadata choices on the \code{\link{rowData}} or \code{\link{colData}} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlots}, respectively.
-#' It returns a character vector containing the names of acceptable columns.
-#' 
+#' @section Get metadata choices:
+#' \code{.getDiscreteMetadataChoices(x, se)} returns a character vector of possible metadata choices, usually names of columns in the \code{\link{rowData}} or \code{\link{colData}} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlots}, respectively.
+#'
+#' \code{.getDiscreteMetadataChoices(x, se)} returns a character vector of discrete metadata choices.
+#'
+#' \code{.getContinusMetadataChoices(x, se)} returns a character vector of continuous metadata choices.
+#'
+#' @section Defining color choices:
+#' \code{.defineDotPlotColorChoices(x, se)} returns a character vector of names for the \code{"ColorBy"} slot in \linkS4class{DotPlot} classes.
+#' This is usually dependent on what is available in \code{se}.
+#'
+#' @section Defining DotPlot constants:
+#' These functions return a list of lists containing constant strings to use as UI labels, as well as the names of slots to use as the UI identifiers (and to populate the default UI values) from a \linkS4class{DotPlot} \code{x}. 
+#'
+#' \code{.getDotPlotColorConstants(x)} returns color-related constants.
+#'
+#' \code{.getDotPlotSizeConstants(x)} returns size-related constants.
+#'
+#' \code{.getDotPlotShapeConstants(x)} returns shape-related constants.
+#'
 #' @name INTERNAL_dotplot-interface
 #' @aliases
 #' .getDiscreteMetadataChoices
+#' .getMetadataChoices
+#' .getContinuousMetadataChoices
+#' .defineDotPlotColorChoices
+#' .getDotPlotColorConstants
+#' .getDotPlotShapeConstants
+#' .getDotPlotSizeConstants
 NULL
 
 setGeneric(".getDiscreteMetadataChoices", function(x, se) standardGeneric(".getDiscreteMetadataChoices"))
 
+setGeneric(".getContinuousMetadataChoices", function(x, se) standardGeneric(".getContinuousMetadataChoices"))
+
 setGeneric(".getMetadataChoices", function(x, se) standardGeneric(".getMetadataChoices"))
 
-setGeneric(".defineDotPlotColorChoices", function(x, ...) standardGeneric(".defineDotPlotColorChoices"))
+setGeneric(".defineDotPlotColorChoices", function(x, se) standardGeneric(".defineDotPlotColorChoices"))
 
-setGeneric(".getDotPlotColorConstants", function(x, ...) standardGeneric(".getDotPlotColorConstants"))
+setGeneric(".getDotPlotColorConstants", function(x) standardGeneric(".getDotPlotColorConstants"))
+
+setGeneric(".getDotPlotSizeConstants", function(x) standardGeneric(".getDotPlotSizeConstants"))
+
+setGeneric(".getDotPlotShapeConstants", function(x) standardGeneric(".getDotPlotShapeConstants"))
 
 ###########################
 

@@ -44,9 +44,6 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots in the \linkS4class{RowDotPlot}.
-#' It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}}.
-#' This will \emph{override} the \linkS4class{Panel} method.
 #' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 #' This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"}, \code{"RowSelectionType"} and \code{"RowSelectionSaved"}),
 #' otherwise it dispatches to the \linkS4class{Panel} method.
@@ -96,10 +93,6 @@
 #' .hideInterface,RowDotPlot-method
 #' .multiSelectionDimension,RowDotPlot-method
 #' .singleSelectionDimension,RowDotPlot-method
-#' .defineVisualShapeInterface,RowDotPlot-method
-#' .defineVisualSizeInterface,RowDotPlot-method
-#' .defineVisualFacetInterface,RowDotPlot-method
-#' .defineVisualPointInterface,RowDotPlot-method
 #' .definePanelTour,RowDotPlot-method
 #'
 #' @name RowDotPlot-class
@@ -335,11 +328,17 @@ setMethod(".getDiscreteMetadataChoices", "RowDotPlot", function(x, se) {
     .getCachedCommonInfo(se, "RowDotPlot")$discrete.rowData.names
 })
 
+setMethod(".getContinuousMetadataChoices", "RowDotPlot", function(x, se) {
+    .getCachedCommonInfo(se, "RowDotPlot")$continuous.colData.names
+})
+
 setMethod(".getMetadataChoices", "RowDotPlot", function(x, se) {
     .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
 })
 
-setMethod(".defineDotPlotColorChoices", "RowDotPlot", function(x, se, covariates, all_assays) {
+setMethod(".defineDotPlotColorChoices", "RowDotPlot", function(x, se) {
+    covariates <- .getMetadataChoices(x, se)
+    all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
     .define_color_options_for_row_plots(se, covariates, all_assays)
 })
 
@@ -363,6 +362,24 @@ setMethod(".getDotPlotColorConstants", "RowDotPlot", function(x) {
             table=.colorByColTable,
             color=.colorBySampNameColor,
             dynamic=.colorBySampDynamic
+        )
+    )
+})
+
+setMethod(".getDotPlotSizeConstants", "RowDotPlot", function(x) {
+    list(
+        metadata=list(
+            title=.sizeByRowDataTitle,
+            field=.sizeByRowData
+        )
+    )
+})
+
+setMethod(".getDotPlotShapeConstants", "RowDotPlot", function(x) {
+    list(
+        metadata=list(
+            title=.shapeByRowDataTitle,
+            field=.shapeByRowData
         )
     )
 })

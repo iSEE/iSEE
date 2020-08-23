@@ -44,9 +44,6 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
-#' It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}}.
-#' This will \emph{override} the \linkS4class{Panel} method.
 #' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 #' This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"}, \code{"RowSelectionType"} and \code{"RowSelectionSaved"}),
 #' otherwise it dispatches to the \linkS4class{Panel} method.
@@ -96,10 +93,6 @@
 #' .hideInterface,ColumnDotPlot-method
 #' .multiSelectionDimension,ColumnDotPlot-method
 #' .singleSelectionDimension,ColumnDotPlot-method
-#' .defineVisualShapeInterface,ColumnDotPlot-method
-#' .defineVisualSizeInterface,ColumnDotPlot-method
-#' .defineVisualFacetInterface,ColumnDotPlot-method
-#' .defineVisualPointInterface,ColumnDotPlot-method
 #' .definePanelTour,ColumnDotPlot-method
 #'
 #' @name ColumnDotPlot-class
@@ -203,99 +196,6 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 })
 
 #' @export
-setMethod(".defineVisualShapeInterface", "ColumnDotPlot", function(x, se) {
-    discrete_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$discrete.colData.names
-
-    plot_name <- .getEncodedName(x)
-    shapeby_field <- paste0(plot_name, "_", .shapeByField)
-
-    if (length(discrete_covariates)) {
-        tagList(
-            hr(),
-            radioButtons(
-                shapeby_field, label="Shape by:", inline=TRUE,
-                choices=c(.shapeByNothingTitle, if (length(discrete_covariates)) .shapeByColDataTitle),
-                selected=x[[.shapeByField]]
-            ),
-            .conditional_on_radio(
-                shapeby_field, .shapeByColDataTitle,
-                selectInput(
-                    paste0(plot_name, "_", .shapeByColData), label=NULL,
-                    choices=discrete_covariates, selected=x[[.shapeByColData]])
-            )
-        )
-    } else {
-        NULL
-    }
-})
-
-#' @export
-setMethod(".defineVisualSizeInterface", "ColumnDotPlot", function(x, se) {
-    numeric_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$continuous.colData.names
-
-    plot_name <- .getEncodedName(x)
-    sizeby_field <- paste0(plot_name, "_", .sizeByField)
-
-    tagList(
-        hr(),
-        radioButtons(
-            sizeby_field, label="Size by:", inline=TRUE,
-            choices=c(.sizeByNothingTitle, if (length(numeric_covariates)) .sizeByColDataTitle),
-            selected=x[[.sizeByField]]
-        ),
-        .conditional_on_radio(
-            sizeby_field, .sizeByNothingTitle,
-            numericInput(
-                paste0(plot_name, "_", .plotPointSize), label="Point size:",
-                min=0, value=x[[.plotPointSize]])
-        ),
-        .conditional_on_radio(
-            sizeby_field, .sizeByColDataTitle,
-            selectInput(paste0(plot_name, "_", .sizeByColData), label=NULL,
-                choices=numeric_covariates, selected=x[[.sizeByColData]])
-        )
-    )
-})
-
-#' @export
-setMethod(".defineVisualPointInterface", "ColumnDotPlot", function(x, se) {
-    numeric_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$continuous.colData.names
-
-    plot_name <- .getEncodedName(x)
-    sizeby_field <- paste0(plot_name, "_", .shapeByField)
-
-    tagList(
-        hr(),
-        .add_point_UI_elements(x),
-        checkboxInput(
-            inputId=paste0(plot_name, "_", .contourAdd),
-            label="Add contour (scatter only)",
-            value=FALSE),
-        .conditional_on_check_solo(
-            paste0(plot_name, "_", .contourAdd),
-            on_select=TRUE,
-            colourInput(
-                paste0(plot_name, "_", .contourColor), label=NULL,
-                value=x[[.contourColor]]))
-    )
-})
-
-#' @export
-setMethod(".defineVisualFacetInterface", "ColumnDotPlot", function(x, se) {
-    discrete_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$discrete.colData.names
-
-    if (length(discrete_covariates)) {
-        tagList(
-            hr(),
-            .add_facet_UI_elements(x, discrete_covariates)
-        )
-    } else {
-        NULL
-    }
-
-})
-
-#' @export
 setMethod(".hideInterface", "ColumnDotPlot", function(x, field) {
     if (field %in% c(.selectRowSource, .selectRowType, .selectRowSaved, .selectRowDynamic)) {
         TRUE
@@ -335,11 +235,17 @@ setMethod(".getDiscreteMetadataChoices", "ColumnDotPlot", function(x, se) {
     .getCachedCommonInfo(se, "ColumnDotPlot")$discrete.colData.names
 })
 
+setMethod(".getContinuousMetadataChoices", "ColumnDotPlot", function(x, se) {
+    .getCachedCommonInfo(se, "ColumnDotPlot")$continuous.colData.names
+})
+
 setMethod(".getMetadataChoices", "ColumnDotPlot", function(x, se) {
     .getCachedCommonInfo(se, "ColumnDotPlot")$valid.colData.names
 })
 
-setMethod(".defineDotPlotColorChoices", "ColumnDotPlot", function(x, se, covariates, all_assays) {
+setMethod(".defineDotPlotColorChoices", "ColumnDotPlot", function(x, se) {
+    covariates <- .getMetadataChoices(x, se)
+    all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
     .define_color_options_for_column_plots(se, covariates, all_assays)
 })
 
@@ -363,6 +269,24 @@ setMethod(".getDotPlotColorConstants", "ColumnDotPlot", function(x) {
             table=.colorByRowTable,
             color=.colorByFeatNameColor,
             dynamic=.colorByFeatDynamic
+        )
+    )
+})
+
+setMethod(".getDotPlotSizeConstants", "ColumnDotPlot", function(x) {
+    list(
+        metadata=list(
+            title=.sizeByColDataTitle,
+            field=.sizeByColData
+        )
+    )
+})
+
+setMethod(".getDotPlotShapeConstants", "ColumnDotPlot", function(x) {
+    list(
+        metadata=list(
+            title=.shapeByColDataTitle,
+            field=.shapeByColData
         )
     )
 })

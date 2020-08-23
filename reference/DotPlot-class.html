@@ -206,6 +206,23 @@ while for ColumnDotPlots, this should be a field in the <code>colData</code>.
 Defaults to <code>"---"</code>, i.e., no column faceting.</p></li>
 </ul>
 
+<p>The following slots control any text to be shown on the plot:</p><ul>
+<li><p><code>LabelCenters</code>, a logical scalar indicating whether the label the centers (technically medoids) of all cells in each group, where groups are defined by a discrete covariate in the relevant metadata field.
+Defaults to <code>FALSE</code>.</p></li>
+<li><p><code>LabelCentersBy</code>, a string specifying the metadata field to define the groups when <code>LabelCenters</code> is <code>TRUE</code>.
+This should be a discrete variable in <code>rowData</code> or <code>colData</code> for RowDotPlots and ColumnDotPlots, respectively.
+Defaults to the name of the first column.</p></li>
+<li><p><code>LabelCentersColor</code>, a string specifying the color used for the labels at the center of each group.
+Only used when <code>LabelCenters</code> is <code>TRUE</code>.
+Defaults to <code>"black"</code>.</p></li>
+<li><p><code>CustomLabels</code>, a logical scalar indicating whether custom labels should be inserted on specific points.
+Defaults to <code>FALSE</code>.</p></li>
+<li><p><code>CustomLabelsText</code>, a (possibly multi-line) string with the names of the points to label when <code>CustomLabels</code> is set to <code>TRUE</code>.
+Each line should contain the name of a row or column for RowDotPlots and ColumnDotPlots, respectively.
+Leading and trailing whitespace are stripped, and all text on a line after <code>#</code> is ignored.
+Defaults to the name of the first row/column.</p></li>
+</ul>
+
 <p>The following slots control the effect of the transmitted selection from another panel:</p><ul>
 <li><p><code>SelectionEffect</code>, a string specifying the selection effect.
 This should be one of <code>"Transparent"</code> (the default), where all non-selected points become transparent;

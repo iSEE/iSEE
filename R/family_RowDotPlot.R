@@ -96,7 +96,6 @@
 #' .hideInterface,RowDotPlot-method
 #' .multiSelectionDimension,RowDotPlot-method
 #' .singleSelectionDimension,RowDotPlot-method
-#' .defineVisualColorInterface,RowDotPlot-method
 #' .defineVisualShapeInterface,RowDotPlot-method
 #' .defineVisualSizeInterface,RowDotPlot-method
 #' .defineVisualFacetInterface,RowDotPlot-method
@@ -201,70 +200,6 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
     x <- .replace_na_with_first(x, .plotCustomLabelsText, rownames(se)[1])
 
     x
-})
-
-#' @export
-setMethod(".defineInterface", "RowDotPlot", function(x, se, select_info) {
-    list(
-        .create_data_param_box(x, se, select_info),
-        .create_visual_box(x, se, select_info$single),
-        .create_dotplot_selection_param_box(x, select_info$multi$row, select_info$multi$column)
-    )
-})
-
-#' @export
-setMethod(".defineVisualColorInterface", "RowDotPlot", function(x, se, select_info) {
-    covariates <- .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
-    all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
-
-    plot_name <- .getEncodedName(x)
-    colorby_field <- paste0(plot_name, "_", .colorByField)
-
-    tagList(
-        hr(),
-        radioButtons(
-            colorby_field, label="Color by:", inline=TRUE,
-            choices=.define_color_options_for_row_plots(se, covariates, all_assays),
-            selected=x[[.colorByField]]
-        ),
-        .conditional_on_radio(
-            colorby_field, .colorByNothingTitle,
-            colourInput(
-                paste0(plot_name, "_", .colorByDefaultColor), label=NULL,
-                value=x[[.colorByDefaultColor]])
-        ),
-        .conditional_on_radio(
-            colorby_field, .colorByRowDataTitle,
-            selectInput(
-                paste0(plot_name, "_", .colorByRowData), label=NULL,
-                choices=covariates, selected=x[[.colorByRowData]])
-        ),
-        .conditional_on_radio(colorby_field, .colorByFeatNameTitle,
-            selectizeInput(paste0(plot_name, "_", .colorByFeatName),
-                label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
-            selectInput(
-                paste0(plot_name, "_", .colorByRowTable), label=NULL, choices=select_info$row,
-                selected=.choose_link(x[[.colorByRowTable]], select_info$row)),
-            colourInput(paste0(plot_name, "_", .colorByFeatNameColor), label=NULL,
-                value=x[[.colorByFeatNameColor]]),
-            checkboxInput(
-                paste0(plot_name, "_", .colorByFeatDynamic), label="Use dynamic feature selection",
-                value=x[[.colorByFeatDynamic]])
-        ),
-        .conditional_on_radio(colorby_field, .colorBySampNameTitle,
-            selectizeInput(paste0(plot_name, "_", .colorBySampName),
-                label=NULL, choices=NULL, selected=NULL, multiple=FALSE),
-            selectInput(
-                paste0(plot_name, "_", .colorBySampNameAssay), label=NULL,
-                choices=all_assays, selected=x[[.colorBySampNameAssay]]),
-            selectInput(
-                paste0(plot_name, "_", .colorByColTable), label=NULL, choices=select_info$column,
-                selected=.choose_link(x[[.colorByColTable]], select_info$column)),
-            checkboxInput(
-                paste0(plot_name, "_", .colorBySampDynamic), label="Use dynamic sample selection",
-                value=x[[.colorBySampDynamic]])
-        )
-    )
 })
 
 #' @export
@@ -394,8 +329,42 @@ setMethod(".multiSelectionDimension", "RowDotPlot", function(x) "row")
 #' @export
 setMethod(".singleSelectionDimension", "RowDotPlot", function(x) "feature")
 
+###############################################################
+
 setMethod(".getDiscreteMetadataChoices", "RowDotPlot", function(x, se) {
     .getCachedCommonInfo(se, "RowDotPlot")$discrete.rowData.names
+})
+
+setMethod(".getMetadataChoices", "RowDotPlot", function(x, se) {
+    .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
+})
+
+setMethod(".defineDotPlotColorChoices", "RowDotPlot", function(x, se, covariates, all_assays) {
+    .define_color_options_for_row_plots(se, covariates, all_assays)
+})
+
+setMethod(".getDotPlotColorConstants", "RowDotPlot", function(x) {
+    list(
+        metadata=list(
+            title=.colorByRowDataTitle,
+            field=.colorByRowData
+        ),
+        name=list(
+            title=.colorByFeatNameTitle,
+            field=.colorByFeatName,
+            table=.colorByRowTable,
+            color=.colorByFeatNameColor,
+            dynamic=.colorByFeatDynamic
+        ),
+        assay=list(
+            title=.colorBySampNameTitle,
+            field=.colorBySampName,
+            assay=.colorBySampNameAssay,
+            table=.colorByColTable,
+            color=.colorBySampNameColor,
+            dynamic=.colorBySampDynamic
+        )
+    )
 })
 
 setMethod(".getDotPlotMetadataCommand", "RowDotPlot", function(x) "rowData")

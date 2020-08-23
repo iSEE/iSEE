@@ -96,7 +96,6 @@
 #' .hideInterface,ColumnDotPlot-method
 #' .multiSelectionDimension,ColumnDotPlot-method
 #' .singleSelectionDimension,ColumnDotPlot-method
-#' .defineVisualColorInterface,ColumnDotPlot-method
 #' .defineVisualShapeInterface,ColumnDotPlot-method
 #' .defineVisualSizeInterface,ColumnDotPlot-method
 #' .defineVisualFacetInterface,ColumnDotPlot-method
@@ -201,69 +200,6 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
     x <- .replace_na_with_first(x, .plotCustomLabelsText, colnames(se)[1])
 
     x
-})
-
-#' @export
-setMethod(".defineInterface", "ColumnDotPlot", function(x, se, select_info) {
-    list(
-        .create_data_param_box(x, se, select_info),
-        .create_visual_box(x, se, select_info$single),
-        .create_dotplot_selection_param_box(x, select_info$multi$row, select_info$multi$column)
-    )
-})
-
-#' @export
-setMethod(".defineVisualColorInterface", "ColumnDotPlot", function(x, se, select_info) {
-    covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$valid.colData.names
-    all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
-
-    plot_name <- .getEncodedName(x)
-    colorby_field <- paste0(plot_name, "_", .colorByField)
-
-    tagList(
-        hr(),
-        radioButtons(
-            colorby_field, label="Color by:", inline=TRUE,
-            choices=.define_color_options_for_column_plots(se, covariates, all_assays),
-            selected=x[[.colorByField]]
-        ),
-        .conditional_on_radio(
-            colorby_field, .colorByNothingTitle,
-            colourInput(paste0(plot_name, "_", .colorByDefaultColor), label=NULL,
-                value=x[[.colorByDefaultColor]])
-        ),
-        .conditional_on_radio(
-            colorby_field, .colorByColDataTitle,
-            selectInput(paste0(plot_name, "_", .colorByColData), label=NULL,
-                choices=covariates, selected=x[[.colorByColData]])
-        ),
-        .conditional_on_radio(colorby_field, .colorByFeatNameTitle,
-            selectizeInput(paste0(plot_name, "_", .colorByFeatName), label=NULL,
-                choices=NULL, selected=NULL, multiple=FALSE),
-            selectInput(
-                paste0(plot_name, "_", .colorByFeatNameAssay), label=NULL,
-                choices=all_assays, selected=x[[.colorByFeatNameAssay]]),
-            selectInput(
-                paste0(plot_name, "_", .colorByRowTable), label=NULL, choices=select_info$row,
-                selected=.choose_link(x[[.colorByRowTable]], select_info$row)),
-            checkboxInput(
-                paste0(plot_name, "_", .colorByFeatDynamic), label="Use dynamic feature selection for coloring",
-                value=x[[.colorByFeatDynamic]])
-        ),
-        .conditional_on_radio(colorby_field, .colorBySampNameTitle,
-            selectizeInput(paste0(plot_name, "_", .colorBySampName),
-                label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
-            selectInput(
-                paste0(plot_name, "_", .colorByColTable), label=NULL, choices=select_info$column,
-                selected=.choose_link(x[[.colorByColTable]], select_info$column)),
-            colourInput(
-                paste0(plot_name, "_", .colorBySampNameColor), label=NULL,
-                value=x[[.colorBySampNameColor]]),
-            checkboxInput(
-                paste0(plot_name, "_", .colorBySampDynamic), label="Use dynamic sample selection for coloring",
-                value=x[[.colorBySampDynamic]])
-        )
-    )
 })
 
 #' @export
@@ -393,8 +329,42 @@ setMethod(".multiSelectionDimension", "ColumnDotPlot", function(x) "column")
 #' @export
 setMethod(".singleSelectionDimension", "ColumnDotPlot", function(x) "sample")
 
+###############################################################
+
 setMethod(".getDiscreteMetadataChoices", "ColumnDotPlot", function(x, se) {
     .getCachedCommonInfo(se, "ColumnDotPlot")$discrete.colData.names
+})
+
+setMethod(".getMetadataChoices", "ColumnDotPlot", function(x, se) {
+    .getCachedCommonInfo(se, "ColumnDotPlot")$valid.colData.names
+})
+
+setMethod(".defineDotPlotColorChoices", "ColumnDotPlot", function(x, se, covariates, all_assays) {
+    .define_color_options_for_column_plots(se, covariates, all_assays)
+})
+
+setMethod(".getDotPlotColorConstants", "ColumnDotPlot", function(x) {
+    list(
+        metadata=list(
+            title=.colorByColDataTitle,
+            field=.colorByColData
+        ),
+        name=list(
+            title=.colorBySampNameTitle,
+            field=.colorBySampName,
+            table=.colorByColTable,
+            color=.colorBySampNameColor,
+            dynamic=.colorBySampDynamic
+        ),
+        assay=list(
+            title=.colorByFeatNameTitle,
+            field=.colorByFeatName,
+            assay=.colorByFeatNameAssay,
+            table=.colorByRowTable,
+            color=.colorByFeatNameColor,
+            dynamic=.colorByFeatDynamic
+        )
+    )
 })
 
 setMethod(".getDotPlotMetadataCommand", "ColumnDotPlot", function(x) "colData")

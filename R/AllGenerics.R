@@ -951,6 +951,12 @@ NULL
 
 setGeneric(".getDiscreteMetadataChoices", function(x, se) standardGeneric(".getDiscreteMetadataChoices"))
 
+setGeneric(".getMetadataChoices", function(x, se) standardGeneric(".getMetadataChoices"))
+
+setGeneric(".defineDotPlotColorChoices", function(x, ...) standardGeneric(".defineDotPlotColorChoices"))
+
+setGeneric(".getDotPlotColorConstants", function(x, ...) standardGeneric(".getDotPlotColorConstants"))
+
 ###########################
 
 #' Documentation generics

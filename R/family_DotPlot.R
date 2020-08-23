@@ -428,6 +428,80 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 # Interface ----
 
 #' @export
+setMethod(".defineInterface", "DotPlot", function(x, se, select_info) {
+    list(
+        .create_data_param_box(x, se, select_info),
+        .create_visual_box(x, se, select_info$single),
+        .create_dotplot_selection_param_box(x, select_info$multi$row, select_info$multi$column)
+    )
+})
+
+#' @export
+setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info) {
+    covariates <- .getMetadataChoices(x, se)
+    all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
+
+    plot_name <- .getEncodedName(x)
+    colorby_field <- paste0(plot_name, "_", .colorByField)
+
+    colorby <- .getDotPlotColorConstants(x)
+    mydim_single <- .singleSelectionDimension(x)
+    otherdim_single <- setdiff(c("feature", "sample"), mydim_single)
+
+    # TODO: fix this upstream. 
+    mydim_choices <- select_info[[c(feature="row", sample="column")[mydim_single]]]
+    otherdim_choices <- select_info[[c(feature="row", sample="column")[otherdim_single]]]
+
+    tagList(
+        hr(),
+        radioButtons(
+            colorby_field, label="Color by:", inline=TRUE,
+            choices=.defineDotPlotColorChoices(x, se, covariates, all_assays),
+            selected=x[[.colorByField]]
+        ),
+        .conditional_on_radio(
+            colorby_field, .colorByNothingTitle,
+            colourInput(
+                paste0(plot_name, "_", .colorByDefaultColor), label=NULL,
+                value=x[[.colorByDefaultColor]])
+        ),
+        .conditional_on_radio(
+            colorby_field, colorby$metadata$title,
+            selectInput(
+                paste0(plot_name, "_", colorby$metadata$field), label=NULL,
+                choices=covariates, selected=x[[colorby$metadata$field]])
+        ),
+        .conditional_on_radio(colorby_field, colorby$name$title,
+            selectizeInput(paste0(plot_name, "_", colorby$name$field),
+                label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
+            selectInput(
+                paste0(plot_name, "_", colorby$name$table), label=NULL, choices=mydim_choices,
+                selected=.choose_link(x[[colorby$name$table]], mydim_choices)),
+            colourInput(paste0(plot_name, "_", colorby$name$color), label=NULL,
+                value=x[[colorby$name$color]]),
+            checkboxInput(
+                paste0(plot_name, "_", colorby$name$dynamic), 
+                label=sprintf("Use dynamic %s selection", mydim_single), 
+                value=x[[colorby$name$dynamic]])
+        ),
+        .conditional_on_radio(colorby_field, colorby$assay$title,
+            selectizeInput(paste0(plot_name, "_", colorby$assay$field),
+                label=NULL, choices=NULL, selected=NULL, multiple=FALSE),
+            selectInput(
+                paste0(plot_name, "_", colorby$assay$assay), label=NULL,
+                choices=all_assays, selected=x[[colorby$assay$assay]]),
+            selectInput(
+                paste0(plot_name, "_", colorby$assay$table), label=NULL, choices=otherdim_choices, 
+                selected=.choose_link(x[[colorby$assay$table]], otherdim_choices)),
+            checkboxInput(
+                paste0(plot_name, "_", colorby$assay$dynamic), 
+                label=sprintf("Use dynamic %s selection", otherdim_single),
+                value=x[[.colorBySampDynamic]])
+        )
+    )
+})
+
+#' @export
 setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
     plot_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }

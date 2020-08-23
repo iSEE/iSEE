@@ -256,12 +256,15 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
 
     args <- .emptyDefault(args, .plotCustomLabels, FALSE)
     args <- .emptyDefault(args, .plotCustomLabelsText, NA_character_)
-    args <- .emptyDefault(args, .plotLabelCenters, .noSelection)
     args <- .emptyDefault(args, .plotFontSize, iSEEOptions$get("font.size"))
     args <- .emptyDefault(args, .legendPointSize, iSEEOptions$get("legend.point.size"))
     args <- .emptyDefault(args, .plotLegendPosition, iSEEOptions$get("legend.position"))
 
     args <- .emptyDefault(args, .plotHoverInfo, TRUE)
+
+    args <- .emptyDefault(args, .plotLabelCenters, FALSE)
+    args <- .emptyDefault(args, .plotLabelCentersBy, NA_character_)
+    args <- .emptyDefault(args, .plotLabelCentersColor, "black") 
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -271,20 +274,26 @@ setValidity2("DotPlot", function(object) {
     msg <- character(0)
 
     msg <- .valid_logical_error(msg, object,
-        c(.plotCustomLabels, .visualParamBoxOpen, .contourAdd, .plotPointDownsample, .plotHoverInfo))
+        c(.plotCustomLabels, .visualParamBoxOpen, .contourAdd, .plotPointDownsample, 
+            .plotHoverInfo,
+            .plotLabelCenters            
+        ))
 
     msg <- .single_string_error(msg, object,
         c(.plotCustomLabelsText, .colorByField, .colorByFeatName, .colorByRowTable, .colorBySampName, .colorByColTable,
             .shapeByField,
             .sizeByField,
-            .selectEffect))
+            .selectEffect,
+            .plotLabelCentersBy
+        ))
 
     msg <- .valid_string_error(msg, object,
         c(.colorByDefaultColor,
             .selectColor,
             .facetByRow, .facetByColumn,
             .contourColor,
-            .plotLabelCenters))
+            .plotLabelCentersColor
+        ))
 
     msg <- .allowable_choice_error(msg, object, .selectEffect,
         c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
@@ -344,17 +353,15 @@ setMethod(".refineParameters", "DotPlot", function(x, se) {
         .Deprecated(msg=sprintf("'%s' lacks the '%s' field.\nTry '<%s>[[\"%s\"]] <- TRUE'.",
             class(x)[1], .plotHoverInfo, class(x)[1], .plotHoverInfo))
         x[[.plotHoverInfo]] <- TRUE
-        x[[.plotLabelCenters]] <- .noSelection
+        x[[.plotLabelCenters]] <- FALSE
+        x[[.plotLabelCentersBy]] <- NA_character_
+        x[[.plotLabelCentersColor]] <- "black"
     }
     # nocov end
 
     x <- .replace_na_with_first(x, .colorByFeatName, rownames(se))
     x <- .replace_na_with_first(x, .colorBySampName, colnames(se))
-
-    center_lab <- x[[.plotLabelCenters]]
-    if (!center_lab %in% .getDiscreteMetadataChoices(x, se) && center_lab!=.noSelection) {
-        x[[.plotLabelCenters]] <- .noSelection
-    }
+    x <- .replace_na_with_first(x, .plotLabelCentersBy, .getDiscreteMetadataChoices(x, se))
 
     x
 })
@@ -380,7 +387,8 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
             .shapeByField, .sizeByField,
             .plotPointSize, .plotPointAlpha, .plotFontSize, .legendPointSize, .plotLegendPosition,
             .plotPointDownsample, .plotPointSampleRes, .contourAdd,
-            .contourColor, .plotCustomLabels, .plotHoverInfo, .plotLabelCenters),
+            .contourColor, .plotCustomLabels, .plotHoverInfo, 
+            .plotLabelCenters, .plotLabelCentersBy, .plotLabelCentersColor),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     # Filling the plot interaction observers:
@@ -411,6 +419,7 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
         checkboxInput(.input_FUN(.plotHoverInfo),
             label=sprintf("Show %s details on hover", .singleSelectionDimension(x)),
             value=x[[.plotHoverInfo]]),
+        hr(),
         checkboxInput(.input_FUN(.plotCustomLabels),
             label=sprintf("Label custom %ss", .singleSelectionDimension(x)),
             value=x[[.plotCustomLabels]]),
@@ -418,12 +427,24 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
             .input_FUN(.plotCustomLabels),
             on_select=TRUE,
             actionButton(.input_FUN(.dimnamesModalOpen), 
-                label=sprintf("Edit %s names", .singleSelectionDimension(x))), 
-            br(), br()),
-        selectInput(.input_FUN(.plotLabelCenters),
-            label="Label centers:",
-            choices=c(.noSelection, .getDiscreteMetadataChoices(x, se)),
-            selected=x[[.plotLabelCenters]]),
+                label=sprintf("Edit %s names", .singleSelectionDimension(x)))
+        ), 
+        hr(),
+        checkboxInput(.input_FUN(.plotLabelCenters),
+            label="Label centers",
+            value=x[[.plotLabelCenters]]),
+        .conditional_on_check_solo(
+            .input_FUN(.plotLabelCenters),
+            on_select=TRUE,
+            selectInput(.input_FUN(.plotLabelCentersBy),
+                label="Label centers:",
+                choices=.getDiscreteMetadataChoices(x, se),
+                selected=x[[.plotLabelCentersBy]]),
+            colourInput(.input_FUN(.plotLabelCentersColor),
+                label=NULL,
+                value=x[[.plotLabelCentersColor]])
+        ),
+        hr(),
         numericInput(
             paste0(plot_name, "_", .plotFontSize), label="Font size:",
             min=0, value=x[[.plotFontSize]]),
@@ -662,27 +683,8 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
         plot_cmds <- c(plot_cmds, facet_cmd)
     }
 
-    # Adding centering labels, but only for scatter plots.
-    if (x[[.plotLabelCenters]]!=.noSelection && plot_type=="scatter") {
-        aggregants <- c("LabelCenters=.label_values")
-        if (x[[.facetByRow]]!=.noSelection) {
-            aggregants <- c(aggregants, "FacetRow=plot.data$FacetRow")
-        }
-        if (x[[.facetByColumn]]!=.noSelection) {
-            aggregants <- c(aggregants, "FacetColumn=plot.data$FacetColumn")
-        }
-
-        cmds <- sprintf("{
-    .label_values <- %s(se)[[%s]][match(rownames(plot.data), %s(se))]
-    .aggregated <- aggregate(plot.data[,c('X', 'Y')], FUN=median, na.rm=TRUE,
-        by=list(%s))
-    ggplot2::geom_text(aes(x=X, y=Y, label=LabelCenters), .aggregated)
-}", .getDotPlotMetadataCommand(x), deparse(x[[.plotLabelCenters]]), .getDotPlotNamesCommand(x), 
-            paste(aggregants, collapse=", "))
-
-        N <- length(plot_cmds)
-        plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")
-        plot_cmds <- c(plot_cmds, cmds)
+    if (plot_type=="scatter") {
+        plot_cmds <- .addCenteredLabelsCommands(x, commands=plot_cmds)
     }
 
     # Adding self-brushing boxes, if they exist.

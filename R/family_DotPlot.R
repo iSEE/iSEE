@@ -51,6 +51,24 @@
 #' Defaults to \code{"---"}, i.e., no column faceting.
 #' }
 #'
+#' The following slots control any text to be shown on the plot:
+#' \itemize{
+#' \item \code{LabelCenters}, a logical scalar indicating whether the label the centers (technically medoids) of all cells in each group, where groups are defined by a discrete covariate in the relevant metadata field.
+#' Defaults to \code{FALSE}.
+#' \item \code{LabelCentersBy}, a string specifying the metadata field to define the groups when \code{LabelCenters} is \code{TRUE}.
+#' This should be a discrete variable in \code{\link{rowData}} or \code{\link{colData}} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
+#' Defaults to the name of the first column.
+#' \item \code{LabelCentersColor}, a string specifying the color used for the labels at the center of each group.
+#' Only used when \code{LabelCenters} is \code{TRUE}.
+#' Defaults to \code{"black"}.
+#' \item \code{CustomLabels}, a logical scalar indicating whether custom labels should be inserted on specific points.
+#' Defaults to \code{FALSE}.
+#' \item \code{CustomLabelsText}, a (possibly multi-line) string with the names of the points to label when \code{CustomLabels} is set to \code{TRUE}.
+#' Each line should contain the name of a row or column for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
+#' Leading and trailing whitespace are stripped, and all text on a line after \code{#} is ignored.
+#' Defaults to the name of the first row/column.
+#' }
+#'
 #' The following slots control the effect of the transmitted selection from another panel:
 #' \itemize{
 #' \item \code{SelectionEffect}, a string specifying the selection effect.

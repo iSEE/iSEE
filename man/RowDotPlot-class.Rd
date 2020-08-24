@@ -11,11 +11,6 @@
 \alias{.hideInterface,RowDotPlot-method}
 \alias{.multiSelectionDimension,RowDotPlot-method}
 \alias{.singleSelectionDimension,RowDotPlot-method}
-\alias{.defineVisualColorInterface,RowDotPlot-method}
-\alias{.defineVisualShapeInterface,RowDotPlot-method}
-\alias{.defineVisualSizeInterface,RowDotPlot-method}
-\alias{.defineVisualFacetInterface,RowDotPlot-method}
-\alias{.defineVisualPointInterface,RowDotPlot-method}
 \alias{.definePanelTour,RowDotPlot-method}
 \title{The RowDotPlot virtual class}
 \description{
@@ -66,9 +61,6 @@ This will also call the equivalent \linkS4class{DotPlot} method.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots in the \linkS4class{RowDotPlot}.
-It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}}.
-This will \emph{override} the \linkS4class{Panel} method.
 \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"}, \code{"RowSelectionType"} and \code{"RowSelectionSaved"}),
 otherwise it dispatches to the \linkS4class{Panel} method.

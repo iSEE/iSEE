@@ -294,8 +294,9 @@
 #' @param multiple Logical vector indicating whether sources for multiple selections should be returned.
 #' If \code{FALSE}, single selection sources are returned.
 #'
-#' @return A list containing \code{"row"} and \code{"column"}, 
-#' character vectors containing the names of the acceptable panels that can transmit on the corresponding dimension.
+#' @return A list of two character vectors containing the names of the acceptable panels that can transmit on the corresponding dimension.
+#' If \code{multiple=TRUE}, these vectors are named \code{"row"} and \code{"column"};
+#' otherwise they are named \code{"feature"} and \code{"sample"}.
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_get_multi_sources
@@ -309,8 +310,11 @@
     }
 
     dims <- vapply(all_memory, FUN=FUN, "")
-    list(
-        row=c(.noSelection, all_names[dims==choices[1]]),
-        column=c(.noSelection, all_names[dims==choices[2]])
-    )
+    output <- vector("list", length(choices))
+    names(output) <- choices
+    for (i in choices) {
+        output[[i]] <- c(.noSelection, all_names[dims==i])
+    }
+
+    output
 }

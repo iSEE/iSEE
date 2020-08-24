@@ -11,11 +11,6 @@
 \alias{.hideInterface,ColumnDotPlot-method}
 \alias{.multiSelectionDimension,ColumnDotPlot-method}
 \alias{.singleSelectionDimension,ColumnDotPlot-method}
-\alias{.defineVisualColorInterface,ColumnDotPlot-method}
-\alias{.defineVisualShapeInterface,ColumnDotPlot-method}
-\alias{.defineVisualSizeInterface,ColumnDotPlot-method}
-\alias{.defineVisualFacetInterface,ColumnDotPlot-method}
-\alias{.defineVisualPointInterface,ColumnDotPlot-method}
 \alias{.definePanelTour,ColumnDotPlot-method}
 \title{The ColumnDotPlot virtual class}
 \description{
@@ -66,9 +61,6 @@ This will also call the equivalent \linkS4class{DotPlot} method.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
-It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}}.
-This will \emph{override} the \linkS4class{Panel} method.
 \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"}, \code{"RowSelectionType"} and \code{"RowSelectionSaved"}),
 otherwise it dispatches to the \linkS4class{Panel} method.

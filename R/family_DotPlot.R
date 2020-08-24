@@ -874,7 +874,7 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
     plot_cmds <- .addCustomLabelsCommands(x, commands=plot_cmds, plot_type=plot_type)
 
     if (plot_type=="scatter") {
-        plot_cmds <- .addCenteredLabelsCommands(x, commands=plot_cmds)
+        plot_cmds <- .addLabelCentersCommands(x, commands=plot_cmds)
     }
 
     # Adding self-brushing boxes, if they exist.

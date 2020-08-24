@@ -1398,8 +1398,8 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #'
 #' @author Aaron Lun
 #' @export
-#' @rdname addCenteredLabelsCommands
-.addCenteredLabelsCommands <- function(x, commands) {
+#' @rdname addLabelCentersCommands
+.addLabelCentersCommands <- function(x, commands) {
     if (x[[.plotLabelCenters]]) {
         aggregants <- c("LabelCenters=.label_values")
 

@@ -755,11 +755,12 @@ setMethod("updateObject", "DotPlot", function(object) {
     if (is(try(object[[.plotHoverInfo]], silent=TRUE), "try-error")) {
         .Deprecated(msg=sprintf("'%s' is out of date, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
         object[[.plotHoverInfo]] <- TRUE
+        object[[.legendPointSize]] <- 1
         object[[.plotLabelCenters]] <- FALSE
         object[[.plotLabelCentersBy]] <- NA_character_
         object[[.plotLabelCentersColor]] <- "black"
         object[[.plotCustomLabels]] <- FALSE
-        object[[.plotCustomLabelsTeobjectt]] <- NA_character_
+        object[[.plotCustomLabelsText]] <- NA_character_
     }
     # nocov end
 

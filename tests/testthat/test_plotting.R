@@ -56,7 +56,7 @@ test_that(".make_redDimPlot/.scatter_plot produce a valid xy with color", {
 
 test_that(".make_colDataPlot/.scatter_plot produce a valid list",{
     cdp <- pObjects$memory$ColumnDataPlot1
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
     cdp[[iSEE:::.colDataYAxis]] <- "NALIGNED"
 
@@ -81,7 +81,7 @@ test_that(".make_colDataPlot/.scatter_plot produce a valid list",{
 
 test_that(".make_colDataPlot/.scatter_plot produce a valid xy with color", {
     cdp <- pObjects$memory$ColumnDataPlot1
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
     cdp[[iSEE:::.colorByField]] <- iSEE:::.colorByColDataTitle
 
@@ -129,7 +129,7 @@ test_that(".make_colDataPlot/.violin_plot produce a valid xy with color", {
 
 test_that(".make_colDataPlot/.square_plot produce a valid list",{
     cdp <- pObjects$memory$ColumnDataPlot1
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "driver_1_s"
     cdp[[iSEE:::.colDataYAxis]] <- "passes_qc_checks_s"
 
@@ -154,7 +154,7 @@ test_that(".make_colDataPlot/.square_plot produce a valid list",{
 
 test_that(".make_colDataPlot/.square_plot produce a valid xy with color", {
     cdp <- pObjects$memory$ColumnDataPlot1
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "driver_1_s"
     cdp[[iSEE:::.colDataYAxis]] <- "passes_qc_checks_s"
     cdp[[iSEE:::.colorByField]] <- iSEE:::.colorByColDataTitle
@@ -170,7 +170,7 @@ test_that(".make_colDataPlot/.square_plot produce a valid xy with color", {
 
 test_that(".make_rowDataPlot/.scatter_plot produce a valid list",{
     rdp <- pObjects$memory$RowDataPlot
-    rdp[[iSEE:::.rowDataXAxis]] <- iSEE:::.rowDataXAxisRowData
+    rdp[[iSEE:::.rowDataXAxis]] <- iSEE:::.rowDataXAxisRowDataTitle
     rdp[[iSEE:::.rowDataXAxisRowData]] <- "num_cells"
     rdp[[iSEE:::.rowDataYAxis]] <- "mean_count"
 
@@ -195,7 +195,7 @@ test_that(".make_rowDataPlot/.scatter_plot produce a valid list",{
 
 test_that(".make_rowDataPlot/.violin_plot produce a valid xy with color", {
     rdp <- pObjects$memory$RowDataPlot
-    rdp[[iSEE:::.rowDataXAxis]] <- iSEE:::.rowDataXAxisRowData
+    rdp[[iSEE:::.rowDataXAxis]] <- iSEE:::.rowDataXAxisRowDataTitle
     rdp[[iSEE:::.rowDataXAxisRowData]] <- "num_cells"
     rdp[[iSEE:::.rowDataYAxis]] <- "mean_count"
 
@@ -262,7 +262,7 @@ test_that(".make_rowDataPlot/.square_plot produce a valid list",{
     rowData(sce)[, "LETTERS"] <- sample(LETTERS[1:3], nrow(sce), replace=TRUE)
 
     rdp <- pObjects$memory$RowDataPlot
-    rdp[[iSEE:::.rowDataXAxis]] <- iSEE:::.rowDataXAxisRowData
+    rdp[[iSEE:::.rowDataXAxis]] <- iSEE:::.rowDataXAxisRowDataTitle
     rdp[[iSEE:::.rowDataXAxisRowData]] <- "letters"
     rdp[[iSEE:::.rowDataYAxis]] <- "LETTERS"
 
@@ -289,7 +289,7 @@ test_that(".make_rowDataPlot/.square_plot produce a valid xy with color",{
     rowData(sce)[, "LETTERS"] <- sample(LETTERS[1:3], nrow(sce), replace=TRUE)
 
     rdp <- pObjects$memory$RowDataPlot
-    rdp[[iSEE:::.rowDataXAxis]] <- iSEE:::.rowDataXAxisRowData
+    rdp[[iSEE:::.rowDataXAxis]] <- iSEE:::.rowDataXAxisRowDataTitle
     rdp[[iSEE:::.rowDataXAxisRowData]] <- "letters"
     rdp[[iSEE:::.rowDataYAxis]] <- "LETTERS"
 
@@ -502,7 +502,7 @@ test_that(".scatter_plot works with zoom",{
 
 test_that(".make_colDataPlot/.violin_plot works with zoom",{
     cdp <- pObjects$memory$ColumnDataPlot1
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     chosen_x <- "driver_1_s"
     cdp[[iSEE:::.colDataXAxisColData]] <- chosen_x
 
@@ -535,7 +535,7 @@ test_that(".make_colDataPlot/.violin_plot works with zoom",{
 
 test_that(".make_colDataPlot/.violin_plot works with zoom",{
     cdp <- pObjects$memory$ColumnDataPlot1
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     chosen_x <- "NREADS"
     cdp[[iSEE:::.colDataXAxisColData]] <- chosen_x
     chosen_y <- "driver_1_s"
@@ -569,7 +569,7 @@ test_that(".make_colDataPlot/.violin_plot works with zoom",{
 
 test_that(".make_colDataPlot/.square_plot works with zoom",{
     cdp <- pObjects$memory$ColumnDataPlot1
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     chosen_x <- "passes_qc_checks_s"
     cdp[[iSEE:::.colDataXAxisColData]] <- chosen_x
     chosen_y <- "driver_1_s"
@@ -850,7 +850,7 @@ test_that(".create_points handles sizing effects", {
 
 test_that(".self_brush_box draw multiple shiny brushes", {
     cdp <- pObjects$memory$ColumnDataPlot1
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
     cdp[[iSEE:::.colDataYAxis]] <- "driver_1_s"
 
@@ -871,7 +871,7 @@ test_that(".self_brush_box draw multiple shiny brushes", {
 
 test_that(".self_brush_box can flip axes", {
     cdp <- pObjects$memory$ColumnDataPlot1
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
     cdp[[iSEE:::.colDataYAxis]] <- "driver_1_s"
 
@@ -884,7 +884,7 @@ test_that(".self_brush_box can flip axes", {
 
 test_that(".self_brush_box flip axes when faceting on both X and Y", {
     cdp <- pObjects$memory$ColumnDataPlot1
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
     cdp[[iSEE:::.colDataYAxis]] <- "driver_1_s"
     cdp[[iSEE:::.facetByRow]] <- "Core.Type"
@@ -1016,7 +1016,7 @@ test_that(".self_lasso_path work with a closed path", {
 
 test_that(".self_lasso_path works with multiple lassos", {
     cdp <- pObjects$memory$ColumnDataPlot
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
     cdp[[iSEE:::.colDataYAxis]] <- "driver_1_s"
 
@@ -1039,7 +1039,7 @@ test_that(".self_lasso_path works with multiple lassos", {
 
 test_that(".self_lasso_path flip axes when faceting on both X and Y", {
     cdp <- pObjects$memory$ColumnDataPlot1
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
     cdp[[iSEE:::.colDataYAxis]] <- "driver_1_s"
     cdp[[iSEE:::.facetByRow]] <- "Core.Type"
@@ -1173,7 +1173,7 @@ test_that("Jitter is properly performed for faceted plots", {
 
 test_that(".downsample_points produces the appropriate code for square plots", {
     cdp <- pObjects$memory$ColumnDataPlot1
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "driver_1_s"
     cdp[[iSEE:::.colDataYAxis]] <- "passes_qc_checks_s"
 
@@ -1190,8 +1190,7 @@ test_that(".downsample_points produces the appropriate code for square plots", {
 
 test_that(".downsample_points produces the appropriate code for violin plots", {
     cdp <- pObjects$memory$ColumnDataPlot1
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "passes_qc_checks_s"
     cdp[[iSEE:::.colDataYAxis]] <- "NREADS"
 
@@ -1208,8 +1207,7 @@ test_that(".downsample_points produces the appropriate code for violin plots", {
 
 test_that(".downsample_points produces the appropriate code for horizontal violin plots", {
     cdp <- pObjects$memory$ColumnDataPlot1
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
     cdp[[iSEE:::.colDataYAxis]] <- "passes_qc_checks_s"
 
@@ -1241,7 +1239,7 @@ setMethod(".prioritizeDotPlotData", "ColumnDataPlotPrioritized", function(x, env
 
 test_that(".generateDotPlot responds to priority", {
     cdp <- pObjects$memory$ColumnDataPlot1
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "driver_1_s"
     cdp[[iSEE:::.colDataYAxis]] <- "passes_qc_checks_s"
 
@@ -1259,7 +1257,7 @@ test_that(".generateDotPlot responds to priority", {
 
 test_that(".downsample_points responds to priority", {
     cdp <- pObjects$memory$ColumnDataPlot1
-    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColData
+    cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "driver_1_s"
     cdp[[iSEE:::.colDataYAxis]] <- "passes_qc_checks_s"
 
@@ -1430,7 +1428,7 @@ test_that(".generateDotPlot handles centered labels", {
 
     # Works for row-based plots.
     rdp <- pObjects$memory$RowDataPlot1
-    rdp[["XAxis"]] <- "Row metadata" 
+    rdp[["XAxis"]] <- "Row data" 
     rdp[[iSEE:::.plotLabelCenters]] <- TRUE
 
     p.out <- .generateOutput(rdp, sce,

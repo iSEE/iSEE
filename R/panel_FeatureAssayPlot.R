@@ -220,7 +220,7 @@ setMethod(".defineDataInterface", "FeatureAssayPlot", function(x, se, select_inf
 
     all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
     column_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$valid.colData.names
-    tab_by_row <- select_info$single$row
+    tab_by_row <- select_info$single$feature
 
     xaxis_choices <- c(.featAssayXAxisNothingTitle)
     if (length(column_covariates)) { # As it is possible for this plot to be _feasible_ but for no column data to exist.

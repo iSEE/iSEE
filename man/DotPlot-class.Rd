@@ -22,8 +22,13 @@
 \alias{.prioritizeDotPlotData,DotPlot-method}
 \alias{.colorByNoneDotPlotField,DotPlot-method}
 \alias{.colorByNoneDotPlotScale,DotPlot-method}
+\alias{.defineVisualColorInterface,DotPlot-method}
+\alias{.defineVisualSizeInterface,DotPlot-method}
+\alias{.defineVisualShapeInterface,DotPlot-method}
 \alias{.defineVisualTextInterface,DotPlot-method}
+\alias{.defineVisualPointInterface,DotPlot-method}
 \alias{.defineVisualOtherInterface,DotPlot-method}
+\alias{.defineVisualFacetInterface,DotPlot-method}
 \alias{.definePanelTour,DotPlot-method}
 \alias{.updateObject,DotPlot-method}
 \title{The DotPlot virtual class}
@@ -181,6 +186,17 @@ This will also call the equivalent \linkS4class{Panel} method.
 
 For defining the interface:
 \itemize{
+\item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
+It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}}.
+This will \emph{override} the \linkS4class{Panel} method.
+\item \code{\link{.defineVisualColorInterface}(x, se, select_info)} defines the user interface subpanel for manipulating the color of the points.
+\item \code{\link{.defineVisualShapeInterface}(x, se)} defines the user interface subpanel for manipulating the shape of the points.
+\item \code{\link{.defineVisualSizeInterface}(x, se)} defines the user interface subpanel for manipulating the size of the points.
+\item \code{\link{.defineVisualPointInterface}(x, se)} defines the user interface subpanel for manipulating other point-related parameters.
+\item \code{\link{.defineVisualFacetInterface}(x, se)} defines the user interface subpanel for manipulating facet-related parameters.
+\item \code{\link{.defineVisualTextInterface}(x, se)} defines the user interface subpanel for manipulating text-related parameters.
+\item \code{\link{.defineVisualOtherInterface}(x, se)} defines the user interface subpanel for manipulating other parameters.
+Currently this returns \code{NULL}.
 \item \code{\link{.defineOutput}(x)} returns a UI element for a brushable plot.
 }
 

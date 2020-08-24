@@ -1429,3 +1429,45 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
     commands
 }
+
+#' Add custom label plotting commands
+#'
+#' Add \link{ggplot} instructions to add custom labels to specified points in a \linkS4class{DotPlot}.
+#' This is a utility function that is intended for use in \code{\link{.generateDotPlot}}.
+#'
+#' @param x An instance of a \linkS4class{DotPlot} class.
+#' @param commands A character vector representing the sequence of commands to create the \link{ggplot} object.
+#' @param plot_type String specifying the type of plot, e.g., \code{"scatter"}, \code{"square"}, \code{"violin"}.
+#'
+#' @return A character vector containing \code{commands} plus any additional commands required to generate the labels.
+#'
+#' @author Kevin Rue-Albrecht, Aaron Lun
+#'
+#' @export
+#' @importFrom ggrepel geom_text_repel
+#' @importFrom grid unit
+#' @rdname addCustomLabelsCommands
+.addCustomLabelsCommands <- function(x, commands, plot_type) {
+    if (x[[.plotCustomLabels]]) {
+        N <- length(commands)
+        commands[[N]] <- paste(commands[[N]], "+")
+
+        dn <- .convert_text_to_names(x[[.plotCustomLabelsText]])
+
+        axes <- switch(plot_type,
+            scatter=c("X", "Y"),
+            square=c("jitteredX", "jitteredY"),
+            c("jitteredX", "Y")
+        )
+
+        label_cmd <- sprintf('{
+    .sub.data <- plot.data
+    .sub.data$LabelBy <- rownames(.sub.data)
+    .sub.data <- subset(.sub.data, LabelBy %%in%% %s)
+    ggrepel::geom_text_repel(aes(x=%s, y=%s, label=LabelBy), .sub.data, min.segment.length = grid::unit(0, "mm"))
+}', .deparse_for_viewing(dn), axes[1], axes[2])
+        commands <- c(commands, label_cmd)
+    }
+    
+    commands
+}

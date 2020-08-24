@@ -1430,5 +1430,15 @@ test_that(".generateDotPlot handles centered labels", {
 
     expect_true(any(grepl("LabelCenters.*FacetRow", p.out$commands)))
     expect_true(any(grepl("LabelCenters.*FacetColumn", p.out$commands)))
+
+    # Works for row-based plots.
+    rdp <- pObjects$memory$RowDataPlot1
+    rdp[["XAxis"]] <- "Row metadata" 
+    rdp[[iSEE:::.plotLabelCenters]] <- TRUE
+
+    p.out <- .generateOutput(rdp, sce,
+        all_memory=pObjects$memory, all_contents=pObjects$contents)
+
+    expect_true(any(grepl("\\.aggregated", p.out$commands)))
 })
 

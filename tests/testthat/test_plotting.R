@@ -1401,10 +1401,7 @@ test_that(".generateDotPlot handles custom labels", {
     # cmd value is a named list
     expect_type(p.out$commands, "list")
     expect_true(all(vapply(p.out$commands, is.character, TRUE)))
-    
-    # xy value is a data frame
-    expect_s3_class(p.out$contents, "data.frame")
-    expect_named(p.out$contents, c("X", "Y", "LabelBy"))
+    expect_true(any(grepl("LabelBy", p.out$commands)))
     
     #plot
     expect_s3_class(p.out$plot, c("gg", "ggplot"))

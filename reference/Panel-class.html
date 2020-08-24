@@ -224,7 +224,8 @@ and <code>i</code> is a string containing the slot name:</p><ul>
 <p>In the following code snippets, <code>x</code> is an instance of a ColumnDotPlot class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For setting up data values:</p><ul>
-<li><p><code>.refineParameters(x, se)</code> is a no-op, returning <code>x</code> without modification.</p></li>
+<li><p><code>.refineParameters(x, se)</code> calls <code>updateObject(x)</code>.
+If <code>x</code> is up to date, this operation is a no-op and returns <code>x</code> without modification.</p></li>
 <li><p><code>.cacheCommonInfo(x, se)</code> is a no-op, returning <code>se</code> without modification.</p></li>
 </ul>
 

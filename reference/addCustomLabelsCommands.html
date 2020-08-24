@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check compatibility between ExperimentColorMap and SummarizedExperiment
-objects — checkColormapCompatibility • iSEE</title>
+<title>Add custom label plotting commands — .addCustomLabelsCommands • iSEE</title>
 
 
 <!-- jquery -->
@@ -40,12 +39,9 @@ objects — checkColormapCompatibility • iSEE</title>
 
 
 
-<meta property="og:title" content="Check compatibility between ExperimentColorMap and SummarizedExperiment
-objects — checkColormapCompatibility" />
-<meta property="og:description" content="This function compares a pair of ExperimentColorMap and
-SingleCellExperiment objects, and examines whether
-all of the assays, colData, and rowData defined
-in the ExperimentColorMap object exist in the SingleCellExperiment object." />
+<meta property="og:title" content="Add custom label plotting commands — .addCustomLabelsCommands" />
+<meta property="og:description" content="Add ggplot instructions to add custom labels to specified points in a DotPlot.
+This is a utility function that is intended for use in .generateDotPlot." />
 
 
 
@@ -150,69 +146,39 @@ in the ExperimentColorMap object exist in the SingleCellExperiment object." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check compatibility between ExperimentColorMap and SummarizedExperiment
-objects</h1>
-    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/ExperimentColorMap.R'><code>R/ExperimentColorMap.R</code></a></small>
-    <div class="hidden name"><code>checkColormapCompatibility.Rd</code></div>
+    <h1>Add custom label plotting commands</h1>
+    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/plotting.R'><code>R/plotting.R</code></a></small>
+    <div class="hidden name"><code>addCustomLabelsCommands.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function compares a pair of ExperimentColorMap and
-SingleCellExperiment objects, and examines whether
-all of the <code>assays</code>, <code>colData</code>, and <code>rowData</code> defined
-in the ExperimentColorMap object exist in the SingleCellExperiment object.</p>
+    <p>Add ggplot instructions to add custom labels to specified points in a DotPlot.
+This is a utility function that is intended for use in <code>.generateDotPlot</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>checkColormapCompatibility</span>(<span class='no'>ecm</span>, <span class='no'>se</span>)</pre>
+    <pre class="usage"><span class='fu'>.addCustomLabelsCommands</span>(<span class='no'>x</span>, <span class='no'>commands</span>, <span class='no'>plot_type</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>ecm</th>
-      <td><p>An ExperimentColorMap.</p></td>
+      <th>x</th>
+      <td><p>An instance of a DotPlot class.</p></td>
     </tr>
     <tr>
-      <th>se</th>
-      <td><p>A SingleCellExperiment.</p></td>
+      <th>commands</th>
+      <td><p>A character vector representing the sequence of commands to create the ggplot object.</p></td>
+    </tr>
+    <tr>
+      <th>plot_type</th>
+      <td><p>String specifying the type of plot, e.g., <code>"scatter"</code>, <code>"square"</code>, <code>"violin"</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A character vector of incompability error messages, if any.</p>
+    <p>A character vector containing <code>commands</code> plus any additional commands required to generate the labels.</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># Example colormaps ----</span>
-
-<span class='no'>count_colors</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>n</span>){
-  <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"black"</span>,<span class='st'>"brown"</span>,<span class='st'>"red"</span>,<span class='st'>"orange"</span>,<span class='st'>"yellow"</span>)
-}
-
-<span class='no'>qc_color_fun</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>n</span>){
-  <span class='no'>qc_colors</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"forestgreen"</span>, <span class='st'>"firebrick1"</span>)
-  <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>qc_colors</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Y"</span>, <span class='st'>"N"</span>)
-  <span class='fu'><a href='https://rdrr.io/r/base/function.html'>return</a></span>(<span class='no'>qc_colors</span>)
-}
-
-<span class='no'>ecm</span> <span class='kw'>&lt;-</span> <span class='fu'>ExperimentColorMap</span>(
-    <span class='kw'>assays</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
-        <span class='kw'>tophat_counts</span> <span class='kw'>=</span> <span class='no'>count_colors</span>
-    ),
-    <span class='kw'>colData</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
-        <span class='kw'>passes_qc_checks_s</span> <span class='kw'>=</span> <span class='no'>qc_color_fun</span>
-    )
-)
-
-<span class='co'># Example SingleCellExperiment ----</span>
-
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scRNAseq</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span>(<span class='kw'>assays</span><span class='kw'>=</span><span class='st'>"tophat_counts"</span>)</div><div class='output co'>#&gt; <span class='message'>using temporary cache /tmp/RtmpJYmIjf/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2020-08-20</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='input'>
-<span class='co'># Test for compatibility ----</span>
-
-<span class='fu'>checkColormapCompatibility</span>(<span class='no'>ecm</span>, <span class='no'>sce</span>)</div><div class='output co'>#&gt; NULL</div><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -200,9 +200,6 @@ This will also call the equivalent DotPlot method.</p></li>
 </ul>
 
 <p>For defining the interface:</p><ul>
-<li><p><code>.defineInterface(x, se, select_info)</code> defines the user interface for manipulating all slots in the RowDotPlot.
-It will also create a data parameter box that can respond to specialized <code>.defineDataInterface</code>.
-This will <em>override</em> the Panel method.</p></li>
 <li><p><code>.hideInterface(x, field)</code> returns a logical scalar indicating whether the interface element corresponding to <code>field</code> should be hidden.
 This returns <code>TRUE</code> for row selection parameters (<code>"RowSelectionSource"</code>, <code>"RowSelectionType"</code> and <code>"RowSelectionSaved"</code>),
 otherwise it dispatches to the Panel method.</p></li>

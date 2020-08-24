@@ -297,6 +297,17 @@ This will also call the equivalent Panel method.</p></li>
 </ul>
 
 <p>For defining the interface:</p><ul>
+<li><p><code>.defineInterface(x, se, select_info)</code> defines the user interface for manipulating all slots described above and in the parent classes.
+It will also create a data parameter box that can respond to specialized <code>.defineDataInterface</code>.
+This will <em>override</em> the Panel method.</p></li>
+<li><p><code>.defineVisualColorInterface(x, se, select_info)</code> defines the user interface subpanel for manipulating the color of the points.</p></li>
+<li><p><code>.defineVisualShapeInterface(x, se)</code> defines the user interface subpanel for manipulating the shape of the points.</p></li>
+<li><p><code>.defineVisualSizeInterface(x, se)</code> defines the user interface subpanel for manipulating the size of the points.</p></li>
+<li><p><code>.defineVisualPointInterface(x, se)</code> defines the user interface subpanel for manipulating other point-related parameters.</p></li>
+<li><p><code>.defineVisualFacetInterface(x, se)</code> defines the user interface subpanel for manipulating facet-related parameters.</p></li>
+<li><p><code>.defineVisualTextInterface(x, se)</code> defines the user interface subpanel for manipulating text-related parameters.</p></li>
+<li><p><code>.defineVisualOtherInterface(x, se)</code> defines the user interface subpanel for manipulating other parameters.
+Currently this returns <code>NULL</code>.</p></li>
 <li><p><code>.defineOutput(x)</code> returns a UI element for a brushable plot.</p></li>
 </ul>
 

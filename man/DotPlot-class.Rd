@@ -22,6 +22,7 @@
 \alias{.prioritizeDotPlotData,DotPlot-method}
 \alias{.colorByNoneDotPlotField,DotPlot-method}
 \alias{.colorByNoneDotPlotScale,DotPlot-method}
+\alias{.defineInterface,DotPlot-method}
 \alias{.defineVisualColorInterface,DotPlot-method}
 \alias{.defineVisualSizeInterface,DotPlot-method}
 \alias{.defineVisualShapeInterface,DotPlot-method}

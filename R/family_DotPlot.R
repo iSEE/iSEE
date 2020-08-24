@@ -765,7 +765,6 @@ setMethod(".singleSelectionSlots", "DotPlot", function(x) {
 
 #' @export
 #' @importFrom S4Vectors metadata
-#' @importFrom ggrepel geom_text_repel
 #' @importFrom grid unit
 setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents) {
     # Initialize an environment storing information for generating ggplot commands
@@ -853,14 +852,6 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
         scatter=do.call(.scatter_plot, args)
     )
     
-    if (x[[.plotCustomLabels]]) {
-        N <- length(plot_cmds)
-        plot_cmds[[N]] <- paste(plot_cmds[[N]], "+")
-        dn <- .convert_text_to_names(x[[.plotCustomLabelsText]])
-        label_cmd <- sprintf('ggrepel::geom_text_repel(aes(x=X, y=Y, label=LabelBy), subset(plot.data, LabelBy %%in%% %s), min.segment.length = grid::unit(0, "mm"))', .deparse_for_viewing(dn))
-        plot_cmds <- c(plot_cmds, label_cmd)
-    }
-
     # Adding a faceting command, if applicable.
     facet_cmd <- .addFacets(x)
     if (length(facet_cmd)) {
@@ -869,8 +860,10 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
         plot_cmds <- c(plot_cmds, facet_cmd)
     }
 
+    plot_cmds <- .addCustomLabelsCommands(x, commands=plot_cmds, plot_type=plot_type)
+
     if (plot_type=="scatter") {
-        plot_cmds <- .addCenteredLabelsCommands(x, commands=plot_cmds)
+        plot_cmds <- .addLabelCentersCommands(x, commands=plot_cmds)
     }
 
     # Adding self-brushing boxes, if they exist.
@@ -889,17 +882,6 @@ setMethod(".colorByNoneDotPlotField", "DotPlot", function(x) NULL)
 
 #' @export
 setMethod(".colorByNoneDotPlotScale", "DotPlot", function(x) NULL)
-
-#' @export
-setMethod(".addDotPlotDataLabel", "DotPlot", function(x, envir) {
-    if (x[[.plotCustomLabels]]) {
-        cmds <- "plot.data$LabelBy <- rownames(plot.data);"
-    } else {
-        return(NULL)
-    }
-    .textEval(cmds, envir)
-    list(commands = cmds, labels = list())
-})
 
 #' @export
 setMethod(".definePanelTour", "DotPlot", function(x) {

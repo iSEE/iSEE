@@ -1413,12 +1413,12 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
             aggregants <- c(aggregants, "FacetColumn=plot.data$FacetColumn")
         }
 
-        cmds <- sprintf("{
+        cmds <- sprintf("local({
     .label_values <- %s(se)[[%s]][match(rownames(plot.data), %s(se))]
     .aggregated <- aggregate(plot.data[,c('X', 'Y')], FUN=median, na.rm=TRUE,
         by=list(%s))
     ggplot2::geom_text(aes(x=X, y=Y, label=LabelCenters), .aggregated, color=%s, size=%s)
-}", .getDotPlotMetadataCommand(x), deparse(x[[.plotLabelCentersBy]]), .getDotPlotNamesCommand(x),
+})", .getDotPlotMetadataCommand(x), deparse(x[[.plotLabelCentersBy]]), .getDotPlotNamesCommand(x),
             paste(aggregants, collapse=", "), deparse(x[[.plotLabelCentersColor]]), 
             deparse(x[[.plotFontSize]] * 4))
 
@@ -1460,12 +1460,12 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
             c("jitteredX", "Y")
         )
 
-        label_cmd <- sprintf('{
+        label_cmd <- sprintf('local({
     .sub.data <- plot.data
     .sub.data$LabelBy <- rownames(.sub.data)
     .sub.data <- subset(.sub.data, LabelBy %%in%% %s)
     ggrepel::geom_text_repel(aes(x=%s, y=%s, label=LabelBy), .sub.data, min.segment.length = grid::unit(0, "mm"))
-}', .deparse_for_viewing(dn), axes[1], axes[2])
+})', .deparse_for_viewing(dn), axes[1], axes[2])
         commands <- c(commands, label_cmd)
     }
     

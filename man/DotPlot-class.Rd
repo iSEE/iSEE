@@ -31,6 +31,7 @@
 \alias{.defineVisualOtherInterface,DotPlot-method}
 \alias{.defineVisualFacetInterface,DotPlot-method}
 \alias{.definePanelTour,DotPlot-method}
+\alias{.updateObject,DotPlot-method}
 \title{The DotPlot virtual class}
 \description{
 The DotPlot is a virtual class for all panels where each row or column in the \linkS4class{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link{ggplot} plot.

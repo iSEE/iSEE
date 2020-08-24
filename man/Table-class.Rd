@@ -15,6 +15,7 @@
 \alias{.singleSelectionValue,Table-method}
 \alias{.definePanelTour,Table-method}
 \alias{.defineDataInterface,Table-method}
+\alias{updateObject,Table-method}
 \title{The Table class}
 \description{
 The Table is a virtual class for all panels containing a \code{\link{datatable}} widget from the \pkg{DT} package, where each row \emph{usually} corresponds to a row or column of the \linkS4class{SummarizedExperiment} object.

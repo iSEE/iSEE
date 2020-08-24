@@ -25,6 +25,7 @@
 \alias{.singleSelectionValue,Panel-method}
 \alias{.singleSelectionSlots,Panel-method}
 \alias{.definePanelTour,Panel-method}
+\alias{updateObject,Panel-method}
 \title{The Panel virtual class}
 \description{
 The Panel is a virtual base class for all \pkg{iSEE} panels.
@@ -99,7 +100,8 @@ Refer to the documentation for each method for more details on the remaining arg
 
 For setting up data values:
 \itemize{
-\item \code{\link{.refineParameters}(x, se)} is a no-op, returning \code{x} without modification.
+\item \code{\link{.refineParameters}(x, se)} calls \code{\link{updateObject}(x)}.
+If \code{x} is up to date, this operation is a no-op and returns \code{x} without modification.
 \item \code{\link{.cacheCommonInfo}(x, se)} is a no-op, returning \code{se} without modification.
 }
 

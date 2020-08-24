@@ -250,6 +250,7 @@
 #' .defineVisualOtherInterface,DotPlot-method
 #' .defineVisualFacetInterface,DotPlot-method
 #' .definePanelTour,DotPlot-method
+#' .updateObject,DotPlot-method
 NULL
 
 #' @export
@@ -381,18 +382,6 @@ setMethod(".refineParameters", "DotPlot", function(x, se) {
     if (is.null(x)) {
         return(NULL)
     }
-
-    # Backwards compatibility for new slot (added 3.12, due for removal in 3.14).
-    # nocov start
-    if (is(try(x[[.plotHoverInfo]], silent=TRUE), "try-error")) {
-        .Deprecated(msg=sprintf("'%s' lacks the '%s' field.\nTry '<%s>[[\"%s\"]] <- TRUE'.",
-            class(x)[1], .plotHoverInfo, class(x)[1], .plotHoverInfo))
-        x[[.plotHoverInfo]] <- TRUE
-        x[[.plotLabelCenters]] <- FALSE
-        x[[.plotLabelCentersBy]] <- NA_character_
-        x[[.plotLabelCentersColor]] <- "black"
-    }
-    # nocov end
 
     x <- .replace_na_with_first(x, .colorByFeatName, rownames(se))
     x <- .replace_na_with_first(x, .colorBySampName, colnames(se))
@@ -935,4 +924,24 @@ setMethod(".definePanelTour", "DotPlot", function(x) {
     }
 
     collated
+})
+
+#' @export
+#' @importFrom BiocGenerics updateObject
+setMethod("updateObject", "DotPlot", function(object) {
+    # Backwards compatibility for new slots (added 3.12).
+    # nocov start
+    if (is(try(object[[.plotHoverInfo]], silent=TRUE), "try-error")) {
+        .Deprecated(msg=sprintf("'%s' is out of date, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
+        object[[.plotHoverInfo]] <- TRUE
+        object[[.legendPointSize]] <- 1
+        object[[.plotLabelCenters]] <- FALSE
+        object[[.plotLabelCentersBy]] <- NA_character_
+        object[[.plotLabelCentersColor]] <- "black"
+        object[[.plotCustomLabels]] <- FALSE
+        object[[.plotCustomLabelsText]] <- NA_character_
+    }
+    # nocov end
+
+    object
 })

@@ -59,11 +59,8 @@ test_that(".single_string_error detects issues", {
     msg <- character(0)
 
     x <- ReducedDimensionPlot()
-    x[[iSEE:::.colorByField]] <- character(0)
-
-    out <- iSEE:::.single_string_error(msg, x, fields = iSEE:::.colorByField)
-    expect_identical(out, "'ColorBy' should be a single string for 'ReducedDimensionPlot'")
-
+    expect_error(x[[iSEE:::.colorByField]] <- character(0), 
+        "'ColorBy' should be a single string for 'ReducedDimensionPlot'")
 })
 
 test_that(".valid_logical_error detects issues", {
@@ -71,11 +68,8 @@ test_that(".valid_logical_error detects issues", {
     msg <- character(0)
 
     x <- ReducedDimensionPlot()
-    x[[iSEE:::.visualParamBoxOpen]] <- NA
-
-    out <- iSEE:::.valid_logical_error(msg, x, fields = iSEE:::.visualParamBoxOpen)
-    expect_identical(out, "'VisualBoxOpen' should be a non-NA logical scalar for 'ReducedDimensionPlot'")
-
+    expect_error(x[[iSEE:::.visualParamBoxOpen]] <- NA,
+        "'VisualBoxOpen' should be a non-NA logical scalar")
 })
 
 test_that(".valid_string_error detects issues", {
@@ -83,11 +77,8 @@ test_that(".valid_string_error detects issues", {
     msg <- character(0)
 
     x <- ReducedDimensionPlot()
-    x[[iSEE:::.colorByDefaultColor]] <- c("a", "b")
-
-    out <- iSEE:::.valid_string_error(msg, x, fields = iSEE:::.colorByDefaultColor)
-    expect_identical(out, "'ColorByDefaultColor' should be a non-NA string for 'ReducedDimensionPlot'")
-
+    expect_error(x[[iSEE:::.colorByDefaultColor]] <- c("a", "b"),
+        "'ColorByDefaultColor' should be a non-NA string") 
 })
 
 test_that(".allowable_choice_error detects issues", {
@@ -95,12 +86,8 @@ test_that(".allowable_choice_error detects issues", {
     msg <- character(0)
 
     x <- ReducedDimensionPlot()
-    x[[iSEE:::.selectEffect]] <- "other"
-
-    out <- iSEE:::.allowable_choice_error(msg, x, iSEE:::.selectEffect,
-        c(iSEE:::.selectRestrictTitle, iSEE:::.selectColorTitle, iSEE:::.selectTransTitle))
-    expect_identical(out, "'SelectionEffect' for 'ReducedDimensionPlot' should be one of 'Restrict', 'Color', 'Transparent'")
-
+    expect_error(x[[iSEE:::.selectEffect]] <- "other",
+        "'SelectionEffect' for 'ReducedDimensionPlot' should be one") 
 })
 
 test_that(".multiple_choice_error detects issues", {
@@ -108,12 +95,8 @@ test_that(".multiple_choice_error detects issues", {
     msg <- character(0)
 
     x <- ReducedDimensionPlot()
-    x[[iSEE:::.visualParamChoice]] <- "other"
-
-    out <- iSEE:::.multiple_choice_error(msg, x, iSEE:::.visualParamChoice,
-        c(iSEE:::.visualParamChoiceColorTitle, iSEE:::.visualParamChoiceShapeTitle, iSEE:::.visualParamChoiceSizeTitle, iSEE:::.visualParamChoicePointTitle, iSEE:::.visualParamChoiceFacetTitle, iSEE:::.visualParamChoiceTextTitle, iSEE:::.visualParamChoiceOtherTitle))
-    expect_identical(out, "values of 'VisualChoices' for 'ReducedDimensionPlot' should be in 'Color', 'Shape', 'Size', 'Point', 'Facet', 'Text', 'Other'")
-
+    expect_error(x[[iSEE:::.visualParamChoice]] <- "other",
+        "values of 'VisualChoices' for 'ReducedDimensionPlot' should be")
 })
 
 test_that(".valid_number_error detects issues", {
@@ -121,11 +104,8 @@ test_that(".valid_number_error detects issues", {
     msg <- character(0)
 
     x <- ReducedDimensionPlot()
-    x[[iSEE:::.selectTransAlpha]] <- 2
-
-    out <- iSEE:::.valid_number_error(msg, x, iSEE:::.selectTransAlpha, lower=0, upper=1)
-    expect_identical(out, "'SelectionAlpha' for 'ReducedDimensionPlot' should be a numeric scalar in [0, 1]")
-
+    expect_error(x[[iSEE:::.selectTransAlpha]] <- 2,
+        "'SelectionAlpha' for 'ReducedDimensionPlot' should be a numeric scalar")
 })
 
 # utils_reactive.R ----

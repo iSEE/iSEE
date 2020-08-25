@@ -90,7 +90,7 @@
 #' @importFrom shinyjs useShinyjs
 #' @importFrom rintrojs introjsUI
 #' @importFrom shiny reactiveValues uiOutput actionButton shinyApp
-#' HTML icon tags includeCSS isolate showNotification
+#' HTML icon tags includeCSS isolate showNotification onStop
 iSEE <- function(se,
     initial=NULL,
     extra=NULL,
@@ -325,7 +325,20 @@ iSEE <- function(se,
     # Launching the app.
     #######################################################################
 
-    shinyApp(ui=function(request) iSEE_ui, server=iSEE_server, ...)
+    shinyApp(ui=function(request) iSEE_ui, server=iSEE_server, 
+
+        # Turning off validity checks in the classes for speed,
+        # given that we should internally guarantee correctness anyway.
+        onStart=function() {
+            # nocov start
+            old <- iSEEOptions$get(".check.validity")
+            iSEEOptions$set(.check.validity=FALSE)
+            onStop(function() iSEEOptions$set(.check.validity=old))
+            # nocov end
+        },
+
+        # Enable bookmarking to be turned off, if so desired.
+        ...)
 }
 
 #' Server-side initialization of the app

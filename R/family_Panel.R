@@ -222,6 +222,7 @@ setMethod("[[", "Panel", function(x, i, j, ...) {
 #' @export
 setReplaceMethod("[[", "Panel", function(x, i, j, ..., value) {
     slot(x, i) <- value
+    if (iSEEOptions$get('.check.validity')) validObject(x)
     x
 })
 

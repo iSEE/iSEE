@@ -71,6 +71,7 @@ new_defaults = function(value = list()) {
 #' @export
 #' @examples iSEEOptions$get('downsample'); iSEEOptions$get('selected.color')
 iSEEOptions <- new_defaults(list(
+    .check.validity=TRUE,
 
     point.color = "black",
     point.size = 1,

@@ -1,3 +1,8 @@
+# iSEE 2.1.15
+
+* Allow labelling of the medoid for each level of a discrete variable in a scatter-type `DotPlot`.
+* Turned on validity checks during `[[<-` assignment into `Panel` classes.
+
 # iSEE 2.1.14
 
 * Right-aligned the help icon for individual panel tour.

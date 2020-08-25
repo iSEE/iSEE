@@ -330,9 +330,11 @@ iSEE <- function(se,
         # Turning off validity checks in the classes for speed,
         # given that we should internally guarantee correctness anyway.
         onStart=function() {
+            # nocov start
             old <- iSEEOptions$get(".check.validity")
             iSEEOptions$set(.check.validity=FALSE)
             onStop(function() iSEEOptions$set(.check.validity=old))
+            # nocov end
         },
 
         # Enable bookmarking to be turned off, if so desired.

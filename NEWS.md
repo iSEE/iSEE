@@ -1,3 +1,7 @@
+# iSEE 2.1.16
+
+* Bugfix for initialization of the `ColorByFeatureDynamicSource` UI element in `ColumnDotPlot`s.
+
 # iSEE 2.1.15
 
 * Allow labelling of the medoid for each level of a discrete variable in a scatter-type `DotPlot`.

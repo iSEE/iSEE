@@ -1,7 +1,7 @@
 Package: iSEE
 Title: Interactive SummarizedExperiment Explorer
-Version: 2.1.15
-Date: 2020-08-24
+Version: 2.1.16
+Date: 2020-09-01
 Authors@R: c(person("Kevin", "Rue-Albrecht", role = "aut", email = "kevinrue67@gmail.com", comment = c(ORCID = "0000-0003-3899-3872")),
     person("Federico", "Marini", role="aut", email="marinif@uni-mainz.de", comment = c(ORCID = '0000-0003-3252-7758')),
     person("Charlotte", "Soneson", role=c("aut", "cre"), email="charlottesoneson@gmail.com", comment = c(ORCID = '0000-0003-3833-2169')),

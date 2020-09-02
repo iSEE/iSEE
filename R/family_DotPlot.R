@@ -500,7 +500,7 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
             checkboxInput(
                 paste0(plot_name, "_", colorby$assay$dynamic), 
                 label=sprintf("Use dynamic %s selection", otherdim_single),
-                value=x[[.colorBySampDynamic]])
+                value=x[[colorby$assay$dynamic]])
         )
     )
 })

@@ -185,7 +185,13 @@ setMethod(".refineParameters", "FeatureAssayPlot", function(x, se) {
     }
 
     column_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$valid.colData.names
-    x <- .replace_na_with_first(x, .featAssayXAxisColData, column_covariates)
+    if (length(column_covariates)==0L) {
+        if (x[[.featAssayXAxis]] == .featAssayXAxisColDataTitle) {
+            x[[.featAssayXAxis]] <- .featAssayXAxisNothingTitle
+        }
+    } else {
+        x <- .replace_na_with_first(x, .featAssayXAxisColData, column_covariates)
+    }
 
     x
 })

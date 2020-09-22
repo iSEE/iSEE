@@ -185,7 +185,13 @@ setMethod(".refineParameters", "SampleAssayPlot", function(x, se) {
     }
 
     row_covariates <- .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
-    x <- .replace_na_with_first(x, .sampAssayXAxisRowData, row_covariates)
+    if (length(row_covariates)==0L) {
+        if (x[[.sampAssayXAxis]]==.sampAssayXAxisRowDataTitle) {
+            x[[.sampAssayXAxis]] <- .sampAssayXAxisNothingTitle
+        }
+    } else {
+        x <- .replace_na_with_first(x, .sampAssayXAxisRowData, row_covariates)
+    }
 
     x
 })

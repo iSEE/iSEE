@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.17</span>
       </span>
     </div>
 
@@ -123,7 +123,7 @@
                   <a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       
                   
-            <h4 class="date">2 September 2020</h4>
+            <h4 class="date">22 September 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/voice.Rmd"><code>vignettes/voice.Rmd</code></a></small>
       <div class="hidden name"><code>voice.Rmd</code></div>
@@ -132,14 +132,14 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-09-02</p>
+<p><strong>Compiled date</strong>: 2020-09-22</p>
 <p><strong>Last edited</strong>: 2018-11-29</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="feature" class="section level1">
 <h1 class="hasAnchor">
 <a href="#feature" class="anchor"></a>Feature</h1>
 <p>Using JavaScript, <code>iSEE</code> applications can leverage lightweight speech recognition libraries that react to specific vocal commands (think “OK Google”, “Hey Siri”) and trigger updates of the UI equivalent to one or more mouse or keyboard interaction with the UI components <span class="citation">(Rue-Albrecht et al. 2018)</span>.</p>
-<p><strong>Note</strong>: As we value privacy, this feature is disabled by default: <code><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE(..., voice=FALSE)</a></code>.</p>
+<p><strong>Note</strong>: As we value privacy, this feature is disabled by default: <code><a href="../reference/iSEE.html">iSEE(..., voice=FALSE)</a></code>.</p>
 <p>To keep the spoken commands reasonably short, only one panel may be under voice command at any one time. All spoken commands will affect the currently active panel, until a new panel is selected for voice command. See section <a href="#availableVocalCommands">Vocal commands available</a>.</p>
 </div>
 <div id="implementation" class="section level1">
@@ -157,13 +157,17 @@
 <h1 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h1>
 <p>Using the <code>sce</code> object that we generated <a href="https://bioconductor.org/packages/3.12/iSEE/vignettes/basic.html">earlier</a>, enabling speech recognition is as simple as setting <code>voice=TRUE</code> below:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">iSEE</span>)
-<span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">voice</span><span class="kw">=</span><span class="fl">TRUE</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/iSEE/iSEE">iSEE</a></span>)
+<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>, voice=<span class="fl">TRUE</span>)
+</pre></div>
 <p>With <code>voice=TRUE</code>, the lightweight JavaScript speech recognition library <em>annyang</em> is loaded and activated in any web browser tab that runs <code>app</code>.</p>
 <p>If your default browser is not compatible with the feature, or if you work in <em>RStudio</em>, you can prevent the application from opening in the default browser by setting <code>launch.browser=FALSE</code> as follows:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="kw">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/interactive.html">interactive</a></span>()) {
-    <span class="kw pkg">shiny</span><span class="kw ns">::</span><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/runApp.html">runApp</a></span>(<span class="no">app</span>, <span class="kw">port</span><span class="kw">=</span><span class="fl">1234</span>, <span class="kw">launch.browser</span><span class="kw">=</span><span class="fl">FALSE</span>)
-}</pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="co">if</span> (<span class="fu"><a href="https://rdrr.io/r/base/interactive.html">interactive</a></span>()) {
+    <span class="kw">shiny</span>::<span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/runApp.html">runApp</a></span>(<span class="kw">app</span>, port=<span class="fl">1234</span>, launch.browser=<span class="fl">FALSE</span>)
+}
+</pre></div>
 <p>At that point, your R console should be displaying the address and port where <code>app</code> is running. In the example above, that would be:</p>
 <pre><code>Listening on http://127.0.0.1:1234</code></pre>
 <p>Using a compatible browser, navigate to the indicated address and port. Note that when the web page opens, you may be prompted to allow the web browser to use your microphone, which you must accept to enable the functionality.</p>
@@ -188,8 +192,9 @@
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
-<div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
-<span class="co">#&gt; R version 4.0.2 Patched (2020-08-27 r79088)</span>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
+<span class="co">#&gt; R version 4.0.2 Patched (2020-09-17 r79226)</span>
 <span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span>
 <span class="co">#&gt; Running under: Ubuntu 20.04.1 LTS</span>
 <span class="co">#&gt; </span>
@@ -209,31 +214,31 @@
 <span class="co">#&gt; [8] methods   base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt;  [1] iSEE_2.1.16                 SingleCellExperiment_1.11.6</span>
-<span class="co">#&gt;  [3] SummarizedExperiment_1.19.6 DelayedArray_0.15.7        </span>
+<span class="co">#&gt;  [1] iSEE_2.1.17                 SingleCellExperiment_1.11.7</span>
+<span class="co">#&gt;  [3] SummarizedExperiment_1.19.6 DelayedArray_0.15.8        </span>
 <span class="co">#&gt;  [5] matrixStats_0.56.0          Matrix_1.2-18              </span>
-<span class="co">#&gt;  [7] Biobase_2.49.0              GenomicRanges_1.41.6       </span>
-<span class="co">#&gt;  [9] GenomeInfoDb_1.25.10        IRanges_2.23.10            </span>
-<span class="co">#&gt; [11] S4Vectors_0.27.12           BiocGenerics_0.35.4        </span>
+<span class="co">#&gt;  [7] Biobase_2.49.1              GenomicRanges_1.41.6       </span>
+<span class="co">#&gt;  [9] GenomeInfoDb_1.25.11        IRanges_2.23.10            </span>
+<span class="co">#&gt; [11] S4Vectors_0.27.13           BiocGenerics_0.35.4        </span>
 <span class="co">#&gt; [13] BiocStyle_2.17.0           </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
 <span class="co">#&gt;  [1] nlme_3.1-149           bitops_1.0-6           fs_1.5.0              </span>
 <span class="co">#&gt;  [4] RColorBrewer_1.1-2     rprojroot_1.3-2        tools_4.0.2           </span>
-<span class="co">#&gt;  [7] backports_1.1.9        R6_2.4.1               DT_0.15               </span>
-<span class="co">#&gt; [10] vipor_0.4.5            mgcv_1.8-32            colorspace_1.4-1      </span>
+<span class="co">#&gt;  [7] backports_1.1.10       R6_2.4.1               DT_0.15               </span>
+<span class="co">#&gt; [10] vipor_0.4.5            mgcv_1.8-33            colorspace_1.4-1      </span>
 <span class="co">#&gt; [13] GetoptLong_1.0.2       tidyselect_1.1.0       compiler_4.0.2        </span>
-<span class="co">#&gt; [16] shinyjs_1.1            desc_1.2.0             colourpicker_1.0      </span>
-<span class="co">#&gt; [19] bookdown_0.20          scales_1.1.1           pkgdown_1.5.1         </span>
-<span class="co">#&gt; [22] stringr_1.4.0          digest_0.6.25          rmarkdown_2.3         </span>
-<span class="co">#&gt; [25] XVector_0.29.3         pkgconfig_2.0.3        htmltools_0.5.0       </span>
-<span class="co">#&gt; [28] fastmap_1.0.1          htmlwidgets_1.5.1      rlang_0.4.7           </span>
-<span class="co">#&gt; [31] GlobalOptions_0.1.2    shiny_1.5.0            shape_1.4.4           </span>
-<span class="co">#&gt; [34] generics_0.0.2         jsonlite_1.7.0         dplyr_1.0.2           </span>
-<span class="co">#&gt; [37] RCurl_1.98-1.2         magrittr_1.5           GenomeInfoDbData_1.2.3</span>
-<span class="co">#&gt; [40] Rcpp_1.0.5             munsell_0.5.0          lifecycle_0.2.0       </span>
-<span class="co">#&gt; [43] stringi_1.4.6          yaml_2.2.1             rintrojs_0.2.2        </span>
-<span class="co">#&gt; [46] MASS_7.3-52            zlibbioc_1.35.0        grid_4.0.2            </span>
+<span class="co">#&gt; [16] shinyjs_2.0.0          desc_1.2.0             colourpicker_1.1.0    </span>
+<span class="co">#&gt; [19] bookdown_0.20          scales_1.1.1           pkgdown_1.6.1         </span>
+<span class="co">#&gt; [22] systemfonts_0.3.1      stringr_1.4.0          digest_0.6.25         </span>
+<span class="co">#&gt; [25] rmarkdown_2.3          XVector_0.29.3         pkgconfig_2.0.3       </span>
+<span class="co">#&gt; [28] htmltools_0.5.0        fastmap_1.0.1          htmlwidgets_1.5.1     </span>
+<span class="co">#&gt; [31] rlang_0.4.7            GlobalOptions_0.1.2    shiny_1.5.0           </span>
+<span class="co">#&gt; [34] shape_1.4.5            generics_0.0.2         jsonlite_1.7.1        </span>
+<span class="co">#&gt; [37] dplyr_1.0.2            RCurl_1.98-1.2         magrittr_1.5          </span>
+<span class="co">#&gt; [40] GenomeInfoDbData_1.2.3 Rcpp_1.0.5             munsell_0.5.0         </span>
+<span class="co">#&gt; [43] lifecycle_0.2.0        stringi_1.5.3          yaml_2.2.1            </span>
+<span class="co">#&gt; [46] rintrojs_0.2.2         zlibbioc_1.35.0        grid_4.0.2            </span>
 <span class="co">#&gt; [49] promises_1.1.1         ggrepel_0.8.2          shinydashboard_0.7.1  </span>
 <span class="co">#&gt; [52] crayon_1.3.4           miniUI_0.1.1.1         lattice_0.20-41       </span>
 <span class="co">#&gt; [55] splines_4.0.2          circlize_0.4.10        knitr_1.29            </span>
@@ -242,11 +247,13 @@
 <span class="co">#&gt; [64] BiocManager_1.30.10    png_0.1-7              vctrs_0.3.4           </span>
 <span class="co">#&gt; [67] httpuv_1.5.4           gtable_0.3.0           purrr_0.3.4           </span>
 <span class="co">#&gt; [70] clue_0.3-57            assertthat_0.2.1       ggplot2_3.3.2         </span>
-<span class="co">#&gt; [73] xfun_0.16              mime_0.9               xtable_1.8-4          </span>
-<span class="co">#&gt; [76] later_1.1.0.1          viridisLite_0.3.0      tibble_3.0.3          </span>
-<span class="co">#&gt; [79] memoise_1.1.0          cluster_2.1.0          shinyWidgets_0.5.3    </span>
-<span class="co">#&gt; [82] ellipsis_0.3.1         shinyAce_0.4.1</span>
-<span class="co"># devtools::session_info()</span></pre></body></html></div>
+<span class="co">#&gt; [73] cpp11_0.2.1            xfun_0.17              mime_0.9              </span>
+<span class="co">#&gt; [76] xtable_1.8-4           later_1.1.0.1          viridisLite_0.3.0     </span>
+<span class="co">#&gt; [79] ragg_0.3.1             tibble_3.0.3           memoise_1.1.0         </span>
+<span class="co">#&gt; [82] cluster_2.1.0          shinyWidgets_0.5.3     ellipsis_0.3.1        </span>
+<span class="co">#&gt; [85] shinyAce_0.4.1</span>
+<span class="co"># devtools::session_info()</span>
+</pre></div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
@@ -274,7 +281,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

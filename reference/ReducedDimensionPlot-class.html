@@ -73,7 +73,7 @@ It provides slots and methods to specify which dimensionality reduction result t
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.17</span>
       </span>
     </div>
 
@@ -152,7 +152,7 @@ It provides slots and methods to specify which dimensionality reduction result t
     </div>
 
     <div class="ref-description">
-    <p>The ReducedDimensionPlot is a panel class for creating a ColumnDotPlot where the coordinates of each column/sample are taken from the <code>reducedDims</code> of a SingleCellExperiment object.
+    <p>The ReducedDimensionPlot is a panel class for creating a <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> where the coordinates of each column/sample are taken from the <code>reducedDims</code> of a SingleCellExperiment object.
 It provides slots and methods to specify which dimensionality reduction result to use and to create the data.frame with the coordinates of the specified results for plotting.</p>
     </div>
 
@@ -171,7 +171,7 @@ Defaults to 1.</p></li>
 Defaults to 2.</p></li>
 </ul>
 
-<p>In addition, this class inherits all slots from its parent ColumnDotPlot, DotPlot and Panel classes.</p>
+<p>In addition, this class inherits all slots from its parent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>, <a href='DotPlot-class.html'>DotPlot</a> and <a href='Panel-class.html'>Panel</a> classes.</p>
     <h2 class="hasAnchor" id="constructor"><a class="anchor" href="#constructor"></a>Constructor</h2>
 
     
@@ -184,64 +184,70 @@ Defaults to 2.</p></li>
 <p>In the following code snippets, <code>x</code> is an instance of a ReducedDimensionPlot class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For setting up data values:</p><ul>
-<li><p><code>.cacheCommonInfo(x)</code> adds a <code>"ReducedDimensionPlot"</code> entry containing <code>valid.reducedDim.names</code>, a character vector of names of valid dimensionality reduction results (i.e., at least one dimension).
-This will also call the equivalent ColumnDotPlot method.</p></li>
-<li><p><code>.refineParameters(x, se)</code> replaces <code>NA</code> values in <code>RedDimType</code> with the first valid dimensionality reduction result name in <code>se</code>.
-This will also call the equivalent ColumnDotPlot method for further refinements to <code>x</code>.
+<li><p><code><a href='setup-generics.html'>.cacheCommonInfo</a>(x)</code> adds a <code>"ReducedDimensionPlot"</code> entry containing <code>valid.reducedDim.names</code>, a character vector of names of valid dimensionality reduction results (i.e., at least one dimension).
+This will also call the equivalent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> method.</p></li>
+<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> replaces <code>NA</code> values in <code>RedDimType</code> with the first valid dimensionality reduction result name in <code>se</code>.
+This will also call the equivalent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> method for further refinements to <code>x</code>.
 If no dimensionality reduction results are available, <code>NULL</code> is returned instead.</p></li>
 </ul>
 
 <p>For defining the interface:</p><ul>
-<li><p><code>.defineDataInterface(x, se, select_info)</code> returns a list of interface elements for manipulating all slots described above.</p></li>
-<li><p><code>.panelColor(x)</code> will return the specified default color for this panel class.</p></li>
+<li><p><code><a href='interface-generics.html'>.defineDataInterface</a>(x, se, select_info)</code> returns a list of interface elements for manipulating all slots described above.</p></li>
+<li><p><code><a href='.panelColor.html'>.panelColor</a>(x)</code> will return the specified default color for this panel class.</p></li>
 </ul>
 
 <p>For monitoring reactive expressions:</p><ul>
-<li><p><code>.createObservers(x, se, input, session, pObjects, rObjects)</code> sets up observers for all slots described above and in the parent classes.
-This will also call the equivalent ColumnDotPlot method.</p></li>
+<li><p><code><a href='observer-generics.html'>.createObservers</a>(x, se, input, session, pObjects, rObjects)</code> sets up observers for all slots described above and in the parent classes.
+This will also call the equivalent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> method.</p></li>
 </ul>
 
 <p>For defining the panel name:</p><ul>
-<li><p><code>.fullName(x)</code> will return <code>"Reduced dimension plot"</code>.</p></li>
+<li><p><code><a href='.fullName.html'>.fullName</a>(x)</code> will return <code>"Reduced dimension plot"</code>.</p></li>
 </ul>
 
 <p>For creating the plot:</p><ul>
-<li><p><code>.generateDotPlotData(x, envir)</code> will create a data.frame of reduced dimension coordinates in <code>envir</code>.
+<li><p><code><a href='plot-generics.html'>.generateDotPlotData</a>(x, envir)</code> will create a data.frame of reduced dimension coordinates in <code>envir</code>.
 It will return the commands required to do so as well as a list of labels.</p></li>
 </ul>
 
 <p>For documentation:</p><ul>
-<li><p><code>.definePanelTour(x)</code> returns an data.frame containing a panel-specific tour.</p></li>
+<li><p><code><a href='documentation-generics.html'>.definePanelTour</a>(x)</code> returns an data.frame containing a panel-specific tour.</p></li>
 </ul>
 
 <p>Subclasses do not have to provide any methods, as this is a concrete class.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>ColumnDotPlot, for the immediate parent class.</p></div>
+    <div class='dont-index'><p><a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>, for the immediate parent class.</p></div>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Aaron Lun</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>#################</span>
 <span class='co'># For end-users #</span>
 <span class='co'>#################</span>
 
-<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>ReducedDimensionPlot</span>()
-<span class='no'>x</span><span class='kw'>[[</span><span class='st'>"Type"</span>]]</div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='no'>x</span><span class='kw'>[[</span><span class='st'>"Type"</span>]] <span class='kw'>&lt;-</span> <span class='st'>"TSNE"</span>
+<span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'>ReducedDimensionPlot</span>()
+<span class='kw'>x</span>[[<span class='st'>"Type"</span>]]
+</div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='kw'>x</span>[[<span class='st'>"Type"</span>]] <span class='op'>&lt;-</span> <span class='st'>"TSNE"</span>
 
 <span class='co'>##################</span>
 <span class='co'># For developers #</span>
 <span class='co'>##################</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scater</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/reexports.html'>mockSCE</a></span>()
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/reexports.html'>logNormCounts</a></span>(<span class='no'>sce</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://bioconductor.org/packages/scater'>scater</a></span>)
+<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/mockSCE.html'>mockSCE</a></span>()
+<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/logNormCounts.html'>logNormCounts</a></span>(<span class='kw'>sce</span>)
 
 <span class='co'># Spits out a NULL and a warning if no reducedDims are available.</span>
-<span class='no'>sce0</span> <span class='kw'>&lt;-</span> <span class='fu'>.cacheCommonInfo</span>(<span class='no'>x</span>, <span class='no'>sce</span>)
-<span class='fu'>.refineParameters</span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: no 'reducedDims' with non-zero dimensions for 'ReducedDimensionPlot'</span></div><div class='output co'>#&gt; NULL</div><div class='input'>
+<span class='kw'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span>(<span class='kw'>x</span>, <span class='kw'>sce</span>)
+<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span>(<span class='kw'>x</span>, <span class='kw'>sce0</span>)
+</div><div class='output co'>#&gt; <span class='warning'>Warning: no 'reducedDims' with non-zero dimensions for 'ReducedDimensionPlot'</span></div><div class='output co'>#&gt; NULL</div><div class='input'>
 <span class='co'># Replaces the default with something sensible.</span>
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/runPCA.html'>runPCA</a></span>(<span class='no'>sce</span>)
-<span class='no'>sce0</span> <span class='kw'>&lt;-</span> <span class='fu'>.cacheCommonInfo</span>(<span class='no'>x</span>, <span class='no'>sce</span>)
-<span class='fu'>.refineParameters</span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; An object of class "ReducedDimensionPlot"
+<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/runPCA.html'>runPCA</a></span>(<span class='kw'>sce</span>)
+<span class='kw'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span>(<span class='kw'>x</span>, <span class='kw'>sce</span>)
+<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span>(<span class='kw'>x</span>, <span class='kw'>sce0</span>)
+</div><div class='output co'>#&gt; An object of class "ReducedDimensionPlot"
 #&gt; Slot "Type":
 #&gt; [1] "PCA"
 #&gt; 
@@ -426,7 +432,7 @@ It will return the commands required to do so as well as a list of labels.</p></
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

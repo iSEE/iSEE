@@ -73,7 +73,7 @@ It provides slots and methods to specify the feature and what to plot on the x-a
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.17</span>
       </span>
     </div>
 
@@ -152,7 +152,7 @@ It provides slots and methods to specify the feature and what to plot on the x-a
     </div>
 
     <div class="ref-description">
-    <p>The FeatureAssayPlot is a panel class for creating a ColumnDotPlot where the y-axis represents the expression of a feature of interest, using the <code>assay</code> values of the SummarizedExperiment.
+    <p>The FeatureAssayPlot is a panel class for creating a <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> where the y-axis represents the expression of a feature of interest, using the <code>assay</code> values of the SummarizedExperiment.
 It provides slots and methods to specify the feature and what to plot on the x-axis, as well as a method to actually create a data.frame containing those pieces of data in preparation for plotting.</p>
     </div>
 
@@ -166,7 +166,7 @@ It provides slots and methods to specify the feature and what to plot on the x-a
 <li><p><code>YAxisFeatureName</code>, a string specifying the name of the feature to plot on the y-axis.
 If <code>NA</code>, defaults to the first row name of the SummarizedExperiment object.</p></li>
 <li><p><code>Assay</code>, string specifying the name of the assay to use for obtaining expression values.
-Defaults to the first valid assay name (see <code>?".refineParameters,DotPlot-method"</code> for details).</p></li>
+Defaults to the first valid assay name (see <code>?"<a href='DotPlot-class.html'>.refineParameters,DotPlot-method</a>"</code> for details).</p></li>
 <li><p><code>YAxisFeatureSource</code>, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces <code>YAxisFeatureName</code>.
 Defaults to <code>"---"</code>, i.e., no transmission is performed.</p></li>
 <li><p><code>YAxisFeatureDynamicSource</code>, a logical scalar indicating whether <code>x</code> should dynamically change its selection source for the y-axis.
@@ -179,7 +179,7 @@ This can be any one of <code>"None"</code>, <code>"Feature name"</code> or <code
 Defaults to <code>"None"</code>.</p></li>
 <li><p><code>XAxisColumnData</code>, string specifying which column of the <code>colData</code> should be shown on the x-axis,
 if <code>XAxis="Column data"</code>.
-Defaults to the first valid <code>colData</code> field (see <code>?".refineParameters,ColumnDotPlot-method"</code> for details).</p></li>
+Defaults to the first valid <code>colData</code> field (see <code>?"<a href='ColumnDotPlot-class.html'>.refineParameters,ColumnDotPlot-method</a>"</code> for details).</p></li>
 <li><p><code>XAaxisFeatureName</code>, string specifying the name of the feature to plot on the x-axis,
 if <code>XAxis="Feature name"</code>.
 Defaults to the first row name.</p></li>
@@ -189,7 +189,7 @@ Defaults to <code>"---"</code>, i.e., no transmission is performed.</p></li>
 Defaults to <code>FALSE</code>.</p></li>
 </ul>
 
-<p>In addition, this class inherits all slots from its parent ColumnDotPlot, DotPlot and Panel classes.</p>
+<p>In addition, this class inherits all slots from its parent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>, <a href='DotPlot-class.html'>DotPlot</a> and <a href='Panel-class.html'>Panel</a> classes.</p>
     <h2 class="hasAnchor" id="constructor"><a class="anchor" href="#constructor"></a>Constructor</h2>
 
     
@@ -202,70 +202,76 @@ Defaults to <code>FALSE</code>.</p></li>
 <p>In the following code snippets, <code>x</code> is an instance of a FeatureAssayPlot class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For setting up data values:</p><ul>
-<li><p><code>.refineParameters(x, se)</code> replaces any <code>NA</code> values in <code>XAxisFeatureName</code> and <code>YAxisFeatureName</code> with the first row name; any <code>NA</code> value in <code>Assay</code> with the first valid assay name; and any <code>NA</code> value in <code>XAxisColumnData</code> with the first valid column metadata field.
-This will also call the equivalent ColumnDotPlot method for further refinements to <code>x</code>.
+<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> replaces any <code>NA</code> values in <code>XAxisFeatureName</code> and <code>YAxisFeatureName</code> with the first row name; any <code>NA</code> value in <code>Assay</code> with the first valid assay name; and any <code>NA</code> value in <code>XAxisColumnData</code> with the first valid column metadata field.
+This will also call the equivalent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> method for further refinements to <code>x</code>.
 If no rows or assays are present, <code>NULL</code> is returned instead.</p></li>
 </ul>
 
 <p>For defining the interface:</p><ul>
-<li><p><code>.defineDataInterface(x, se, select_info)</code> returns a list of interface elements for manipulating all slots described above.</p></li>
-<li><p><code>.panelColor(x)</code> will return the specified default color for this panel class.</p></li>
+<li><p><code><a href='interface-generics.html'>.defineDataInterface</a>(x, se, select_info)</code> returns a list of interface elements for manipulating all slots described above.</p></li>
+<li><p><code><a href='.panelColor.html'>.panelColor</a>(x)</code> will return the specified default color for this panel class.</p></li>
 </ul>
 
 <p>For monitoring reactive expressions:</p><ul>
-<li><p><code>.createObservers(x, se, input, session, pObjects, rObjects)</code> sets up observers for all slots described above and in the parent classes.
-This will also call the equivalent ColumnDotPlot method.</p></li>
+<li><p><code><a href='observer-generics.html'>.createObservers</a>(x, se, input, session, pObjects, rObjects)</code> sets up observers for all slots described above and in the parent classes.
+This will also call the equivalent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> method.</p></li>
 </ul>
 
 <p>For defining the panel name:</p><ul>
-<li><p><code>.fullName(x)</code> will return <code>"Feature assay plot"</code>.</p></li>
+<li><p><code><a href='.fullName.html'>.fullName</a>(x)</code> will return <code>"Feature assay plot"</code>.</p></li>
 </ul>
 
 <p>For creating the plot:</p><ul>
-<li><p><code>.generateDotPlotData(x, envir)</code> will create a data.frame of feature expression values in <code>envir</code>.
+<li><p><code><a href='plot-generics.html'>.generateDotPlotData</a>(x, envir)</code> will create a data.frame of feature expression values in <code>envir</code>.
 It will return the commands required to do so as well as a list of labels.</p></li>
 </ul>
 
 <p>For managing selections:</p><ul>
-<li><p><code>.singleSelectionSlots(x)</code> will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of feature on the x- and y-axes.
+<li><p><code><a href='single-select-generics.html'>.singleSelectionSlots</a>(x)</code> will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of feature on the x- and y-axes.
 This includes the output of <code>callNextMethod</code>.</p></li>
 </ul>
 
 <p>For documentation:</p><ul>
-<li><p><code>.definePanelTour(x)</code> returns an data.frame containing a panel-specific tour.</p></li>
+<li><p><code><a href='documentation-generics.html'>.definePanelTour</a>(x)</code> returns an data.frame containing a panel-specific tour.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>ColumnDotPlot, for the immediate parent class.</p></div>
+    <div class='dont-index'><p><a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>, for the immediate parent class.</p></div>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Aaron Lun</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>#################</span>
 <span class='co'># For end-users #</span>
 <span class='co'>#################</span>
 
-<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>FeatureAssayPlot</span>()
-<span class='no'>x</span><span class='kw'>[[</span><span class='st'>"XAxis"</span>]]</div><div class='output co'>#&gt; [1] "None"</div><div class='input'><span class='no'>x</span><span class='kw'>[[</span><span class='st'>"Assay"</span>]] <span class='kw'>&lt;-</span> <span class='st'>"logcounts"</span>
-<span class='no'>x</span><span class='kw'>[[</span><span class='st'>"XAxisColumnData"</span>]] <span class='kw'>&lt;-</span> <span class='st'>"stuff"</span>
+<span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'>FeatureAssayPlot</span>()
+<span class='kw'>x</span>[[<span class='st'>"XAxis"</span>]]
+</div><div class='output co'>#&gt; [1] "None"</div><div class='input'><span class='kw'>x</span>[[<span class='st'>"Assay"</span>]] <span class='op'>&lt;-</span> <span class='st'>"logcounts"</span>
+<span class='kw'>x</span>[[<span class='st'>"XAxisColumnData"</span>]] <span class='op'>&lt;-</span> <span class='st'>"stuff"</span>
 
 <span class='co'>##################</span>
 <span class='co'># For developers #</span>
 <span class='co'>##################</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scater</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/reexports.html'>mockSCE</a></span>()
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/reexports.html'>logNormCounts</a></span>(<span class='no'>sce</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://bioconductor.org/packages/scater'>scater</a></span>)
+<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/mockSCE.html'>mockSCE</a></span>()
+<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/logNormCounts.html'>logNormCounts</a></span>(<span class='kw'>sce</span>)
 
-<span class='no'>old_assay_names</span> <span class='kw'>&lt;-</span> <span class='fu'>assayNames</span>(<span class='no'>sce</span>)
-<span class='fu'>assayNames</span>(<span class='no'>sce</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='no'>old_assay_names</span>))
+<span class='kw'>old_assay_names</span> <span class='op'>&lt;-</span> <span class='fu'>assayNames</span>(<span class='kw'>sce</span>)
+<span class='fu'>assayNames</span>(<span class='kw'>sce</span>) <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/character.html'>character</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span>(<span class='kw'>old_assay_names</span>))
 
 <span class='co'># Spits out a NULL and a warning if no assays are named.</span>
-<span class='no'>sce0</span> <span class='kw'>&lt;-</span> <span class='fu'>.cacheCommonInfo</span>(<span class='no'>x</span>, <span class='no'>sce</span>)
-<span class='fu'>.refineParameters</span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: no valid 'assays' for plotting 'FeatureAssayPlot'</span></div><div class='output co'>#&gt; NULL</div><div class='input'>
+<span class='kw'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span>(<span class='kw'>x</span>, <span class='kw'>sce</span>)
+<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span>(<span class='kw'>x</span>, <span class='kw'>sce0</span>)
+</div><div class='output co'>#&gt; <span class='warning'>Warning: no valid 'assays' for plotting 'FeatureAssayPlot'</span></div><div class='output co'>#&gt; NULL</div><div class='input'>
 <span class='co'># Replaces the default with something sensible.</span>
-<span class='fu'>assayNames</span>(<span class='no'>sce</span>) <span class='kw'>&lt;-</span> <span class='no'>old_assay_names</span>
-<span class='no'>sce0</span> <span class='kw'>&lt;-</span> <span class='fu'>.cacheCommonInfo</span>(<span class='no'>x</span>, <span class='no'>sce</span>)
-<span class='fu'>.refineParameters</span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; An object of class "FeatureAssayPlot"
+<span class='fu'>assayNames</span>(<span class='kw'>sce</span>) <span class='op'>&lt;-</span> <span class='kw'>old_assay_names</span>
+<span class='kw'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span>(<span class='kw'>x</span>, <span class='kw'>sce</span>)
+<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span>(<span class='kw'>x</span>, <span class='kw'>sce0</span>)
+</div><div class='output co'>#&gt; An object of class "FeatureAssayPlot"
 #&gt; Slot "Assay":
 #&gt; [1] "logcounts"
 #&gt; 
@@ -468,7 +474,7 @@ This includes the output of <code>callNextMethod</code>.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

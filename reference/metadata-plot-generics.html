@@ -73,7 +73,7 @@ This is most useful for restricting the visualization to a subset of variables, 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.17</span>
       </span>
     </div>
 
@@ -152,7 +152,7 @@ This is most useful for restricting the visualization to a subset of variables, 
     </div>
 
     <div class="ref-description">
-    <p>These generics allow subclasses to refine the choices of allowable variables on the x- and y-axes of a ColumnDataPlot or RowDataPlot.
+    <p>These generics allow subclasses to refine the choices of allowable variables on the x- and y-axes of a <a href='ColumnDataPlot-class.html'>ColumnDataPlot</a> or <a href='RowDataPlot-class.html'>RowDataPlot</a>.
 This is most useful for restricting the visualization to a subset of variables, e.g., only taking log-fold changes in a y-axis of a MA plot.</p>
     </div>
 
@@ -162,13 +162,13 @@ This is most useful for restricting the visualization to a subset of variables, 
 
     
 
-<p><code>.allowableYAxisChoices(x, se)</code> takes <code>x</code>, a Panel instance; and <code>se</code>, the SummarizedExperiment object.
+<p><code>.allowableYAxisChoices(x, se)</code> takes <code>x</code>, a <a href='Panel-class.html'>Panel</a> instance; and <code>se</code>, the SummarizedExperiment object.
 It is expected to return a character vector containing the names of acceptable variables to show on the y-axis.
-For ColumnDataPlots, these should be a subset of the variables in <code>colData(se)</code>, while for RowDataPlots, these should be a subset of the variables in <code>rowData(se)</code>.</p>
+For <a href='ColumnDataPlot-class.html'>ColumnDataPlot</a>s, these should be a subset of the variables in <code>colData(se)</code>, while for <a href='RowDataPlot-class.html'>RowDataPlot</a>s, these should be a subset of the variables in <code>rowData(se)</code>.</p>
 <p>Given a constant <code>se</code>, the output of this function should be constant for all instances of the same panel class.
-As such, it is a good idea to make use of information precomputed by <code>.cacheCommonInfo</code>.
-For example, <code>.cacheCommonInfo,ColumnDotPlot-method</code> will add vectors specifying whether a variable in the <code>colData</code> is valid and discrete or continuous, which can be intersected with any additional requirements in a subclass's method for this generic.</p>
-<p>This generic is called by <code>.defineDataInterface</code> for ColumnDataPlots and RowDataPlots.
+As such, it is a good idea to make use of information precomputed by <code><a href='setup-generics.html'>.cacheCommonInfo</a></code>.
+For example, <code><a href='ColumnDotPlot-class.html'>.cacheCommonInfo,ColumnDotPlot-method</a></code> will add vectors specifying whether a variable in the <code>colData</code> is valid and discrete or continuous, which can be intersected with any additional requirements in a subclass's method for this generic.</p>
+<p>This generic is called by <code><a href='interface-generics.html'>.defineDataInterface</a></code> for <a href='ColumnDataPlot-class.html'>ColumnDataPlot</a>s and <a href='RowDataPlot-class.html'>RowDataPlot</a>s.
 Thus, developers wanting to restrict those choices for subclasses can simply specialize <code>.allowableYAxisChoices</code> rather than reimplementing <code>.defineDataInterface</code>.</p>
     <h2 class="hasAnchor" id="allowable-x-axis-choices"><a class="anchor" href="#allowable-x-axis-choices"></a>Allowable x-axis choices</h2>
 
@@ -177,6 +177,9 @@ Thus, developers wanting to restrict those choices for subclasses can simply spe
 <p><code>.allowableXAxisChoices(x, se)</code> is the same as above but controls the variables that can be shown on the x-axis.
 This need not return the same subset of variables as <code>.allowableYAxisChoices</code>.
 However, again, the output of this function should be constant for all instances of the same class and a constant <code>se</code>.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Aaron Lun</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -193,7 +196,7 @@ However, again, the output of this function should be constant for all instances
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

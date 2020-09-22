@@ -77,7 +77,7 @@ in the ExperimentColorMap object exist in the SingleCellExperiment object." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.17</span>
       </span>
     </div>
 
@@ -157,20 +157,20 @@ objects</h1>
     </div>
 
     <div class="ref-description">
-    <p>This function compares a pair of ExperimentColorMap and
+    <p>This function compares a pair of <a href='ExperimentColorMap-class.html'>ExperimentColorMap</a> and
 SingleCellExperiment objects, and examines whether
 all of the <code>assays</code>, <code>colData</code>, and <code>rowData</code> defined
 in the ExperimentColorMap object exist in the SingleCellExperiment object.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>checkColormapCompatibility</span>(<span class='no'>ecm</span>, <span class='no'>se</span>)</pre>
+    <pre class="usage"><span class='fu'>checkColormapCompatibility</span>(<span class='kw'>ecm</span>, <span class='kw'>se</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>ecm</th>
-      <td><p>An ExperimentColorMap.</p></td>
+      <td><p>An <a href='ExperimentColorMap-class.html'>ExperimentColorMap</a>.</p></td>
     </tr>
     <tr>
       <th>se</th>
@@ -181,37 +181,42 @@ in the ExperimentColorMap object exist in the SingleCellExperiment object.</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A character vector of incompability error messages, if any.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Kevin Rue-Albrecht</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='co'># Example colormaps ----</span>
 
-<span class='no'>count_colors</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>n</span>){
+<span class='kw'>count_colors</span> <span class='op'>&lt;-</span> <span class='fu'>function</span>(<span class='kw'>n</span>){
   <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"black"</span>,<span class='st'>"brown"</span>,<span class='st'>"red"</span>,<span class='st'>"orange"</span>,<span class='st'>"yellow"</span>)
 }
 
-<span class='no'>qc_color_fun</span> <span class='kw'>&lt;-</span> <span class='kw'>function</span>(<span class='no'>n</span>){
-  <span class='no'>qc_colors</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"forestgreen"</span>, <span class='st'>"firebrick1"</span>)
-  <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='no'>qc_colors</span>) <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Y"</span>, <span class='st'>"N"</span>)
-  <span class='fu'><a href='https://rdrr.io/r/base/function.html'>return</a></span>(<span class='no'>qc_colors</span>)
+<span class='kw'>qc_color_fun</span> <span class='op'>&lt;-</span> <span class='fu'>function</span>(<span class='kw'>n</span>){
+  <span class='kw'>qc_colors</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"forestgreen"</span>, <span class='st'>"firebrick1"</span>)
+  <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span>(<span class='kw'>qc_colors</span>) <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Y"</span>, <span class='st'>"N"</span>)
+  <span class='fu'><a href='https://rdrr.io/r/base/function.html'>return</a></span>(<span class='kw'>qc_colors</span>)
 }
 
-<span class='no'>ecm</span> <span class='kw'>&lt;-</span> <span class='fu'>ExperimentColorMap</span>(
-    <span class='kw'>assays</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
-        <span class='kw'>tophat_counts</span> <span class='kw'>=</span> <span class='no'>count_colors</span>
+<span class='kw'>ecm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ExperimentColorMap-class.html'>ExperimentColorMap</a></span>(
+    assays = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
+        tophat_counts = <span class='kw'>count_colors</span>
     ),
-    <span class='kw'>colData</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
-        <span class='kw'>passes_qc_checks_s</span> <span class='kw'>=</span> <span class='no'>qc_color_fun</span>
+    colData = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(
+        passes_qc_checks_s = <span class='kw'>qc_color_fun</span>
     )
 )
 
 <span class='co'># Example SingleCellExperiment ----</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scRNAseq</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span>(<span class='kw'>assays</span><span class='kw'>=</span><span class='st'>"tophat_counts"</span>)</div><div class='output co'>#&gt; <span class='message'>using temporary cache /tmp/Rtmp3P2cwP/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2020-08-31</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'>scRNAseq</span>)
+<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span>(assays=<span class='st'>"tophat_counts"</span>)
+</div><div class='output co'>#&gt; <span class='message'>using temporary cache /tmp/Rtmpw5q5QV/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2020-09-14</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='input'>
 <span class='co'># Test for compatibility ----</span>
 
-<span class='fu'>checkColormapCompatibility</span>(<span class='no'>ecm</span>, <span class='no'>sce</span>)</div><div class='output co'>#&gt; NULL</div><div class='input'>
+<span class='fu'>checkColormapCompatibility</span>(<span class='kw'>ecm</span>, <span class='kw'>sce</span>)
+</div><div class='output co'>#&gt; NULL</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -228,7 +233,7 @@ in the ExperimentColorMap object exist in the SingleCellExperiment object.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

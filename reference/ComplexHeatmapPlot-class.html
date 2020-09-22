@@ -73,7 +73,7 @@ It provides slots and methods for specifying the features of interest, which ass
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.17</span>
       </span>
     </div>
 
@@ -152,7 +152,7 @@ It provides slots and methods for specifying the features of interest, which ass
     </div>
 
     <div class="ref-description">
-    <p>The ComplexHeatmapPlot is a panel class for creating a Panel that displays an assay of a SummarizedExperiment object as a <code>Heatmap</code> with features as rows and samples and columns, respectively.
+    <p>The ComplexHeatmapPlot is a panel class for creating a <a href='Panel-class.html'>Panel</a> that displays an assay of a SummarizedExperiment object as a <code>Heatmap</code> with features as rows and samples and columns, respectively.
 It provides slots and methods for specifying the features of interest, which assay to display in the main heatmap, any transformations to perform on the data, and which metadata variables to display as row and column heatmap annotations.</p>
     </div>
 
@@ -229,7 +229,7 @@ Defaults to <code>FALSE</code>.</p></li>
 Defaults to <code>FALSE</code>.</p></li>
 </ul>
 
-<p>In addition, this class inherits all slots from its parent Panel class.</p>
+<p>In addition, this class inherits all slots from its parent <a href='Panel-class.html'>Panel</a> class.</p>
     <h2 class="hasAnchor" id="constructor"><a class="anchor" href="#constructor"></a>Constructor</h2>
 
     
@@ -242,7 +242,7 @@ Defaults to <code>FALSE</code>.</p></li>
 <p>In the following code snippets, <code>x</code> is an instance of a ComplexHeatmapPlot class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For setting up data values:</p><ul>
-<li><p><code>.cacheCommonInfo(x)</code> adds a <code>"ComplexHeatmapPlot"</code> entry containing
+<li><p><code><a href='setup-generics.html'>.cacheCommonInfo</a>(x)</code> adds a <code>"ComplexHeatmapPlot"</code> entry containing
 <code>valid.assay.names</code>, a character vector of valid assay names;
 <code>discrete.assay.names</code>, a character vector of valid assay names with discrete atomic values;
 <code>continuous.assay.names</code>, a character vector of valid assay names with continuous atomic values;
@@ -254,79 +254,84 @@ Refer to the documentation for each method for more details on the remaining arg
 <code>continuous.rowData.names</code>, a character vector of names of columns in <code>rowData</code> with continuous atomic values.
 Valid assay names are defined as those that are non-empty, i.e., not <code>""</code>;
 valid columns in <code>colData</code> and <code>rowData</code> are defined as those that contain atomic values.
-This will also call the equivalent Panel method.</p></li>
-<li><p><code>.refineParameters(x, se)</code> replaces
+This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.</p></li>
+<li><p><code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code> replaces
 any <code>NA</code> value in <code>"Assay"</code> with the first valid assay name;
 and <code>NA</code> value in <code>"CustomRowsText"</code> with the first row name.
-This will also call the equivalent Panel method for further refinements to <code>x</code>.
+This will also call the equivalent <a href='Panel-class.html'>Panel</a> method for further refinements to <code>x</code>.
 If no valid column metadata fields are available, <code>NULL</code> is returned instead.</p></li>
 </ul>
 
 <p>For defining the interface:</p><ul>
-<li><p><code>.defineInterface(x, se, select_info)</code> defines the user interface for manipulating all slots described above and in the parent classes.
+<li><p><code><a href='interface-generics.html'>.defineInterface</a>(x, se, select_info)</code> defines the user interface for manipulating all slots described above and in the parent classes.
 TODO
-It will also create a data parameter box that can respond to specialized <code>.defineDataInterface</code>,
+It will also create a data parameter box that can respond to specialized <code><a href='interface-generics.html'>.defineDataInterface</a></code>,
 and a visual parameter box and a selection parameter box both specific to the <code>ComplexHeatmapPlot</code> panel.
-This will <em>override</em> the Panel method.</p></li>
-<li><p><code>.defineDataInterface(x, se, select_info)</code> returns a list of interface elements for manipulating all slots described above.</p></li>
-<li><p><code>.defineOutput(x)</code> returns a UI element for a brushable plot.</p></li>
-<li><p><code>.panelColor(x)</code> will return the specified default color for this panel class.</p></li>
-<li><p><code>.hideInterface(x, field)</code> returns a logical scalar indicating whether the interface element corresponding to <code>field</code> should be hidden.
+This will <em>override</em> the <a href='Panel-class.html'>Panel</a> method.</p></li>
+<li><p><code><a href='interface-generics.html'>.defineDataInterface</a>(x, se, select_info)</code> returns a list of interface elements for manipulating all slots described above.</p></li>
+<li><p><code><a href='output-generics.html'>.defineOutput</a>(x)</code> returns a UI element for a brushable plot.</p></li>
+<li><p><code><a href='.panelColor.html'>.panelColor</a>(x)</code> will return the specified default color for this panel class.</p></li>
+<li><p><code><a href='interface-generics.html'>.hideInterface</a>(x, field)</code> returns a logical scalar indicating whether the interface element corresponding to <code>field</code> should be hidden.
 This returns <code>TRUE</code> for the selection history (<code>"SelectionHistory"</code>),
-otherwise it dispatches to the Panel method.</p></li>
+otherwise it dispatches to the <a href='Panel-class.html'>Panel</a> method.</p></li>
 </ul>
 
 <p>For generating the output:</p><ul>
-<li><p><code>.generateOutput(x, se, all_memory, all_contents)</code> returns a list containing <code>contents</code>, a data.frame with one row per point currently present in the plot;
+<li><p><code><a href='output-generics.html'>.generateOutput</a>(x, se, all_memory, all_contents)</code> returns a list containing <code>contents</code>, a data.frame with one row per point currently present in the plot;
 <code>plot</code>, a ggplot object;
 <code>commands</code>, a list of character vector containing the R commands required to generate <code>contents</code> and <code>plot</code>;
 and <code>varname</code>, a string containing the name of the variable in <code>commands</code> that was used to obtain <code>contents</code>.</p></li>
-<li><p><code>.exportOutput(x, se, all_memory, all_contents)</code> will create a PDF file containing the current plot, and return a string containing the path to that PDF.
-This assumes that the <code>plot</code> field returned by <code>.generateOutput</code> is a Heatmap object.</p></li>
+<li><p><code><a href='output-generics.html'>.exportOutput</a>(x, se, all_memory, all_contents)</code> will create a PDF file containing the current plot, and return a string containing the path to that PDF.
+This assumes that the <code>plot</code> field returned by <code><a href='output-generics.html'>.generateOutput</a></code> is a Heatmap object.</p></li>
 </ul>
 
 <p>For monitoring reactive expressions:</p><ul>
-<li><p><code>.createObservers(x, se, input, session, pObjects, rObjects)</code> sets up observers for all slots described above and in the parent classes.
-This will also call the equivalent Panel method.</p></li>
-<li><p><code>.renderOutput(x, se, output, pObjects, rObjects)</code> will add a rendered plot element to <code>output</code>.
+<li><p><code><a href='observer-generics.html'>.createObservers</a>(x, se, input, session, pObjects, rObjects)</code> sets up observers for all slots described above and in the parent classes.
+This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.</p></li>
+<li><p><code><a href='output-generics.html'>.renderOutput</a>(x, se, output, pObjects, rObjects)</code> will add a rendered plot element to <code>output</code>.
 The reactive expression will add the contents of the plot to <code>pObjects$contents</code> and the relevant commands to <code>pObjects$commands</code>.
-This will also call the equivalent Panel method to render the panel information text boxes.</p></li>
+This will also call the equivalent <a href='Panel-class.html'>Panel</a> method to render the panel information text boxes.</p></li>
 </ul>
 
 <p>For defining the panel name:</p><ul>
-<li><p><code>.fullName(x)</code> will return <code>"Complex heatmap"</code>.</p></li>
+<li><p><code><a href='.fullName.html'>.fullName</a>(x)</code> will return <code>"Complex heatmap"</code>.</p></li>
 </ul>
 
 <p>For documentation:</p><ul>
-<li><p><code>.definePanelTour(x)</code> returns an data.frame containing a panel-specific tour.</p></li>
+<li><p><code><a href='documentation-generics.html'>.definePanelTour</a>(x)</code> returns an data.frame containing a panel-specific tour.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Panel, for the immediate parent class.</p></div>
+    <div class='dont-index'><p><a href='Panel-class.html'>Panel</a>, for the immediate parent class.</p></div>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Kevin Rue-Albrecht</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>#################</span>
 <span class='co'># For end-users #</span>
 <span class='co'>#################</span>
 
-<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>ComplexHeatmapPlot</span>()
-<span class='no'>x</span><span class='kw'>[[</span><span class='st'>"ShowDimNames"</span>]]</div><div class='output co'>#&gt; [1] "Rows"</div><div class='input'><span class='no'>x</span><span class='kw'>[[</span><span class='st'>"ShowDimNames"</span>]] <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Rows"</span>, <span class='st'>"Columns"</span>)
+<span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'>ComplexHeatmapPlot</span>()
+<span class='kw'>x</span>[[<span class='st'>"ShowDimNames"</span>]]
+</div><div class='output co'>#&gt; [1] "Rows"</div><div class='input'><span class='kw'>x</span>[[<span class='st'>"ShowDimNames"</span>]] <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Rows"</span>, <span class='st'>"Columns"</span>)
 
 <span class='co'>##################</span>
 <span class='co'># For developers #</span>
 <span class='co'>##################</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>scater</span>)
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/reexports.html'>mockSCE</a></span>()
-<span class='no'>sce</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/reexports.html'>logNormCounts</a></span>(<span class='no'>sce</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://bioconductor.org/packages/scater'>scater</a></span>)
+<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/mockSCE.html'>mockSCE</a></span>()
+<span class='kw'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/logNormCounts.html'>logNormCounts</a></span>(<span class='kw'>sce</span>)
 
-<span class='no'>old_cd</span> <span class='kw'>&lt;-</span> <span class='fu'>colData</span>(<span class='no'>sce</span>)
-<span class='fu'>colData</span>(<span class='no'>sce</span>) <span class='kw'>&lt;-</span> <span class='kw'>NULL</span>
+<span class='kw'>old_cd</span> <span class='op'>&lt;-</span> <span class='fu'>colData</span>(<span class='kw'>sce</span>)
+<span class='fu'>colData</span>(<span class='kw'>sce</span>) <span class='op'>&lt;-</span> <span class='kw'>NULL</span>
 
 <span class='co'># Spits out a NULL and a warning if there is nothing to plot.</span>
-<span class='no'>sce0</span> <span class='kw'>&lt;-</span> <span class='fu'>.cacheCommonInfo</span>(<span class='no'>x</span>, <span class='no'>sce</span>)
-<span class='fu'>.refineParameters</span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; An object of class "ComplexHeatmapPlot"
+<span class='kw'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span>(<span class='kw'>x</span>, <span class='kw'>sce</span>)
+<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span>(<span class='kw'>x</span>, <span class='kw'>sce0</span>)
+</div><div class='output co'>#&gt; An object of class "ComplexHeatmapPlot"
 #&gt; Slot "Assay":
 #&gt; [1] "logcounts"
 #&gt; 
@@ -433,9 +438,10 @@ This will also call the equivalent Panel method to render the panel information 
 #&gt; list()
 #&gt; </div><div class='input'>
 <span class='co'># Replaces the default with something sensible.</span>
-<span class='fu'>colData</span>(<span class='no'>sce</span>) <span class='kw'>&lt;-</span> <span class='no'>old_cd</span>
-<span class='no'>sce0</span> <span class='kw'>&lt;-</span> <span class='fu'>.cacheCommonInfo</span>(<span class='no'>x</span>, <span class='no'>sce</span>)
-<span class='fu'>.refineParameters</span>(<span class='no'>x</span>, <span class='no'>sce0</span>)</div><div class='output co'>#&gt; An object of class "ComplexHeatmapPlot"
+<span class='fu'>colData</span>(<span class='kw'>sce</span>) <span class='op'>&lt;-</span> <span class='kw'>old_cd</span>
+<span class='kw'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span>(<span class='kw'>x</span>, <span class='kw'>sce</span>)
+<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span>(<span class='kw'>x</span>, <span class='kw'>sce0</span>)
+</div><div class='output co'>#&gt; An object of class "ComplexHeatmapPlot"
 #&gt; Slot "Assay":
 #&gt; [1] "logcounts"
 #&gt; 
@@ -557,7 +563,7 @@ This will also call the equivalent Panel method to render the panel information 
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

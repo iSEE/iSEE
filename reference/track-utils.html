@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.17</span>
       </span>
     </div>
 
@@ -154,13 +154,13 @@
     <p>Utility functions to track internal events for a panel by monitoring the status of reactive variables in <code>rObjects</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.trackUpdate</span>(<span class='no'>panel_name</span>, <span class='no'>rObjects</span>)
+    <pre class="usage"><span class='fu'>.trackUpdate</span>(<span class='kw'>panel_name</span>, <span class='kw'>rObjects</span>)
 
-<span class='fu'>.trackSingleSelection</span>(<span class='no'>panel_name</span>, <span class='no'>rObjects</span>)
+<span class='fu'>.trackSingleSelection</span>(<span class='kw'>panel_name</span>, <span class='kw'>rObjects</span>)
 
-<span class='fu'>.trackMultiSelection</span>(<span class='no'>panel_name</span>, <span class='no'>rObjects</span>)
+<span class='fu'>.trackMultiSelection</span>(<span class='kw'>panel_name</span>, <span class='kw'>rObjects</span>)
 
-<span class='fu'>.trackRelinkedSelection</span>(<span class='no'>panel_name</span>, <span class='no'>rObjects</span>)</pre>
+<span class='fu'>.trackRelinkedSelection</span>(<span class='kw'>panel_name</span>, <span class='kw'>rObjects</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,7 +171,7 @@
     </tr>
     <tr>
       <th>rObjects</th>
-      <td><p>A reactive list of values generated in the <code>iSEE</code> app.</p></td>
+      <td><p>A reactive list of values generated in the <code><a href='iSEE.html'>iSEE</a></code> app.</p></td>
     </tr>
     </table>
 
@@ -181,7 +181,7 @@
 <code>NULL</code> is returned invisibly.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>.trackUpdate</code> will track whether an update has been requested to the current panel via <code>.requestUpdate</code>.</p>
+    <p><code>.trackUpdate</code> will track whether an update has been requested to the current panel via <code><a href='.requestUpdate.html'>.requestUpdate</a></code>.</p>
 <p><code>.trackSingleSelection</code> will track whether the single selection in the current panel has changed.
 Note that this will not cause a reaction if the change involves cancelling a single selection.</p>
 <p><code>.trackMultiSelection</code> will track whether the multiple selections in the current panel have changed.
@@ -189,7 +189,10 @@ This will respond for both active and saved selections.</p>
 <p><code>.trackRelinkedSelection</code> will track whether the single or multiple selection sources have changed.</p>
 <p>These functions should be called within observer or rendering expressions to trigger their evaluation upon panel updates.
 It is only safe to call these functions within expressions for the same panel, e.g., to synchronize multiple output elements.
-Calling them with another <code>panel_name</code> would be unusual, not least because communication between panels is managed by the <code>iSEE</code> framework and is outside of the scope of the per-panel observers.</p>
+Calling them with another <code>panel_name</code> would be unusual, not least because communication between panels is managed by the <code><a href='iSEE.html'>iSEE</a></code> framework and is outside of the scope of the per-panel observers.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Aaron Lun</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -206,7 +209,7 @@ Calling them with another <code>panel_name</code> would be unusual, not least be
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.17</span>
       </span>
     </div>
 
@@ -154,7 +154,7 @@
     <p>Functions to manage commands to be evaluated.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.textEval</span>(<span class='no'>cmd</span>, <span class='no'>envir</span>)</pre>
+    <pre class="usage"><span class='fu'>.textEval</span>(<span class='kw'>cmd</span>, <span class='kw'>envir</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -173,11 +173,15 @@
 
     <p><code>.textEval</code> returns the output of <code><a href='https://rdrr.io/r/base/eval.html'>eval(parse(text=cmd), envir)</a></code>,
 unless <code>cmd</code> is empty in which case it returns <code>NULL</code>.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Aaron Lun, Kevin Rue-Albrecht</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>myenv</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/environment.html'>new.env</a></span>()
-<span class='no'>myenv</span>$<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='st'>"Hello world!"</span>
-<span class='fu'>.textEval</span>(<span class='st'>"print(x)"</span>, <span class='no'>myenv</span>)</div><div class='output co'>#&gt; [1] "Hello world!"</div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>myenv</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/environment.html'>new.env</a></span>()
+<span class='kw'>myenv</span><span class='op'>$</span><span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='st'>"Hello world!"</span>
+<span class='fu'>.textEval</span>(<span class='st'>"print(x)"</span>, <span class='kw'>myenv</span>)
+</div><div class='output co'>#&gt; [1] "Hello world!"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -193,7 +197,7 @@ unless <code>cmd</code> is empty in which case it returns <code>NULL</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

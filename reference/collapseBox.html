@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.17</span>
       </span>
     </div>
 
@@ -154,7 +154,7 @@
     <p>A custom collapsible box with Shiny inputs upon collapse, more or less stolen from <span class="pkg">shinyBS</span>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>collapseBox</span>(<span class='no'>id</span>, <span class='no'>title</span>, <span class='no'>...</span>, <span class='kw'>open</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>style</span> <span class='kw'>=</span> <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>collapseBox</span>(<span class='kw'>id</span>, <span class='kw'>title</span>, <span class='kw'>...</span>, open = <span class='fl'>FALSE</span>, style = <span class='kw'>NULL</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -186,11 +186,11 @@
     <p>A HTML tag object containing a collapsible box.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Collapsible boxes are used to hold parameters in the &#8220;parameter boxes&#8221; described in <code>.defineInterface</code>.
+    <p>Collapsible boxes are used to hold parameters in the &#8220;parameter boxes&#8221; described in <code><a href='interface-generics.html'>.defineInterface</a></code>.
 It is recommended to format the <code>id</code> as <code>PANEL_SLOT</code> where <code>PANEL</code> is the name of the panel associated with the box and <code>SLOT</code> is the name of the slot that specifies whether this box should be open or not at initialization.
-(See Panel for some examples with <code>DataBoxOpen</code>.)</p>
+(See <a href='Panel-class.html'>Panel</a> for some examples with <code>DataBoxOpen</code>.)</p>
 <p>Do not confuse these boxes with the <code><a href='https://rdrr.io/pkg/shinydashboard/man/box.html'>shinydashboard::box</a></code>es, which are used to hold the plot and table panels.
-Adding to the nomenclature confusion is the fact that our collapsible boxes are implemented in Javascript using the Bootstrap &#8220;panel&#8221; classes, which in turn has nothing to do with our Panel classes.</p>
+Adding to the nomenclature confusion is the fact that our collapsible boxes are implemented in Javascript using the Bootstrap &#8220;panel&#8221; classes, which in turn has nothing to do with our <a href='Panel-class.html'>Panel</a> classes.</p>
     <h2 class="hasAnchor" id="comments-on-shinybs"><a class="anchor" href="#comments-on-shinybs"></a>Comments on <span class="pkg">shinyBS</span></h2>
 
     
@@ -204,18 +204,22 @@ The underlying Javascript code for this object is present in <code>inst/www</cod
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><span class="pkg">shinyBS</span>, from which the Javascript code was derived.</p>
-<p><code>.defineInterface</code>, which should return a list of these collapsible boxes.</p></div>
+<p><code><a href='interface-generics.html'>.defineInterface</a></code>, which should return a list of these collapsible boxes.</p></div>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Aaron Lun</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='no'>shiny</span>)
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/library.html'>library</a></span>(<span class='kw'><a href='http://shiny.rstudio.com'>shiny</a></span>)
 <span class='fu'>collapseBox</span>(<span class='st'>"SomePanelType1_ParamBoxOpen"</span>,
-    <span class='kw'>title</span><span class='kw'>=</span><span class='st'>"Custom parameters"</span>,
-    <span class='kw'>open</span><span class='kw'>=</span><span class='fl'>FALSE</span>,
+    title=<span class='st'>"Custom parameters"</span>,
+    open=<span class='fl'>FALSE</span>,
     <span class='fu'><a href='https://shiny.rstudio.com/reference/shiny/latest/selectInput.html'>selectInput</a></span>(<span class='st'>"SomePanelType1_Thing"</span>,
-        <span class='kw'>label</span><span class='kw'>=</span><span class='st'>"What thing?"</span>,
-        <span class='kw'>choices</span><span class='kw'>=</span><span class='no'>LETTERS</span>, <span class='kw'>selected</span><span class='kw'>=</span><span class='st'>"A"</span>
+        label=<span class='st'>"What thing?"</span>,
+        choices=<span class='kw'>LETTERS</span>, selected=<span class='st'>"A"</span>
     )
-)</div><div class='output co'>#&gt; &lt;div class="isee-collapse-box panel panel-default" id="SomePanelType1_ParamBoxOpen" value="Custom parameters"&gt;
+)
+</div><div class='output co'>#&gt; &lt;div class="isee-collapse-box panel panel-default" id="SomePanelType1_ParamBoxOpen" value="Custom parameters"&gt;
 #&gt;   &lt;div class="panel-heading" role="tab" id="heading_collapse_SomePanelType1_ParamBoxOpen"&gt;
 #&gt;     &lt;h4 class="panel-title"&gt;
 #&gt;       &lt;a data-toggle="collapse" href="#collapse_SomePanelType1_ParamBoxOpen"&gt;Custom parameters&lt;/a&gt;
@@ -274,7 +278,7 @@ The underlying Javascript code for this object is present in <code>inst/www</cod
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

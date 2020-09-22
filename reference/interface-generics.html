@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.17</span>
       </span>
     </div>
 
@@ -162,20 +162,20 @@
 
 <p><code>.defineInterface(x, se, select_info)</code> defines the UI for modifying all parameters for a given panel.
 The required arguments are:</p><ul>
-<li><p><code>x</code>, an instance of a Panel class.</p></li>
+<li><p><code>x</code>, an instance of a <a href='Panel-class.html'>Panel</a> class.</p></li>
 <li><p><code>se</code>, a SummarizedExperiment object containing the current dataset.
-This can be assumed to have been produced by running <code>.refineParameters(x, se)</code>.</p></li>
+This can be assumed to have been produced by running <code><a href='setup-generics.html'>.refineParameters</a>(x, se)</code>.</p></li>
 <li><p><code>select_info</code>, a list of two lists, <code>single</code> and <code>multiple</code>,
 each of which contains the character vectors <code>row</code> and <code>column</code>.
 This specifies the panels available for transmitting single/multiple selections on the rows/columns,
-see <code>?.multiSelectionDimension</code> and <code>?.singleSelectionDimension</code> for more details.</p></li>
+see <code>?<a href='multi-select-generics.html'>.multiSelectionDimension</a></code> and <code>?<a href='single-select-generics.html'>.singleSelectionDimension</a></code> for more details.</p></li>
 </ul>
 
-<p>Methods for this generic are expected to return a list of <code>collapseBox</code> elements.
+<p>Methods for this generic are expected to return a list of <code><a href='collapseBox.html'>collapseBox</a></code> elements.
 Each parameter box can contain arbitrary numbers of additional UI elements,
 each of which is expected to modify one slot of <code>x</code> upon user interaction.</p>
-<p>The ID of each interface element should follow the form of <code>PANEL_SLOT</code> where <code>PANEL</code> is the panel name (from <code>.getEncodedName(x)</code>) and <code>SLOT</code> is the name of the slot modified by the interface element, e.g., <code>"ReducedDimensionPlot1_Type"</code>.
-Each interface element should have an equivalent observer in <code>.createObservers</code> unless they are hidden by <code>.hideInterface</code> (see below).</p>
+<p>The ID of each interface element should follow the form of <code>PANEL_SLOT</code> where <code>PANEL</code> is the panel name (from <code><a href='.fullName.html'>.getEncodedName</a>(x)</code>) and <code>SLOT</code> is the name of the slot modified by the interface element, e.g., <code>"ReducedDimensionPlot1_Type"</code>.
+Each interface element should have an equivalent observer in <code><a href='observer-generics.html'>.createObservers</a></code> unless they are hidden by <code>.hideInterface</code> (see below).</p>
 <p>It is the developer's responsibility to call <code>callNextMethod</code> to obtain interface elements for parent classes.</p>
     <h2 class="hasAnchor" id="defining-the-data-parameter-interface"><a class="anchor" href="#defining-the-data-parameter-interface"></a>Defining the data parameter interface</h2>
 
@@ -196,7 +196,7 @@ Conversely, there is no obligation to write a method for this generic if one is 
 
 <p><code>.hideInterface(x, field)</code> determines whether certain UI elements should be hidden from the user.
 The required arguments are:</p><ul>
-<li><p><code>x</code>, an instance of a Panel class.</p></li>
+<li><p><code>x</code>, an instance of a <a href='Panel-class.html'>Panel</a> class.</p></li>
 <li><p><code>field</code>, string containing the name of a slot of <code>x</code>.</p></li>
 </ul>
 
@@ -205,6 +205,9 @@ This is useful for hiding UI elements that cannot be changed or have no effect, 
 (The alternative would be to reimplement all of the parent's <code>.defineInterface</code> method just to omit a handful of UI elements!)</p>
 <p>It is the developer's responsibility to call <code>callNextMethod</code> to hide the same interface elements as parent classes.
 This is not strictly required if one wishes to expose previously hidden elements.</p>
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Aaron Lun</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -221,7 +224,7 @@ This is not strictly required if one wishes to expose previously hidden elements
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -32,7 +32,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.17</span>
       </span>
     </div>
 
@@ -125,7 +125,7 @@
                   <a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       
                   
-            <h4 class="date">2 September 2020</h4>
+            <h4 class="date">22 September 2020</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/links.Rmd"><code>vignettes/links.Rmd</code></a></small>
       <div class="hidden name"><code>links.Rmd</code></div>
@@ -134,14 +134,14 @@
 
     
     
-<p><strong>Compiled date</strong>: 2020-09-02</p>
+<p><strong>Compiled date</strong>: 2020-09-22</p>
 <p><strong>Last edited</strong>: 2020-04-20</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
-<p><img src="../../../../tmp/Rtmpyxofmi/temp_libpath64966ceb1e21/iSEE/www/iSEE.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="../../../../tmp/RtmpdUaPKU/temp_libpath64775c3c42e0/iSEE/www/iSEE.png" width="50%" style="display: block; margin: auto;"></p>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>One of <em><a href="https://bioconductor.org/packages/3.12/iSEE">iSEE</a></em>’s main features is the ability to share information between panels. This facilitates deeper exploration of a dataset by allowing users to visualize relationships across multiple metrics. <code><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE()</a></code> currently supports three modes of information sharing between panels - multiple selections, single selections and dynamic selections - which are demonstrated in this vignette using the Allen dataset processed in the <a href="https://bioconductor.org/packages/3.12/iSEE/vignettes/basic.html">previous vignette</a>.</p>
+<p>One of <em><a href="https://bioconductor.org/packages/3.12/iSEE">iSEE</a></em>’s main features is the ability to share information between panels. This facilitates deeper exploration of a dataset by allowing users to visualize relationships across multiple metrics. <code><a href="../reference/iSEE.html">iSEE()</a></code> currently supports three modes of information sharing between panels - multiple selections, single selections and dynamic selections - which are demonstrated in this vignette using the Allen dataset processed in the <a href="https://bioconductor.org/packages/3.12/iSEE/vignettes/basic.html">previous vignette</a>.</p>
 </div>
 <div id="multiple-selections" class="section level1">
 <h1 class="hasAnchor">
@@ -150,15 +150,17 @@
 <h2 class="hasAnchor">
 <a href="#basic-use" class="anchor"></a>Basic use</h2>
 <p>As its name suggests, this involves selecting multiple features or samples in one panel and transmitting their identities to another panel to affect the visualization. To demonstrate, we will create a small app involving a single reduced dimension plot and a column metadata plot.</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">iSEE</span>)
-<span class="no">app</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE</a></span>(<span class="no">sce</span>, <span class="kw">initial</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-    <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span>(),
-    <span class="fu"><a href="https://rdrr.io/pkg/iSEE/man/ColumnDataPlot-class.html">ColumnDataPlot</a></span>()
-))</pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://github.com/iSEE/iSEE">iSEE</a></span>)
+<span class="kw">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span>(<span class="kw">sce</span>, initial=<span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
+    <span class="fu"><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span>(),
+    <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span>()
+))
+</pre></div>
 <p><img src="screenshots/links-multi-naive.png" width="488"></p>
 <p>We indicate that we want one panel to “receive” a multiple selection from another panel. This is done by specifying the selection source (for samples/columns in this case, given the nature of the two panels) and indicating that the column data plot is to receive a selection from the reduced dimension plot.</p>
 <p><img src="screenshots/links-multi-unselected.png" width="488"></p>
-<p>We can click-and-drag to select multiple points in the reduced dimension plot with a brush, which highlights those same points in the column data plot. This enables users to easily explore relationships between different visualizations in the <code><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE()</a></code> interface.</p>
+<p>We can click-and-drag to select multiple points in the reduced dimension plot with a brush, which highlights those same points in the column data plot. This enables users to easily explore relationships between different visualizations in the <code><a href="../reference/iSEE.html">iSEE()</a></code> interface.</p>
 <p><img src="screenshots/links-multi-brushed.png" width="488"></p>
 <p>Alternatively, a single click will lay down lasso waypoints for a non-rectangular selection. Once closed, the points in the lasso will be transmitted to the column data plot.</p>
 <p><img src="screenshots/links-multi-lasso.png" width="488"></p>
@@ -188,7 +190,7 @@
 <a href="#single-selections" class="anchor"></a>Single selections</h1>
 <p>Another mode of information sharing involves transmitting a selection of a single feature or sample. This allows users to conveniently direct other panels to focus on a feature or sample of interest. For example, we can transmit a single selection from a row data table to a reduced dimension plot, instructing the latter to color points by the expression of the chosen feature.</p>
 <p><img src="screenshots/links-single-color.png" width="488"></p>
-<p>The same approach can be used to control what is plotted on a feature assay plot. Clicking on a different row of the table will directly change the axes (in this case, the y-axis) of the plot, allowing the user to synchronise different aspects of the <code><a href="https://rdrr.io/pkg/iSEE/man/iSEE.html">iSEE()</a></code> interface to whatever is currently of interest.</p>
+<p>The same approach can be used to control what is plotted on a feature assay plot. Clicking on a different row of the table will directly change the axes (in this case, the y-axis) of the plot, allowing the user to synchronise different aspects of the <code><a href="../reference/iSEE.html">iSEE()</a></code> interface to whatever is currently of interest.</p>
 <p><img src="screenshots/links-single-yaxis.png" width="488"></p>
 <p>We can also perform single selections on sample identities. In the example below, the reduced dimension plot highlights the location of the sample chosen in the column data table. This is useful for checking the behavior of specific samples of interest, e.g., during quality control.</p>
 <p><img src="screenshots/links-single-sample.png" width="488"></p>
@@ -208,8 +210,9 @@
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session Info</h1>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
-<span class="co">#&gt; R version 4.0.2 Patched (2020-08-27 r79088)</span>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span>()
+<span class="co">#&gt; R version 4.0.2 Patched (2020-09-17 r79226)</span>
 <span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span>
 <span class="co">#&gt; Running under: Ubuntu 20.04.1 LTS</span>
 <span class="co">#&gt; </span>
@@ -229,31 +232,31 @@
 <span class="co">#&gt; [8] methods   base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt;  [1] iSEE_2.1.16                 SingleCellExperiment_1.11.6</span>
-<span class="co">#&gt;  [3] SummarizedExperiment_1.19.6 DelayedArray_0.15.7        </span>
+<span class="co">#&gt;  [1] iSEE_2.1.17                 SingleCellExperiment_1.11.7</span>
+<span class="co">#&gt;  [3] SummarizedExperiment_1.19.6 DelayedArray_0.15.8        </span>
 <span class="co">#&gt;  [5] matrixStats_0.56.0          Matrix_1.2-18              </span>
-<span class="co">#&gt;  [7] Biobase_2.49.0              GenomicRanges_1.41.6       </span>
-<span class="co">#&gt;  [9] GenomeInfoDb_1.25.10        IRanges_2.23.10            </span>
-<span class="co">#&gt; [11] S4Vectors_0.27.12           BiocGenerics_0.35.4        </span>
+<span class="co">#&gt;  [7] Biobase_2.49.1              GenomicRanges_1.41.6       </span>
+<span class="co">#&gt;  [9] GenomeInfoDb_1.25.11        IRanges_2.23.10            </span>
+<span class="co">#&gt; [11] S4Vectors_0.27.13           BiocGenerics_0.35.4        </span>
 <span class="co">#&gt; [13] BiocStyle_2.17.0           </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
 <span class="co">#&gt;  [1] nlme_3.1-149           bitops_1.0-6           fs_1.5.0              </span>
 <span class="co">#&gt;  [4] RColorBrewer_1.1-2     rprojroot_1.3-2        tools_4.0.2           </span>
-<span class="co">#&gt;  [7] backports_1.1.9        R6_2.4.1               DT_0.15               </span>
-<span class="co">#&gt; [10] vipor_0.4.5            mgcv_1.8-32            colorspace_1.4-1      </span>
+<span class="co">#&gt;  [7] backports_1.1.10       R6_2.4.1               DT_0.15               </span>
+<span class="co">#&gt; [10] vipor_0.4.5            mgcv_1.8-33            colorspace_1.4-1      </span>
 <span class="co">#&gt; [13] GetoptLong_1.0.2       tidyselect_1.1.0       compiler_4.0.2        </span>
-<span class="co">#&gt; [16] shinyjs_1.1            desc_1.2.0             colourpicker_1.0      </span>
-<span class="co">#&gt; [19] bookdown_0.20          scales_1.1.1           pkgdown_1.5.1         </span>
-<span class="co">#&gt; [22] stringr_1.4.0          digest_0.6.25          rmarkdown_2.3         </span>
-<span class="co">#&gt; [25] XVector_0.29.3         pkgconfig_2.0.3        htmltools_0.5.0       </span>
-<span class="co">#&gt; [28] fastmap_1.0.1          htmlwidgets_1.5.1      rlang_0.4.7           </span>
-<span class="co">#&gt; [31] GlobalOptions_0.1.2    shiny_1.5.0            shape_1.4.4           </span>
-<span class="co">#&gt; [34] generics_0.0.2         jsonlite_1.7.0         dplyr_1.0.2           </span>
-<span class="co">#&gt; [37] RCurl_1.98-1.2         magrittr_1.5           GenomeInfoDbData_1.2.3</span>
-<span class="co">#&gt; [40] Rcpp_1.0.5             munsell_0.5.0          lifecycle_0.2.0       </span>
-<span class="co">#&gt; [43] stringi_1.4.6          yaml_2.2.1             rintrojs_0.2.2        </span>
-<span class="co">#&gt; [46] MASS_7.3-52            zlibbioc_1.35.0        grid_4.0.2            </span>
+<span class="co">#&gt; [16] shinyjs_2.0.0          desc_1.2.0             colourpicker_1.1.0    </span>
+<span class="co">#&gt; [19] bookdown_0.20          scales_1.1.1           pkgdown_1.6.1         </span>
+<span class="co">#&gt; [22] systemfonts_0.3.1      stringr_1.4.0          digest_0.6.25         </span>
+<span class="co">#&gt; [25] rmarkdown_2.3          XVector_0.29.3         pkgconfig_2.0.3       </span>
+<span class="co">#&gt; [28] htmltools_0.5.0        fastmap_1.0.1          htmlwidgets_1.5.1     </span>
+<span class="co">#&gt; [31] rlang_0.4.7            GlobalOptions_0.1.2    shiny_1.5.0           </span>
+<span class="co">#&gt; [34] shape_1.4.5            generics_0.0.2         jsonlite_1.7.1        </span>
+<span class="co">#&gt; [37] dplyr_1.0.2            RCurl_1.98-1.2         magrittr_1.5          </span>
+<span class="co">#&gt; [40] GenomeInfoDbData_1.2.3 Rcpp_1.0.5             munsell_0.5.0         </span>
+<span class="co">#&gt; [43] lifecycle_0.2.0        stringi_1.5.3          yaml_2.2.1            </span>
+<span class="co">#&gt; [46] rintrojs_0.2.2         zlibbioc_1.35.0        grid_4.0.2            </span>
 <span class="co">#&gt; [49] promises_1.1.1         ggrepel_0.8.2          shinydashboard_0.7.1  </span>
 <span class="co">#&gt; [52] crayon_1.3.4           miniUI_0.1.1.1         lattice_0.20-41       </span>
 <span class="co">#&gt; [55] splines_4.0.2          circlize_0.4.10        knitr_1.29            </span>
@@ -262,10 +265,12 @@
 <span class="co">#&gt; [64] BiocManager_1.30.10    png_0.1-7              vctrs_0.3.4           </span>
 <span class="co">#&gt; [67] httpuv_1.5.4           gtable_0.3.0           purrr_0.3.4           </span>
 <span class="co">#&gt; [70] clue_0.3-57            assertthat_0.2.1       ggplot2_3.3.2         </span>
-<span class="co">#&gt; [73] xfun_0.16              mime_0.9               xtable_1.8-4          </span>
-<span class="co">#&gt; [76] later_1.1.0.1          viridisLite_0.3.0      tibble_3.0.3          </span>
-<span class="co">#&gt; [79] memoise_1.1.0          cluster_2.1.0          shinyWidgets_0.5.3    </span>
-<span class="co">#&gt; [82] ellipsis_0.3.1         shinyAce_0.4.1</span></pre></body></html></div>
+<span class="co">#&gt; [73] cpp11_0.2.1            xfun_0.17              mime_0.9              </span>
+<span class="co">#&gt; [76] xtable_1.8-4           later_1.1.0.1          viridisLite_0.3.0     </span>
+<span class="co">#&gt; [79] ragg_0.3.1             tibble_3.0.3           memoise_1.1.0         </span>
+<span class="co">#&gt; [82] cluster_2.1.0          shinyWidgets_0.5.3     ellipsis_0.3.1        </span>
+<span class="co">#&gt; [85] shinyAce_0.4.1</span>
+</pre></div>
 </div>
   </div>
 
@@ -284,7 +289,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

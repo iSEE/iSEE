@@ -1,6 +1,13 @@
 pandoc: 2.7.3
-pkgdown: 1.5.1
+pkgdown: 1.6.1
 pkgdown_sha: ~
-articles: []
-last_built: 2020-09-02T04:29Z
+articles:
+  basic: basic.html
+  bigdata: bigdata.html
+  configure: configure.html
+  custom: custom.html
+  ecm: ecm.html
+  links: links.html
+  voice: voice.html
+last_built: 2020-09-22T18:57Z
 

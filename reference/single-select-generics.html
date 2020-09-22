@@ -74,7 +74,7 @@ This suite of generics controls the behavior of these single selections." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.16</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.17</span>
       </span>
     </div>
 
@@ -154,7 +154,7 @@ This suite of generics controls the behavior of these single selections." />
 
     <div class="ref-description">
     <p>A panel can create a single selection on either the rows or columns and transmit this selection to another panel for use as an aesthetic parameter.
-For example, users can click on a RowTable to select a gene of interest, and then the panel can transmit the identities of that row to another panel for coloring by that selected gene's expression.
+For example, users can click on a <a href='RowTable-class.html'>RowTable</a> to select a gene of interest, and then the panel can transmit the identities of that row to another panel for coloring by that selected gene's expression.
 This suite of generics controls the behavior of these single selections.</p>
     </div>
 
@@ -164,7 +164,7 @@ This suite of generics controls the behavior of these single selections.</p>
 
     
 
-<p>Given an instance of the Panel class <code>x</code>, <code>.singleSelectionDimension(x)</code> should return a string specifying whether the panel's single selection would contain a <code>"feature"</code>, <code>"sample"</code>, or if the Panel in <code>x</code> does not perform single selections at all (<code>"none"</code>).
+<p>Given an instance of the <a href='Panel-class.html'>Panel</a> class <code>x</code>, <code>.singleSelectionDimension(x)</code> should return a string specifying whether the panel's single selection would contain a <code>"feature"</code>, <code>"sample"</code>, or if the Panel in <code>x</code> does not perform single selections at all (<code>"none"</code>).
 The output should be constant for all instances of <code>x</code>.</p>
     <h2 class="hasAnchor" id="obtaining-the-selected-element"><a class="anchor" href="#obtaining-the-selected-element"></a>Obtaining the selected element</h2>
 
@@ -172,9 +172,9 @@ The output should be constant for all instances of <code>x</code>.</p>
 
 <p><code>.singleSelectionValue(x, contents)</code> should return a string specifying the selected row or column in <code>x</code> that is to be transmitted to other panels.
 If no row or column is selected, it should return <code>NULL</code>.</p>
-<p><code>contents</code> is any arbitrary structure returned by <code>.generateOutput</code> for <code>x</code> in the field of the same name.
+<p><code>contents</code> is any arbitrary structure returned by <code><a href='output-generics.html'>.generateOutput</a></code> for <code>x</code> in the field of the same name.
 This should contain all of the information necessary to determine the name of the selected row/column.
-For example, a data.frame of coordinates is stored by DotPlots to identify the point selected by a brush/lasso.</p>
+For example, a data.frame of coordinates is stored by <a href='DotPlot-class.html'>DotPlot</a>s to identify the point selected by a brush/lasso.</p>
     <h2 class="hasAnchor" id="indicating-the-receiving-slots"><a class="anchor" href="#indicating-the-receiving-slots"></a>Indicating the receiving slots</h2>
 
     
@@ -182,33 +182,36 @@ For example, a data.frame of coordinates is stored by DotPlots to identify the p
 <p><code>.singleSelectionSlots(x)</code> controls how <code>x</code> should <em>respond</em> to a single selection.
 It should return a list of lists, where each internal list describes a set of slots in <code>x</code> that might respond to a single selection from a transmitting panel.
 This internal list should contain at least entries with the following names:</p><ul>
-<li><p><code>param</code>, the name of the slot of <code>x</code> that can potentially respond to a single selection in a transmitting panel, e.g., <code>ColorByFeatureName</code> in DotPlots.</p></li>
-<li><p><code>source</code>, the name of the slot of <code>x</code> that indicates which transmitting panel to respond to, e.g., <code>ColorByFeatureSource</code> in DotPlots.</p></li>
+<li><p><code>param</code>, the name of the slot of <code>x</code> that can potentially respond to a single selection in a transmitting panel, e.g., <code>ColorByFeatureName</code> in <a href='DotPlot-class.html'>DotPlot</a>s.</p></li>
+<li><p><code>source</code>, the name of the slot of <code>x</code> that indicates which transmitting panel to respond to, e.g., <code>ColorByFeatureSource</code> in <a href='DotPlot-class.html'>DotPlot</a>s.</p></li>
 </ul>
 
-<p>For each set of responsive slots, the expected paradigm is that the user interface will contain two <code>selectInput</code> elements, one for each of the <code>param</code> and <code>source</code> slots.
+<p>For each set of responsive slots, the expected paradigm is that the user interface will contain two <code><a href='https://shiny.rstudio.com/reference/shiny/latest/selectInput.html'>selectInput</a></code> elements, one for each of the <code>param</code> and <code>source</code> slots.
 Users are free to manually alter the choice of feature/sample in the <code>param</code>'s <code>selectInput</code>.
 Users are also allowed to change the identity of the transmitting panel via the <code>source</code>'s <code>selectInput</code>, which will automatically update the chosen entry in the <code>param</code>'s <code>selectInput</code> when the transmitter's single selection changes.</p>
 <p>Developers are strongly recommended to follow the above paradigm.
-In fact, the observers to perform these updates are automatically set up by <code>.createObservers,Panel-method</code> if the internal list also contains the following named entries:</p><ul>
+In fact, the observers to perform these updates are automatically set up by <code><a href='Panel-class.html'>.createObservers,Panel-method</a></code> if the internal list also contains the following named entries:</p><ul>
 <li><p><code>dimension</code>, a string set to either <code>"feature"</code> or <code>"sample"</code>.
 This specifies whether the slot specified by <code>param</code> contains the identity of a single feature or a single sample.
 If this is not present, no observers will be set up.</p></li>
 <li><p><code>dynamic</code>, the name of the slot indicating whether the choice of transmitting panel should change dynamically.
-One example would be <code>"ColorByFeatureDynamicSource"</code> for DotPlots.
-If supplied, a <code>checkboxInput</code> should also be present in the UI to turn on/off dynamic choices for this parameter.
+One example would be <code>"ColorByFeatureDynamicSource"</code> for <a href='DotPlot-class.html'>DotPlot</a>s.
+If supplied, a <code><a href='https://shiny.rstudio.com/reference/shiny/latest/checkboxInput.html'>checkboxInput</a></code> should also be present in the UI to turn on/off dynamic choices for this parameter.
 This field can be missing if the current panel does not support dynamic selection sources.</p></li>
 <li><p><code>use_mode</code>, the name of the slot of <code>x</code> containing the current usage mode.
 This is used in cases where there are multiple choices of which only one involves using information held in <code>source</code>.
-An example would be <code>ColorBy</code> in DotPlots where coloring by feature name is only one of many options, such that the panel should only respond to transmitted single selections when the user intends to color by feature name.
+An example would be <code>ColorBy</code> in <a href='DotPlot-class.html'>DotPlot</a>s where coloring by feature name is only one of many options, such that the panel should only respond to transmitted single selections when the user intends to color by feature name.
 If the value of this field is <code>NA</code>, the usage mode for <code>x</code> is assumed to be such that the panel should always respond to transmitted single selections.</p></li>
 <li><p><code>use_value</code>, a string containing the relevant value of the slot specified by <code>use_mode</code> in order for the panel to respond to transmitted single selections.
-An example would be <code>"Feature name"</code> in DotPlots.
+An example would be <code>"Feature name"</code> in <a href='DotPlot-class.html'>DotPlot</a>s.
 This field can be missing if <code>use_mode</code> is <code>NA</code>.</p></li>
 <li><p><code>protected</code>, a logical scalar indicating whether the slot specified by <code>param</code> is &#8220;protected&#8221;, i.e., changing this value will cause all existing selections to be invalidated and will trigger re-rendering of the children receiving multiple selections.
-This is <code>FALSE</code> for purely aesthetic parameters (e.g., coloring) and <code>TRUE</code> for data-related parameters (e.g., <code>XAxisFeatureName</code> in FeatureAssayPlot).</p></li>
+This is <code>FALSE</code> for purely aesthetic parameters (e.g., coloring) and <code>TRUE</code> for data-related parameters (e.g., <code>XAxisFeatureName</code> in <a href='FeatureAssayPlot-class.html'>FeatureAssayPlot</a>).</p></li>
 </ul>
 
+    <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
+
+    <p>Aaron Lun</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -225,7 +228,7 @@ This is <code>FALSE</code> for purely aesthetic parameters (e.g., coloring) and 
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

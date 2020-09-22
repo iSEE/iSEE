@@ -424,7 +424,7 @@ iSEE <- function(se,
 
     # Adding CSS classes for all boxes.
     class.def <- .define_box_statuses(c(memory, reservoir))
-    insertUI("iSEE-styles", where="beforeEnd", HTML(class.def))
+    insertUI("#iSEE-styles", where="beforeEnd", HTML(class.def), immediate=TRUE)
 
     # Evaluating certain plots to fill the coordinate list, if there are any
     # multiple selections. This is done in topological order so that all

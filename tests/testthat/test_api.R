@@ -85,6 +85,13 @@ test_that(".refineParameters identifies impossible SampleAssayPlot", {
     out <- .refineParameters(x, sce0)
     expect_null(out)
 
+    sce0 <- sce
+    rowData(sce0) <- rowData(sce0)[,0]
+    x[[iSEE:::.sampAssayXAxis]] <- iSEE:::.sampAssayXAxisRowDataTitle
+    sce0 <- .cacheCommonInfo(x, sce0)
+    out <- .refineParameters(x, sce0)
+    expect_identical(out[[iSEE:::.sampAssayXAxis]], iSEE:::.sampAssayXAxisNothingTitle)
+
 })
 
 test_that(".refineParameters identifies impossible FeatureAssayPlot", {
@@ -105,6 +112,13 @@ test_that(".refineParameters identifies impossible FeatureAssayPlot", {
         "no valid 'assays' for plotting 'FeatureAssayPlot'", fixed=TRUE)
     out <- .refineParameters(x, sce0)
     expect_null(out)
+
+    sce0 <- sce
+    colData(sce0) <- colData(sce0)[,0]
+    x[[iSEE:::.featAssayXAxis]] <- iSEE:::.featAssayXAxisColDataTitle
+    sce0 <- .cacheCommonInfo(x, sce0)
+    out <- .refineParameters(x, sce0)
+    expect_identical(out[[iSEE:::.featAssayXAxis]], iSEE:::.featAssayXAxisNothingTitle)
 
 })
 

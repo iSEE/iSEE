@@ -1,3 +1,7 @@
+# iSEE 2.1.17
+
+* `.refineParameters()` for `FeatureAssayPlot`, `SampleAssayPlot` protects the x-axis choice against absent metadata.
+
 # iSEE 2.1.16
 
 * Bugfix for initialization of the `ColorByFeatureDynamicSource` UI element in `ColumnDotPlot`s.

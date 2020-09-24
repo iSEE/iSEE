@@ -43,8 +43,6 @@ The default landing page also allows users to upload a RDS file containing a lis
 that specifies the initial state of the \code{\link{iSEE}} instance
 (to be used as the \code{initial} argument in \code{\link{iSEE}}).
 Again, any source can be used to create this list if \code{initUI} and \code{initLoad} are modified appropriately.
-Note that only \linkS4class{Panel} classes that were in the original \code{\link{iSEE}()} call
-(as the original \code{initial} or in the \code{extra}) will be used for security and other reasons.
 
 The UI elements for the SummarizedExperiment and the initial state are named \code{"se"} and \code{"initial"} respectively.
 This can be used in Shiny bookmarking to initialize an \code{\link{iSEE}} in a desired state by simply clicking a link,

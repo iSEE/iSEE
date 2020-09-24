@@ -51,6 +51,17 @@ test_that(".getPanelColor returns the expected colors", {
 
 })
 
+test_that(".define_box_statuses generates the CSS classes for each box", {
+
+    out <- iSEE:::.define_box_statuses(list(ReducedDimensionPlot(), FeatureAssayPlot()))
+    expect_match(out, "reduceddimensionplot")
+    expect_match(out, .panelColor(ReducedDimensionPlot()))
+
+    expect_match(out, "featureassayplot")
+    expect_match(out, .panelColor(FeatureAssayPlot()))
+
+})
+
 # utils_class.R ----
 context("Class utilities")
 

@@ -266,17 +266,13 @@ iSEE <- function(se,
 
             # for error message handling
             tags$head(
-                tags$style(
-                    HTML(
-                        paste("
-.shiny-output-error-validation {
+                tags$style(id="iSEE-styles",
+                    HTML(".shiny-output-error-validation {
     font-size: 15px;
     color: forestgreen;
     text-align: center;
 }
-", .define_box_statuses(c(initial, extra))
-                        )
-                    )
+")
                 )
             ),
 
@@ -359,7 +355,7 @@ iSEE <- function(se,
 #' @author Aaron Lun
 #'
 #' @rdname INTERNAL_initialize_server
-#' @importFrom shiny showNotification tagList HTML strong br code
+#' @importFrom shiny showNotification tagList HTML strong br code insertUI
 .initialize_server <- function(se, initial, extra, colormap,
     tour, runLocal, se_name, ecm_name, input, output, session, rObjects)
 {
@@ -425,6 +421,10 @@ iSEE <- function(se,
     }
 
     pObjects <- .create_persistent_objects(memory, reservoir, counter)
+
+    # Adding CSS classes for all boxes.
+    class.def <- .define_box_statuses(c(memory, reservoir))
+    insertUI("#iSEE-styles", where="beforeEnd", HTML(class.def), immediate=TRUE)
 
     # Evaluating certain plots to fill the coordinate list, if there are any
     # multiple selections. This is done in topological order so that all

@@ -1,6 +1,7 @@
 # iSEE 2.1.17
 
 * `.refineParameters()` for `FeatureAssayPlot`, `SampleAssayPlot` protects the x-axis choice against absent metadata.
+* CSS classes for each panel are now defined at app run-time, to make it easier to write landing pages without specifying `initial=` in `iSEE()`.
 
 # iSEE 2.1.16
 

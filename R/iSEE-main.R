@@ -293,16 +293,7 @@ iSEE <- function(se,
             FUN <- function(SE, INITIAL, TOUR=NULL) {
                 if (is.null(INITIAL)) {
                     INITIAL <- initial
-                } else {
-                    requested <- vapply(INITIAL, .encodedName, "")
-                    available <- c(vapply(initial, .encodedName, ""), vapply(extra, .encodedName, ""))
-                    keep <- requested %in% available
-                    if (!all(keep)) {
-                        # We need this ahead of time to set the box colors above.
-                        showNotification("not all requested Panels exist in 'initial' or 'extra'", type="warning")
-                    }
-                    INITIAL <- INITIAL[keep]
-                }
+                } 
                 .initialize_server(SE, initial=INITIAL, extra=extra, colormap=colormap,
                     tour=TOUR, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name,
                     input=input, output=output, session=session, rObjects=rObjects)

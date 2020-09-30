@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.17</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.18</span>
       </span>
     </div>
 
@@ -154,7 +154,7 @@
     <p>Functions to manage commands to be evaluated.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.textEval</span>(<span class='kw'>cmd</span>, <span class='kw'>envir</span>)</pre>
+    <pre class="usage"><span class='fu'>.textEval</span><span class='op'>(</span><span class='va'>cmd</span>, <span class='va'>envir</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -178,9 +178,9 @@ unless <code>cmd</code> is empty in which case it returns <code>NULL</code>.</p>
     <p>Aaron Lun, Kevin Rue-Albrecht</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>myenv</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/environment.html'>new.env</a></span>()
-<span class='kw'>myenv</span><span class='op'>$</span><span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='st'>"Hello world!"</span>
-<span class='fu'>.textEval</span>(<span class='st'>"print(x)"</span>, <span class='kw'>myenv</span>)
+    <pre class="examples"><div class='input'><span class='va'>myenv</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/environment.html'>new.env</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='va'>myenv</span><span class='op'>$</span><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='st'>"Hello world!"</span>
+<span class='fu'>.textEval</span><span class='op'>(</span><span class='st'>"print(x)"</span>, <span class='va'>myenv</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "Hello world!"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.17</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.18</span>
       </span>
     </div>
 
@@ -183,8 +183,8 @@ Each parent class should implement observers for its slots, so it is usually onl
 
 <p>Consider an observer for an interface element that modifies a slot of <code>x</code>.
 The code within this observer is expected to modify the &#8220;memory&#8221; of the app state in <code>pObjects</code>, via:</p><pre>
-<span class='kw'>new_value</span> <span class='op'>&lt;-</span> <span class='kw'>input</span>[[<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='kw'>PANEL</span>, <span class='st'>"_"</span>, <span class='kw'>SLOT</span>)]]
-<span class='kw'>pObjects</span><span class='op'>$</span><span class='kw'>memory</span>[[<span class='kw'>PANEL</span>]][[<span class='kw'>SLOT</span>]] <span class='op'>&lt;-</span> <span class='kw'>new_value</span>
+<span class='va'>new_value</span> <span class='op'>&lt;-</span> <span class='va'>input</span><span class='op'>[[</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>PANEL</span>, <span class='st'>"_"</span>, <span class='va'>SLOT</span><span class='op'>)</span><span class='op'>]</span><span class='op'>]</span>
+<span class='va'>pObjects</span><span class='op'>$</span><span class='va'>memory</span><span class='op'>[[</span><span class='va'>PANEL</span><span class='op'>]</span><span class='op'>]</span><span class='op'>[[</span><span class='va'>SLOT</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>new_value</span>
 </pre>
 
 <p>This enables <span class="pkg">iSEE</span> to keep a record of the current state of the application.

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.17</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.18</span>
       </span>
     </div>
 
@@ -154,17 +154,17 @@
     <p>Generate ggplot title and label instructions</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.buildLabs</span>(
-  x = <span class='kw'>NULL</span>,
-  y = <span class='kw'>NULL</span>,
-  color = <span class='kw'>NULL</span>,
-  shape = <span class='kw'>NULL</span>,
-  size = <span class='kw'>NULL</span>,
-  fill = <span class='kw'>NULL</span>,
-  group = <span class='kw'>NULL</span>,
-  title = <span class='kw'>NULL</span>,
-  subtitle = <span class='kw'>NULL</span>
-)</pre>
+    <pre class="usage"><span class='fu'>.buildLabs</span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='cn'>NULL</span>,
+  y <span class='op'>=</span> <span class='cn'>NULL</span>,
+  color <span class='op'>=</span> <span class='cn'>NULL</span>,
+  shape <span class='op'>=</span> <span class='cn'>NULL</span>,
+  size <span class='op'>=</span> <span class='cn'>NULL</span>,
+  fill <span class='op'>=</span> <span class='cn'>NULL</span>,
+  group <span class='op'>=</span> <span class='cn'>NULL</span>,
+  title <span class='op'>=</span> <span class='cn'>NULL</span>,
+  subtitle <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -218,7 +218,7 @@
     <p>Kevin Rue-Albrecht</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/cat.html'>cat</a></span>(<span class='fu'>.buildLabs</span>(y = <span class='st'>"Title for Y axis"</span>, color = <span class='st'>"Color label"</span>))
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/cat.html'>cat</a></span><span class='op'>(</span><span class='fu'>.buildLabs</span><span class='op'>(</span>y <span class='op'>=</span> <span class='st'>"Title for Y axis"</span>, color <span class='op'>=</span> <span class='st'>"Color label"</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; labs(y="Title for Y axis", color="Color label") +</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

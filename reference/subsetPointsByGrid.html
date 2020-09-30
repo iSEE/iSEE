@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.17</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.18</span>
       </span>
     </div>
 
@@ -154,7 +154,7 @@
     <p>Subset points using a grid-based system, to avoid unnecessary rendering when plotting.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>subsetPointsByGrid</span>(<span class='kw'>X</span>, <span class='kw'>Y</span>, resolution = <span class='fl'>200</span>, grouping = <span class='kw'>NULL</span>)</pre>
+    <pre class="usage"><span class='fu'>subsetPointsByGrid</span><span class='op'>(</span><span class='va'>X</span>, <span class='va'>Y</span>, resolution <span class='op'>=</span> <span class='fl'>200</span>, grouping <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -201,16 +201,16 @@ while points corresponding to DE genes should generally be retained.</p>
     <p>Aaron Lun</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>X</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100000</span>)
-<span class='kw'>Y</span> <span class='op'>&lt;-</span> <span class='kw'>X</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100000</span>)
+    <pre class="examples"><div class='input'><span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100000</span><span class='op'>)</span>
+<span class='va'>Y</span> <span class='op'>&lt;-</span> <span class='va'>X</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100000</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='fu'>subsetPointsByGrid</span>(<span class='kw'>X</span>, <span class='kw'>Y</span>, resolution=<span class='fl'>100</span>))
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='fu'>subsetPointsByGrid</span><span class='op'>(</span><span class='va'>X</span>, <span class='va'>Y</span>, resolution<span class='op'>=</span><span class='fl'>100</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;    Mode   FALSE    TRUE 
 #&gt; logical   96686    3314 </div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='fu'>subsetPointsByGrid</span>(<span class='kw'>X</span>, <span class='kw'>Y</span>, resolution=<span class='fl'>200</span>))
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='fu'>subsetPointsByGrid</span><span class='op'>(</span><span class='va'>X</span>, <span class='va'>Y</span>, resolution<span class='op'>=</span><span class='fl'>200</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;    Mode   FALSE    TRUE 
 #&gt; logical   90018    9982 </div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='fu'>subsetPointsByGrid</span>(<span class='kw'>X</span>, <span class='kw'>Y</span>, resolution=<span class='fl'>1000</span>))
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='fu'>subsetPointsByGrid</span><span class='op'>(</span><span class='va'>X</span>, <span class='va'>Y</span>, resolution<span class='op'>=</span><span class='fl'>1000</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;    Mode   FALSE    TRUE 
 #&gt; logical   31232   68768 </div><div class='input'>
 </div></pre>

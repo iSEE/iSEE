@@ -73,7 +73,7 @@ Add random jitter within a rectangular area for square plots when both x- and y-
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.17</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.18</span>
       </span>
     </div>
 
@@ -156,9 +156,9 @@ Add random jitter within a rectangular area for square plots when both x- and y-
 Add random jitter within a rectangular area for square plots when both x- and y-axis variables are categorical.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>jitterSquarePoints</span>(<span class='kw'>X</span>, <span class='kw'>Y</span>, grouping = <span class='kw'>NULL</span>)
+    <pre class="usage"><span class='fu'>jitterSquarePoints</span><span class='op'>(</span><span class='va'>X</span>, <span class='va'>Y</span>, grouping <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 
-<span class='fu'>jitterViolinPoints</span>(<span class='kw'>X</span>, <span class='kw'>Y</span>, grouping = <span class='kw'>NULL</span>, <span class='kw'>...</span>)</pre>
+<span class='fu'>jitterViolinPoints</span><span class='op'>(</span><span class='va'>X</span>, <span class='va'>Y</span>, grouping <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -203,9 +203,9 @@ To avoid clashes with existing fields, the names in <code>grouping</code> should
     <p>Aaron Lun</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>X</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='kw'>LETTERS</span>[<span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>], <span class='fl'>100</span>, replace=<span class='fl'>TRUE</span>))
-<span class='kw'>Y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>100</span>)
-(<span class='kw'>out1</span> <span class='op'>&lt;-</span> <span class='fu'>jitterViolinPoints</span>(X=<span class='kw'>X</span>, Y=<span class='kw'>Y</span>))
+    <pre class="examples"><div class='input'><span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>LETTERS</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>]</span>, <span class='fl'>100</span>, replace<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>Y</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>
+<span class='op'>(</span><span class='va'>out1</span> <span class='op'>&lt;-</span> <span class='fu'>jitterViolinPoints</span><span class='op'>(</span>X<span class='op'>=</span><span class='va'>X</span>, Y<span class='op'>=</span><span class='va'>Y</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;   [1] 0.8437679 1.9719755 2.8839484 1.8213915 1.0494329 0.8510460 2.1851992
 #&gt;   [8] 1.6314743 3.7278511 4.0951772 1.3323633 3.0000000 3.6534348 4.1038057
 #&gt;  [15] 1.8513701 4.2843506 2.0341005 4.0171437 2.0000000 4.0496393 3.9012454
@@ -221,8 +221,8 @@ To avoid clashes with existing fields, the names in <code>grouping</code> should
 #&gt;  [85] 3.1425992 0.9257865 3.9077523 0.7859747 3.0196646 1.7937950 4.1399806
 #&gt;  [92] 0.6563229 3.7450228 4.0445901 4.0882841 1.6986930 0.9523088 1.8197189
 #&gt;  [99] 2.3447632 2.0243548</div><div class='input'>
-<span class='kw'>Y2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='kw'>letters</span>[<span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span>], <span class='fl'>100</span>, replace=<span class='fl'>TRUE</span>))
-(<span class='kw'>out2</span> <span class='op'>&lt;-</span> <span class='fu'>jitterSquarePoints</span>(X=<span class='kw'>X</span>, Y=<span class='kw'>Y2</span>))
+<span class='va'>Y2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>]</span>, <span class='fl'>100</span>, replace<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>
+<span class='op'>(</span><span class='va'>out2</span> <span class='op'>&lt;-</span> <span class='fu'>jitterSquarePoints</span><span class='op'>(</span>X<span class='op'>=</span><span class='va'>X</span>, Y<span class='op'>=</span><span class='va'>Y2</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $X
 #&gt;   [1] 1.0097692 1.8150121 2.5900575 2.4815238 0.9653656 1.1340203 2.1639992
 #&gt;   [8] 2.0057530 4.1115097 4.1295377 1.2797934 3.0815047 4.2875994 3.9518042
@@ -272,8 +272,8 @@ To avoid clashes with existing fields, the names in <code>grouping</code> should
 #&gt; 11 C c    8 0.3578454 0.3578454
 #&gt; 12 D c   12 0.4382693 0.4382693
 #&gt; </div><div class='input'>
-<span class='kw'>grouped</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span>(<span class='fl'>5</span>, <span class='fl'>100</span>, replace=<span class='fl'>TRUE</span>)
-(<span class='kw'>out3</span> <span class='op'>&lt;-</span> <span class='fu'>jitterViolinPoints</span>(X=<span class='kw'>X</span>, Y=<span class='kw'>Y</span>, grouping=<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(FacetRow=<span class='kw'>grouped</span>)))
+<span class='va'>grouped</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fl'>5</span>, <span class='fl'>100</span>, replace<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='op'>(</span><span class='va'>out3</span> <span class='op'>&lt;-</span> <span class='fu'>jitterViolinPoints</span><span class='op'>(</span>X<span class='op'>=</span><span class='va'>X</span>, Y<span class='op'>=</span><span class='va'>Y</span>, grouping<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>FacetRow<span class='op'>=</span><span class='va'>grouped</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt;   [1] 0.9064409 2.0000000 3.0458151 1.8546181 0.8000106 0.7023113 2.1838075
 #&gt;   [8] 2.0000000 3.8113791 3.7469059 1.0957850 3.0000000 4.0000000 4.0563746
 #&gt;  [15] 1.9379969 3.8006484 2.0431006 4.0394861 2.0000000 4.1998941 3.7803732
@@ -288,7 +288,7 @@ To avoid clashes with existing fields, the names in <code>grouping</code> should
 #&gt;  [78] 3.8113895 0.8013138 3.0000000 2.7000090 3.0000000 0.8000106 3.9694427
 #&gt;  [85] 2.9070387 1.0000000 3.9464080 0.7097156 3.1813168 1.7022692 3.8174916
 #&gt;  [92] 0.8683669 4.0000000 4.0788738 3.8123087 1.8053024 0.7014337 2.0991736
-#&gt;  [99] 1.7316931 1.8312735</div><div class='input'>(<span class='kw'>out4</span> <span class='op'>&lt;-</span> <span class='fu'>jitterSquarePoints</span>(X=<span class='kw'>X</span>, Y=<span class='kw'>Y2</span>, grouping=<span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(FacetRow=<span class='kw'>grouped</span>)))
+#&gt;  [99] 1.7316931 1.8312735</div><div class='input'><span class='op'>(</span><span class='va'>out4</span> <span class='op'>&lt;-</span> <span class='fu'>jitterSquarePoints</span><span class='op'>(</span>X<span class='op'>=</span><span class='va'>X</span>, Y<span class='op'>=</span><span class='va'>Y2</span>, grouping<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>FacetRow<span class='op'>=</span><span class='va'>grouped</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; $X
 #&gt;   [1] 0.6206268 1.9416751 3.1053025 1.9924216 0.9155901 0.8597178 1.8649198
 #&gt;   [8] 1.8758244 3.7183893 3.8053358 1.1930098 3.1139839 3.7822385 4.3777103

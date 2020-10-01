@@ -1,3 +1,7 @@
+# iSEE 2.1.18
+
+* Bugfix to properly support dynamic classes on landing page.
+
 # iSEE 2.1.17
 
 * `.refineParameters()` for `FeatureAssayPlot`, `SampleAssayPlot` protects the x-axis choice against absent metadata.

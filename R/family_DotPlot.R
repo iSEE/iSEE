@@ -222,6 +222,7 @@
 #' @name DotPlot-class
 #' @aliases
 #' initialize,DotPlot-method
+#' updateObject,DotPlot-method
 #' .defineOutput,DotPlot-method
 #' .generateOutput,DotPlot-method
 #' .generateDotPlot,DotPlot-method
@@ -250,7 +251,6 @@
 #' .defineVisualOtherInterface,DotPlot-method
 #' .defineVisualFacetInterface,DotPlot-method
 #' .definePanelTour,DotPlot-method
-#' .updateObject,DotPlot-method
 NULL
 
 #' @export
@@ -300,7 +300,7 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
 
     args <- .emptyDefault(args, .plotLabelCenters, FALSE)
     args <- .emptyDefault(args, .plotLabelCentersBy, NA_character_)
-    args <- .emptyDefault(args, .plotLabelCentersColor, "black") 
+    args <- .emptyDefault(args, .plotLabelCentersColor, "black")
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -310,9 +310,9 @@ setValidity2("DotPlot", function(object) {
     msg <- character(0)
 
     msg <- .valid_logical_error(msg, object,
-        c(.plotCustomLabels, .visualParamBoxOpen, .contourAdd, .plotPointDownsample, 
+        c(.plotCustomLabels, .visualParamBoxOpen, .contourAdd, .plotPointDownsample,
             .plotHoverInfo,
-            .plotLabelCenters            
+            .plotLabelCenters
         ))
 
     msg <- .single_string_error(msg, object,
@@ -347,7 +347,7 @@ setValidity2("DotPlot", function(object) {
     msg <- .valid_number_error(msg, object, .plotPointSampleRes, lower=1, upper=Inf)
 
     msg <- .valid_number_error(msg, object, .plotFontSize, lower=0, upper=Inf)
-    
+
     msg <- .valid_number_error(msg, object, .legendPointSize, lower=0, upper=Inf)
 
     msg <- .allowable_choice_error(msg, object, .plotLegendPosition,
@@ -411,7 +411,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
             .shapeByField, .sizeByField,
             .plotPointSize, .plotPointAlpha, .plotFontSize, .legendPointSize, .plotLegendPosition,
             .plotPointDownsample, .plotPointSampleRes, .contourAdd,
-            .contourColor, .plotCustomLabels, .plotHoverInfo, 
+            .contourColor, .plotCustomLabels, .plotHoverInfo,
             .plotLabelCenters, .plotLabelCentersBy, .plotLabelCentersColor),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
@@ -484,8 +484,8 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
             colourInput(paste0(plot_name, "_", colorby$name$color), label=NULL,
                 value=x[[colorby$name$color]]),
             checkboxInput(
-                paste0(plot_name, "_", colorby$name$dynamic), 
-                label=sprintf("Use dynamic %s selection", mydim_single), 
+                paste0(plot_name, "_", colorby$name$dynamic),
+                label=sprintf("Use dynamic %s selection", mydim_single),
                 value=x[[colorby$name$dynamic]])
         ),
         .conditional_on_radio(colorby_field, colorby$assay$title,
@@ -495,10 +495,10 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
                 paste0(plot_name, "_", colorby$assay$assay), label=NULL,
                 choices=all_assays, selected=x[[colorby$assay$assay]]),
             selectInput(
-                paste0(plot_name, "_", colorby$assay$table), label=NULL, choices=otherdim_choices, 
+                paste0(plot_name, "_", colorby$assay$table), label=NULL, choices=otherdim_choices,
                 selected=.choose_link(x[[colorby$assay$table]], otherdim_choices)),
             checkboxInput(
-                paste0(plot_name, "_", colorby$assay$dynamic), 
+                paste0(plot_name, "_", colorby$assay$dynamic),
                 label=sprintf("Use dynamic %s selection", otherdim_single),
                 value=x[[colorby$assay$dynamic]])
         )
@@ -513,7 +513,7 @@ setMethod(".defineVisualShapeInterface", "DotPlot", function(x, se) {
         plot_name <- .getEncodedName(x)
         shapeby_field <- paste0(plot_name, "_", .shapeByField)
         shapeby <- .getDotPlotShapeConstants(x)
-        
+
         tagList(
             hr(),
             radioButtons(
@@ -612,9 +612,9 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
         .conditional_on_check_solo(
             .input_FUN(.plotCustomLabels),
             on_select=TRUE,
-            actionButton(.input_FUN(.dimnamesModalOpen), 
+            actionButton(.input_FUN(.dimnamesModalOpen),
                 label=sprintf("Edit %s names", .singleSelectionDimension(x)))
-        ), 
+        ),
         hr(),
         checkboxInput(.input_FUN(.plotLabelCenters),
             label="Label centers",
@@ -829,7 +829,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
 #' @export
 setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
     plot_data <- envir$plot.data
-    
+
     is_subsetted <- exists("plot.data.all", envir=envir, inherits=FALSE)
     is_downsampled <- exists("plot.data.pre", envir=envir, inherits=FALSE)
     plot_type <- envir$plot.type
@@ -851,7 +851,7 @@ setMethod(".generateDotPlot", "DotPlot", function(x, labels, envir) {
         violin_horizontal=do.call(.violin_plot, c(args, list(horizontal=TRUE))),
         scatter=do.call(.scatter_plot, args)
     )
-    
+
     # Adding a faceting command, if applicable.
     facet_cmd <- .addFacets(x)
     if (length(facet_cmd)) {

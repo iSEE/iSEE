@@ -4,6 +4,7 @@
 #' These observers register input changes in the app's memory, and request an update to the output of the affected panel.
 #'
 #' @param plot_name String containing the name of the panel.
+#' @param slot_name Name of the panel slot that is controlled by the modal.
 #' @param button_name Name of the button that launches the modal.
 #' @param se A \linkS4class{SummarizedExperiment} object after running \code{\link{.cacheCommonInfo}}.
 #' @param input The Shiny input object from the server function.

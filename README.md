@@ -6,8 +6,6 @@
 [![R build status](https://github.com/iSEE/iSEEu/workflows/build_check_deploy/badge.svg)](https://github.com/iSEE/iSEEu/actions)
 [![Codecov.io coverage status](https://codecov.io/github/iSEE/iSEE/coverage.svg?branch=master)](https://codecov.io/github/iSEE/iSEE)
 [![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/iseedevelopers/isee)](https://hub.docker.com/r/iseedevelopers/isee)
-[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/iseedevelopers/isee)](https://hub.docker.com/r/iseedevelopers/isee)
-[![Travis CI build status](https://travis-ci.com/iSEE/iSEE.svg?branch=master)](https://travis-ci.com/iSEE/iSEE)
 <!-- badges: end -->
 
 ## Bioconductor release status

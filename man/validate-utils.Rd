@@ -56,21 +56,6 @@ Helper functions to implement \code{\link{setValidity}} methods for \linkS4class
 
 \code{.validNumberError} adds an error message if the slot named \code{field} is not a non-\code{NA} number within [\code{lower}, \code{upper}].
 }
-\examples{
-.singleStringError(character(0), x=LETTERS, fields="BLAH")
-
-.validStringError(character(0), x=NA_character_, fields="BLAH")
-
-.validLogicalError(character(0), x=NA, fields="BLAH")
-
-.allowableChoiceError(character(0), x="Z", fields="BLAH", allowable=LETTERS[1:3])
-
-.multipleChoiceError(character(0), x=c("A", "Z"), 
-     fields="BLAH", allowable=LETTERS[1:3])
-
-validNumberError(character(0), x=2, field="BLAH", lower=0, upper=1)
-}
 \author{
 Aaron Lun
-.
 }

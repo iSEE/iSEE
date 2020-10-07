@@ -435,7 +435,9 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     heatmap_args <- character(0)
 
     all_cmds$select <- .processMultiSelections(x, all_memory, all_contents, plot_env)
-    all_cmds$assay <- .process_heatmap_assay_values(x, se, plot_env)
+    all_cmds$assay <- .extractAssaySubmatrix(x, se, plot_env,
+        use_custom_row_slot=.heatMapCustomFeatNames,
+        custom_row_text_slot=.heatMapFeatNameText)
 
     # If there is a matrix to work with at all
     if (all(dim(plot_env[["plot.data"]]) > 0)) {
@@ -573,8 +575,8 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     .create_heatmap_extra_observers(plot_name,
         se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_modal_observers_for_dimnames(plot_name, .heatMapFeatNameText, .dimnamesModalOpen,
-        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, "row")
+    .createCustomDimnamesModalObservers(plot_name, .heatMapFeatNameText, .dimnamesModalOpen,
+        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, source_type="row")
 
     invisible(NULL)
 })

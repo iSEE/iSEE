@@ -427,8 +427,9 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 
     .create_hover_observer(plot_name, input=input, session=session, pObjects=pObjects)
 
-    .create_modal_observers_for_dimnames(plot_name, .plotCustomLabelsText, .dimnamesModalOpen,
-        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, plot_dimension)
+    .createCustomDimnamesModalObservers(plot_name, .plotCustomLabelsText, .dimnamesModalOpen,
+        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, 
+        source_type=plot_dimension)
 })
 
 # Interface ----

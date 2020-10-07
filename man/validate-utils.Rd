@@ -3,9 +3,24 @@
 \name{validate-utils}
 \alias{validate-utils}
 \alias{.singleStringError}
+\alias{.validLogicalError}
+\alias{.validStringError}
+\alias{.allowableChoiceError}
+\alias{.multipleChoiceError}
+\alias{.validNumberError}
 \title{Validation error utilites}
 \usage{
 .singleStringError(msg, x, fields)
+
+.validLogicalError(msg, x, fields)
+
+.validStringError(msg, x, fields)
+
+.allowableChoiceError(msg, x, field, allowable)
+
+.multipleChoiceError(msg, x, field, allowable)
+
+.validNumberError(msg, x, field, lower, upper)
 }
 \arguments{
 \item{msg}{Character vector containing the current error messages.}

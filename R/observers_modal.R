@@ -1,11 +1,12 @@
-#' Define observers for a modal for custom dimnames
+#' Create observers for a modal for custom dimnames
 #'
-#' Define a series of observers that launch a modal where users can input a list of row names or column names.
-#' These observers register input changes in the app's memory, and request an update to the output of the affected panel.
+#' Create observers to launch a modal where users can input a list of custom row or column names.
+#' These observers register input changes in the app's memory and request an update to the affected panel.
 #'
-#' @param plot_name String containing the name of the panel.
-#' @param slot_name Name of the panel slot that is controlled by the modal.
-#' @param button_name Name of the button that launches the modal.
+#' @param plot_name String containing the name of the current panel.
+#' @param slot_name String specifying the slot of containing the names of the custom features.
+#' This will be modified by user interactions with the modal.
+#' @param button_name String containing the name of the button in the panel UI that launches the modal.
 #' @param se A \linkS4class{SummarizedExperiment} object after running \code{\link{.cacheCommonInfo}}.
 #' @param input The Shiny input object from the server function.
 #' @param session The Shiny session object from the server function.
@@ -14,29 +15,45 @@
 #' @param source_type String specifying the type of the panel that is source of the selection, either \code{"row"} or \code{"column"}.
 #'
 #' @return
-#' Observers are set up to monitor the UI elements that can change various parameters specific to the \code{ComplexHeatmapPlot} panel.
+#' Observers are set up to launch the modal and monitor its UI elements.
 #' A \code{NULL} is invisibly returned.
+#'
+#' @details
+#' This should be called in \code{\link{.createObservers}} for the target panel.
+#' It assumes that a button element with the suffix \code{button_name} is available in the UI (i.e., the full name is created by concatenated \code{plot_name} with \code{button_name}).
+#'
+#' The modal UI provides options to sort the dimnames, validate them, clear the current text and import a selection from a specified row transmitter.
+#' These are all transient until \dQuote{Apply} is clicked, at which point the app's memory is modified and an update is requested.
+#'
+#' The custom names are stored in the \code{slot_name} as a single string with names separated by newlines.
+#' Hashes are treated as comments and any content after a hash is ignored when interpreting the names.
+#' Any leading and trailing whitespace is also ignored during interpretation.
 #'
 #' @author Kevin Rue-Albrecht
 #'
+#' @export
 #' @importFrom shiny modalDialog removeModal fluidRow column h4 actionButton br tagList em strong
 #' @importFrom shinyAce aceEditor updateAceEditor
 #' @importFrom shinyjs disabled
-#' @rdname INTERNAL_create_modal_observers_for_dimnames
-.create_modal_observers_for_dimnames <- function(plot_name, slot_name, button_name, se, input, session, pObjects, rObjects, source_type) {
-    apply_field <- "INTERNAL_ApplyFeatNameChanges"
-    order_field <- "INTERNAL_OrderFeatNames"
-    import_field <- "INTERNAL_ImportFeatNames"
-    validate_field <- "INTERNAL_ValidateFeatNames"
-    clear_field <- "INTERNAL_ClearFeatNames"
+#' @rdname createCustomDimnamesModalObservers
+.createCustomDimnamesModalObservers <- function(plot_name, slot_name, button_name, se,
+    input, session, pObjects, rObjects, source_type)
+{
+    apply_field <- sprintf("INTERNAL_%s_ApplyNameChanges", source_type)
+    order_field <- sprintf("INTERNAL_%s_OrderNames", source_type)
+    import_field <- sprintf("INTERNAL_%s_ImportNames", source_type)
+    validate_field <- sprintf("INTERNAL_%s_ValidateNames", source_type)
+    clear_field <- sprintf("INTERNAL_%s_ClearNames", source_type)
 
     .input_FUN <- function(field) paste0(plot_name, "_", field)
+
+    source_field <- if (source_type == "row") .selectRowSource else .selectColSource
 
     # nocov start
     observeEvent(input[[.input_FUN(button_name)]], {
         instance <- pObjects$memory[[plot_name]]
 
-        transmitter <- if (source_type == "row") instance[[.selectRowSource]] else instance[[.selectColSource]]
+        transmitter <- instance[[source_field]]
         if (transmitter==.noSelection) {
             txt <- sprintf("No panel chosen for %s selection", source_type)
             FUN <- disabled
@@ -46,9 +63,8 @@
             FUN <- identity
         }
 
-        dim_label <- if (source_type == "row") "feature" else "sample" # TODO: generic mapping "row" and "column" to labels depending on the panel class
         modal_ui <- modalDialog(
-            title=paste(sprintf("Custom %s names for", dim_label), .getFullName(instance)),
+            title=paste(sprintf("Custom %s names for", source_type), .getFullName(instance)),
             size="l", fade=TRUE,
             footer=NULL, easyClose=TRUE,
             fluidRow(
@@ -77,15 +93,18 @@
     # nocov end
 
     # The button that imports incoming selection into the aceEditor
+    selector <- if (source_type == "row") "row_selected" else "col_selected"
+
     # nocov start
     observeEvent(input[[.input_FUN(import_field)]], {
         instance <- pObjects$memory[[plot_name]]
 
         # Compute names for the incoming selection, if any
         plot_env <- new.env()
-        select_cmds <- .processMultiSelections(pObjects$memory[[plot_name]], pObjects$memory, pObjects$contents, plot_env)
-        if (exists("row_selected", envir=plot_env, inherits=FALSE)){
-            incoming_names <- unique(unlist(get("row_selected", envir=plot_env)))
+        select_cmds <- .processMultiSelections(pObjects$memory[[plot_name]], 
+            pObjects$memory, pObjects$contents, plot_env)
+        if (exists(selector, envir=plot_env, inherits=FALSE)){
+            incoming_names <- unique(unlist(get(selector, envir=plot_env)))
         } else {
             incoming_names <- NULL
         }
@@ -109,17 +128,21 @@
     # nocov end
 
     # Button to comment out invalid names
+    dimnamesFUN <- if (source_type == "row") rownames else colnames 
+
     # nocov start
     observeEvent(input[[.input_FUN(validate_field)]], {
         instance <- pObjects$memory[[plot_name]]
-
-        dimnamesFUN <- if (source_type == "row") rownames else colnames # TODO: generic mapping "row" and "column" to labels depending on the panel class
-
         editor_text <- input[[.input_FUN(slot_name)]]
+
+        # Figuring out which ones aren't real names.
+        pure.names <- .convert_text_to_names(editor_text)
+        invalid_idx <- !pure.names %in% dimnamesFUN(se) & nzchar(pure.names)
+
         editor_lines <- strsplit(editor_text, split="\n")[[1]]
-        invalid_idx <- !editor_lines %in% dimnamesFUN(se) & !grepl("^[ ]*#", editor_lines) # TODO switch dimnames function
         editor_lines[invalid_idx] <- paste0("# ", editor_lines[invalid_idx])
         editor_text <- paste0(editor_lines, collapse = "\n")
+
         updateAceEditor(session, editorId = .input_FUN(slot_name), value = editor_text)
     }, ignoreInit=TRUE)
     # nocov end
@@ -128,11 +151,12 @@
     # nocov start
     observeEvent(input[[.input_FUN(order_field)]], {
         instance <- pObjects$memory[[plot_name]]
-
         editor_text <- input[[.input_FUN(slot_name)]]
+
         editor_lines <- strsplit(editor_text, split="\n")[[1]]
         editor_lines <- sort(editor_lines)
         editor_text <- paste0(editor_lines, collapse = "\n")
+
         updateAceEditor(session, editorId = .input_FUN(slot_name), value = editor_text)
     }, ignoreInit=TRUE)
     # nocov end

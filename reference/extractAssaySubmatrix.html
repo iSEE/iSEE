@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check compatibility between ExperimentColorMap and SummarizedExperiment
-objects — checkColormapCompatibility • iSEE</title>
+<title>Extract assay submatrix — .extractAssaySubmatrix • iSEE</title>
 
 
 <!-- jquery -->
@@ -40,12 +39,8 @@ objects — checkColormapCompatibility • iSEE</title>
 
 
 
-<meta property="og:title" content="Check compatibility between ExperimentColorMap and SummarizedExperiment
-objects — checkColormapCompatibility" />
-<meta property="og:description" content="This function compares a pair of ExperimentColorMap and
-SingleCellExperiment objects, and examines whether
-all of the assays, colData, and rowData defined
-in the ExperimentColorMap object exist in the SingleCellExperiment object." />
+<meta property="og:title" content="Extract assay submatrix — .extractAssaySubmatrix" />
+<meta property="og:description" content="Extract an assay submatrix based on the multiple row/column selection and any custom specifications from .createCustomDimnamesModalObservers." />
 
 
 
@@ -150,74 +145,58 @@ in the ExperimentColorMap object exist in the SingleCellExperiment object." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check compatibility between ExperimentColorMap and SummarizedExperiment
-objects</h1>
-    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/ExperimentColorMap.R'><code>R/ExperimentColorMap.R</code></a></small>
-    <div class="hidden name"><code>checkColormapCompatibility.Rd</code></div>
+    <h1>Extract assay submatrix</h1>
+    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/outputs_heatmap.R'><code>R/outputs_heatmap.R</code></a></small>
+    <div class="hidden name"><code>extractAssaySubmatrix.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function compares a pair of <a href='ExperimentColorMap-class.html'>ExperimentColorMap</a> and
-SingleCellExperiment objects, and examines whether
-all of the <code>assays</code>, <code>colData</code>, and <code>rowData</code> defined
-in the ExperimentColorMap object exist in the SingleCellExperiment object.</p>
+    <p>Extract an assay submatrix based on the multiple row/column selection and any custom specifications from <code><a href='.createCustomDimnamesModalObservers.html'>.createCustomDimnamesModalObservers</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>checkColormapCompatibility</span><span class='op'>(</span><span class='va'>ecm</span>, <span class='va'>se</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>.extractAssaySubmatrix</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>se</span>, <span class='va'>envir</span>, <span class='va'>use_custom_row_slot</span>, <span class='va'>custom_row_text_slot</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>ecm</th>
-      <td><p>An <a href='ExperimentColorMap-class.html'>ExperimentColorMap</a>.</p></td>
+      <th>x</th>
+      <td><p>A <a href='Panel-class.html'>Panel</a> instance that uses the row selection modal.</p></td>
     </tr>
     <tr>
       <th>se</th>
-      <td><p>A SingleCellExperiment.</p></td>
+      <td><p>The current SummarizedExperiment object.</p></td>
+    </tr>
+    <tr>
+      <th>envir</th>
+      <td><p>The evaluation environment.
+This assumes that <code><a href='.processMultiSelections.html'>.processMultiSelections</a></code> has already been run.</p></td>
+    </tr>
+    <tr>
+      <th>use_custom_row_slot</th>
+      <td><p>String specifying the name of the slot indicating whether to use custom rows.</p></td>
+    </tr>
+    <tr>
+      <th>custom_row_text_slot</th>
+      <td><p>String specifying the name of the slot holding the custom row names.
+This is expected to be of the same format as described in <code>?<a href='.createCustomDimnamesModalObservers.html'>.createCustomDimnamesModalObservers</a></code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A character vector of incompability error messages, if any.</p>
+    <p>A character vector of commands to set up the assay submatrix.
+The submatrix itself is generated within <code>envir</code> as the <code>plot.data</code> variable.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This is designed to extract a matrix of assay values for a subset of rows/columns of interest, most typically for a <a href='ComplexHeatmapPlot-class.html'>ComplexHeatmapPlot</a>.
+It assumes that the class of <code>x</code> contains a slot indicating whether custom rows should be used, plus a slot to hold the selected custom row names (usually from a modal, see <code><a href='.createCustomDimnamesModalObservers.html'>.createCustomDimnamesModalObservers</a></code>).</p>
+<p>If a multiple row selection is present in <code>envir</code> and custom rows are <em>not</em> to be used, that selection is used to define the rows of the submatrix.
+All columns are returned in the submatrix unless a multiple column selection is present in <code>envir</code> and the <code>SelectEffect</code> in <code>x</code> is &#8220;Restrict&#8221;, in which case only the selected columns are returned.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Kevin Rue-Albrecht</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># Example colormaps ----</span>
-
-<span class='va'>count_colors</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>{</span>
-  <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"black"</span>,<span class='st'>"brown"</span>,<span class='st'>"red"</span>,<span class='st'>"orange"</span>,<span class='st'>"yellow"</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-<span class='va'>qc_color_fun</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>{</span>
-  <span class='va'>qc_colors</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"forestgreen"</span>, <span class='st'>"firebrick1"</span><span class='op'>)</span>
-  <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>qc_colors</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Y"</span>, <span class='st'>"N"</span><span class='op'>)</span>
-  <span class='kw'><a href='https://rdrr.io/r/base/function.html'>return</a></span><span class='op'>(</span><span class='va'>qc_colors</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-<span class='va'>ecm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ExperimentColorMap-class.html'>ExperimentColorMap</a></span><span class='op'>(</span>
-    assays <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-        tophat_counts <span class='op'>=</span> <span class='va'>count_colors</span>
-    <span class='op'>)</span>,
-    colData <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-        passes_qc_checks_s <span class='op'>=</span> <span class='va'>qc_color_fun</span>
-    <span class='op'>)</span>
-<span class='op'>)</span>
-
-<span class='co'># Example SingleCellExperiment ----</span>
-
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scRNAseq</span><span class='op'>)</span>
-<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span><span class='op'>(</span>assays<span class='op'>=</span><span class='st'>"tophat_counts"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>using temporary cache /tmp/Rtmpjekj11/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2020-10-02</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='input'>
-<span class='co'># Test for compatibility ----</span>
-
-<span class='fu'>checkColormapCompatibility</span><span class='op'>(</span><span class='va'>ecm</span>, <span class='va'>sce</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; NULL</div><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

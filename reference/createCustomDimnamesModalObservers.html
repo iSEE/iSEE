@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check compatibility between ExperimentColorMap and SummarizedExperiment
-objects — checkColormapCompatibility • iSEE</title>
+<title>Create observers for a modal for custom dimnames — .createCustomDimnamesModalObservers • iSEE</title>
 
 
 <!-- jquery -->
@@ -40,12 +39,9 @@ objects — checkColormapCompatibility • iSEE</title>
 
 
 
-<meta property="og:title" content="Check compatibility between ExperimentColorMap and SummarizedExperiment
-objects — checkColormapCompatibility" />
-<meta property="og:description" content="This function compares a pair of ExperimentColorMap and
-SingleCellExperiment objects, and examines whether
-all of the assays, colData, and rowData defined
-in the ExperimentColorMap object exist in the SingleCellExperiment object." />
+<meta property="og:title" content="Create observers for a modal for custom dimnames — .createCustomDimnamesModalObservers" />
+<meta property="og:description" content="Create observers to launch a modal where users can input a list of custom row or column names.
+These observers register input changes in the app's memory and request an update to the affected panel." />
 
 
 
@@ -150,74 +146,87 @@ in the ExperimentColorMap object exist in the SingleCellExperiment object." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check compatibility between ExperimentColorMap and SummarizedExperiment
-objects</h1>
-    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/ExperimentColorMap.R'><code>R/ExperimentColorMap.R</code></a></small>
-    <div class="hidden name"><code>checkColormapCompatibility.Rd</code></div>
+    <h1>Create observers for a modal for custom dimnames</h1>
+    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/observers_modal.R'><code>R/observers_modal.R</code></a></small>
+    <div class="hidden name"><code>createCustomDimnamesModalObservers.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function compares a pair of <a href='ExperimentColorMap-class.html'>ExperimentColorMap</a> and
-SingleCellExperiment objects, and examines whether
-all of the <code>assays</code>, <code>colData</code>, and <code>rowData</code> defined
-in the ExperimentColorMap object exist in the SingleCellExperiment object.</p>
+    <p>Create observers to launch a modal where users can input a list of custom row or column names.
+These observers register input changes in the app's memory and request an update to the affected panel.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>checkColormapCompatibility</span><span class='op'>(</span><span class='va'>ecm</span>, <span class='va'>se</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>.createCustomDimnamesModalObservers</span><span class='op'>(</span>
+  <span class='va'>plot_name</span>,
+  <span class='va'>slot_name</span>,
+  <span class='va'>button_name</span>,
+  <span class='va'>se</span>,
+  <span class='va'>input</span>,
+  <span class='va'>session</span>,
+  <span class='va'>pObjects</span>,
+  <span class='va'>rObjects</span>,
+  <span class='va'>source_type</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>ecm</th>
-      <td><p>An <a href='ExperimentColorMap-class.html'>ExperimentColorMap</a>.</p></td>
+      <th>plot_name</th>
+      <td><p>String containing the name of the current panel.</p></td>
+    </tr>
+    <tr>
+      <th>slot_name</th>
+      <td><p>String specifying the slot of containing the names of the custom features.
+This will be modified by user interactions with the modal.</p></td>
+    </tr>
+    <tr>
+      <th>button_name</th>
+      <td><p>String containing the name of the button in the panel UI that launches the modal.</p></td>
     </tr>
     <tr>
       <th>se</th>
-      <td><p>A SingleCellExperiment.</p></td>
+      <td><p>A SummarizedExperiment object after running <code><a href='setup-generics.html'>.cacheCommonInfo</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>input</th>
+      <td><p>The Shiny input object from the server function.</p></td>
+    </tr>
+    <tr>
+      <th>session</th>
+      <td><p>The Shiny session object from the server function.</p></td>
+    </tr>
+    <tr>
+      <th>pObjects</th>
+      <td><p>An environment containing global parameters generated in the <code><a href='iSEE.html'>iSEE</a></code> app.</p></td>
+    </tr>
+    <tr>
+      <th>rObjects</th>
+      <td><p>A reactive list of values generated in the <code><a href='iSEE.html'>iSEE</a></code> app.</p></td>
+    </tr>
+    <tr>
+      <th>source_type</th>
+      <td><p>String specifying the type of the panel that is source of the selection, either <code>"row"</code> or <code>"column"</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A character vector of incompability error messages, if any.</p>
+    <p>Observers are set up to launch the modal and monitor its UI elements.
+A <code>NULL</code> is invisibly returned.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This should be called in <code><a href='observer-generics.html'>.createObservers</a></code> for the target panel.
+It assumes that a button element with the suffix <code>button_name</code> is available in the UI (i.e., the full name is created by concatenated <code>plot_name</code> with <code>button_name</code>).</p>
+<p>The modal UI provides options to sort the dimnames, validate them, clear the current text and import a selection from a specified row transmitter.
+These are all transient until &#8220;Apply&#8221; is clicked, at which point the app's memory is modified and an update is requested.</p>
+<p>The custom names are stored in the <code>slot_name</code> as a single string with names separated by newlines.
+Hashes are treated as comments and any content after a hash is ignored when interpreting the names.
+Any leading and trailing whitespace is also ignored during interpretation.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Kevin Rue-Albrecht</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># Example colormaps ----</span>
-
-<span class='va'>count_colors</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>{</span>
-  <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"black"</span>,<span class='st'>"brown"</span>,<span class='st'>"red"</span>,<span class='st'>"orange"</span>,<span class='st'>"yellow"</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-<span class='va'>qc_color_fun</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>{</span>
-  <span class='va'>qc_colors</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"forestgreen"</span>, <span class='st'>"firebrick1"</span><span class='op'>)</span>
-  <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>qc_colors</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Y"</span>, <span class='st'>"N"</span><span class='op'>)</span>
-  <span class='kw'><a href='https://rdrr.io/r/base/function.html'>return</a></span><span class='op'>(</span><span class='va'>qc_colors</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-<span class='va'>ecm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ExperimentColorMap-class.html'>ExperimentColorMap</a></span><span class='op'>(</span>
-    assays <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-        tophat_counts <span class='op'>=</span> <span class='va'>count_colors</span>
-    <span class='op'>)</span>,
-    colData <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-        passes_qc_checks_s <span class='op'>=</span> <span class='va'>qc_color_fun</span>
-    <span class='op'>)</span>
-<span class='op'>)</span>
-
-<span class='co'># Example SingleCellExperiment ----</span>
-
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scRNAseq</span><span class='op'>)</span>
-<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span><span class='op'>(</span>assays<span class='op'>=</span><span class='st'>"tophat_counts"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>using temporary cache /tmp/Rtmpjekj11/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2020-10-02</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='input'>
-<span class='co'># Test for compatibility ----</span>
-
-<span class='fu'>checkColormapCompatibility</span><span class='op'>(</span><span class='va'>ecm</span>, <span class='va'>sce</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; NULL</div><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

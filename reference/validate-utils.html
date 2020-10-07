@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Class utilities — dataframe-utils • iSEE</title>
+<title>Validation error utilites — validate-utils • iSEE</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,8 @@
 
 
 
-<meta property="og:title" content="Class utilities — dataframe-utils" />
-<meta property="og:description" content=".findAtomicFields: A utility function to find columns in a data.frame or DataFrame
-that are atomic R types, as most of the app does not know how to handle  more complex types being stored as columns.
-An obvious example is in data.frames expected by ggplot or datatable." />
+<meta property="og:title" content="Validation error utilites — validate-utils" />
+<meta property="og:description" content="Helper functions to implement setValidity methods for Panel subclasses." />
 
 
 
@@ -147,63 +145,75 @@ An obvious example is in data.frames expected by ggplot or datatable." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Class utilities</h1>
+    <h1>Validation error utilites</h1>
     <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/utils_class.R'><code>R/utils_class.R</code></a></small>
-    <div class="hidden name"><code>dataframe-utils.Rd</code></div>
+    <div class="hidden name"><code>validate-utils.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>.findAtomicFields</code>: A utility function to find columns in a data.frame or DataFrame
-that are atomic R types, as most of the app does not know how to handle  more complex types being stored as columns.
-An obvious example is in data.frames expected by <code>ggplot</code> or <code>datatable</code>.</p>
+    <p>Helper functions to implement <code>setValidity</code> methods for <a href='Panel-class.html'>Panel</a> subclasses.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.findAtomicFields</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>.singleStringError</span><span class='op'>(</span><span class='va'>msg</span>, <span class='va'>x</span>, <span class='va'>fields</span><span class='op'>)</span>
 
-<span class='fu'>.whichGroupable</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+<span class='fu'>.validLogicalError</span><span class='op'>(</span><span class='va'>msg</span>, <span class='va'>x</span>, <span class='va'>fields</span><span class='op'>)</span>
 
-<span class='fu'>.whichNumeric</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
+<span class='fu'>.validStringError</span><span class='op'>(</span><span class='va'>msg</span>, <span class='va'>x</span>, <span class='va'>fields</span><span class='op'>)</span>
+
+<span class='fu'>.allowableChoiceError</span><span class='op'>(</span><span class='va'>msg</span>, <span class='va'>x</span>, <span class='va'>field</span>, <span class='va'>allowable</span><span class='op'>)</span>
+
+<span class='fu'>.multipleChoiceError</span><span class='op'>(</span><span class='va'>msg</span>, <span class='va'>x</span>, <span class='va'>field</span>, <span class='va'>allowable</span><span class='op'>)</span>
+
+<span class='fu'>.validNumberError</span><span class='op'>(</span><span class='va'>msg</span>, <span class='va'>x</span>, <span class='va'>field</span>, <span class='va'>lower</span>, <span class='va'>upper</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>msg</th>
+      <td><p>Character vector containing the current error messages.</p></td>
+    </tr>
+    <tr>
       <th>x</th>
-      <td><p>A data.frame or DataFrame.</p></td>
+      <td><p>An instance of a <a href='Panel-class.html'>Panel</a> subclass.</p></td>
+    </tr>
+    <tr>
+      <th>fields</th>
+      <td><p>Character vector containing the names of the relevant slots.</p></td>
+    </tr>
+    <tr>
+      <th>field</th>
+      <td><p>String containing the name of the relevant slot under investigation.</p></td>
+    </tr>
+    <tr>
+      <th>allowable</th>
+      <td><p>Character vector of allowable choices for a multiple-choice selection.</p></td>
+    </tr>
+    <tr>
+      <th>lower</th>
+      <td><p>Numeric scalar specifying the lower bound of possible values.</p></td>
+    </tr>
+    <tr>
+      <th>upper</th>
+      <td><p>Numeric scalar specifying the upper bound of possible values.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p><code>.findAtomicFields</code>: A character vector of names of atomic fields in <code>x</code>.</p>
-<p><code>.whichGroupable</code>: An integer vector containing the indices of the categorical columns.</p>
-<p><code>.whichNumeric</code>: An integer vector containing the indices of the numeric columns.</p>
+    <p>All functions return a character vector containing <code>msg</code>, possibly appended with additional error messages.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>.whichNumeric</code>: Identify continuous columns that can be used as options in various interface elements, e.g., for sizing.
-This is typically called in <code><a href='setup-generics.html'>.cacheCommonInfo</a></code> for later use by methods of <code><a href='interface-generics.html'>.defineInterface</a></code>.</p>
-<p><code>.whichGroupable</code>: Identify categorical columns that can be used as options in various interface elements, e.g., for faceting or shaping.
-This is typically called in <code><a href='setup-generics.html'>.cacheCommonInfo</a></code> for later use by methods of <code><a href='interface-generics.html'>.defineInterface</a></code>.</p>
+    <p><code>.singleStringError</code> adds an error message if any of the slots named in <code>fields</code> does not contain a single string.</p>
+<p><code>.validStringError</code> adds an error message if any of the slots named in <code>fields</code> does not contain a single non-<code>NA</code> string.</p>
+<p><code>.validLogicalError</code> adds an error message if any of the slots named in <code>fields</code> does not contain a non-<code>NA</code> logical scalar.</p>
+<p><code>.allowableChoiceError</code> adds an error message if the slot named <code>field</code> does not have a value in <code>allowable</code>, assuming it contains a single string.</p>
+<p><code>.multipleChoiceError</code> adds an error message if the slot named <code>field</code> does not have all of its values in <code>allowable</code>, assuming it contains a character vector of any length.</p>
+<p><code>.validNumberError</code> adds an error message if the slot named <code>field</code> is not a non-<code>NA</code> number within [<code>lower</code>, <code>upper</code>].</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
-    <p>Aaron Lun, Kevin Rue-Albrecht, Charlotte Soneson</p>
+    <p>Aaron Lun</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>DataFrame</span><span class='op'>(</span>
-    A <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>,
-    B <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>letters</span>, <span class='fl'>10</span><span class='op'>)</span>,
-    DataFrame <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span><span class='op'>(</span><span class='fu'>DataFrame</span><span class='op'>(</span>
-        C <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>,
-        D <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>letters</span>, <span class='fl'>10</span><span class='op'>)</span>
-    <span class='op'>)</span><span class='op'>)</span>
-<span class='op'>)</span>
-
-<span class='fu'>.findAtomicFields</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "A" "B"</div><div class='input'><span class='fu'>.whichGroupable</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;         B DataFrame 
-#&gt;         2         3 </div><div class='input'><span class='fu'>.whichNumeric</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; A 
-#&gt; 1 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -55,6 +55,4 @@ x <- DataFrame(
 }
 \author{
 Aaron Lun, Kevin Rue-Albrecht, Charlotte Soneson
-
-Kevin Rue-Albrecht
 }

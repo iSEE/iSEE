@@ -185,7 +185,7 @@ setMethod(".refineParameters", "ReducedDimensionPlot", function(x, se) {
 setValidity2("ReducedDimensionPlot", function(object) {
     msg <- character(0)
 
-    msg <- .single_string_error(msg, object, .redDimType)
+    msg <- .singleStringError(msg, object, .redDimType)
 
     for (field in c(.redDimXAxis, .redDimYAxis)) {
         if (length(val <- object[[field]])!=1 || is.na(val) || val <= 0L) {

@@ -204,10 +204,10 @@ setMethod(".refineParameters", "SampleAssayPlot", function(x, se) {
 setValidity2("SampleAssayPlot", function(object) {
     msg <- character(0)
 
-    msg <- .allowable_choice_error(msg, object, .sampAssayXAxis,
+    msg <- .allowableChoiceError(msg, object, .sampAssayXAxis,
         c(.sampAssayXAxisNothingTitle, .sampAssayXAxisRowDataTitle, .sampAssayXAxisSampNameTitle))
 
-    msg <- .single_string_error(msg, object,
+    msg <- .singleStringError(msg, object,
         c(.sampAssayAssay, .sampAssayXAxisRowData, .sampAssayXAxisColTable,
         .sampAssayXAxisSampName, .sampAssayYAxisColTable, .sampAssayYAxisSampName))
 

@@ -134,25 +134,40 @@
 #' @param upper Numeric scalar specifying the upper bound of possible values.
 #'
 #' @return
-#' All functions return \code{msg}, possibly appended with additional error messages.
+#' All functions return a character vector containing \code{msg}, possibly appended with additional error messages.
 #'
 #' @details
-#' \code{.single_string_error} adds an error message if any of the slots named in \code{fields} does not contain a single string.
+#' \code{.singleStringError} adds an error message if any of the slots named in \code{fields} does not contain a single string.
 #'
-#' \code{.valid_string_error} adds an error message if any of the slots named in \code{fields} does not contain a single non-\code{NA} string.
+#' \code{.validStringError} adds an error message if any of the slots named in \code{fields} does not contain a single non-\code{NA} string.
 #'
-#' \code{.valid_logical_error} adds an error message if any of the slots named in \code{fields} does not contain a non-\code{NA} logical scalar.
+#' \code{.validLogicalError} adds an error message if any of the slots named in \code{fields} does not contain a non-\code{NA} logical scalar.
 #'
-#' \code{.allowable_choice_error} adds an error message if the slot named \code{field} does not have a value in \code{allowable}, assuming it contains a single string.
+#' \code{.allowableChoiceError} adds an error message if the slot named \code{field} does not have a value in \code{allowable}, assuming it contains a single string.
 #'
-#' \code{.multiple_choice_error} adds an error message if the slot named \code{field} does not have all of its values in \code{allowable}, assuming it contains a character vector of any length.
+#' \code{.multipleChoiceError} adds an error message if the slot named \code{field} does not have all of its values in \code{allowable}, assuming it contains a character vector of any length.
 #'
-#' \code{.valid_number_error} adds an error message if the slot named \code{field} is not a non-\code{NA} number within [\code{lower}, \code{upper}].
+#' \code{.validNumberError} adds an error message if the slot named \code{field} is not a non-\code{NA} number within [\code{lower}, \code{upper}].
 #'
 #' @author Aaron Lun
 #'.
-#' @rdname validate-utils
-.single_string_error <- function(msg, x, fields) {
+#'
+#' @examples
+#' .singleStringError(character(0), x=LETTERS, fields="BLAH")
+#'
+#' .validStringError(character(0), x=NA_character_, fields="BLAH")
+#'
+#' .validLogicalError(character(0), x=NA, fields="BLAH")
+#'
+#' .allowableChoiceError(character(0), x="Z", fields="BLAH", allowable=LETTERS[1:3])
+#'
+#' .multipleChoiceError(character(0), x=c("A", "Z"), 
+#'      fields="BLAH", allowable=LETTERS[1:3])
+#'
+#' validNumberError(character(0), x=2, field="BLAH", lower=0, upper=1)
+#' @export
+#' @name validate-utils
+.singleStringError <- function(msg, x, fields) {
     for (field in fields) {
         if (length(x[[field]]) != 1L) {
             msg <- c(msg, sprintf("'%s' should be a single string for '%s'", field, class(x)[1]))
@@ -161,8 +176,9 @@
     msg
 }
 
-#' @rdname INTERNAL_validation_errors
-.valid_logical_error <- function(msg, x, fields) {
+#' @export
+#' @rdname validate-utils
+.validLogicalError <- function(msg, x, fields) {
     for (field in fields) {
         if (length(val <- x[[field]])!=1 || is.na(val)) {
             msg <- c(msg, sprintf("'%s' should be a non-NA logical scalar for '%s'", field, class(x)[1]))
@@ -171,8 +187,9 @@
     msg
 }
 
-#' @rdname INTERNAL_validation_errors
-.valid_string_error <- function(msg, x, fields) {
+#' @export
+#' @rdname validate-utils
+.validStringError <- function(msg, x, fields) {
     for (field in fields) {
         if (length(val <- x[[field]])!=1 || is.na(val)) {
             msg <- c(msg, sprintf("'%s' should be a non-NA string for '%s'", field, class(x)[1]))
@@ -181,8 +198,9 @@
     msg
 }
 
-#' @rdname INTERNAL_validation_errors
-.allowable_choice_error <- function(msg, x, field, allowable) {
+#' @export
+#' @rdname validate-utils
+.allowableChoiceError <- function(msg, x, field, allowable) {
     if (!x[[field]] %in% allowable) {
         msg <- c(msg, sprintf("'%s' for '%s' should be one of %s", field, class(x)[1],
             paste(sprintf("'%s'", allowable), collapse=", ")))
@@ -190,8 +208,9 @@
     msg
 }
 
-#' @rdname INTERNAL_validation_errors
-.multiple_choice_error <- function(msg, x, field, allowable) {
+#' @export
+#' @rdname validate-utils
+.multipleChoiceError <- function(msg, x, field, allowable) {
     if (any(!x[[field]] %in% allowable)) {
         msg <- c(msg, sprintf("values of '%s' for '%s' should be in %s", field, class(x)[1],
             paste(sprintf("'%s'", allowable), collapse=", ")))
@@ -199,8 +218,9 @@
     msg
 }
 
-#' @rdname INTERNAL_validation_errors
-.valid_number_error <- function(msg, x, field, lower, upper) {
+#' @export
+#' @rdname validate-utils
+.validNumberError <- function(msg, x, field, lower, upper) {
     if (length(val <- x[[field]])!=1 || is.na(val) || val < lower || val > upper) {
         msg <- c(msg, sprintf("'%s' for '%s' should be a numeric scalar in [%s, %s]",
             field, class(x)[1], lower, upper))

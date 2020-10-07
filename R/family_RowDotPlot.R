@@ -121,16 +121,16 @@ setMethod("initialize", "RowDotPlot", function(.Object, ...) {
 setValidity2("RowDotPlot", function(object) {
     msg <- character(0)
 
-    msg <- .single_string_error(msg, object,
+    msg <- .singleStringError(msg, object,
         c(.colorByRowData, .colorBySampNameAssay, .colorByFeatNameColor))
 
-    msg <- .allowable_choice_error(msg, object, .colorByField,
+    msg <- .allowableChoiceError(msg, object, .colorByField,
           c(.colorByNothingTitle, .colorByRowDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle))
 
-    msg <- .allowable_choice_error(msg, object, .shapeByField,
+    msg <- .allowableChoiceError(msg, object, .shapeByField,
           c(.shapeByNothingTitle, .shapeByRowDataTitle))
 
-    msg <- .allowable_choice_error(msg, object, .sizeByField,
+    msg <- .allowableChoiceError(msg, object, .sizeByField,
           c(.sizeByNothingTitle, .sizeByRowDataTitle))
 
     if (length(msg)) {

@@ -260,27 +260,27 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
 setValidity2("ComplexHeatmapPlot", function(object) {
     msg <- character(0)
 
-    msg <- .single_string_error(msg, object, c(.heatMapAssay, .heatMapFeatNameText,
+    msg <- .singleStringError(msg, object, c(.heatMapAssay, .heatMapFeatNameText,
         .heatMapClusterDistanceFeatures, .heatMapClusterMethodFeatures,
         .heatMapCenteredColormap,
         .selectEffect, .selectColor))
 
-    msg <- .valid_string_error(msg, object, .selectColor)
+    msg <- .validStringError(msg, object, .selectColor)
 
-    msg <- .multiple_choice_error(msg, object, .visualParamChoice,
+    msg <- .multipleChoiceError(msg, object, .visualParamChoice,
         c(.visualParamChoiceMetadataTitle, .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle,
           .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle))
 
-    msg <- .multiple_choice_error(msg, object, .showDimnames,
+    msg <- .multipleChoiceError(msg, object, .showDimnames,
         c(.showNamesRowTitle, .showNamesColumnTitle))
 
-    msg <- .allowable_choice_error(msg, object, .plotLegendPosition,
+    msg <- .allowableChoiceError(msg, object, .plotLegendPosition,
         c(.plotLegendRightTitle, .plotLegendBottomTitle))
 
-    msg <- .allowable_choice_error(msg, object, .plotLegendDirection,
+    msg <- .allowableChoiceError(msg, object, .plotLegendDirection,
         c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle))
 
-    msg <- .valid_logical_error(msg, object, c(
+    msg <- .validLogicalError(msg, object, c(
         .heatMapCustomFeatNames, .heatMapCustomFeatNames,
         .heatMapClusterFeatures, .dataParamBoxOpen,
         .heatMapCustomAssayBounds,

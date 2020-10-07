@@ -185,20 +185,20 @@ setMethod("initialize", "Panel", function(.Object, ...) {
 setValidity2("Panel", function(object) {
     msg <- character(0)
 
-    msg <- .valid_logical_error(msg, object, c(.selectParamBoxOpen, .dataParamBoxOpen,
+    msg <- .validLogicalError(msg, object, c(.selectParamBoxOpen, .dataParamBoxOpen,
         .selectRowDynamic, .selectColDynamic))
 
-    msg <- .single_string_error(msg, object, c(.selectRowSource, .selectColSource))
+    msg <- .singleStringError(msg, object, c(.selectRowSource, .selectColSource))
 
-    msg <- .valid_number_error(msg, object, .organizationHeight, lower=height_limits[1], upper=height_limits[2])
-    msg <- .valid_number_error(msg, object, .organizationWidth, lower=width_limits[1], upper=width_limits[2])
+    msg <- .validNumberError(msg, object, .organizationHeight, lower=height_limits[1], upper=height_limits[2])
+    msg <- .validNumberError(msg, object, .organizationWidth, lower=width_limits[1], upper=width_limits[2])
 
     if (length(val <- object[[.organizationId]])!=1 || (!is.na(val) && val <= 0L)) {
         msg <- c(msg, sprintf("'%s' must be a positive integer or NA for '%s'", .organizationId, class(object)[1]))
     }
 
     for (field in c(.selectRowType, .selectColType)) {
-        msg <- .allowable_choice_error(msg, object, field,
+        msg <- .allowableChoiceError(msg, object, field,
             c(.selectMultiActiveTitle, .selectMultiUnionTitle, .selectMultiSavedTitle))
     }
 

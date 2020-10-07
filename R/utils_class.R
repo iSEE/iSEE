@@ -22,7 +22,7 @@
 #' .getCachedCommonInfo(se, "SomePanelClass")
 #'
 #' @seealso
-#' \code{?"\link{dataframe-utils}"}, for utilities to define some cached variables.
+#' \code{?"\link{cache-utils}"}, for utilities to define some cached variables.
 #'
 #' @export
 #' @rdname setCachedCommonInfo
@@ -72,33 +72,30 @@
     args
 }
 
-#' Class utilities
+#' Caching utilities
 #'
-#' \code{.findAtomicFields}: A utility function to find columns in a data.frame or \linkS4class{DataFrame}
-#' that are atomic R types, as most of the app does not know how to handle  more complex types being stored as columns.
-#' An obvious example is in data.frames expected by \code{\link{ggplot}} or \code{\link{datatable}}.
+#' Utility functions to be used in a \code{\link{.cacheCommonInfo}} method, usually to identify names of elements of the \linkS4class{SummarizedExperiment} for later use in \code{\link{.defineInterface}} to populate the user interface.
 #'
-#' \code{.whichNumeric}: Identify continuous columns that can be used as options in various interface elements, e.g., for sizing.
-#' This is typically called in \code{\link{.cacheCommonInfo}} for later use by methods of \code{\link{.defineInterface}}.
+#' @param x A data.frame or \linkS4class{DataFrame}, most typically the \code{\link{rowData}} or \code{\link{colData}}.
+#' @param se The \linkS4class{SummarizedExperiment} object.
+#' @param i An integer scalar or string specifying the assay of interest in \code{se}.
 #'
-#' \code{.whichGroupable}: Identify categorical columns that can be used as options in various interface elements, e.g., for faceting or shaping.
-#' This is typically called in \code{\link{.cacheCommonInfo}} for later use by methods of \code{\link{.defineInterface}}.
+#' @details
+#' \code{.findAtomicFields} is necessary as many of the widgets used by \code{\link{iSEE}} (e.g., \code{\link{ggplot}}, \code{\link{datatable}}) do not know how to handle more complex types being stored as columns.
+#' Similarly, \code{.whichNumeric} and \code{.whichGroupable} can be used to specify options for visualization modes that only make sense for continuous or discrete variables respectively (e.g., sizing, faceting).
 #'
-#' @param x A data.frame or \linkS4class{DataFrame}.
+#' @return 
+#' For \code{.findAtomicFields}, a character vector of names of columns in \code{x} containing atomic R types.
 #'
-#' @return \code{.findAtomicFields}: A character vector of names of atomic fields in \code{x}.
+#' For \code{.whichNumeric}, an integer vector containing the indices of the numeric columns.
 #'
-#' \code{.whichGroupable}: An integer vector containing the indices of the categorical columns.
+#' For \code{.whichGroupable}, an integer vector containing the indices of the categorical columns.
 #'
-#' \code{.whichNumeric}: An integer vector containing the indices of the numeric columns.
+#' For \code{.isAssayNumeric}, a logical scalar indicating whether the specified assay as numeric.
 #'
 #' @author Aaron Lun, Kevin Rue-Albrecht, Charlotte Soneson
 #'
-#' @name dataframe-utils
-#' @aliases .findAtomicFields
-#' .whichNumeric
-#' .whichGroupable
-#'
+#' @name cache-utils
 #' @export
 #' @examples
 #' x <- DataFrame(
@@ -137,25 +134,26 @@
 #' @param upper Numeric scalar specifying the upper bound of possible values.
 #'
 #' @return
-#' All functions return \code{msg}, possibly appended with additional error messages.
+#' All functions return a character vector containing \code{msg}, possibly appended with additional error messages.
 #'
 #' @details
-#' \code{.single_string_error} adds an error message if any of the slots named in \code{fields} does not contain a single string.
+#' \code{.singleStringError} adds an error message if any of the slots named in \code{fields} does not contain a single string.
 #'
-#' \code{.valid_string_error} adds an error message if any of the slots named in \code{fields} does not contain a single non-\code{NA} string.
+#' \code{.validStringError} adds an error message if any of the slots named in \code{fields} does not contain a single non-\code{NA} string.
 #'
-#' \code{.valid_logical_error} adds an error message if any of the slots named in \code{fields} does not contain a non-\code{NA} logical scalar.
+#' \code{.validLogicalError} adds an error message if any of the slots named in \code{fields} does not contain a non-\code{NA} logical scalar.
 #'
-#' \code{.allowable_choice_error} adds an error message if the slot named \code{field} does not have a value in \code{allowable}, assuming it contains a single string.
+#' \code{.allowableChoiceError} adds an error message if the slot named \code{field} does not have a value in \code{allowable}, assuming it contains a single string.
 #'
-#' \code{.multiple_choice_error} adds an error message if the slot named \code{field} does not have all of its values in \code{allowable}, assuming it contains a character vector of any length.
+#' \code{.multipleChoiceError} adds an error message if the slot named \code{field} does not have all of its values in \code{allowable}, assuming it contains a character vector of any length.
 #'
-#' \code{.valid_number_error} adds an error message if the slot named \code{field} is not a non-\code{NA} number within [\code{lower}, \code{upper}].
+#' \code{.validNumberError} adds an error message if the slot named \code{field} is not a non-\code{NA} number within [\code{lower}, \code{upper}].
 #'
 #' @author Aaron Lun
-#'.
-#' @rdname INTERNAL_validation_errors
-.single_string_error <- function(msg, x, fields) {
+#'
+#' @export
+#' @name validate-utils
+.singleStringError <- function(msg, x, fields) {
     for (field in fields) {
         if (length(x[[field]]) != 1L) {
             msg <- c(msg, sprintf("'%s' should be a single string for '%s'", field, class(x)[1]))
@@ -164,8 +162,9 @@
     msg
 }
 
-#' @rdname INTERNAL_validation_errors
-.valid_logical_error <- function(msg, x, fields) {
+#' @export
+#' @rdname validate-utils
+.validLogicalError <- function(msg, x, fields) {
     for (field in fields) {
         if (length(val <- x[[field]])!=1 || is.na(val)) {
             msg <- c(msg, sprintf("'%s' should be a non-NA logical scalar for '%s'", field, class(x)[1]))
@@ -174,8 +173,9 @@
     msg
 }
 
-#' @rdname INTERNAL_validation_errors
-.valid_string_error <- function(msg, x, fields) {
+#' @export
+#' @rdname validate-utils
+.validStringError <- function(msg, x, fields) {
     for (field in fields) {
         if (length(val <- x[[field]])!=1 || is.na(val)) {
             msg <- c(msg, sprintf("'%s' should be a non-NA string for '%s'", field, class(x)[1]))
@@ -184,8 +184,9 @@
     msg
 }
 
-#' @rdname INTERNAL_validation_errors
-.allowable_choice_error <- function(msg, x, field, allowable) {
+#' @export
+#' @rdname validate-utils
+.allowableChoiceError <- function(msg, x, field, allowable) {
     if (!x[[field]] %in% allowable) {
         msg <- c(msg, sprintf("'%s' for '%s' should be one of %s", field, class(x)[1],
             paste(sprintf("'%s'", allowable), collapse=", ")))
@@ -193,8 +194,9 @@
     msg
 }
 
-#' @rdname INTERNAL_validation_errors
-.multiple_choice_error <- function(msg, x, field, allowable) {
+#' @export
+#' @rdname validate-utils
+.multipleChoiceError <- function(msg, x, field, allowable) {
     if (any(!x[[field]] %in% allowable)) {
         msg <- c(msg, sprintf("values of '%s' for '%s' should be in %s", field, class(x)[1],
             paste(sprintf("'%s'", allowable), collapse=", ")))
@@ -202,8 +204,9 @@
     msg
 }
 
-#' @rdname INTERNAL_validation_errors
-.valid_number_error <- function(msg, x, field, lower, upper) {
+#' @export
+#' @rdname validate-utils
+.validNumberError <- function(msg, x, field, lower, upper) {
     if (length(val <- x[[field]])!=1 || is.na(val) || val < lower || val > upper) {
         msg <- c(msg, sprintf("'%s' for '%s' should be a numeric scalar in [%s, %s]",
             field, class(x)[1], lower, upper))
@@ -272,14 +275,21 @@
     .nlevels(x) <= max_levels
 }
 
-#' @rdname dataframe-utils
+#' @rdname cache-utils
 #' @export
 .whichGroupable <- function(x) {
     which(vapply(x, FUN=.is_groupable, FUN.VALUE=FALSE))
 }
 
-#' @rdname dataframe-utils
+#' @rdname cache-utils
 #' @export
 .whichNumeric <- function(x) {
     which(vapply(x, FUN=is.numeric, FUN.VALUE=FALSE))
+}
+
+#' @export
+#' @rdname cache-utils
+.isAssayNumeric <- function(se, i) {
+    # The as.matrix is necessary to account for non-ordinary matrices.
+    is.numeric(as.matrix(assay(se, i)[0, 0]))
 }

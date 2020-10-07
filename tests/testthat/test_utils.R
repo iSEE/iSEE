@@ -65,7 +65,7 @@ test_that(".define_box_statuses generates the CSS classes for each box", {
 # utils_class.R ----
 context("Class utilities")
 
-test_that(".single_string_error detects issues", {
+test_that(".singleStringError detects issues", {
 
     msg <- character(0)
 
@@ -74,7 +74,7 @@ test_that(".single_string_error detects issues", {
         "'ColorBy' should be a single string for 'ReducedDimensionPlot'")
 })
 
-test_that(".valid_logical_error detects issues", {
+test_that(".validLogicalError detects issues", {
 
     msg <- character(0)
 
@@ -83,7 +83,7 @@ test_that(".valid_logical_error detects issues", {
         "'VisualBoxOpen' should be a non-NA logical scalar")
 })
 
-test_that(".valid_string_error detects issues", {
+test_that(".validStringError detects issues", {
 
     msg <- character(0)
 
@@ -92,7 +92,7 @@ test_that(".valid_string_error detects issues", {
         "'ColorByDefaultColor' should be a non-NA string") 
 })
 
-test_that(".allowable_choice_error detects issues", {
+test_that(".allowableChoiceError detects issues", {
 
     msg <- character(0)
 
@@ -101,7 +101,7 @@ test_that(".allowable_choice_error detects issues", {
         "'SelectionEffect' for 'ReducedDimensionPlot' should be one") 
 })
 
-test_that(".multiple_choice_error detects issues", {
+test_that(".multipleChoiceError detects issues", {
 
     msg <- character(0)
 
@@ -110,7 +110,7 @@ test_that(".multiple_choice_error detects issues", {
         "values of 'VisualChoices' for 'ReducedDimensionPlot' should be")
 })
 
-test_that(".valid_number_error detects issues", {
+test_that(".validNumberError detects issues", {
 
     msg <- character(0)
 

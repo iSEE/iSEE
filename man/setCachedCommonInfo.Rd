@@ -34,7 +34,7 @@ se <- .setCachedCommonInfo(se, "SomePanelClass",
 
 }
 \seealso{
-\code{?"\link{dataframe-utils}"}, for utilities to define some cached variables.
+\code{?"\link{cache-utils}"}, for utilities to define some cached variables.
 }
 \author{
 Aaron Lun

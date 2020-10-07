@@ -164,10 +164,10 @@ setMethod(".refineParameters", "ColumnDataPlot", function(x, se) {
 setValidity2("ColumnDataPlot", function(object) {
     msg <- character(0)
 
-    msg <- .allowable_choice_error(msg, object, .colDataXAxis,
+    msg <- .allowableChoiceError(msg, object, .colDataXAxis,
         c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle))
 
-    msg <- .single_string_error(msg, object,
+    msg <- .singleStringError(msg, object,
         c(.colDataXAxisColData, .colDataYAxis))
 
     if (length(msg)) {

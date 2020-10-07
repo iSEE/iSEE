@@ -121,16 +121,16 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ...) {
 setValidity2("ColumnDotPlot", function(object) {
     msg <- character(0)
 
-    msg <- .single_string_error(msg, object,
+    msg <- .singleStringError(msg, object,
         c(.colorByColData, .colorByFeatNameAssay, .colorBySampNameColor))
 
-    msg <- .allowable_choice_error(msg, object, .colorByField,
+    msg <- .allowableChoiceError(msg, object, .colorByField,
         c(.colorByNothingTitle, .colorByColDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle))
 
-    msg <- .allowable_choice_error(msg, object, .shapeByField,
+    msg <- .allowableChoiceError(msg, object, .shapeByField,
           c(.shapeByNothingTitle, .shapeByColDataTitle))
 
-    msg <- .allowable_choice_error(msg, object, .sizeByField,
+    msg <- .allowableChoiceError(msg, object, .sizeByField,
           c(.sizeByNothingTitle, .sizeByColDataTitle))
 
     if (length(msg)) {

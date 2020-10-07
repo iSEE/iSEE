@@ -204,10 +204,10 @@ setMethod(".refineParameters", "FeatureAssayPlot", function(x, se) {
 setValidity2("FeatureAssayPlot", function(object) {
     msg <- character(0)
 
-    msg <- .allowable_choice_error(msg, object, .featAssayXAxis,
+    msg <- .allowableChoiceError(msg, object, .featAssayXAxis,
         c(.featAssayXAxisNothingTitle, .featAssayXAxisColDataTitle, .featAssayXAxisFeatNameTitle))
 
-    msg <- .single_string_error(msg, object,
+    msg <- .singleStringError(msg, object,
         c(.featAssayAssay, .featAssayXAxisColData, .featAssayXAxisRowTable,
         .featAssayXAxisFeatName, .featAssayYAxisRowTable, .featAssayYAxisFeatName))
 

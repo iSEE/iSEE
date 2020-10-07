@@ -260,27 +260,27 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
 setValidity2("ComplexHeatmapPlot", function(object) {
     msg <- character(0)
 
-    msg <- .single_string_error(msg, object, c(.heatMapAssay, .heatMapFeatNameText,
+    msg <- .singleStringError(msg, object, c(.heatMapAssay, .heatMapFeatNameText,
         .heatMapClusterDistanceFeatures, .heatMapClusterMethodFeatures,
         .heatMapCenteredColormap,
         .selectEffect, .selectColor))
 
-    msg <- .valid_string_error(msg, object, .selectColor)
+    msg <- .validStringError(msg, object, .selectColor)
 
-    msg <- .multiple_choice_error(msg, object, .visualParamChoice,
+    msg <- .multipleChoiceError(msg, object, .visualParamChoice,
         c(.visualParamChoiceMetadataTitle, .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle,
           .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle))
 
-    msg <- .multiple_choice_error(msg, object, .showDimnames,
+    msg <- .multipleChoiceError(msg, object, .showDimnames,
         c(.showNamesRowTitle, .showNamesColumnTitle))
 
-    msg <- .allowable_choice_error(msg, object, .plotLegendPosition,
+    msg <- .allowableChoiceError(msg, object, .plotLegendPosition,
         c(.plotLegendRightTitle, .plotLegendBottomTitle))
 
-    msg <- .allowable_choice_error(msg, object, .plotLegendDirection,
+    msg <- .allowableChoiceError(msg, object, .plotLegendDirection,
         c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle))
 
-    msg <- .valid_logical_error(msg, object, c(
+    msg <- .validLogicalError(msg, object, c(
         .heatMapCustomFeatNames, .heatMapCustomFeatNames,
         .heatMapClusterFeatures, .dataParamBoxOpen,
         .heatMapCustomAssayBounds,
@@ -306,7 +306,7 @@ setMethod(".cacheCommonInfo", "ComplexHeatmapPlot", function(x, se) {
     named_assays <- assayNames(se)
     named_assays <- named_assays[named_assays!=""]
     # matrix[0,0] preserves the storage mode, while avoiding out-of-bound errors
-    assays_continuous <- vapply(named_assays, .is_assay_numeric, logical(1), se)
+    assays_continuous <- vapply(named_assays, .isAssayNumeric, logical(1), se=se)
     assays_discrete <- !assays_continuous
 
     df <- colData(se)
@@ -435,7 +435,9 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     heatmap_args <- character(0)
 
     all_cmds$select <- .processMultiSelections(x, all_memory, all_contents, plot_env)
-    all_cmds$assay <- .process_heatmap_assay_values(x, se, plot_env)
+    all_cmds$assay <- .extractAssaySubmatrix(x, se, plot_env,
+        use_custom_row_slot=.heatMapCustomFeatNames,
+        custom_row_text_slot=.heatMapFeatNameText)
 
     # If there is a matrix to work with at all
     if (all(dim(plot_env[["plot.data"]]) > 0)) {
@@ -573,8 +575,8 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     .create_heatmap_extra_observers(plot_name,
         se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_modal_observers_for_dimnames(plot_name, .heatMapFeatNameText, .dimnamesModalOpen,
-        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, "row")
+    .createCustomDimnamesModalObservers(plot_name, .heatMapFeatNameText, .dimnamesModalOpen,
+        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, source_type="row")
 
     invisible(NULL)
 })

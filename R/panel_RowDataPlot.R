@@ -161,10 +161,10 @@ setMethod(".refineParameters", "RowDataPlot", function(x, se) {
 setValidity2("RowDataPlot", function(object) {
     msg <- character(0)
 
-    msg <- .allowable_choice_error(msg, object, .rowDataXAxis,
+    msg <- .allowableChoiceError(msg, object, .rowDataXAxis,
         c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle))
 
-    msg <- .single_string_error(msg, object, c(.rowDataXAxisRowData, .rowDataYAxis))
+    msg <- .singleStringError(msg, object, c(.rowDataXAxisRowData, .rowDataYAxis))
 
     if (length(msg)) {
         return(msg)

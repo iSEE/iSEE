@@ -309,13 +309,13 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
 setValidity2("DotPlot", function(object) {
     msg <- character(0)
 
-    msg <- .valid_logical_error(msg, object,
+    msg <- .validLogicalError(msg, object,
         c(.plotCustomLabels, .visualParamBoxOpen, .contourAdd, .plotPointDownsample,
             .plotHoverInfo,
             .plotLabelCenters
         ))
 
-    msg <- .single_string_error(msg, object,
+    msg <- .singleStringError(msg, object,
         c(.plotCustomLabelsText, .colorByField, .colorByFeatName, .colorByRowTable, .colorBySampName, .colorByColTable,
             .shapeByField,
             .sizeByField,
@@ -323,7 +323,7 @@ setValidity2("DotPlot", function(object) {
             .plotLabelCentersBy
         ))
 
-    msg <- .valid_string_error(msg, object,
+    msg <- .validStringError(msg, object,
         c(.colorByDefaultColor,
             .selectColor,
             .facetByRow, .facetByColumn,
@@ -331,26 +331,26 @@ setValidity2("DotPlot", function(object) {
             .plotLabelCentersColor
         ))
 
-    msg <- .allowable_choice_error(msg, object, .selectEffect,
+    msg <- .allowableChoiceError(msg, object, .selectEffect,
         c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
 
-    msg <- .valid_number_error(msg, object, .selectTransAlpha, lower=0, upper=1)
+    msg <- .validNumberError(msg, object, .selectTransAlpha, lower=0, upper=1)
 
-    msg <- .multiple_choice_error(msg, object, .visualParamChoice,
+    msg <- .multipleChoiceError(msg, object, .visualParamChoice,
         c(.visualParamChoiceColorTitle, .visualParamChoiceShapeTitle, .visualParamChoiceSizeTitle, .visualParamChoicePointTitle,
             .visualParamChoiceFacetTitle, .visualParamChoiceTextTitle, .visualParamChoiceOtherTitle))
 
-    msg <- .valid_number_error(msg, object, .plotPointSize, lower=0, upper=Inf)
+    msg <- .validNumberError(msg, object, .plotPointSize, lower=0, upper=Inf)
 
-    msg <- .valid_number_error(msg, object, .plotPointAlpha, lower=0, upper=1)
+    msg <- .validNumberError(msg, object, .plotPointAlpha, lower=0, upper=1)
 
-    msg <- .valid_number_error(msg, object, .plotPointSampleRes, lower=1, upper=Inf)
+    msg <- .validNumberError(msg, object, .plotPointSampleRes, lower=1, upper=Inf)
 
-    msg <- .valid_number_error(msg, object, .plotFontSize, lower=0, upper=Inf)
+    msg <- .validNumberError(msg, object, .plotFontSize, lower=0, upper=Inf)
 
-    msg <- .valid_number_error(msg, object, .legendPointSize, lower=0, upper=Inf)
+    msg <- .validNumberError(msg, object, .legendPointSize, lower=0, upper=Inf)
 
-    msg <- .allowable_choice_error(msg, object, .plotLegendPosition,
+    msg <- .allowableChoiceError(msg, object, .plotLegendPosition,
         c(.plotLegendRightTitle, .plotLegendBottomTitle))
 
     if (length(msg)) {
@@ -427,8 +427,9 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 
     .create_hover_observer(plot_name, input=input, session=session, pObjects=pObjects)
 
-    .create_modal_observers_for_dimnames(plot_name, .plotCustomLabelsText, .dimnamesModalOpen,
-        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, plot_dimension)
+    .createCustomDimnamesModalObservers(plot_name, .plotCustomLabelsText, .dimnamesModalOpen,
+        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, 
+        source_type=plot_dimension)
 })
 
 # Interface ----

@@ -1,45 +1,55 @@
-#' Heatmap processing commands
+#' Extract assay submatrix
 #'
-#' Constructs, evaluates and returns commands to process the heatmap values.
+#' Extract an assay submatrix based on the multiple row/column selection and any custom specifications from \code{\link{.createCustomDimnamesModalObservers}}.
 #'
-#' @param x A \linkS4class{ComplexHeatmapPlot} instance.
+#' @param x A \linkS4class{Panel} instance that uses the row selection modal.
 #' @param se The current \linkS4class{SummarizedExperiment} object.
 #' @param envir The evaluation environment.
+#' This assumes that \code{\link{.processMultiSelections}} has already been run.
+#' @param use_custom_row_slot String specifying the name of the slot indicating whether to use custom rows.
+#' @param custom_row_text_slot String specifying the name of the slot holding the custom row names.
+#' This is expected to be of the same format as described in \code{?\link{.createCustomDimnamesModalObservers}}.
 #'
 #' @return
-#' \code{.process_heatmap_assay_values} returns a character vector of commands to set up the assay submatrix,
-#' after evaluating them within \code{envir}.
+#' A character vector of commands to set up the assay submatrix.
+#' The submatrix itself is generated within \code{envir} as the \code{plot.data} variable.
 #'
-#' \code{.is_heatmap_continuous} returns a logical scalar indicating whether the assay values are continuous.
+#' @details
+#' This is designed to extract a matrix of assay values for a subset of rows/columns of interest, most typically for a \linkS4class{ComplexHeatmapPlot}.
+#' It assumes that the class of \code{x} contains a slot indicating whether custom rows should be used, plus a slot to hold the selected custom row names (usually from a modal, see \code{\link{.createCustomDimnamesModalObservers}}).
 #'
+#' If a multiple row selection is present in \code{envir} and custom rows are \emph{not} to be used, that selection is used to define the rows of the submatrix.
+#' All columns are returned in the submatrix unless a multiple column selection is present in \code{envir} and the \code{SelectEffect} in \code{x} is \dQuote{Restrict}, in which case only the selected columns are returned.
+#' 
 #' @author
 #' Kevin Rue-Albrecht
 #'
-#' @rdname INTERNAL_process_heatmap
+#' @export
+#' @rdname extractAssaySubmatrix
 #' @importFrom SummarizedExperiment assay
-.process_heatmap_assay_values <- function(x, se, envir) {
+.extractAssaySubmatrix <- function(x, se, envir, use_custom_row_slot, custom_row_text_slot) {
     all_cmds <- character(0)
 
     # Feature names default to custom selection if no multiple selection is available.
-    if (x[[.heatMapCustomFeatNames]] || is.null(envir$row_selected)) {
-        rn <- .convert_text_to_names(x[[.heatMapFeatNameText]])
+    if (x[[use_custom_row_slot]] || is.null(envir$row_selected)) {
+        rn <- .convert_text_to_names(x[[custom_row_text_slot]])
         rn <- intersect(rn, rownames(se))
-        all_cmds[["rows"]] <- sprintf(".heatmap.rows <- %s;", .deparse_for_viewing(rn))
+        all_cmds[["rows"]] <- sprintf(".chosen.rows <- %s;", .deparse_for_viewing(rn))
     } else {
-        all_cmds[["rows"]] <- ".heatmap.rows <- intersect(rownames(se), unlist(row_selected));"
+        all_cmds[["rows"]] <- ".chosen.rows <- intersect(rownames(se), unlist(row_selected));"
     }
 
     if (!is.null(envir$col_selected) && x[[.selectEffect]]==.selectRestrictTitle) {
         # TODO: implement visual effects for other forms of selection.
-        all_cmds[["columns"]] <- ".heatmap.columns <- intersect(colnames(se), unlist(col_selected));"
+        all_cmds[["columns"]] <- ".chosen.columns <- intersect(colnames(se), unlist(col_selected));"
     } else {
         # includes color effect
-        all_cmds[["columns"]] <- ".heatmap.columns <- colnames(se);"
+        all_cmds[["columns"]] <- ".chosen.columns <- colnames(se);"
     }
 
     all_cmds[["data"]] <- paste(
         sprintf(
-            'plot.data <- assay(se, %s)[.heatmap.rows, .heatmap.columns, drop=FALSE]',
+            'plot.data <- assay(se, %s)[.chosen.rows, .chosen.columns, drop=FALSE]',
             deparse(x[[.heatMapAssay]])
         ),
         'plot.data <- as.matrix(plot.data);',
@@ -50,7 +60,6 @@
     all_cmds
 }
 
-#' @rdname INTERNAL_process_heatmap
 .is_heatmap_continuous <- function(x, se) {
     x[[.heatMapAssay]] %in% .getCachedCommonInfo(se, "ComplexHeatmapPlot")$continuous.assay.names
 }
@@ -189,7 +198,7 @@
             deparse(x[[.selectColor]])), "")
     }
 
-    additional <- c(additional, '.column_data <- .column_data[.heatmap.columns, , drop=FALSE]')
+    additional <- c(additional, '.column_data <- .column_data[colnames(plot.data), , drop=FALSE]')
     additional <- c(additional, '.column_data <- as.data.frame(.column_data, optional=TRUE)') # preserve colnames
 
     if (length(x[[.heatMapColData]])) {
@@ -257,7 +266,7 @@
         cmds <- c(cmds, rowcmds, "")
     }
 
-    additional <- '.row_data <- .row_data[.heatmap.rows, , drop=FALSE]'
+    additional <- '.row_data <- .row_data[rownames(plot.data), , drop=FALSE]'
     additional <- c(additional, '.row_data <- as.data.frame(.row_data, optional=TRUE)') # preserve colnames
     additional <- c(additional,
         sprintf(

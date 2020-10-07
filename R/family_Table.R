@@ -105,9 +105,9 @@ setMethod("initialize", "Table", function(.Object, ...) {
 setValidity2("Table", function(object) {
     msg <- character(0)
 
-    msg <- .single_string_error(msg, object, .TableSelected)
+    msg <- .singleStringError(msg, object, .TableSelected)
 
-    msg <- .valid_string_error(msg, object, .TableSearch)
+    msg <- .validStringError(msg, object, .TableSearch)
 
     if (length(msg)) {
         return(msg)

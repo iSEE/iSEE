@@ -77,7 +77,7 @@ test_that(".process_heatmap_column_annotations_colorscale handles column selecti
     x <- .refineParameters(x, sce)
 
     plot_env$se <- sce
-    plot_env$.heatmap.columns <- head(colnames(sce))
+    plot_env$plot.data <- assay(sce)[1:10,1:10]
 
     out <- iSEE:::.process_heatmap_column_annotations_colorscale(x, sce, plot_env)
     expect_true(any(out == '.column_col[["Selected points"]] <- c("TRUE"="red", "FALSE"="white")'))
@@ -96,7 +96,6 @@ test_that(".process_heatmap_column_annotations_colorscale handles column annotat
     plot_env$se <- sce
     plot_env$colormap <- ExperimentColorMap()
     plot_env$plot.data <- assay(sce)[1, , drop=FALSE]
-    plot_env$.heatmap.columns <- head(colnames(sce))
 
     out <- iSEE:::.process_heatmap_column_annotations_colorscale(x, sce, plot_env)
     expect_true(any(out == '.color_values <- .column_data[[\"driver_1_s\"]]'))
@@ -118,12 +117,12 @@ test_that(".process_heatmap_row_annotations_colorscale handles row annotations",
 
     plot_env$se <- sce
     plot_env$colormap <- ExperimentColorMap()
-    plot_env$.heatmap.rows <- head(rownames(sce))
+    plot_env$plot.data <- assay(sce)[1:10,1:10]
 
     out <- iSEE:::.process_heatmap_row_annotations_colorscale(x, sce, plot_env)
     expect_true(any(out == '.color_values <- .row_data[["letters"]]'))
     expect_true(any(out == '.color_values <- .row_data[["num_cells"]]'))
-    expect_true(any(out == '.row_data <- .row_data[.heatmap.rows, , drop=FALSE]'))
+    expect_true(any(out == '.row_data <- .row_data[rownames(plot.data), , drop=FALSE]'))
 })
 
 test_that(".generateOutput detects col_selected and row_selected", {
@@ -153,10 +152,9 @@ test_that(".generateOutput detects col_selected and row_selected", {
     memory$ComplexHeatmapPlot1 <- x
 
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
-    expect_identical(out$commands$assay[["rows"]], '.heatmap.rows <- c("0610007P14Rik", "0610009B22Rik");')
-    expect_identical(out$commands$assay[["columns"]], '.heatmap.columns <- intersect(colnames(se), unlist(col_selected));')
-    expect_identical(out$commands$assay[["columns"]], '.heatmap.columns <- intersect(colnames(se), unlist(col_selected));')
-    expect_identical(out$commands$assay[["data"]], 'plot.data <- assay(se, "logcounts")[.heatmap.rows, .heatmap.columns, drop=FALSE]\nplot.data <- as.matrix(plot.data);')
+    expect_identical(out$commands$assay[["rows"]], '.chosen.rows <- c("0610007P14Rik", "0610009B22Rik");')
+    expect_identical(out$commands$assay[["columns"]], '.chosen.columns <- intersect(colnames(se), unlist(col_selected));')
+    expect_identical(out$commands$assay[["data"]], 'plot.data <- assay(se, "logcounts")[.chosen.rows, .chosen.columns, drop=FALSE]\nplot.data <- as.matrix(plot.data);')
 })
 
 test_that(".generateOutput handles row_selected when not using custom feature names", {
@@ -184,7 +182,7 @@ test_that(".generateOutput handles row_selected when not using custom feature na
     memory$ComplexHeatmapPlot1 <- x
 
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
-    expect_identical(out$commands$assay[["rows"]], ".heatmap.rows <- intersect(rownames(se), unlist(row_selected));")
+    expect_identical(out$commands$assay[["rows"]], ".chosen.rows <- intersect(rownames(se), unlist(row_selected));")
 })
 
 test_that(".generateOutput handles row annotations", {

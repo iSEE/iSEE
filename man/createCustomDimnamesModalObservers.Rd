@@ -52,8 +52,8 @@ The modal UI provides options to sort the dimnames, validate them, clear the cur
 These are all transient until \dQuote{Apply} is clicked, at which point the app's memory is modified and an update is requested.
 
 The custom names are stored in the \code{slot_name} as a single string with names separated by newlines.
-Hashes are treated as comments and any content after a hash is ignored.
-Names are also stripped of any leading and trailing whitespace.
+Hashes are treated as comments and any content after a hash is ignored when interpreting the names.
+Any leading and trailing whitespace is also ignored during interpretation.
 }
 \author{
 Kevin Rue-Albrecht

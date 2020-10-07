@@ -198,7 +198,7 @@
             deparse(x[[.selectColor]])), "")
     }
 
-    additional <- c(additional, '.column_data <- .column_data[.heatmap.columns, , drop=FALSE]')
+    additional <- c(additional, '.column_data <- .column_data[colnames(plot.data), , drop=FALSE]')
     additional <- c(additional, '.column_data <- as.data.frame(.column_data, optional=TRUE)') # preserve colnames
 
     if (length(x[[.heatMapColData]])) {
@@ -266,7 +266,7 @@
         cmds <- c(cmds, rowcmds, "")
     }
 
-    additional <- '.row_data <- .row_data[.heatmap.rows, , drop=FALSE]'
+    additional <- '.row_data <- .row_data[rownames(plot.data), , drop=FALSE]'
     additional <- c(additional, '.row_data <- as.data.frame(.row_data, optional=TRUE)') # preserve colnames
     additional <- c(additional,
         sprintf(

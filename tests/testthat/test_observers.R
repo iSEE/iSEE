@@ -146,8 +146,9 @@ test_that(".create_heatmap_modal_observers returns NULL", {
     pObjects <- new.env()
     rObjects <- new.env()
     
-    out <- iSEE:::.create_modal_observers_for_dimnames("ReducedDimensionPlot1",
+    out <- .createCustomDimnamesModalObservers("ReducedDimensionPlot1",
         iSEE:::.plotCustomLabelsText, iSEE:::.dimnamesModalOpen,
-        sce, input=input, session=NULL, pObjects=pObjects, rObjects=rObjects, "column")
+        sce, input=input, session=NULL, pObjects=pObjects, rObjects=rObjects, 
+        source_type="column")
     expect_null(out)
 })

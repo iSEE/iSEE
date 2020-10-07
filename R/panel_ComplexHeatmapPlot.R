@@ -306,7 +306,7 @@ setMethod(".cacheCommonInfo", "ComplexHeatmapPlot", function(x, se) {
     named_assays <- assayNames(se)
     named_assays <- named_assays[named_assays!=""]
     # matrix[0,0] preserves the storage mode, while avoiding out-of-bound errors
-    assays_continuous <- vapply(named_assays, .isAssayNumeric, logical(1), se)
+    assays_continuous <- vapply(named_assays, .isAssayNumeric, logical(1), se=se)
     assays_discrete <- !assays_continuous
 
     df <- colData(se)

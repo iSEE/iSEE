@@ -72,33 +72,30 @@
     args
 }
 
-#' Class utilities
+#' Caching utilities
 #'
-#' \code{.findAtomicFields}: A utility function to find columns in a data.frame or \linkS4class{DataFrame}
-#' that are atomic R types, as most of the app does not know how to handle  more complex types being stored as columns.
-#' An obvious example is in data.frames expected by \code{\link{ggplot}} or \code{\link{datatable}}.
+#' Utility functions to be used in a \code{\link{.cacheCommonInfo}} method, usually to identify names of elements of the \linkS4class{SummarizedExperiment} for later use in \code{\link{.defineInterface}} to populate the user interface.
 #'
-#' \code{.whichNumeric}: Identify continuous columns that can be used as options in various interface elements, e.g., for sizing.
-#' This is typically called in \code{\link{.cacheCommonInfo}} for later use by methods of \code{\link{.defineInterface}}.
+#' @param x A data.frame or \linkS4class{DataFrame}, most typically the \code{\link{rowData}} or \code{\link{colData}}.
+#' @param se The \linkS4class{SummarizedExperiment} object.
+#' @param i An integer scalar or string specifying the assay of interest in \code{se}.
 #'
-#' \code{.whichGroupable}: Identify categorical columns that can be used as options in various interface elements, e.g., for faceting or shaping.
-#' This is typically called in \code{\link{.cacheCommonInfo}} for later use by methods of \code{\link{.defineInterface}}.
+#' @details
+#' \code{.findAtomicFields} is necessary as many of the widgets used by \code{\link{iSEE}} (e.g., \code{\link{ggplot}}, \code{\link{datatable}}) do not know how to handle more complex types being stored as columns.
+#' Similarly, \code{.whichNumeric} and \code{.whichGroupable} can be used to specify options for visualization modes that only make sense for continuous or discrete variables respectively (e.g., sizing, faceting).
 #'
-#' @param x A data.frame or \linkS4class{DataFrame}.
+#' @return 
+#' For \code{.findAtomicFields}, a character vector of names of columns in \code{x} containing atomic R types.
 #'
-#' @return \code{.findAtomicFields}: A character vector of names of atomic fields in \code{x}.
+#' For \code{.whichNumeric}, an integer vector containing the indices of the numeric columns.
 #'
-#' \code{.whichGroupable}: An integer vector containing the indices of the categorical columns.
+#' For \code{.whichGroupable}, an integer vector containing the indices of the categorical columns.
 #'
-#' \code{.whichNumeric}: An integer vector containing the indices of the numeric columns.
+#' For \code{.isAssayNumeric}, a logical scalar indicating whether the specified assay as numeric.
 #'
 #' @author Aaron Lun, Kevin Rue-Albrecht, Charlotte Soneson
 #'
-#' @name dataframe-utils
-#' @aliases .findAtomicFields
-#' .whichNumeric
-#' .whichGroupable
-#'
+#' @name cache-utils
 #' @export
 #' @examples
 #' x <- DataFrame(
@@ -154,7 +151,7 @@
 #'
 #' @author Aaron Lun
 #'.
-#' @rdname INTERNAL_validation_errors
+#' @rdname validate-utils
 .single_string_error <- function(msg, x, fields) {
     for (field in fields) {
         if (length(x[[field]]) != 1L) {
@@ -272,14 +269,21 @@
     .nlevels(x) <= max_levels
 }
 
-#' @rdname dataframe-utils
+#' @rdname cache-utils
 #' @export
 .whichGroupable <- function(x) {
     which(vapply(x, FUN=.is_groupable, FUN.VALUE=FALSE))
 }
 
-#' @rdname dataframe-utils
+#' @rdname cache-utils
 #' @export
 .whichNumeric <- function(x) {
     which(vapply(x, FUN=is.numeric, FUN.VALUE=FALSE))
+}
+
+#' @export
+#' @rdname cache-utils
+.isAssayNumeric <- function(se, i) {
+    # The as.matrix is necessary to account for non-ordinary matrices.
+    is.numeric(as.matrix(assay(se, i)[0, 0]))
 }

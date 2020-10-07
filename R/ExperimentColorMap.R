@@ -803,7 +803,7 @@ synchronizeAssays <- function(ecm, se){
                 ecm_warning)
         }
         # Fetch named-matched assay colormaps
-        assay_numeric <- vapply(se_assay_names, .is_assay_numeric, logical(1), se)
+        assay_numeric <- vapply(se_assay_names, .isAssayNumeric, logical(1), se)
         new_ecm_assays <- mapply(FUN = function(i, discrete) { assayColorMap(ecm, i, discrete = discrete) },
             i = se_assay_names, discrete = !assay_numeric)
 
@@ -839,7 +839,7 @@ synchronizeAssays <- function(ecm, se){
         # Exclude unnamed assay colormaps in the ExperimentColorMap
         assays(ecm) <- assays(ecm)[assayNames(ecm) != ""]
         # Fetch named-matched assay colormaps
-        assay_numeric <- vapply(seq_along(se_assay_names), .is_assay_numeric, logical(1), se)
+        assay_numeric <- vapply(seq_along(se_assay_names), .isAssayNumeric, logical(1), se)
         new_ecm_assays <- mapply(FUN = function(i, discrete) { assayColorMap(ecm, i, discrete = discrete) },
             i = se_assay_names, discrete = !assay_numeric)
 

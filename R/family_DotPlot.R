@@ -153,6 +153,7 @@
 #' \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
 #' It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}}.
 #' This will \emph{override} the \linkS4class{Panel} method.
+#' \item \code{\link{.defineSelectionEffectInterface}(x)} returns a list of interface elements for controlling the multiple selection effect.
 #' \item \code{\link{.defineVisualColorInterface}(x, se, select_info)} defines the user interface subpanel for manipulating the color of the points.
 #' \item \code{\link{.defineVisualShapeInterface}(x, se)} defines the user interface subpanel for manipulating the shape of the points.
 #' \item \code{\link{.defineVisualSizeInterface}(x, se)} defines the user interface subpanel for manipulating the size of the points.
@@ -242,6 +243,7 @@
 #' .prioritizeDotPlotData,DotPlot-method
 #' .colorByNoneDotPlotField,DotPlot-method
 #' .colorByNoneDotPlotScale,DotPlot-method
+#' .defineSelectionEffectInterface,DotPlot-method
 #' .defineInterface,DotPlot-method
 #' .defineVisualColorInterface,DotPlot-method
 #' .defineVisualSizeInterface,DotPlot-method
@@ -436,11 +438,37 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 
 #' @export
 setMethod(".defineInterface", "DotPlot", function(x, se, select_info) {
-    list(
-        .create_data_param_box(x, se, select_info),
-        .create_visual_box(x, se, select_info$single),
-        .create_dotplot_selection_param_box(x, select_info$multi$row, select_info$multi$column)
+    out <- callNextMethod()
+    c(
+        out[1],
+        list(.create_visual_box(x, se, select_info$single)),
+        out[-1]
     )
+})
+
+#' @export
+#' @importFrom colourpicker colourInput
+#' @importFrom shiny sliderInput
+setMethod(".defineSelectionEffectInterface", "DotPlot", function(x) {
+    list(
+        .radioButtonsHidden(x, field=.selectEffect,
+            label="Selection effect:", inline=TRUE,
+            choices=c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle),
+            selected=x[[.selectEffect]]),
+
+        .conditional_on_radio(
+            select_effect, .selectColorTitle,
+            colourInput(
+                paste0(plot_name, "_", .selectColor), label=NULL,
+                value=x[[.selectColor]])
+        ),
+        .conditional_on_radio(
+            select_effect, .selectTransTitle,
+            sliderInput(
+                paste0(plot_name, "_", .selectTransAlpha), label=NULL,
+                min=0, max=1, value=x[[.selectTransAlpha]])
+        )
+    ) 
 })
 
 #' @export

@@ -68,10 +68,10 @@
 
         .define_selection_choices(x, by_field=.selectColSource,
             type_field=.selectColType, saved_field=.selectColSaved,
-            dyn_field=.selectColDynamic, selectable=col_selectable, "column"),
+            dyn_field=.selectColDynamic, selectable=col_selectable, "column")
     )
 
-    args <- c(args, .defineSelectEffectInterface(x)) 
+    args <- c(args, .defineSelectionEffectInterface(x)) 
 
     if (!.hideInterface(x, .multiSelectHistory)) {
         panel_name <- .getEncodedName(x)

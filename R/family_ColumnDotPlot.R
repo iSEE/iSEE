@@ -218,7 +218,7 @@ setMethod(".createObservers", "ColumnDotPlot", function(x, se, input, session, p
     .create_dimname_propagation_observer(plot_name, choices=colnames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_effect_observer(plot_name,
+    .createMultiSelectionEffectObserver(plot_name,
         by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })

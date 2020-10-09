@@ -307,7 +307,6 @@ setMethod(".cacheCommonInfo", "ComplexHeatmapPlot", function(x, se) {
 
     named_assays <- assayNames(se)
     named_assays <- named_assays[named_assays!=""]
-    # matrix[0,0] preserves the storage mode, while avoiding out-of-bound errors
     assays_continuous <- vapply(named_assays, .isAssayNumeric, logical(1), se=se)
     assays_discrete <- !assays_continuous
 
@@ -592,7 +591,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
             .plotLegendPosition, .plotLegendDirection),
         input=input, pObjects=pObjects, rObjects=rObjects, ignoreNULL = FALSE)
 
-    .create_multi_selection_effect_observer(plot_name,
+    .createMultiSelectionEffectObserver(plot_name,
         by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 

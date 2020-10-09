@@ -103,9 +103,40 @@
     invisible(NULL)
 }
 
-#' @rdname INTERNAL_selection_parameter_observers
+#' Create an observer for multiple selection effect
+#'
+#' Create an observer to trigger replotting upon changes to the (typically visual) effect for multiple selections.
+#'
+#' @param plot_name String containing the encoded name of the current panel.
+#' @param by_field String with the name of the slot containing the name of the transmitting panel. 
+#' @param type_field String with the name of the slot containing the type of selection to receive
+#' (i.e., \code{"Saved"}, \code{"Active"} or \code{"Union"}).
+#' @param saved_field String with the name of the slot containing the saved history of selections.
+#' @param input The Shiny input object from the server function.
+#' @param session The Shiny session object from the server function.
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#'
+#' @details
+#' This is typically called within a \code{\link{.createObservers}} function.
+#' It is exported for use in subclasses as the selection effect is not a property of the \linkS4class{Panel} class
+#' (given that not all panels are visual) 
+#' and thus needs to be called separately for each subclass rather than in the parent's method.
+#'
+#' @return 
+#' An observer for the input corresponding to \code{"SelectEffect"} is created in the current Shiny session.
+#' A \code{NULL} is invisibly returned.
+#'
+#' @author Aaron Lun
+#' 
+#' @seealso
+#' \code{\link{.createObservers}}, where this function is usually called -
+#' see, for example, the methods for \linkS4class{ColumnDotPlot}, \linkS4class{RowDotPlot} and \linkS4class{ComplexHeatmapPlot}.
+#'
+#' @export  
+#' @rdname createMultiSelectionEffectObserver
 #' @importFrom shiny showNotification observeEvent
-.create_multi_selection_effect_observer <- function(plot_name,
+.createMultiSelectionEffectObserver <- function(plot_name,
     by_field, type_field, saved_field,
     input, session, pObjects, rObjects)
 {
@@ -114,7 +145,6 @@
     # nocov start
     observeEvent(input[[select_effect_field]], {
         cur_effect <- input[[select_effect_field]]
-        old_effect <- pObjects$memory[[plot_name]][[.selectEffect]]
         pObjects$memory[[plot_name]][[.selectEffect]] <- cur_effect
 
         # Avoiding replotting if there was no transmitting selection.
@@ -128,6 +158,7 @@
         }
 
         # Updating children if the selection in the current plot changes due to gain/loss of Restrict.
+        old_effect <- pObjects$memory[[plot_name]][[.selectEffect]]
         if (cur_effect==.selectRestrictTitle || old_effect==.selectRestrictTitle) {
             .mark_panel_as_modified(plot_name, .panelRepopulated, rObjects)
         } else {

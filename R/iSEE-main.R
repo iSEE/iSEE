@@ -441,7 +441,7 @@ iSEE <- function(se,
     .create_organization_observers(se=se, input=input, output=output, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
-    .create_child_propagation_observer(se, pObjects, rObjects)
+    .create_child_propagation_observer(se, session=session, pObjects=pObjects, rObjects=rObjects)
 
     for (idx in seq_along(pObjects$memory)) {
         instance <- pObjects$memory[[idx]]

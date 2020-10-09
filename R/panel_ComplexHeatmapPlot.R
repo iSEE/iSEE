@@ -426,6 +426,9 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 #' @export
 #' @importFrom colourpicker colourInput
 setMethod(".defineSelectionEffectInterface", "DotPlot", function(x) {
+    plot_name <- .getEncodedName(x)
+    select_effect <- paste0(plot_name, "_", .selectEffect)
+
     list(
         .radioButtonsHidden(x, field=.selectEffect,
             label="Selection effect:", inline=TRUE,
@@ -438,6 +441,16 @@ setMethod(".defineSelectionEffectInterface", "DotPlot", function(x) {
                 paste0(plot_name, "_", .selectColor), label=NULL,
                 value=x[[.selectColor]])
         )
+    )
+})
+
+#' @export
+setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info) {
+    out <- callNextMethod()
+    list(
+        out[1],
+        .create_visual_box_for_complexheatmap(x, se),
+        out[-1]
     )
 })
 
@@ -556,15 +569,6 @@ setMethod(".exportOutput", "ComplexHeatmapPlot", function(x, se, all_memory, all
     dev.off()
     
     newpath
-})
-
-#' @export
-setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info) {
-    list(
-        .create_data_param_box(x, se, select_info),
-        .create_visual_box_for_complexheatmap(x, se),
-        .create_heatmap_selection_param_box(x, select_info$multi$row, select_info$multi$column)
-    )
 })
 
 #' @export

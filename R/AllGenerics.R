@@ -88,6 +88,7 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #'
 #' @docType methods
 #' @aliases .defineInterface .defineDataInterface .hideInterface
+#' .defineSelectionEffectInterface
 #' @name interface-generics
 #' @author Aaron Lun
 NULL

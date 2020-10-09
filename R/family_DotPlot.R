@@ -450,6 +450,9 @@ setMethod(".defineInterface", "DotPlot", function(x, se, select_info) {
 #' @importFrom colourpicker colourInput
 #' @importFrom shiny sliderInput
 setMethod(".defineSelectionEffectInterface", "DotPlot", function(x) {
+    plot_name <- .getEncodedName(x)
+    select_effect <- paste0(plot_name, "_", .selectEffect)
+
     list(
         .radioButtonsHidden(x, field=.selectEffect,
             label="Selection effect:", inline=TRUE,
@@ -462,6 +465,7 @@ setMethod(".defineSelectionEffectInterface", "DotPlot", function(x) {
                 paste0(plot_name, "_", .selectColor), label=NULL,
                 value=x[[.selectColor]])
         ),
+
         .conditional_on_radio(
             select_effect, .selectTransTitle,
             sliderInput(

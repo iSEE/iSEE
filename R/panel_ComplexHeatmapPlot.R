@@ -579,16 +579,30 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     # Not much point distinguishing between protected and unprotected here,
     # as there aren't any selections transmitted from this panel anyway.
     .createProtectedParameterObservers(plot_name,
-        fields=c(.heatMapCustomFeatNames),
+        fields=c(
+            .heatMapClusterFeatures, 
+            .heatMapClusterDistanceFeatures, 
+            .heatMapClusterMethodFeatures,
+            .heatMapCustomFeatNames
+        ),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     .createUnprotectedParameterObservers(plot_name,
-        fields=c(.heatMapClusterFeatures, .heatMapClusterDistanceFeatures, .heatMapClusterMethodFeatures,
-            .heatMapColData, .heatMapRowData,
+        fields=c(
+            .heatMapAssay,
             .heatMapCenteredColormap,
-            .selectEffect, .selectColor,
+            .selectColor,
             .showDimnames,
-            .plotLegendPosition, .plotLegendDirection),
+            .plotLegendPosition, 
+            .plotLegendDirection
+        ),
+        input=input, pObjects=pObjects, rObjects=rObjects)
+
+    .createUnprotectedParameterObservers(plot_name,
+        fields=c(
+            .heatMapColData, 
+            .heatMapRowData
+        ),
         input=input, pObjects=pObjects, rObjects=rObjects, ignoreNULL = FALSE)
 
     .createMultiSelectionEffectObserver(plot_name,

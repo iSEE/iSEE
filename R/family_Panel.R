@@ -295,7 +295,10 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
                 use_value=f$use_value,
                 tab_field=f$source,
                 protected=f$protected,
-                input=input, session=session, pObjects=pObjects, rObjects=rObjects)
+                input=input,
+                session=session,
+                pObjects=pObjects,
+                rObjects=rObjects)
 
             if (!is.null(f$dynamic)) {
                 .create_dynamic_single_selection_source_observer(panel_name, dyn_field=f$dynamic,

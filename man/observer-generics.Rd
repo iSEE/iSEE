@@ -44,6 +44,7 @@ In fact, any changes must go through \code{pObjects$memory} before they change t
 there is no direct interaction between \code{input} and \code{output} in this framework.
 
 We suggest using \code{\link{.createProtectedParameterObservers}} and \code{\link{.createUnprotectedParameterObservers}}, which create simple observers that will update the memory in response to changes in the UI elements.
+For more specific responses, there are also \code{\link{.createMultiSelectionEffectObserver}} and \code{\link{.createCustomDimnamesModalObservers}}.
 
 Developers should not attempt to modify \code{x} in any observer expression.
 This value does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.

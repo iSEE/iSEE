@@ -13,6 +13,7 @@
 \alias{.createObservers,Panel-method}
 \alias{.hideInterface,Panel-method}
 \alias{.defineDataInterface,Panel-method}
+\alias{.defineSelectionEffectInterface,Panel-method}
 \alias{.renderOutput,Panel-method}
 \alias{.exportOutput,Panel-method}
 \alias{.multiSelectionRestricted,Panel-method}

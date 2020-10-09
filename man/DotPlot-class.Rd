@@ -23,6 +23,7 @@
 \alias{.prioritizeDotPlotData,DotPlot-method}
 \alias{.colorByNoneDotPlotField,DotPlot-method}
 \alias{.colorByNoneDotPlotScale,DotPlot-method}
+\alias{.defineSelectionEffectInterface,DotPlot-method}
 \alias{.defineInterface,DotPlot-method}
 \alias{.defineVisualColorInterface,DotPlot-method}
 \alias{.defineVisualSizeInterface,DotPlot-method}
@@ -190,6 +191,7 @@ For defining the interface:
 \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
 It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}}.
 This will \emph{override} the \linkS4class{Panel} method.
+\item \code{\link{.defineSelectionEffectInterface}(x)} returns a list of interface elements for controlling the multiple selection effect.
 \item \code{\link{.defineVisualColorInterface}(x, se, select_info)} defines the user interface subpanel for manipulating the color of the points.
 \item \code{\link{.defineVisualShapeInterface}(x, se)} defines the user interface subpanel for manipulating the shape of the points.
 \item \code{\link{.defineVisualSizeInterface}(x, se)} defines the user interface subpanel for manipulating the size of the points.

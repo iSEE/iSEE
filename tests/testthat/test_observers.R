@@ -136,7 +136,7 @@ test_that(".create_child_propagation_observer returns NULL", {
     pObjects <- new.env()
     rObjects <- new.env()
 
-    out <- iSEE:::.create_child_propagation_observer(sce, pObjects, rObjects)
+    out <- iSEE:::.create_child_propagation_observer(sce, session=NULL, pObjects, rObjects)
     expect_null(out)
 
 })

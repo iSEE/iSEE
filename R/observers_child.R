@@ -11,6 +11,7 @@
 #' based on the panels that have been marked as modified.
 #'
 #' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
 #'
@@ -58,14 +59,15 @@
 #' @rdname INTERNAL_child_propagation_observer
 #' @importFrom shiny observeEvent onFlushed
 #' @importFrom igraph topo_sort adjacent_vertices
-.create_child_propagation_observer <- function(se, pObjects, rObjects) {
+.create_child_propagation_observer <- function(se, session, pObjects, rObjects) {
     # nocov start
-
-    # Run this just in case we haven't triggered the observer below on start-up 
-    # (in which case the app will refuse to respond to the # first user input).
-    # This occasionally occurs for very well-behaved Panels that do not trigger
-    # further changes to their 'input' fields upon initialization.
-    onFlushed(function() pObjects$initialized <- TRUE)
+    if (!is.null(session)) {
+        # Run this just in case we haven't triggered the observer below on start-up 
+        # (in which case the app will refuse to respond to the # first user input).
+        # This occasionally occurs for very well-behaved Panels that do not trigger
+        # further changes to their 'input' fields upon initialization.
+        onFlushed(function() pObjects$initialized <- TRUE, session=session)
+    }
 
     observeEvent(rObjects$modified, {
         if (!isTRUE(pObjects$initialized)) { # Avoid running this on app start and double-generating output.

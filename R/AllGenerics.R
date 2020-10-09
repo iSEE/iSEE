@@ -62,6 +62,15 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #'
 #' It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
 #'
+#' @section Defining the selection effect interface:
+#' \code{.defineSelectionEffectInterface(x)} defines the UI for controlling the effect of a multiple row/column selection.
+#' This should return a list of UI elements specifying how the panel should behave upon a transmitted selection;
+#' see the methods for \linkS4class{DotPlot} and \linkS4class{ComplexHeatmapPlot} for specific examples.
+#' 
+#' Like with \code{.defineDataInterface}, this generic aims to provide a simpler alternative to specializing \code{.defineInterface} when only the selection effect needs to be changed in a subclass.
+#' 
+#' It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
+#'
 #' @section Hiding interface elements:
 #' \code{.hideInterface(x, field)} determines whether certain UI elements should be hidden from the user.
 #' The required arguments are:
@@ -79,6 +88,7 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #'
 #' @docType methods
 #' @aliases .defineInterface .defineDataInterface .hideInterface
+#' .defineSelectionEffectInterface
 #' @name interface-generics
 #' @author Aaron Lun
 NULL
@@ -88,6 +98,9 @@ setGeneric(".defineInterface", function(x, se, select_info) standardGeneric(".de
 
 #' @export
 setGeneric(".defineDataInterface", function(x, se, select_info) standardGeneric(".defineDataInterface"))
+
+#' @export
+setGeneric(".defineSelectionEffectInterface", function(x) standardGeneric(".defineSelectionEffectInterface"))
 
 #' @export
 setGeneric(".hideInterface", function(x, field) standardGeneric(".hideInterface"))

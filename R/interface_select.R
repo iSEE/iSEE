@@ -8,7 +8,6 @@
 #' @param selectable A character vector of decoded names for available transmitting panels.
 #' @param source_type String specifying the type of the panel that is source of the selection,
 #' either \code{"row"} or \code{"column"}.
-#' @param ... Additional interface elements to be included in the parameter box, passed to \code{\link{collapseBox}}.
 #' @param by_field String specifying the name of the slot containing the identity of the panel transmitting to \code{x}.
 #' @param type_field String specifying the name of the slot containing the type of multiple selection to use in \code{x}.
 #' @param saved_field String specifying the name of the slot containing the index of the saved selection to use in \code{x}.
@@ -36,9 +35,11 @@
 #' @seealso
 #' \code{\link{.defineInterface}}, where this function is typically called.
 #'
+#' \code{\link{.defineSelectEffectInterface}}, to control the interface for additional selection effects.
+#'
 #' @importFrom shiny selectInput actionButton hr strong br
 #' @importFrom shinyjs disabled
-.create_selection_param_box <- function(x, row_selectable, col_selectable, ...) {
+.create_selection_param_box <- function(x, row_selectable, col_selectable) {
     # initialize active "Delete" button only if a preconfigured selection history exists
     deleteFUN <- identity
     deleteLabel <- .buttonDeleteLabel
@@ -67,10 +68,10 @@
 
         .define_selection_choices(x, by_field=.selectColSource,
             type_field=.selectColType, saved_field=.selectColSaved,
-            dyn_field=.selectColDynamic, selectable=col_selectable, "column"),
-
-        ...
+            dyn_field=.selectColDynamic, selectable=col_selectable, "column")
     )
+
+    args <- c(args, .defineSelectionEffectInterface(x)) 
 
     if (!.hideInterface(x, .multiSelectHistory)) {
         panel_name <- .getEncodedName(x)
@@ -86,53 +87,6 @@
     }
 
     do.call(.collapseBoxHidden, args)
-}
-
-#' @importFrom colourpicker colourInput
-#' @importFrom shiny sliderInput
-.create_dotplot_selection_param_box <- function(x, row_selectable, col_selectable) {
-    plot_name <- .getEncodedName(x)
-    select_effect <- paste0(plot_name, "_", .selectEffect)
-
-    .create_selection_param_box(x, row_selectable, col_selectable,
-        .radioButtonsHidden(x, field=.selectEffect,
-            label="Selection effect:", inline=TRUE,
-            choices=c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle),
-            selected=x[[.selectEffect]]),
-
-        .conditional_on_radio(
-            select_effect, .selectColorTitle,
-            colourInput(
-                paste0(plot_name, "_", .selectColor), label=NULL,
-                value=x[[.selectColor]])
-        ),
-        .conditional_on_radio(
-            select_effect, .selectTransTitle,
-            sliderInput(
-                paste0(plot_name, "_", .selectTransAlpha), label=NULL,
-                min=0, max=1, value=x[[.selectTransAlpha]])
-        )
-    )
-}
-
-#' @importFrom colourpicker colourInput
-.create_heatmap_selection_param_box <- function(x, row_selectable, col_selectable) {
-    plot_name <- .getEncodedName(x)
-    select_effect <- paste0(plot_name, "_", .selectEffect)
-
-    .create_selection_param_box(x, row_selectable, col_selectable,
-        .radioButtonsHidden(x, field=.selectEffect,
-            label="Selection effect:", inline=TRUE,
-            choices=c(.selectRestrictTitle, .selectColorTitle),
-            selected=x[[.selectEffect]]),
-
-        .conditional_on_radio(
-            select_effect, .selectColorTitle,
-            colourInput(
-                paste0(plot_name, "_", .selectColor), label=NULL,
-                value=x[[.selectColor]])
-        )
-    )
 }
 
 #' @rdname INTERNAL_create_selection_param_box

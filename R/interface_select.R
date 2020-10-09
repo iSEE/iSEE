@@ -35,7 +35,7 @@
 #' @seealso
 #' \code{\link{.defineInterface}}, where this function is typically called.
 #'
-#' \code{\link{.defineSelectEffectInterface}}, to control the interface for additional selection effects.
+#' \code{\link{.defineSelectionEffectInterface}}, to control the interface for additional selection effects.
 #'
 #' @importFrom shiny selectInput actionButton hr strong br
 #' @importFrom shinyjs disabled

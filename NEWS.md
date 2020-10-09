@@ -1,3 +1,10 @@
+# iSEE 2.1.19
+
+* Export more internal utilities for re-use in downstream packages.
+* Added a generic to define the selection effect UI.
+* Fixes to the `ComplexHeatmapPlot` observers, most obviously for the assay choice.
+* Fixes to the underlying reactive framework to avoid bugs due to unresponsiveness.
+
 # iSEE 2.1.18
 
 * Bugfix to properly support dynamic classes on landing page.

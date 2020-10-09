@@ -6,6 +6,7 @@
 \alias{.defineInterface}
 \alias{.defineDataInterface}
 \alias{.hideInterface}
+\alias{.defineSelectionEffectInterface}
 \title{Generics for the panel interface}
 \description{
 An overview of the generics for defining the user interface (UI) for each panel as well as some recommendations on their implementation.

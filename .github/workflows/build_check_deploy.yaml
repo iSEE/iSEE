@@ -13,7 +13,7 @@ name: build_check_deploy
 jobs:
   build_check_deploy:
     runs-on: ubuntu-latest
-    container: bioconductor/bioconductor_docker:devel
+    container: iseedevelopers/isee:latest
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
 
@@ -28,28 +28,13 @@ jobs:
           key: ${{ runner.os }}-ehub
           restore-keys: ${{ runner.os }}-ehub
 
-      - name: Query dependencies
-        run: |
-          install.packages('remotes')
-          saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
-        shell: Rscript {0}
-
-      # This lets us augment with additional dependencies
-      - name: Install system dependencies
-        if: runner.os == 'Linux'
-        env:
-          RHUB_PLATFORM: linux-x86_64-ubuntu-gcc
-        run: |
-          Rscript -e "remotes::install_github('r-hub/sysreqs')"
-          sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
-          sudo -s eval "$sysreqs"
-          sudo apt-get install -y libglpk-dev
-
       - name: Install dependencies
         run: |
-          remotes::install_deps(dependencies = TRUE, repos = BiocManager::repositories(), Ncpu = 2L)
-          remotes::install_cran("rcmdcheck")
+          dependencies <- remotes::local_package_deps(dependencies = TRUE)
+          leftovers <- setdiff(dependencies, installed.packages())
+          BiocManager::install(leftovers, ask=FALSE, Ncpu=2L)
           BiocManager::install("Rtsne", Ncpu = 2L)
+          remotes::install_cran("rcmdcheck")
         shell: Rscript {0}
 
       - name: Check
@@ -63,15 +48,6 @@ jobs:
           BiocManager::install("BiocCheck")
           BiocCheck::BiocCheck(".")
         shell: Rscript {0}
-
-      - name: Publish to Registry
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-        uses: elgohr/Publish-Docker-Github-Action@master
-        with:
-          name: docker.pkg.github.com/${{ github.repository }}/isee:latest
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-          registry: docker.pkg.github.com
 
       - name: Show testthat output
         if: always()

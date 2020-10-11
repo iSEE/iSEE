@@ -16,7 +16,7 @@
 #'
 #' @details
 #' Wrapping the output inside a \code{\link{hidden}} call is intended to avoid problems with conditional elements.
-#' Consider a situation where \code{\link{.conditional_on_radio}} depends on the value of a UI element;
+#' Consider a situation where \code{\link{.conditionalOnRadio}} depends on the value of a UI element;
 #' one needs the upstream element to exist for the conditional element to have correct behavior.
 #'
 #' @author Aaron Lun

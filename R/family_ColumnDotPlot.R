@@ -447,11 +447,3 @@ setMethod(".definePanelTour", "ColumnDotPlot", function(x) {
 
     data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
 })
-
-.add_tour_step <- function(x, field, text, element=paste0("#", .getEncodedName(x), "_", field)) {
-    if (!.hideInterface(x, field)) {
-        c(element, text)
-    } else {
-        NULL
-    }
-}

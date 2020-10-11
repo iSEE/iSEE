@@ -268,12 +268,10 @@ setMethod(".definePanelTour", "ColumnDataPlot", function(x) {
 
     collated <- rbind(
         c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Column data plot</font> panel shows variables from the column metadata (i.e., <code>colData</code>) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a column (usually a sample) of the <code>SummarizedExperiment</code>, and the y-axis represents a chosen variable.", .getPanelColor(x))),
-        .add_tour_step(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
-        .add_tour_step(x, .colDataYAxis, "We can manually choose the variable to show on the y-axis.",
-            element=paste0("#", .getEncodedName(x), "_", .colDataYAxis, " + .selectize-control")),
-        .add_tour_step(x, .colDataXAxis, sprintf("We can also specify what should be shown on the x-axis.<br/><br/><strong>Action:</strong> click on <i>Column data</i> to stratify values by a column metadata field.", .getPanelColor(x))),
-        .add_tour_step(x, .colDataXAxisColData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis.",
-            element=paste0("#", .getEncodedName(x), "_", .colDataXAxisColData, " + .selectize-control"))
+        .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
+        .addTourStep(x, .colDataYAxis, "We can manually choose the variable to show on the y-axis.", is_selectize=TRUE),
+        .addTourStep(x, .colDataXAxis, sprintf("We can also specify what should be shown on the x-axis.<br/><br/><strong>Action:</strong> click on <i>Column data</i> to stratify values by a column metadata field.", .getPanelColor(x))),
+        .addTourStep(x, .colDataXAxisColData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis.", is_selectize=TRUE)
     )
 
     rbind(

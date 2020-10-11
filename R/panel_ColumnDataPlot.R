@@ -154,8 +154,8 @@ setMethod(".refineParameters", "ColumnDataPlot", function(x, se) {
         return(NULL)
     }
 
-    x <- .replace_na_with_first(x, .colDataYAxis, yaxis)
-    x <- .replace_na_with_first(x, .colDataXAxisColData, xaxis)
+    x <- .replaceMissingWithFirst(x, .colDataYAxis, yaxis)
+    x <- .replaceMissingWithFirst(x, .colDataXAxisColData, xaxis)
 
     x
 })

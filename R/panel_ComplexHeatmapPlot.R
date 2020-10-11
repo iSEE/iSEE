@@ -359,7 +359,7 @@ setMethod(".refineParameters", "ComplexHeatmapPlot", function(x, se) {
     }
 
     all_assays <- c(intersect(iSEEOptions$get("assay"), all_assays), all_assays)
-    x <- .replace_na_with_first(x, .heatMapAssay, all_assays)
+    x <- .replaceMissingWithFirst(x, .heatMapAssay, all_assays)
 
     if (is.na(x[[.heatMapFeatNameText]])) {
         x[[.heatMapFeatNameText]] <- rownames(se)[1]

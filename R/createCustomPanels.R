@@ -116,7 +116,7 @@ createCustomTable <- function(FUN, restrict=NULL, className="CustomTable",
         if (is.null(x)) {
             return(NULL)
         }
-        .replace_na_with_first(x, .TableSelected, "")
+        .replaceMissingWithFirst(x, .TableSelected, "")
     }, where=where)
 
     generator

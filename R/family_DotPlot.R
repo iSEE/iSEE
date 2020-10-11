@@ -385,9 +385,9 @@ setMethod(".refineParameters", "DotPlot", function(x, se) {
         return(NULL)
     }
 
-    x <- .replace_na_with_first(x, .colorByFeatName, rownames(se))
-    x <- .replace_na_with_first(x, .colorBySampName, colnames(se))
-    x <- .replace_na_with_first(x, .plotLabelCentersBy, .getDiscreteMetadataChoices(x, se))
+    x <- .replaceMissingWithFirst(x, .colorByFeatName, rownames(se))
+    x <- .replaceMissingWithFirst(x, .colorBySampName, colnames(se))
+    x <- .replaceMissingWithFirst(x, .plotLabelCentersBy, .getDiscreteMetadataChoices(x, se))
 
     x
 })

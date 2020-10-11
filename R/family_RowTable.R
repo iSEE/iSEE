@@ -91,7 +91,7 @@ setMethod(".refineParameters", "RowTable", function(x, se) {
         return(NULL)
     }
 
-    x <- .replace_na_with_first(x, .TableSelected, rownames(se))
+    x <- .replaceMissingWithFirst(x, .TableSelected, rownames(se))
 
     x
 })

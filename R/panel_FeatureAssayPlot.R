@@ -360,15 +360,12 @@ setMethod(".definePanelTour", "FeatureAssayPlot", function(x) {
 
     collated <- rbind(
         c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Feature assay plot</font> panel shows assay values for a particular feature (i.e., row) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a column (usually a sample) of the <code>SummarizedExperiment</code> object, and the y-axis represents the assay values.", .getPanelColor(x))),
-        .add_tour_step(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
-        .add_tour_step(x, .featAssayYAxisFeatName, "We can manually choose the feature of interest based on the row names of our <code>SummarizedExperiment</code> object.",
-            element=paste0("#", .getEncodedName(x), "_", .featAssayYAxisFeatName, " + .selectize-control")),
-        .add_tour_step(x, .featAssayYAxisRowTable, sprintf("Alternatively, we can link the choice of feature to a single selection from another panel such as a <font color=\"%s\">Row data table</font>.", .getPanelColor(RowDataTable())),
-            element=paste0("#", .getEncodedName(x), "_", .featAssayYAxisRowTable, " + .selectize-control")),
-        .add_tour_step(x, .featAssayYAxisFeatDynamic, "The upstream panel can even be chosen dynamically, where a single selection of a feature from any panel in the current instance can be used to specify the feature to be shown on the y-axis in this pane."),
-        .add_tour_step(x, .featAssayXAxis, "A variety of choices are available for the variable to be plotted on the x-axis.<br/><br/><strong>Action:</strong> click on <i>Column data</i> to stratify values by a column metadata field."),
-        .add_tour_step(x, .featAssayXAxisColData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis. Similar logic applies for plotting against the assay values of another feature with the <i>Feature name</i> choice.",
-            element=paste0("#", .getEncodedName(x), "_", .featAssayXAxisColData, " + .selectize-control"))
+        .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
+        .addTourStep(x, .featAssayYAxisFeatName, "We can manually choose the feature of interest based on the row names of our <code>SummarizedExperiment</code> object.", is_selectize=TRUE),
+        .addTourStep(x, .featAssayYAxisRowTable, sprintf("Alternatively, we can link the choice of feature to a single selection from another panel such as a <font color=\"%s\">Row data table</font>.", .getPanelColor(RowDataTable())), is_selectize=TRUE),
+        .addTourStep(x, .featAssayYAxisFeatDynamic, "The upstream panel can even be chosen dynamically, where a single selection of a feature from any panel in the current instance can be used to specify the feature to be shown on the y-axis in this pane."),
+        .addTourStep(x, .featAssayXAxis, "A variety of choices are available for the variable to be plotted on the x-axis.<br/><br/><strong>Action:</strong> click on <i>Column data</i> to stratify values by a column metadata field."),
+        .addTourStep(x, .featAssayXAxisColData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis. Similar logic applies for plotting against the assay values of another feature with the <i>Feature name</i> choice.", is_selectize=TRUE)
     )
 
     rbind(

@@ -4,14 +4,13 @@
 #' It provides slots and methods for specifying the features of interest, which assay to display in the main heatmap, any transformations to perform on the data, and which metadata variables to display as row and column heatmap annotations.
 #'
 #' @section ComplexHeatmapPlot slot overview:
-#' The following slots control the assay that is used:
+#' The following slots control the rows that are used:
 #' \itemize{
-#' \item \code{Assay}, string specifying the name of the assay to use for obtaining expression values.
-#' Defaults to the first valid assay name (see \code{?"\link{.refineParameters,ComplexHeatmapPlot-method}"} for details).
-#' \item \code{CustomRows}, a logical scalar indicating whether the custom list of features should be used.
+#' \item \code{CustomRows}, a logical scalar indicating whether the custom list of rows should be used.
 #' If \code{FALSE}, the incoming selection is used instead. Defaults to \code{TRUE}.
-#' \item \code{CustomRowsText}, string specifying a custom list of features to use, as newline-separated row names.
-#' If \code{NA}, defaults to the first row name of the \linkS4class{SummarizedExperiment} object.
+#' \item \code{CustomRowsText}, string containing newline-separated row names.
+#' This specifies which rows of the \linkS4class{SummarizedExperiment} object are to be shown in the heatmap.
+#' If \code{NA}, defaults to the first row name of the SummarizedExperiment.
 #' }
 #'
 #' The following slots control the metadata variables that are used:
@@ -22,9 +21,15 @@
 #' Defaults to \code{character(0)}.
 #' }
 #'
-#' The following slots control the clustering of features:
+#' The following slots control the choice of assay values:
 #' \itemize{
-#' \item \code{ClusterRows}, a logical scalar indicating whether features should be clustered by assay data.
+#' \item \code{Assay}, string specifying the name of the assay to use for obtaining expression values.
+#' Defaults to the first valid assay name (see \code{?"\link{.refineParameters,ComplexHeatmapPlot-method}"} for details).
+#' }
+#'
+#' The following slots control the clustering of rows:
+#' \itemize{
+#' \item \code{ClusterRows}, a logical scalar indicating whether rows should be clustered by their assay values.
 #' Defaults to \code{FALSE}.
 #' \item \code{ClusterRowsDistance}, string specifying a distance measure to use.
 #' This can be any one of \code{"euclidean"}, \code{"maximum"}, \code{"manhattan"}, \code{"canberra"}, \code{"binary"}, \code{"minkowski"}, \code{"pearson"}, \code{"spearman"}, or \code{"kendall"}.
@@ -630,7 +635,7 @@ setMethod(".hideInterface", "ComplexHeatmapPlot", function(x, field) {
 #' @export
 setMethod(".definePanelTour", "ComplexHeatmapPlot", function(x) {
     collated <- rbind(
-        c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">ComplexHeatmap plot</font> panel contains... well, a complex heatmap, from the <i><a href='https://bioconductor.org/packages/ComplexHeatmap/'>ComplexHeatmap</a></i> package. This is quite conceptually different from the other panels as it shows assay data for multiple rows and columns at the same time. However, it is strictly an end-point panel, i.e., it cannot transmit to other panels.", .getPanelColor(x))),
+        c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">ComplexHeatmapPlot</font> panel contains a complex heatmap from the <i><a href='https://bioconductor.org/packages/ComplexHeatmap/'>ComplexHeatmap</a></i> package. This is quite conceptually different from the other panels as it shows assay data for multiple rows and columns at the same time. However, it is strictly an end-point panel, i.e., it cannot transmit to other panels.", .getPanelColor(x))),
         .add_tour_step(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked to control the data on the heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
         .add_tour_step(x, .dimnamesModalOpen, "The most relevant parameter is the choice of features to show as rows on the heatmap. This can be manually specified by entering row names of the <code>SummarizedExperiment</code> object into this modal..."),
         .add_tour_step(x, .heatMapCustomFeatNames, "Or it can be chained to a multiple row selection from another panel, if the <i>Custom rows</i> choice is unselected - see the <i>Selection parameters</i> later."),

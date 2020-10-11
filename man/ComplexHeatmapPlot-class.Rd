@@ -26,14 +26,13 @@ It provides slots and methods for specifying the features of interest, which ass
 }
 \section{ComplexHeatmapPlot slot overview}{
 
-The following slots control the assay that is used:
+The following slots control the rows that are used:
 \itemize{
-\item \code{Assay}, string specifying the name of the assay to use for obtaining expression values.
-Defaults to the first valid assay name (see \code{?"\link{.refineParameters,ComplexHeatmapPlot-method}"} for details).
-\item \code{CustomRows}, a logical scalar indicating whether the custom list of features should be used.
+\item \code{CustomRows}, a logical scalar indicating whether the custom list of rows should be used.
 If \code{FALSE}, the incoming selection is used instead. Defaults to \code{TRUE}.
-\item \code{CustomRowsText}, string specifying a custom list of features to use, as newline-separated row names.
-If \code{NA}, defaults to the first row name of the \linkS4class{SummarizedExperiment} object.
+\item \code{CustomRowsText}, string containing newline-separated row names.
+This specifies which rows of the \linkS4class{SummarizedExperiment} object are to be shown in the heatmap.
+If \code{NA}, defaults to the first row name of the SummarizedExperiment.
 }
 
 The following slots control the metadata variables that are used:
@@ -44,9 +43,15 @@ Defaults to \code{character(0)}.
 Defaults to \code{character(0)}.
 }
 
-The following slots control the clustering of features:
+The following slots control the choice of assay values:
 \itemize{
-\item \code{ClusterRows}, a logical scalar indicating whether features should be clustered by assay data.
+\item \code{Assay}, string specifying the name of the assay to use for obtaining expression values.
+Defaults to the first valid assay name (see \code{?"\link{.refineParameters,ComplexHeatmapPlot-method}"} for details).
+}
+
+The following slots control the clustering of rows:
+\itemize{
+\item \code{ClusterRows}, a logical scalar indicating whether rows should be clustered by their assay values.
 Defaults to \code{FALSE}.
 \item \code{ClusterRowsDistance}, string specifying a distance measure to use.
 This can be any one of \code{"euclidean"}, \code{"maximum"}, \code{"manhattan"}, \code{"canberra"}, \code{"binary"}, \code{"minkowski"}, \code{"pearson"}, \code{"spearman"}, or \code{"kendall"}.

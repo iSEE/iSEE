@@ -248,13 +248,13 @@ setMethod(".defineDataInterface", "FeatureAssayPlot", function(x, se, select_inf
         radioButtons(.input_FUN(.featAssayXAxis), label="X-axis:", inline=TRUE,
             choices=xaxis_choices, selected=x[[.featAssayXAxis]]),
 
-        .conditional_on_radio(.input_FUN(.featAssayXAxis),
+        .conditionalOnRadio(.input_FUN(.featAssayXAxis),
             .featAssayXAxisColDataTitle,
             selectInput(.input_FUN(.featAssayXAxisColData),
                 label="X-axis column data:",
                 choices=column_covariates, selected=x[[.featAssayXAxisColData]])),
 
-        .conditional_on_radio(.input_FUN(.featAssayXAxis),
+        .conditionalOnRadio(.input_FUN(.featAssayXAxis),
             .featAssayXAxisFeatNameTitle,
             selectizeInput(.input_FUN(.featAssayXAxisFeatName),
                 label="X-axis feature:", choices=NULL, selected=NULL, multiple=FALSE),

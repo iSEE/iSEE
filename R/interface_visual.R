@@ -70,28 +70,28 @@
             selected=x[[.visualParamChoice]],
             choices=.define_visual_options(ui)),
         # Some repeated code pattern below. lapply?
-        .conditional_on_check_group(
+        .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceColorTitle,
             ui[[.visualParamChoiceColorTitle]]
         ),
-        .conditional_on_check_group(
+        .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceShapeTitle,
             ui[[.visualParamChoiceShapeTitle]]
         ),
-        .conditional_on_check_group(
+        .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceSizeTitle,
             ui[[.visualParamChoiceSizeTitle]]
         ),
-        .conditional_on_check_group(
+        .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoicePointTitle,
             ui[[.visualParamChoicePointTitle]]),
-        .conditional_on_check_group(
+        .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceFacetTitle,
             ui[[.visualParamChoiceFacetTitle]]),
-        .conditional_on_check_group(
+        .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceTextTitle,
             ui[[.visualParamChoiceTextTitle]]),
-        .conditional_on_check_group(
+        .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceOtherTitle,
             ui[[.visualParamChoiceOtherTitle]])
     )
@@ -222,7 +222,7 @@
             selected=x[[.visualParamChoice]],
             choices=c(.visualParamChoiceMetadataTitle, .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle,
                 .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle)),
-        .conditional_on_check_group(
+        .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceMetadataTitle,
             hr(),
             selectizeInput(.input_FUN(.heatMapColData), label="Column annotations:",
@@ -232,29 +232,29 @@
                 selected=x[[.heatMapRowData]], choices=all_rowdata, multiple=TRUE,
                 options=list(plugins=list('remove_button', 'drag_drop')))
         ),
-        .conditional_on_check_group(
+        .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceTransformTitle,
             hr(),
             strong("Row transformations:"),
             ABLEFUN(checkboxInput(.input_FUN(.assayCenterRows), "Center", value=x[[.assayCenterRows]])),
-            .conditional_on_check_solo(.input_FUN(.assayCenterRows), on_select = TRUE,
+            .conditionalOnCheckSolo(.input_FUN(.assayCenterRows), on_select = TRUE,
                 ABLEFUN(checkboxInput(.input_FUN(.assayScaleRows), "Scale", value=x[[.assayScaleRows]])),
                 ABLEFUN(selectizeInput(.input_FUN(.heatMapCenteredColormap), label="Centered assay colormap:",
                     selected=x[[.heatMapCenteredColormap]],
                     choices=c(.colormapPurpleBlackYellow, .colormapBlueWhiteOrange, .colormapBlueWhiteRed, .colormapGreenWhiteRed))))
         ),
-        .conditional_on_check_group(
+        .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceColorTitle,
             hr(),
             ABLEFUN(checkboxInput(.input_FUN(.heatMapCustomAssayBounds), "Use custom colorscale bounds",
                 value = x[[.heatMapCustomAssayBounds]])),
-            .conditional_on_check_solo(.input_FUN(.heatMapCustomAssayBounds), on_select = TRUE,
+            .conditionalOnCheckSolo(.input_FUN(.heatMapCustomAssayBounds), on_select = TRUE,
                 ABLEFUN(numericInput(.input_FUN(.assayLowerBound), "Lower bound",
                     value=x[[.assayLowerBound]], min = -Inf, max = Inf)),
                 ABLEFUN(numericInput(.input_FUN(.assayUpperBound), "Upper bound",
                     value=x[[.assayUpperBound]], min = -Inf, max = Inf)))
         ),
-        .conditional_on_check_group(
+        .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceLabelsTitle,
             hr(),
             checkboxGroupInput(
@@ -262,7 +262,7 @@
                 selected=x[[.showDimnames]],
                 choices=c(.showNamesRowTitle, .showNamesColumnTitle))
         ),
-        .conditional_on_check_group(
+        .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceLegendTitle,
             hr(),
             radioButtons(.input_FUN(.plotLegendPosition), label="Legend position:", inline=TRUE,
@@ -337,7 +337,7 @@
         .checkboxInputHidden(x, field=.plotPointDownsample,
             label="Downsample points for speed",
             value=x[[.plotPointDownsample]]),
-        .conditional_on_check_solo(
+        .conditionalOnCheckSolo(
             ds_id, on_select=TRUE,
             numericInput(
                 paste0(plot_name, "_", .plotPointSampleRes), label="Sampling resolution:",

@@ -252,7 +252,7 @@ setMethod(".defineDataInterface", "SampleAssayPlot", function(x, se, select_info
             .input_FUN(.sampAssayXAxis), label="X-axis:", inline=TRUE,
             choices=xaxis_choices, selected=x[[.sampAssayXAxis]]),
 
-        .conditional_on_radio(
+        .conditionalOnRadio(
             .input_FUN(.sampAssayXAxis),
             .sampAssayXAxisRowDataTitle,
             selectInput(
@@ -260,7 +260,7 @@ setMethod(".defineDataInterface", "SampleAssayPlot", function(x, se, select_info
                 label="Row data of interest (X-axis):",
                 choices=row_covariates, selected=x[[.sampAssayXAxisRowData]])),
 
-        .conditional_on_radio(
+        .conditionalOnRadio(
             .input_FUN(.sampAssayXAxis),
             .sampAssayXAxisSampNameTitle,
             selectizeInput(

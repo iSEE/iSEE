@@ -459,14 +459,14 @@ setMethod(".defineSelectionEffectInterface", "DotPlot", function(x) {
             choices=c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle),
             selected=x[[.selectEffect]]),
 
-        .conditional_on_radio(
+        .conditionalOnRadio(
             select_effect, .selectColorTitle,
             colourInput(
                 paste0(plot_name, "_", .selectColor), label=NULL,
                 value=x[[.selectColor]])
         ),
 
-        .conditional_on_radio(
+        .conditionalOnRadio(
             select_effect, .selectTransTitle,
             sliderInput(
                 paste0(plot_name, "_", .selectTransAlpha), label=NULL,
@@ -496,19 +496,19 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
             choices=.defineDotPlotColorChoices(x, se),
             selected=x[[.colorByField]]
         ),
-        .conditional_on_radio(
+        .conditionalOnRadio(
             colorby_field, .colorByNothingTitle,
             colourInput(
                 paste0(plot_name, "_", .colorByDefaultColor), label=NULL,
                 value=x[[.colorByDefaultColor]])
         ),
-        .conditional_on_radio(
+        .conditionalOnRadio(
             colorby_field, colorby$metadata$title,
             selectInput(
                 paste0(plot_name, "_", colorby$metadata$field), label=NULL,
                 choices=covariates, selected=x[[colorby$metadata$field]])
         ),
-        .conditional_on_radio(colorby_field, colorby$name$title,
+        .conditionalOnRadio(colorby_field, colorby$name$title,
             selectizeInput(paste0(plot_name, "_", colorby$name$field),
                 label=NULL, selected=NULL, choices=NULL, multiple=FALSE),
             selectInput(
@@ -521,7 +521,7 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
                 label=sprintf("Use dynamic %s selection", mydim_single),
                 value=x[[colorby$name$dynamic]])
         ),
-        .conditional_on_radio(colorby_field, colorby$assay$title,
+        .conditionalOnRadio(colorby_field, colorby$assay$title,
             selectizeInput(paste0(plot_name, "_", colorby$assay$field),
                 label=NULL, choices=NULL, selected=NULL, multiple=FALSE),
             selectInput(
@@ -554,7 +554,7 @@ setMethod(".defineVisualShapeInterface", "DotPlot", function(x, se) {
                 choices=c(.shapeByNothingTitle, if (length(discrete_covariates)) shapeby$metadata$title),
                 selected=x[[.shapeByField]]
             ),
-            .conditional_on_radio(
+            .conditionalOnRadio(
                 shapeby_field, shapeby$metadata$title,
                 selectInput(
                     paste0(plot_name, "_", shapeby$metadata$field), label=NULL,
@@ -580,13 +580,13 @@ setMethod(".defineVisualSizeInterface", "DotPlot", function(x, se) {
             choices=c(.sizeByNothingTitle, if (length(numeric_covariates)) sizeby$metadata$title),
             selected=x[[.sizeByField]]
         ),
-        .conditional_on_radio(
+        .conditionalOnRadio(
             sizeby_field, .sizeByNothingTitle,
             numericInput(
                 paste0(plot_name, "_", .plotPointSize), label="Point size:",
                 min=0, value=x[[.plotPointSize]])
         ),
-        .conditional_on_radio(
+        .conditionalOnRadio(
             sizeby_field, sizeby$metadata$title,
             selectInput(paste0(plot_name, "_", sizeby$metadata$field), label=NULL,
                 choices=numeric_covariates, selected=x[[sizeby$metadata$field]])
@@ -604,7 +604,7 @@ setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
             inputId=paste0(plot_name, "_", .contourAdd),
             label="Add contour (scatter only)",
             value=FALSE),
-        .conditional_on_check_solo(
+        .conditionalOnCheckSolo(
             paste0(plot_name, "_", .contourAdd),
             on_select=TRUE,
             colourInput(
@@ -642,7 +642,7 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
         checkboxInput(.input_FUN(.plotCustomLabels),
             label=sprintf("Label custom %ss", .singleSelectionDimension(x)),
             value=x[[.plotCustomLabels]]),
-        .conditional_on_check_solo(
+        .conditionalOnCheckSolo(
             .input_FUN(.plotCustomLabels),
             on_select=TRUE,
             actionButton(.input_FUN(.dimnamesModalOpen),
@@ -652,7 +652,7 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
         checkboxInput(.input_FUN(.plotLabelCenters),
             label="Label centers",
             value=x[[.plotLabelCenters]]),
-        .conditional_on_check_solo(
+        .conditionalOnCheckSolo(
             .input_FUN(.plotLabelCenters),
             on_select=TRUE,
             selectInput(.input_FUN(.plotLabelCentersBy),

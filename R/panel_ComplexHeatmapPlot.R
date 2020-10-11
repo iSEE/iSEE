@@ -403,13 +403,13 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
             choices=all_assays, selected=x[[.heatMapAssay]]),
         checkboxInput(.input_FUN(.heatMapCustomFeatNames), label="Use custom rows",
             value=x[[.heatMapCustomFeatNames]]),
-        .conditional_on_check_solo(
+        .conditionalOnCheckSolo(
             .input_FUN(.heatMapCustomFeatNames),
             on_select=TRUE,
             actionButton(.input_FUN(.dimnamesModalOpen), label="Edit feature names")),
         ABLEFUN(checkboxInput(.input_FUN(.heatMapClusterFeatures), label="Cluster rows",
             value=x[[.heatMapClusterFeatures]])),
-        .conditional_on_check_solo(
+        .conditionalOnCheckSolo(
             .input_FUN(.heatMapClusterFeatures),
             on_select=TRUE,
             ABLEFUN(selectInput(.input_FUN(.heatMapClusterDistanceFeatures), label="Clustering distance for rows",
@@ -439,7 +439,7 @@ setMethod(".defineSelectionEffectInterface", "DotPlot", function(x) {
             choices=c(.selectRestrictTitle, .selectColorTitle),
             selected=x[[.selectEffect]]),
 
-        .conditional_on_radio(
+        .conditionalOnRadio(
             select_effect, .selectColorTitle,
             colourInput(
                 paste0(plot_name, "_", .selectColor), label=NULL,

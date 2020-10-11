@@ -1,3 +1,8 @@
+# iSEE 2.1.20
+
+* Export even more internal utilities for re-use in downstream packages.
+* Minor fixes to the `ComplexHeatmapPlot` documentation.
+
 # iSEE 2.1.19
 
 * Export more internal utilities for re-use in downstream packages.

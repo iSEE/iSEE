@@ -120,7 +120,7 @@
             selected=x[[type_field]]
         ),
 
-        .conditional_on_radio(
+        .conditionalOnRadio(
             select_type, .selectMultiSavedTitle,
             .selectizeInputHidden(
                 x, field=saved_field,

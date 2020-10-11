@@ -188,7 +188,7 @@ setMethod(".defineDataInterface", "RowDataPlot", function(x, se, select_info) {
             label="X-axis:", inline=TRUE,
             choices=c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle),
             selected=x[[.rowDataXAxis]]),
-        .conditional_on_radio(.input_FUN(.rowDataXAxis),
+        .conditionalOnRadio(.input_FUN(.rowDataXAxis),
             .rowDataXAxisRowDataTitle,
             .selectInputHidden(x, .rowDataXAxisRowData,
                 label="Column of interest (X-axis):",

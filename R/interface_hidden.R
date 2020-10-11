@@ -69,42 +69,44 @@
 
 #' Conditional elements on radio or checkbox selection
 #'
-#' Creates a conditional UI element that appears upon a certain choice in a radio button or checkbox group selection.
+#' Creates a conditional UI element that appears when the user picks a certain choice in a radio button, single checkbox or checkbox group interface element.
 #'
-#' @param id String containing the id of the UI element for the radio buttons or checkbox group.
-#' @param choice String containing the choice on which to show the conditional elements.
+#' @param id String containing the ID of the UI element controlling the relevant choice.
+#' @param choice String containing the choice for the radio button or checkbox group on which to show the conditional element(s).
 #' @param on_select Logical scalar specifying whether the conditional element should be shown upon selection in a check box, or upon de-selection (if \code{FALSE}).
 #' @param ... UI elements to show conditionally.
 #'
 #' @return
-#' A HTML object containing elements that only appear when \code{choice} is selected in the UI element for \code{id}.
+#' A HTML object containing interface elements in \code{...} that only appear when the relevant condition is satisfied.
 #'
 #' @details
-#' This function is useful for hiding options that are irrelevant when a different radio button is selected
-#' or when the corresponding checkbox element is unselected.
-#' In this manner, we can avoid cluttering the UI.
+#' These functions are just wrappers around \code{\link{conditionalPanel}},
+#' with the added value coming from the pre-written conditional expressions in Javascript.
+#' They are useful for hiding elements that are only relevant when the right radio button or checkbox is selected.
+#' This means that we avoid cluttering the UI with options that are not immediately useful to the user.
 #'
 #' @author Aaron Lun
-#' @rdname INTERNAL_conditional_elements
+#' @rdname conditional-utils 
 #' @seealso
-#' \code{\link{.panel_generation}},
-#' \code{\link{.create_selection_param_box}},
-#' \code{\link{.create_visual_box}}
+#' \code{\link{conditionalPanel}}, which is used under the hood.
 #'
+#' @export
 #' @importFrom shiny conditionalPanel
-.conditional_on_radio <- function(id, choice, ...) {
+.conditionalOnRadio <- function(id, choice, ...) {
     conditionalPanel(condition=sprintf('(input["%s"] == "%s")', id, choice), ...)
 }
 
-#' @rdname INTERNAL_conditional_elements
+#' @export
+#' @rdname conditional-utils 
 #' @importFrom shiny conditionalPanel
-.conditional_on_check_solo <- function(id, on_select=TRUE, ...) {
+.conditionalOnCheckSolo <- function(id, on_select=TRUE, ...) {
     choice <- ifelse(on_select, 'true', 'false')
     conditionalPanel(condition=sprintf('(input["%s"] == %s)', id, choice), ...)
 }
 
-#' @rdname INTERNAL_conditional_elements
+#' @export
+#' @rdname conditional-utils 
 #' @importFrom shiny conditionalPanel
-.conditional_on_check_group <- function(id, choice, ...) {
+.conditionalOnCheckGroup <- function(id, choice, ...) {
     conditionalPanel(condition=sprintf('(typeof input["%s"] !== "undefined" && input["%s"].includes("%s"))', id, id, choice), ...)
 }

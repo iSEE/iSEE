@@ -192,7 +192,7 @@ setMethod(".defineDataInterface", "ColumnDataPlot", function(x, se, select_info)
             label="X-axis:", inline=TRUE,
             choices=c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle),
             selected=x[[.colDataXAxis]]),
-        .conditional_on_radio(.input_FUN(.colDataXAxis),
+        .conditionalOnRadio(.input_FUN(.colDataXAxis),
             .colDataXAxisColDataTitle,
             .selectInputHidden(x, .colDataXAxisColData,
                 label="Column of interest (X-axis):",

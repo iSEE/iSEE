@@ -151,8 +151,8 @@ setMethod(".refineParameters", "RowDataPlot", function(x, se) {
         return(NULL)
     }
 
-    x <- .replace_na_with_first(x, .rowDataYAxis, yaxis)
-    x <- .replace_na_with_first(x, .rowDataXAxisRowData, xaxis)
+    x <- .replaceMissingWithFirst(x, .rowDataYAxis, yaxis)
+    x <- .replaceMissingWithFirst(x, .rowDataXAxisRowData, xaxis)
 
     x
 })

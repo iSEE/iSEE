@@ -216,7 +216,7 @@
 
 #' Replace with first choice
 #'
-#' Replace a \code{NA} value in a slot with the first valid choice.
+#' Replace an \code{NA} or invalid value in a slot of a \linkS4class{Panel} object with the first valid choice.
 #' This is usually called in \code{\link{.refineParameters}}.
 #'
 #' @param x An instance of a \linkS4class{Panel} class.
@@ -224,11 +224,12 @@
 #' @param choices Character vector of permissible values for this slot.
 #'
 #' @return
-#' \code{x} where the slot named \code{field} is replaced with \code{choices[1]} if it was previously \code{NA}.
+#' \code{x} where the slot named \code{field} is replaced with \code{choices[1]} if its value was previously \code{NA} or did not exist in \code{choices}.
 #'
 #' @author Aaron Lun
-#' @rdname INTERNAL_replace_na_with_first
-.replace_na_with_first <- function(x, field, choices) {
+#' @export
+#' @rdname replaceMissingWithFirst
+.replaceMissingWithFirst <- function(x, field, choices) {
     if (is.na(chosen <- x[[field]]) || !chosen %in% choices) {
         x[[field]] <- choices[1]
     }

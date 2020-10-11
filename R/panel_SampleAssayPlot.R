@@ -178,10 +178,10 @@ setMethod(".refineParameters", "SampleAssayPlot", function(x, se) {
     }
 
     all_assays <- c(intersect(iSEEOptions$get("assay"), all_assays), all_assays)
-    x <- .replace_na_with_first(x, .sampAssayAssay, all_assays)
+    x <- .replaceMissingWithFirst(x, .sampAssayAssay, all_assays)
 
     for (field in c(.sampAssayXAxisSampName, .sampAssayYAxisSampName)) {
-        x <- .replace_na_with_first(x, field, colnames(se))
+        x <- .replaceMissingWithFirst(x, field, colnames(se))
     }
 
     row_covariates <- .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
@@ -190,7 +190,7 @@ setMethod(".refineParameters", "SampleAssayPlot", function(x, se) {
             x[[.sampAssayXAxis]] <- .sampAssayXAxisNothingTitle
         }
     } else {
-        x <- .replace_na_with_first(x, .sampAssayXAxisRowData, row_covariates)
+        x <- .replaceMissingWithFirst(x, .sampAssayXAxisRowData, row_covariates)
     }
 
     x

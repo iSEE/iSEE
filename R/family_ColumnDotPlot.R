@@ -174,23 +174,23 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
     dp_cached <- .getCachedCommonInfo(se, "DotPlot")
 
     available <- cdp_cached$valid.colData.names
-    x <- .replace_na_with_first(x, .colorByColData, available)
+    x <- .replaceMissingWithFirst(x, .colorByColData, available)
 
     assays <- dp_cached$valid.assay.names
     if (length(assays)) {
         assays <- c(intersect(iSEEOptions$get("assay"), assays), assays)
-        x <- .replace_na_with_first(x, .colorByFeatNameAssay, assays)
+        x <- .replaceMissingWithFirst(x, .colorByFeatNameAssay, assays)
     } else {
         x[[.colorByFeatNameAssay]] <- NA_character_
     }
 
     discrete <- cdp_cached$discrete.colData.names
-    x <- .replace_na_with_first(x, .shapeByColData, discrete)
+    x <- .replaceMissingWithFirst(x, .shapeByColData, discrete)
 
     continuous <- cdp_cached$continuous.colData.names
-    x <- .replace_na_with_first(x, .sizeByColData, continuous)
+    x <- .replaceMissingWithFirst(x, .sizeByColData, continuous)
     
-    x <- .replace_na_with_first(x, .plotCustomLabelsText, colnames(se)[1])
+    x <- .replaceMissingWithFirst(x, .plotCustomLabelsText, colnames(se)[1])
 
     x
 })

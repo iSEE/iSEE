@@ -178,10 +178,10 @@ setMethod(".refineParameters", "FeatureAssayPlot", function(x, se) {
     }
 
     all_assays <- c(intersect(iSEEOptions$get("assay"), all_assays), all_assays)
-    x <- .replace_na_with_first(x, .featAssayAssay, all_assays)
+    x <- .replaceMissingWithFirst(x, .featAssayAssay, all_assays)
 
     for (field in c(.featAssayXAxisFeatName, .featAssayYAxisFeatName)) {
-        x <- .replace_na_with_first(x, field, rownames(se))
+        x <- .replaceMissingWithFirst(x, field, rownames(se))
     }
 
     column_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$valid.colData.names
@@ -190,7 +190,7 @@ setMethod(".refineParameters", "FeatureAssayPlot", function(x, se) {
             x[[.featAssayXAxis]] <- .featAssayXAxisNothingTitle
         }
     } else {
-        x <- .replace_na_with_first(x, .featAssayXAxisColData, column_covariates)
+        x <- .replaceMissingWithFirst(x, .featAssayXAxisColData, column_covariates)
     }
 
     x

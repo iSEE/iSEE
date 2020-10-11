@@ -73,7 +73,7 @@ It provides slots and methods for specifying the features of interest, which ass
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.19</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.20</span>
       </span>
     </div>
 
@@ -162,13 +162,12 @@ It provides slots and methods for specifying the features of interest, which ass
 
     
 
-<p>The following slots control the assay that is used:</p><ul>
-<li><p><code>Assay</code>, string specifying the name of the assay to use for obtaining expression values.
-Defaults to the first valid assay name (see <code>?".refineParameters,ComplexHeatmapPlot-method"</code> for details).</p></li>
-<li><p><code>CustomRows</code>, a logical scalar indicating whether the custom list of features should be used.
+<p>The following slots control the rows that are used:</p><ul>
+<li><p><code>CustomRows</code>, a logical scalar indicating whether the custom list of rows should be used.
 If <code>FALSE</code>, the incoming selection is used instead. Defaults to <code>TRUE</code>.</p></li>
-<li><p><code>CustomRowsText</code>, string specifying a custom list of features to use, as newline-separated row names.
-If <code>NA</code>, defaults to the first row name of the SummarizedExperiment object.</p></li>
+<li><p><code>CustomRowsText</code>, string containing newline-separated row names.
+This specifies which rows of the SummarizedExperiment object are to be shown in the heatmap.
+If <code>NA</code>, defaults to the first row name of the SummarizedExperiment.</p></li>
 </ul>
 
 <p>The following slots control the metadata variables that are used:</p><ul>
@@ -178,8 +177,13 @@ Defaults to <code><a href='https://rdrr.io/r/base/character.html'>character(0)</
 Defaults to <code><a href='https://rdrr.io/r/base/character.html'>character(0)</a></code>.</p></li>
 </ul>
 
-<p>The following slots control the clustering of features:</p><ul>
-<li><p><code>ClusterRows</code>, a logical scalar indicating whether features should be clustered by assay data.
+<p>The following slots control the choice of assay values:</p><ul>
+<li><p><code>Assay</code>, string specifying the name of the assay to use for obtaining expression values.
+Defaults to the first valid assay name (see <code>?".refineParameters,ComplexHeatmapPlot-method"</code> for details).</p></li>
+</ul>
+
+<p>The following slots control the clustering of rows:</p><ul>
+<li><p><code>ClusterRows</code>, a logical scalar indicating whether rows should be clustered by their assay values.
 Defaults to <code>FALSE</code>.</p></li>
 <li><p><code>ClusterRowsDistance</code>, string specifying a distance measure to use.
 This can be any one of <code>"euclidean"</code>, <code>"maximum"</code>, <code>"manhattan"</code>, <code>"canberra"</code>, <code>"binary"</code>, <code>"minkowski"</code>, <code>"pearson"</code>, <code>"spearman"</code>, or <code>"kendall"</code>.

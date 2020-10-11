@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Generics for table construction — table-generics • iSEE</title>
+<title>Conditional elements on radio or checkbox selection — .conditionalOnRadio • iSEE</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Generics for table construction — table-generics" />
-<meta property="og:description" content="Generic to control the creation of a data.frame to show in the datatable widget of a Table panel.
-Table subclasses can specialize methods to modify the behavior of .generateOutput." />
+<meta property="og:title" content="Conditional elements on radio or checkbox selection — .conditionalOnRadio" />
+<meta property="og:description" content="Creates a conditional UI element that appears when the user picks a certain choice in a radio button, single checkbox or checkbox group interface element." />
 
 
 
@@ -146,51 +145,54 @@ Table subclasses can specialize methods to modify the behavior of .generateOutpu
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Generics for table construction</h1>
-    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/AllGenerics.R'><code>R/AllGenerics.R</code></a></small>
-    <div class="hidden name"><code>table-generics.Rd</code></div>
+    <h1>Conditional elements on radio or checkbox selection</h1>
+    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/interface_hidden.R'><code>R/interface_hidden.R</code></a></small>
+    <div class="hidden name"><code>conditional-utils.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Generic to control the creation of a data.frame to show in the <code>datatable</code> widget of a <a href='Table-class.html'>Table</a> panel.
-<a href='Table-class.html'>Table</a> subclasses can specialize methods to modify the behavior of <code><a href='output-generics.html'>.generateOutput</a></code>.</p>
+    <p>Creates a conditional UI element that appears when the user picks a certain choice in a radio button, single checkbox or checkbox group interface element.</p>
     </div>
 
+    <pre class="usage"><span class='fu'>.conditionalOnRadio</span><span class='op'>(</span><span class='va'>id</span>, <span class='va'>choice</span>, <span class='va'>...</span><span class='op'>)</span>
 
+<span class='fu'>.conditionalOnCheckSolo</span><span class='op'>(</span><span class='va'>id</span>, on_select <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
 
-    <h2 class="hasAnchor" id="constructing-the-table"><a class="anchor" href="#constructing-the-table"></a>Constructing the table</h2>
+<span class='fu'>.conditionalOnCheckGroup</span><span class='op'>(</span><span class='va'>id</span>, <span class='va'>choice</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
-    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>id</th>
+      <td><p>String containing the ID of the UI element controlling the relevant choice.</p></td>
+    </tr>
+    <tr>
+      <th>choice</th>
+      <td><p>String containing the choice for the radio button or checkbox group on which to show the conditional element(s).</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>UI elements to show conditionally.</p></td>
+    </tr>
+    <tr>
+      <th>on_select</th>
+      <td><p>Logical scalar specifying whether the conditional element should be shown upon selection in a check box, or upon de-selection (if <code>FALSE</code>).</p></td>
+    </tr>
+    </table>
 
-<p><code>.generateTable(x, envir)</code> generates the data.frame to use in the <code>datatable</code> widget.
-The following arguments are required:</p><ul>
-<li><p><code>x</code>, an instance of a Table subclass.</p></li>
-<li><p><code>envir</code>, the evaluation environment in which the data.frame is to be constructed.
-This can be assumed to have <code>se</code>, the SummarizedExperiment object containing the current dataset;
-possibly <code>col_selected</code>, if a multiple column selection is being transmitted to <code>x</code>;
-and possibly <code>row_selected</code>, if a multiple row selection is being transmitted to <code>x</code>.</p></li>
-</ul>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-<p>In return, the method should add a <code>tab</code> variable in <code>envir</code> containing the relevant data.frame.
-This will automatically be passed to the <code>datatable</code> widget as well as being stored in <code>pObjects$contents</code>.
-The return value should be a character vector of commands that produces <code>tab</code> when evaluated in <code>envir</code>.</p>
-<p>Each row of the <code>tab</code> data.frame should correspond to one row or column in the SummarizedExperiment <code>envir$se</code> for <a href='RowTable-class.html'>RowTable</a>s and <a href='ColumnTable-class.html'>ColumnTable</a>s respectively.
-Unlike <code><a href='plot-generics.html'>.generateDotPlotData</a></code>, it is not necessary for all rows or columns to be represented in this data.frame.</p>
-<p>Ideally, the number and names of the columns of the data.frame should be fixed for all calls to <code>.generateTable</code>.
-Violating this principle may result in unpredictable interactions with existing values in the <code>SearchColumns</code> slot.
-Nonetheless, the app will be robust to mismatches, see <code><a href='filterDTColumn.html'>filterDT</a></code> for more details.</p>
-<p>Any internal variables that are generated by the commands should be prefixed with <code>.</code> to avoid potential clashes with reserved variable names in the rest of the application.</p>
-<p>This generic is called by <code>.generateOutput</code> for Table subclasses.
-Thus, developers of such subclasses only need to specialize <code>.generateTable</code> to change the table contents, without needing to reimplement the entirety of <code>.generateOutput</code>.</p>
-    <h2 class="hasAnchor" id="adding-details-on-the-selection"><a class="anchor" href="#adding-details-on-the-selection"></a>Adding details on the selection</h2>
+    <p>A HTML object containing interface elements in <code>...</code> that only appear when the relevant condition is satisfied.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    
+    <p>These functions are just wrappers around <code><a href='https://shiny.rstudio.com/reference/shiny/latest/conditionalPanel.html'>conditionalPanel</a></code>,
+with the added value coming from the pre-written conditional expressions in Javascript.
+They are useful for hiding elements that are only relevant when the right radio button or checkbox is selected.
+This means that we avoid cluttering the UI with options that are not immediately useful to the user.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-<p><code>.showSelectionDetails(x)</code> should return a HTML element containing details on the currently selected row,
-given an instance of a Table subclass <code>x</code>.
-The identity of the selected row should be extracted from <code>x[["Selected"]]</code>.
-The element will only be rerendered upon a single selection in the Table.
-Alternatively, it may return <code>NULL</code> in which case no selection details are shown in the interface.</p>
+    <div class='dont-index'><p><code><a href='https://shiny.rstudio.com/reference/shiny/latest/conditionalPanel.html'>conditionalPanel</a></code>, which is used under the hood.</p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Aaron Lun</p>

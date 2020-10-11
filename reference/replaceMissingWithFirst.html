@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Generics for table construction — table-generics • iSEE</title>
+<title>Replace with first choice — .replaceMissingWithFirst • iSEE</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="Generics for table construction — table-generics" />
-<meta property="og:description" content="Generic to control the creation of a data.frame to show in the datatable widget of a Table panel.
-Table subclasses can specialize methods to modify the behavior of .generateOutput." />
+<meta property="og:title" content="Replace with first choice — .replaceMissingWithFirst" />
+<meta property="og:description" content="Replace an NA or invalid value in a slot of a Panel object with the first valid choice.
+This is usually called in .refineParameters." />
 
 
 
@@ -146,51 +146,38 @@ Table subclasses can specialize methods to modify the behavior of .generateOutpu
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Generics for table construction</h1>
-    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/AllGenerics.R'><code>R/AllGenerics.R</code></a></small>
-    <div class="hidden name"><code>table-generics.Rd</code></div>
+    <h1>Replace with first choice</h1>
+    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/utils_class.R'><code>R/utils_class.R</code></a></small>
+    <div class="hidden name"><code>replaceMissingWithFirst.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Generic to control the creation of a data.frame to show in the <code>datatable</code> widget of a <a href='Table-class.html'>Table</a> panel.
-<a href='Table-class.html'>Table</a> subclasses can specialize methods to modify the behavior of <code><a href='output-generics.html'>.generateOutput</a></code>.</p>
+    <p>Replace an <code>NA</code> or invalid value in a slot of a <a href='Panel-class.html'>Panel</a> object with the first valid choice.
+This is usually called in <code><a href='setup-generics.html'>.refineParameters</a></code>.</p>
     </div>
 
+    <pre class="usage"><span class='fu'>.replaceMissingWithFirst</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>field</span>, <span class='va'>choices</span><span class='op'>)</span></pre>
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>x</th>
+      <td><p>An instance of a <a href='Panel-class.html'>Panel</a> class.</p></td>
+    </tr>
+    <tr>
+      <th>field</th>
+      <td><p>String containing the name of the relevant slot.</p></td>
+    </tr>
+    <tr>
+      <th>choices</th>
+      <td><p>Character vector of permissible values for this slot.</p></td>
+    </tr>
+    </table>
 
-    <h2 class="hasAnchor" id="constructing-the-table"><a class="anchor" href="#constructing-the-table"></a>Constructing the table</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
-
-<p><code>.generateTable(x, envir)</code> generates the data.frame to use in the <code>datatable</code> widget.
-The following arguments are required:</p><ul>
-<li><p><code>x</code>, an instance of a Table subclass.</p></li>
-<li><p><code>envir</code>, the evaluation environment in which the data.frame is to be constructed.
-This can be assumed to have <code>se</code>, the SummarizedExperiment object containing the current dataset;
-possibly <code>col_selected</code>, if a multiple column selection is being transmitted to <code>x</code>;
-and possibly <code>row_selected</code>, if a multiple row selection is being transmitted to <code>x</code>.</p></li>
-</ul>
-
-<p>In return, the method should add a <code>tab</code> variable in <code>envir</code> containing the relevant data.frame.
-This will automatically be passed to the <code>datatable</code> widget as well as being stored in <code>pObjects$contents</code>.
-The return value should be a character vector of commands that produces <code>tab</code> when evaluated in <code>envir</code>.</p>
-<p>Each row of the <code>tab</code> data.frame should correspond to one row or column in the SummarizedExperiment <code>envir$se</code> for <a href='RowTable-class.html'>RowTable</a>s and <a href='ColumnTable-class.html'>ColumnTable</a>s respectively.
-Unlike <code><a href='plot-generics.html'>.generateDotPlotData</a></code>, it is not necessary for all rows or columns to be represented in this data.frame.</p>
-<p>Ideally, the number and names of the columns of the data.frame should be fixed for all calls to <code>.generateTable</code>.
-Violating this principle may result in unpredictable interactions with existing values in the <code>SearchColumns</code> slot.
-Nonetheless, the app will be robust to mismatches, see <code><a href='filterDTColumn.html'>filterDT</a></code> for more details.</p>
-<p>Any internal variables that are generated by the commands should be prefixed with <code>.</code> to avoid potential clashes with reserved variable names in the rest of the application.</p>
-<p>This generic is called by <code>.generateOutput</code> for Table subclasses.
-Thus, developers of such subclasses only need to specialize <code>.generateTable</code> to change the table contents, without needing to reimplement the entirety of <code>.generateOutput</code>.</p>
-    <h2 class="hasAnchor" id="adding-details-on-the-selection"><a class="anchor" href="#adding-details-on-the-selection"></a>Adding details on the selection</h2>
-
-    
-
-<p><code>.showSelectionDetails(x)</code> should return a HTML element containing details on the currently selected row,
-given an instance of a Table subclass <code>x</code>.
-The identity of the selected row should be extracted from <code>x[["Selected"]]</code>.
-The element will only be rerendered upon a single selection in the Table.
-Alternatively, it may return <code>NULL</code> in which case no selection details are shown in the interface.</p>
+    <p><code>x</code> where the slot named <code>field</code> is replaced with <code>choices[1]</code> if its value was previously <code>NA</code> or did not exist in <code>choices</code>.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Aaron Lun</p>

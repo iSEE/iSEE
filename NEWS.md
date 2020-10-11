@@ -1,3 +1,7 @@
+# iSEE 2.1.21
+
+* Minor fix to unit test.
+
 # iSEE 2.1.20
 
 * Export even more internal utilities for re-use in downstream packages.

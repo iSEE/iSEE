@@ -72,7 +72,7 @@
 }
 
 setClass("ExperimentColorMap",
-    contains="Vector",
+    contains="Annotated",
     representation(
         # each slot has a list of closures
         assays="list",

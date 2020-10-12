@@ -1,3 +1,7 @@
+# iSEE 2.1.23
+
+* `ExperimentColorMap` inherits from `Annotated`.
+
 # iSEE 2.1.22
 
 * Split and rename scripts for test setup.

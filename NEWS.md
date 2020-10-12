@@ -1,3 +1,7 @@
+# iSEE 2.1.22
+
+* Split and rename scripts for test setup.
+
 # iSEE 2.1.21
 
 * Minor fix to unit test.

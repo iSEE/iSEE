@@ -3,7 +3,7 @@ on:
     branches:
       - master
   schedule:
-    - cron: '0 8 * * 5'
+    - cron: '0 8 * * 1,3,5'
 
 jobs:
   publish_docker:
@@ -12,7 +12,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Publish to Registry
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         uses: elgohr/Publish-Docker-Github-Action@master
         with:
           name: docker.pkg.github.com/${{ github.repository }}/isee:latest

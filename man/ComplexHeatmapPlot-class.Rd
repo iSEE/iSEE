@@ -65,7 +65,7 @@ The following control transformations applied to rows:
 \itemize{
 \item \code{AssayCenterRows} is a logical scalar indicating whether assay values should be centered for each row.
 \item \code{AssayScaleRows} is a logical scalar indicating whether assay values should be scaled for each row.
-This transformation is only applicable if \code{AssayCenterRows} is \code{TRUE}. 
+This transformation is only applicable if \code{AssayCenterRows} is \code{TRUE}.
 }
 
 The following slots control the color scale:

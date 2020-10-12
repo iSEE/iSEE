@@ -38,14 +38,14 @@
 #' This can be any one of \code{"ward.D"}, \code{"ward.D2"}, \code{"single"}, \code{"complete"}, \code{"average"}, \code{"mcquitty"}, \code{"median"}, or \code{"centroid"}.
 #' Defaults to \code{"ward.D2"}.
 #' }
-#' 
+#'
 #' The following control transformations applied to rows:
 #' \itemize{
 #' \item \code{AssayCenterRows} is a logical scalar indicating whether assay values should be centered for each row.
 #' \item \code{AssayScaleRows} is a logical scalar indicating whether assay values should be scaled for each row.
-#' This transformation is only applicable if \code{AssayCenterRows} is \code{TRUE}. 
+#' This transformation is only applicable if \code{AssayCenterRows} is \code{TRUE}.
 #' }
-#' 
+#'
 #' The following slots control the color scale:
 #' \itemize{
 #' \item \code{CustomBounds} is logical scale indicating whether the color scale should be constrained by an upper and/or a lower bounds.
@@ -130,7 +130,7 @@
 #' This returns \code{TRUE} for the selection history (\code{"SelectionHistory"}),
 #' otherwise it dispatches to the \linkS4class{Panel} method.
 #' }
-#' 
+#'
 #' For generating the output:
 #' \itemize{
 #' \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the plot;
@@ -383,6 +383,7 @@ setMethod(".defineOutput", "ComplexHeatmapPlot", function(x) {
 
 #' @export
 #' @importFrom shiny selectInput radioButtons checkboxInput actionButton
+#' @importFrom shinyjs disabled
 #' @importFrom methods callNextMethod
 setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_info) {
     panel_name <- .getEncodedName(x)
@@ -564,14 +565,14 @@ setMethod(".renderOutput", "ComplexHeatmapPlot", function(x, se, output, pObject
 setMethod(".exportOutput", "ComplexHeatmapPlot", function(x, se, all_memory, all_contents) {
     contents <- .generateOutput(x, se, all_memory=all_memory, all_contents=all_contents)
     newpath <- paste0(.getEncodedName(x), ".pdf")
-    
+
     # These are reasonably satisfactory heuristics:
     # Width = Pixels -> Inches, Height = Bootstrap -> Inches.
     pdf(newpath, width=x[[.organizationHeight]]/75, height=x[[.organizationWidth]]*2)
     # print(contents$plot)
     draw(contents$plot)
     dev.off()
-    
+
     newpath
 })
 
@@ -585,8 +586,8 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     # as there aren't any selections transmitted from this panel anyway.
     .createProtectedParameterObservers(plot_name,
         fields=c(
-            .heatMapClusterFeatures, 
-            .heatMapClusterDistanceFeatures, 
+            .heatMapClusterFeatures,
+            .heatMapClusterDistanceFeatures,
             .heatMapClusterMethodFeatures,
             .heatMapCustomFeatNames
         ),
@@ -598,14 +599,14 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
             .heatMapCenteredColormap,
             .selectColor,
             .showDimnames,
-            .plotLegendPosition, 
+            .plotLegendPosition,
             .plotLegendDirection
         ),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     .createUnprotectedParameterObservers(plot_name,
         fields=c(
-            .heatMapColData, 
+            .heatMapColData,
             .heatMapRowData
         ),
         input=input, pObjects=pObjects, rObjects=rObjects, ignoreNULL = FALSE)
@@ -640,7 +641,7 @@ setMethod(".definePanelTour", "ComplexHeatmapPlot", function(x) {
         .addTourStep(x, .dimnamesModalOpen, "The most relevant parameter is the choice of features to show as rows on the heatmap. This can be manually specified by entering row names of the <code>SummarizedExperiment</code> object into this modal..."),
         .addTourStep(x, .heatMapCustomFeatNames, "Or it can be chained to a multiple row selection from another panel, if the <i>Custom rows</i> choice is unselected - see the <i>Selection parameters</i> later."),
         .addTourStep(x, .heatMapClusterFeatures, "We can also choose whether to cluster the features for better visibility."),
-       
+
         .addTourStep(x, .visualParamBoxOpen, "The <i>Visual parameters</i> box shows the available visual parameters that can be tweaked in this heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
         .addTourStep(x, .visualParamChoice, "A large number of options are available here, so not all of them are shown by default. We can check some of the boxes here to show or hide some classes of parameters.<br/><br/><strong>Action:</strong> check the <i>Transform</i> box to expose some transformation options."),
         .addTourStep(x, .heatMapColData, "One key parameter is to select the column annotations to show as color bars on the top of the heatmap. This will also order the columns by the values of the selected annotations (in the specified order, if multiple annotations are specified). This is useful for providing some structure to the heatmap.", is_selectize=TRUE),

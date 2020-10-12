@@ -16,7 +16,3 @@ mimic_live_app <- function(se, all_memory) {
 
     pObjects
 }
-
-# Dummy class direcly deriving from Panel, used to trigger Panel methods
-
-setClass("PanelChildClass", contains = "Panel")

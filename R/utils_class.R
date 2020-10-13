@@ -42,6 +42,30 @@
     metadata(se)$iSEE[[cls]]
 }
 
+#' Dedicated colormap getters/setters
+#'
+#' Store/retrieve the \linkS4class{ExperimentColorMap} in the \linkS4class{SummarizedExperiment} using the caching machinery.
+#'
+#' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' @param colormap A \linkS4class{ExperimentColorMap} object.
+#'
+#' @return 
+#' \code{.set_colormap} returns \code{se} with \code{colormap} cached in its metadata.
+#'
+#' \code{.get_colormap} returns \code{colormap} from its metadata cache in \code{se}.
+#'
+#' @author Aaron Lun
+#' 
+#' @rdname INTERNAL_set_colormap
+.set_colormap <- function(se, colormap) {
+    .setCachedCommonInfo(se, ".internal", list(colormap=colormap))
+}
+
+#' @rdname INTERNAL_set_colormap
+.get_colormap <- function(se) {
+    .getCachedCommonInfo(se, ".internal")$colormap
+}
+
 #' Set default slot values
 #'
 #' A utility function to set slots to default values if their values are not provided to \code{\link{initialize}} methods.

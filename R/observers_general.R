@@ -12,6 +12,9 @@
 .generalCodeTracker <- "iSEE_INTERNAL_tracked_code"
 .generalMemoryTracker <- "iSEE_INTERNAL_tracked_memory"
 .generalMemoryExport <- "iSEE_INTERNAL_memory_export"
+.generalMemoryIncludeSE <- "iSEE_INTERNAL_memory_se"
+.generalMemoryIncludeECM <- "iSEE_INTERNAL_memory_ecm"
+.generalMemoryCustomSave <- "iSEE_INTERNAL_custom_save"
 
 .generalExportOutput <- "iSEE_INTERNAL_export_content"
 .generalExportOutputUI <- "iSEE_INTERNAL_export_content_ui"
@@ -37,10 +40,11 @@
 #'
 #' @importFrom utils read.delim sessionInfo citation browseURL capture.output
 #' @importFrom shiny observeEvent showModal modalDialog HTML br tagList showNotification p pre downloadButton
+#' checkboxInput actionButton
 #' @importFrom shinyAce aceEditor
 #'
 #' @rdname INTERNAL_general_observers
-.create_general_observers <- function(runLocal, se_name, ecm_name, mod_commands, input, session, pObjects, rObjects) {
+.create_general_observers <- function(se, runLocal, se_name, ecm_name, mod_commands, saveState, input, session, pObjects, rObjects) {
     observeEvent(input[[.generalTrackedCode]], {
         all_cmds <- .track_it_all(pObjects, se_name, ecm_name, mod_commands)
         all_cmds <- paste(all_cmds, collapse="\n")
@@ -61,12 +65,25 @@
         showModal(modalDialog(
             title="Panel settings", size="l", fade=TRUE,
             footer=NULL, easyClose=TRUE,
+            checkboxInput(.generalMemoryIncludeSE, "include SummarizedExperiment", value=TRUE),
+            checkboxInput(.generalMemoryIncludeECM, "include ExperimentColorMap", value=TRUE),
+            downloadButton(.generalMemoryExport, "Download RDS"),
+            if (!is.null(saveState)) {
+                actionButton(.generalMemoryCustomSave, "Save application state")
+            },
+            br(), br(),
             aceEditor(.generalMemoryTracker, mode="r", theme="solarized_light", autoComplete="live",
                 value=paste(.report_memory(pObjects$memory), collapse="\n"),
-                height="600px"),
-            downloadButton(.generalMemoryExport, "Download RDS")
+                height="600px")
         ))
     }, ignoreInit=TRUE)
+
+    # Arbitrary function to save the content.
+    if (!is.null(saveState)) {
+        observeEvent(input[[.generalMemoryCustomSave]], {
+            saveState(.gather_current_memory(se, input, pObjects))
+        }, ignoreInit=TRUE)
+    }
 
     observeEvent(input[[.generalSessionInfo]], {
         showModal(modalDialog(
@@ -177,3 +194,27 @@
 }
 
 #nocov end
+
+#' Gather current memory state
+#'
+#' Gather the bits and pieces necessary to describe the current state of the application.
+#'
+#' @inheritParams .create_general_observers
+#'
+#' @return A list containing \code{memory}, the list of \linkS4class{Panel} describing the current app state;
+#' and possibly \code{se} and \code{colormap}, depending on whether their respective options are checked.
+#'
+#' @author Aaron Lun
+#'
+#' @rdname INTERNAL_gather_current_memory
+#' @importFrom S4Vectors metadata
+.gather_current_memory <- function(se, input, pObjects) {
+    args <- list(memory=pObjects$memory)
+    if (input[[.generalMemoryIncludeSE]]) {
+        args$se <- se
+    }
+    if (input[[.generalMemoryIncludeECM]]) {
+        args$colormap <- metadata(se)$colormap
+    }
+    args
+}

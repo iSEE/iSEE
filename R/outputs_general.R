@@ -38,14 +38,17 @@
         )
     })
     # nocov end
+
     # nocov start
     output[[.generalMemoryExport]] <- downloadHandler(
         filename="iSEE_memory.rds",
         content=function(file) {
-            saveRDS(file=file, pObjects$memory)
+            vals <- .gather_current_memory(se, input, pObjects)
+            saveRDS(file=file, vals)
         }
     )
     # nocov end
+
     # nocov start
     output[[.generalExportOutputDownload]] <- downloadHandler(
         filename="iSEE_exports.zip",

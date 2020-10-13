@@ -42,3 +42,11 @@ test_that("iSEE main function runs with empty dimnames", {
     expect_true(any(grepl("colnames.* <- ", out$commands)))
     expect_true(any(grepl("rownames.* <- ", out$commands)))
 })
+
+test_that("iSEE runs correctly with saveState= specified", {
+    app <- iSEE(sce, saveState=function(x) {
+        withProgress(message="Saving!", saveRDS(x, file=tempfile(fileext='.rds')))
+        showNotification("hooray, saved!", type="message")
+    })
+    expect_s3_class(app, "shiny.appobj")
+})

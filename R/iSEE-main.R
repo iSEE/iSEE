@@ -21,6 +21,7 @@
 #' @param voice A logical indicating whether the voice recognition should be enabled.
 #' @param bugs Set to \code{TRUE} to enable the bugs Easter egg.
 #' Alternatively, a named numeric vector control the respective number of each bug type (e.g., \code{c(bugs=3L, spiders=1L)}).
+#' @param saveState A function that accepts a single argument containing the current application state and saves it to some appropriate location.
 #' @param ... Further arguments to pass to \code{\link{shinyApp}}.
 #'
 #' @details
@@ -36,18 +37,41 @@
 #' so it is not strictly necessary to re-specify instances of those initial panels in \code{extra}.
 #' (unless we want the parameters of newly created panels to be different from those at initialization).
 #'
-#' The \code{tour} argument needs to be provided in a form compatible with the format expected by the \code{rintrojs} package.
-#' There should be two columns, \code{element} and \code{intro}, with the former describing the element to highlight and the latter providing some descriptive text - see \url{https://github.com/carlganz/rintrojs#usage} for more information.
-#' The \code{\link{defaultTour}} also provides the default tour that is used in the Examples below.
-#'
 #' By default, categorical data types such as factor and character are limited to 24 levels, beyond which they are coerced to numeric variables for faster plotting.
 #' This limit may be set to a different value as a global option, e.g. \code{options(iSEE.maxlevels=30)}.
 #'
+#' @section Setting up a tour:
+#' The \code{tour} argument allows users to specify a custom tour to walk their audience through various panels.
+#' This is useful for describing different aspects of the dataset and highlighting interesting points in an interactive manner.
+#' 
+#' We use the format expected by the \code{rintrojs} package - see \url{https://github.com/carlganz/rintrojs#usage} for more information.
+#' There should be two columns, \code{element} and \code{intro}, with the former describing the element to highlight and the latter providing some descriptive text. 
+#' The \code{\link{defaultTour}} also provides the default tour that is used in the Examples below.
+#'
+#' @section Creating a landing page:
 #' If \code{se} is not supplied, a landing page is generated that allows users to upload their own RDS file to initialize the app.
 #' By default, the maximum request size for file uploads defaults to 5MB
 #' (\url{https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html}).
 #' To raise the limit (e.g., 50MB), run \code{options(shiny.maxRequestSize=50*1024^2)}.
+#' 
 #' The \code{landingPage} argument can be used to alter the landing page, see \code{\link{createLandingPage}} for more details.
+#' This is useful for creating front-ends that can retrieve \linkS4class{SummarizedExperiment}s from a database on demand for interactive visualization.
+#'
+#' @section Saving application state:
+#' If users want to record the application state, they can download an RDS file containing a list with the entries:
+#' \itemize{
+#' \item \code{memory}, a list of \linkS4class{Panel} objects containing the current state of the application.
+#' This can be directly re-used as the \code{initial} argument in a subsequent \code{\link{iSEE}} call.
+#' \item \code{se}, the \linkS4class{SummarizedExperiment} object of interest.
+#' This is optional and may not be present in the list, depending on the user specifications.
+#' \item \code{colormap}, the \linkS4class{ExperimentColorMap} object being used.
+#' This is optional and may not be present in the list, depending on the user specifications.
+#' }
+#' 
+#' We can also provide a custom function in \code{saveState} that accepts a single argument containing this list.
+#' This is most useful when \code{\link{iSEE}} is deployed in an enterprise environment where sessions can be saved in a persistent location;
+#' combined with a suitable \code{landingPage} specification, this allows users to easily reload sessions of interest.
+#' The idea is very similar to Shiny bookmarks but is more customizable and can be used in conjunction with URL-based bookmarking.
 #'
 #' @return A Shiny app object is returned for interactive data exploration of \code{se},
 #' either by simply printing the object or by explicitly running it with \code{\link{runApp}}.
@@ -101,6 +125,7 @@ iSEE <- function(se,
     runLocal=TRUE,
     voice=FALSE,
     bugs=FALSE,
+    saveState=NULL,
     ...)
 {
     # Save the original name of the input object for renaming in the tracker
@@ -295,14 +320,14 @@ iSEE <- function(se,
                     INITIAL <- initial
                 } 
                 .initialize_server(SE, initial=INITIAL, extra=extra, colormap=colormap,
-                    tour=TOUR, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name,
+                    tour=TOUR, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name, saveState=saveState,
                     input=input, output=output, session=session, rObjects=rObjects)
                 rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
             }
             landingPage(FUN, input=input, output=output, session=session)
         } else {
             .initialize_server(se, initial=initial, extra=extra, colormap=colormap,
-                tour=tour, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name,
+                tour=tour, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name, saveState=saveState,
                 input=input, output=output, session=session, rObjects=rObjects)
         }
     } # end of iSEE_server
@@ -348,7 +373,8 @@ iSEE <- function(se,
 #' @rdname INTERNAL_initialize_server
 #' @importFrom shiny showNotification tagList HTML strong br code insertUI
 .initialize_server <- function(se, initial, extra, colormap,
-    tour, runLocal, se_name, ecm_name, input, output, session, rObjects)
+    tour, runLocal, se_name, ecm_name, saveState, 
+    input, output, session, rObjects)
 {
     # nocov start
     if (grepl("[[:digit:]]+-12-06", Sys.Date())) {
@@ -433,7 +459,8 @@ iSEE <- function(se,
     }
 
     # Observer set-up.
-    .create_general_observers(runLocal, se_name=se_name, ecm_name=ecm_name, mod_commands=mod_commands,
+    .create_general_observers(se, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name, 
+        mod_commands=mod_commands, saveState=saveState, 
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_tour_observer(se, memory=pObjects$memory, tour=tour, input=input, session=session)

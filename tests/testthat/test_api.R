@@ -369,7 +369,7 @@ test_that(".exportOutput handles DotPlot", {
     ReducedDimensionPlot1 <- .refineParameters(ReducedDimensionPlot1, sce)
     memory <- list(ReducedDimensionPlot1=ReducedDimensionPlot1)
     pObjects <- mimic_live_app(sce, memory)
-    metadata(sce)$colormap <- ExperimentColorMap()
+    sce <- .set_colormap(sce, ExperimentColorMap())
 
     out <- .exportOutput(memory$ReducedDimensionPlot1, sce, memory, pObjects$contents)
     expect_identical(out, "ReducedDimensionPlot1.pdf")
@@ -383,7 +383,7 @@ test_that(".exportOutput handles Table", {
     ColumnDataTable1 <- .refineParameters(ColumnDataTable1, sce)
     memory <- list(ColumnDataTable1=ColumnDataTable1)
     pObjects <- mimic_live_app(sce, memory)
-    metadata(sce)$colormap <- ExperimentColorMap()
+    sce <- .set_colormap(sce, ExperimentColorMap())
 
     out <- .exportOutput(memory$ColumnDataTable1, sce, memory, pObjects$contents)
     expect_identical(out, "ColumnDataTable1.csv")
@@ -397,7 +397,7 @@ test_that(".exportOutput handles ComplexHeatmapPlot", {
     ComplexHeatmapPlot1 <- .refineParameters(ComplexHeatmapPlot1, sce)
     memory <- list(ComplexHeatmapPlot1=ComplexHeatmapPlot1)
     pObjects <- mimic_live_app(sce, memory)
-    metadata(sce)$colormap <- ExperimentColorMap()
+    sce <- .set_colormap(sce, ExperimentColorMap())
 
     out <- .exportOutput(memory$ComplexHeatmapPlot1, sce, memory, pObjects$contents)
     expect_identical(out, "ComplexHeatmapPlot1.pdf")

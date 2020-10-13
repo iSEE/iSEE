@@ -20,7 +20,7 @@ test_that(".prepare_SE works correctly", {
     sce <- iSEE:::.prepare_SE(sce, ExperimentColorMap(), memory)
 
     # Stores the colormap:
-    expect_identical(ExperimentColorMap(), metadata(sce)$colormap)
+    expect_identical(ExperimentColorMap(), .get_colormap(sce))
 
     # Caches common information:
     expect_true(all(c("DotPlot", "ColumnDotPlot", "ReducedDimensionPlot", "RowDataTable", "RowDotPlot", "ColumnDataTable")

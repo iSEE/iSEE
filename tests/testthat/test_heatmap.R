@@ -8,7 +8,7 @@ memory <- list(
 )
 
 pObjects <- mimic_live_app(sce, memory)
-metadata(sce)$colormap <- ExperimentColorMap()
+sce <- .set_colormap(sce, ExperimentColorMap())
 
 test_that(".process_heatmap_assay_colormap handles discrete assays", {
 

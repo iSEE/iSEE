@@ -502,7 +502,7 @@ iSEE <- function(se,
 #' @rdname INTERNAL_prepare_SE
 #' @importFrom S4Vectors metadata metadata<-
 .prepare_SE <- function(se, colormap, available) {
-    metadata(se)$colormap <- colormap
+    se <- .set_colormap(se, colormap)
     for (entry in available) {
         se <- .cacheCommonInfo(entry, se)
     }

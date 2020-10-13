@@ -167,6 +167,7 @@ SummarizedExperiment object, using a Shiny interface.</p>
   runLocal <span class='op'>=</span> <span class='cn'>TRUE</span>,
   voice <span class='op'>=</span> <span class='cn'>FALSE</span>,
   bugs <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  saveState <span class='op'>=</span> <span class='cn'>NULL</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -222,6 +223,10 @@ If not provided, the app displays the version info of <code>iSEE</code>.</p></td
 Alternatively, a named numeric vector control the respective number of each bug type (e.g., <code><a href='https://rdrr.io/r/base/c.html'>c(bugs=3L, spiders=1L)</a></code>).</p></td>
     </tr>
     <tr>
+      <th>saveState</th>
+      <td><p>A function that accepts a single argument containing the current application state and saves it to some appropriate location.</p></td>
+    </tr>
+    <tr>
       <th>...</th>
       <td><p>Further arguments to pass to <code><a href='https://shiny.rstudio.com/reference/shiny/latest/shinyApp.html'>shinyApp</a></code>.</p></td>
     </tr>
@@ -243,16 +248,44 @@ The first instance of each new class in <code>extra</code> will be used as a tem
 Note that <code>initial</code> will automatically be appended to <code>extra</code> to form the final set of available panels,
 so it is not strictly necessary to re-specify instances of those initial panels in <code>extra</code>.
 (unless we want the parameters of newly created panels to be different from those at initialization).</p>
-<p>The <code>tour</code> argument needs to be provided in a form compatible with the format expected by the <code>rintrojs</code> package.
-There should be two columns, <code>element</code> and <code>intro</code>, with the former describing the element to highlight and the latter providing some descriptive text - see <a href='https://github.com/carlganz/rintrojs#usage'>https://github.com/carlganz/rintrojs#usage</a> for more information.
-The <code><a href='defaultTour.html'>defaultTour</a></code> also provides the default tour that is used in the Examples below.</p>
 <p>By default, categorical data types such as factor and character are limited to 24 levels, beyond which they are coerced to numeric variables for faster plotting.
 This limit may be set to a different value as a global option, e.g. <code><a href='https://rdrr.io/r/base/options.html'>options(iSEE.maxlevels=30)</a></code>.</p>
+    <h2 class="hasAnchor" id="setting-up-a-tour"><a class="anchor" href="#setting-up-a-tour"></a>Setting up a tour</h2>
+
+    
+
+<p>The <code>tour</code> argument allows users to specify a custom tour to walk their audience through various panels.
+This is useful for describing different aspects of the dataset and highlighting interesting points in an interactive manner.</p>
+<p>We use the format expected by the <code>rintrojs</code> package - see <a href='https://github.com/carlganz/rintrojs#usage'>https://github.com/carlganz/rintrojs#usage</a> for more information.
+There should be two columns, <code>element</code> and <code>intro</code>, with the former describing the element to highlight and the latter providing some descriptive text. 
+The <code><a href='defaultTour.html'>defaultTour</a></code> also provides the default tour that is used in the Examples below.</p>
+    <h2 class="hasAnchor" id="creating-a-landing-page"><a class="anchor" href="#creating-a-landing-page"></a>Creating a landing page</h2>
+
+    
+
 <p>If <code>se</code> is not supplied, a landing page is generated that allows users to upload their own RDS file to initialize the app.
 By default, the maximum request size for file uploads defaults to 5MB
 (<a href='https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html'>https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html</a>).
-To raise the limit (e.g., 50MB), run <code><a href='https://rdrr.io/r/base/options.html'>options(shiny.maxRequestSize=50*1024^2)</a></code>.
-The <code>landingPage</code> argument can be used to alter the landing page, see <code><a href='createLandingPage.html'>createLandingPage</a></code> for more details.</p>
+To raise the limit (e.g., 50MB), run <code><a href='https://rdrr.io/r/base/options.html'>options(shiny.maxRequestSize=50*1024^2)</a></code>.</p>
+<p>The <code>landingPage</code> argument can be used to alter the landing page, see <code><a href='createLandingPage.html'>createLandingPage</a></code> for more details.
+This is useful for creating front-ends that can retrieve SummarizedExperiments from a database on demand for interactive visualization.</p>
+    <h2 class="hasAnchor" id="saving-application-state"><a class="anchor" href="#saving-application-state"></a>Saving application state</h2>
+
+    
+
+<p>If users want to record the application state, they can download an RDS file containing a list with the entries:</p><ul>
+<li><p><code>memory</code>, a list of <a href='Panel-class.html'>Panel</a> objects containing the current state of the application.
+This can be directly re-used as the <code>initial</code> argument in a subsequent <code>iSEE</code> call.</p></li>
+<li><p><code>se</code>, the SummarizedExperiment object of interest.
+This is optional and may not be present in the list, depending on the user specifications.</p></li>
+<li><p><code>colormap</code>, the <a href='ExperimentColorMap-class.html'>ExperimentColorMap</a> object being used.
+This is optional and may not be present in the list, depending on the user specifications.</p></li>
+</ul>
+
+<p>We can also provide a custom function in <code>saveState</code> that accepts a single argument containing this list.
+This is most useful when <code>iSEE</code> is deployed in an enterprise environment where sessions can be saved in a persistent location;
+combined with a suitable <code>landingPage</code> specification, this allows users to easily reload sessions of interest.
+The idea is very similar to Shiny bookmarks but is more customizable and can be used in conjunction with URL-based bookmarking.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Rue-Albrecht K, Marini F, Soneson C, Lun ATL.

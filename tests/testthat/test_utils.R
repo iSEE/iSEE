@@ -282,4 +282,4 @@ test_that(".gather_current_memory works as expected", {
     expect_identical(out$memory, pObjects$memory)
     expect_identical(out$colormap, "WHEE")
 
-}
+})

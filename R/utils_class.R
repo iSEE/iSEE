@@ -58,7 +58,7 @@
 #' 
 #' @rdname INTERNAL_set_colormap
 .set_colormap <- function(se, colormap) {
-    .setCachedCommonInfo(se, ".internal", list(colormap=colormap))
+    .setCachedCommonInfo(se, ".internal", colormap=colormap)
 }
 
 #' @rdname INTERNAL_set_colormap

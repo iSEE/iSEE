@@ -264,3 +264,22 @@ test_that("define_visual_options throws an error for unnamed list input", {
         "Visual parameters UI elements must be named"
     )
 })
+
+test_that(".gather_current_memory works as expected", {
+
+    input <- list()
+    input[[iSEE:::.generalMemoryIncludeSE]] <- TRUE
+    input[[iSEE:::.generalMemoryIncludeECM]] <- TRUE
+
+    pObjects <- new.env()
+    pObjects$memory <- list("YAY")
+
+    metadata(sce)$colormap <- "WHEE"
+
+    out <- iSEE:::.gather_current_memory(sce, input, pObjects)
+
+    expect_identical(out$se, sce)
+    expect_identical(out$memory, pObjects$memory)
+    expect_identical(out$colormap, "WHEE")
+
+}

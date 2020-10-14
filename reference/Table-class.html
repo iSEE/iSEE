@@ -73,7 +73,7 @@ It provides observers for rendering the table widget, monitoring single selectio
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.24</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.25</span>
       </span>
     </div>
 
@@ -167,8 +167,10 @@ It provides observers for rendering the table widget, monitoring single selectio
 Defaults to <code>NA</code>, in which case the value should be chosen by the subclass' <code><a href='setup-generics.html'>.refineParameters</a></code> method.</p></li>
 <li><p><code>Search</code>, a string containing the regular expression for the global search.
 Defaults to <code>""</code>, i.e., no search.</p></li>
-<li><p><code>SearchColumns</code>, a character vector where each entry contains the search string for each column.
-Defaults to an empty character vector, i.e., no search.</p></li>
+<li><p><code>SearchColumns</code>, a unnamed character vector of length equal to the number of columns of the data.frame,
+where each entry contains the search string for its corresponding column.
+Alternatively, a character vector of variable length, containing search strings for one or more columns.
+Defaults to an character vector of length zero, which is internally expanded to an vector of zero-length strings, i.e., no search.</p></li>
 </ul>
 
 <p>The following slots control the appearance of the table:</p><ul>

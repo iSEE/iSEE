@@ -96,6 +96,7 @@ filterDT <- function(df, column, global) {
         output <- output & g.out
     }
 
+    column <- .expand_named_colsearch(df, column)
     for (i in seq_len(min(ncol(df), length(column)))) {
         if (column[i]!="") {
             output <- output & filterDTColumn(df[[i]], column[i])
@@ -105,6 +106,44 @@ filterDT <- function(df, column, global) {
     output
 }
 
+#' A missing-robust \code{grep}
+#'
+#' A variant of \code{\link{grep}} that is robust to \code{NA}s, by returning \code{FALSE}.
+#'
+#' @param pattern String containing the pattern to pass to \code{grepl}.
+#' @param val Character vector containing the strings to search for the pattern.
+#'
+#' @return A logical vector indicating whether the pattern is present in each entry of \code{val}.
+#' Set to \code{FALSE} if \code{val} is \code{NA}.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_safegrep
 safegrep <- function(pattern, val) {
     grepl(pattern, val) & !is.na(val)
 }
+
+#' Expand the column search field
+#'
+#' Expand the column search field to support the use of a named vector as a shorthand in the \linkS4class{Table}'s \code{SearchColumns} field.
+#'
+#' @inheritParams filterDT
+#'
+#' @return An unnamed character vector containing the search fields for every column.
+#' Either \code{column} is returned directly if it was already unnamed,
+#' or a new vector of length equal to the number of columns in \code{df}.
+#'
+#' @author Aaron Lun 
+#' @rdname INTERNAL_expand_named_colsearch
+.expand_named_colsearch <- function(df, column) {
+    if (is.null(names(column))) {
+        return(column)
+    }
+
+    wider <- character(ncol(df))
+    m <- match(names(column), colnames(df))
+    keep <- !is.na(m)
+    wider[m[keep]] <- unname(column)[keep]
+
+    wider
+}
+

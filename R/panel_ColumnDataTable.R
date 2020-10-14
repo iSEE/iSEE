@@ -110,6 +110,8 @@ setMethod(".refineParameters", "ColumnDataTable", function(x, se) {
 
     # First, expanding out so that we cover all columns.
     search_vals <- x[[.TableColSearch]]
+    search_vals <- .expand_named_colsearch(df, search_vals)
+
     N <- ncol(df)
     if (length(search_vals)!=N) {
         search_vals <- character(N)

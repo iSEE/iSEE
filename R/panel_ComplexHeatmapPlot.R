@@ -429,7 +429,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 
 #' @export
 #' @importFrom colourpicker colourInput
-setMethod(".defineSelectionEffectInterface", "DotPlot", function(x) {
+setMethod(".defineSelectionEffectInterface", "ComplexHeatmapPlot", function(x) {
     plot_name <- .getEncodedName(x)
     select_effect <- paste0(plot_name, "_", .selectEffect)
 

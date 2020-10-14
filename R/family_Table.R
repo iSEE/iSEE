@@ -10,8 +10,10 @@
 #' Defaults to \code{NA}, in which case the value should be chosen by the subclass' \code{\link{.refineParameters}} method.
 #' \item \code{Search}, a string containing the regular expression for the global search.
 #' Defaults to \code{""}, i.e., no search.
-#' \item \code{SearchColumns}, a character vector where each entry contains the search string for each column.
-#' Defaults to an empty character vector, i.e., no search.
+#' \item \code{SearchColumns}, a unnamed character vector of length equal to the number of columns of the data.frame,
+#' where each entry contains the search string for its corresponding column.
+#' Alternatively, a character vector of variable length, containing search strings for one or more columns.
+#' Defaults to an character vector of length zero, which is internally expanded to an vector of zero-length strings, i.e., no search.
 #' }
 #'
 #' The following slots control the appearance of the table:

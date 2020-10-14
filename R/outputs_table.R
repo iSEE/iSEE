@@ -54,9 +54,10 @@
         .safe_reactive_bump(rObjects, tabupdate_field)
 
         # Protection against a change in the number of columns from .generateOutput.
-        # .generate_table_filter protects against a mismatch in use by children,
-        #  so there's no need to edit the memory here (and in fact that won't work
-        # anyway because the children are evaluating way before we get here).
+        # filterDT protects against a mismatch in use by children, so there's no 
+        # need to edit the memory here (and in fact that won't work anyway because 
+        # the children are evaluating way before we get here).
+        search_col <- .expand_named_colsearch(full_tab, search_col)
         delta <- ncol(full_tab) - length(search_col)
         if (delta!=0L) {
             if (delta < 0L) {

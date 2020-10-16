@@ -803,7 +803,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
     # Initialize an environment storing information for generating ggplot commands
     plot_env <- new.env()
     plot_env$se <- se
-    plot_env$colormap <- metadata(se)$colormap
+    plot_env$colormap <- .get_colormap(se)
 
     all_cmds <- list()
     all_labels <- list()

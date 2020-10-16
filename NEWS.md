@@ -1,3 +1,12 @@
+# iSEE 2.1.25
+
+* Support a named vector in the `SearchColumns` field of the `Table` subclasses.
+
+# iSEE 2.1.24
+
+* Enable custom saving of the application state via the new `saveState=` argument.
+* Switch colormap getters to use an internal cache to avoid conflicts with user entries.
+
 # iSEE 2.1.23
 
 * `ExperimentColorMap` inherits from `Annotated`.

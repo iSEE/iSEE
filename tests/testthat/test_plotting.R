@@ -16,7 +16,7 @@ memory <- list(
 )
 
 pObjects <- mimic_live_app(sce, memory)
-metadata(sce)$colormap <- ExperimentColorMap()
+sce <- .set_colormap(sce, ExperimentColorMap())
 
 ########################################
 # .make_redDimPlot/.scatter_plot ----

@@ -129,3 +129,11 @@ test_that("filterDT behaves correctly with NAs", {
         grepl("A", boogered$blah)
     )
 })
+
+test_that("filterDT behaves correctly with a named character vector", {
+    expect_identical(filterDT(df, global="", column=c(stuff="Aaron")), df$stuff=="Aaron")
+
+    expect_identical(filterDT(df, global="", column=c(foo="25 ... 100")), df$foo >= 25)
+
+    expect_identical(filterDT(df, global="", column=c(thing="0 ... 0.5", blah="A|B")), df$thing < 0.5 & df$blah %in% c("A", "B"))
+})

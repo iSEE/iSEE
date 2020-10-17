@@ -103,6 +103,7 @@
 #' @param x A data.frame or \linkS4class{DataFrame}, most typically the \code{\link{rowData}} or \code{\link{colData}}.
 #' @param se The \linkS4class{SummarizedExperiment} object.
 #' @param i An integer scalar or string specifying the assay of interest in \code{se}.
+#' @param max_levels Integer scalar specifying the maximum number unique values for \code{x} to be categorical.
 #'
 #' @details
 #' \code{.findAtomicFields} is necessary as many of the widgets used by \code{\link{iSEE}} (e.g., \code{\link{ggplot}}, \code{\link{datatable}}) do not know how to handle more complex types being stored as columns.
@@ -296,14 +297,15 @@
 #' @rdname INTERNAL_is_groupable
 #' @seealso
 #' \code{\link{.nlevels}}.
-.is_groupable <- function(x, max_levels = getOption("iSEE.maxlevels", 24)){
-    .nlevels(x) <= max_levels
+.is_groupable <- function(x, max_levels = Inf) {
+    out <- .nlevels(x)
+    is.finite(out) && out <= max_levels
 }
 
 #' @rdname cache-utils
 #' @export
-.whichGroupable <- function(x) {
-    which(vapply(x, FUN=.is_groupable, FUN.VALUE=FALSE))
+.whichGroupable <- function(x, max_levels = Inf) {
+    which(vapply(x, FUN=.is_groupable, max_levels=max_levels, FUN.VALUE=FALSE))
 }
 
 #' @rdname cache-utils

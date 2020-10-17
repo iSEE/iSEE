@@ -54,14 +54,22 @@
     labels <- list()
 
     # Add commands coercing X and Y to appropriate type
-    collected$coerce <- .coerce_dataframe_columns(envir, c("X", "Y"), "plot.data")
+    collected$coerce <- .coerce_dataframe_columns(envir, 
+        fields=c("X", "Y"), df="plot.data",
+        max_levels=iSEEOptions$get("factor.maxlevels")
+    )
 
     # Add commands adding optional columns to plot.data
     out_color <- .addDotPlotDataColor(x, envir)
     collected$color <- out_color$commands
     labels <- c(labels, out_color$labels)
     if (!is.null(envir$plot.data$ColorBy)) {
-        collected$color <- c(collected$color, .coerce_dataframe_columns(envir, "ColorBy", "plot.data"))
+        collected$color <- c(collected$color, 
+            .coerce_dataframe_columns(envir, 
+                fields="ColorBy", df="plot.data", 
+                max_levels=iSEEOptions$get("color.maxlevels")
+            )
+        )
     }
 
     out_shape <- .addDotPlotDataShape(x, envir)
@@ -121,6 +129,7 @@
 #' @param envir An environment containing the \code{df} data.frame.
 #' @param fields A character vector of column names to coerce.
 #' @param df Name of the data.frame in \code{envir}.
+#' @inheritParams .coerce_type
 #'
 #' @return
 #' The specified \code{plot.data} columns are coerced to factors or numeric values.
@@ -130,11 +139,11 @@
 #' \code{\link{.coerce_type}}, which generates the commands to do the coercion.
 #' @author Aaron Lun, Kevin Rue-Albrecht
 #' @rdname INTERNAL_coerce_dataframe_columns
-.coerce_dataframe_columns <- function(envir, fields, df="plot.data") {
+.coerce_dataframe_columns <- function(envir, fields, df="plot.data", max_levels=Inf) {
     coerce_cmds <- NULL
     for (f in fields) {
         v <- get(df, envir = envir)[[f]]
-        coerce_cmds <- c(coerce_cmds, .coerce_type(v, f, as_numeric=!.is_groupable(v), df=df))
+        coerce_cmds <- c(coerce_cmds, .coerce_type(v, f, max_levels=max_levels, df=df))
     }
     .textEval(coerce_cmds, envir)
     coerce_cmds

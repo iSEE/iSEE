@@ -763,28 +763,25 @@ test_that(".coerce_type handles various inputs correctly", {
 
     input_field <- "XYZ"
     expect_warning(
-        lab_out <- iSEE:::.coerce_type(letters, input_field, as_numeric=TRUE),
-        "coloring covariate has too many unique values, coercing to numeric"
+        lab_out <- iSEE:::.coerce_type(letters, input_field, max_levels=0),
+        "covariate has too many unique values, coercing to numeric"
     )
     expect_identical(lab_out, "plot.data$XYZ <- as.numeric(as.factor(plot.data$XYZ));")
 
     expect_warning(
-        lab_out <- iSEE:::.coerce_type(factor(letters), input_field, as_numeric=TRUE),
-        "coloring covariate has too many unique values, coercing to numeric"
+        lab_out <- iSEE:::.coerce_type(factor(letters), input_field, max_levels=0),
+        "covariate has too many unique values, coercing to numeric"
     )
     expect_identical(lab_out, "plot.data$XYZ <- as.numeric(plot.data$XYZ);")
 
-    lab_out <- iSEE:::.coerce_type(1:10, input_field, as_numeric=TRUE)
+    lab_out <- iSEE:::.coerce_type(1:10, input_field)
     expect_identical(lab_out, NULL)
 
-    lab_out <- iSEE:::.coerce_type(letters, input_field, as_numeric=FALSE)
+    lab_out <- iSEE:::.coerce_type(letters, input_field)
     expect_identical(lab_out, 'plot.data[["XYZ"]] <- factor(plot.data[["XYZ"]]);')
 
-    lab_out <- iSEE:::.coerce_type(factor(letters), input_field, as_numeric=FALSE)
+    lab_out <- iSEE:::.coerce_type(factor(letters), input_field)
     expect_identical(lab_out, NULL)
-
-    lab_out <- iSEE:::.coerce_type(1:10, input_field, as_numeric=FALSE)
-    expect_identical(lab_out, 'plot.data[["XYZ"]] <- factor(plot.data[["XYZ"]]);')
 })
 
 ########################################

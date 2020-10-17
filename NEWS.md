@@ -1,3 +1,8 @@
+# iSEE 2.1.26
+
+* Disable the import button on the dimnames modal when transmitter has not made a selection.
+* Separate the maximum number of factor levels for colors from other applications.
+
 # iSEE 2.1.25
 
 * Support a named vector in the `SearchColumns` field of the `Table` subclasses.

@@ -47,7 +47,15 @@
 
     .input_FUN <- function(field) paste0(plot_name, "_", field)
 
-    source_field <- if (source_type == "row") .selectRowSource else .selectColSource
+    if (source_type == "row") {
+        source_field <- .selectRowSource
+        type_field <- .selectRowType
+        saved_field <- .selectRowSaved
+    } else {
+        source_field <- .selectColSource
+        type_field <- .selectColType
+        saved_field <- .selectColSaved
+    }
 
     # nocov start
     observeEvent(input[[.input_FUN(button_name)]], {
@@ -58,9 +66,19 @@
             txt <- sprintf("No panel chosen for %s selection", source_type)
             FUN <- disabled
         } else {
-            transmitter <- .getFullName(pObjects$memory[[transmitter]])
-            txt <- tagList(sprintf("Receiving %s selection from", source_type), em(strong(transmitter)))
-            FUN <- identity
+            full_trans <- .getFullName(pObjects$memory[[transmitter]])
+            select_type <- pObjects$memory[[plot_name]][[type_field]]
+            select_saved <- pObjects$memory[[plot_name]][[saved_field]]
+
+            if (.transmitted_selection(plot_name, transmitter, pObjects$memory,
+                select_type=select_type, select_saved=select_saved)) 
+            {
+                txt <- tagList(sprintf("Receiving %s selection from", source_type), em(strong(full_trans)))
+                FUN <- identity
+            } else {
+                txt <- tagList(sprintf("No %s selection in", source_type), em(strong(full_trans)))
+                FUN <- disabled 
+            }
         }
 
         modal_ui <- modalDialog(

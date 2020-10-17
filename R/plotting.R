@@ -991,7 +991,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #'
 #' @param values Input vector that must be coerced to \code{numeric}.
 #' @param field Column name in the \code{plot.data} data.frame that contains \code{values}.
-#' @param as_numeric A logical scalar indicating whether the column should be coerced to numeric (if \code{TRUE}) or factor (otherwise).
+#' @param max_levels Integer scalar specifying the maximum number unique values for \code{x} to be considered as categorical.
 #' @param df String containing the variable name of the data.frame containing the plotting data.
 #'
 #' @return A command that coerces the plot data.frame column to the specified type, or \code{NULL} if no coercion is required.
@@ -1000,10 +1000,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @rdname INTERNAL_coerce_type
 #' @seealso
 #' \code{\link{.generateDotPlot}}.
-.coerce_type <- function(values, field, as_numeric=TRUE, df="plot.data") {
-    if (as_numeric) {
+.coerce_type <- function(values, field, max_levels=Inf, df="plot.data") {
+    if (!.is_groupable(values, max_levels)) {
         if (!is.numeric(values)) {
-            warning("coloring covariate has too many unique values, coercing to numeric")
+            warning("covariate has too many unique values, coercing to numeric")
             col_var <- sprintf("%s$%s", df, field)
             if (!is.factor(values)) {
                 col_var <- sprintf("as.factor(%s)", col_var)

@@ -9,7 +9,8 @@ test_that("grouping evaluation functions work correctly", {
 
     # Too many levels to consider groupable.
     X <- data.frame(A=LETTERS, B=1L)
-    expect_equivalent(iSEE:::.whichGroupable(X), integer(0))
+    expect_equivalent(iSEE:::.whichGroupable(X), 1L)
+    expect_equivalent(iSEE:::.whichGroupable(X, max_levels=20), integer(0))
     expect_equivalent(iSEE:::.whichNumeric(X), 2L)
 })
 

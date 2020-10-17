@@ -10,7 +10,7 @@
 \usage{
 .findAtomicFields(x)
 
-.whichGroupable(x)
+.whichGroupable(x, max_levels = Inf)
 
 .whichNumeric(x)
 
@@ -18,6 +18,8 @@
 }
 \arguments{
 \item{x}{A data.frame or \linkS4class{DataFrame}, most typically the \code{\link{rowData}} or \code{\link{colData}}.}
+
+\item{max_levels}{Integer scalar specifying the maximum number unique values for \code{x} to be categorical.}
 
 \item{se}{The \linkS4class{SummarizedExperiment} object.}
 

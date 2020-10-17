@@ -61,6 +61,12 @@ new_defaults = function(value = list()) {
 #' \item{\code{panel.color}}{Named character vector of colors.
 #' The names of the vector should be set to the name of class to be overridden; if a class is not named here, its default color is used.
 #' It is highly recommended to define colors as hex color codes (e.g., \code{"#1e90ff"}), for full compatibility with both HTML elements and R plots.}
+#' \item{\code{color.maxlevels}}{Maximum number of levels for a categorical variable used for coloring.
+#' Variables with more levels are coerced to numeric to avoid problems with an overly-large legend.
+#' Defaults to 24.}
+#' \item{\code{factor.maxlevels}}{Maximum number of levels for a categorical variable to be used anywhere in the app.
+#' Variables with more levels are coerced to numeric to avoid rendering delays.
+#' Defaults to 100.}
 #' \item{\code{assay}}{Character vector of assay names to use if available, in order of preference.}
 #' \item{\code{RowTable.select.details}}{A function that takes a string containing the name of a feature (i.e., the current selection in the \linkS4class{RowTable}) and returns a HTML element with more details.} 
 #' \item{\code{ColumnTable.select.details}}{A function that takes a string containing the name of a sample (i.e., the current selection in the \linkS4class{ColumnTable}) and returns a HTML element with more details.}
@@ -96,6 +102,9 @@ iSEEOptions <- new_defaults(list(
     panel.width = 4L,
     panel.height = 500L,
     panel.color = c(),
+
+    color.maxlevels=24L,
+    factor.maxlevels=100L,
 
     assay = c("logcounts", "normcounts"),
     RowTable.extra.info = NULL,

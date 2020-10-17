@@ -156,7 +156,7 @@
 
     <pre class="usage"><span class='fu'>.findAtomicFields</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 
-<span class='fu'>.whichGroupable</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+<span class='fu'>.whichGroupable</span><span class='op'>(</span><span class='va'>x</span>, max_levels <span class='op'>=</span> <span class='cn'>Inf</span><span class='op'>)</span>
 
 <span class='fu'>.whichNumeric</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 
@@ -168,6 +168,10 @@
     <tr>
       <th>x</th>
       <td><p>A data.frame or DataFrame, most typically the <code>rowData</code> or <code>colData</code>.</p></td>
+    </tr>
+    <tr>
+      <th>max_levels</th>
+      <td><p>Integer scalar specifying the maximum number unique values for <code>x</code> to be categorical.</p></td>
     </tr>
     <tr>
       <th>se</th>

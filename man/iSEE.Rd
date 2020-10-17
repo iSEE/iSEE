@@ -72,9 +72,6 @@ The first instance of each new class in \code{extra} will be used as a template 
 Note that \code{initial} will automatically be appended to \code{extra} to form the final set of available panels,
 so it is not strictly necessary to re-specify instances of those initial panels in \code{extra}.
 (unless we want the parameters of newly created panels to be different from those at initialization).
-
-By default, categorical data types such as factor and character are limited to 24 levels, beyond which they are coerced to numeric variables for faster plotting.
-This limit may be set to a different value as a global option, e.g. \code{options(iSEE.maxlevels=30)}.
 }
 \section{Setting up a tour}{
 

@@ -163,7 +163,12 @@
     cmds <- c(cmds, "", init_cmd, "")
 
     for (annot in x[[.heatMapColData]]) {
-        cmds <- c(cmds, .coerce_dataframe_columns(envir, annot, ".column_data"))
+        cmds <- c(cmds, 
+            .coerce_dataframe_columns(envir, 
+                fields=annot, df=".column_data",
+                max_levels=iSEEOptions$get("factor.maxlevels")
+            )
+        )
 
         cmd_get_value <- sprintf(".color_values <- .column_data[[%s]]", deparse(annot))
         .textEval(cmd_get_value, envir)
@@ -239,7 +244,12 @@
     cmds <- c(cmds, "", init_cmd, "")
 
     for (annot in x[[.heatMapRowData]]) {
-        cmds <- c(cmds, .coerce_dataframe_columns(envir, annot, ".row_data"))
+        cmds <- c(cmds, 
+            .coerce_dataframe_columns(envir, 
+                fields=annot, df=".row_data",
+                max_levels=iSEEOptions$get("factor.maxlevels")
+            )
+        )
 
         cmd_get_value <- sprintf('.color_values <- .row_data[[%s]]', deparse(annot))
         .textEval(cmd_get_value, envir)

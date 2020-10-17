@@ -37,9 +37,6 @@
 #' so it is not strictly necessary to re-specify instances of those initial panels in \code{extra}.
 #' (unless we want the parameters of newly created panels to be different from those at initialization).
 #'
-#' By default, categorical data types such as factor and character are limited to 24 levels, beyond which they are coerced to numeric variables for faster plotting.
-#' This limit may be set to a different value as a global option, e.g. \code{options(iSEE.maxlevels=30)}.
-#'
 #' @section Setting up a tour:
 #' The \code{tour} argument allows users to specify a custom tour to walk their audience through various panels.
 #' This is useful for describing different aspects of the dataset and highlighting interesting points in an interactive manner.

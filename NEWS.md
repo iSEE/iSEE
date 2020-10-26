@@ -1,3 +1,7 @@
+# iSEE 2.1.26
+
+* Minor edits to the API documentation.
+
 # iSEE 2.1.25
 
 * Support a named vector in the `SearchColumns` field of the `Table` subclasses.

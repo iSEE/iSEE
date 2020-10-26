@@ -39,8 +39,8 @@ The following arguments are required:
 }
 
 It is expected to attach one or more reactive expressions to \code{output} to render the output element(s) defined by \code{.defineOutput}.
-This is typically done by calling rendering functions like \code{\link{.renderOutput}} or the most appropriate equivalent for the panel's output. 
-The return value of this generic is not used; only the side-effect of the output set-up is relevant.
+This is typically done by calling \pkg{shiny} rendering functions like \code{\link{renderPlot}} or the most appropriate equivalent for the panel's output. 
+The return value of this generic is not used; only the side-effect of the reactive output set-up is relevant.
 
 The rendering expression inside the chosen rendering function is expected to:
 \enumerate{
@@ -58,7 +58,8 @@ This is used for code reporting, and again, is only strictly necessary if the pa
 }
 
 We strongly recommend calling \code{\link{.retrieveOutput}} within the rendering expression, which will automatically perform all of the tasks above, rather than calling \code{\link{.generateOutput}} manually.
-This means that the only extra work required in the implementation of \code{\link{.renderOutput}} is to choose an appropriate rendering function to encapsulate the rendering expression and assign the output of that function to \code{output}.
+By doing so, the only extra work required of the rendering expression is to actually render the output (e.g., by \code{print}ing a \link{ggplot} object).
+Of course, the rendering expression must itself be encapsulated by an appropriate rendering function assigned to \code{output}.
 
 Developers should not attempt to modify \code{x} in any rendering expression.
 This does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.

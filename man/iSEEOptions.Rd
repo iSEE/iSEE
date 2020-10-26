@@ -3,7 +3,7 @@
 \docType{data}
 \name{iSEEOptions}
 \alias{iSEEOptions}
-\title{Default panel options}
+\title{Global \pkg{iSEE} options}
 \format{
 An object of class \code{list} of length 4.
 }
@@ -11,15 +11,19 @@ An object of class \code{list} of length 4.
 iSEEOptions
 }
 \description{
-Set global options using \code{iSEEOptions$set()}, so that all relevant panels will use these default values during initialization.
+Get or set global values that are used by relevant panels during construction and application initialization.
+This allows users to easily modify parameters for multiple panels simultaneously.
 }
-\details{
-See \code{str(iSEEOptions$get())} for a list of default panel options.
+\section{Commands}{
 
-Note that \code{iSEEOptions$restore()} can be used to reset the global options to the package default values.
+\code{str(iSEEOptions$get())} will show the default values for all options.
+
+\code{iSEEOptions$set(name=value)} will set the \code{name}d option to \code{value}.
+
+\code{iSEEOptions$restore()} will reset the global options to the package default values.
 }
+
 \section{Available options}{
-
 
 \describe{
 \item{\code{point.color}}{Default color of data points in \code{DotPlot} panels (character).}
@@ -50,6 +54,18 @@ Defaults to 100.}
 \item{\code{RowTable.select.details}}{A function that takes a string containing the name of a feature (i.e., the current selection in the \linkS4class{RowTable}) and returns a HTML element with more details.} 
 \item{\code{ColumnTable.select.details}}{A function that takes a string containing the name of a sample (i.e., the current selection in the \linkS4class{ColumnTable}) and returns a HTML element with more details.}
 }
+}
+
+\section{Comments on globals}{
+
+As much as possible, these options will only affect the application during Panel construction.
+This enables users to reproduce the app state from one session to another by simply saving the memory. 
+Otherwise, users would also have to export the state of the global variables to properly recapitulate the app state.
+
+For developers: following this guideline generally means that the globals should reflect some parameter that is already present as a formal slot in the panel class.
+If all panels must have the same value, this can be enforced via some creative use of \code{\link{.cacheCommonInfo}} (to cache the first encountered value of the global slot)
+followed by \code{\link{.refineParameters}} (to enforce that value on every other panel of the same class) - 
+see the MAPlot class in the \pkg{iSEEu} package for a working example.
 }
 
 \examples{

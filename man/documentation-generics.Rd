@@ -15,6 +15,11 @@ Each row corresponds to a step of an \pkg{rintrojs} tour;
 the \code{"element"} specifies the active UI element to be highlighted in that step,
 while the \code{"intro"} element contains the HTML-formatted text to show in the tour pop-up.
 
+It is a good idea to \code{\link{callNextMethod}()} to obtain the tour steps for the parent class to append onto the current class's data.frame.
+In some cases, modification of the parent class's tour steps may be necessary if some of the parent's functionality has been overwritten.
+Some communication with the parent's maintainers may be necessary to establish a stable way to identify the rows corresponding to the steps to be written, 
+e.g., based on the row names of the data.frame.
+
 A tour for a Panel \code{x} is expected to only highlight UI elements \emph{on the same panel}.
 This is very important as other panels cannot be assumed to exist in an arbitrary instance of \code{\link{iSEE}}.
 As such, these tours are not well-suited to highlighting interactions between different panels.

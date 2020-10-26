@@ -21,8 +21,9 @@ This determines the color of the panel header as well as (for \linkS4class{DotPl
 }
 \details{
 For developers: \code{.panelColor} is a method that should be subclassed for each \linkS4class{Panel} subclass.
-and determines the default color for all instances of that class.
-It is highly recommended to define colors as hex color codes, for full compatibility with both HTML elements and R plots.
+This determines the color theme for all instances of that class for use in, e.g., headers and box shadings.
+Developers should choose a color that is dark enough to serve as a background for white text. 
+We recommend defining colors as hex color codes for full compatibility with both HTML elements and R plots.
 
 For users: by default, \code{.getPanelColor} will return the default color of each panel as specified by the developer in \code{.panelColor}.
 However, users can override this by setting the \code{panel.color} global option to a named character vector of colors (see Examples).

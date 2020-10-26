@@ -48,6 +48,7 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #' Each interface element should have an equivalent observer in \code{\link{.createObservers}} unless they are hidden by \code{\link{.hideInterface}} (see below).
 #'
 #' It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
+#' A common strategy is to combine the output of \code{callNextMethod} with additional \code{\link{collapseBox}} elements to achieve the desired UI structure.
 #'
 #' @section Defining the data parameter interface:
 #' \code{.defineDataInterface(x, se, select_info)} defines the UI for data-related (i.e., non-aesthetic) parameters.
@@ -142,11 +143,13 @@ setGeneric(".hideInterface", function(x, field) standardGeneric(".hideInterface"
 #' In fact, any changes must go through \code{pObjects$memory} before they change the output in \code{\link{.renderOutput}};
 #' there is no direct interaction between \code{input} and \code{output} in this framework.
 #'
-#' We suggest using \code{\link{.createProtectedParameterObservers}} and \code{\link{.createUnprotectedParameterObservers}}, which create simple observers that will update the memory in response to changes in the UI elements.
+#' We suggest using \code{\link{.createProtectedParameterObservers}} and \code{\link{.createUnprotectedParameterObservers}}, 
+#' which create simple observers that update the memory in response to changes in the UI elements.
 #' For more specific responses, there are also \code{\link{.createMultiSelectionEffectObserver}} and \code{\link{.createCustomDimnamesModalObservers}}.
 #'
 #' Developers should not attempt to modify \code{x} in any observer expression.
 #' This value does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.
+#' Rather, modifications should occur to the version of \code{x} in \code{pObjects$memory}, as described in the code chunk above.
 #' 
 #' @section Triggering re-rendering:
 #' To trigger re-rendering of an output, observers should call \code{\link{.requestUpdate}(PANEL, rObjects)} where \code{PANEL} is the name of the current panel
@@ -194,8 +197,8 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' }
 #'
 #' It is expected to attach one or more reactive expressions to \code{output} to render the output element(s) defined by \code{.defineOutput}.
-#' This is typically done by calling rendering functions like \code{\link{.renderOutput}} or the most appropriate equivalent for the panel's output. 
-#' The return value of this generic is not used; only the side-effect of the output set-up is relevant.
+#' This is typically done by calling \pkg{shiny} rendering functions like \code{\link{renderPlot}} or the most appropriate equivalent for the panel's output. 
+#' The return value of this generic is not used; only the side-effect of the reactive output set-up is relevant.
 #'
 #' The rendering expression inside the chosen rendering function is expected to:
 #' \enumerate{
@@ -213,7 +216,8 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' }
 #'
 #' We strongly recommend calling \code{\link{.retrieveOutput}} within the rendering expression, which will automatically perform all of the tasks above, rather than calling \code{\link{.generateOutput}} manually.
-#' This means that the only extra work required in the implementation of \code{\link{.renderOutput}} is to choose an appropriate rendering function to encapsulate the rendering expression and assign the output of that function to \code{output}.
+#' By doing so, the only extra work required of the rendering expression is to actually render the output (e.g., by \code{print}ing a \link{ggplot} object).
+#' Of course, the rendering expression must itself be encapsulated by an appropriate rendering function assigned to \code{output}.
 #'
 #' Developers should not attempt to modify \code{x} in any rendering expression.
 #' This does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.
@@ -636,14 +640,15 @@ setGeneric(".showSelectionDetails", function(x) standardGeneric(".showSelectionD
 #'
 #' It is expected to return \code{se} with (optionally) extra fields added to \code{\link{int_metadata}(se)$iSEE}.
 #' Each field should be named according to the class name and contain some common information that is constant for all instances of the class of \code{x} - see \code{\link{.setCachedCommonInfo}} for an appropriate setter utility.
-#' The goal is to avoid repeated recomputation of required values when creating user interface elements or observers.
+#' The goal is to avoid repeated recomputation of required values when creating user interface elements or observers that respond to those elements.
 #'
 #' Methods for this generic should start by checking whether the metadata already contains the class name, and returning \code{se} without modification if this is the case.
 #' Otherwise, it should \code{\link{callNextMethod}} to fill in the cache values from the parent classes, before adding cached values under the class name for \code{x}.
 #' This means that any modification to \code{se} will only be performed once per class, so any cached values should be constant for all instances of the same class.
 #'
-#' Practically, the cache should only be used to define interface elements and in observers that respond to those elements.
-#' Developers should not expect to be able to retrieve cached values when rendering the output for a panel, as the code tracker does not capture the code used to construct the cache.
+#' Values from the cache can also be \code{\link{deparse}}d and used to assemble rendering commands in \code{\link{.generateOutput}}. 
+#' However, those same commands should not make any use of the cache itself, i.e., they should not call \code{\link{.getCachedCommonInfo}}.
+#' This is because the code tracker does not capture the code used to construct the cache, so the commands that are shown to the user will make use of a cache that is not present in the original \code{se} object.
 #'
 #' @section Refining parameters:
 #' \code{.refineParameters(x, se)} enforces appropriate settings for each parameter in \code{x}.
@@ -654,13 +659,14 @@ setGeneric(".showSelectionDetails", function(x) standardGeneric(".showSelectionD
 #' }
 #'
 #' Methods for this generic should return a copy of \code{x} where slots with invalid values are replaced with appropriate entries from \code{se}.
-#' This is necessary because the constructor and validity methods for \code{x} does not know about \code{se};
-#' thus, certain slots (e.g., for the row/column names) cannot be set to a reasonable default or checked at that point.
+#' This is necessary because the constructor and validity methods for \code{x} do not know about \code{se};
+#' thus, certain slots (e.g., for the row/column names) cannot be set to a reasonable default or checked by the validity method.
+#' By comparison, \code{\link{.refineParameters}} can catch and correct invalid values as it has access to \code{se}.
 #'
 #' We recommend specializing \code{\link{initialize}} to fill any yet-to-be-determined slots with \code{NA} defaults.
 #' \code{\link{.refineParameters}} can then be used to sweep across these slots and replace them with appropriate entries,
-#' typically by using \code{\link{.getCachedCommonInfo}} to extract previously cached valid values.
-#' Of course, any slots that are not \code{se}-dependent should be set at construction and checked by the validity method.
+#' typically by using \code{\link{.getCachedCommonInfo}} to extract the cached set of potential valid values.
+#' Of course, any slots that are not \code{se}-dependent should just be set at construction and checked by the validity method.
 #'
 #' It is also possible for this generic to return \code{NULL}, which is used as an indicator that \code{se} does not contain information to meaningfully show any instance of the class of \code{x} in the \pkg{iSEE} app.
 #' For example, the method for \linkS4class{ReducedDimensionPlot} will return \code{NULL} if \code{se} is not a \linkS4class{SingleCellExperiment} containing some dimensionality reduction results.
@@ -893,12 +899,19 @@ setGeneric(".allowableXAxisChoices", function(x, se) standardGeneric(".allowable
 #' \itemize{
 #' \item \code{.defineVisualColorInterface(x, se, select_info)} should return a HTML tag definition that contains UI input elements controlling the \code{color} aesthetic of \code{ggplot} objects.
 #' Here, \code{select_info} is a list of two character vectors named \code{row} and \code{column}, which specifies the names of panels available for transmitting single selections on the rows/columns respectively.
+#' A common use case would involve adding elements to change the default color of the points or to color by a chosen metadata field/assay values.
 #' \item \code{.defineVisualShapeInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling the \code{shape} aesthetic of \code{ggplot} objects.
+#' A common use case would involve adding elements to change the shape of each point according to a chosen metadata field.
 #' \item \code{.defineVisualSizeInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling the \code{size} aesthetic of \code{ggplot} objects.
-#' \item \code{.defineVisualPointInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling other aesthetics of \code{ggplot} objects (e.g. \code{alpha}).
+#' A common use case would involve adding elements to change the size of each point according to a chosen metadata field or assay values.
+#' \item \code{.defineVisualPointInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling other aesthetics of \code{ggplot} objects.
+#' This might include controlling the transparency or downsampling.
 #' \item \code{.defineVisualFacetInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling the \code{facet_grid} applied to \code{ggplot} objects.
-#' \item \code{.defineVisualTextInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling the appearance of non-data text elements of \code{ggplot} objects (e.g., font size, legend position).
+#' This typically involves providing UI elements to choose the metadata variables to use for faceting.
+#' \item \code{.defineVisualTextInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling the appearance of non-data text elements of \code{ggplot} objects.
+#' This typically involves matters such as the font size and legend position.
 #' \item \code{.defineVisualOtherInterface(x)} should a HTML tag definition that contains UI inputs elements to display in the \code{"Other"} section of the visual parameters.
+#' This is a grab-bag of other parameters that don't fit into the more defined categories above.
 #' }
 #'
 #' A method for any of these generics may also return \code{NULL}, in which case the corresponding section of the visual parameter box is completely hidden.
@@ -1008,6 +1021,11 @@ setGeneric(".getDotPlotShapeConstants", function(x) standardGeneric(".getDotPlot
 #' Each row corresponds to a step of an \pkg{rintrojs} tour;
 #' the \code{"element"} specifies the active UI element to be highlighted in that step,
 #' while the \code{"intro"} element contains the HTML-formatted text to show in the tour pop-up.
+#'
+#' It is a good idea to \code{\link{callNextMethod}()} to obtain the tour steps for the parent class to append onto the current class's data.frame.
+#' In some cases, modification of the parent class's tour steps may be necessary if some of the parent's functionality has been overwritten.
+#' Some communication with the parent's maintainers may be necessary to establish a stable way to identify the rows corresponding to the steps to be written, 
+#' e.g., based on the row names of the data.frame.
 #'
 #' A tour for a Panel \code{x} is expected to only highlight UI elements \emph{on the same panel}.
 #' This is very important as other panels cannot be assumed to exist in an arbitrary instance of \code{\link{iSEE}}.

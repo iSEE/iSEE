@@ -38,12 +38,15 @@ An observer for the input corresponding to \code{"SelectEffect"} is created in t
 A \code{NULL} is invisibly returned.
 }
 \description{
-Create an observer to trigger replotting upon changes to the (typically visual) effect for multiple selections.
+Create an observer to trigger rerendering upon changes to the (typically visual) effect for multiple selections.
 }
 \details{
-This is typically called within a \code{\link{.createObservers}} function.
-It is exported for use in subclasses as the selection effect is not a property of the \linkS4class{Panel} class
-(given that not all panels are visual) 
+The selection effect is expected to be stored in the \code{SelectionEffect} slot of the current panel.
+Changes to the specified effect will trigger rerendering of the current panel if there was a multiple selection transmitted from an upstream panel.
+If the specified effect changes to or from \dQuote{Restrict}, all children of the current panel will also be rerendered.
+
+This function is typically called within a \code{\link{.createObservers}} method 
+It is exported for use in subclasses as the selection effect is not a property of the \linkS4class{Panel} class (given that not all panels are visual) 
 and thus needs to be called separately for each subclass rather than in the parent's method.
 }
 \seealso{

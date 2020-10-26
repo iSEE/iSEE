@@ -43,11 +43,13 @@ This enables \pkg{iSEE} to keep a record of the current state of the application
 In fact, any changes must go through \code{pObjects$memory} before they change the output in \code{\link{.renderOutput}};
 there is no direct interaction between \code{input} and \code{output} in this framework.
 
-We suggest using \code{\link{.createProtectedParameterObservers}} and \code{\link{.createUnprotectedParameterObservers}}, which create simple observers that will update the memory in response to changes in the UI elements.
+We suggest using \code{\link{.createProtectedParameterObservers}} and \code{\link{.createUnprotectedParameterObservers}}, 
+which create simple observers that update the memory in response to changes in the UI elements.
 For more specific responses, there are also \code{\link{.createMultiSelectionEffectObserver}} and \code{\link{.createCustomDimnamesModalObservers}}.
 
 Developers should not attempt to modify \code{x} in any observer expression.
 This value does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.
+Rather, modifications should occur to the version of \code{x} in \code{pObjects$memory}, as described in the code chunk above.
 }
 
 \section{Triggering re-rendering}{

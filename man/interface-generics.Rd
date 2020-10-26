@@ -33,6 +33,7 @@ The ID of each interface element should follow the form of \code{PANEL_SLOT} whe
 Each interface element should have an equivalent observer in \code{\link{.createObservers}} unless they are hidden by \code{\link{.hideInterface}} (see below).
 
 It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
+A common strategy is to combine the output of \code{callNextMethod} with additional \code{\link{collapseBox}} elements to achieve the desired UI structure.
 }
 
 \section{Defining the data parameter interface}{

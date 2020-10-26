@@ -21,12 +21,19 @@ In all of the code snippets below, \code{x} is a \linkS4class{Panel} instance an
 \itemize{
 \item \code{.defineVisualColorInterface(x, se, select_info)} should return a HTML tag definition that contains UI input elements controlling the \code{color} aesthetic of \code{ggplot} objects.
 Here, \code{select_info} is a list of two character vectors named \code{row} and \code{column}, which specifies the names of panels available for transmitting single selections on the rows/columns respectively.
+A common use case would involve adding elements to change the default color of the points or to color by a chosen metadata field/assay values.
 \item \code{.defineVisualShapeInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling the \code{shape} aesthetic of \code{ggplot} objects.
+A common use case would involve adding elements to change the shape of each point according to a chosen metadata field.
 \item \code{.defineVisualSizeInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling the \code{size} aesthetic of \code{ggplot} objects.
-\item \code{.defineVisualPointInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling other aesthetics of \code{ggplot} objects (e.g. \code{alpha}).
+A common use case would involve adding elements to change the size of each point according to a chosen metadata field or assay values.
+\item \code{.defineVisualPointInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling other aesthetics of \code{ggplot} objects.
+This might include controlling the transparency or downsampling.
 \item \code{.defineVisualFacetInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling the \code{facet_grid} applied to \code{ggplot} objects.
-\item \code{.defineVisualTextInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling the appearance of non-data text elements of \code{ggplot} objects (e.g., font size, legend position).
+This typically involves providing UI elements to choose the metadata variables to use for faceting.
+\item \code{.defineVisualTextInterface(x, se)} should return a HTML tag definition that contains UI input elements controlling the appearance of non-data text elements of \code{ggplot} objects.
+This typically involves matters such as the font size and legend position.
 \item \code{.defineVisualOtherInterface(x)} should a HTML tag definition that contains UI inputs elements to display in the \code{"Other"} section of the visual parameters.
+This is a grab-bag of other parameters that don't fit into the more defined categories above.
 }
 
 A method for any of these generics may also return \code{NULL}, in which case the corresponding section of the visual parameter box is completely hidden.

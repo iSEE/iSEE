@@ -39,13 +39,14 @@ The following arguments are required:
 }
 
 Methods for this generic should return a copy of \code{x} where slots with invalid values are replaced with appropriate entries from \code{se}.
-This is necessary because the constructor and validity methods for \code{x} does not know about \code{se};
-thus, certain slots (e.g., for the row/column names) cannot be set to a reasonable default or checked at that point.
+This is necessary because the constructor and validity methods for \code{x} do not know about \code{se};
+thus, certain slots (e.g., for the row/column names) cannot be set to a reasonable default or checked by the validity method.
+By comparison, \code{\link{.refineParameters}} can catch and correct invalid values as it has access to \code{se}.
 
 We recommend specializing \code{\link{initialize}} to fill any yet-to-be-determined slots with \code{NA} defaults.
 \code{\link{.refineParameters}} can then be used to sweep across these slots and replace them with appropriate entries,
-typically by using \code{\link{.getCachedCommonInfo}} to extract previously cached valid values.
-Of course, any slots that are not \code{se}-dependent should be set at construction and checked by the validity method.
+typically by using \code{\link{.getCachedCommonInfo}} to extract the cached set of potential valid values.
+Of course, any slots that are not \code{se}-dependent should just be set at construction and checked by the validity method.
 
 It is also possible for this generic to return \code{NULL}, which is used as an indicator that \code{se} does not contain information to meaningfully show any instance of the class of \code{x} in the \pkg{iSEE} app.
 For example, the method for \linkS4class{ReducedDimensionPlot} will return \code{NULL} if \code{se} is not a \linkS4class{SingleCellExperiment} containing some dimensionality reduction results.

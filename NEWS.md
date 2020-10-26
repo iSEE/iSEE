@@ -1,6 +1,11 @@
-# iSEE 2.1.26
+# iSEE 2.1.27
 
 * Minor edits to the API documentation.
+
+# iSEE 2.1.26
+
+* Disable the import button on the dimnames modal when transmitter has not made a selection.
+* Separate the maximum number of factor levels for colors from other applications.
 
 # iSEE 2.1.25
 

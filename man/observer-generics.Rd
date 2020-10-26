@@ -49,6 +49,7 @@ For more specific responses, there are also \code{\link{.createMultiSelectionEff
 
 Developers should not attempt to modify \code{x} in any observer expression.
 This value does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.
+Rather, modifications should occur to the version of \code{x} in \code{pObjects$memory}, as described in the code chunk above.
 }
 
 \section{Triggering re-rendering}{

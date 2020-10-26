@@ -58,8 +58,8 @@
 #'
 #' @details
 #' For developers: \code{.panelColor} is a method that should be subclassed for each \linkS4class{Panel} subclass.
-#' This determines the color theme for all instances of that class, for use in, e.g., headers and box shadings.
-#' Developers should choose a color that is sufficiently dark for use as a background for white text. 
+#' This determines the color theme for all instances of that class for use in, e.g., headers and box shadings.
+#' Developers should choose a color that is dark enough to serve as a background for white text. 
 #' We recommend defining colors as hex color codes for full compatibility with both HTML elements and R plots.
 #'
 #' For users: by default, \code{.getPanelColor} will return the default color of each panel as specified by the developer in \code{.panelColor}.

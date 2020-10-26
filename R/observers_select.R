@@ -105,7 +105,7 @@
 
 #' Create an observer for multiple selection effect
 #'
-#' Create an observer to trigger rerendered upon changes to the (typically visual) effect for multiple selections.
+#' Create an observer to trigger rerendering upon changes to the (typically visual) effect for multiple selections.
 #'
 #' @param plot_name String containing the encoded name of the current panel.
 #' @param by_field String with the name of the slot containing the name of the transmitting panel. 

@@ -38,7 +38,7 @@ An observer for the input corresponding to \code{"SelectEffect"} is created in t
 A \code{NULL} is invisibly returned.
 }
 \description{
-Create an observer to trigger rerendered upon changes to the (typically visual) effect for multiple selections.
+Create an observer to trigger rerendering upon changes to the (typically visual) effect for multiple selections.
 }
 \details{
 The selection effect is expected to be stored in the \code{SelectionEffect} slot of the current panel.

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.26</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.27</span>
       </span>
     </div>
 
@@ -162,13 +162,20 @@
 For example, <code><a href='ColumnDotPlot-class.html'>.cacheCommonInfo,ColumnDotPlot-method</a></code> will add vectors specifying whether a variable in the <code>colData</code> is valid and discrete or continuous.</p>
 <p>In all of the code snippets below, <code>x</code> is a <a href='Panel-class.html'>Panel</a> instance and <code>se</code> is the SummarizedExperiment object.</p><ul>
 <li><p><code>.defineVisualColorInterface(x, se, select_info)</code> should return a HTML tag definition that contains UI input elements controlling the <code>color</code> aesthetic of <code>ggplot</code> objects.
-Here, <code>select_info</code> is a list of two character vectors named <code>row</code> and <code>column</code>, which specifies the names of panels available for transmitting single selections on the rows/columns respectively.</p></li>
-<li><p><code>.defineVisualShapeInterface(x, se)</code> should return a HTML tag definition that contains UI input elements controlling the <code>shape</code> aesthetic of <code>ggplot</code> objects.</p></li>
-<li><p><code>.defineVisualSizeInterface(x, se)</code> should return a HTML tag definition that contains UI input elements controlling the <code>size</code> aesthetic of <code>ggplot</code> objects.</p></li>
-<li><p><code>.defineVisualPointInterface(x, se)</code> should return a HTML tag definition that contains UI input elements controlling other aesthetics of <code>ggplot</code> objects (e.g. <code>alpha</code>).</p></li>
-<li><p><code>.defineVisualFacetInterface(x, se)</code> should return a HTML tag definition that contains UI input elements controlling the <code>facet_grid</code> applied to <code>ggplot</code> objects.</p></li>
-<li><p><code>.defineVisualTextInterface(x, se)</code> should return a HTML tag definition that contains UI input elements controlling the appearance of non-data text elements of <code>ggplot</code> objects (e.g., font size, legend position).</p></li>
-<li><p><code>.defineVisualOtherInterface(x)</code> should a HTML tag definition that contains UI inputs elements to display in the <code>"Other"</code> section of the visual parameters.</p></li>
+Here, <code>select_info</code> is a list of two character vectors named <code>row</code> and <code>column</code>, which specifies the names of panels available for transmitting single selections on the rows/columns respectively.
+A common use case would involve adding elements to change the default color of the points or to color by a chosen metadata field/assay values.</p></li>
+<li><p><code>.defineVisualShapeInterface(x, se)</code> should return a HTML tag definition that contains UI input elements controlling the <code>shape</code> aesthetic of <code>ggplot</code> objects.
+A common use case would involve adding elements to change the shape of each point according to a chosen metadata field.</p></li>
+<li><p><code>.defineVisualSizeInterface(x, se)</code> should return a HTML tag definition that contains UI input elements controlling the <code>size</code> aesthetic of <code>ggplot</code> objects.
+A common use case would involve adding elements to change the size of each point according to a chosen metadata field or assay values.</p></li>
+<li><p><code>.defineVisualPointInterface(x, se)</code> should return a HTML tag definition that contains UI input elements controlling other aesthetics of <code>ggplot</code> objects.
+This might include controlling the transparency or downsampling.</p></li>
+<li><p><code>.defineVisualFacetInterface(x, se)</code> should return a HTML tag definition that contains UI input elements controlling the <code>facet_grid</code> applied to <code>ggplot</code> objects.
+This typically involves providing UI elements to choose the metadata variables to use for faceting.</p></li>
+<li><p><code>.defineVisualTextInterface(x, se)</code> should return a HTML tag definition that contains UI input elements controlling the appearance of non-data text elements of <code>ggplot</code> objects.
+This typically involves matters such as the font size and legend position.</p></li>
+<li><p><code>.defineVisualOtherInterface(x)</code> should a HTML tag definition that contains UI inputs elements to display in the <code>"Other"</code> section of the visual parameters.
+This is a grab-bag of other parameters that don't fit into the more defined categories above.</p></li>
 </ul>
 
 <p>A method for any of these generics may also return <code>NULL</code>, in which case the corresponding section of the visual parameter box is completely hidden.</p>

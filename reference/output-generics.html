@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.26</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.27</span>
       </span>
     </div>
 
@@ -183,8 +183,8 @@ The following arguments are required:</p><ul>
 </ul>
 
 <p>It is expected to attach one or more reactive expressions to <code>output</code> to render the output element(s) defined by <code>.defineOutput</code>.
-This is typically done by calling rendering functions like <code>.renderOutput</code> or the most appropriate equivalent for the panel's output. 
-The return value of this generic is not used; only the side-effect of the output set-up is relevant.</p>
+This is typically done by calling <span class="pkg">shiny</span> rendering functions like <code><a href='https://shiny.rstudio.com/reference/shiny/latest/renderPlot.html'>renderPlot</a></code> or the most appropriate equivalent for the panel's output. 
+The return value of this generic is not used; only the side-effect of the reactive output set-up is relevant.</p>
 <p>The rendering expression inside the chosen rendering function is expected to:</p><ol>
 <li><p>Call <code><a href='https://rdrr.io/r/base/force.html'>force(rObjects[[PANEL]])</a></code>, where <code>PANEL</code> is the output of <code><a href='.fullName.html'>.getEncodedName</a>(x)</code>.
 This ensures that the output is rerendered upon requesting changes in <code><a href='.requestUpdate.html'>.requestUpdate</a></code>.</p></li>
@@ -200,7 +200,8 @@ This is used for code reporting, and again, is only strictly necessary if the pa
 </ol>
 
 <p>We strongly recommend calling <code><a href='.retrieveOutput.html'>.retrieveOutput</a></code> within the rendering expression, which will automatically perform all of the tasks above, rather than calling <code>.generateOutput</code> manually.
-This means that the only extra work required in the implementation of <code>.renderOutput</code> is to choose an appropriate rendering function to encapsulate the rendering expression and assign the output of that function to <code>output</code>.</p>
+By doing so, the only extra work required of the rendering expression is to actually render the output (e.g., by <code>print</code>ing a ggplot object).
+Of course, the rendering expression must itself be encapsulated by an appropriate rendering function assigned to <code>output</code>.</p>
 <p>Developers should not attempt to modify <code>x</code> in any rendering expression.
 This does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.
 Similarly, the rendering expression should treat <code>pObjects$memory</code> as read-only.

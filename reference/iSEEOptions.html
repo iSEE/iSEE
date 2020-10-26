@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Default panel options — iSEEOptions • iSEE</title>
+<title>Global iSEE options — iSEEOptions • iSEE</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Default panel options — iSEEOptions" />
-<meta property="og:description" content="Set global options using iSEEOptions$set(), so that all relevant panels will use these default values during initialization." />
+<meta property="og:title" content="Global iSEE options — iSEEOptions" />
+<meta property="og:description" content="Get or set global values that are used by relevant panels during construction and application initialization.
+This allows users to easily modify parameters for multiple panels simultaneously." />
 
 
 
@@ -72,7 +73,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.26</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.27</span>
       </span>
     </div>
 
@@ -145,13 +146,14 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Default panel options</h1>
+    <h1>Global <span class="pkg">iSEE</span> options</h1>
     <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/iSEE-options.R'><code>R/iSEE-options.R</code></a></small>
     <div class="hidden name"><code>iSEEOptions.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Set global options using <code>iSEEOptions$set()</code>, so that all relevant panels will use these default values during initialization.</p>
+    <p>Get or set global values that are used by relevant panels during construction and application initialization.
+This allows users to easily modify parameters for multiple panels simultaneously.</p>
     </div>
 
     <pre class="usage"><span class='va'>iSEEOptions</span></pre>
@@ -160,14 +162,16 @@
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
 
     <p>An object of class <code>list</code> of length 4.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>See <code><a href='https://rdrr.io/r/utils/str.html'>str(iSEEOptions$get())</a></code> for a list of default panel options.</p>
-<p>Note that <code>iSEEOptions$restore()</code> can be used to reset the global options to the package default values.</p>
-    <h2 class="hasAnchor" id="available-options"><a class="anchor" href="#available-options"></a>Available options</h2>
+    <h2 class="hasAnchor" id="commands"><a class="anchor" href="#commands"></a>Commands</h2>
 
     
 
+<p><code><a href='https://rdrr.io/r/utils/str.html'>str(iSEEOptions$get())</a></code> will show the default values for all options.</p>
+<p><code>iSEEOptions$set(name=value)</code> will set the <code>name</code>d option to <code>value</code>.</p>
+<p><code>iSEEOptions$restore()</code> will reset the global options to the package default values.</p>
+    <h2 class="hasAnchor" id="available-options"><a class="anchor" href="#available-options"></a>Available options</h2>
+
+    
 
 <dl>
 <dt><code>point.color</code></dt><dd><p>Default color of data points in <code>DotPlot</code> panels (character).</p></dd>
@@ -200,6 +204,17 @@ Defaults to 100.</p></dd>
 
 </dl>
 
+    <h2 class="hasAnchor" id="comments-on-globals"><a class="anchor" href="#comments-on-globals"></a>Comments on globals</h2>
+
+    
+
+<p>As much as possible, these options will only affect the application during Panel construction.
+This enables users to reproduce the app state from one session to another by simply saving the memory. 
+Otherwise, users would also have to export the state of the global variables to properly recapitulate the app state.</p>
+<p>For developers: following this guideline generally means that the globals should reflect some parameter that is already present as a formal slot in the panel class.
+If all panels must have the same value, this can be enforced via some creative use of <code><a href='setup-generics.html'>.cacheCommonInfo</a></code> (to cache the first encountered value of the global slot)
+followed by <code><a href='setup-generics.html'>.refineParameters</a></code> (to enforce that value on every other panel of the same class) - 
+see the MAPlot class in the <span class="pkg">iSEEu</span> package for a working example.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Kevin Rue-Albrecht</p>

@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Create an observer for multiple selection effect — .createMultiSelectionEffectObserver" />
-<meta property="og:description" content="Create an observer to trigger replotting upon changes to the (typically visual) effect for multiple selections." />
+<meta property="og:description" content="Create an observer to trigger rerendering upon changes to the (typically visual) effect for multiple selections." />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.26</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.27</span>
       </span>
     </div>
 
@@ -151,7 +151,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Create an observer to trigger replotting upon changes to the (typically visual) effect for multiple selections.</p>
+    <p>Create an observer to trigger rerendering upon changes to the (typically visual) effect for multiple selections.</p>
     </div>
 
     <pre class="usage"><span class='fu'>.createMultiSelectionEffectObserver</span><span class='op'>(</span>
@@ -209,9 +209,11 @@
 A <code>NULL</code> is invisibly returned.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This is typically called within a <code><a href='observer-generics.html'>.createObservers</a></code> function.
-It is exported for use in subclasses as the selection effect is not a property of the <a href='Panel-class.html'>Panel</a> class
-(given that not all panels are visual) 
+    <p>The selection effect is expected to be stored in the <code>SelectionEffect</code> slot of the current panel.
+Changes to the specified effect will trigger rerendering of the current panel if there was a multiple selection transmitted from an upstream panel.
+If the specified effect changes to or from &#8220;Restrict&#8221;, all children of the current panel will also be rerendered.</p>
+<p>This function is typically called within a <code><a href='observer-generics.html'>.createObservers</a></code> method 
+It is exported for use in subclasses as the selection effect is not a property of the <a href='Panel-class.html'>Panel</a> class (given that not all panels are visual) 
 and thus needs to be called separately for each subclass rather than in the parent's method.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 

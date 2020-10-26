@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.26</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.1.27</span>
       </span>
     </div>
 
@@ -176,7 +176,8 @@ Each parameter box can contain arbitrary numbers of additional UI elements,
 each of which is expected to modify one slot of <code>x</code> upon user interaction.</p>
 <p>The ID of each interface element should follow the form of <code>PANEL_SLOT</code> where <code>PANEL</code> is the panel name (from <code><a href='.fullName.html'>.getEncodedName</a>(x)</code>) and <code>SLOT</code> is the name of the slot modified by the interface element, e.g., <code>"ReducedDimensionPlot1_Type"</code>.
 Each interface element should have an equivalent observer in <code><a href='observer-generics.html'>.createObservers</a></code> unless they are hidden by <code>.hideInterface</code> (see below).</p>
-<p>It is the developer's responsibility to call <code>callNextMethod</code> to obtain interface elements for parent classes.</p>
+<p>It is the developer's responsibility to call <code>callNextMethod</code> to obtain interface elements for parent classes.
+A common strategy is to combine the output of <code>callNextMethod</code> with additional <code><a href='collapseBox.html'>collapseBox</a></code> elements to achieve the desired UI structure.</p>
     <h2 class="hasAnchor" id="defining-the-data-parameter-interface"><a class="anchor" href="#defining-the-data-parameter-interface"></a>Defining the data parameter interface</h2>
 
     

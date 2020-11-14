@@ -16,7 +16,7 @@
 #'
 #' @rdname INTERNAL_range
 .safe_nonzero_range <- function(range, centered) {
-    converted <- sprinf("%s", range)
+    converted <- sprintf("%s", range)
     if (identical(converted[1], converted[2])) {
         range[2] <- range[2] + 1
         if (centered) {

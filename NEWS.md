@@ -1,3 +1,7 @@
+# iSEE 2.3.1
+
+* Bugfix to the heatmap color selection for near-zero length ranges.
+
 # iSEE 2.1.27
 
 * Minor edits to the API documentation.

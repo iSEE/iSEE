@@ -1,3 +1,7 @@
+# iSEE 2.3.2
+
+* Bugfix for duplicate entries in selectize elements.
+
 # iSEE 2.3.1
 
 * Bugfix to the heatmap color selection for near-zero length ranges.

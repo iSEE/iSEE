@@ -157,9 +157,9 @@ setMethod(".cacheCommonInfo", "RowDotPlot", function(x, se) {
     continuous <- .whichNumeric(subdf)
 
     .setCachedCommonInfo(se, "RowDotPlot",
-        valid.rowData.names=displayable,
-        discrete.rowData.names=displayable[discrete],
-        continuous.rowData.names=displayable[continuous])
+        valid.rowData.names=unique(displayable),
+        discrete.rowData.names=unique(displayable[discrete]),
+        continuous.rowData.names=unique(displayable[continuous]))
 })
 
 #' @export

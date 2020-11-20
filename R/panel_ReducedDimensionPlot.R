@@ -147,7 +147,7 @@ setMethod(".cacheCommonInfo", "ReducedDimensionPlot", function(x, se) {
     }
 
     .setCachedCommonInfo(se, "ReducedDimensionPlot",
-        valid.reducedDim.names=available)
+        valid.reducedDim.names=unique(available))
 })
 
 #' @export

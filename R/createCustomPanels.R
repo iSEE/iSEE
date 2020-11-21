@@ -222,7 +222,8 @@ createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot",
             collected[[i]] <- if (is.character(options) && length(options)==1L) {
                 textInput(id, label=i, value=current)
             } else if (is.character(options) && length(options) >= 1L) {
-                selectInput(id, label=i, choices=options, selected=current)
+                # Force uniqueness as duplicated values cause problems in selectInput.
+                selectInput(id, label=i, choices=unique(options), selected=current)
             } else if (is.numeric(options)) {
                 numericInput(id, label=i, value=current)
             } else if (is.logical(options)) {

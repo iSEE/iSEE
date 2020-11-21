@@ -51,6 +51,22 @@ test_that("iSEE main function runs with empty dimnames", {
     colnames(sce) <- rep(1, ncol(sce))
     expect_warning(out <- iSEE:::.fill_se_dimnames(sce), "duplicated column names")
     expect_false(anyDuplicated(colnames(out$se)) > 0)
+
+    colnames(colData(sce)) <- rep("1", ncol(colData(sce)))
+    expect_warning(out <- iSEE:::.fill_se_dimnames(sce), "duplicated colData column names")
+    expect_false(anyDuplicated(colnames(colData(out$se))) > 0)
+
+    colnames(rowData(sce)) <- rep("1", ncol(rowData(sce)))
+    expect_warning(out <- iSEE:::.fill_se_dimnames(sce), "duplicated rowData column names")
+    expect_false(anyDuplicated(colnames(rowData(out$se))) > 0)
+
+    assayNames(sce) <- rep("", length(assays(sce)))
+    expect_warning(out <- iSEE:::.fill_se_dimnames(sce), "duplicated assayNames")
+    expect_false(anyDuplicated(assayNames(out$se)) > 0)
+
+    reducedDimNames(sce) <- rep("", length(reducedDims(sce)))
+    expect_warning(out <- iSEE:::.fill_se_dimnames(sce), "duplicated reducedDimNames")
+    expect_false(anyDuplicated(reducedDimNames(out$se)) > 0)
 })
 
 test_that("iSEE runs correctly with saveState= specified", {

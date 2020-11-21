@@ -675,10 +675,18 @@ iSEE <- function(se,
     cmds <- character(0)
     if (is.null(rownames(se))) {
         cmds <- c(cmds, "rownames(se) <- seq_len(nrow(se));")
-    } 
+    } else if (anyDuplicated(rownames(se))) {
+        warning("modifying duplicated row names to be unique") 
+        cmds <- c(cmds, "rownames(se) <- make.unique(rownames(se))")
+    }
+
     if (is.null(colnames(se))) {
         cmds <- c(cmds, "colnames(se) <- seq_len(ncol(se));")
-    }
+    } else if (anyDuplicated(colnames(se))) {
+        warning("modifying duplicated column names to be unique") 
+        cmds <- c(cmds, "colnames(se) <- make.unique(colnames(se))")
+    } 
+
     env <- new.env()
     env$se <- se
     eval(parse(text=cmds), envir=env)

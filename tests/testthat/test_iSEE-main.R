@@ -43,6 +43,16 @@ test_that("iSEE main function runs with empty dimnames", {
     expect_true(any(grepl("rownames.* <- ", out$commands)))
 })
 
+test_that("iSEE main function runs with empty dimnames", {
+    rownames(sce) <- rep(1, nrow(sce))
+    expect_warning(out <- .fill_se_dimnames(sce), "duplicated row names")
+    expect_false(anyDuplicated(rownames(se)) > 0)
+
+    colnames(sce) <- rep(1, ncol(sce))
+    expect_warning(out <- .fill_se_dimnames(sce), "duplicated column names")
+    expect_false(anyDuplicated(colnames(se)) > 0)
+})
+
 test_that("iSEE runs correctly with saveState= specified", {
     app <- iSEE(sce, saveState=function(x) {
         withProgress(message="Saving!", saveRDS(x, file=tempfile(fileext='.rds')))

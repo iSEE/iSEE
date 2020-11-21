@@ -374,7 +374,7 @@ setMethod(".cacheCommonInfo", "DotPlot", function(x, se) {
     named_assays <- assayNames(se)
     named_assays <- named_assays[named_assays!=""]
     .setCachedCommonInfo(se, "DotPlot",
-        valid.assay.names=unique(named_assays))
+        valid.assay.names=named_assays)
 })
 
 #' @export
@@ -430,7 +430,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
     .create_hover_observer(plot_name, input=input, session=session, pObjects=pObjects)
 
     .createCustomDimnamesModalObservers(plot_name, .plotCustomLabelsText, .dimnamesModalOpen,
-        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, 
+        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects,
         source_type=plot_dimension)
 })
 
@@ -472,7 +472,7 @@ setMethod(".defineSelectionEffectInterface", "DotPlot", function(x) {
                 paste0(plot_name, "_", .selectTransAlpha), label=NULL,
                 min=0, max=1, value=x[[.selectTransAlpha]])
         )
-    ) 
+    )
 })
 
 #' @export

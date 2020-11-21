@@ -157,9 +157,9 @@ setMethod(".cacheCommonInfo", "RowDotPlot", function(x, se) {
     continuous <- .whichNumeric(subdf)
 
     .setCachedCommonInfo(se, "RowDotPlot",
-        valid.rowData.names=unique(displayable),
-        discrete.rowData.names=unique(displayable[discrete]),
-        continuous.rowData.names=unique(displayable[continuous]))
+        valid.rowData.names=displayable,
+        discrete.rowData.names=displayable[discrete],
+        continuous.rowData.names=displayable[continuous])
 })
 
 #' @export
@@ -189,7 +189,7 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 
     continuous <- rdp_cached$continuous.rowData.names
     x <- .replaceMissingWithFirst(x, .sizeByRowData, continuous)
-    
+
     x <- .replaceMissingWithFirst(x, .plotCustomLabelsText, rownames(se)[1])
 
     x

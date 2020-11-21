@@ -328,15 +328,15 @@ setMethod(".cacheCommonInfo", "ComplexHeatmapPlot", function(x, se) {
     rowdata_continuous <- .whichNumeric(subdf)
 
     .setCachedCommonInfo(se, "ComplexHeatmapPlot",
-        valid.assay.names=unique(named_assays),
-        discrete.assay.names=unique(named_assays[assays_discrete]),
-        continuous.assay.names=unique(named_assays[assays_continuous]),
-        valid.colData.names=unique(coldata_displayable),
-        discrete.colData.names=unique(coldata_displayable[coldata_discrete]),
-        continuous.colData.names=unique(coldata_displayable[coldata_continuous]),
-        valid.rowData.names=unique(rowdata_displayable),
-        discrete.rowData.names=unique(rowdata_displayable[rowdata_discrete]),
-        continuous.rowData.names=unique(rowdata_displayable[rowdata_continuous]))
+        valid.assay.names=named_assays,
+        discrete.assay.names=named_assays[assays_discrete],
+        continuous.assay.names=named_assays[assays_continuous],
+        valid.colData.names=coldata_displayable,
+        discrete.colData.names=coldata_displayable[coldata_discrete],
+        continuous.colData.names=coldata_displayable[coldata_continuous],
+        valid.rowData.names=rowdata_displayable,
+        discrete.rowData.names=rowdata_displayable[rowdata_discrete],
+        continuous.rowData.names=rowdata_displayable[rowdata_continuous])
 })
 
 #' @export

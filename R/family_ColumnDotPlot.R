@@ -110,7 +110,7 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ...) {
 
     args <- .emptyDefault(args, .sizeByColData, NA_character_)
 
-    # Defensive measure to avoid problems with cyclic graphs 
+    # Defensive measure to avoid problems with cyclic graphs
     # that the user doesn't have permissions to change!
     args <- .emptyDefault(args, .selectRowDynamic, FALSE)
 
@@ -157,9 +157,9 @@ setMethod(".cacheCommonInfo", "ColumnDotPlot", function(x, se) {
     continuous <- .whichNumeric(subdf)
 
     .setCachedCommonInfo(se, "ColumnDotPlot",
-        valid.colData.names=unique(displayable),
-        discrete.colData.names=unique(displayable[discrete]),
-        continuous.colData.names=unique(displayable[continuous]))
+        valid.colData.names=displayable,
+        discrete.colData.names=displayable[discrete],
+        continuous.colData.names=displayable[continuous])
 })
 
 #' @export
@@ -189,7 +189,7 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 
     continuous <- cdp_cached$continuous.colData.names
     x <- .replaceMissingWithFirst(x, .sizeByColData, continuous)
-    
+
     x <- .replaceMissingWithFirst(x, .plotCustomLabelsText, colnames(se)[1])
 
     x
@@ -442,7 +442,7 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
 #' @export
 setMethod(".definePanelTour", "ColumnDotPlot", function(x) {
     collated <- callNextMethod()
-        
+
     collated$intro[collated$intro=="PLACEHOLDER_COLOR"] <- "We can choose to color by different per-column attributes - from the column metadata, across a specific feature of an assay, or to identify a chosen sample.<br/><br/><strong>Action:</strong> try out some of the different choices. Note how further options become available when each choice is selected."
 
     data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)

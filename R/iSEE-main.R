@@ -40,9 +40,9 @@
 #' @section Setting up a tour:
 #' The \code{tour} argument allows users to specify a custom tour to walk their audience through various panels.
 #' This is useful for describing different aspects of the dataset and highlighting interesting points in an interactive manner.
-#' 
+#'
 #' We use the format expected by the \code{rintrojs} package - see \url{https://github.com/carlganz/rintrojs#usage} for more information.
-#' There should be two columns, \code{element} and \code{intro}, with the former describing the element to highlight and the latter providing some descriptive text. 
+#' There should be two columns, \code{element} and \code{intro}, with the former describing the element to highlight and the latter providing some descriptive text.
 #' The \code{\link{defaultTour}} also provides the default tour that is used in the Examples below.
 #'
 #' @section Creating a landing page:
@@ -50,7 +50,7 @@
 #' By default, the maximum request size for file uploads defaults to 5MB
 #' (\url{https://shiny.rstudio.com/reference/shiny/0.14/shiny-options.html}).
 #' To raise the limit (e.g., 50MB), run \code{options(shiny.maxRequestSize=50*1024^2)}.
-#' 
+#'
 #' The \code{landingPage} argument can be used to alter the landing page, see \code{\link{createLandingPage}} for more details.
 #' This is useful for creating front-ends that can retrieve \linkS4class{SummarizedExperiment}s from a database on demand for interactive visualization.
 #'
@@ -64,7 +64,7 @@
 #' \item \code{colormap}, the \linkS4class{ExperimentColorMap} object being used.
 #' This is optional and may not be present in the list, depending on the user specifications.
 #' }
-#' 
+#'
 #' We can also provide a custom function in \code{saveState} that accepts a single argument containing this list.
 #' This is most useful when \code{\link{iSEE}} is deployed in an enterprise environment where sessions can be saved in a persistent location;
 #' combined with a suitable \code{landingPage} specification, this allows users to easily reload sessions of interest.
@@ -105,7 +105,7 @@
 #'
 #' @export
 #' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
-#' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu 
+#' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu
 #' notificationItem
 #' @importFrom utils packageVersion
 #' @importFrom shinyjs useShinyjs
@@ -135,13 +135,13 @@ iSEE <- function(se,
 
     if (is.null(initial) || is.null(extra)) {
         all_defaults <- list(
-            ReducedDimensionPlot(), 
-            RowDataTable(), 
-            FeatureAssayPlot(), 
+            ReducedDimensionPlot(),
+            RowDataTable(),
+            FeatureAssayPlot(),
             ColumnDataPlot(),
-            RowDataPlot(), 
-            SampleAssayPlot(), 
-            ColumnDataTable(), 
+            RowDataPlot(),
+            SampleAssayPlot(),
+            ColumnDataTable(),
             ComplexHeatmapPlot()
         )
 
@@ -315,7 +315,7 @@ iSEE <- function(se,
             FUN <- function(SE, INITIAL, TOUR=NULL) {
                 if (is.null(INITIAL)) {
                     INITIAL <- initial
-                } 
+                }
                 .initialize_server(SE, initial=INITIAL, extra=extra, colormap=colormap,
                     tour=TOUR, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name, saveState=saveState,
                     input=input, output=output, session=session, rObjects=rObjects)
@@ -334,7 +334,7 @@ iSEE <- function(se,
     # Launching the app.
     #######################################################################
 
-    shinyApp(ui=function(request) iSEE_ui, server=iSEE_server, 
+    shinyApp(ui=function(request) iSEE_ui, server=iSEE_server,
 
         # Turning off validity checks in the classes for speed,
         # given that we should internally guarantee correctness anyway.
@@ -370,7 +370,7 @@ iSEE <- function(se,
 #' @rdname INTERNAL_initialize_server
 #' @importFrom shiny showNotification tagList HTML strong br code insertUI
 .initialize_server <- function(se, initial, extra, colormap,
-    tour, runLocal, se_name, ecm_name, saveState, 
+    tour, runLocal, se_name, ecm_name, saveState,
     input, output, session, rObjects)
 {
     # nocov start
@@ -416,7 +416,7 @@ iSEE <- function(se,
 
     # Validating the multiple selection sources to avoid invalid app state
     # downstream. We also clean out the selection sources in the reservoir,
-    # given that there is no guarantee that the panel is still present. 
+    # given that there is no guarantee that the panel is still present.
     all_names <- vapply(memory, .getEncodedName, "")
     multi_sources <- .get_selection_sources(memory, all_names)
 
@@ -456,8 +456,8 @@ iSEE <- function(se,
     }
 
     # Observer set-up.
-    .create_general_observers(se, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name, 
-        mod_commands=mod_commands, saveState=saveState, 
+    .create_general_observers(se, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name,
+        mod_commands=mod_commands, saveState=saveState,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_tour_observer(se, memory=pObjects$memory, tour=tour, input=input, session=session)
@@ -676,16 +676,38 @@ iSEE <- function(se,
     if (is.null(rownames(se))) {
         cmds <- c(cmds, "rownames(se) <- seq_len(nrow(se));")
     } else if (anyDuplicated(rownames(se))) {
-        warning("modifying duplicated row names to be unique") 
+        warning("modifying duplicated row names to be unique")
         cmds <- c(cmds, "rownames(se) <- make.unique(rownames(se))")
     }
 
     if (is.null(colnames(se))) {
         cmds <- c(cmds, "colnames(se) <- seq_len(ncol(se));")
     } else if (anyDuplicated(colnames(se))) {
-        warning("modifying duplicated column names to be unique") 
+        warning("modifying duplicated column names to be unique")
         cmds <- c(cmds, "colnames(se) <- make.unique(colnames(se))")
-    } 
+    }
+
+    # NOTE: if we really wanted to make users life overly easy
+    # we would track renamed columns and rename them in the ExperimentColorMap if needed
+    if (anyDuplicated(colnames(colData(se)))) {
+        warning("modifying duplicated colData column names to be unique")
+        cmds <- c(cmds, "colnames(colData(se)) <- make.unique(colnames(colData(se)))")
+    }
+
+    if (anyDuplicated(colnames(rowData(se)))) {
+        warning("modifying duplicated rowData column names to be unique")
+        cmds <- c(cmds, "colnames(rowData(se)) <- make.unique(colnames(rowData(se)))")
+    }
+
+    if (anyDuplicated(assayNames(se))) {
+        warning("modifying duplicated assayNames to be unique")
+        cmds <- c(cmds, "assayNames(se) <- make.unique(assayNames(se))")
+    }
+
+    if (anyDuplicated(reducedDimNames(se))) {
+        warning("modifying duplicated reducedDimNames to be unique")
+        cmds <- c(cmds, "reducedDimNames(se) <- make.unique(reducedDimNames(se))")
+    }
 
     env <- new.env()
     env$se <- se

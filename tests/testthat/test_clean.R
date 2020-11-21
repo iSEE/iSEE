@@ -3,6 +3,8 @@
 
 test_that("cleanDataset does nothing for empties", {
     expect_warning(cleanDataset(SummarizedExperiment()), NA)
+
+    expect_warning(cleanDataset(SingleCellExperiment()), NA)
 })
 
 test_that("cleanDataset works on row names", {
@@ -59,6 +61,10 @@ test_that("cleanDataset works on assay names", {
     expect_warning(out <- cleanDataset(se), "assayNames")
     expect_identical(assayNames(out), c("unnamed", "unnamed.1"))
 
+    assays(se) <- list(counts=assay(se), assay(se))
+    expect_warning(out <- cleanDataset(se), "assayNames")
+    expect_identical(assayNames(out), c("counts", "unnamed"))
+
     assays(se) <- list(counts=assay(se), counts=assay(se))
     expect_warning(out <- cleanDataset(se), "assayNames")
     expect_identical(assayNames(out), c("counts", "counts.1"))
@@ -69,7 +75,6 @@ test_that("cleanDataset works on assay names", {
 
 test_that("cleanDataset works on reducedDimNames", {
     skip("waiting for a fix to the SCE itself")
-    sce <- SingleCellExperiment()
     reducedDims(sce) <- list(PCA=matrix(0,0,5), PCA=matrix(0,0,2))
     expect_warning(out <- cleanDataset(sce), "reducedDimNames")
     expect_identical(reducedDimNames(out), c("PCA", "PCA.1"))

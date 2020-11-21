@@ -381,10 +381,10 @@ iSEE <- function(se,
             type="default", duration = NULL)
     }
 
-    mod_commands <- "se <- cleanDataset(se)"
+    mod_commands <- "se <- iSEE::cleanDataset(se)"
     env <- new.env()
     env$se <- se
-    se <- eval(parse(text=cmds), envir=env)
+    se <- eval(parse(text=mod_commands), envir=env)
 
     # Display an error notifications if colormap is not compatible with se
     # Display one warning notification for each incompatibility issue

@@ -85,8 +85,10 @@ setMethod("cleanDataset", "SingleCellExperiment", function(se) {
     se <- callNextMethod()
     
     if (anyDuplicated(reducedDimNames(se))) {
+        #nocov start
         warning("duplicated 'reducedDimNames(se)' detected, making them unique")
         reducedDimNames(se) <- make.unique(reducedDimNames(se))
+        #nocov end
     }
 
     se

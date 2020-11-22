@@ -311,7 +311,6 @@ setMethod(".cacheCommonInfo", "ComplexHeatmapPlot", function(x, se) {
     se <- callNextMethod()
 
     named_assays <- assayNames(se)
-    named_assays <- named_assays[named_assays!=""]
     assays_continuous <- vapply(named_assays, .isAssayNumeric, logical(1), se=se)
     assays_discrete <- !assays_continuous
 

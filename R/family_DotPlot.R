@@ -371,10 +371,7 @@ setMethod(".cacheCommonInfo", "DotPlot", function(x, se) {
 
     se <- callNextMethod()
 
-    named_assays <- assayNames(se)
-    named_assays <- named_assays[named_assays!=""]
-    .setCachedCommonInfo(se, "DotPlot",
-        valid.assay.names=named_assays)
+    .setCachedCommonInfo(se, "DotPlot", valid.assay.names=assayNames(se))
 })
 
 #' @export

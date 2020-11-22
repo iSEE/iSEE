@@ -1,3 +1,7 @@
+# iSEE 2.3.2
+
+* Added the `cleanDataset()` generic to ensure all names in the SummarizedExperiment are present and unique.
+
 # iSEE 2.3.1
 
 * Bugfix to the heatmap color selection for near-zero length ranges.

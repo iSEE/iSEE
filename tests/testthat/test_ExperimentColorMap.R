@@ -1,3 +1,6 @@
+# This tests the ExperimentColorMap methods.
+# library(testthat); library(iSEE); source("setup_ecm.R"); source("setup_sce.R"); source("test_ExperimentColorMap.R")
+
 context("ExperimentColorMap")
 
 # Validity method ----
@@ -471,7 +474,7 @@ test_that("colDataColorMap returns appropriate values",{
     # specific > (discrete) all > global > .defaultDiscreteColorMap
     expect_identical(
         colDataColorMap(ecm, "test", discrete=TRUE)(21L),
-        .defaultDiscreteColorMap(21L)
+        iSEE:::.defaultDiscreteColorMap(21L)
     )
 
     # specific > (continuous) all > global
@@ -529,7 +532,7 @@ test_that("rowDataColorMap returns appropriate values",{
     # specific > (discrete) all > global > .defaultDiscreteColorMap
     expect_identical(
         rowDataColorMap(ecm, "test", discrete=TRUE)(21L),
-        .defaultDiscreteColorMap(21L)
+        iSEE:::.defaultDiscreteColorMap(21L)
     )
 
     # specific > (continuous) all > global

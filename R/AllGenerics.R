@@ -1043,3 +1043,9 @@ NULL
 
 #' @export
 setGeneric(".definePanelTour", function(x) standardGeneric(".definePanelTour"))
+
+###########################
+
+#' @export
+#' @rdname cleanDataset
+setGeneric("cleanDataset", function(se) standardGeneric("cleanDataset"))

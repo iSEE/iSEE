@@ -381,9 +381,10 @@ iSEE <- function(se,
             type="default", duration = NULL)
     }
 
-    dn_out <- .fill_se_dimnames(se)
-    se <- dn_out$se
-    mod_commands <- dn_out$commands
+    mod_commands <- "se <- iSEE::cleanDataset(se)"
+    env <- new.env()
+    env$se <- se
+    se <- eval(parse(text=mod_commands), envir=env)
 
     # Display an error notifications if colormap is not compatible with se
     # Display one warning notification for each incompatibility issue
@@ -656,31 +657,4 @@ iSEE <- function(se,
     pObjects[[.voiceActivePanel]] <- NA_character_
 
     pObjects
-}
-
-#' Fill SummarizedExperiment dimnames
-#'
-#' Fill the dimension names of the SummarizedExperiment object,
-#' as the app assumes that rows and columns are named for setting up the UI.
-#'
-#' @param se The \linkS4class{SummarizedExperiment} object.
-#'
-#' @return A list of length 2 containing \code{se}, the dimnamed SummarizedExperiment object,
-#' and \code{commands}, a character vector of R commands required to create names.
-#'
-#' @author Aaron Lun
-#'
-#' @rdname INTERNAL_fill_se_dimnames
-.fill_se_dimnames <- function(se) {
-    cmds <- character(0)
-    if (is.null(rownames(se))) {
-        cmds <- c(cmds, "rownames(se) <- seq_len(nrow(se));")
-    } 
-    if (is.null(colnames(se))) {
-        cmds <- c(cmds, "colnames(se) <- seq_len(ncol(se));")
-    }
-    env <- new.env()
-    env$se <- se
-    eval(parse(text=cmds), envir=env)
-    list(se=env$se, commands=cmds)
 }

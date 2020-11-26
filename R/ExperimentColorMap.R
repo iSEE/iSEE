@@ -770,8 +770,6 @@ synchronizeAssays <- function(ecm, se){
     stopifnot(is(ecm, "ExperimentColorMap"))
     stopifnot(inherits(se, "SummarizedExperiment"))
 
-    se <- .cacheCommonInfo(ComplexHeatmapPlot(), se)
-
     se_assay_names <- assayNames(se)
     ecm_assay_names <- assayNames(ecm)
 

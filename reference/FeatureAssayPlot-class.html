@@ -73,7 +73,7 @@ It provides slots and methods to specify the feature and what to plot on the x-a
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.2</span>
       </span>
     </div>
 
@@ -266,7 +266,193 @@ This includes the output of <code>callNextMethod</code>.</p></li>
 <span class='co'># Spits out a NULL and a warning if no assays are named.</span>
 <span class='va'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce</span><span class='op'>)</span>
 <span class='fu'><a href='setup-generics.html'>.refineParameters</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce0</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: no valid 'assays' for plotting 'FeatureAssayPlot'</span></div><div class='output co'>#&gt; NULL</div><div class='input'>
+</div><div class='output co'>#&gt; An object of class "FeatureAssayPlot"
+#&gt; Slot "Assay":
+#&gt; [1] ""
+#&gt; 
+#&gt; Slot "XAxis":
+#&gt; [1] "None"
+#&gt; 
+#&gt; Slot "XAxisColumnData":
+#&gt; [1] "Mutation_Status"
+#&gt; 
+#&gt; Slot "XAxisFeatureName":
+#&gt; [1] "Gene_0001"
+#&gt; 
+#&gt; Slot "XAxisFeatureSource":
+#&gt; [1] "---"
+#&gt; 
+#&gt; Slot "XAxisFeatureDynamicSource":
+#&gt; [1] FALSE
+#&gt; 
+#&gt; Slot "YAxisFeatureName":
+#&gt; [1] "Gene_0001"
+#&gt; 
+#&gt; Slot "YAxisFeatureSource":
+#&gt; [1] "---"
+#&gt; 
+#&gt; Slot "YAxisFeatureDynamicSource":
+#&gt; [1] FALSE
+#&gt; 
+#&gt; Slot "ColorByColumnData":
+#&gt; [1] "Mutation_Status"
+#&gt; 
+#&gt; Slot "ColorByFeatureNameAssay":
+#&gt; [1] ""
+#&gt; 
+#&gt; Slot "ColorBySampleNameColor":
+#&gt; [1] "red"
+#&gt; 
+#&gt; Slot "ShapeByColumnData":
+#&gt; [1] "Mutation_Status"
+#&gt; 
+#&gt; Slot "SizeByColumnData":
+#&gt; [1] "sizeFactor"
+#&gt; 
+#&gt; Slot "FacetByRow":
+#&gt; [1] "---"
+#&gt; 
+#&gt; Slot "FacetByColumn":
+#&gt; [1] "---"
+#&gt; 
+#&gt; Slot "ColorBy":
+#&gt; [1] "None"
+#&gt; 
+#&gt; Slot "ColorByDefaultColor":
+#&gt; [1] "black"
+#&gt; 
+#&gt; Slot "ColorByFeatureName":
+#&gt; [1] "Gene_0001"
+#&gt; 
+#&gt; Slot "ColorByFeatureSource":
+#&gt; [1] "---"
+#&gt; 
+#&gt; Slot "ColorByFeatureDynamicSource":
+#&gt; [1] FALSE
+#&gt; 
+#&gt; Slot "ColorBySampleName":
+#&gt; [1] "Cell_001"
+#&gt; 
+#&gt; Slot "ColorBySampleSource":
+#&gt; [1] "---"
+#&gt; 
+#&gt; Slot "ColorBySampleDynamicSource":
+#&gt; [1] FALSE
+#&gt; 
+#&gt; Slot "ShapeBy":
+#&gt; [1] "None"
+#&gt; 
+#&gt; Slot "SizeBy":
+#&gt; [1] "None"
+#&gt; 
+#&gt; Slot "SelectionEffect":
+#&gt; [1] "Transparent"
+#&gt; 
+#&gt; Slot "SelectionColor":
+#&gt; [1] "red"
+#&gt; 
+#&gt; Slot "SelectionAlpha":
+#&gt; [1] 0.1
+#&gt; 
+#&gt; Slot "ZoomData":
+#&gt; numeric(0)
+#&gt; 
+#&gt; Slot "BrushData":
+#&gt; list()
+#&gt; 
+#&gt; Slot "VisualBoxOpen":
+#&gt; [1] FALSE
+#&gt; 
+#&gt; Slot "VisualChoices":
+#&gt; [1] "Color"
+#&gt; 
+#&gt; Slot "ContourAdd":
+#&gt; [1] FALSE
+#&gt; 
+#&gt; Slot "ContourColor":
+#&gt; [1] "blue"
+#&gt; 
+#&gt; Slot "PointSize":
+#&gt; [1] 1
+#&gt; 
+#&gt; Slot "PointAlpha":
+#&gt; [1] 1
+#&gt; 
+#&gt; Slot "Downsample":
+#&gt; [1] FALSE
+#&gt; 
+#&gt; Slot "DownsampleResolution":
+#&gt; [1] 200
+#&gt; 
+#&gt; Slot "CustomLabels":
+#&gt; [1] FALSE
+#&gt; 
+#&gt; Slot "CustomLabelsText":
+#&gt; [1] "Cell_001"
+#&gt; 
+#&gt; Slot "FontSize":
+#&gt; [1] 1
+#&gt; 
+#&gt; Slot "LegendPointSize":
+#&gt; [1] 1
+#&gt; 
+#&gt; Slot "LegendPosition":
+#&gt; [1] "Bottom"
+#&gt; 
+#&gt; Slot "HoverInfo":
+#&gt; [1] TRUE
+#&gt; 
+#&gt; Slot "LabelCenters":
+#&gt; [1] FALSE
+#&gt; 
+#&gt; Slot "LabelCentersBy":
+#&gt; [1] "Mutation_Status"
+#&gt; 
+#&gt; Slot "LabelCentersColor":
+#&gt; [1] "black"
+#&gt; 
+#&gt; Slot "PanelId":
+#&gt; [1] NA
+#&gt; 
+#&gt; Slot "PanelHeight":
+#&gt; [1] 500
+#&gt; 
+#&gt; Slot "PanelWidth":
+#&gt; [1] 4
+#&gt; 
+#&gt; Slot "SelectionBoxOpen":
+#&gt; [1] FALSE
+#&gt; 
+#&gt; Slot "RowSelectionSource":
+#&gt; [1] "---"
+#&gt; 
+#&gt; Slot "ColumnSelectionSource":
+#&gt; [1] "---"
+#&gt; 
+#&gt; Slot "DataBoxOpen":
+#&gt; [1] FALSE
+#&gt; 
+#&gt; Slot "RowSelectionDynamicSource":
+#&gt; [1] FALSE
+#&gt; 
+#&gt; Slot "RowSelectionType":
+#&gt; [1] "Active"
+#&gt; 
+#&gt; Slot "RowSelectionSaved":
+#&gt; [1] 0
+#&gt; 
+#&gt; Slot "ColumnSelectionDynamicSource":
+#&gt; [1] FALSE
+#&gt; 
+#&gt; Slot "ColumnSelectionType":
+#&gt; [1] "Active"
+#&gt; 
+#&gt; Slot "ColumnSelectionSaved":
+#&gt; [1] 0
+#&gt; 
+#&gt; Slot "SelectionHistory":
+#&gt; list()
+#&gt; </div><div class='input'>
 <span class='co'># Replaces the default with something sensible.</span>
 <span class='fu'>assayNames</span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>old_assay_names</span>
 <span class='va'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce</span><span class='op'>)</span>

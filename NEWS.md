@@ -1,3 +1,7 @@
+# iSEE 2.3.3
+
+* Edge-case bugfix for correct cleaning of zero-row/column SummarizedExperiments.
+
 # iSEE 2.3.2
 
 * Added the `cleanDataset()` generic to ensure all names in the SummarizedExperiment are present and unique.

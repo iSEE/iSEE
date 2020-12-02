@@ -37,16 +37,20 @@ NULL
 #' @rdname cleanDataset
 #' @importFrom SummarizedExperiment rowData colData rowData<- colData<- assayNames assayNames<-
 setMethod("cleanDataset", "SummarizedExperiment", function(se) {
-    if (is.null(rownames(se)) && nrow(se) > 0) {
-        warning("filling in the missing 'rownames(se)'")
+    if (is.null(rownames(se))) {
+        if (nrow(se) > 0) {
+            warning("filling in the missing 'rownames(se)'")
+        }
         rownames(se) <- seq_len(nrow(se))
     } else if (anyDuplicated(rownames(se))) {
         warning("duplicated 'rownames(se)' detected, making them unique")
         rownames(se) <- make.unique(rownames(se))
     }
 
-    if (is.null(colnames(se)) && ncol(se) > 0) {
-        warning("filling in the missing 'colnames(se)'")
+    if (is.null(colnames(se))) {
+        if (ncol(se) > 0) {
+            warning("filling in the missing 'colnames(se)'")
+        }
         colnames(se) <- seq_len(ncol(se))
     } else if (anyDuplicated(colnames(se))) {
         warning("duplicated 'colnames(se)' detected, making them unique")

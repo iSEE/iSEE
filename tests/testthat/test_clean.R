@@ -1,7 +1,7 @@
 # This tests the cleanDataset function.
 # library(testthat); library(iSEE); source("test_clean.R")
 
-test_that("cleanDataset does nothing for empties", {
+test_that("cleanDataset makes no noise for empties", {
     expect_warning(cleanDataset(SummarizedExperiment()), NA)
 
     expect_warning(cleanDataset(SingleCellExperiment()), NA)
@@ -18,6 +18,10 @@ test_that("cleanDataset works on row names", {
 
     rownames(se) <- LETTERS[1:10]
     expect_warning(cleanDataset(se), NA)
+
+    # Actually sets empty row names.
+    out <- cleanDataset(SummarizedExperiment())
+    expect_identical(rownames(out), character(0))
 })
 
 test_that("cleanDataset works on column names", {
@@ -31,6 +35,10 @@ test_that("cleanDataset works on column names", {
 
     colnames(se) <- LETTERS[1:10]
     expect_warning(cleanDataset(se), NA)
+
+    # Actually sets empty column names.
+    out <- cleanDataset(SummarizedExperiment())
+    expect_identical(colnames(out), character(0))
 })
 
 test_that("cleanDataset works on colData names", {

@@ -32,7 +32,7 @@
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param mod_commands A character vector of commands performed to modify \code{se} before running the app proper.
 #' @inheritParams .initialize_server
-#' 
+#'
 #' @return Observers are created in the server function in which this is called.
 #' A \code{NULL} value is invisibly returned.
 #'
@@ -114,7 +114,7 @@
     }, ignoreInit=TRUE)
 
     if (runLocal) {
-        observeEvent(input[[.generalTourSteps]], {
+        observeEvent(input[[.generalVignetteOpen]], {
             path <- system.file("doc", "basic.html", package="iSEE")
             if (path=="") {
                 showNotification("vignette has not been built on this system", type="error")
@@ -181,7 +181,7 @@
 
     observeEvent(input[[.generalExportOutputAll]], {
         all_options <- .define_export_choices(pObjects$memory)
-        updateCheckboxGroupInput(session, .generalExportOutputChoices, 
+        updateCheckboxGroupInput(session, .generalExportOutputChoices,
             choices=all_options, selected=all_options)
     }, ignoreInit=TRUE)
 

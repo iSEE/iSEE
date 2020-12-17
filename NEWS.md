@@ -1,3 +1,7 @@
+# iSEE 2.3.4
+
+* Fix wiring of button observer to open vignette.
+
 # iSEE 2.3.3
 
 * Edge-case bugfix for correct cleaning of zero-row/column SummarizedExperiments.

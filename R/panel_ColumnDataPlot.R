@@ -47,6 +47,13 @@
 #' This will also call the equivalent \linkS4class{ColumnDotPlot} method.
 #' }
 #'
+#' For controlling selections:
+#' \itemize{
+#' \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the x-axis uses multiple column selections,
+#' such that the point coordinates may change upon updates to upstream selections in transmitting panels.
+#' Otherwise, it dispatches to the \linkS4class{ColumnDotPlot} method.
+#' }
+#'
 #' For defining the panel name:
 #' \itemize{
 #' \item \code{\link{.fullName}(x)} will return \code{"Column data plot"}.
@@ -109,6 +116,7 @@
 #' .fullName,ColumnDataPlot-method
 #' .panelColor,ColumnDataPlot-method
 #' .generateDotPlotData,ColumnDataPlot-method
+#' .multiSelectionInvalidated,ColumnDataPlot-method
 #' .allowableXAxisChoices,ColumnDataPlot-method
 #' .allowableYAxisChoices,ColumnDataPlot-method
 #' .definePanelTour,ColumnDataPlot-method
@@ -223,6 +231,11 @@ setMethod(".createObservers", "ColumnDataPlot", function(x, se, input, session, 
     .createProtectedParameterObservers(plot_name,
         fields=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
         input=input, pObjects=pObjects, rObjects=rObjects)
+})
+
+#' @export
+setMethod(".multiSelectionInvalidated", "ColumnDataPlot", function(x) {
+    x[[.colDataXAxis]] == .colDataXAxisSelectionsTitle || callNextMethod()
 })
 
 #' @export

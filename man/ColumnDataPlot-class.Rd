@@ -11,6 +11,7 @@
 \alias{.fullName,ColumnDataPlot-method}
 \alias{.panelColor,ColumnDataPlot-method}
 \alias{.generateDotPlotData,ColumnDataPlot-method}
+\alias{.multiSelectionInvalidated,ColumnDataPlot-method}
 \alias{.allowableXAxisChoices,ColumnDataPlot-method}
 \alias{.allowableYAxisChoices,ColumnDataPlot-method}
 \alias{.definePanelTour,ColumnDataPlot-method}
@@ -66,6 +67,13 @@ For monitoring reactive expressions:
 \itemize{
 \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
 This will also call the equivalent \linkS4class{ColumnDotPlot} method.
+}
+
+For controlling selections:
+\itemize{
+\item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the x-axis uses multiple column selections,
+such that the point coordinates may change upon updates to upstream selections in transmitting panels.
+Otherwise, it dispatches to the \linkS4class{ColumnDotPlot} method.
 }
 
 For defining the panel name:

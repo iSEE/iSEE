@@ -10,6 +10,7 @@
 \alias{.createObservers,RowDotPlot-method}
 \alias{.hideInterface,RowDotPlot-method}
 \alias{.multiSelectionDimension,RowDotPlot-method}
+\alias{.multiSelectionInvalidated,RowDotPlot-method}
 \alias{.singleSelectionDimension,RowDotPlot-method}
 \alias{.definePanelTour,RowDotPlot-method}
 \title{The RowDotPlot virtual class}
@@ -74,7 +75,9 @@ This will also call the equivalent \linkS4class{DotPlot} method.
 
 For controlling selections:
 \itemize{
-\item \code{\link{.multiSelectionDimension}(x)} returns \code{"row"} to indicate that a row selection is being transmitted.
+\item \code{\link{.multiSelectionDimension}(x)} returns \code{"row"} to indicate that a multiple row selection is being transmitted.
+\item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the faceting options usethe multiple row selections,
+such that the point coordinates/domain may change upon updates to upstream selections in transmitting panels.
 \item \code{\link{.singleSelectionDimension}(x)} returns \code{"feature"} to indicate that a feature identity is being transmitted.
 }
 

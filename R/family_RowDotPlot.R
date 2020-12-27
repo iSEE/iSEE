@@ -57,7 +57,9 @@
 #'
 #' For controlling selections:
 #' \itemize{
-#' \item \code{\link{.multiSelectionDimension}(x)} returns \code{"row"} to indicate that a row selection is being transmitted.
+#' \item \code{\link{.multiSelectionDimension}(x)} returns \code{"row"} to indicate that a multiple row selection is being transmitted.
+#' \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the faceting options usethe multiple row selections,
+#' such that the point coordinates/domain may change upon updates to upstream selections in transmitting panels.
 #' \item \code{\link{.singleSelectionDimension}(x)} returns \code{"feature"} to indicate that a feature identity is being transmitted.
 #' }
 #'
@@ -92,6 +94,7 @@
 #' .createObservers,RowDotPlot-method
 #' .hideInterface,RowDotPlot-method
 #' .multiSelectionDimension,RowDotPlot-method
+#' .multiSelectionInvalidated,RowDotPlot-method
 #' .singleSelectionDimension,RowDotPlot-method
 #' .definePanelTour,RowDotPlot-method
 #'
@@ -229,6 +232,11 @@ setMethod(".createObservers", "RowDotPlot", function(x, se, input, session, pObj
 
 #' @export
 setMethod(".multiSelectionDimension", "RowDotPlot", function(x) "row")
+
+#' @export
+setMethod(".multiSelectionInvalidated", "RowDotPlot", function(x) {
+    x[[.facetRow]] == .facetByRowSelectionsTitle || x[[.facetColumn]] == .facetByRowSelectionsTitle || callNextMethod()
+})
 
 #' @export
 setMethod(".singleSelectionDimension", "RowDotPlot", function(x) "feature")

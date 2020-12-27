@@ -74,8 +74,12 @@
 #'
 #' For managing selections:
 #' \itemize{
-#' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of sample on the x- and y-axes.
-#' This includes the output of \code{callNextMethod}.
+#' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, 
+#' mostly related to the choice of sample on the x- and y-axes.
+#' This includes the output of the method for the parent \linkS4class{RowDotPlot} class.
+#' \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the x-axis uses multiple row selections,
+#' such that the point coordinates may change upon updates to upstream selections in transmitting panels.
+#' Otherwise, it dispatches to the \linkS4class{RowDotPlot} method.
 #' }
 #'
 #' For documentation:
@@ -125,6 +129,7 @@
 #' .defineDataInterface,SampleAssayPlot-method
 #' .createObservers,SampleAssayPlot-method
 #' .singleSelectionSlots,SampleAssayPlot-method
+#' .multiSelectionInvalidated,SampleAssayPlot-method
 #' .fullName,SampleAssayPlot-method
 #' .panelColor,SampleAssayPlot-method
 #' .generateDotPlotData,SampleAssayPlot-method
@@ -314,6 +319,11 @@ setMethod(".singleSelectionSlots", "SampleAssayPlot", function(x) {
             )
         )
     )
+})
+
+#' @export
+setMethod(".multiSelectionInvalidated", "SampleAssayPlot", function(x) {
+    x[[.sampAssayXAxis]] == .sampAssayXAxisSelectionsTitle || callNextMethod()
 })
 
 #' @export

@@ -47,6 +47,13 @@
 #' This will also call the equivalent \linkS4class{RowDotPlot} method.
 #' }
 #'
+#' For controlling selections:
+#' \itemize{
+#' \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the x-axis uses multiple row selections,
+#' such that the point coordinates may change upon updates to upstream selections in transmitting panels.
+#' Otherwise, it dispatches to the \linkS4class{RowDotPlot} method.
+#' }
+#'
 #' For defining the panel name:
 #' \itemize{
 #' \item \code{\link{.fullName}(x)} will return \code{"Row data plot"}.
@@ -105,6 +112,7 @@
 #' .createObservers,RowDataPlot-method
 #' .fullName,RowDataPlot-method
 #' .panelColor,RowDataPlot-method
+#' .multiSelectionInvalidated,RowDataPlot-method
 #' .generateDotPlotData,RowDataPlot-method
 #' .allowableXAxisChoices,RowDataPlot-method
 #' .allowableYAxisChoices,RowDataPlot-method
@@ -208,7 +216,6 @@ setMethod(".allowableYAxisChoices", "RowDataPlot", function(x, se) {
     .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
 })
 
-
 #' @export
 #' @importFrom shiny updateSelectInput
 #' @importFrom methods callNextMethod
@@ -220,6 +227,11 @@ setMethod(".createObservers", "RowDataPlot", function(x, se, input, session, pOb
     .createProtectedParameterObservers(plot_name,
         fields=c(.rowDataYAxis, .rowDataXAxis, .rowDataXAxisRowData),
         input=input, pObjects=pObjects, rObjects=rObjects)
+})
+
+#' @export
+setMethod(".multiSelectionInvalidated", "RowDataPlot", function(x) {
+    x[[.rowDataXAxis]] == .rowDataXAxisSelectionsTitle || callNextMethod()
 })
 
 #' @export

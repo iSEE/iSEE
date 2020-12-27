@@ -74,8 +74,12 @@
 #'
 #' For managing selections:
 #' \itemize{
-#' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of feature on the x- and y-axes.
-#' This includes the output of \code{callNextMethod}.
+#' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, 
+#' mostly related to the choice of feature on the x- and y-axes.
+#' This includes the output of the method for the parent \linkS4class{ColumnDotPlot} class.
+#' \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the x-axis uses multiple column selections,
+#' such that the point coordinates may change upon updates to upstream selections in transmitting panels.
+#' Otherwise, it dispatches to the \linkS4class{ColumnDotPlot} method.
 #' }
 #'
 #' For documentation:
@@ -125,6 +129,7 @@
 #' .defineDataInterface,FeatureAssayPlot-method
 #' .createObservers,FeatureAssayPlot-method
 #' .singleSelectionSlots,FeatureAssayPlot-method
+#' .multiSelectionInvalidated,FeatureAssayPlot-method
 #' .fullName,FeatureAssayPlot-method
 #' .panelColor,FeatureAssayPlot-method
 #' .generateDotPlotData,FeatureAssayPlot-method
@@ -305,6 +310,11 @@ setMethod(".singleSelectionSlots", "FeatureAssayPlot", function(x) {
             )
         )
     )
+})
+
+#' @export
+setMethod(".multiSelectionInvalidated", "FeatureAssayPlot", function(x) {
+    x[[.featAssayXAxis]] == .featAssayXAxisSelectionsTitle || callNextMethod()
 })
 
 #' @export

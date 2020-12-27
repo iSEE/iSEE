@@ -20,10 +20,13 @@
 \alias{rowData<-,ExperimentColorMap,ANY-method}
 \alias{assayColorMap,ExperimentColorMap,character-method}
 \alias{assayColorMap,ExperimentColorMap,numeric-method}
+\alias{assayColorMap,ExperimentColorMap,missing-method}
 \alias{assay,ExperimentColorMap,character-method}
 \alias{assay,ExperimentColorMap,numeric-method}
 \alias{colDataColorMap,ExperimentColorMap,character-method}
+\alias{colDataColorMap,ExperimentColorMap,missing-method}
 \alias{rowDataColorMap,ExperimentColorMap,character-method}
+\alias{rowDataColorMap,ExperimentColorMap,missing-method}
 \alias{assayColorMap<-,ExperimentColorMap,character-method}
 \alias{assayColorMap<-,ExperimentColorMap,numeric-method}
 \alias{colDataColorMap<-,ExperimentColorMap,character-method}
@@ -105,20 +108,24 @@ function(n) {
 
 
 In the following code snippets, \code{x} is an \code{ExperimentColorMap} object.
-If the colormap can not immediately be found in the appropriate slot,
-\code{discrete} is a \code{logical(1)} that indicates
-whether the default colormap returned should be categorical \code{TRUE} or continuous (\code{FALSE}, default).
 
 \describe{
   \item{\code{assayColorMap(x, i, ..., discrete=FALSE)}:}{
-  Get an \code{assays} colormap.}
+  Get an \code{assays} colormap for the specified assay \code{i}.}
 
   \item{\code{colDataColorMap(x, i, ..., discrete=FALSE)}:}{
-  Get a \code{colData} colormap.}
+  Get a \code{colData} colormap for the specified \code{colData} column \code{i}.}
 
   \item{\code{rowDataColorMap(x, i, ..., discrete=FALSE)}:}{
-  Get a \code{rowData} colormap.}
+  Get a \code{rowData} colormap for the specified \code{rowData} column \code{i}.}
 }
+
+If the colormap for \code{i} cannot be found, one of the default colormaps is returned.
+In this case, \code{discrete} is a logical scalar that indicates whether the colormap should be categorical.
+The more specialized default is first attempted - 
+e.g., for \code{assayColorMap}, this would be the assay colormap specified in \code{assays} of \code{all_discrete} or \code{all_continuous} -
+before falling back to the global default in \code{global_discrete} or \code{global_continuous}.
+Similarly, if \code{i} is missing, the default discrete/continuous colormap is returned.
 }
 
 \section{Setters}{

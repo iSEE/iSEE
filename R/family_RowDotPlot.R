@@ -489,16 +489,9 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
         .create_color_scale("assayColorMap", deparse(assay_choice), colorby)
 
     } else if (color_choice == .colorByRowSelectionsTitle) {
-        # TODO: move this into a separate function and respond to specification
-        # of the discrete rowData colormap with i=NULL or something.
-        opt <- levels(colorby)
-        opt <- union("active", opt)
-        opt <- setdiff(opt, "unselected")
-        available <- .defaultDiscreteColorMap(length(opt))
-        names(available) <- opt
-        available <- c(available, unselected="grey")
-        sprintf("scale_color_manual(values=%s, drop=FALSE) +", paste(deparse(available), collapse="")) 
-
+        sprintf("scale_color_manual(values=iSEE::rowSelectionColorMap(colormap, %s), drop=FALSE) +", 
+            paste(deparse(levels(colorby)), collapse="")) 
+        
     } else {
         .colorByNoneDotPlotScale(x)
     }

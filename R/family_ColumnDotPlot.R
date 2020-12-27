@@ -235,7 +235,7 @@ setMethod(".multiSelectionDimension", "ColumnDotPlot", function(x) "column")
 
 #' @export
 setMethod(".multiSelectionInvalidated", "ColumnDotPlot", function(x) {
-    x[[.facetRow]] == .facetByColumnSelectionsTitle || x[[.facetColumn]] == .facetByColumnSelectionsTitle || callNextMethod()
+    x[[.facetRow]] == .facetByColSelectionsTitle || x[[.facetColumn]] == .facetByColSelectionsTitle || callNextMethod()
 })
 
 #' @export
@@ -485,15 +485,8 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
         )
 
     } else if (color_choice == .colorByColSelectionsTitle) {
-        # TODO: move this into a separate function and respond to specification
-        # of the discrete colData colormap with i=NULL or something.
-        opt <- levels(colorby)
-        opt <- union("active", opt)
-        opt <- setdiff(opt, "unselected")
-        available <- .defaultDiscreteColorMap(length(opt))
-        names(available) <- opt
-        available <- c(available, unselected="grey")
-        sprintf("scale_color_manual(values=%s, drop=FALSE) +", paste(deparse(available), collapse="")) 
+        sprintf("scale_color_manual(values=iSEE::columnSelectionColorMap(colormap, %s), drop=FALSE) +", 
+            paste(deparse(levels(colorby)), collapse="")) 
 
     } else {
         .colorByNoneDotPlotScale(x)

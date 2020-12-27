@@ -156,11 +156,11 @@ setClass("Panel", contains="VIRTUAL", slots=collated)
 
 collated <- character(0)
 
-.facetByRow <- "FacetByRow"
-.facetByColumn <- "FacetByColumn"
+.facetRow <- "FacetRowBy"
+.facetColumn <- "FacetColumnBy"
 
-collated[.facetByRow] <- "character"
-collated[.facetByColumn] <- "character"
+collated[.facetRow] <- "character"
+collated[.facetColumn] <- "character"
 
 .colorByField <- "ColorBy"
 .colorByDefaultColor <- "ColorByDefaultColor"
@@ -255,6 +255,12 @@ setClass("DotPlot", contains=c("Panel", "VIRTUAL"), slots=collated)
 
 collated <- character(0)
 
+.facetRowByColData <- "FacetRowByColData"
+.facetColumnByColData <- "FacetColumnByColData"
+
+collated[.facetRowByColData] <- "character"
+collated[.facetColumnByColData] <- "character"
+
 .colorByColData <- "ColorByColumnData"
 .colorByFeatNameAssay <- "ColorByFeatureNameAssay"
 .colorBySampNameColor <- "ColorBySampleNameColor"
@@ -277,6 +283,12 @@ setClass("ColumnDotPlot", contains=c("DotPlot", "VIRTUAL"), slots=collated)
 ####################################################
 
 collated <- character(0)
+
+.facetRowByRowData <- "FacetRowByRowData"
+.facetColumnByRowData <- "FacetColumnByRowData"
+
+collated[.facetRowByRowData] <- "character"
+collated[.facetColumnByRowData] <- "character"
 
 .colorByRowData <- "ColorByRowData"
 .colorBySampNameAssay <- "ColorBySampleNameAssay"

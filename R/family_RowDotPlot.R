@@ -215,6 +215,10 @@ setMethod(".createObservers", "RowDotPlot", function(x, se, input, session, pObj
             .shapeByRowData, .sizeByRowData, .colorByFeatNameColor),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
+    .createProtectedParameterObservers(plot_name,
+        fields=c(.facetRowByRowData, .facetColumnByRowData),
+        input=input, pObjects=pObjects, rObjects=rObjects)
+
     .create_dimname_propagation_observer(plot_name, choices=rownames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
 
@@ -294,6 +298,19 @@ setMethod(".getDotPlotShapeConstants", "RowDotPlot", function(x) {
 setMethod(".getDotPlotMetadataCommand", "RowDotPlot", function(x) "rowData")
 
 setMethod(".getDotPlotNamesCommand", "RowDotPlot", function(x) "rownames")
+
+setMethod(".getDotPlotFacetConstants", "RowDotPlot", function(x) {
+    list(
+        metadata=list(
+            title=.facetByRowDataTitle,
+            row_field=.facetRowByRowData,
+            column_field=.facetColumnByRowData
+        ),
+        selections=list(
+            title=.facetByRowSelectionsTitle
+        )
+    )
+})
 
 ###############################################################
 # See ?.addDotPlotDataColor for documentation on these methods.
@@ -378,18 +395,31 @@ setMethod(".addDotPlotDataFacets", "RowDotPlot", function(x, envir) {
     facet_cmds <- NULL
     labels <- list()
 
-    facet_row <- x[[.facetByRow]]
-    if (facet_row!=.noSelection) {
-        facet_cmds["FacetRow"] <- sprintf(
-            "plot.data$FacetRow <- rowData(se)[, %s];", deparse(facet_row))
-        labels$FacetRow <- facet_row
-    }
+    params <- list(
+        list(.facetRow, "FacetRow", .facetRowByRowData),
+        list(.facetColumn, "FacetColumn", .facetColumnByRowData)
+    )
 
-    facet_column <- x[[.facetByColumn]]
-    if (facet_column!=.noSelection) {
-        facet_cmds["FacetColumn"] <- sprintf(
-            "plot.data$FacetColumn <- rowData(se)[, %s];", deparse(facet_column))
-        labels$FacetColumn <- facet_column
+    for (f in seq_len(2)) {
+        current <- params[[f]]
+        param_field <- current[[1]]
+        pd_field <- current[[2]]
+        facet_mode <- x[[param_field]]
+
+        if (facet_mode == .facetByRowDataTitle) {
+            facet_data <- x[[current[[3]]]]
+            facet_cmds[pd_field] <- sprintf("plot.data$%s <- rowData(se)[, %s];", pd_field, deparse(facet_data))
+            labels[[pd_field]] <- facet_data
+
+        } else if (facet_mode == .facetByRowSelectionsTitle) {
+            if (exists("row_selected", envir=envir, inherits=FALSE)) {
+                target <- "row_selected"
+            } else {
+                target <- "list()"
+            }
+            facet_cmds[pd_field] <- sprintf("plot.data$%s <- iSEE::multiSelectionToFactor(%s, rownames(se));", pd_field, target)
+            labels[[pd_field]] <- "Row selection"
+        }
     }
 
     .textEval(facet_cmds, envir)

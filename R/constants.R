@@ -20,6 +20,14 @@
 .sizeByColDataTitle <- "Column data"
 .sizeByRowDataTitle <- "Row data"
 
+# Faceting parameters. ----
+
+.facetByNothingTitle <- "Nothing"
+.facetByRowDataTitle <- "Row data"
+.facetByColDataTitle <- "Column data"
+.facetByRowSelectionsTitle <- "Row selection"
+.facetByColSelectionsTitle <- "Column selection"
+
 # Point selection parameters. ----
 
 .selectRestrictTitle <- "Restrict"

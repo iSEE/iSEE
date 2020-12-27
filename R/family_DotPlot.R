@@ -259,8 +259,8 @@ NULL
 #' @importFrom methods callNextMethod
 setMethod("initialize", "DotPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .emptyDefault(args, .facetByRow, .noSelection)
-    args <- .emptyDefault(args, .facetByColumn, .noSelection)
+    args <- .emptyDefault(args, .facetRow, .facetByNothingTitle)
+    args <- .emptyDefault(args, .facetColumn, .facetByNothingTitle)
 
     args <- .emptyDefault(args, .colorByField, .colorByNothingTitle)
     args <- .emptyDefault(args, .colorByDefaultColor, iSEEOptions$get("point.color"))
@@ -328,10 +328,15 @@ setValidity2("DotPlot", function(object) {
     msg <- .validStringError(msg, object,
         c(.colorByDefaultColor,
             .selectColor,
-            .facetByRow, .facetByColumn,
             .contourColor,
             .plotLabelCentersColor
         ))
+
+    facet_info <- .getDotPlotFacetConstants(object) 
+    for (field in c(.facetRow, .facetColumn)) {
+        msg <- .allowableChoiceError(msg, object, field,
+            c(.facetByNothingTitle, facet_info$metadata$title, facet_info$selections$title))
+    }
 
     msg <- .allowableChoiceError(msg, object, .selectEffect,
         c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
@@ -401,7 +406,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
     .create_visual_parameter_choice_observer(plot_name, input, pObjects)
 
     .createProtectedParameterObservers(plot_name,
-        fields=c(.facetByRow, .facetByColumn),
+        fields=c(.facetRow, .facetColumn),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     .createUnprotectedParameterObservers(plot_name,
@@ -611,18 +616,34 @@ setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
 })
 
 #' @export
+#' @importFrom shiny tagList selectInput radioButtons
 setMethod(".defineVisualFacetInterface", "DotPlot", function(x, se) {
-    discrete_covariates <- .getDiscreteMetadataChoices(x, se)
+    covariates <- .getDiscreteMetadataChoices(x, se)
+    plot_name <- .getEncodedName(x)
+    rowId <- paste0(plot_name, "_", .facetRow)
+    columnId <- paste0(plot_name, "_", .facetColumn)
 
-    if (length(discrete_covariates)) {
-        tagList(
-            hr(),
-            .add_facet_UI_elements(x, discrete_covariates)
-        )
-    } else {
-        NULL
+    facet_info <- .getDotPlotFacetConstants(x)
+    title_choices <- .facetByNothingTitle
+    if (length(covariates)) {
+        title_choices <- c(title_choices, facet_info$metadata$title)
     }
+    title_choices <- c(title_choices, facet_info$selections$title)
 
+    row_field <- facet_info$metadata$row_field
+    col_field <- facet_info$metadata$column_field
+
+    tagList(
+        hr(),
+        radioButtons(rowId, label="Facet by row:", choices=title_choices, selected=x[[.facetRow]], inline=TRUE),
+        .conditionalOnRadio(rowId, facet_info$metadata$title, 
+            selectInput(paste0(plot_name, "_", row_field), label=NULL, choices=covariates, selected=x[[row_field]])
+        ),
+        radioButtons(columnId, label="Facet by column:", choices=title_choices, selected=x[[.facetColumn]], inline=TRUE),
+        .conditionalOnRadio(columnId, facet_info$metadata$title,
+            selectInput(paste0(plot_name, "_", col_field), label=NULL, choices=covariates, selected=x[[col_field]])
+        )
+    )
 })
 
 #' @export

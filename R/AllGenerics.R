@@ -983,6 +983,8 @@ setGeneric(".defineVisualOtherInterface", function(x) standardGeneric(".defineVi
 #'
 #' \code{.getDotPlotShapeConstants(x)} returns shape-related constants.
 #'
+#' \code{.getDotPlotFacetConstants(x)} returns facet-related constants.
+#'
 #' @name INTERNAL_dotplot-interface
 #' @aliases
 #' .getDiscreteMetadataChoices
@@ -992,6 +994,7 @@ setGeneric(".defineVisualOtherInterface", function(x) standardGeneric(".defineVi
 #' .getDotPlotColorConstants
 #' .getDotPlotShapeConstants
 #' .getDotPlotSizeConstants
+#' .getDotPlotFacetConstants
 NULL
 
 setGeneric(".getDiscreteMetadataChoices", function(x, se) standardGeneric(".getDiscreteMetadataChoices"))
@@ -1007,6 +1010,8 @@ setGeneric(".getDotPlotColorConstants", function(x) standardGeneric(".getDotPlot
 setGeneric(".getDotPlotSizeConstants", function(x) standardGeneric(".getDotPlotSizeConstants"))
 
 setGeneric(".getDotPlotShapeConstants", function(x) standardGeneric(".getDotPlotShapeConstants"))
+
+setGeneric(".getDotPlotFacetConstants", function(x) standardGeneric(".getDotPlotFacetConstants"))
 
 ###########################
 

@@ -35,7 +35,7 @@ Defaults to \code{FALSE}.
 The following slots control the values on the x-axis:
 \itemize{ 
 \item \code{XAxis}, string specifying what should be plotting on the x-axis.
-This can be any one of \code{"None"}, \code{"Feature name"} or \code{"Column data"}.
+This can be any one of \code{"None"}, \code{"Feature name"}, \code{"Column data"} or \code{"Column selection"}.
 Defaults to \code{"None"}.
 \item \code{XAxisColumnData}, string specifying which column of the \code{\link{colData}} should be shown on the x-axis,
 if \code{XAxis="Column data"}.

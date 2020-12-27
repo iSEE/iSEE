@@ -26,7 +26,7 @@ The following slots control the variables to be shown:
 \item \code{YAxis}, a string specifying the row of the \code{\link{rowData}} to show on the y-axis.
 If \code{NA}, defaults to the first valid field (see \code{?"\link{.refineParameters,RowDotPlot-method}"}).
 \item \code{XAxis}, string specifying what should be plotting on the x-axis.
-This can be any one of \code{"None"} or \code{"Row data"}.
+This can be any one of \code{"None"}, \code{"Row data"} and \code{"Row selection"}.
 Defaults to \code{"None"}.
 \item \code{XAxisRowData}, string specifying the row of the \code{\link{rowData}} to show on the x-axis.
 If \code{NA}, defaults to the first valid field.

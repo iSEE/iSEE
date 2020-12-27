@@ -9,7 +9,7 @@
 #' \item \code{YAxis}, a string specifying the column of the \code{\link{colData}} to show on the y-axis.
 #' If \code{NA}, defaults to the first valid field (see \code{?"\link{.refineParameters,ColumnDotPlot-method}"}).
 #' \item \code{XAxis}, string specifying what should be plotting on the x-axis.
-#' This can be any one of \code{"None"} or \code{"Column data"}.
+#' This can be any one of \code{"None"}, \code{"Column data"} or \code{"Column selection"}.
 #' Defaults to \code{"None"}.
 #' \item \code{XAxisColumnData}, string specifying the column of the \code{\link{colData}} to show on the x-axis.
 #' If \code{NA}, defaults to the first valid field.
@@ -133,6 +133,7 @@ setMethod("initialize", "ColumnDataPlot", function(.Object, ...) {
 
 .colDataXAxisNothingTitle <- "None"
 .colDataXAxisColDataTitle <- "Column data"
+.colDataXAxisSelectionsTitle <- "Column selection"
 
 #' @export
 #' @importFrom methods callNextMethod
@@ -190,7 +191,7 @@ setMethod(".defineDataInterface", "ColumnDataPlot", function(x, se, select_info)
             selected=x[[.colDataYAxis]]),
         .radioButtonsHidden(x, .colDataXAxis, 
             label="X-axis:", inline=TRUE,
-            choices=c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle),
+            choices=c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle, .colDataXAxisSelectionsTitle),
             selected=x[[.colDataXAxis]]),
         .conditionalOnRadio(.input_FUN(.colDataXAxis),
             .colDataXAxisColDataTitle,
@@ -242,18 +243,34 @@ setMethod(".generateDotPlotData", "ColumnDataPlot", function(x, envir) {
     )
 
     # Prepare X-axis data.
-    if (x[[.colDataXAxis]] == .colDataXAxisNothingTitle) {
-        x_lab <- ''
+    x_choice <- x[[.colDataXAxis]]
+    if (x_choice == .colDataXAxisNothingTitle) {
+        x_title <- x_lab <- ''
         data_cmds[["x"]] <- "plot.data$X <- factor(character(ncol(se)))"
+
+    } else if (x_choice == .colDataXAxisSelectionsTitle) {
+        x_lab <- "Column selection"
+        x_title <- "vs column selection"
+        
+        if (exists("col_selected", envir=envir, inherits=FALSE)) {
+            target <- "col_selected"
+        } else {
+            target <- "list()"
+        }
+        data_cmds[["x"]] <- sprintf(
+            "plot.data$X <- iSEE::multiSelectionToFactor(%s, colnames(se));", 
+            target
+        )
+
     } else {
         x_lab <- x[[.colDataXAxisColData]]
+        x_title <- sprintf("vs %s", x_lab)
         data_cmds[["x"]] <- sprintf(
             "plot.data$X <- colData(se)[, %s];",
             deparse(x_lab)
         )
     }
 
-    x_title <- ifelse(x_lab == '', x_lab, sprintf("vs %s", x_lab))
     plot_title <- sprintf("%s %s", y_lab, x_title)
 
     data_cmds <- unlist(data_cmds)

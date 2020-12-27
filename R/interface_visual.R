@@ -126,7 +126,7 @@
     if (ncol(se)) {
         color_choices <- c(color_choices, .colorBySampNameTitle)
     }
-    color_choices
+    c(color_choices, .colorByColSelectionsTitle)
 }
 
 #' Define visual parameter check options
@@ -164,7 +164,7 @@
     if (ncol(se) && length(assay_names)) {
         color_choices <- c(color_choices, .colorBySampNameTitle)
     }
-    color_choices
+    c(color_choices, .colorByRowSelectionsTitle)
 }
 
 #' Add a visual parameter box for heatmap plots

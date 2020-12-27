@@ -5,6 +5,8 @@
 .colorByRowDataTitle <- "Row data"
 .colorByFeatNameTitle <- "Feature name"
 .colorBySampNameTitle <- "Sample name"
+.colorByColSelectionsTitle <- "Column selection"
+.colorByRowSelectionsTitle <- "Row selection"
 
 # Point shaping parameters. ----
 

@@ -319,6 +319,19 @@ setMethod(".addDotPlotDataColor", "ColumnDotPlot", function(x, envir) {
         label <- chosen_sample
         cmds <- sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;",
             deparse(chosen_sample))
+
+    } else if (color_choice == .colorByColSelectionsTitle) {
+        label <- "Column selection"
+        if (exists("col_selected", envir=envir, inherits=FALSE)) {
+            target <- "col_selected"
+        } else {
+            target <- "list()"
+        }
+        cmds <- sprintf(
+            "plot.data$ColorBy <- iSEE::multiSelectionToFactor(%s, colnames(se));", 
+            target
+        )
+
     } else {
         return(NULL)
     }
@@ -432,6 +445,18 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
                 )
             )
         )
+
+    } else if (color_choice == .colorByColSelectionsTitle) {
+        # TODO: move this into a separate function and respond to specification
+        # of the discrete colData colormap with i=NULL or something.
+        opt <- levels(colorby)
+        opt <- union("active", opt)
+        opt <- setdiff(opt, "unselected")
+        available <- .defaultDiscreteColorMap(length(opt))
+        names(available) <- opt
+        available <- c(available, unselected="grey")
+        sprintf("scale_color_manual(values=%s, drop=FALSE) +", paste(deparse(available), collapse="")) 
+
     } else {
         .colorByNoneDotPlotScale(x)
     }

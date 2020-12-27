@@ -319,6 +319,18 @@ setMethod(".addDotPlotDataColor", "RowDotPlot", function(x, envir) {
         cmds <- sprintf("plot.data$ColorBy <- assay(se, %s)[, %s];",
             deparse(assay_choice), deparse(chosen_sample))
 
+    } else if (color_choice == .colorByRowSelectionsTitle) {
+        label <- "Row selection"
+        if (exists("row_selected", envir=envir, inherits=FALSE)) {
+            target <- "row_selected"
+        } else {
+            target <- "list()"
+        }
+        cmds <- sprintf(
+            "plot.data$ColorBy <- iSEE::multiSelectionToFactor(%s, rownames(se));", 
+            target
+        )
+
     } else {
         return(NULL)
     }
@@ -437,6 +449,18 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
     } else if (color_choice == .colorBySampNameTitle) {
         assay_choice <- x[[.colorBySampNameAssay]]
         .create_color_scale("assayColorMap", deparse(assay_choice), colorby)
+
+    } else if (color_choice == .colorByRowSelectionsTitle) {
+        # TODO: move this into a separate function and respond to specification
+        # of the discrete rowData colormap with i=NULL or something.
+        opt <- levels(colorby)
+        opt <- union("active", opt)
+        opt <- setdiff(opt, "unselected")
+        available <- .defaultDiscreteColorMap(length(opt))
+        names(available) <- opt
+        available <- c(available, unselected="grey")
+        sprintf("scale_color_manual(values=%s, drop=FALSE) +", paste(deparse(available), collapse="")) 
+
     } else {
         .colorByNoneDotPlotScale(x)
     }

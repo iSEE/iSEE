@@ -205,6 +205,9 @@ Defaults to <code>FALSE</code>.</p></li>
 <li><p><code>SelectionHistory</code>, a list of arbitrary elements that contain parameters for saved multiple selections.
 Each element of this list corresponds to one saved selection in the current panel.
 Defaults to an empty list.</p></li>
+<li><p><code>VersionInfo</code>, a named list of <a href='https://rdrr.io/r/base/numeric_version.html'>package_version</a> objects specifying the versions of packages used to create a given Panel instance.
+This information is used to inform <code>updateObject</code> of any updates that need to be applied.
+By default, it is filled with a single <code>"iSEE"</code> entry containing the current version of <span class="pkg">iSEE</span>.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="getting-and-setting-slots"><a class="anchor" href="#getting-and-setting-slots"></a>Getting and setting slots</h2>

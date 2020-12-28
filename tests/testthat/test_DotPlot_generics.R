@@ -277,10 +277,17 @@ test_that(".addDotPlotDataFacets works for column plots with column selections",
     params[["FacetRowBy"]] <- "Column selection"
     params[["FacetColumnBy"]] <- "Column selection"
 
+    # Trying first with nothing.
     env <- new.env()
     env$se <- sce
-    env$col_selected <- list(active=head(colnames(sce)), saved=tail(colnames(sce)))
     .generateDotPlotData(params, env)
+
+    facet_out <- iSEE:::.addDotPlotDataFacets(params, env)
+    expect_match(facet_out$commands["FacetRow"], "multiSelectionToFactor.*list()")
+    expect_match(facet_out$commands["FacetColumn"], "multiSelectionToFactor.*list()")
+
+    # Repeating after adding a selection.
+    env$col_selected <- list(active=head(colnames(sce)), saved=tail(colnames(sce)))
     facet_out <- iSEE:::.addDotPlotDataFacets(params, env)
 
     expect_true("FacetRow" %in% colnames(env$plot.data))
@@ -326,11 +333,18 @@ test_that(".addDotPlotDataFacets works for row plots with row selections", {
 
     params[["FacetRowBy"]] <- "Row selection"
     params[["FacetColumnBy"]] <- "Row selection"
-
+    
+    # First trying with nothing.
     env <- new.env()
     env$se <- sce
-    env$row_selected <- list(active=head(rownames(sce)), saved=tail(rownames(sce)))
     .generateDotPlotData(params, env)
+
+    facet_out <- iSEE:::.addDotPlotDataFacets(params, env)
+    expect_match(facet_out$commands["FacetRow"], "multiSelectionToFactor.*list()")
+    expect_match(facet_out$commands["FacetColumn"], "multiSelectionToFactor.*list()")
+
+    # Trying again with a selection.
+    env$row_selected <- list(active=head(rownames(sce)), saved=tail(rownames(sce)))
     facet_out <- iSEE:::.addDotPlotDataFacets(params, env)
 
     expect_true("FacetRow" %in% colnames(env$plot.data))

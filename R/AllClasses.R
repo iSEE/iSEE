@@ -107,6 +107,10 @@ setClass("ExperimentColorMap",
 
 collated <- character(0)
 
+.packageVersion <- "VersionInfo"
+
+collated[.packageVersion] <- "list"
+
 .organizationId <- "PanelId"
 .organizationWidth <- "PanelWidth"
 .organizationHeight <- "PanelHeight"

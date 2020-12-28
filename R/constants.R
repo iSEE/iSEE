@@ -166,3 +166,8 @@
 .colormapBlueWhiteOrange <- "blue < white < orange"
 .colormapBlueWhiteRed <- "blue < white < red"
 .colormapGreenWhiteRed <- "green < black < red"
+
+# Versioning information ---
+
+#' @importFrom utils packageVersion
+.latest_version <- list(iSEE=packageVersion("iSEE"))

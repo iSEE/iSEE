@@ -97,7 +97,7 @@
 #' .multiSelectionInvalidated,RowDotPlot-method
 #' .singleSelectionDimension,RowDotPlot-method
 #' .definePanelTour,RowDotPlot-method
-#'
+#' updateObject,RowDotPlot-method
 #' @name RowDotPlot-class
 NULL
 

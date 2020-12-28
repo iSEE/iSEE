@@ -97,7 +97,7 @@
 #' .multiSelectionInvalidated,ColumnDotPlot-method
 #' .singleSelectionDimension,ColumnDotPlot-method
 #' .definePanelTour,ColumnDotPlot-method
-#'
+#' updateObject,ColumnDotPlot-method
 #' @name ColumnDotPlot-class
 NULL
 

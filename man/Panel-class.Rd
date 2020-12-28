@@ -81,6 +81,9 @@ Defaults to \code{FALSE}.
 \item \code{SelectionHistory}, a list of arbitrary elements that contain parameters for saved multiple selections.
 Each element of this list corresponds to one saved selection in the current panel.
 Defaults to an empty list.
+\item \code{VersionInfo}, a named list of \link{package_version} objects specifying the versions of packages used to create a given \linkS4class{Panel} instance.
+This information is used to inform \code{\link{updateObject}} of any updates that need to be applied.
+By default, it is filled with a single \code{"iSEE"} entry containing the current version of \pkg{iSEE}.
 }
 }
 

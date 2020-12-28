@@ -253,6 +253,7 @@
 #' .defineVisualOtherInterface,DotPlot-method
 #' .defineVisualFacetInterface,DotPlot-method
 #' .definePanelTour,DotPlot-method
+#' updateObject,DotPlot-method
 NULL
 
 #' @export
@@ -966,19 +967,51 @@ setMethod(".definePanelTour", "DotPlot", function(x) {
 #' @export
 #' @importFrom BiocGenerics updateObject
 setMethod("updateObject", "DotPlot", function(object) {
-    # Backwards compatibility for new slots (added 3.12).
-    # nocov start
-    if (is(try(object[[.plotHoverInfo]], silent=TRUE), "try-error")) {
-        .Deprecated(msg=sprintf("'%s' is out of date, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
-        object[[.plotHoverInfo]] <- TRUE
-        object[[.legendPointSize]] <- 1
-        object[[.plotLabelCenters]] <- FALSE
-        object[[.plotLabelCentersBy]] <- NA_character_
-        object[[.plotLabelCentersColor]] <- "black"
-        object[[.plotCustomLabels]] <- FALSE
-        object[[.plotCustomLabelsText]] <- NA_character_
+    if (!.is_latest_version(object)) {
+        # nocov start
+        object <- callNextMethod()
+
+        # Backwards compatibility for new slots (added 3.12).
+        if (is(try(object[[.plotHoverInfo]], silent=TRUE), "try-error")) {
+            .Deprecated(msg=sprintf("'%s' is out of date, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
+            slot(object, .plotHoverInfo, check=FALSE) <- TRUE
+            slot(object, .legendPointSize, check=FALSE) <- 1
+            slot(object, .plotLabelCenters, check=FALSE) <- FALSE
+            slot(object, .plotLabelCentersBy, check=FALSE) <- NA_character_
+            slot(object, .plotLabelCentersColor, check=FALSE) <- "black"
+            slot(object, .plotCustomLabels, check=FALSE) <- FALSE
+            slot(object, .plotCustomLabelsText, check=FALSE) <- NA_character_
+        }
+
+        # Backwards compatibility for new slots (added 3.13, preceding versioning information).
+        if (is(try(object[[.facetRow]], silent=TRUE), "try-error")) {
+            .Deprecated(msg=sprintf("'%s' is out of date, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
+
+            facet_info <- .getDotPlotFacetConstants(object)
+            row_field <- facet_info$metadata$row_field
+            col_field <- facet_info$metadata$column_field
+            title <- facet_info$metadata$title
+
+            oldr <- object[["FacetByRow"]]
+            if (oldr==.noSelection) {
+                slot(object, .facetRow, check=FALSE) <- .facetByNothingTitle
+                slot(object, row_field, check=FALSE) <- NA_character_
+            } else {
+                slot(object, .facetRow, check=FALSE) <- title
+                slot(object, row_field, check=FALSE) <- oldr
+            }
+
+            oldc <- object[["FacetByColumn"]]
+            if (oldc==.noSelection) {
+                slot(object, .facetColumn, check=FALSE) <- .facetByNothingTitle
+                slot(object, col_field, check=FALSE) <- NA_character_
+            } else {
+                slot(object, .facetColumn, check=FALSE) <- title
+                slot(object, col_field, check=FALSE) <- oldc
+            }
+        }
+        # nocov end
     }
-    # nocov end
 
     object
 })

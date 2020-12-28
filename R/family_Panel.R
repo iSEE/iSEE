@@ -51,6 +51,9 @@
 #' \item \code{SelectionHistory}, a list of arbitrary elements that contain parameters for saved multiple selections.
 #' Each element of this list corresponds to one saved selection in the current panel.
 #' Defaults to an empty list.
+#' \item \code{VersionInfo}, a named list of \link{package_version} objects specifying the versions of packages used to create a given \linkS4class{Panel} instance.
+#' This information is used to inform \code{\link{updateObject}} of any updates that need to be applied.
+#' By default, it is filled with a single \code{"iSEE"} entry containing the current version of \pkg{iSEE}.
 #' }
 #'
 #' @section Getting and setting slots:
@@ -179,6 +182,10 @@ setMethod("initialize", "Panel", function(.Object, ...) {
     args <- .emptyDefault(args, .selectColDynamic, iSEEOptions$get("selection.dynamic.multiple"))
 
     args <- .emptyDefault(args, .dataParamBoxOpen, FALSE)
+
+    current <- c(.latest_version, args[[.packageVersion]])
+    current <- current[!duplicated(names(current))]
+    args[[.packageVersion]] <- current
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -398,4 +405,12 @@ setMethod(".definePanelTour", "Panel", function(x) {
 
 #' @export
 #' @importFrom BiocGenerics updateObject
-setMethod("updateObject", "Panel", function(object) object)
+setMethod("updateObject", "Panel", function(object) {
+    # nocov start
+    if (is(try(object[[.packageVersion]], silent=TRUE), "try-error")) {
+        .Deprecated(msg=sprintf("'%s' is out of date, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
+        slot(object, .packageVersion, check=FALSE) <- .latest_version 
+    }
+    object
+    # nocov end
+})

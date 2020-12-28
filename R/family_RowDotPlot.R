@@ -103,7 +103,7 @@ NULL
 
 #' @export
 #' @importFrom methods callNextMethod
-setMethod("initialize", "RowDotPlot", function(.Object, ...) {
+setMethod("initialize", "RowDotPlot", function(.Object, ..., FacetByRow=NULL, FacetByColumn=NULL) {
     args <- list(...)
     args <- .emptyDefault(args, .colorByRowData, NA_character_)
     args <- .emptyDefault(args, .colorBySampNameAssay, NA_character_)
@@ -117,6 +117,28 @@ setMethod("initialize", "RowDotPlot", function(.Object, ...) {
     # that the user doesn't have permissions to change!
     args <- .emptyDefault(args, .selectColDynamic, FALSE)
 
+    args <- .emptyDefault(args, .facetRowByRowData, NA_character_)
+    args <- .emptyDefault(args, .facetColumnByRowData, NA_character_)
+
+    # nocov start
+    if (!is.null(FacetByRow)) {
+        .Deprecated(msg="'FacetByRow=' is deprecated.\nUse 'FacetRowBy=\"Column data\"' and 'FacetRowByRowData=' instead.")
+        if (FacetByRow!=.noSelection) {
+            args[["FacetRowBy"]] <- "Row data"
+            args[["FacetRowByRowData"]] <- FacetByRow
+        }
+    }
+
+    if (!is.null(FacetByColumn)) {
+        .Deprecated(msg="'FacetByColumn=' is deprecated.\nUse 'FacetColumnBy=\"Column data\"' and 'FacetColumnByRowData=' instead.")
+        if (FacetByColumn!=.noSelection) {
+            args[["FacetColumnBy"]] <- "Row data"
+            args[["FacetColumnByRowData"]] <- FacetByColumn
+        }
+    }
+    # nocov end
+
+
     do.call(callNextMethod, c(list(.Object), args))
 })
 
@@ -125,7 +147,7 @@ setValidity2("RowDotPlot", function(object) {
     msg <- character(0)
 
     msg <- .singleStringError(msg, object,
-        c(.colorByRowData, .colorBySampNameAssay, .colorByFeatNameColor))
+        c(.colorByRowData, .colorBySampNameAssay, .colorByFeatNameColor, .facetRowByRowData, .facetColumnByRowData))
 
     msg <- .allowableChoiceError(msg, object, .colorByField,
           c(.colorByNothingTitle, .colorByRowDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle, .colorByRowSelectionsTitle))
@@ -189,6 +211,8 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 
     discrete <- rdp_cached$discrete.rowData.names
     x <- .replaceMissingWithFirst(x, .shapeByRowData, discrete)
+    x <- .replaceMissingWithFirst(x, .facetRowByRowData, discrete)
+    x <- .replaceMissingWithFirst(x, .facetColumnByRowData, discrete)
 
     continuous <- rdp_cached$continuous.rowData.names
     x <- .replaceMissingWithFirst(x, .sizeByRowData, continuous)

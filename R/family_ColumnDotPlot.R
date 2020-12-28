@@ -103,7 +103,7 @@ NULL
 
 #' @export
 #' @importFrom methods callNextMethod
-setMethod("initialize", "ColumnDotPlot", function(.Object, ...) {
+setMethod("initialize", "ColumnDotPlot", function(.Object, ..., FacetByRow=NULL, FacetByColumn=NULL) {
     args <- list(...)
     args <- .emptyDefault(args, .colorByColData, NA_character_)
     args <- .emptyDefault(args, .colorByFeatNameAssay, NA_character_)
@@ -117,6 +117,27 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ...) {
     # that the user doesn't have permissions to change!
     args <- .emptyDefault(args, .selectRowDynamic, FALSE)
 
+    args <- .emptyDefault(args, .facetRowByColData, NA_character_)
+    args <- .emptyDefault(args, .facetColumnByColData, NA_character_)
+
+    # nocov start
+    if (!is.null(FacetByRow)) {
+        .Deprecated(msg="'FacetByRow=' is deprecated.\nUse 'FacetRowBy=\"Column data\"' and 'FacetRowByColData=' instead.")
+        if (FacetByRow!=.noSelection) {
+            args[["FacetRowBy"]] <- "Column data"
+            args[["FacetRowByColData"]] <- FacetByRow
+        }
+    }
+
+    if (!is.null(FacetByColumn)) {
+        .Deprecated(msg="'FacetByColumn=' is deprecated.\nUse 'FacetColumnBy=\"Column data\"' and 'FacetColumnByColData=' instead.")
+        if (FacetByColumn!=.noSelection) {
+            args[["FacetColumnBy"]] <- "Column data"
+            args[["FacetColumnByColData"]] <- FacetByColumn
+        }
+    }
+    # nocov end
+
     do.call(callNextMethod, c(list(.Object), args))
 })
 
@@ -125,7 +146,7 @@ setValidity2("ColumnDotPlot", function(object) {
     msg <- character(0)
 
     msg <- .singleStringError(msg, object,
-        c(.colorByColData, .colorByFeatNameAssay, .colorBySampNameColor))
+        c(.colorByColData, .colorByFeatNameAssay, .colorBySampNameColor, .facetRowByColData, .facetColumnByColData))
 
     msg <- .allowableChoiceError(msg, object, .colorByField,
         c(.colorByNothingTitle, .colorByColDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle, .colorByColSelectionsTitle))
@@ -141,6 +162,8 @@ setValidity2("ColumnDotPlot", function(object) {
     }
     TRUE
 })
+
+###############################################################
 
 #' @export
 #' @importFrom SummarizedExperiment colData
@@ -189,6 +212,8 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 
     discrete <- cdp_cached$discrete.colData.names
     x <- .replaceMissingWithFirst(x, .shapeByColData, discrete)
+    x <- .replaceMissingWithFirst(x, .facetRowByColData, discrete)
+    x <- .replaceMissingWithFirst(x, .facetColumnByColData, discrete)
 
     continuous <- cdp_cached$continuous.colData.names
     x <- .replaceMissingWithFirst(x, .sizeByColData, continuous)

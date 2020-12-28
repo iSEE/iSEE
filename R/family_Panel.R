@@ -406,9 +406,11 @@ setMethod(".definePanelTour", "Panel", function(x) {
 #' @export
 #' @importFrom BiocGenerics updateObject
 setMethod("updateObject", "Panel", function(object) {
+    # nocov start
     if (is(try(object[[.packageVersion]], silent=TRUE), "try-error")) {
         .Deprecated(msg=sprintf("'%s' is out of date, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
-        slot(object, .packageVersion, check=FALSE) <- .latest_version # nocov
+        slot(object, .packageVersion, check=FALSE) <- .latest_version 
     }
     object
+    # nocov end
 })

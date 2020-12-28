@@ -503,38 +503,3 @@ setMethod(".definePanelTour", "ColumnDotPlot", function(x) {
 
     data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
 })
-
-#' @export
-#' @importFrom BiocGenerics updateObject
-setMethod("updateObject", "ColumnDotPlot", function(object, verbose=TRUE) {
-    if (!.is_latest_version(object)) {
-        # nocov start
-        object <- callNextMethod()
-
-        # Backwards compatibility for new slots (added 3.13, preceding versioning information).
-        if (is(try(object[[.facetRow]], silent=TRUE), "try-error")) {
-            .Deprecated(msg=sprintf("'%s' is out of date, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
-
-            oldr <- object[["FacetByRow"]]
-            if (oldr==.noSelection) {
-                slot(object, .facetRow, check=FALSE) <- .facetByNothingTitle
-                slot(object, .facetRowByColData, check=FALSE) <- NA_character_
-            } else {
-                slot(object, .facetRow, check=FALSE) <- .facetByColDataTitle
-                slot(object, .facetRowByColData, check=FALSE) <- oldr
-            }
-
-            oldc <- object[["FacetByColumn"]]
-            if (oldc==.noSelection) {
-                slot(object, .facetColumn, check=FALSE) <- .facetByNothingTitle
-                slot(object, .facetColumnByColData, check=FALSE) <- NA_character_
-            } else {
-                slot(object, .facetColumn, check=FALSE) <- .facetByColDataTitle
-                slot(object, .facetColumnByColData, check=FALSE) <- oldc
-            }
-        }
-        # nocov end
-    }
-
-    object
-})

@@ -224,13 +224,30 @@ setValidity2("Panel", function(object) {
 
 #' @export
 setMethod("[[", "Panel", function(x, i, j, ...) {
-    slot(x, i)
+    out <- try(slot(x, i), silent=TRUE)
+
+    if (is(out, "try-error")) {
+        x <- updateObject(x, check=FALSE)
+        out <- slot(x, i)
+    }
+
+    out
 })
 
 #' @export
 setReplaceMethod("[[", "Panel", function(x, i, j, ..., value) {
-    slot(x, i) <- value
-    if (iSEEOptions$get('.check.validity')) validObject(x)
+    out <- try({
+        slot(x, i) <- value
+    }, silent=TRUE)
+
+    if (is(out, "try-error")) {
+        x <- updateObject(x, check=FALSE)
+        slot(x, i) <- value
+    }
+
+    if (iSEEOptions$get('.check.validity')) {
+        validObject(x)
+    }
     x
 })
 
@@ -405,11 +422,15 @@ setMethod(".definePanelTour", "Panel", function(x) {
 
 #' @export
 #' @importFrom BiocGenerics updateObject
-setMethod("updateObject", "Panel", function(object) {
+setMethod("updateObject", "Panel", function(object, ..., verbose=FALSE) {
+    # NOTE: it is crucial that updateObject does not contain '[[' or '[[<-'
+    # calls, lest we get sucked into infinite recursion with the calls to
+    # 'updateObject' from '[['.
+
     # nocov start
-    if (is(try(object[[.packageVersion]], silent=TRUE), "try-error")) {
-        .Deprecated(msg=sprintf("'%s' is out of date, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
-        slot(object, .packageVersion, check=FALSE) <- .latest_version 
+    if (is(try(slot(object, .packageVersion), silent=TRUE), "try-error")) {
+        .Deprecated(msg=sprintf("detected outdated '%s' instance, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
+        slot(object, .packageVersion) <- .latest_version 
     }
     object
     # nocov end

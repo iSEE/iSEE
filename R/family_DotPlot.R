@@ -967,8 +967,8 @@ setMethod(".definePanelTour", "DotPlot", function(x) {
 #' @export
 #' @importFrom BiocGenerics updateObject
 setMethod("updateObject", "DotPlot", function(object) {
-    # nocov start
     if (!.is_latest_version(object)) {
+        # nocov start
         object <- callNextMethod()
 
         # Backwards compatibility for new slots (added 3.12).
@@ -1014,5 +1014,4 @@ setMethod("updateObject", "DotPlot", function(object) {
     }
 
     object
-    # nocov end
 })

@@ -138,7 +138,7 @@ setMethod("initialize", "RowDataPlot", function(.Object, ...) {
 
 .rowDataXAxisNothingTitle <- "None"
 .rowDataXAxisRowDataTitle <- "Row data"
-.rowDataXAxisSelectionsTitle <- "Row selections"
+.rowDataXAxisSelectionsTitle <- "Row selection"
 
 #' @export
 #' @importFrom methods callNextMethod
@@ -171,7 +171,7 @@ setValidity2("RowDataPlot", function(object) {
     msg <- character(0)
 
     msg <- .allowableChoiceError(msg, object, .rowDataXAxis,
-        c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle))
+        c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle, .rowDataXAxisSelectionsTitle))
 
     msg <- .singleStringError(msg, object, c(.rowDataXAxisRowData, .rowDataYAxis))
 

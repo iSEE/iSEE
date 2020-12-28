@@ -1,5 +1,5 @@
 # Tests the various plotting functionality.
-# library(testthat); library(iSEE); source("setup_sce.R"); source("setup_other.R"); source("test_plotting.R")
+# library(testthat); library(iSEE); source("setup_sce.R"); source("setup_mimic_live_app.R"); source("test_plotting.R")
 
 context("plotting")
 
@@ -16,7 +16,7 @@ memory <- list(
 )
 
 pObjects <- mimic_live_app(sce, memory)
-sce <- .set_colormap(sce, ExperimentColorMap())
+sce <- iSEE:::.set_colormap(sce, ExperimentColorMap())
 
 ########################################
 # .make_redDimPlot/.scatter_plot ----
@@ -884,8 +884,10 @@ test_that(".self_brush_box flip axes when faceting on both X and Y", {
     cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
     cdp[[iSEE:::.colDataYAxis]] <- "driver_1_s"
-    cdp[[iSEE:::.facetByRow]] <- "Core.Type"
-    cdp[[iSEE:::.facetByColumn]] <- "passes_qc_checks_s"
+    cdp[[iSEE:::.facetRow]] <- "Column data"
+    cdp[[iSEE:::.facetRowByColData]] <- "Core.Type"
+    cdp[[iSEE:::.facetColumn]] <- "Column data"
+    cdp[[iSEE:::.facetColumnByColData]] <- "passes_qc_checks_s"
 
     brushData <- list(xmin=1, xmax=2, ymin=3, ymax=4)
     cdp[[iSEE:::.brushData]] <- brushData
@@ -1039,8 +1041,10 @@ test_that(".self_lasso_path flip axes when faceting on both X and Y", {
     cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
     cdp[[iSEE:::.colDataYAxis]] <- "driver_1_s"
-    cdp[[iSEE:::.facetByRow]] <- "Core.Type"
-    cdp[[iSEE:::.facetByColumn]] <- "passes_qc_checks_s"
+    cdp[[iSEE:::.facetRow]] <- "Column data"
+    cdp[[iSEE:::.facetRowByColData]] <- "Core.Type"
+    cdp[[iSEE:::.facetColumn]] <- "Column data"
+    cdp[[iSEE:::.facetColumnByColData]] <- "passes_qc_checks_s"
 
     LASSO_CLOSED <- list(
         lasso=NULL,
@@ -1066,8 +1070,10 @@ test_that(".self_lasso_path flip axes when faceting on both X and Y", {
 test_that(".define_facetby_for_column_plot works", {
     params <- pObjects$memory$ReducedDimensionPlot1
 
-    params[["FacetByRow"]] <- "driver_1_s"
-    params[["FacetByColumn"]] <- "Core.Type"
+    params[["FacetRowBy"]] <- "Column data"
+    params[["FacetRowByColData"]] <- "driver_1_s"
+    params[["FacetColumnBy"]] <- "Column data"
+    params[["FacetColumnByColData"]] <- "Core.Type"
 
     env <- new.env()
     env$se <- sce
@@ -1084,8 +1090,10 @@ test_that(".define_facetby_for_row_plot works", {
     rowData(sce)[, "LETTERS"] <- sample(LETTERS[1:3], nrow(sce), replace=TRUE)
 
     params <- pObjects$memory$RowDataPlot1
-    params[["FacetByRow"]] <- "letters"
-    params[["FacetByColumn"]] <- "LETTERS"
+    params[["FacetRowBy"]] <- "Row data"
+    params[["FacetRowByRowData"]] <- "letters"
+    params[["FacetColumnBy"]] <- "Row data"
+    params[["FacetColumnByRowData"]] <- "LETTERS"
 
     env <- new.env()
     env$se <- sce
@@ -1103,8 +1111,10 @@ test_that(".addFacets works correctly plots", {
     out <- iSEE:::.addFacets(params)
     expect_null(out)
 
-    params[["FacetByRow"]] <- "driver_1_s"
-    params[["FacetByColumn"]] <- "Core.Type"
+    params[["FacetRowBy"]] <- "Column data"
+    params[["FacetRowByColData"]] <- "driver_1_s"
+    params[["FacetColumnBy"]] <- "Column data"
+    params[["FacetColumnByColData"]] <- "Core.Type"
 
     out <- iSEE:::.addFacets(params)
     expect_identical(out, "facet_grid(FacetRow ~ FacetColumn)")
@@ -1113,14 +1123,15 @@ test_that(".addFacets works correctly plots", {
     out <- iSEE:::.addFacets(params)
     expect_null(out)
 
-    params[["FacetByRow"]] <- "letters"
-    params[["FacetByColumn"]] <- iSEE:::.noSelection
+    params[["FacetRowBy"]] <- "Row data"
+    params[["FacetRowByRowData"]] <- "letters"
 
     out <- iSEE:::.addFacets(params)
     expect_identical(out, "facet_grid(FacetRow ~ .)")
 
-    params[["FacetByRow"]] <- iSEE:::.noSelection
-    params[["FacetByColumn"]] <- "letters"
+    params[["FacetRowBy"]] <- "None"
+    params[["FacetColumnBy"]] <- "Row data"
+    params[["FacetColumnByRowData"]] <- "letters"
 
     out <- iSEE:::.addFacets(params)
     expect_identical(out, "facet_grid(. ~ FacetColumn)")
@@ -1279,7 +1290,8 @@ test_that(".downsample_points responds to priority", {
 
 test_that(".create_plot can add faceting commands", {
     rdp <- pObjects$memory$ReducedDimensionPlot1
-    rdp[[iSEE:::.facetByColumn]] <- "driver_1_s"
+    rdp[["FacetColumnBy"]] <- "Column data"
+    rdp[["FacetColumnByColData"]] <- "driver_1_s"
 
     out <- .generateOutput(rdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
     expect_true(any(grepl("facet_grid(. ~ FacetColumn)", out$commands$plot, fixed=TRUE)))
@@ -1414,8 +1426,10 @@ test_that(".generateDotPlot handles centered labels", {
     expect_s3_class(p.out$plot, c("gg", "ggplot"))
 
     # Plus faceting.
-    rdp[["FacetByColumn"]] <- "dissection_s"
-    rdp[["FacetByRow"]] <- "dissection_s"
+    rdp[["FacetRowBy"]] <- "Column data"
+    rdp[["FacetColumnBy"]] <- "Column data"
+    rdp[["FacetColumnByColData"]] <- "dissection_s"
+    rdp[["FacetRowByColData"]] <- "dissection_s"
 
     p.out <- .generateOutput(rdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)

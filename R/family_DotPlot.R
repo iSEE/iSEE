@@ -41,14 +41,14 @@
 #'
 #' The following slots control the faceting:
 #' \itemize{
-#' \item \code{FacetByRow}, a string specifying the metadata field to use for creating row facets.
-#' For \linkS4class{RowDotPlot}s, this should be a field in the \code{\link{rowData}},
-#' while for \linkS4class{ColumnDotPlot}s, this should be a field in the \code{\link{colData}}.
-#' Defaults to \code{"---"}, i.e., no row faceting.
-#' \item \code{FacetByColumn}, a string specifying the metadata field to use for creating column facets.
-#' For \linkS4class{RowDotPlot}s, this should be a field in the \code{\link{rowData}},
-#' while for \linkS4class{ColumnDotPlot}s, this should be a field in the \code{\link{colData}}.
-#' Defaults to \code{"---"}, i.e., no column faceting.
+#' \item \code{FacetRowBy}, a string indicating what to use for creating row facets.
+#' For \linkS4class{RowDotPlot}s, this should be one of \code{"None"}, \code{"Row data"} or \code{"Row selection"}. 
+#' For \linkS4class{ColumnDotPlot}s, this should be one of \code{"None"}, \code{"Column data"} or \code{"Column selection"}. 
+#' Defaults to \code{"None"}, i.e., no row faceting.
+#' \item \code{FacetByColumn}, a string indicating what to use for creating column facets.
+#' For \linkS4class{RowDotPlot}s, this should be one of \code{"None"}, \code{"Row data"} or \code{"Row selection"}. 
+#' For \linkS4class{ColumnDotPlot}s, this should be one of \code{"None"}, \code{"Column data"} or \code{"Column selection"}. 
+#' Defaults to \code{"None"}, i.e., no column faceting.
 #' }
 #'
 #' The following slots control any text to be shown on the plot:
@@ -636,13 +636,17 @@ setMethod(".defineVisualFacetInterface", "DotPlot", function(x, se) {
     tagList(
         hr(),
         radioButtons(rowId, label="Facet by row:", choices=title_choices, selected=x[[.facetRow]], inline=TRUE),
-        .conditionalOnRadio(rowId, facet_info$metadata$title, 
-            selectInput(paste0(plot_name, "_", row_field), label=NULL, choices=covariates, selected=x[[row_field]])
-        ),
+        if (length(covariates)) {
+            .conditionalOnRadio(rowId, facet_info$metadata$title, 
+                selectInput(paste0(plot_name, "_", row_field), label=NULL, choices=covariates, selected=x[[row_field]])
+            )
+        },
         radioButtons(columnId, label="Facet by column:", choices=title_choices, selected=x[[.facetColumn]], inline=TRUE),
-        .conditionalOnRadio(columnId, facet_info$metadata$title,
-            selectInput(paste0(plot_name, "_", col_field), label=NULL, choices=covariates, selected=x[[col_field]])
-        )
+        if (length(covariates)) {
+            .conditionalOnRadio(columnId, facet_info$metadata$title,
+                selectInput(paste0(plot_name, "_", col_field), label=NULL, choices=covariates, selected=x[[col_field]])
+            )
+        }
     )
 })
 

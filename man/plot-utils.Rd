@@ -19,7 +19,9 @@ covariates.
 Generate ggplot instructions to facet a plot by row and/or column
 }
 \examples{
-x <- ReducedDimensionPlot(FacetByRow = "Covariate_1", FacetByColumn = "Covariate_2")
+x <- ReducedDimensionPlot(
+    FacetRowBy = "Column data", FacetRowByColData="Covariate_1", 
+    FacetColumnBy = "Column data", FacetColumnByColData="Covariate_2") 
 .addFacets(x)
 }
 \author{

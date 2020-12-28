@@ -1040,7 +1040,9 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @importFrom ggplot2 facet_grid
 #'
 #' @examples
-#' x <- ReducedDimensionPlot(FacetByRow = "Covariate_1", FacetByColumn = "Covariate_2")
+#' x <- ReducedDimensionPlot(
+#'     FacetRowBy = "Column data", FacetRowByColData="Covariate_1", 
+#'     FacetColumnBy = "Column data", FacetColumnByColData="Covariate_2") 
 #' .addFacets(x)
 .addFacets <- function(x){
     row_facet <- x[[.facetRow]]!=.facetByNothingTitle

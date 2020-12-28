@@ -174,7 +174,7 @@ setValidity2("ColumnDataPlot", function(object) {
     msg <- character(0)
 
     msg <- .allowableChoiceError(msg, object, .colDataXAxis,
-        c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle))
+        c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle, .colDataXAxisSelectionsTitle))
 
     msg <- .singleStringError(msg, object,
         c(.colDataXAxisColData, .colDataYAxis))

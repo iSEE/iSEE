@@ -1,5 +1,5 @@
 # This tests the various class set-up methods.
-# library(testthat); library(iSEE); source('setup_sce.R'); source('setup_other.R'); source('test_api.R')
+# library(testthat); library(iSEE); source('setup_sce.R'); source("setup_mimic_live_app.R"); source('setup_classes.R'); source('test_api.R')
 
 # .refineParameters ----
 context(".refineParameters")
@@ -72,17 +72,15 @@ test_that(".refineParameters identifies impossible SampleAssayPlot", {
 
     sce0 <- sce[, 0]
     sce0 <- .cacheCommonInfo(x, sce0)
-    expect_warning(.refineParameters(x, sce0),
+    expect_warning(out <- .refineParameters(x, sce0),
         "no columns for plotting 'SampleAssayPlot'", fixed=TRUE)
-    out <- .refineParameters(x, sce0)
     expect_null(out)
 
     sce0 <- sce
     assays(sce0) <- List()
     sce0 <- .cacheCommonInfo(x, sce0)
-    expect_warning(.refineParameters(x, sce0),
+    expect_warning(out <- .refineParameters(x, sce0),
         "no named 'assays' for plotting 'SampleAssayPlot'", fixed=TRUE)
-    out <- .refineParameters(x, sce0)
     expect_null(out)
 
     sce0 <- sce
@@ -100,17 +98,15 @@ test_that(".refineParameters identifies impossible FeatureAssayPlot", {
 
     sce0 <- sce[0, ]
     sce0 <- .cacheCommonInfo(x, sce0)
-    expect_warning(.refineParameters(x, sce0),
+    expect_warning(out <- .refineParameters(x, sce0),
         "no rows available for plotting 'FeatureAssayPlot'", fixed=TRUE)
-    out <- .refineParameters(x, sce0)
     expect_null(out)
 
     sce0 <- sce
     assays(sce0) <- List()
     sce0 <- .cacheCommonInfo(x, sce0)
-    expect_warning(.refineParameters(x, sce0),
+    expect_warning(out <- .refineParameters(x, sce0),
         "no valid 'assays' for plotting 'FeatureAssayPlot'", fixed=TRUE)
-    out <- .refineParameters(x, sce0)
     expect_null(out)
 
     sce0 <- sce
@@ -128,17 +124,15 @@ test_that(".refineParameters identifies impossible ComplexHeatmapPlot", {
 
     sce0 <- sce[0, ]
     sce0 <- .cacheCommonInfo(x, sce0)
-    expect_warning(.refineParameters(x, sce0),
+    expect_warning(out <- .refineParameters(x, sce0),
         "no rows available for plotting 'ComplexHeatmapPlot'", fixed=TRUE)
-    out <- .refineParameters(x, sce0)
     expect_null(out)
 
     sce0 <- sce
     assays(sce0) <- List()
     sce0 <- .cacheCommonInfo(x, sce0)
-    expect_warning(.refineParameters(x, sce0),
+    expect_warning(out <- .refineParameters(x, sce0),
         "no valid 'assays' for plotting 'ComplexHeatmapPlot'", fixed=TRUE)
-    out <- .refineParameters(x, sce0)
     expect_null(out)
 
 })
@@ -150,12 +144,12 @@ test_that(".colorDotPlot returns NULL when coloring DotPlot by nothing", {
 
     x <- ColumnDataPlot()
     x[[iSEE:::.colorByField]] <- iSEE:::.colorByNothingTitle
-    out <- .colorDotPlot(x, LETTERS)
+    out <- iSEE:::.colorDotPlot(x, LETTERS)
     expect_null(out)
 
     x <- RowDataPlot()
     x[[iSEE:::.colorByField]] <- iSEE:::.colorByNothingTitle
-    out <- .colorDotPlot(x, LETTERS)
+    out <- iSEE:::.colorDotPlot(x, LETTERS)
     expect_null(out)
 
 })
@@ -184,11 +178,17 @@ test_that(".cacheCommonInfo detects earlier cache", {
 
     for (x_class in x_classes) {
         x_instance <- new(x_class)
-        for (i in seq_len(2)) {
-            sce <- .cacheCommonInfo(x_instance, sce)
-            # Run again to trigger !is.null(.getCachedCommonInfo(se, "CLASS"))
-            sce <- .cacheCommonInfo(x_instance, sce)
-        }
+        copy <- sce
+        expect_null(metadata(copy)$iSEE)
+
+        copy <- .cacheCommonInfo(x_instance, copy)
+        cached <- .getCachedCommonInfo(copy, x_class)
+        expect_false(is.null(metadata(copy)$iSEE))
+        metadata(copy)$iSEE[[x_class]] <- "DONE"
+
+        # Run again: this will not wipe 'status'. 
+        copy <- .cacheCommonInfo(x_instance, copy)
+        expect_identical(metadata(copy)$iSEE[[x_class]], "DONE")
     }
 
 })
@@ -234,13 +234,13 @@ test_that(".addDotPlotDataSelected handles RowDotPlot", {
     x <- SampleAssayPlot()
 
     # no row_selected in plot_env
-    out <- .addDotPlotDataSelected(x, plot_env)
+    out <- iSEE:::.addDotPlotDataSelected(x, plot_env)
     expect_null(out)
 
     # row_selected exists in plot_env
     plot_env$row_selected <- head(letters, 3)
     plot_env$plot.data <- data.frame(row.names = letters)
-    out <- .addDotPlotDataSelected(x, plot_env)
+    out <- iSEE:::.addDotPlotDataSelected(x, plot_env)
     expect_identical(out, c(
         header1 = "",
         header2 = "# Receiving row point selection",
@@ -249,7 +249,7 @@ test_that(".addDotPlotDataSelected handles RowDotPlot", {
 
     # row_selected exists in plot_env with effect Restrict
     x[[iSEE:::.selectEffect]] <- iSEE:::.selectRestrictTitle
-    out <- .addDotPlotDataSelected(x, plot_env)
+    out <- iSEE:::.addDotPlotDataSelected(x, plot_env)
     expect_identical(out, c(
         header1 = "",
         header2 = "# Receiving row point selection",
@@ -346,6 +346,23 @@ test_that(".multiSelectionInvalidated handles Panel", {
 
 })
 
+test_that(".multiSelectionInvalidated handles the various subclasses", {
+    expect_false(.multiSelectionInvalidated(FeatureAssayPlot()))
+    expect_false(.multiSelectionInvalidated(ColumnDataPlot()))
+    expect_false(.multiSelectionInvalidated(SampleAssayPlot()))
+    expect_false(.multiSelectionInvalidated(RowDataPlot()))
+
+    expect_true(.multiSelectionInvalidated(FeatureAssayPlot(XAxis="Column selection")))
+    expect_true(.multiSelectionInvalidated(ColumnDataPlot(XAxis="Column selection")))
+    expect_true(.multiSelectionInvalidated(SampleAssayPlot(XAxis="Row selection")))
+    expect_true(.multiSelectionInvalidated(RowDataPlot(XAxis="Row selection")))
+
+    expect_true(.multiSelectionInvalidated(ColumnDataPlot(FacetRowBy="Column selection")))
+    expect_true(.multiSelectionInvalidated(ColumnDataPlot(FacetColumnBy="Column selection")))
+    expect_true(.multiSelectionInvalidated(RowDataPlot(FacetRowBy="Row selection")))
+    expect_true(.multiSelectionInvalidated(RowDataPlot(FacetColumnBy="Row selection")))
+})
+
 # .multiSelectionAvailable ----
 context(".multiSelectionAvailable")
 
@@ -369,7 +386,7 @@ test_that(".exportOutput handles DotPlot", {
     ReducedDimensionPlot1 <- .refineParameters(ReducedDimensionPlot1, sce)
     memory <- list(ReducedDimensionPlot1=ReducedDimensionPlot1)
     pObjects <- mimic_live_app(sce, memory)
-    sce <- .set_colormap(sce, ExperimentColorMap())
+    sce <- iSEE:::.set_colormap(sce, ExperimentColorMap())
 
     out <- .exportOutput(memory$ReducedDimensionPlot1, sce, memory, pObjects$contents)
     expect_identical(out, "ReducedDimensionPlot1.pdf")
@@ -383,7 +400,7 @@ test_that(".exportOutput handles Table", {
     ColumnDataTable1 <- .refineParameters(ColumnDataTable1, sce)
     memory <- list(ColumnDataTable1=ColumnDataTable1)
     pObjects <- mimic_live_app(sce, memory)
-    sce <- .set_colormap(sce, ExperimentColorMap())
+    sce <- iSEE:::.set_colormap(sce, ExperimentColorMap())
 
     out <- .exportOutput(memory$ColumnDataTable1, sce, memory, pObjects$contents)
     expect_identical(out, "ColumnDataTable1.csv")
@@ -397,7 +414,7 @@ test_that(".exportOutput handles ComplexHeatmapPlot", {
     ComplexHeatmapPlot1 <- .refineParameters(ComplexHeatmapPlot1, sce)
     memory <- list(ComplexHeatmapPlot1=ComplexHeatmapPlot1)
     pObjects <- mimic_live_app(sce, memory)
-    sce <- .set_colormap(sce, ExperimentColorMap())
+    sce <- iSEE:::.set_colormap(sce, ExperimentColorMap())
 
     out <- .exportOutput(memory$ComplexHeatmapPlot1, sce, memory, pObjects$contents)
     expect_identical(out, "ComplexHeatmapPlot1.pdf")
@@ -425,11 +442,16 @@ test_that(".defineVisualShapeInterface returns NULL if there are no discrete cov
     expect_null(.defineVisualShapeInterface(RowDataPlot(), sce))
 })
 
-test_that(".defineVisualFacetInterface returns NULL if there are no discrete covariate", {
-
+test_that(".defineVisualFacetInterface avoids column data if there are no discrete covariate", {
     # Note that at this point there is no discrete covariate cached, even if such a covariate exists
-    expect_null(.defineVisualFacetInterface(ColumnDataPlot(), sce))
+    expect_false(grepl("FacetRowByColData", .defineVisualFacetInterface(ColumnDataPlot(), sce)))
 
-    # Note that at this point there is no discrete covariate cached, even if such a covariate exists
-    expect_null(.defineVisualFacetInterface(RowDataPlot(), sce))
+    expect_false(grepl("FacetRowByRowData", .defineVisualFacetInterface(RowDataPlot(), sce)))
+
+    sce <- .cacheCommonInfo(ColumnDataPlot(), sce)
+    sce <- .cacheCommonInfo(RowDataPlot(), sce)
+
+    expect_true(grepl("FacetRowByColData", .defineVisualFacetInterface(ColumnDataPlot(), sce)))
+
+    expect_true(grepl("FacetRowByRowData", .defineVisualFacetInterface(RowDataPlot(), sce)))
 })

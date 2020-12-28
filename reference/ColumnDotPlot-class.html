@@ -211,7 +211,9 @@ This will also call the equivalent <a href='DotPlot-class.html'>DotPlot</a> meth
 </ul>
 
 <p>For controlling selections:</p><ul>
-<li><p><code><a href='multi-select-generics.html'>.multiSelectionDimension</a>(x)</code> returns <code>"column"</code> to indicate that a column selection is being transmitted.</p></li>
+<li><p><code><a href='multi-select-generics.html'>.multiSelectionDimension</a>(x)</code> returns <code>"column"</code> to indicate that a multiple column selection is being transmitted.</p></li>
+<li><p><code><a href='multi-select-generics.html'>.multiSelectionInvalidated</a>(x)</code> returns <code>TRUE</code> if the faceting options use multiple column selections,
+such that the point coordinates/domain may change upon updates to upstream selections in transmitting panels.</p></li>
 <li><p><code><a href='single-select-generics.html'>.singleSelectionDimension</a>(x)</code> returns <code>"sample"</code> to indicate that a sample identity is being transmitted.</p></li>
 </ul>
 

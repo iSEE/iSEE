@@ -175,7 +175,7 @@ Defaults to <code>FALSE</code>.</p></li>
 
 <p>The following slots control the values on the x-axis:</p><ul>
 <li><p><code>XAxis</code>, string specifying what should be plotting on the x-axis.
-This can be any one of <code>"None"</code>, <code>"Feature name"</code> or <code>"Column data"</code>.
+This can be any one of <code>"None"</code>, <code>"Feature name"</code>, <code>"Column data"</code> or <code>"Column selection"</code>.
 Defaults to <code>"None"</code>.</p></li>
 <li><p><code>XAxisColumnData</code>, string specifying which column of the <code>colData</code> should be shown on the x-axis,
 if <code>XAxis="Column data"</code>.
@@ -227,8 +227,12 @@ It will return the commands required to do so as well as a list of labels.</p></
 </ul>
 
 <p>For managing selections:</p><ul>
-<li><p><code><a href='single-select-generics.html'>.singleSelectionSlots</a>(x)</code> will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of feature on the x- and y-axes.
-This includes the output of <code>callNextMethod</code>.</p></li>
+<li><p><code><a href='single-select-generics.html'>.singleSelectionSlots</a>(x)</code> will return a list specifying the slots that can be updated by single selections in transmitter panels, 
+mostly related to the choice of feature on the x- and y-axes.
+This includes the output of the method for the parent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> class.</p></li>
+<li><p><code><a href='multi-select-generics.html'>.multiSelectionInvalidated</a>(x)</code> returns <code>TRUE</code> if the x-axis uses multiple column selections,
+such that the point coordinates may change upon updates to upstream selections in transmitting panels.
+Otherwise, it dispatches to the <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> method.</p></li>
 </ul>
 
 <p>For documentation:</p><ul>
@@ -294,6 +298,12 @@ This includes the output of <code>callNextMethod</code>.</p></li>
 #&gt; Slot "YAxisFeatureDynamicSource":
 #&gt; [1] FALSE
 #&gt; 
+#&gt; Slot "FacetRowByColData":
+#&gt; character(0)
+#&gt; 
+#&gt; Slot "FacetColumnByColData":
+#&gt; character(0)
+#&gt; 
 #&gt; Slot "ColorByColumnData":
 #&gt; [1] "Mutation_Status"
 #&gt; 
@@ -309,11 +319,11 @@ This includes the output of <code>callNextMethod</code>.</p></li>
 #&gt; Slot "SizeByColumnData":
 #&gt; [1] "sizeFactor"
 #&gt; 
-#&gt; Slot "FacetByRow":
-#&gt; [1] "---"
+#&gt; Slot "FacetRowBy":
+#&gt; [1] "None"
 #&gt; 
-#&gt; Slot "FacetByColumn":
-#&gt; [1] "---"
+#&gt; Slot "FacetColumnBy":
+#&gt; [1] "None"
 #&gt; 
 #&gt; Slot "ColorBy":
 #&gt; [1] "None"
@@ -485,6 +495,12 @@ This includes the output of <code>callNextMethod</code>.</p></li>
 #&gt; Slot "YAxisFeatureDynamicSource":
 #&gt; [1] FALSE
 #&gt; 
+#&gt; Slot "FacetRowByColData":
+#&gt; character(0)
+#&gt; 
+#&gt; Slot "FacetColumnByColData":
+#&gt; character(0)
+#&gt; 
 #&gt; Slot "ColorByColumnData":
 #&gt; [1] "Mutation_Status"
 #&gt; 
@@ -500,11 +516,11 @@ This includes the output of <code>callNextMethod</code>.</p></li>
 #&gt; Slot "SizeByColumnData":
 #&gt; [1] "sizeFactor"
 #&gt; 
-#&gt; Slot "FacetByRow":
-#&gt; [1] "---"
+#&gt; Slot "FacetRowBy":
+#&gt; [1] "None"
 #&gt; 
-#&gt; Slot "FacetByColumn":
-#&gt; [1] "---"
+#&gt; Slot "FacetColumnBy":
+#&gt; [1] "None"
 #&gt; 
 #&gt; Slot "ColorBy":
 #&gt; [1] "None"

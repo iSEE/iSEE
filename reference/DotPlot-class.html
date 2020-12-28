@@ -196,14 +196,14 @@ Defaults to <code>"None"</code>.</p></li>
 </ul>
 
 <p>The following slots control the faceting:</p><ul>
-<li><p><code>FacetByRow</code>, a string specifying the metadata field to use for creating row facets.
-For <a href='RowDotPlot-class.html'>RowDotPlot</a>s, this should be a field in the <code>rowData</code>,
-while for <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s, this should be a field in the <code>colData</code>.
-Defaults to <code>"---"</code>, i.e., no row faceting.</p></li>
-<li><p><code>FacetByColumn</code>, a string specifying the metadata field to use for creating column facets.
-For <a href='RowDotPlot-class.html'>RowDotPlot</a>s, this should be a field in the <code>rowData</code>,
-while for <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s, this should be a field in the <code>colData</code>.
-Defaults to <code>"---"</code>, i.e., no column faceting.</p></li>
+<li><p><code>FacetRowBy</code>, a string indicating what to use for creating row facets.
+For <a href='RowDotPlot-class.html'>RowDotPlot</a>s, this should be one of <code>"None"</code>, <code>"Row data"</code> or <code>"Row selection"</code>. 
+For <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s, this should be one of <code>"None"</code>, <code>"Column data"</code> or <code>"Column selection"</code>. 
+Defaults to <code>"None"</code>, i.e., no row faceting.</p></li>
+<li><p><code>FacetByColumn</code>, a string indicating what to use for creating column facets.
+For <a href='RowDotPlot-class.html'>RowDotPlot</a>s, this should be one of <code>"None"</code>, <code>"Row data"</code> or <code>"Row selection"</code>. 
+For <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s, this should be one of <code>"None"</code>, <code>"Column data"</code> or <code>"Column selection"</code>. 
+Defaults to <code>"None"</code>, i.e., no column faceting.</p></li>
 </ul>
 
 <p>The following slots control any text to be shown on the plot:</p><ul>

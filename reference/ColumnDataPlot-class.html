@@ -166,7 +166,7 @@ It provides slots and methods for specifying which variable to use on the y-axis
 <li><p><code>YAxis</code>, a string specifying the column of the <code>colData</code> to show on the y-axis.
 If <code>NA</code>, defaults to the first valid field (see <code>?"<a href='ColumnDotPlot-class.html'>.refineParameters,ColumnDotPlot-method</a>"</code>).</p></li>
 <li><p><code>XAxis</code>, string specifying what should be plotting on the x-axis.
-This can be any one of <code>"None"</code> or <code>"Column data"</code>.
+This can be any one of <code>"None"</code>, <code>"Column data"</code> or <code>"Column selection"</code>.
 Defaults to <code>"None"</code>.</p></li>
 <li><p><code>XAxisColumnData</code>, string specifying the column of the <code>colData</code> to show on the x-axis.
 If <code>NA</code>, defaults to the first valid field.</p></li>
@@ -202,6 +202,12 @@ This consists of all variables with atomic values.</p></li>
 <p>For monitoring reactive expressions:</p><ul>
 <li><p><code><a href='observer-generics.html'>.createObservers</a>(x, se, input, session, pObjects, rObjects)</code> sets up observers for all slots described above and in the parent classes.
 This will also call the equivalent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> method.</p></li>
+</ul>
+
+<p>For controlling selections:</p><ul>
+<li><p><code><a href='multi-select-generics.html'>.multiSelectionInvalidated</a>(x)</code> returns <code>TRUE</code> if the x-axis uses multiple column selections,
+such that the point coordinates may change upon updates to upstream selections in transmitting panels.
+Otherwise, it dispatches to the <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> method.</p></li>
 </ul>
 
 <p>For defining the panel name:</p><ul>
@@ -267,6 +273,12 @@ It will return the commands required to do so as well as a list of labels.</p></
 #&gt; Slot "XAxisColumnData":
 #&gt; [1] "Mutation_Status"
 #&gt; 
+#&gt; Slot "FacetRowByColData":
+#&gt; character(0)
+#&gt; 
+#&gt; Slot "FacetColumnByColData":
+#&gt; character(0)
+#&gt; 
 #&gt; Slot "ColorByColumnData":
 #&gt; [1] "Mutation_Status"
 #&gt; 
@@ -282,11 +294,11 @@ It will return the commands required to do so as well as a list of labels.</p></
 #&gt; Slot "SizeByColumnData":
 #&gt; [1] "sizeFactor"
 #&gt; 
-#&gt; Slot "FacetByRow":
-#&gt; [1] "---"
+#&gt; Slot "FacetRowBy":
+#&gt; [1] "None"
 #&gt; 
-#&gt; Slot "FacetByColumn":
-#&gt; [1] "---"
+#&gt; Slot "FacetColumnBy":
+#&gt; [1] "None"
 #&gt; 
 #&gt; Slot "ColorBy":
 #&gt; [1] "None"

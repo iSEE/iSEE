@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Check compatibility between ExperimentColorMap and SummarizedExperiment
-objects — checkColormapCompatibility • iSEE</title>
+<title>Convert multiple selections into a factor — multiSelectionToFactor • iSEE</title>
 
 
 <!-- jquery -->
@@ -40,12 +39,8 @@ objects — checkColormapCompatibility • iSEE</title>
 
 
 
-<meta property="og:title" content="Check compatibility between ExperimentColorMap and SummarizedExperiment
-objects — checkColormapCompatibility" />
-<meta property="og:description" content="This function compares a pair of ExperimentColorMap and
-SingleCellExperiment objects, and examines whether
-all of the assays, colData, and rowData defined
-in the ExperimentColorMap object exist in the SingleCellExperiment object." />
+<meta property="og:title" content="Convert multiple selections into a factor — multiSelectionToFactor" />
+<meta property="og:description" content="Convert multiple selection information into a factor, typically for use as a covariate or for coloring." />
 
 
 
@@ -150,73 +145,49 @@ in the ExperimentColorMap object exist in the SingleCellExperiment object." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Check compatibility between ExperimentColorMap and SummarizedExperiment
-objects</h1>
-    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/ExperimentColorMap.R'><code>R/ExperimentColorMap.R</code></a></small>
-    <div class="hidden name"><code>checkColormapCompatibility.Rd</code></div>
+    <h1>Convert multiple selections into a factor</h1>
+    <small class="dont-index">Source: <a href='https://github.com/iSEE/iSEE/blob/master/R/multiSelectionToFactor.R'><code>R/multiSelectionToFactor.R</code></a></small>
+    <div class="hidden name"><code>multiSelectionToFactor.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>This function compares a pair of <a href='ExperimentColorMap-class.html'>ExperimentColorMap</a> and
-SingleCellExperiment objects, and examines whether
-all of the <code>assays</code>, <code>colData</code>, and <code>rowData</code> defined
-in the ExperimentColorMap object exist in the SingleCellExperiment object.</p>
+    <p>Convert multiple selection information into a factor, typically for use as a covariate or for coloring.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>checkColormapCompatibility</span><span class='op'>(</span><span class='va'>ecm</span>, <span class='va'>se</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>multiSelectionToFactor</span><span class='op'>(</span><span class='va'>selected</span>, <span class='va'>all.names</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>ecm</th>
-      <td><p>An <a href='ExperimentColorMap-class.html'>ExperimentColorMap</a>.</p></td>
+      <th>selected</th>
+      <td><p>A named list of character vectors, containing the names of selected observations for different selections.
+Vectors for different selections may overlap.</p></td>
     </tr>
     <tr>
-      <th>se</th>
-      <td><p>A SingleCellExperiment.</p></td>
+      <th>all.names</th>
+      <td><p>Character vector of all observations.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A character vector of incompability error messages, if any.</p>
+    <p>A factor containing the set(s) to which each observation is assigned.
+Multiple sets are encoded as comma-separated strings.
+Unselected observations are listed as <code>"unselected"</code>.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
-    <p>Kevin Rue-Albrecht</p>
+    <p>Aaron Lun</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># Example colormaps ----</span>
-
-<span class='va'>count_colors</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>{</span>
-  <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"black"</span>,<span class='st'>"brown"</span>,<span class='st'>"red"</span>,<span class='st'>"orange"</span>,<span class='st'>"yellow"</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-<span class='va'>qc_color_fun</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>n</span><span class='op'>)</span><span class='op'>{</span>
-  <span class='va'>qc_colors</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"forestgreen"</span>, <span class='st'>"firebrick1"</span><span class='op'>)</span>
-  <span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>qc_colors</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Y"</span>, <span class='st'>"N"</span><span class='op'>)</span>
-  <span class='kw'><a href='https://rdrr.io/r/base/function.html'>return</a></span><span class='op'>(</span><span class='va'>qc_colors</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-<span class='va'>ecm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='ExperimentColorMap-class.html'>ExperimentColorMap</a></span><span class='op'>(</span>
-    assays <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-        tophat_counts <span class='op'>=</span> <span class='va'>count_colors</span>
-    <span class='op'>)</span>,
-    colData <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-        passes_qc_checks_s <span class='op'>=</span> <span class='va'>qc_color_fun</span>
-    <span class='op'>)</span>
-<span class='op'>)</span>
-
-<span class='co'># Example SingleCellExperiment ----</span>
-
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scRNAseq</span><span class='op'>)</span>
-<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span><span class='op'>(</span>assays<span class='op'>=</span><span class='st'>"tophat_counts"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>using temporary cache /tmp/Rtmp4lyLYp/BiocFileCache</span></div><div class='output co'>#&gt; <span class='message'>snapshotDate(): 2020-12-22</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='output co'>#&gt; <span class='message'>see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span></div><div class='output co'>#&gt; <span class='message'>downloading 1 resources</span></div><div class='output co'>#&gt; <span class='message'>retrieving 1 resource</span></div><div class='output co'>#&gt; <span class='message'>loading from cache</span></div><div class='input'>
-<span class='co'># Test for compatibility ----</span>
-
-<span class='fu'>checkColormapCompatibility</span><span class='op'>(</span><span class='va'>ecm</span>, <span class='va'>sce</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; NULL</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='fu'>multiSelectionToFactor</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>active<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"A"</span>, <span class='st'>"B"</span><span class='op'>)</span>, 
+    saved1<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"B"</span>, <span class='st'>"C"</span><span class='op'>)</span>, saved2<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"D"</span>, <span class='st'>"E"</span>, <span class='st'>"F"</span><span class='op'>)</span><span class='op'>)</span>,
+    all.names<span class='op'>=</span><span class='va'>LETTERS</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>]</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;             A             B             C             D             E 
+#&gt;        active active,saved1        saved1        saved2        saved2 
+#&gt;             F             G             H             I             J 
+#&gt;        saved2    unselected    unselected    unselected    unselected 
+#&gt; Levels: active active,saved1 saved1 saved2 unselected</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

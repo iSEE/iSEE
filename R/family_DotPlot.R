@@ -254,6 +254,10 @@
 #' .defineVisualFacetInterface,DotPlot-method
 #' .definePanelTour,DotPlot-method
 #' updateObject,DotPlot-method
+#' [[,DotPlot-method
+#' [[,DotPlot,ANY,ANY-method
+#' [[<-,DotPlot-method
+#' [[<-,DotPlot,ANY,ANY-method
 NULL
 
 #' @export
@@ -366,6 +370,83 @@ setValidity2("DotPlot", function(object) {
     }
     TRUE
 })
+
+#' @export
+setMethod("[[", "DotPlot", function(x, i, j, ...) {
+    if (i %in% c("FacetByRow", "FacetByColumn")) {
+        # nocov start
+        facet_info <- .getDotPlotFacetConstants(x)
+        row_field <- facet_info$metadata$row_field
+        col_field <- facet_info$metadata$column_field
+        title <- facet_info$metadata$title
+        cname <- class(x)[1]
+
+        if (i=="FacetByRow") {
+            .Deprecated(msg=sprintf("<%s>[['FacetByRow']] is deprecated.\nUse <%s>[['FacetRowBy']] and/or <%s>[['%s']] instead.", 
+                cname, cname, cname, row_field))
+            if (x[[.facetRow]]!=title) {
+                return(.noSelection)
+            } else {
+                return(x[[row_field]])
+            }
+        }
+
+        if (i=="FacetByColumn") {
+            .Deprecated(msg=sprintf("<%s>[['FacetByColumn']] is deprecated.\nUse <%s>[['FacetColumnBy']] and/or <%s>[['%s']] instead.", 
+                cname, cname, cname, col_field))
+            if (x[[.facetColumn]]!=title) {
+                return(.noSelection)
+            } else {
+                return(x[[col_field]])
+            }
+        }
+        # nocov end
+    }
+
+    callNextMethod()
+})
+
+#' @export
+setReplaceMethod("[[", "DotPlot", function(x, i, j, ..., value) {
+    if (i %in% c("FacetByRow", "FacetByColumn")) {
+        # nocov start
+        facet_info <- .getDotPlotFacetConstants(x)
+        row_field <- facet_info$metadata$row_field
+        col_field <- facet_info$metadata$column_field
+        title <- facet_info$metadata$title
+        cname <- class(x)[1]
+
+        if (i=="FacetByRow") {
+            .Deprecated(msg=sprintf("Setting <%s>[['FacetByRow']] is deprecated.\nUse <%s>[['FacetRowBy']] and/or <%s>[['%s']] instead.", 
+                cname, cname, cname, row_field))
+            if (value==.noSelection) {
+                x[[.facetRow]] <- .facetByNothingTitle
+                return(x)
+            } else {
+                x[[.facetRow]] <- title
+                x[[row_field]] <- value
+                return(x)
+            }
+        }
+
+        if (i=="FacetByColumn") {
+            .Deprecated(msg=sprintf("Setting <%s>[['FacetByColumn']] is deprecated.\nUse <%s>[['FacetColumnBy']] and/or <%s>[['%s']] instead.", 
+                cname, cname, cname, col_field))
+            if (value==.noSelection) {
+                x[[.facetColumn]] <- .facetByNothingTitle
+                return(x)
+            } else {
+                x[[.facetColumn]] <- title
+                x[[col_field]] <- value
+                return(x)
+            }
+        }
+        # nocov end
+    }
+
+    callNextMethod()
+})
+
 
 #' @export
 #' @importFrom methods callNextMethod

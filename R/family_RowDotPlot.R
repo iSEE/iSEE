@@ -97,7 +97,7 @@
 #' .multiSelectionInvalidated,RowDotPlot-method
 #' .singleSelectionDimension,RowDotPlot-method
 #' .definePanelTour,RowDotPlot-method
-#'
+#' updateObject,RowDotPlot-method
 #' @name RowDotPlot-class
 NULL
 
@@ -506,4 +506,39 @@ setMethod(".definePanelTour", "RowDotPlot", function(x) {
     collated$intro[collated$intro=="PLACEHOLDER_COLOR"] <- "We can choose to color by different per-row attributes - from the row metadata, across a specific sample of an assay, or to identify a chosen feature.<br/><br/><strong>Action:</strong> try out some of the different choices. Note how further options become available when each choice is selected."
 
     data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
+})
+
+#' @export
+#' @importFrom BiocGenerics updateObject
+setMethod("updateObject", "RowDotPlot", function(object, ..., verbose=FALSE) {
+    if (!.is_latest_version(object)) {
+        # nocov start
+        object <- callNextMethod()
+
+        # Backwards compatibility for new slots (added 3.13, preceding versioning information).
+        if (is(try(object[[.facetRow]], silent=TRUE), "try-error")) {
+            .Deprecated(msg=sprintf("'%s' is out of date, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
+
+            oldr <- object[["FacetByRow"]]
+            if (oldr==.noSelection) {
+                slot(object, .facetRow, check=FALSE) <- .facetByNothingTitle
+                slot(object, .facetRowByRowData, check=FALSE) <- NA_character_
+            } else {
+                slot(object, .facetRow, check=FALSE) <- .facetByRowDataTitle
+                slot(object, .facetRowByRowData, check=FALSE) <- oldr
+            }
+
+            oldc <- object[["FacetByColumn"]]
+            if (oldc==.noSelection) {
+                slot(object, .facetColumn, check=FALSE) <- .facetByNothingTitle
+                slot(object, .facetColumnByRowData, check=FALSE) <- NA_character_
+            } else {
+                slot(object, .facetColumn, check=FALSE) <- .facetByRowDataTitle
+                slot(object, .facetColumnByRowData, check=FALSE) <- oldc
+            }
+        }
+        # nocov end
+    }
+
+    object
 })

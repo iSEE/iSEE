@@ -22,7 +22,7 @@
 
 # Faceting parameters. ----
 
-.facetByNothingTitle <- "Nothing"
+.facetByNothingTitle <- "None"
 .facetByRowDataTitle <- "Row data"
 .facetByColDataTitle <- "Column data"
 .facetByRowSelectionsTitle <- "Row selection"

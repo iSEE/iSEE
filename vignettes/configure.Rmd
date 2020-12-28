@@ -277,20 +277,19 @@ Note that points may only be shaped by a categorical variable.
 ## Configuring plot facets
 
 Categorical variables may also be used to facet plots by row and column.
-
 For instance, _column data plot_ panels can be facet by variables stored in the columns of `colData(sce)`.
-Users can enable faceting by setting `FacetByRow` and/or `FacetByColumn` to the appropriate column name in `colData(sce)`.
 We demonstrate below how faceting may be enabled by row, column, or both:
 
 ```{r facet}
 cdp <- ColumnDataPlot(VisualBoxOpen=TRUE, VisualChoices=c("Facet"),
-    FacetByRow="driver_1_s", FacetByColumn="Core.Type", PanelWidth=4L)
+    FacetRowBy="Column data", FacetRowByColData="driver_1_s", 
+    FacetColumnBy="Column data", FacetColumnByColData="Core.Type", PanelWidth=4L)
 
 cdp2 <- cdp
-cdp2[["FacetByRow"]] <- "---"
+cdp2[["FacetRowBy"]] <- "None"
 
 cdp3 <- cdp
-cdp3[["FacetByColumn"]] <- "---"
+cdp3[["FacetColumnBy"]] <- "None" 
 
 app <- iSEE(sce, initial=list(cdp, cdp2, cdp3))
 ```

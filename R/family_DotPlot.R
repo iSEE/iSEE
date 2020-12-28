@@ -375,78 +375,71 @@ setValidity2("DotPlot", function(object) {
 setMethod("[[", "DotPlot", function(x, i, j, ...) {
     if (i %in% c("FacetByRow", "FacetByColumn")) {
         # nocov start
+        x <- updateObject(x, check=FALSE)
+
         facet_info <- .getDotPlotFacetConstants(x)
         row_field <- facet_info$metadata$row_field
         col_field <- facet_info$metadata$column_field
-        title <- facet_info$metadata$title
-        cname <- class(x)[1]
 
         if (i=="FacetByRow") {
-            .Deprecated(msg=sprintf("<%s>[['FacetByRow']] is deprecated.\nUse <%s>[['FacetRowBy']] and/or <%s>[['%s']] instead.", 
-                cname, cname, cname, row_field))
-            if (x[[.facetRow]]!=title) {
-                return(.noSelection)
-            } else {
-                return(x[[row_field]])
-            }
+            dim <- .facetRow
+            dim_field <- row_field
+        } else {
+            dim <- .facetColumn
+            dim_field <- col_field
         }
 
-        if (i=="FacetByColumn") {
-            .Deprecated(msg=sprintf("<%s>[['FacetByColumn']] is deprecated.\nUse <%s>[['FacetColumnBy']] and/or <%s>[['%s']] instead.", 
-                cname, cname, cname, col_field))
-            if (x[[.facetColumn]]!=title) {
-                return(.noSelection)
-            } else {
-                return(x[[col_field]])
-            }
+        cname <- class(x)[1]
+        .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.\nUse <%s>[['%s']] and/or <%s>[['%s']] instead.", 
+            cname, i, cname, dim, cname, dim_field))
+
+        title <- facet_info$metadata$title
+        if (x[[dim]]!=title) {
+            .noSelection
+        } else {
+            x[[dim_field]]
         }
         # nocov end
+    } else {
+        callNextMethod()
     }
-
-    callNextMethod()
 })
 
 #' @export
 setReplaceMethod("[[", "DotPlot", function(x, i, j, ..., value) {
     if (i %in% c("FacetByRow", "FacetByColumn")) {
         # nocov start
+        x <- updateObject(x, check=FALSE)
+
         facet_info <- .getDotPlotFacetConstants(x)
         row_field <- facet_info$metadata$row_field
         col_field <- facet_info$metadata$column_field
-        title <- facet_info$metadata$title
-        cname <- class(x)[1]
 
         if (i=="FacetByRow") {
-            .Deprecated(msg=sprintf("Setting <%s>[['FacetByRow']] is deprecated.\nUse <%s>[['FacetRowBy']] and/or <%s>[['%s']] instead.", 
-                cname, cname, cname, row_field))
-            if (value==.noSelection) {
-                x[[.facetRow]] <- .facetByNothingTitle
-                return(x)
-            } else {
-                x[[.facetRow]] <- title
-                x[[row_field]] <- value
-                return(x)
-            }
+            dim <- .facetRow
+            dim_field <- row_field
+        } else {
+            dim <- .facetColumn
+            dim_field <- col_field
         }
 
-        if (i=="FacetByColumn") {
-            .Deprecated(msg=sprintf("Setting <%s>[['FacetByColumn']] is deprecated.\nUse <%s>[['FacetColumnBy']] and/or <%s>[['%s']] instead.", 
-                cname, cname, cname, col_field))
-            if (value==.noSelection) {
-                x[[.facetColumn]] <- .facetByNothingTitle
-                return(x)
-            } else {
-                x[[.facetColumn]] <- title
-                x[[col_field]] <- value
-                return(x)
-            }
+        cname <- class(x)[1]
+        .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.\nSet <%s>[['%s']] and/or <%s>[['%s']] instead.", 
+            cname, i, cname, dim, cname, dim_field))
+
+        title <- facet_info$metadata$title
+        if (value==.noSelection) {
+            x[[dim]] <- .facetByNothingTitle
+        } else {
+            x[[dim]] <- title
+            x[[dim_field]] <- value
         }
+        x
         # nocov end
+    } else {
+        callNextMethod()
     }
-
-    callNextMethod()
 })
-
 
 #' @export
 #' @importFrom methods callNextMethod
@@ -1047,48 +1040,52 @@ setMethod(".definePanelTour", "DotPlot", function(x) {
 
 #' @export
 #' @importFrom BiocGenerics updateObject
-setMethod("updateObject", "DotPlot", function(object) {
+setMethod("updateObject", "DotPlot", function(object, ..., verbose=FALSE) {
     if (!.is_latest_version(object)) {
         # nocov start
+
+        # NOTE: it is crucial that updateObject does not contain '[[' or '[[<-'
+        # calls, lest we get sucked into infinite recursion with the calls to
+        # 'updateObject' from '[['.
         object <- callNextMethod()
 
-        # Backwards compatibility for new slots (added 3.12).
-        if (is(try(object[[.plotHoverInfo]], silent=TRUE), "try-error")) {
-            .Deprecated(msg=sprintf("'%s' is out of date, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
-            slot(object, .plotHoverInfo, check=FALSE) <- TRUE
-            slot(object, .legendPointSize, check=FALSE) <- 1
-            slot(object, .plotLabelCenters, check=FALSE) <- FALSE
-            slot(object, .plotLabelCentersBy, check=FALSE) <- NA_character_
-            slot(object, .plotLabelCentersColor, check=FALSE) <- "black"
-            slot(object, .plotCustomLabels, check=FALSE) <- FALSE
-            slot(object, .plotCustomLabelsText, check=FALSE) <- NA_character_
+        # Backwards compatibility for new slots (added 3.12, preceding versioning information).
+        if (is(try(slot(object, .plotHoverInfo), silent=TRUE), "try-error")) {
+            .Deprecated(msg=sprintf("detected outdated '%s' instance, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
+            slot(object, .plotHoverInfo) <- TRUE
+            slot(object, .legendPointSize) <- 1
+            slot(object, .plotLabelCenters) <- FALSE
+            slot(object, .plotLabelCentersBy) <- NA_character_
+            slot(object, .plotLabelCentersColor) <- "black"
+            slot(object, .plotCustomLabels) <- FALSE
+            slot(object, .plotCustomLabelsText) <- NA_character_
         }
 
         # Backwards compatibility for new slots (added 3.13, preceding versioning information).
-        if (is(try(object[[.facetRow]], silent=TRUE), "try-error")) {
-            .Deprecated(msg=sprintf("'%s' is out of date, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
+        if (is(try(slot(object, .facetRow), silent=TRUE), "try-error")) {
+            .Deprecated(msg=sprintf("detected outdated '%s' instance, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
 
             facet_info <- .getDotPlotFacetConstants(object)
             row_field <- facet_info$metadata$row_field
             col_field <- facet_info$metadata$column_field
             title <- facet_info$metadata$title
 
-            oldr <- object[["FacetByRow"]]
+            oldr <- object@FacetByRow
             if (oldr==.noSelection) {
-                slot(object, .facetRow, check=FALSE) <- .facetByNothingTitle
-                slot(object, row_field, check=FALSE) <- NA_character_
+                slot(object, .facetRow) <- .facetByNothingTitle
+                slot(object, row_field) <- NA_character_
             } else {
-                slot(object, .facetRow, check=FALSE) <- title
-                slot(object, row_field, check=FALSE) <- oldr
+                slot(object, .facetRow) <- title
+                slot(object, row_field) <- oldr
             }
 
-            oldc <- object[["FacetByColumn"]]
+            oldc <- object@FacetByColumn
             if (oldc==.noSelection) {
-                slot(object, .facetColumn, check=FALSE) <- .facetByNothingTitle
-                slot(object, col_field, check=FALSE) <- NA_character_
+                slot(object, .facetColumn) <- .facetByNothingTitle
+                slot(object, col_field) <- NA_character_
             } else {
-                slot(object, .facetColumn, check=FALSE) <- title
-                slot(object, col_field, check=FALSE) <- oldc
+                slot(object, .facetColumn) <- title
+                slot(object, col_field) <- oldc
             }
         }
         # nocov end

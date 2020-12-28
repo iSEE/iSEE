@@ -20,104 +20,6 @@ test_that(".refineParameters handles NULL x", {
 
 })
 
-test_that(".refineParameters identifies impossible ColumnDataPlot", {
-    # Wiping out the metadata to trigger the NULL.
-    copy <- sce
-    colData(copy) <- DataFrame(row.names = colnames(copy))
-
-    x <- ColumnDataPlot()
-    copy <- .cacheCommonInfo(x, copy)
-    expect_warning(out <- .refineParameters(x, copy),
-        "no valid y-axis 'colData' fields for 'ColumnDataPlot'", fixed=TRUE)
-    expect_null(out)
-
-    # Making up a class to meet damn coverage targets.
-    setClass("ColumnDataPlot342", contains="ColumnDataPlot")
-    setMethod(".allowableXAxisChoices", "ColumnDataPlot342", function(x, se) character(0))
-    x2 <- as(x, "ColumnDataPlot342")
-
-    copy <- sce
-    copy <- .cacheCommonInfo(x2, copy)
-    expect_warning(out <- .refineParameters(x2, copy),
-        "no valid x-axis 'colData' fields for 'ColumnDataPlot342'", fixed=TRUE)
-    expect_null(out)
-})
-
-test_that(".refineParameters identifies impossible RowDataPlot", {
-    # Wiping out the metadata to trigger the NULL.
-    copy <- sce
-    rowData(copy) <- DataFrame(row.names = rownames(copy))
-
-    x <- RowDataPlot()
-    copy <- .cacheCommonInfo(x, copy)
-    expect_warning(out <- .refineParameters(x, copy),
-        "no valid y-axis 'rowData' fields for 'RowDataPlot'", fixed=TRUE)
-    expect_null(out)
-
-    # Making up a class to meet damn coverage targets.
-    setClass("RowDataPlot342", contains="RowDataPlot")
-    setMethod(".allowableXAxisChoices", "RowDataPlot342", function(x) character(0))
-    x2 <- as(x, "RowDataPlot342")
-
-    copy <- sce
-    copy <- .cacheCommonInfo(x2, copy)
-    expect_warning(out <- .refineParameters(x2, copy),
-        "no valid x-axis 'rowData' fields for 'RowDataPlot342'", fixed=TRUE)
-    expect_null(out)
-})
-
-test_that(".refineParameters identifies impossible SampleAssayPlot", {
-
-    x <- SampleAssayPlot()
-
-    sce0 <- sce[, 0]
-    sce0 <- .cacheCommonInfo(x, sce0)
-    expect_warning(out <- .refineParameters(x, sce0),
-        "no columns for plotting 'SampleAssayPlot'", fixed=TRUE)
-    expect_null(out)
-
-    sce0 <- sce
-    assays(sce0) <- List()
-    sce0 <- .cacheCommonInfo(x, sce0)
-    expect_warning(out <- .refineParameters(x, sce0),
-        "no named 'assays' for plotting 'SampleAssayPlot'", fixed=TRUE)
-    expect_null(out)
-
-    sce0 <- sce
-    rowData(sce0) <- rowData(sce0)[,0]
-    x[[iSEE:::.sampAssayXAxis]] <- iSEE:::.sampAssayXAxisRowDataTitle
-    sce0 <- .cacheCommonInfo(x, sce0)
-    out <- .refineParameters(x, sce0)
-    expect_identical(out[[iSEE:::.sampAssayXAxis]], iSEE:::.sampAssayXAxisNothingTitle)
-
-})
-
-test_that(".refineParameters identifies impossible FeatureAssayPlot", {
-
-    x <- FeatureAssayPlot()
-
-    sce0 <- sce[0, ]
-    sce0 <- .cacheCommonInfo(x, sce0)
-    expect_warning(out <- .refineParameters(x, sce0),
-        "no rows available for plotting 'FeatureAssayPlot'", fixed=TRUE)
-    expect_null(out)
-
-    sce0 <- sce
-    assays(sce0) <- List()
-    sce0 <- .cacheCommonInfo(x, sce0)
-    expect_warning(out <- .refineParameters(x, sce0),
-        "no valid 'assays' for plotting 'FeatureAssayPlot'", fixed=TRUE)
-    expect_null(out)
-
-    sce0 <- sce
-    colData(sce0) <- colData(sce0)[,0]
-    x[[iSEE:::.featAssayXAxis]] <- iSEE:::.featAssayXAxisColDataTitle
-    sce0 <- .cacheCommonInfo(x, sce0)
-    out <- .refineParameters(x, sce0)
-    expect_identical(out[[iSEE:::.featAssayXAxis]], iSEE:::.featAssayXAxisNothingTitle)
-
-})
-
 test_that(".refineParameters identifies impossible ComplexHeatmapPlot", {
 
     x <- ComplexHeatmapPlot()
@@ -133,23 +35,6 @@ test_that(".refineParameters identifies impossible ComplexHeatmapPlot", {
     sce0 <- .cacheCommonInfo(x, sce0)
     expect_warning(out <- .refineParameters(x, sce0),
         "no valid 'assays' for plotting 'ComplexHeatmapPlot'", fixed=TRUE)
-    expect_null(out)
-
-})
-
-# .colorDotPlot ----
-context(".colorDotPlot")
-
-test_that(".colorDotPlot returns NULL when coloring DotPlot by nothing", {
-
-    x <- ColumnDataPlot()
-    x[[iSEE:::.colorByField]] <- iSEE:::.colorByNothingTitle
-    out <- iSEE:::.colorDotPlot(x, LETTERS)
-    expect_null(out)
-
-    x <- RowDataPlot()
-    x[[iSEE:::.colorByField]] <- iSEE:::.colorByNothingTitle
-    out <- iSEE:::.colorDotPlot(x, LETTERS)
     expect_null(out)
 
 })
@@ -344,23 +229,6 @@ test_that(".multiSelectionInvalidated handles Panel", {
     out <- .multiSelectionInvalidated(x)
     expect_false(out)
 
-})
-
-test_that(".multiSelectionInvalidated handles the various subclasses", {
-    expect_false(.multiSelectionInvalidated(FeatureAssayPlot()))
-    expect_false(.multiSelectionInvalidated(ColumnDataPlot()))
-    expect_false(.multiSelectionInvalidated(SampleAssayPlot()))
-    expect_false(.multiSelectionInvalidated(RowDataPlot()))
-
-    expect_true(.multiSelectionInvalidated(FeatureAssayPlot(XAxis="Column selection")))
-    expect_true(.multiSelectionInvalidated(ColumnDataPlot(XAxis="Column selection")))
-    expect_true(.multiSelectionInvalidated(SampleAssayPlot(XAxis="Row selection")))
-    expect_true(.multiSelectionInvalidated(RowDataPlot(XAxis="Row selection")))
-
-    expect_true(.multiSelectionInvalidated(ColumnDataPlot(FacetRowBy="Column selection")))
-    expect_true(.multiSelectionInvalidated(ColumnDataPlot(FacetColumnBy="Column selection")))
-    expect_true(.multiSelectionInvalidated(RowDataPlot(FacetRowBy="Row selection")))
-    expect_true(.multiSelectionInvalidated(RowDataPlot(FacetColumnBy="Row selection")))
 })
 
 # .multiSelectionAvailable ----

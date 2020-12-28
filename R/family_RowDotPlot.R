@@ -128,7 +128,7 @@ setValidity2("RowDotPlot", function(object) {
         c(.colorByRowData, .colorBySampNameAssay, .colorByFeatNameColor))
 
     msg <- .allowableChoiceError(msg, object, .colorByField,
-          c(.colorByNothingTitle, .colorByRowDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle))
+          c(.colorByNothingTitle, .colorByRowDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle, .colorByRowSelectionsTitle))
 
     msg <- .allowableChoiceError(msg, object, .shapeByField,
           c(.shapeByNothingTitle, .shapeByRowDataTitle))

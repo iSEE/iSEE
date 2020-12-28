@@ -5,6 +5,8 @@
 .colorByRowDataTitle <- "Row data"
 .colorByFeatNameTitle <- "Feature name"
 .colorBySampNameTitle <- "Sample name"
+.colorByColSelectionsTitle <- "Column selection"
+.colorByRowSelectionsTitle <- "Row selection"
 
 # Point shaping parameters. ----
 
@@ -17,6 +19,14 @@
 .sizeByNothingTitle <- "None"
 .sizeByColDataTitle <- "Column data"
 .sizeByRowDataTitle <- "Row data"
+
+# Faceting parameters. ----
+
+.facetByNothingTitle <- "None"
+.facetByRowDataTitle <- "Row data"
+.facetByColDataTitle <- "Column data"
+.facetByRowSelectionsTitle <- "Row selection"
+.facetByColSelectionsTitle <- "Column selection"
 
 # Point selection parameters. ----
 

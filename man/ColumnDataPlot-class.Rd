@@ -11,6 +11,7 @@
 \alias{.fullName,ColumnDataPlot-method}
 \alias{.panelColor,ColumnDataPlot-method}
 \alias{.generateDotPlotData,ColumnDataPlot-method}
+\alias{.multiSelectionInvalidated,ColumnDataPlot-method}
 \alias{.allowableXAxisChoices,ColumnDataPlot-method}
 \alias{.allowableYAxisChoices,ColumnDataPlot-method}
 \alias{.definePanelTour,ColumnDataPlot-method}
@@ -26,7 +27,7 @@ The following slots control the column data information that is used:
 \item \code{YAxis}, a string specifying the column of the \code{\link{colData}} to show on the y-axis.
 If \code{NA}, defaults to the first valid field (see \code{?"\link{.refineParameters,ColumnDotPlot-method}"}).
 \item \code{XAxis}, string specifying what should be plotting on the x-axis.
-This can be any one of \code{"None"} or \code{"Column data"}.
+This can be any one of \code{"None"}, \code{"Column data"} or \code{"Column selection"}.
 Defaults to \code{"None"}.
 \item \code{XAxisColumnData}, string specifying the column of the \code{\link{colData}} to show on the x-axis.
 If \code{NA}, defaults to the first valid field.
@@ -66,6 +67,13 @@ For monitoring reactive expressions:
 \itemize{
 \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
 This will also call the equivalent \linkS4class{ColumnDotPlot} method.
+}
+
+For controlling selections:
+\itemize{
+\item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the x-axis uses multiple column selections,
+such that the point coordinates may change upon updates to upstream selections in transmitting panels.
+Otherwise, it dispatches to the \linkS4class{ColumnDotPlot} method.
 }
 
 For defining the panel name:

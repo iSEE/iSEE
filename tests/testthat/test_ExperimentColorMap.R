@@ -1,5 +1,5 @@
 # This tests the ExperimentColorMap methods.
-# library(testthat); library(iSEE); source("setup_ecm.R"); source("setup_sce.R"); source("test_ExperimentColorMap.R")
+# library(testthat); library(iSEE); source("setup_ecm.R"); source("setup_sce.R"); source("setup_ecm.R"); source("test_ExperimentColorMap.R")
 
 context("ExperimentColorMap")
 
@@ -357,6 +357,11 @@ test_that("assayColorMap returns appropriate values",{
     # specific > (continuous) all > global (character)
     expect_equal(
         assayColorMap(ecm, "undefined", discrete=FALSE)(21L),
+        ASSAY_CONTINUOUS_COLORS(21L)
+    )
+
+    expect_equal(
+        assayColorMap(ecm, discrete=FALSE)(21L),
         ASSAY_CONTINUOUS_COLORS(21L)
     )
 
@@ -870,4 +875,33 @@ test_that("synchronizeAssays works for partially named assays", {
         assayNames(ecm_sync)
     )
 
+})
+
+test_that("*SelectionColorMaps work as expected", {
+    ecm <- ExperimentColorMap()
+
+    ref <- columnSelectionColorMap(ecm, c("active", "unselected"))
+    out <- columnSelectionColorMap(ecm, c("active", "saved1", "unselected"))
+    expect_identical(out[c('active', 'unselected')], ref[c('active', 'unselected')])
+    expect_true(!is.na(out['saved1']))
+
+    # Always has 'active' and 'unselected', even if they aren't in the levels.
+    out2 <- columnSelectionColorMap(ecm, c("saved1", "unselected"))
+    expect_identical(out, out2)
+
+    out2 <- columnSelectionColorMap(ecm, c("saved1"))
+    expect_identical(out, out2)
+
+    # Same for rows.
+    ref <- rowSelectionColorMap(ecm, c("active", "unselected"))
+    out <- rowSelectionColorMap(ecm, c("active", "saved1", "unselected"))
+    expect_identical(out[c('active', 'unselected')], ref[c('active', 'unselected')])
+    expect_true(!is.na(out['saved1']))
+
+    # Always has 'active' and 'unselected', even if they aren't in the levels.
+    out2 <- rowSelectionColorMap(ecm, c("saved1", "unselected"))
+    expect_identical(out, out2)
+
+    out2 <- rowSelectionColorMap(ecm, c("saved1"))
+    expect_identical(out, out2)
 })

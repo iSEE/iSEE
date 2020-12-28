@@ -73,20 +73,24 @@
 #' @section Accessors:
 #'
 #' In the following code snippets, \code{x} is an \code{ExperimentColorMap} object.
-#' If the colormap can not immediately be found in the appropriate slot,
-#' \code{discrete} is a \code{logical(1)} that indicates
-#' whether the default colormap returned should be categorical \code{TRUE} or continuous (\code{FALSE}, default).
 #'
 #' \describe{
 #'   \item{\code{assayColorMap(x, i, ..., discrete=FALSE)}:}{
-#'   Get an \code{assays} colormap.}
+#'   Get an \code{assays} colormap for the specified assay \code{i}.}
 #'
 #'   \item{\code{colDataColorMap(x, i, ..., discrete=FALSE)}:}{
-#'   Get a \code{colData} colormap.}
-#'
+#'   Get a \code{colData} colormap for the specified \code{colData} column \code{i}.}
+#' 
 #'   \item{\code{rowDataColorMap(x, i, ..., discrete=FALSE)}:}{
-#'   Get a \code{rowData} colormap.}
+#'   Get a \code{rowData} colormap for the specified \code{rowData} column \code{i}.}
 #' }
+#'
+#' If the colormap for \code{i} cannot be found, one of the default colormaps is returned.
+#' In this case, \code{discrete} is a logical scalar that indicates whether the colormap should be categorical.
+#' The more specialized default is first attempted - 
+#' e.g., for \code{assayColorMap}, this would be the assay colormap specified in \code{assays} of \code{all_discrete} or \code{all_continuous} -
+#' before falling back to the global default in \code{global_discrete} or \code{global_continuous}.
+#' Similarly, if \code{i} is missing, the default discrete/continuous colormap is returned.
 #'
 #' @section Setters:
 #'
@@ -132,10 +136,13 @@
 #' rowData<-,ExperimentColorMap,ANY-method
 #' assayColorMap,ExperimentColorMap,character-method
 #' assayColorMap,ExperimentColorMap,numeric-method
+#' assayColorMap,ExperimentColorMap,missing-method
 #' assay,ExperimentColorMap,character-method
 #' assay,ExperimentColorMap,numeric-method
 #' colDataColorMap,ExperimentColorMap,character-method
+#' colDataColorMap,ExperimentColorMap,missing-method
 #' rowDataColorMap,ExperimentColorMap,character-method
+#' rowDataColorMap,ExperimentColorMap,missing-method
 #' assayColorMap<-,ExperimentColorMap,character-method
 #' assayColorMap<-,ExperimentColorMap,numeric-method
 #' colDataColorMap<-,ExperimentColorMap,character-method
@@ -380,6 +387,12 @@ setMethod("assayColorMap", c("ExperimentColorMap", "numeric"),
     return(.assayAllColorMap(x, discrete))
 }
 
+setMethod("assayColorMap", c("ExperimentColorMap", "missing"),
+    function(x, i, ..., discrete=FALSE)
+    {
+        .assayAllColorMap(x, discrete=discrete)
+    })
+
 .assayAllColorMap <- function(x, discrete){
     if (discrete){
         all_assays_map <- x@all_discrete$assays
@@ -430,6 +443,12 @@ setMethod("colDataColorMap", c("ExperimentColorMap", "character"),
     return(.colDataAllColorMap(x, discrete))
 }
 
+setMethod("colDataColorMap", c("ExperimentColorMap", "missing"),
+    function(x, i, ..., discrete=FALSE)
+    {
+        .colDataAllColorMap(x, discrete=discrete)
+    })
+
 .colDataAllColorMap <- function(x, discrete){
     if (discrete){
         all_coldata_map <- x@all_discrete$colData
@@ -473,6 +492,12 @@ setMethod("rowDataColorMap", c("ExperimentColorMap", "character"),
     }
     return(.rowDataAllColorMap(x, discrete))
 }
+
+setMethod("rowDataColorMap", c("ExperimentColorMap", "missing"),
+    function(x, i, ..., discrete=FALSE)
+    {
+        .rowDataAllColorMap(x, discrete=discrete)
+    })
 
 .rowDataAllColorMap <- function(x, discrete){
     if (discrete){

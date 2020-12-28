@@ -57,7 +57,9 @@
 #'
 #' For controlling selections:
 #' \itemize{
-#' \item \code{\link{.multiSelectionDimension}(x)} returns \code{"row"} to indicate that a row selection is being transmitted.
+#' \item \code{\link{.multiSelectionDimension}(x)} returns \code{"row"} to indicate that a multiple row selection is being transmitted.
+#' \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the faceting options usethe multiple row selections,
+#' such that the point coordinates/domain may change upon updates to upstream selections in transmitting panels.
 #' \item \code{\link{.singleSelectionDimension}(x)} returns \code{"feature"} to indicate that a feature identity is being transmitted.
 #' }
 #'
@@ -92,6 +94,7 @@
 #' .createObservers,RowDotPlot-method
 #' .hideInterface,RowDotPlot-method
 #' .multiSelectionDimension,RowDotPlot-method
+#' .multiSelectionInvalidated,RowDotPlot-method
 #' .singleSelectionDimension,RowDotPlot-method
 #' .definePanelTour,RowDotPlot-method
 #'
@@ -125,7 +128,7 @@ setValidity2("RowDotPlot", function(object) {
         c(.colorByRowData, .colorBySampNameAssay, .colorByFeatNameColor))
 
     msg <- .allowableChoiceError(msg, object, .colorByField,
-          c(.colorByNothingTitle, .colorByRowDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle))
+          c(.colorByNothingTitle, .colorByRowDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle, .colorByRowSelectionsTitle))
 
     msg <- .allowableChoiceError(msg, object, .shapeByField,
           c(.shapeByNothingTitle, .shapeByRowDataTitle))
@@ -215,6 +218,10 @@ setMethod(".createObservers", "RowDotPlot", function(x, se, input, session, pObj
             .shapeByRowData, .sizeByRowData, .colorByFeatNameColor),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
+    .createProtectedParameterObservers(plot_name,
+        fields=c(.facetRowByRowData, .facetColumnByRowData),
+        input=input, pObjects=pObjects, rObjects=rObjects)
+
     .create_dimname_propagation_observer(plot_name, choices=rownames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
 
@@ -225,6 +232,11 @@ setMethod(".createObservers", "RowDotPlot", function(x, se, input, session, pObj
 
 #' @export
 setMethod(".multiSelectionDimension", "RowDotPlot", function(x) "row")
+
+#' @export
+setMethod(".multiSelectionInvalidated", "RowDotPlot", function(x) {
+    x[[.facetRow]] == .facetByRowSelectionsTitle || x[[.facetColumn]] == .facetByRowSelectionsTitle || callNextMethod()
+})
 
 #' @export
 setMethod(".singleSelectionDimension", "RowDotPlot", function(x) "feature")
@@ -295,6 +307,19 @@ setMethod(".getDotPlotMetadataCommand", "RowDotPlot", function(x) "rowData")
 
 setMethod(".getDotPlotNamesCommand", "RowDotPlot", function(x) "rownames")
 
+setMethod(".getDotPlotFacetConstants", "RowDotPlot", function(x) {
+    list(
+        metadata=list(
+            title=.facetByRowDataTitle,
+            row_field=.facetRowByRowData,
+            column_field=.facetColumnByRowData
+        ),
+        selections=list(
+            title=.facetByRowSelectionsTitle
+        )
+    )
+})
+
 ###############################################################
 # See ?.addDotPlotDataColor for documentation on these methods.
 
@@ -318,6 +343,18 @@ setMethod(".addDotPlotDataColor", "RowDotPlot", function(x, envir) {
         label <- sprintf("%s\n(%s)", chosen_sample, assay_choice)
         cmds <- sprintf("plot.data$ColorBy <- assay(se, %s)[, %s];",
             deparse(assay_choice), deparse(chosen_sample))
+
+    } else if (color_choice == .colorByRowSelectionsTitle) {
+        label <- "Row selection"
+        if (exists("row_selected", envir=envir, inherits=FALSE)) {
+            target <- "row_selected"
+        } else {
+            target <- "list()"
+        }
+        cmds <- sprintf(
+            "plot.data$ColorBy <- iSEE::multiSelectionToFactor(%s, rownames(se));", 
+            target
+        )
 
     } else {
         return(NULL)
@@ -366,18 +403,31 @@ setMethod(".addDotPlotDataFacets", "RowDotPlot", function(x, envir) {
     facet_cmds <- NULL
     labels <- list()
 
-    facet_row <- x[[.facetByRow]]
-    if (facet_row!=.noSelection) {
-        facet_cmds["FacetRow"] <- sprintf(
-            "plot.data$FacetRow <- rowData(se)[, %s];", deparse(facet_row))
-        labels$FacetRow <- facet_row
-    }
+    params <- list(
+        list(.facetRow, "FacetRow", .facetRowByRowData),
+        list(.facetColumn, "FacetColumn", .facetColumnByRowData)
+    )
 
-    facet_column <- x[[.facetByColumn]]
-    if (facet_column!=.noSelection) {
-        facet_cmds["FacetColumn"] <- sprintf(
-            "plot.data$FacetColumn <- rowData(se)[, %s];", deparse(facet_column))
-        labels$FacetColumn <- facet_column
+    for (f in seq_len(2)) {
+        current <- params[[f]]
+        param_field <- current[[1]]
+        pd_field <- current[[2]]
+        facet_mode <- x[[param_field]]
+
+        if (facet_mode == .facetByRowDataTitle) {
+            facet_data <- x[[current[[3]]]]
+            facet_cmds[pd_field] <- sprintf("plot.data$%s <- rowData(se)[, %s];", pd_field, deparse(facet_data))
+            labels[[pd_field]] <- facet_data
+
+        } else if (facet_mode == .facetByRowSelectionsTitle) {
+            if (exists("row_selected", envir=envir, inherits=FALSE)) {
+                target <- "row_selected"
+            } else {
+                target <- "list()"
+            }
+            facet_cmds[pd_field] <- sprintf("plot.data$%s <- iSEE::multiSelectionToFactor(%s, rownames(se));", pd_field, target)
+            labels[[pd_field]] <- "Row selection"
+        }
     }
 
     .textEval(facet_cmds, envir)
@@ -437,6 +487,11 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
     } else if (color_choice == .colorBySampNameTitle) {
         assay_choice <- x[[.colorBySampNameAssay]]
         .create_color_scale("assayColorMap", deparse(assay_choice), colorby)
+
+    } else if (color_choice == .colorByRowSelectionsTitle) {
+        sprintf("scale_color_manual(values=iSEE::rowSelectionColorMap(colormap, %s), drop=FALSE) +", 
+            paste(deparse(levels(colorby)), collapse="")) 
+        
     } else {
         .colorByNoneDotPlotScale(x)
     }

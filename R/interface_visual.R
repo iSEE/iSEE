@@ -126,7 +126,7 @@
     if (ncol(se)) {
         color_choices <- c(color_choices, .colorBySampNameTitle)
     }
-    color_choices
+    c(color_choices, .colorByColSelectionsTitle)
 }
 
 #' Define visual parameter check options
@@ -164,7 +164,7 @@
     if (ncol(se) && length(assay_names)) {
         color_choices <- c(color_choices, .colorBySampNameTitle)
     }
-    color_choices
+    c(color_choices, .colorByRowSelectionsTitle)
 }
 
 #' Add a visual parameter box for heatmap plots
@@ -272,39 +272,6 @@
                 choices=c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle),
                 selected=x[[.plotLegendDirection]])
         )
-    )
-}
-
-#' Faceting visual parameters
-#'
-#' Create UI elements for selection of faceting visual parameters.
-#'
-#' @param x An instance of the \linkS4class{Panel} class.
-#' @param covariates Character vector listing categorical metadata columns that can be used for faceting.
-#'
-#' @return
-#' A HTML tag object containing faceting parameter inputs.
-#'
-#' @details
-#' This creates UI elements to choose the row and column faceting covariates.
-#'
-#' @author Kevin Rue-Albrecht
-#' @rdname INTERNAL_add_facet_UI_elements
-#' @seealso
-#' \code{\link{.create_visual_box}}
-#'
-#' @importFrom shiny tagList selectInput
-.add_facet_UI_elements <- function(x, covariates) {
-    plot_name <- .getEncodedName(x)
-    rowId <- paste0(plot_name, "_", .facetByRow)
-    columnId <- paste0(plot_name, "_", .facetByColumn)
-    choices <- c(.noSelection, covariates)
-
-    tagList(
-        selectInput(paste0(plot_name, "_", .facetByRow), label="Facet by row:",
-            choices=choices, selected=x[[.facetByRow]]),
-        selectInput(paste0(plot_name, "_", .facetByColumn), label="Facet by column:",
-            choices=choices, selected=x[[.facetByColumn]])
     )
 }
 

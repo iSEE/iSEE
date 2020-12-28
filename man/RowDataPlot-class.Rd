@@ -10,6 +10,7 @@
 \alias{.createObservers,RowDataPlot-method}
 \alias{.fullName,RowDataPlot-method}
 \alias{.panelColor,RowDataPlot-method}
+\alias{.multiSelectionInvalidated,RowDataPlot-method}
 \alias{.generateDotPlotData,RowDataPlot-method}
 \alias{.allowableXAxisChoices,RowDataPlot-method}
 \alias{.allowableYAxisChoices,RowDataPlot-method}
@@ -26,7 +27,7 @@ The following slots control the variables to be shown:
 \item \code{YAxis}, a string specifying the row of the \code{\link{rowData}} to show on the y-axis.
 If \code{NA}, defaults to the first valid field (see \code{?"\link{.refineParameters,RowDotPlot-method}"}).
 \item \code{XAxis}, string specifying what should be plotting on the x-axis.
-This can be any one of \code{"None"} or \code{"Row data"}.
+This can be any one of \code{"None"}, \code{"Row data"} and \code{"Row selection"}.
 Defaults to \code{"None"}.
 \item \code{XAxisRowData}, string specifying the row of the \code{\link{rowData}} to show on the x-axis.
 If \code{NA}, defaults to the first valid field.
@@ -66,6 +67,13 @@ For monitoring reactive expressions:
 \itemize{
 \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all slots described above and in the parent classes.
 This will also call the equivalent \linkS4class{RowDotPlot} method.
+}
+
+For controlling selections:
+\itemize{
+\item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the x-axis uses multiple row selections,
+such that the point coordinates may change upon updates to upstream selections in transmitting panels.
+Otherwise, it dispatches to the \linkS4class{RowDotPlot} method.
 }
 
 For defining the panel name:

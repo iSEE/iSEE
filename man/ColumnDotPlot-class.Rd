@@ -10,6 +10,7 @@
 \alias{.createObservers,ColumnDotPlot-method}
 \alias{.hideInterface,ColumnDotPlot-method}
 \alias{.multiSelectionDimension,ColumnDotPlot-method}
+\alias{.multiSelectionInvalidated,ColumnDotPlot-method}
 \alias{.singleSelectionDimension,ColumnDotPlot-method}
 \alias{.definePanelTour,ColumnDotPlot-method}
 \title{The ColumnDotPlot virtual class}
@@ -74,7 +75,9 @@ This will also call the equivalent \linkS4class{DotPlot} method.
 
 For controlling selections:
 \itemize{
-\item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
+\item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a multiple column selection is being transmitted.
+\item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the faceting options use multiple column selections,
+such that the point coordinates/domain may change upon updates to upstream selections in transmitting panels.
 \item \code{\link{.singleSelectionDimension}(x)} returns \code{"sample"} to indicate that a sample identity is being transmitted.
 }
 

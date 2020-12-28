@@ -1040,11 +1040,13 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @importFrom ggplot2 facet_grid
 #'
 #' @examples
-#' x <- ReducedDimensionPlot(FacetByRow = "Covariate_1", FacetByColumn = "Covariate_2")
+#' x <- ReducedDimensionPlot(
+#'     FacetRowBy = "Column data", FacetRowByColData="Covariate_1", 
+#'     FacetColumnBy = "Column data", FacetColumnByColData="Covariate_2") 
 #' .addFacets(x)
 .addFacets <- function(x){
-    row_facet <- x[[.facetByRow]]!=.noSelection
-    col_facet <- x[[.facetByColumn]]!=.noSelection
+    row_facet <- x[[.facetRow]]!=.facetByNothingTitle
+    col_facet <- x[[.facetColumn]]!=.facetByNothingTitle
     if (!row_facet && !col_facet) {
         return(NULL)
     }
@@ -1096,7 +1098,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     }
 
     # Note: Faceting simultaneously on row and column produces a 'flip' effect on the brush data
-    if (param_choices[[.facetByRow]]!=.noSelection && param_choices[[.facetByColumn]]!=.noSelection) {
+    if (param_choices[[.facetRow]]!=.facetByNothingTitle && param_choices[[.facetColumn]]!=.facetByNothingTitle) {
         facet_row <- 'panelvar2'
         facet_column <- 'panelvar1'
     } else {
@@ -1160,10 +1162,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
     # Collect additional panel information for the brush
     addPanels <- character(0)
-    if (param_choices[[.facetByRow]]!=.noSelection) {
+    if (param_choices[[.facetRow]]!=.facetByNothingTitle) {
         addPanels["FacetRow"] <- sprintf("FacetRow=%s[['%s']]", brush_src, facet_row)
     }
-    if (param_choices[[.facetByColumn]]!=.noSelection) {
+    if (param_choices[[.facetColumn]]!=.facetByNothingTitle) {
         addPanels["FacetColumn"] <- sprintf("FacetColumn=%s[['%s']]", brush_src, facet_column)
     }
 
@@ -1253,10 +1255,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
     # Collect additional panel information for the lasso.
     addPanels <- character(0)
-    if (param_choices[[.facetByRow]]!=.noSelection) {
+    if (param_choices[[.facetRow]]!=.facetByNothingTitle) {
         addPanels["FacetRow"] <- sprintf("FacetRow=%s[['%s']]", lasso_src, facet_row)
     }
-    if (param_choices[[.facetByColumn]]!=.noSelection) {
+    if (param_choices[[.facetColumn]]!=.facetByNothingTitle) {
         addPanels["FacetColumn"] <- sprintf("FacetColumn=%s[['%s']]", lasso_src, facet_column)
     }
     if (length(addPanels)) {
@@ -1406,10 +1408,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         # Some intelligence involved in accounting for the faceting;
         # in this case, a label is shown on each facet if possible.
         # Note that the same label may differ in locations across facets.
-        if (x[[.facetByRow]]!=.noSelection) {
+        if (x[[.facetRow]]!=.facetByNothingTitle) {
             aggregants <- c(aggregants, "FacetRow=plot.data$FacetRow")
         }
-        if (x[[.facetByColumn]]!=.noSelection) {
+        if (x[[.facetColumn]]!=.facetByNothingTitle) {
             aggregants <- c(aggregants, "FacetColumn=plot.data$FacetColumn")
         }
 

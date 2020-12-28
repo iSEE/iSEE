@@ -18,8 +18,8 @@
 #'
 #' The following slots control the values on the x-axis:
 #' \itemize{
-#' \item \code{XAxis}, string specifying what should be plotting on the x-axis.
-#' This can be any one of \code{"None"}, \code{"Sample name"} or \code{"Column data"}.
+#' \item \code{XAxis}, string specifying what should be plotted on the x-axis.
+#' This can be any one of \code{"None"}, \code{"Sample name"}, \code{"Row data"} or \code{"Row selection"}.
 #' Defaults to \code{"None"}.
 #' \item \code{XAxisColumnData}, string specifying which column of the \code{\link{colData}} should be shown on the x-axis,
 #' if \code{XAxis="Column data"}.
@@ -74,8 +74,12 @@
 #'
 #' For managing selections:
 #' \itemize{
-#' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of sample on the x- and y-axes.
-#' This includes the output of \code{callNextMethod}.
+#' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, 
+#' mostly related to the choice of sample on the x- and y-axes.
+#' This includes the output of the method for the parent \linkS4class{RowDotPlot} class.
+#' \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the x-axis uses multiple row selections,
+#' such that the point coordinates may change upon updates to upstream selections in transmitting panels.
+#' Otherwise, it dispatches to the \linkS4class{RowDotPlot} method.
 #' }
 #'
 #' For documentation:
@@ -125,6 +129,7 @@
 #' .defineDataInterface,SampleAssayPlot-method
 #' .createObservers,SampleAssayPlot-method
 #' .singleSelectionSlots,SampleAssayPlot-method
+#' .multiSelectionInvalidated,SampleAssayPlot-method
 #' .fullName,SampleAssayPlot-method
 #' .panelColor,SampleAssayPlot-method
 #' .generateDotPlotData,SampleAssayPlot-method
@@ -199,13 +204,14 @@ setMethod(".refineParameters", "SampleAssayPlot", function(x, se) {
 .sampAssayXAxisNothingTitle <- "None"
 .sampAssayXAxisRowDataTitle <- "Row data"
 .sampAssayXAxisSampNameTitle <- "Sample name"
+.sampAssayXAxisSelectionsTitle <- "Row selection"
 
 #' @importFrom S4Vectors setValidity2
 setValidity2("SampleAssayPlot", function(object) {
     msg <- character(0)
 
     msg <- .allowableChoiceError(msg, object, .sampAssayXAxis,
-        c(.sampAssayXAxisNothingTitle, .sampAssayXAxisRowDataTitle, .sampAssayXAxisSampNameTitle))
+        c(.sampAssayXAxisNothingTitle, .sampAssayXAxisRowDataTitle, .sampAssayXAxisSampNameTitle, .sampAssayXAxisSelectionsTitle))
 
     msg <- .singleStringError(msg, object,
         c(.sampAssayAssay, .sampAssayXAxisRowData, .sampAssayXAxisColTable,
@@ -232,7 +238,7 @@ setMethod(".defineDataInterface", "SampleAssayPlot", function(x, se, select_info
     if (length(row_covariates)) { # As it is possible for this plot to be _feasible_ but for no row data to exist.
         xaxis_choices <- c(xaxis_choices, .sampAssayXAxisRowDataTitle)
     }
-    xaxis_choices <- c(xaxis_choices, .sampAssayXAxisSampNameTitle)
+    xaxis_choices <- c(xaxis_choices, .sampAssayXAxisSampNameTitle, .sampAssayXAxisSelectionsTitle)
 
     list(
         selectizeInput(
@@ -316,6 +322,11 @@ setMethod(".singleSelectionSlots", "SampleAssayPlot", function(x) {
 })
 
 #' @export
+setMethod(".multiSelectionInvalidated", "SampleAssayPlot", function(x) {
+    x[[.sampAssayXAxis]] == .sampAssayXAxisSelectionsTitle || callNextMethod()
+})
+
+#' @export
 setMethod(".fullName", "SampleAssayPlot", function(x) "Sample assay plot")
 
 #' @export
@@ -346,6 +357,20 @@ setMethod(".generateDotPlotData", "SampleAssayPlot", function(x, envir) {
         x_lab <- x[[.sampAssayXAxisRowData]]
         plot_title <- paste(plot_title, "vs", x_lab)
         data_cmds[["x"]] <- sprintf("plot.data$X <- rowData(se)[, %s];", deparse(x_lab))
+
+    } else if (x_choice == .sampAssayXAxisSelectionsTitle) {
+        x_lab <- "Row selection"
+        plot_title <- paste(plot_title, "vs row selection")
+        
+        if (exists("row_selected", envir=envir, inherits=FALSE)) {
+            target <- "row_selected"
+        } else {
+            target <- "list()"
+        }
+        data_cmds[["x"]] <- sprintf(
+            "plot.data$X <- iSEE::multiSelectionToFactor(%s, rownames(se));", 
+            target
+        )
 
     } else {
         samp_selected_x <- x[[.sampAssayXAxisSampName]]

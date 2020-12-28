@@ -19,7 +19,7 @@
 #' The following slots control the values on the x-axis:
 #' \itemize{ 
 #' \item \code{XAxis}, string specifying what should be plotting on the x-axis.
-#' This can be any one of \code{"None"}, \code{"Feature name"} or \code{"Column data"}.
+#' This can be any one of \code{"None"}, \code{"Feature name"}, \code{"Column data"} or \code{"Column selection"}.
 #' Defaults to \code{"None"}.
 #' \item \code{XAxisColumnData}, string specifying which column of the \code{\link{colData}} should be shown on the x-axis,
 #' if \code{XAxis="Column data"}.
@@ -74,8 +74,12 @@
 #'
 #' For managing selections:
 #' \itemize{
-#' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of feature on the x- and y-axes.
-#' This includes the output of \code{callNextMethod}.
+#' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, 
+#' mostly related to the choice of feature on the x- and y-axes.
+#' This includes the output of the method for the parent \linkS4class{ColumnDotPlot} class.
+#' \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the x-axis uses multiple column selections,
+#' such that the point coordinates may change upon updates to upstream selections in transmitting panels.
+#' Otherwise, it dispatches to the \linkS4class{ColumnDotPlot} method.
 #' }
 #'
 #' For documentation:
@@ -125,6 +129,7 @@
 #' .defineDataInterface,FeatureAssayPlot-method
 #' .createObservers,FeatureAssayPlot-method
 #' .singleSelectionSlots,FeatureAssayPlot-method
+#' .multiSelectionInvalidated,FeatureAssayPlot-method
 #' .fullName,FeatureAssayPlot-method
 #' .panelColor,FeatureAssayPlot-method
 #' .generateDotPlotData,FeatureAssayPlot-method
@@ -199,13 +204,14 @@ setMethod(".refineParameters", "FeatureAssayPlot", function(x, se) {
 .featAssayXAxisNothingTitle <- "None"
 .featAssayXAxisColDataTitle <- "Column data"
 .featAssayXAxisFeatNameTitle <- "Feature name"
+.featAssayXAxisSelectionsTitle <- "Column selection"
 
 #' @importFrom S4Vectors setValidity2
 setValidity2("FeatureAssayPlot", function(object) {
     msg <- character(0)
 
     msg <- .allowableChoiceError(msg, object, .featAssayXAxis,
-        c(.featAssayXAxisNothingTitle, .featAssayXAxisColDataTitle, .featAssayXAxisFeatNameTitle))
+        c(.featAssayXAxisNothingTitle, .featAssayXAxisColDataTitle, .featAssayXAxisFeatNameTitle, .featAssayXAxisSelectionsTitle))
 
     msg <- .singleStringError(msg, object,
         c(.featAssayAssay, .featAssayXAxisColData, .featAssayXAxisRowTable,
@@ -232,7 +238,7 @@ setMethod(".defineDataInterface", "FeatureAssayPlot", function(x, se, select_inf
     if (length(column_covariates)) { # As it is possible for this plot to be _feasible_ but for no column data to exist.
         xaxis_choices <- c(xaxis_choices, .featAssayXAxisColDataTitle)
     }
-    xaxis_choices <- c(xaxis_choices, .featAssayXAxisFeatNameTitle)
+    xaxis_choices <- c(xaxis_choices, .featAssayXAxisFeatNameTitle, .featAssayXAxisSelectionsTitle)
 
     list(
         selectizeInput(.input_FUN(.featAssayYAxisFeatName),
@@ -307,6 +313,11 @@ setMethod(".singleSelectionSlots", "FeatureAssayPlot", function(x) {
 })
 
 #' @export
+setMethod(".multiSelectionInvalidated", "FeatureAssayPlot", function(x) {
+    x[[.featAssayXAxis]] == .featAssayXAxisSelectionsTitle || callNextMethod()
+})
+
+#' @export
 setMethod(".fullName", "FeatureAssayPlot", function(x) "Feature assay plot")
 
 #' @export
@@ -341,6 +352,20 @@ setMethod(".generateDotPlotData", "FeatureAssayPlot", function(x, envir) {
         data_cmds[["x"]] <- sprintf(
             "plot.data$X <- assay(se, %s)[%s, ];",
             deparse(assay_choice), deparse(gene_selected_x)
+        )
+
+    } else if (x_choice == .featAssayXAxisSelectionsTitle) {
+        x_lab <- "Column selection"
+        plot_title <- paste(plot_title, "vs column selection")
+        
+        if (exists("col_selected", envir=envir, inherits=FALSE)) {
+            target <- "col_selected"
+        } else {
+            target <- "list()"
+        }
+        data_cmds[["x"]] <- sprintf(
+            "plot.data$X <- iSEE::multiSelectionToFactor(%s, colnames(se));", 
+            target
         )
 
     } else { # no x axis variable specified: show single violin

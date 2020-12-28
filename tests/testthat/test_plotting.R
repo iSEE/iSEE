@@ -1,5 +1,5 @@
 # Tests the various plotting functionality.
-# library(testthat); library(iSEE); source("setup_sce.R"); source("setup_other.R"); source("test_plotting.R")
+# library(testthat); library(iSEE); source("setup_sce.R"); source("setup_mimic_live_app.R"); source("test_plotting.R")
 
 context("plotting")
 
@@ -16,7 +16,7 @@ memory <- list(
 )
 
 pObjects <- mimic_live_app(sce, memory)
-sce <- .set_colormap(sce, ExperimentColorMap())
+sce <- iSEE:::.set_colormap(sce, ExperimentColorMap())
 
 ########################################
 # .make_redDimPlot/.scatter_plot ----
@@ -602,95 +602,6 @@ test_that(".make_colDataPlot/.square_plot works with zoom",{
 })
 
 ########################################
-# .define_colorby_for_column_plot ----
-
-test_that(".define_colorby_for_column_plot handles feature selection", {
-    params <- pObjects$memory$ReducedDimensionPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
-    rn <- rownames(sce)[1]
-    params[[iSEE:::.colorByFeatName]] <- rn
-
-    env <- new.env()
-    env$se <- sce
-    .generateDotPlotData(params, env)
-    color_out <- iSEE:::.addDotPlotDataColor(params, env)
-
-    expect_match(color_out$commands, "assay", fixed=TRUE)
-    expect_match(color_out$commands, rn, fixed=TRUE)
-    expect_true(!is.null(env$plot.data$ColorBy))
-
-    expect_match(color_out$labels$ColorBy, rn, fixed=TRUE)
-    expect_match(color_out$labels$ColorBy, iSEEOptions$get("assay")[1], fixed=TRUE)
-
-    color_add <- iSEE:::.colorDotPlot(params, env$plot.data$ColorBy)
-    expect_match(color_add[1], "scale_color_gradientn", fixed=TRUE)
-})
-
-test_that(".define_colorby_for_column_plot handles sample selection", {
-    params <- pObjects$memory$ReducedDimensionPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorBySampNameTitle
-    cn <- colnames(sce)[3]
-    params[[ iSEE:::.colorBySampName]] <- cn
-
-    env <- new.env()
-    env$se <- sce
-    .generateDotPlotData(params, env)
-    color_out <- iSEE:::.addDotPlotDataColor(params, env)
-
-    expect_match(color_out$commands, cn, fixed=TRUE)
-    expect_identical(color_out$labels$ColorBy, cn)
-    expect_true(!is.null(env$plot.data$ColorBy))
-
-    color_add <- iSEE:::.colorDotPlot(params, env$plot.data$ColorBy)
-    expect_identical(color_add, c(
-        "scale_color_manual(values=c(`FALSE`='black', `TRUE`=\"red\"), drop=FALSE) +",
-        "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy == 'TRUE'), col=\"red\", alpha=1, size=5*1) +"))
-})
-
-test_that(".define_colorby_for_row_plot handles sample selection", {
-    params <- pObjects$memory$RowDataPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
-    rn <- rownames(sce)[3]
-    params[[iSEE:::.colorByFeatName]] <- rn
-
-    env <- new.env()
-    env$se <- sce
-    .generateDotPlotData(params, env)
-    color_out <- iSEE:::.addDotPlotDataColor(params, env)
-
-    expect_match(color_out$commands, rn, fixed=TRUE)
-    expect_identical(color_out$labels$ColorBy, rn)
-    expect_true(!is.null(env$plot.data$ColorBy))
-
-    color_add <- iSEE:::.colorDotPlot(params, env$plot.data$ColorBy)
-    expect_identical(color_add, c(
-        "scale_color_manual(values=c(`FALSE`='black', `TRUE`=\"red\"), drop=FALSE) +",
-        "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy == 'TRUE'), col=\"red\", alpha=1, size=5*1) +"))
-})
-
-test_that(".define_colorby_for_row_plot handles sample selection", {
-    params <- pObjects$memory$RowDataPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorBySampNameTitle
-    cn <- colnames(sce)[3]
-    params[[iSEE:::.colorBySampName]] <- cn
-
-    env <- new.env()
-    env$se <- sce
-    .generateDotPlotData(params, env)
-    color_out <- iSEE:::.addDotPlotDataColor(params, env)
-
-    expect_match(color_out$commands, "assay", fixed=TRUE)
-    expect_match(color_out$commands, cn, fixed=TRUE)
-    expect_true(!is.null(env$plot.data$ColorBy))
-
-    expect_match(color_out$labels$ColorBy, cn, fixed=TRUE)
-    expect_match(color_out$labels$ColorBy, iSEEOptions$get("assay")[1], fixed=TRUE)
-
-    color_add <- iSEE:::.colorDotPlot(params, env$plot.data$ColorBy)
-    expect_match(color_add[1], "scale_color_gradientn", fixed=TRUE)
-})
-
-########################################
 # define_shapeby_for_column_plot ----
 
 test_that("define_shapeby_for_column_plot produces the expected commands", {
@@ -884,8 +795,10 @@ test_that(".self_brush_box flip axes when faceting on both X and Y", {
     cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
     cdp[[iSEE:::.colDataYAxis]] <- "driver_1_s"
-    cdp[[iSEE:::.facetByRow]] <- "Core.Type"
-    cdp[[iSEE:::.facetByColumn]] <- "passes_qc_checks_s"
+    cdp[[iSEE:::.facetRow]] <- "Column data"
+    cdp[[iSEE:::.facetRowByColData]] <- "Core.Type"
+    cdp[[iSEE:::.facetColumn]] <- "Column data"
+    cdp[[iSEE:::.facetColumnByColData]] <- "passes_qc_checks_s"
 
     brushData <- list(xmin=1, xmax=2, ymin=3, ymax=4)
     cdp[[iSEE:::.brushData]] <- brushData
@@ -1039,8 +952,10 @@ test_that(".self_lasso_path flip axes when faceting on both X and Y", {
     cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEE:::.colDataXAxisColData]] <- "NREADS"
     cdp[[iSEE:::.colDataYAxis]] <- "driver_1_s"
-    cdp[[iSEE:::.facetByRow]] <- "Core.Type"
-    cdp[[iSEE:::.facetByColumn]] <- "passes_qc_checks_s"
+    cdp[[iSEE:::.facetRow]] <- "Column data"
+    cdp[[iSEE:::.facetRowByColData]] <- "Core.Type"
+    cdp[[iSEE:::.facetColumn]] <- "Column data"
+    cdp[[iSEE:::.facetColumnByColData]] <- "passes_qc_checks_s"
 
     LASSO_CLOSED <- list(
         lasso=NULL,
@@ -1063,48 +978,15 @@ test_that(".self_lasso_path flip axes when faceting on both X and Y", {
 ########################################
 # Faceting utilities all work correctly. ---
 
-test_that(".define_facetby_for_column_plot works", {
-    params <- pObjects$memory$ReducedDimensionPlot1
-
-    params[["FacetByRow"]] <- "driver_1_s"
-    params[["FacetByColumn"]] <- "Core.Type"
-
-    env <- new.env()
-    env$se <- sce
-    .generateDotPlotData(params, env)
-    facet_out <- iSEE:::.addDotPlotDataFacets(params, env)
-
-    expect_true("FacetRow" %in% colnames(env$plot.data))
-    expect_true("FacetColumn" %in% colnames(env$plot.data))
-    expect_match(facet_out$commands["FacetRow"], "driver_1_s", fixed=TRUE)
-    expect_match(facet_out$commands["FacetColumn"], "Core.Type", fixed=TRUE)
-})
-
-test_that(".define_facetby_for_row_plot works", {
-    rowData(sce)[, "LETTERS"] <- sample(LETTERS[1:3], nrow(sce), replace=TRUE)
-
-    params <- pObjects$memory$RowDataPlot1
-    params[["FacetByRow"]] <- "letters"
-    params[["FacetByColumn"]] <- "LETTERS"
-
-    env <- new.env()
-    env$se <- sce
-    .generateDotPlotData(params, env)
-    facet_out <- iSEE:::.addDotPlotDataFacets(params, env)
-
-    expect_true("FacetRow" %in% colnames(env$plot.data))
-    expect_true("FacetColumn" %in% colnames(env$plot.data))
-    expect_match(facet_out$commands["FacetRow"], "letters", fixed=TRUE)
-    expect_match(facet_out$commands["FacetColumn"], "LETTERS", fixed=TRUE)
-})
-
 test_that(".addFacets works correctly plots", {
     params <- pObjects$memory$ReducedDimensionPlot1
     out <- iSEE:::.addFacets(params)
     expect_null(out)
 
-    params[["FacetByRow"]] <- "driver_1_s"
-    params[["FacetByColumn"]] <- "Core.Type"
+    params[["FacetRowBy"]] <- "Column data"
+    params[["FacetRowByColData"]] <- "driver_1_s"
+    params[["FacetColumnBy"]] <- "Column data"
+    params[["FacetColumnByColData"]] <- "Core.Type"
 
     out <- iSEE:::.addFacets(params)
     expect_identical(out, "facet_grid(FacetRow ~ FacetColumn)")
@@ -1113,14 +995,15 @@ test_that(".addFacets works correctly plots", {
     out <- iSEE:::.addFacets(params)
     expect_null(out)
 
-    params[["FacetByRow"]] <- "letters"
-    params[["FacetByColumn"]] <- iSEE:::.noSelection
+    params[["FacetRowBy"]] <- "Row data"
+    params[["FacetRowByRowData"]] <- "letters"
 
     out <- iSEE:::.addFacets(params)
     expect_identical(out, "facet_grid(FacetRow ~ .)")
 
-    params[["FacetByRow"]] <- iSEE:::.noSelection
-    params[["FacetByColumn"]] <- "letters"
+    params[["FacetRowBy"]] <- "None"
+    params[["FacetColumnBy"]] <- "Row data"
+    params[["FacetColumnByRowData"]] <- "letters"
 
     out <- iSEE:::.addFacets(params)
     expect_identical(out, "facet_grid(. ~ FacetColumn)")
@@ -1279,7 +1162,8 @@ test_that(".downsample_points responds to priority", {
 
 test_that(".create_plot can add faceting commands", {
     rdp <- pObjects$memory$ReducedDimensionPlot1
-    rdp[[iSEE:::.facetByColumn]] <- "driver_1_s"
+    rdp[["FacetColumnBy"]] <- "Column data"
+    rdp[["FacetColumnByColData"]] <- "driver_1_s"
 
     out <- .generateOutput(rdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
     expect_true(any(grepl("facet_grid(. ~ FacetColumn)", out$commands$plot, fixed=TRUE)))
@@ -1414,8 +1298,10 @@ test_that(".generateDotPlot handles centered labels", {
     expect_s3_class(p.out$plot, c("gg", "ggplot"))
 
     # Plus faceting.
-    rdp[["FacetByColumn"]] <- "dissection_s"
-    rdp[["FacetByRow"]] <- "dissection_s"
+    rdp[["FacetRowBy"]] <- "Column data"
+    rdp[["FacetColumnBy"]] <- "Column data"
+    rdp[["FacetColumnByColData"]] <- "dissection_s"
+    rdp[["FacetRowByColData"]] <- "dissection_s"
 
     p.out <- .generateOutput(rdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)

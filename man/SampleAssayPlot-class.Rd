@@ -9,6 +9,7 @@
 \alias{.defineDataInterface,SampleAssayPlot-method}
 \alias{.createObservers,SampleAssayPlot-method}
 \alias{.singleSelectionSlots,SampleAssayPlot-method}
+\alias{.multiSelectionInvalidated,SampleAssayPlot-method}
 \alias{.fullName,SampleAssayPlot-method}
 \alias{.panelColor,SampleAssayPlot-method}
 \alias{.generateDotPlotData,SampleAssayPlot-method}
@@ -34,8 +35,8 @@ Defaults to \code{FALSE}.
 
 The following slots control the values on the x-axis:
 \itemize{
-\item \code{XAxis}, string specifying what should be plotting on the x-axis.
-This can be any one of \code{"None"}, \code{"Sample name"} or \code{"Column data"}.
+\item \code{XAxis}, string specifying what should be plotted on the x-axis.
+This can be any one of \code{"None"}, \code{"Sample name"}, \code{"Row data"} or \code{"Row selection"}.
 Defaults to \code{"None"}.
 \item \code{XAxisColumnData}, string specifying which column of the \code{\link{colData}} should be shown on the x-axis,
 if \code{XAxis="Column data"}.
@@ -94,8 +95,12 @@ It will return the commands required to do so as well as a list of labels.
 
 For managing selections:
 \itemize{
-\item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, mostly related to the choice of sample on the x- and y-axes.
-This includes the output of \code{callNextMethod}.
+\item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, 
+mostly related to the choice of sample on the x- and y-axes.
+This includes the output of the method for the parent \linkS4class{RowDotPlot} class.
+\item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the x-axis uses multiple row selections,
+such that the point coordinates may change upon updates to upstream selections in transmitting panels.
+Otherwise, it dispatches to the \linkS4class{RowDotPlot} method.
 }
 
 For documentation:

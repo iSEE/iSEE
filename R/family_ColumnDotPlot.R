@@ -57,7 +57,9 @@
 #'
 #' For controlling selections:
 #' \itemize{
-#' \item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a column selection is being transmitted.
+#' \item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a multiple column selection is being transmitted.
+#' \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the faceting options use multiple column selections,
+#' such that the point coordinates/domain may change upon updates to upstream selections in transmitting panels.
 #' \item \code{\link{.singleSelectionDimension}(x)} returns \code{"sample"} to indicate that a sample identity is being transmitted.
 #' }
 #'
@@ -92,6 +94,7 @@
 #' .createObservers,ColumnDotPlot-method
 #' .hideInterface,ColumnDotPlot-method
 #' .multiSelectionDimension,ColumnDotPlot-method
+#' .multiSelectionInvalidated,ColumnDotPlot-method
 #' .singleSelectionDimension,ColumnDotPlot-method
 #' .definePanelTour,ColumnDotPlot-method
 #'
@@ -125,7 +128,7 @@ setValidity2("ColumnDotPlot", function(object) {
         c(.colorByColData, .colorByFeatNameAssay, .colorBySampNameColor))
 
     msg <- .allowableChoiceError(msg, object, .colorByField,
-        c(.colorByNothingTitle, .colorByColDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle))
+        c(.colorByNothingTitle, .colorByColDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle, .colorByColSelectionsTitle))
 
     msg <- .allowableChoiceError(msg, object, .shapeByField,
           c(.shapeByNothingTitle, .shapeByColDataTitle))
@@ -215,6 +218,10 @@ setMethod(".createObservers", "ColumnDotPlot", function(x, se, input, session, p
             .shapeByColData, .sizeByColData, .colorBySampNameColor),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
+    .createProtectedParameterObservers(plot_name,
+        fields=c(.facetRowByColData, .facetColumnByColData),
+        input=input, pObjects=pObjects, rObjects=rObjects)
+
     .create_dimname_propagation_observer(plot_name, choices=colnames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
 
@@ -225,6 +232,11 @@ setMethod(".createObservers", "ColumnDotPlot", function(x, se, input, session, p
 
 #' @export
 setMethod(".multiSelectionDimension", "ColumnDotPlot", function(x) "column")
+
+#' @export
+setMethod(".multiSelectionInvalidated", "ColumnDotPlot", function(x) {
+    x[[.facetRow]] == .facetByColSelectionsTitle || x[[.facetColumn]] == .facetByColSelectionsTitle || callNextMethod()
+})
 
 #' @export
 setMethod(".singleSelectionDimension", "ColumnDotPlot", function(x) "sample")
@@ -295,6 +307,19 @@ setMethod(".getDotPlotMetadataCommand", "ColumnDotPlot", function(x) "colData")
 
 setMethod(".getDotPlotNamesCommand", "ColumnDotPlot", function(x) "colnames")
 
+setMethod(".getDotPlotFacetConstants", "ColumnDotPlot", function(x) {
+    list(
+        metadata=list(
+            title=.facetByColDataTitle,
+            row_field=.facetRowByColData,
+            column_field=.facetColumnByColData
+        ),
+        selections=list(
+            title=.facetByColSelectionsTitle
+        )
+    )
+})
+
 ###############################################################
 # See ?.addDotPlotDataColor for documentation on these methods.
 
@@ -319,6 +344,19 @@ setMethod(".addDotPlotDataColor", "ColumnDotPlot", function(x, envir) {
         label <- chosen_sample
         cmds <- sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;",
             deparse(chosen_sample))
+
+    } else if (color_choice == .colorByColSelectionsTitle) {
+        label <- "Column selection"
+        if (exists("col_selected", envir=envir, inherits=FALSE)) {
+            target <- "col_selected"
+        } else {
+            target <- "list()"
+        }
+        cmds <- sprintf(
+            "plot.data$ColorBy <- iSEE::multiSelectionToFactor(%s, colnames(se));", 
+            target
+        )
+
     } else {
         return(NULL)
     }
@@ -366,18 +404,31 @@ setMethod(".addDotPlotDataFacets", "ColumnDotPlot", function(x, envir) {
     facet_cmds <- NULL
     labels <- list()
 
-    facet_row <- x[[.facetByRow]]
-    if (facet_row!=.noSelection) {
-        facet_cmds["FacetRow"] <- sprintf(
-            "plot.data$FacetRow <- colData(se)[, %s];", deparse(facet_row))
-        labels$FacetRow <- facet_row
-    }
+    params <- list(
+        list(.facetRow, "FacetRow", .facetRowByColData),
+        list(.facetColumn, "FacetColumn", .facetColumnByColData)
+    )
 
-    facet_column <- x[[.facetByColumn]]
-    if (facet_column!=.noSelection) {
-        facet_cmds["FacetColumn"] <- sprintf(
-            "plot.data$FacetColumn <- colData(se)[, %s];", deparse(facet_column))
-        labels$FacetColumn <- facet_column
+    for (f in seq_len(2)) {
+        current <- params[[f]]
+        param_field <- current[[1]]
+        pd_field <- current[[2]]
+        facet_mode <- x[[param_field]]
+
+        if (facet_mode == .facetByColDataTitle) {
+            facet_data <- x[[current[[3]]]]
+            facet_cmds[pd_field] <- sprintf("plot.data$%s <- colData(se)[, %s];", pd_field, deparse(facet_data))
+            labels[[pd_field]] <- facet_data
+
+        } else if (facet_mode == .facetByColSelectionsTitle) {
+            if (exists("col_selected", envir=envir, inherits=FALSE)) {
+                target <- "col_selected"
+            } else {
+                target <- "list()"
+            }
+            facet_cmds[pd_field] <- sprintf("plot.data$%s <- iSEE::multiSelectionToFactor(%s, colnames(se));", pd_field, target)
+            labels[[pd_field]] <- "Column selection"
+        }
     }
 
     .textEval(facet_cmds, envir)
@@ -432,6 +483,11 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
                 )
             )
         )
+
+    } else if (color_choice == .colorByColSelectionsTitle) {
+        sprintf("scale_color_manual(values=iSEE::columnSelectionColorMap(colormap, %s), drop=FALSE) +", 
+            paste(deparse(levels(colorby)), collapse="")) 
+
     } else {
         .colorByNoneDotPlotScale(x)
     }

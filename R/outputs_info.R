@@ -24,7 +24,8 @@
 
     # nocov start
     output[[gen_field]] <- renderUI({
-        .trackMultiSelection(plot_name, rObjects)
+        .trackUpdate(plot_name, rObjects)
+
         instance <- pObjects$memory[[plot_name]]
         cur_coords <- pObjects$contents[[plot_name]]
         n_total <- .multiSelectionAvailable(instance, cur_coords)

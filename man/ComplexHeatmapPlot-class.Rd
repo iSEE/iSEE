@@ -39,8 +39,10 @@ The following slots control the metadata variables that are used:
 \itemize{
 \item \code{ColumnData}, a character vector specifying columns of the \code{\link{colData}} to show as \code{\link{columnAnnotation}}.
 Defaults to \code{character(0)}.
-\item \code{RowData}, a character vector specifying columns of the \code{\link{rowData}} to show as \code{\link{columnAnnotation}}.
+\item \code{RowData}, a character vector specifying columns of the \code{\link{rowData}} to show as \code{\link{rowAnnotation}}.
 Defaults to \code{character(0)}.
+\item \code{ShowColumnSelection}, a logical vector indicating whether the column selection should be shown as an extra annotation bar.
+Defaults to \code{TRUE}.
 }
 
 The following slots control the choice of assay values:
@@ -87,15 +89,6 @@ Defaults to \code{"Rows"}.
 Defaults to \code{"Bottom"} but can also be \code{"Right"}.
 \item \code{LegendDirection}, string specifying the orientation of the legend on the plot for continuous covariates.
 Defaults to \code{"Horizontal"} but can also be \code{"Vertical"}.
-}
-
-The following slots control the effect of the transmitted selection from another panel:
-\itemize{
-\item \code{SelectionEffect}, a string specifying the selection effect.
-This should be one of \code{"Color"} (the default), where all selected points change to the specified color;
-\code{"Restrict"}, where all non-selected points are not plotted.
-\item \code{SelectionColor}, a string specifying the color to use for selected points when \code{SelectionEffect="Color"}.
-Defaults to \code{"red"}.
 }
 
 The following slots control some aspects of the user interface:

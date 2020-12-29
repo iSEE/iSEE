@@ -229,12 +229,12 @@ setReplaceMethod("[[", "Panel", function(x, i, j, ..., value) {
         return(x)
     }
 
-    .attempt <- function(x) {
-        slot(x, i) <- value
+    .attempt <- function(y) {
+        slot(y, i) <- value
         if (iSEEOptions$get('.check.validity')) {
-            validObject(x)
+            validObject(y)
         }
-        x
+        y
     }
 
     # Avoid having to call updateObject unnecessarily.

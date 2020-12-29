@@ -187,7 +187,7 @@ setMethod("[[", "ColumnDotPlot", function(x, i, j, ...) {
 
         if (x[[.selectColRestrict]]) {
             "Restrict" 
-        } else if (x[[.colorBy]] == .colorByColSelectionsTitle) {
+        } else if (x[[.colorByField]] == .colorByColSelectionsTitle) {
             "Color"
         } else {
             "Transparent"
@@ -219,7 +219,7 @@ setReplaceMethod("[[", "ColumnDotPlot", function(x, i, j, ..., value) {
             x[[.selectColRestrict]] <- TRUE
         } else if (value=="Color") {
             x[[.selectColRestrict]] <- FALSE
-            x[[.colorBy]] <- .colorByColSelectionsTitle
+            x[[.colorByField]] <- .colorByColSelectionsTitle
         } else {
             x[[.selectColRestrict]] <- FALSE
         }
@@ -614,11 +614,13 @@ setMethod("updateObject", "ColumnDotPlot", function(object, ..., verbose=FALSE) 
                 slot(object, .selectColRestrict) <- TRUE
             } else if (effect=="Color") {
                 slot(object, .selectColRestrict) <- FALSE
-                slot(object, .colorBy) <- .colorByColSelectionsTitle
+                slot(object, .colorByField) <- .colorByColSelectionsTitle
             } else {
                 slot(object, .selectColRestrict) <- FALSE
             }
         }
+
+        # nocov end
     }
 
     object

@@ -53,34 +53,21 @@ test_that(".transmitted_selection detects whether a brush is active", {
 
     # No point selection
     all_memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- list()
-    out <- iSEE:::.transmitted_selection("ColumnDataPlot1", "ReducedDimensionPlot1", all_memory,
-        select_type="Active", select_saved=0L)
+    out <- iSEE:::.transmitted_selection("ReducedDimensionPlot1", all_memory)
     expect_false(out)
 
     # Active point selection (non-empty brush or lasso)
     all_memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- list(a=1, b=2)
-    out <- iSEE:::.transmitted_selection("ColumnDataPlot1", "ReducedDimensionPlot1", all_memory,
-        select_type="Active", select_saved=0L)
+    out <- iSEE:::.transmitted_selection("ReducedDimensionPlot1", all_memory)
     expect_true(out)
 
     # Panel linked to no transmitter (---)
-    out <- iSEE:::.transmitted_selection("ColumnDataPlot1", "---", all_memory,
-        select_type="Active", select_saved=0L)
+    out <- iSEE:::.transmitted_selection("---", all_memory)
     expect_false(out)
 
     # missing "select_type" argument requires to "SelectMultiSaved"
     all_memory$ReducedDimensionPlot1[[iSEE:::.multiSelectHistory]] <- list(list(a=1, b=2))
-    out <- iSEE:::.transmitted_selection("ColumnDataPlot1", "ReducedDimensionPlot1", all_memory,
-        select_type="Union", select_saved=0L)
-    expect_true(out)
-
-    # "select_type" argument "Saved"
-    out <- iSEE:::.transmitted_selection("ColumnDataPlot1", "ReducedDimensionPlot1", all_memory,
-        select_type="Saved", select_saved=0L)
-    expect_false(out)
-
-    out <- iSEE:::.transmitted_selection("ColumnDataPlot1", "ReducedDimensionPlot1", all_memory,
-        select_type="Saved", select_saved=1L)
+    out <- iSEE:::.transmitted_selection("ReducedDimensionPlot1", all_memory)
     expect_true(out)
 })
 

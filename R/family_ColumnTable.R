@@ -20,7 +20,7 @@
 #' For defining the interface:
 #' \itemize{
 #' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
-#' This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"}, \code{"RowSelectionType"} and \code{"RowSelectionSaved"}),
+#' This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"} and \code{"RowSelectionRestrict"}),
 #' otherwise it dispatches to the \linkS4class{Panel} method.
 #' }
 #'
@@ -112,7 +112,7 @@ setMethod(".singleSelectionDimension", "ColumnTable", function(x) "sample")
 
 #' @export
 setMethod(".hideInterface", "ColumnTable", function(x, field) {
-    if (field %in% c(.selectRowSource, .selectRowType, .selectRowSaved, .selectRowDynamic)) {
+    if (field %in% c(.selectRowSource, .selectRowRestrict, .selectRowDynamic)) {
         TRUE
     } else {
         callNextMethod()

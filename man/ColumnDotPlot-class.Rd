@@ -10,6 +10,7 @@
 \alias{.createObservers,ColumnDotPlot-method}
 \alias{.hideInterface,ColumnDotPlot-method}
 \alias{.multiSelectionDimension,ColumnDotPlot-method}
+\alias{.multiSelectionRestricted,ColumnDotPlot-method}
 \alias{.multiSelectionInvalidated,ColumnDotPlot-method}
 \alias{.singleSelectionDimension,ColumnDotPlot-method}
 \alias{.definePanelTour,ColumnDotPlot-method}
@@ -64,7 +65,7 @@ This will also call the equivalent \linkS4class{DotPlot} method.
 For defining the interface:
 \itemize{
 \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
-This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"}, \code{"RowSelectionType"} and \code{"RowSelectionSaved"}),
+This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"} and \code{"RowSelectionRestrict"}),
 otherwise it dispatches to the \linkS4class{Panel} method.
 }
 
@@ -76,6 +77,7 @@ This will also call the equivalent \linkS4class{DotPlot} method.
 
 For controlling selections:
 \itemize{
+\item \code{\link{.multiSelectionRestricted}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel.
 \item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a multiple column selection is being transmitted.
 \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the faceting options use multiple column selections,
 such that the point coordinates/domain may change upon updates to upstream selections in transmitting panels.

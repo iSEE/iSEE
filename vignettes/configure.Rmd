@@ -316,8 +316,7 @@ cdArgs <- ColumnDataPlot(
     # Configuring the selection parameters.
     SelectionBoxOpen=TRUE,
     ColumnSelectionSource="ReducedDimensionPlot1",
-    SelectionEffect="Color", 
-    SelectionColor="purple", 
+    ColorBy="Column selection", 
 
     # Throwing in some parameters for aesthetic reasons.
     ColorByDefaultColor="#BDB3B3", 
@@ -352,10 +351,9 @@ app <- iSEE(sce, initial=list(cdArgs, rdArgs))
 SCREENSHOT("screenshots/configure-ReDP-select.png")
 ```
 
-Note that in the example above, we chose to color selected data points in the receiver panel, by setting the `SelectionEffect` argument to `"Color"`,
-and the color of selected data points to `"darkgoldenrod1"`.
-Other choices include `"Restrict"`, to show only the selected data points;
-and `"Transparent"` (the default), to increase the transparency of unselected data points.
+Note that in the example above, we color selected data points in the receiver panel by setting the `ColorBy` argument to `"Column selection"`.
+The default is to increase the transparency of unselected data points;
+another option is to set `ColumnSelectionRestrict` to `TRUE` to show only the selected data points.
 
 An identical process can be followed to preconfigure a lasso point selection:
 

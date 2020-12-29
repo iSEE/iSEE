@@ -45,7 +45,7 @@
 #' For defining the interface:
 #' \itemize{
 #' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
-#' This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"}, \code{"RowSelectionType"} and \code{"RowSelectionSaved"}),
+#' This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"} and \code{"RowSelectionRestrict"}),
 #' otherwise it dispatches to the \linkS4class{Panel} method.
 #' }
 #'
@@ -57,6 +57,7 @@
 #'
 #' For controlling selections:
 #' \itemize{
+#' \item \code{\link{.multiSelectionRestricted}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel.
 #' \item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a multiple column selection is being transmitted.
 #' \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the faceting options use multiple column selections,
 #' such that the point coordinates/domain may change upon updates to upstream selections in transmitting panels.
@@ -94,6 +95,7 @@
 #' .createObservers,ColumnDotPlot-method
 #' .hideInterface,ColumnDotPlot-method
 #' .multiSelectionDimension,ColumnDotPlot-method
+#' .multiSelectionRestricted,ColumnDotPlot-method
 #' .multiSelectionInvalidated,ColumnDotPlot-method
 #' .singleSelectionDimension,ColumnDotPlot-method
 #' .definePanelTour,ColumnDotPlot-method
@@ -225,7 +227,7 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 
 #' @export
 setMethod(".hideInterface", "ColumnDotPlot", function(x, field) {
-    if (field %in% c(.selectRowSource, .selectRowType, .selectRowSaved, .selectRowDynamic)) {
+    if (field %in% c(.selectRowSource, .selectRowRestrict, .selectRowDynamic)) {
         TRUE
     } else {
         callNextMethod()
@@ -249,14 +251,15 @@ setMethod(".createObservers", "ColumnDotPlot", function(x, se, input, session, p
 
     .create_dimname_propagation_observer(plot_name, choices=colnames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
-
-    .createMultiSelectionEffectObserver(plot_name,
-        by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export
 setMethod(".multiSelectionDimension", "ColumnDotPlot", function(x) "column")
+
+#' @export
+setMethod(".multiSelectionRestricted", "ColumnDotPlot", function(x) {
+    x[[.selectColRestrict]]
+})
 
 #' @export
 setMethod(".multiSelectionInvalidated", "ColumnDotPlot", function(x) {
@@ -471,7 +474,7 @@ setMethod(".addDotPlotDataSelected", "ColumnDotPlot", function(x, envir) {
         SelectBy="plot.data$SelectBy <- rownames(plot.data) %in% unlist(col_selected);"
     )
 
-    if (x[[.selectEffect]] == .selectRestrictTitle) {
+    if (x[[.selectColRestrict]]) {
         cmds["saved"] <- "plot.data.all <- plot.data;"
         cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"
     }
@@ -524,7 +527,7 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
 setMethod(".definePanelTour", "ColumnDotPlot", function(x) {
     collated <- callNextMethod()
         
-    collated$intro[collated$intro=="PLACEHOLDER_COLOR"] <- "We can choose to color by different per-column attributes - from the column metadata, across a specific feature of an assay, or to identify a chosen sample.<br/><br/><strong>Action:</strong> try out some of the different choices. Note how further options become available when each choice is selected."
+    collated$intro[collated$intro=="PLACEHOLDER_COLOR"] <- "We can choose to color by different per-column attributes - from the column metadata, across a specific feature of an assay, to identify a chosen sample, or based on a multiple column selection transmitted from another panel.<br/><br/><strong>Action:</strong> try out some of the different choices. Note how further options become available when each choice is selected."
 
     data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
 })

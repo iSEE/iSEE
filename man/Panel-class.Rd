@@ -48,14 +48,9 @@ The following slots are relevant to \emph{receiving} a multiple selection on the
 \itemize{
 \item \code{RowSelectionSource}, a string specifying the name of the transmitting panel from which to receive a multiple row selection (e.g., \code{"RowDataPlot1"}).
 Defaults to \code{"---"}.
-\item \code{RowSelectionType}, a string specifying which of the multiple row selections from the transmitting panel should be used.
-Takes one of \code{"Active"}, only the active selection;
-\code{"Union"}, the union of active and saved selections;
-and \code{"Saved"}, one of the saved selections.
-Defaults to \code{"Active"}.
-\item \code{RowSelectionSaved}, an integer scalar specifying the index of the saved multiple row selection to use when \code{RowSelectionType="Saved"}.
-Defaults to 0.
 \item \code{RowSelectionDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for multiple row selections.
+Defaults to \code{FALSE}.
+\item \code{RowSelectionRestrict}, a logical scalar indicating whether the display of \code{x} should be restricted to the rows in the multiple selection received from a transmitting panel.
 Defaults to \code{FALSE}.
 }
 
@@ -63,14 +58,9 @@ The following slots are relevant to \emph{receiving} a multiple selection on the
 \itemize{
 \item \code{ColumnSelectionSource}, a string specifying the name of the transmitting panel from which to receive a multiple column selection (e.g., \code{"ColumnDataPlot1"}).
 Defaults to \code{"---"}.
-\item \code{ColumnSelectionType}, a string specifying which of the column-based selections from the transmitting panel should be used.
-Takes one of \code{"Active"}, only the active selection;
-\code{"Union"}, the union of active and saved selections;
-and \code{"Saved"}, one of the saved selections.
-Defaults to \code{"Active"}.
-\item \code{ColumnSelectionSaved}, an integer scalar specifying the index of the saved multiple column selection to use when \code{ColumnSelectionType="Saved"}.
-Defaults to 0.
 \item \code{ColumnSelectionDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for multiple column selections.
+Defaults to \code{FALSE}.
+\item \code{ColumnSelectionRestrict}, a logical scalar indicating whether the display of \code{x} should be restricted to the columns in the multiple selection received from a transmitting panel.
 Defaults to \code{FALSE}.
 }
 

@@ -45,7 +45,7 @@
 #' For defining the interface:
 #' \itemize{
 #' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
-#' This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"}, \code{"RowSelectionType"} and \code{"RowSelectionSaved"}),
+#' This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"} and \code{"RowSelectionRestrict"}),
 #' otherwise it dispatches to the \linkS4class{Panel} method.
 #' }
 #'
@@ -57,6 +57,7 @@
 #'
 #' For controlling selections:
 #' \itemize{
+#' \item \code{\link{.multiSelectionRestricted}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel.
 #' \item \code{\link{.multiSelectionDimension}(x)} returns \code{"row"} to indicate that a multiple row selection is being transmitted.
 #' \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the faceting options usethe multiple row selections,
 #' such that the point coordinates/domain may change upon updates to upstream selections in transmitting panels.
@@ -94,6 +95,7 @@
 #' .createObservers,RowDotPlot-method
 #' .hideInterface,RowDotPlot-method
 #' .multiSelectionDimension,RowDotPlot-method
+#' .multiSelectionRestricted,RowDotPlot-method
 #' .multiSelectionInvalidated,RowDotPlot-method
 #' .singleSelectionDimension,RowDotPlot-method
 #' .definePanelTour,RowDotPlot-method
@@ -224,7 +226,7 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 
 #' @export
 setMethod(".hideInterface", "RowDotPlot", function(x, field) {
-    if (field %in% c(.selectColSource, .selectColType, .selectColSaved, .selectColDynamic)) {
+    if (field %in% c(.selectColSource, .selectColRestrict, .selectColDynamic)) {
         TRUE
     } else {
         callNextMethod()
@@ -248,14 +250,15 @@ setMethod(".createObservers", "RowDotPlot", function(x, se, input, session, pObj
 
     .create_dimname_propagation_observer(plot_name, choices=rownames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
-
-    .createMultiSelectionEffectObserver(plot_name,
-        by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export
 setMethod(".multiSelectionDimension", "RowDotPlot", function(x) "row")
+
+#' @export
+setMethod(".multiSelectionRestricted", "RowDotPlot", function(x) {
+    x[[.selectRowRestrict]]
+})
 
 #' @export
 setMethod(".multiSelectionInvalidated", "RowDotPlot", function(x) {
@@ -465,16 +468,14 @@ setMethod(".addDotPlotDataSelected", "RowDotPlot", function(x, envir) {
     }
 
     cmds <- c(
-        header1="",
-        header2="# Receiving row point selection",
+        header="# Receiving row point selection",
         SelectBy="plot.data$SelectBy <- rownames(plot.data) %in% unlist(row_selected);"
     )
 
-    if (x[[.selectEffect]] == .selectRestrictTitle) {
+    if (x[[.selectRowRestrict]]) {
         cmds["saved"] <- "plot.data.all <- plot.data;"
         cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"
     }
-    cmds["footer"] <- ""
 
     .textEval(cmds, envir)
 
@@ -527,7 +528,7 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
 setMethod(".definePanelTour", "RowDotPlot", function(x) {
     collated <- callNextMethod()
 
-    collated$intro[collated$intro=="PLACEHOLDER_COLOR"] <- "We can choose to color by different per-row attributes - from the row metadata, across a specific sample of an assay, or to identify a chosen feature.<br/><br/><strong>Action:</strong> try out some of the different choices. Note how further options become available when each choice is selected."
+    collated$intro[collated$intro=="PLACEHOLDER_COLOR"] <- "We can choose to color by different per-row attributes - from the row metadata, across a specific sample of an assay, to identify a chosen feature, or based on a multiple row selection transmitted from another panel.<br/><br/><strong>Action:</strong> try out some of the different choices. Note how further options become available when each choice is selected."
 
     data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
 })

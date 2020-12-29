@@ -164,8 +164,8 @@
     element <- c(element, paste0("#", enc_fap))
     intro <- c(intro, "The points selected in the <font color=\"#402ee8\">Reduced dimension plot 1</font> are shown as opaque in this plot, while all other points are semi-transparent.")
 
-    element <- c(element, paste0("#", enc_fap, "_", .selectEffect))
-    intro <- c(intro, 'The effect of the selection can also be altered. If set to <font color="#402ee8">Restrict</font>, only the selected points will be plotted in the receiving plot. If <font color="#402ee8">Color</font>, all points are plotted and the selected points are marked with a specified color. The default is to use <font color="#402ee8">Transparent</font>, where all non-selected points are transparent.')
+    element <- c(element, paste0("#", enc_fap, "_", .selectColRestrict))
+    intro <- c(intro, 'If <font color="#402ee8">Restrict</font> is set, only the selected points will be plotted in the receiving plot.')
 
     element <- c(element, paste0("#", enc_rdp, "_", .panelMultiSelectInfo))
     intro <- c(intro, "Some information on the number of selected points is displayed in this element.")
@@ -242,8 +242,8 @@
     element <- c(element, paste0("#", enc_chm))
     intro <- c(intro, "You can see the result of our interactions so far, including the selections applied to both rows and columns of this plot.")
 
-    element <- c(element, paste0("#", enc_chm, "_", .selectEffect))
-    intro <- c(intro, "By default, all samples are shown in the heatmap, and column selections are colored. Alternatively, the heatmap can be restricted to show only the selected samples.<br/><br/><strong>Action:</strong> Select the 'Restrict' effect.")
+    element <- c(element, paste0("#", enc_chm, "_", .selectColRestrict))
+    intro <- c(intro, "By default, all samples are shown in the heatmap and column selections are marked by a separate colored annotation bar. Alternatively, the heatmap can be restricted to show only the selected samples.<br/><br/><strong>Action:</strong> enable the 'Restrict' option.")
 
     element <- c(element, paste0("#", enc_chm, "_", .heatMapClusterFeatures))
     intro <- c(intro, "Having seleted features of interest, it is often helpful to cluster them by expression profile.<br/><br/><strong>Action:</strong> tick this box.")

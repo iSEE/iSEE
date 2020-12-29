@@ -7,8 +7,7 @@
 #'
 #' @param panel_name String containing the name of the panel.
 #' @param by_field String specifying the name of the slot containing the identity of the panel transmitting to the current panel.
-#' @param type_field String specifying the name of the slot containing the type of multiple selection to use from the transmitter.
-#' @param saved_field String specifying the name of the slot containing the index of the saved selection to use from the transmitter.
+#' @param res_field String specifying the name of the slot indicating whether to restrict to the multiple selection.
 #' @param input The Shiny input object from the server function.
 #' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
@@ -20,15 +19,13 @@
 #' @author Aaron Lun
 #'
 #' @seealso
-#' \code{\link{.renderOutput,Panel-method}}, where \code{.create_multi_selection_choice_observer} is called.
-#'
-#' \code{\link{.renderOutput,DotPlot-method}}, where \code{\link{.createMultiSelectionEffectObserver}} is called.
+#' \code{\link{.createObservers,Panel-method}}, where these functions are called.
 #'
 #' @rdname INTERNAL_selection_parameter_observers
 #' @importFrom shiny observeEvent showNotification updateSelectInput
 #' @importFrom igraph is_dag simplify
 .create_multi_selection_choice_observer <- function(panel_name,
-    by_field, type_field, saved_field, input, session, pObjects, rObjects)
+    by_field, input, session, pObjects, rObjects)
 {
     saved_select_name <- paste0(panel_name, "_", .updateSavedChoices)
     .safe_reactive_init(rObjects, saved_select_name)
@@ -63,28 +60,12 @@
             .safe_reactive_bump(rObjects, relink_name)
         }
 
-        # Update the saved selection choice selectize.
-        .safe_reactive_bump(rObjects, saved_select_name)
-
-        saved_val <- pObjects$memory[[panel_name]][[saved_field]]
-        if (saved_val!=0L && new_transmitter!=.noSelection) {
-            if (saved_val > .any_saved_selection(pObjects$memory[[new_transmitter]], count=TRUE)) {
-                pObjects$memory[[panel_name]][[saved_field]] <- 0L
-            }
-        }
-
         # Checking if there were active/saved selections in either the new or
         # old transmitters. This requires some protection when this observer
         # is triggered because the old transmitter was deleted.
         if (old_transmitter %in% c(.noSelection, names(pObjects$memory))) {
-            select_type <- pObjects$memory[[panel_name]][[type_field]]
-            select_saved <- pObjects$memory[[panel_name]][[saved_field]]
-
-            no_old_selection <- !.transmitted_selection(panel_name, old_transmitter, pObjects$memory,
-                select_type=select_type, select_saved=select_saved)
-            no_new_selection <- !.transmitted_selection(panel_name, new_transmitter, pObjects$memory,
-                select_type=select_type, select_saved=select_saved)
-
+            no_old_selection <- !.transmitted_selection(old_transmitter, pObjects$memory)
+            no_new_selection <- !.transmitted_selection(new_transmitter, pObjects$memory)
             if (no_old_selection && no_new_selection) {
                 return(NULL)
             }
@@ -103,108 +84,26 @@
     invisible(NULL)
 }
 
-#' Create an observer for multiple selection effect
-#'
-#' Create an observer to trigger rerendering upon changes to the (typically visual) effect for multiple selections.
-#'
-#' @param plot_name String containing the encoded name of the current panel.
-#' @param by_field String with the name of the slot containing the name of the transmitting panel. 
-#' @param type_field String with the name of the slot containing the type of selection to receive
-#' (i.e., \code{"Saved"}, \code{"Active"} or \code{"Union"}).
-#' @param saved_field String with the name of the slot containing the saved history of selections.
-#' @param input The Shiny input object from the server function.
-#' @param session The Shiny session object from the server function.
-#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
-#' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
-#'
-#' @details
-#' The selection effect is expected to be stored in the \code{SelectionEffect} slot of the current panel.
-#' Changes to the specified effect will trigger rerendering of the current panel if there was a multiple selection transmitted from an upstream panel.
-#' If the specified effect changes to or from \dQuote{Restrict}, all children of the current panel will also be rerendered.
-#'
-#' This function is typically called within a \code{\link{.createObservers}} method 
-#' It is exported for use in subclasses as the selection effect is not a property of the \linkS4class{Panel} class (given that not all panels are visual) 
-#' and thus needs to be called separately for each subclass rather than in the parent's method.
-#'
-#' @return 
-#' An observer for the input corresponding to \code{"SelectEffect"} is created in the current Shiny session.
-#' A \code{NULL} is invisibly returned.
-#'
-#' @author Aaron Lun
-#' 
-#' @seealso
-#' \code{\link{.createObservers}}, where this function is usually called -
-#' see, for example, the methods for \linkS4class{ColumnDotPlot}, \linkS4class{RowDotPlot} and \linkS4class{ComplexHeatmapPlot}.
-#'
-#' @export  
-#' @rdname createMultiSelectionEffectObserver
-#' @importFrom shiny showNotification observeEvent
-.createMultiSelectionEffectObserver <- function(plot_name,
-    by_field, type_field, saved_field,
-    input, session, pObjects, rObjects)
+#' @rdname INTERNAL_selection_parameter_observers
+#' @importFrom shiny observeEvent
+.create_multi_selection_restrict_observer <- function(panel_name,
+    by_field, res_field, input, session, pObjects, rObjects)
 {
-    select_effect_field <- paste0(plot_name, "_", .selectEffect)
+    select_restrict_field <- paste0(panel_name, "_", res_field)
 
     # nocov start
-    observeEvent(input[[select_effect_field]], {
-        cur_effect <- input[[select_effect_field]]
-        pObjects$memory[[plot_name]][[.selectEffect]] <- cur_effect
+    observeEvent(input[[select_restrict_field]], {
+        cur_restrict <- input[[select_restrict_field]]
+        pObjects$memory[[panel_name]][[res_field]] <- cur_restrict
 
         # Avoiding replotting if there was no transmitting selection.
-        if (!.transmitted_selection(plot_name,
-            pObjects$memory[[plot_name]][[by_field]],
-            all_memory=pObjects$memory,
-            select_type=pObjects$memory[[plot_name]][[type_field]],
-            select_saved=pObjects$memory[[plot_name]][[saved_field]]))
-        {
+        if (!.transmitted_selection(pObjects$memory[[panel_name]][[by_field]], all_memory=pObjects$memory)) {
             return(NULL)
         }
 
         # Updating children if the selection in the current plot changes due to gain/loss of Restrict.
-        old_effect <- pObjects$memory[[plot_name]][[.selectEffect]]
-        if (cur_effect==.selectRestrictTitle || old_effect==.selectRestrictTitle) {
-            .mark_panel_as_modified(plot_name, .panelRepopulated, rObjects)
-        } else {
-            .requestUpdate(plot_name, rObjects)
-        }
-    }, ignoreInit=TRUE)
-    # nocov end
-
-    invisible(NULL)
-}
-
-#' @importFrom shiny observeEvent observe updateSelectInput req
-#' @rdname INTERNAL_selection_parameter_observers
-.create_multi_selection_type_observers <- function(panel_name,
-    by_field, type_field, saved_field,
-    input, session, pObjects, rObjects)
-{
-    ## Type field observers. ---
-    select_type_field <- paste0(panel_name, "_", type_field)
-
-    # nocov start
-    observeEvent(input[[select_type_field]], {
-        old_type <- pObjects$memory[[panel_name]][[type_field]]
-        new_type <- as(input[[select_type_field]], typeof(old_type))
-        if (identical(new_type, old_type)) {
-            return(NULL)
-        }
-        pObjects$memory[[panel_name]][[type_field]] <- new_type
-
-        # Skipping if neither the old or new types were relevant.
-        transmitter <- pObjects$memory[[panel_name]][[by_field]]
-        select_saved <- pObjects$memory[[panel_name]][[saved_field]]
-
-        no_old_selection <- !.transmitted_selection(panel_name, transmitter, pObjects$memory,
-            select_type=old_type, select_saved=select_saved)
-        no_new_selection <- !.transmitted_selection(panel_name, transmitter, pObjects$memory,
-            select_type=new_type, select_saved=select_saved)
-
-        if (no_old_selection && no_new_selection) {
-            return(NULL)
-        }
-
-        if (.multiSelectionRestricted(pObjects$memory[[panel_name]])) {
+        old_restrict <- pObjects$memory[[panel_name]][[res_field]]
+        if (cur_restrict || old_restrict) {
             .mark_panel_as_modified(panel_name, .panelRepopulated, rObjects)
         } else {
             .requestUpdate(panel_name, rObjects)
@@ -212,79 +111,120 @@
     }, ignoreInit=TRUE)
     # nocov end
 
-    ## Saved field observers. ---
-    saved_select_field <- paste0(panel_name, "_", saved_field)
-
-    # nocov start
-    observeEvent(input[[saved_select_field]], {
-        # Required to defend against empty strings before updateSelectizeInput runs.
-        req(input[[saved_select_field]])
-
-        matched_input <- as(input[[saved_select_field]],
-            typeof(pObjects$memory[[panel_name]][[saved_field]]))
-        if (identical(matched_input, pObjects$memory[[panel_name]][[saved_field]])) {
-            return(NULL)
-        }
-        pObjects$memory[[panel_name]][[saved_field]] <- matched_input
-
-        transmitter <- pObjects$memory[[panel_name]][[by_field]]
-        if (transmitter==.noSelection) {
-            return(NULL)
-        }
-
-        # Switch of 'Saved' will ALWAYS change the current plot, as it's not
-        # possible to do so without being on the "Saved" choice in the first
-        # place; so there's no need for other checks.
-
-        if (.multiSelectionRestricted(pObjects$memory[[panel_name]])) {
-            .mark_panel_as_modified(panel_name, .panelRepopulated, rObjects)
-        } else {
-            .requestUpdate(panel_name, rObjects)
-        }
-    }, ignoreInit=TRUE)
-    # nocov end
-
-    ## Selectize observer. ---
-    # Do NOT be tempted to centralize code by setting 'saved_field' in the above observer.
-    # This needs to be done in a separate observer that actually executes to set the
-    # the field to something upon initialization of the panel.
-    saved_choice_name <- paste0(panel_name, "_", .updateSavedChoices)
-    .safe_reactive_init(rObjects, saved_choice_name)
-
-    # nocov start
-    observe({
-        force(rObjects[[saved_choice_name]])
-        force(rObjects$rerendered)
-
-        # Protect against re-rendering after deleting a panel.
-        if (!panel_name %in% names(pObjects$memory)) {
-            return(NULL)
-        }
-
-        transmitter <- pObjects$memory[[panel_name]][[by_field]]
-        if (transmitter==.noSelection) {
-            available_choices <- integer(0)
-        } else {
-            N <- length(pObjects$memory[[transmitter]][[.multiSelectHistory]])
-            available_choices <- seq_len(N)
-            names(available_choices) <- available_choices
-        }
-
-        no_choice <- 0L
-        names(no_choice) <- .noSelection
-        available_choices <- c(no_choice, available_choices)
-        updateSelectizeInput(session, saved_select_field, choices=available_choices, server=TRUE,
-            selected=pObjects$memory[[panel_name]][[saved_field]])
-    })
-    # nocov end
-
     invisible(NULL)
 }
+
+# @importFrom shiny observeEvent observe updateSelectInput req
+# @rdname INTERNAL_selection_parameter_observers
+#.create_multi_selection_type_observers <- function(panel_name,
+#    by_field, type_field, saved_field,
+#    input, session, pObjects, rObjects)
+#{
+#    ## Type field observers. ---
+#    select_type_field <- paste0(panel_name, "_", type_field)
+#
+#    # nocov start
+#    observeEvent(input[[select_type_field]], {
+#        old_type <- pObjects$memory[[panel_name]][[type_field]]
+#        new_type <- as(input[[select_type_field]], typeof(old_type))
+#        if (identical(new_type, old_type)) {
+#            return(NULL)
+#        }
+#        pObjects$memory[[panel_name]][[type_field]] <- new_type
+#
+#        # Skipping if neither the old or new types were relevant.
+#        transmitter <- pObjects$memory[[panel_name]][[by_field]]
+#        select_saved <- pObjects$memory[[panel_name]][[saved_field]]
+#
+#        no_old_selection <- !.transmitted_selection(panel_name, transmitter, pObjects$memory,
+#            select_type=old_type, select_saved=select_saved)
+#        no_new_selection <- !.transmitted_selection(panel_name, transmitter, pObjects$memory,
+#            select_type=new_type, select_saved=select_saved)
+#
+#        if (no_old_selection && no_new_selection) {
+#            return(NULL)
+#        }
+#
+#        if (.multiSelectionRestricted(pObjects$memory[[panel_name]])) {
+#            .mark_panel_as_modified(panel_name, .panelRepopulated, rObjects)
+#        } else {
+#            .requestUpdate(panel_name, rObjects)
+#        }
+#    }, ignoreInit=TRUE)
+#    # nocov end
+#
+#    ## Saved field observers. ---
+#    saved_select_field <- paste0(panel_name, "_", saved_field)
+#
+#    # nocov start
+#    observeEvent(input[[saved_select_field]], {
+#        # Required to defend against empty strings before updateSelectizeInput runs.
+#        req(input[[saved_select_field]])
+#
+#        matched_input <- as(input[[saved_select_field]],
+#            typeof(pObjects$memory[[panel_name]][[saved_field]]))
+#        if (identical(matched_input, pObjects$memory[[panel_name]][[saved_field]])) {
+#            return(NULL)
+#        }
+#        pObjects$memory[[panel_name]][[saved_field]] <- matched_input
+#
+#        transmitter <- pObjects$memory[[panel_name]][[by_field]]
+#        if (transmitter==.noSelection) {
+#            return(NULL)
+#        }
+#
+#        # Switch of 'Saved' will ALWAYS change the current plot, as it's not
+#        # possible to do so without being on the "Saved" choice in the first
+#        # place; so there's no need for other checks.
+#
+#        if (.multiSelectionRestricted(pObjects$memory[[panel_name]])) {
+#            .mark_panel_as_modified(panel_name, .panelRepopulated, rObjects)
+#        } else {
+#            .requestUpdate(panel_name, rObjects)
+#        }
+#    }, ignoreInit=TRUE)
+#    # nocov end
+#
+#    ## Selectize observer. ---
+#    # Do NOT be tempted to centralize code by setting 'saved_field' in the above observer.
+#    # This needs to be done in a separate observer that actually executes to set the
+#    # the field to something upon initialization of the panel.
+#    saved_choice_name <- paste0(panel_name, "_", .updateSavedChoices)
+#    .safe_reactive_init(rObjects, saved_choice_name)
+#
+#    # nocov start
+#    observe({
+#        force(rObjects[[saved_choice_name]])
+#        force(rObjects$rerendered)
+#
+#        # Protect against re-rendering after deleting a panel.
+#        if (!panel_name %in% names(pObjects$memory)) {
+#            return(NULL)
+#        }
+#
+#        transmitter <- pObjects$memory[[panel_name]][[by_field]]
+#        if (transmitter==.noSelection) {
+#            available_choices <- integer(0)
+#        } else {
+#            N <- length(pObjects$memory[[transmitter]][[.multiSelectHistory]])
+#            available_choices <- seq_len(N)
+#            names(available_choices) <- available_choices
+#        }
+#
+#        no_choice <- 0L
+#        names(no_choice) <- .noSelection
+#        available_choices <- c(no_choice, available_choices)
+#        updateSelectizeInput(session, saved_select_field, choices=available_choices, server=TRUE,
+#            selected=pObjects$memory[[panel_name]][[saved_field]])
+#    })
+#    # nocov end
+#
+#    invisible(NULL)
+#}
 
 #' Multiple selection observers
 #'
 #' Observers to change the multiple selections by saving the active selection or deleting existing saved selections.
-#' This differs from \code{\link{.create_multi_selection_type_observers}}, which just involves using existing saved selections.
 #'
 #' @param panel_name String containing the name of the plot.
 #' @param input The Shiny input object from the server function.

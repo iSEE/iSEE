@@ -1,4 +1,6 @@
-# library(iSEE); library(testthat); source("setup_sce.R"); source("setup_other.R"); source("test_heatmap.R")
+# This tests the various heatmap-related functions.
+# library(iSEE); library(testthat); source("setup_sce.R"); source("setup_mimic_live_app.R"); source("test_heatmap.R")
+
 context("heatmap")
 
 memory <- list(
@@ -8,7 +10,7 @@ memory <- list(
 )
 
 pObjects <- mimic_live_app(sce, memory)
-sce <- .set_colormap(sce, ExperimentColorMap())
+sce <- iSEE:::.set_colormap(sce, ExperimentColorMap())
 
 test_that(".process_heatmap_assay_colormap handles discrete assays", {
 
@@ -68,7 +70,6 @@ test_that(".process_heatmap_assay_colormap handles custom bounds", {
 })
 
 test_that(".process_heatmap_column_annotations_colorscale handles column selections", {
-
     plot_env <- new.env()
     plot_env$col_selected <- head(colnames(sce))
 
@@ -77,15 +78,42 @@ test_that(".process_heatmap_column_annotations_colorscale handles column selecti
     x <- .refineParameters(x, sce)
 
     plot_env$se <- sce
+    plot_env$colormap <- ExperimentColorMap()
     plot_env$plot.data <- assay(sce)[1:10,1:10]
 
     out <- iSEE:::.process_heatmap_column_annotations_colorscale(x, sce, plot_env)
-    expect_true(any(out == '.column_col[["Selected points"]] <- c("TRUE"="red", "FALSE"="white")'))
+    expect_true(any(grepl('.column_col[["Selected points"]] <- iSEE::columnSelectionColorMap', out, fixed=TRUE)))
 
+    # What happens when we turn off column selections?
+    x[[iSEE:::.heatMapShowSelection]] <- FALSE
+    out <- iSEE:::.process_heatmap_column_annotations_colorscale(x, sce, plot_env)
+    expect_false(any(grepl('.column_col[["Selected points"]] <- iSEE::columnSelectionColorMap', out, fixed=TRUE)))
 })
 
-test_that(".process_heatmap_column_annotations_colorscale handles column annotations", {
+test_that(".process_heatmap_column_annotations_colorscale handles existing 'Selected points' column", {
+    plot_env <- new.env()
+    plot_env$col_selected <- head(colnames(sce))
 
+    x <- memory[["ComplexHeatmapPlot1"]]
+
+    sce$`Selected points` <- "A"
+    sce <- .cacheCommonInfo(x, sce)
+    x <- .refineParameters(x, sce)
+
+    plot_env$se <- sce
+    plot_env$colormap <- ExperimentColorMap()
+    plot_env$plot.data <- assay(sce)[1:10,1:10]
+
+    # Handles existing 'Selected points' in the coldata.
+    out <- iSEE:::.process_heatmap_column_annotations_colorscale(x, sce, plot_env)
+    expect_false(any(grepl('.column_col[["Selected points (1)"]] <- iSEE::columnSelectionColorMap', out, fixed=TRUE)))
+
+    x[[iSEE:::.heatMapColData]] <- c("Selected points")
+    out <- iSEE:::.process_heatmap_column_annotations_colorscale(x, sce, plot_env)
+    expect_true(any(grepl('.column_col[["Selected points (1)"]] <- iSEE::columnSelectionColorMap', out, fixed=TRUE)))
+})
+
+test_that(".process_heatmap_column_annotations_colorscale handles other column annotations", {
     plot_env <- new.env()
 
     x <- memory[["ComplexHeatmapPlot1"]]
@@ -100,8 +128,13 @@ test_that(".process_heatmap_column_annotations_colorscale handles column annotat
     out <- iSEE:::.process_heatmap_column_annotations_colorscale(x, sce, plot_env)
     expect_true(any(out == '.color_values <- .column_data[[\"driver_1_s\"]]'))
     expect_true(any(out == '.color_values <- .column_data[["NREADS"]]'))
-    expect_true(any(out == '.column_annot_order <- order(.column_data[["driver_1_s"]], .column_data[["NREADS"]])'))
+    expect_true(any(out == '.column_annot_order <- order(.column_data[["Selected points"]], .column_data[["driver_1_s"]], .column_data[["NREADS"]])'))
     expect_true(any(out == '.column_data <- .column_data[.column_annot_order, , drop=FALSE]'))
+    
+    # What happens when we turn off column selections?
+    x[[iSEE:::.heatMapOrderSelection]] <- FALSE
+    out <- iSEE:::.process_heatmap_column_annotations_colorscale(x, sce, plot_env)
+    expect_true(any(out == '.column_annot_order <- order(.column_data[["driver_1_s"]], .column_data[["NREADS"]])'))
 })
 
 test_that(".process_heatmap_row_annotations_colorscale handles row annotations", {
@@ -146,7 +179,7 @@ test_that(".generateOutput detects col_selected and row_selected", {
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
     x[[iSEE:::.selectColSource]] <- "FeatureAssayPlot1"
-    x[[iSEE:::.selectEffect]] <- iSEE:::.selectRestrictTitle
+    x[[iSEE:::.selectColRestrict]] <- TRUE
     x[[iSEE:::.heatMapCustomFeatNames]] <- TRUE
     x[[iSEE:::.heatMapFeatNameText]] <- paste0(head(rownames(sce), 2), collapse = "\n")
     memory$ComplexHeatmapPlot1 <- x

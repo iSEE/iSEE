@@ -17,8 +17,10 @@
 #' \itemize{
 #' \item \code{ColumnData}, a character vector specifying columns of the \code{\link{colData}} to show as \code{\link{columnAnnotation}}.
 #' Defaults to \code{character(0)}.
-#' \item \code{RowData}, a character vector specifying columns of the \code{\link{rowData}} to show as \code{\link{columnAnnotation}}.
+#' \item \code{RowData}, a character vector specifying columns of the \code{\link{rowData}} to show as \code{\link{rowAnnotation}}.
 #' Defaults to \code{character(0)}.
+#' \item \code{ShowColumnSelection}, a logical vector indicating whether the column selection should be shown as an extra annotation bar.
+#' Defaults to \code{TRUE}.
 #' }
 #'
 #' The following slots control the choice of assay values:
@@ -65,15 +67,6 @@
 #' Defaults to \code{"Bottom"} but can also be \code{"Right"}.
 #' \item \code{LegendDirection}, string specifying the orientation of the legend on the plot for continuous covariates.
 #' Defaults to \code{"Horizontal"} but can also be \code{"Vertical"}.
-#' }
-#'
-#' The following slots control the effect of the transmitted selection from another panel:
-#' \itemize{
-#' \item \code{SelectionEffect}, a string specifying the selection effect.
-#' This should be one of \code{"Color"} (the default), where all selected points change to the specified color;
-#' \code{"Restrict"}, where all non-selected points are not plotted.
-#' \item \code{SelectionColor}, a string specifying the color to use for selected points when \code{SelectionEffect="Color"}.
-#' Defaults to \code{"red"}.
 #' }
 #'
 #' The following slots control some aspects of the user interface:
@@ -257,8 +250,8 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- .emptyDefault(args, .plotLegendDirection, iSEEOptions$get("legend.direction"))
     args <- .emptyDefault(args, .visualParamBoxOpen, FALSE)
 
-    args <- .emptyDefault(args, .selectEffect, .selectColorTitle)
-    args <- .emptyDefault(args, .selectColor, iSEEOptions$get("selected.color"))
+    args <- .emptyDefault(args, .heatMapShowSelection, TRUE)
+    args <- .emptyDefault(args, .heatMapOrderSelection, TRUE)
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -269,10 +262,7 @@ setValidity2("ComplexHeatmapPlot", function(object) {
 
     msg <- .singleStringError(msg, object, c(.heatMapAssay, .heatMapFeatNameText,
         .heatMapClusterDistanceFeatures, .heatMapClusterMethodFeatures,
-        .heatMapCenteredColormap,
-        .selectEffect, .selectColor))
-
-    msg <- .validStringError(msg, object, .selectColor)
+        .heatMapCenteredColormap))
 
     msg <- .multipleChoiceError(msg, object, .visualParamChoice,
         c(.visualParamChoiceMetadataTitle, .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle,
@@ -292,7 +282,8 @@ setValidity2("ComplexHeatmapPlot", function(object) {
         .heatMapClusterFeatures, .dataParamBoxOpen,
         .heatMapCustomAssayBounds,
         .assayCenterRows, .assayScaleRows,
-        .visualParamBoxOpen))
+        .visualParamBoxOpen,
+        .heatMapShowSelection, .heatMapOrderSelection))
 
     if (length(msg)) {
         return(msg)
@@ -424,27 +415,6 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
                     "median (= WPGMC)"=.clusterMethodMedian,
                     "centroid (= UPGMC)"=.clusterMethodCentroid),
                 selected=x[[.heatMapClusterMethodFeatures]])))
-    )
-})
-
-#' @export
-#' @importFrom colourpicker colourInput
-setMethod(".defineSelectionEffectInterface", "ComplexHeatmapPlot", function(x) {
-    plot_name <- .getEncodedName(x)
-    select_effect <- paste0(plot_name, "_", .selectEffect)
-
-    list(
-        .radioButtonsHidden(x, field=.selectEffect,
-            label="Selection effect:", inline=TRUE,
-            choices=c(.selectRestrictTitle, .selectColorTitle),
-            selected=x[[.selectEffect]]),
-
-        .conditionalOnRadio(
-            select_effect, .selectColorTitle,
-            colourInput(
-                paste0(plot_name, "_", .selectColor), label=NULL,
-                value=x[[.selectColor]])
-        )
     )
 })
 
@@ -596,10 +566,10 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
         fields=c(
             .heatMapAssay,
             .heatMapCenteredColormap,
-            .selectColor,
             .showDimnames,
             .plotLegendPosition,
-            .plotLegendDirection
+            .plotLegendDirection,
+            .heatMapShowSelection
         ),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
@@ -609,10 +579,6 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
             .heatMapRowData
         ),
         input=input, pObjects=pObjects, rObjects=rObjects, ignoreNULL = FALSE)
-
-    .createMultiSelectionEffectObserver(plot_name,
-        by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_heatmap_extra_observers(plot_name,
         se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
@@ -625,7 +591,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
 #' @export
 setMethod(".hideInterface", "ComplexHeatmapPlot", function(x, field) {
-    if (field %in% c(.multiSelectHistory)) {
+    if (field %in% c(.multiSelectHistory, .selectRowRestrict)) {
         TRUE
     } else {
         callNextMethod()
@@ -647,7 +613,7 @@ setMethod(".definePanelTour", "ComplexHeatmapPlot", function(x) {
         .addTourStep(x, .assayCenterRows, "Another useful setting is to center the heatmap by row so that the colors represent deviations from the average. This better handles differences in assay values "),
 
         callNextMethod(),
-        .addTourStep(x, .selectEffect, "Here, we can choose the effect of the multiple column selection that was transmitted from the chosen source panel - should the unselected columns be colored with a separate annotation bar? Or should the heatmap be explicitly restricted to only the selected columns?")
+        .addTourStep(x, .selectColRestrict, "Here, we can specify that heatmap should be explicitly restricted to only the selected columns.")
     )
 
     collated[which(collated$intro=="PLACEHOLDER_ROW_SELECT"), "intro"] <- "We can choose the \"source\" panel from which to receive a multiple row selection, which is used to control the features on the heatmap when <i>Custom rows</i> checkbox is unselected. In other words, if we selected some rows of the <code>SummarizedExperiment</code> object in the chosen source panel, those rows would make up the rows of the heatmap."

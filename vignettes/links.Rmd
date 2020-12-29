@@ -155,7 +155,7 @@ Alternatively, we may use color:
 
 ```{r, echo=FALSE}
 cdp2 <- cdp
-cdp2[["SelectionEffect"]] <- "Color"
+cdp2[["ColorBy"]] <- "Column selection"
 app <- iSEE(sce, initial=list(rdp, cdp2))
 ```
 
@@ -172,7 +172,7 @@ a multiple selection could made on the column data plot and transmitted to anoth
 
 ```{r, echo=FALSE}
 cdp2 <- cdp
-cdp2[["SelectionEffect"]] <- "Restrict"
+cdp2[["ColumnSelectionRestrict"]] <- TRUE
 app <- iSEE(sce, initial=list(rdp, cdp2))
 ```
 
@@ -211,15 +211,11 @@ SCREENSHOT("screenshots/links-multi-table2.png")
 ## Saving selections
 
 In certain panels (usually plots), multiple selections can be saved to form disjoint selections.
-Receiving plots can then choose to respond to the union of all selections, 
-just the active selection, or one of the saved selections.
-For example, here the column data plot is responding to the union of all selections.
+Receiving plots will respond to the union of all active and saved selections:
 
 ```{r, echo=FALSE}
 rdp <- ReducedDimensionPlot(SelectionBoxOpen=TRUE, 
     SelectionHistory=list(brush, lasso))
-cdp[["ColumnSelectionType"]] <- "Union"
-
 app <- iSEE(sce, initial=list(rdp, cdp))
 ```
 

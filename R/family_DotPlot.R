@@ -27,6 +27,8 @@
 #' Defaults to \code{FALSE}.
 #' \item \code{ColorBySampleDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source when coloring by feature.
 #' Defaults to \code{FALSE}.
+#' \item \code{SelectionAlpha}, a numeric scalar in [0, 1] specifying the transparency to use for non-selected points.
+#' Defaults to 0.1.
 #' }
 #'
 #' The following slots control other metadata-related aesthetic aspects of the points:
@@ -67,18 +69,6 @@
 #' Each line should contain the name of a row or column for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
 #' Leading and trailing whitespace are stripped, and all text on a line after \code{#} is ignored.
 #' Defaults to the name of the first row/column.
-#' }
-#'
-#' The following slots control the effect of the transmitted selection from another panel:
-#' \itemize{
-#' \item \code{SelectionEffect}, a string specifying the selection effect.
-#' This should be one of \code{"Transparent"} (the default), where all non-selected points become transparent;
-#' \code{"Color"}, where all selected points change to the specified color;
-#' \code{"Restrict"}, where all non-selected points are not plotted.
-#' \item \code{SelectionAlpha}, a numeric scalar in [0, 1] specifying the transparency to use for non-selected points when \code{SelectionEffect="Transparent"}.
-#' Defaults to 0.1.
-#' \item \code{SelectionColor}, a string specifying the color to use for selected points when \code{SelectionEffect="Color"}.
-#' Defaults to \code{"red"}.
 #' }
 #'
 #' The following slots control interactions with the plot image:
@@ -153,7 +143,6 @@
 #' \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
 #' It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}}.
 #' This will \emph{override} the \linkS4class{Panel} method.
-#' \item \code{\link{.defineSelectionEffectInterface}(x)} returns a list of interface elements for controlling the multiple selection effect.
 #' \item \code{\link{.defineVisualColorInterface}(x, se, select_info)} defines the user interface subpanel for manipulating the color of the points.
 #' \item \code{\link{.defineVisualShapeInterface}(x, se)} defines the user interface subpanel for manipulating the shape of the points.
 #' \item \code{\link{.defineVisualSizeInterface}(x, se)} defines the user interface subpanel for manipulating the size of the points.
@@ -192,7 +181,6 @@
 #'
 #' For controlling selections:
 #' \itemize{
-#' \item \code{\link{.multiSelectionRestricted}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel, i.e., is \code{SelectionEffect="Restrict"}?
 #' \item \code{\link{.multiSelectionCommands}(x, index)} returns a character vector of R expressions that - when evaluated - returns a character vector of the names of selected points in the active and/or saved selections of \code{x}.
 #' The active selection is returned if \code{index=NA}, otherwise one of the saved selection is returned.
 #' \item \code{\link{.multiSelectionActive}(x)} returns \code{x[["BrushData"]]} or \code{NULL} if there is no brush or closed lasso.
@@ -233,7 +221,6 @@
 #' .cacheCommonInfo,DotPlot-method
 #' .createObservers,DotPlot-method
 #' .hideInterface,DotPlot-method
-#' .multiSelectionRestricted,DotPlot-method
 #' .multiSelectionActive,DotPlot-method
 #' .multiSelectionCommands,DotPlot-method
 #' .multiSelectionClear,DotPlot-method
@@ -243,7 +230,6 @@
 #' .prioritizeDotPlotData,DotPlot-method
 #' .colorByNoneDotPlotField,DotPlot-method
 #' .colorByNoneDotPlotScale,DotPlot-method
-#' .defineSelectionEffectInterface,DotPlot-method
 #' .defineInterface,DotPlot-method
 #' .defineVisualColorInterface,DotPlot-method
 #' .defineVisualSizeInterface,DotPlot-method
@@ -282,8 +268,6 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
 
     args <- .emptyDefault(args, .sizeByField, .sizeByNothingTitle)
 
-    args <- .emptyDefault(args, .selectEffect, .selectTransTitle)
-    args <- .emptyDefault(args, .selectColor, iSEEOptions$get("selected.color"))
     args <- .emptyDefault(args, .selectTransAlpha, iSEEOptions$get("selected.alpha"))
 
     args <- .emptyDefault(args, .visualParamBoxOpen, FALSE)
@@ -326,13 +310,11 @@ setValidity2("DotPlot", function(object) {
         c(.plotCustomLabelsText, .colorByField, .colorByFeatName, .colorByRowTable, .colorBySampName, .colorByColTable,
             .shapeByField,
             .sizeByField,
-            .selectEffect,
             .plotLabelCentersBy
         ))
 
     msg <- .validStringError(msg, object,
         c(.colorByDefaultColor,
-            .selectColor,
             .contourColor,
             .plotLabelCentersColor
         ))
@@ -342,9 +324,6 @@ setValidity2("DotPlot", function(object) {
         msg <- .allowableChoiceError(msg, object, field,
             c(.facetByNothingTitle, facet_info$metadata$title, facet_info$selections$title))
     }
-
-    msg <- .allowableChoiceError(msg, object, .selectEffect,
-        c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle))
 
     msg <- .validNumberError(msg, object, .selectTransAlpha, lower=0, upper=1)
 
@@ -486,7 +465,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 
     .createUnprotectedParameterObservers(plot_name,
         fields=c(
-            .colorByDefaultColor, .selectColor, .selectTransAlpha,
+            .colorByDefaultColor, .selectTransAlpha,
             .shapeByField, .sizeByField,
             .plotPointSize, .plotPointAlpha, .plotFontSize, .legendPointSize, .plotLegendPosition,
             .plotPointDownsample, .plotPointSampleRes, .contourAdd,
@@ -521,35 +500,6 @@ setMethod(".defineInterface", "DotPlot", function(x, se, select_info) {
         list(.create_visual_box(x, se, select_info$single)),
         out[-1]
     )
-})
-
-#' @export
-#' @importFrom colourpicker colourInput
-#' @importFrom shiny sliderInput
-setMethod(".defineSelectionEffectInterface", "DotPlot", function(x) {
-    plot_name <- .getEncodedName(x)
-    select_effect <- paste0(plot_name, "_", .selectEffect)
-
-    list(
-        .radioButtonsHidden(x, field=.selectEffect,
-            label="Selection effect:", inline=TRUE,
-            choices=c(.selectRestrictTitle, .selectColorTitle, .selectTransTitle),
-            selected=x[[.selectEffect]]),
-
-        .conditionalOnRadio(
-            select_effect, .selectColorTitle,
-            colourInput(
-                paste0(plot_name, "_", .selectColor), label=NULL,
-                value=x[[.selectColor]])
-        ),
-
-        .conditionalOnRadio(
-            select_effect, .selectTransTitle,
-            sliderInput(
-                paste0(plot_name, "_", .selectTransAlpha), label=NULL,
-                min=0, max=1, value=x[[.selectTransAlpha]])
-        )
-    ) 
 })
 
 #' @export
@@ -611,6 +561,11 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
                 paste0(plot_name, "_", colorby$assay$dynamic),
                 label=sprintf("Use dynamic %s selection", otherdim_single),
                 value=x[[colorby$assay$dynamic]])
+        ),
+        sliderInput(
+            paste0(plot_name, "_", .selectTransAlpha), 
+            label="Unselected point opacity:",
+            min=0, max=1, value=x[[.selectTransAlpha]]
         )
     )
 })
@@ -825,11 +780,6 @@ setMethod(".exportOutput", "DotPlot", function(x, se, all_memory, all_contents) 
 })
 
 #' @export
-setMethod(".multiSelectionRestricted", "DotPlot", function(x) {
-    x[[.selectEffect]] == .selectRestrictTitle
-})
-
-#' @export
 setMethod(".multiSelectionClear", "DotPlot", function(x) {
     x[[.brushData]] <- list()
     x
@@ -1024,7 +974,6 @@ setMethod(".definePanelTour", "DotPlot", function(x) {
         .addTourStep(x, .plotCustomLabels, sprintf("Users can show the names of certain %ss alongside the locations of their data points on the plot.<br/><br/><strong>Action:</strong> tick the checkbox to enable custom labels.", mdim)),
         .addTourStep(x, .dimnamesModalOpen, sprintf("When custom labels are enabled, this button can launch a modal containing a text editor where users can specify the data points to label - in this case, using their %s names.", mdim)),
         callNextMethod(),
-        .addTourStep(x, .selectEffect, sprintf("Here, we can choose the effect of the multiple %s selection that was transmitted from the chosen source panel - should the unselected %ss be made transparent? Should the selected %ss be colored? Or should the plot be explicitly restricted to only the selected %s?", mdim, mdim, mdim, mdim)),
         c(paste0("#", .getEncodedName(x)), sprintf("At the other end of the spectrum, brushing or creating a lasso on this plot will create a selection of multiple %ss, to be transmitted to other panels that choose this one as their selection source.<br/><br/>Drag-and-dropping will create a rectangular brush while a single click will lay down a lasso waypoint for non-rectangular selections.<br/><br/>Brushes and lassos can also be used to transmit single %s selections in which case one %s is arbitrarily chosen from the selection.", mdim, mdim, mdim)),
         .addTourStep(x, .multiSelectSave, "Advanced users can also save their selections for later use. Brushes and lassos are saved using a first-in-last-out scheme where you can only delete the last saved selection.")
     )

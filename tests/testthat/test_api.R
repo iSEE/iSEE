@@ -109,55 +109,23 @@ test_that(".renderOutput populates output for DotPlot", {
     expect_is(output$ReducedDimensionPlot1_INTERNAL_PanelSelectLinkInfo, "shiny.render.function")
 })
 
-# .addDotPlotDataSelected ----
-context(".addDotPlotDataSelected")
-
-test_that(".addDotPlotDataSelected handles RowDotPlot", {
-
-    plot_env <- new.env()
-
-    x <- SampleAssayPlot()
-
-    # no row_selected in plot_env
-    out <- iSEE:::.addDotPlotDataSelected(x, plot_env)
-    expect_null(out)
-
-    # row_selected exists in plot_env
-    plot_env$row_selected <- head(letters, 3)
-    plot_env$plot.data <- data.frame(row.names = letters)
-    out <- iSEE:::.addDotPlotDataSelected(x, plot_env)
-    expect_identical(out, c(
-        header1 = "",
-        header2 = "# Receiving row point selection",
-        SelectBy = "plot.data$SelectBy <- rownames(plot.data) %in% unlist(row_selected);",
-        footer = ""))
-
-    # row_selected exists in plot_env with effect Restrict
-    x[[iSEE:::.selectEffect]] <- iSEE:::.selectRestrictTitle
-    out <- iSEE:::.addDotPlotDataSelected(x, plot_env)
-    expect_identical(out, c(
-        header1 = "",
-        header2 = "# Receiving row point selection",
-        SelectBy = "plot.data$SelectBy <- rownames(plot.data) %in% unlist(row_selected);",
-        saved = "plot.data.all <- plot.data;",
-        subset = "plot.data <- subset(plot.data, SelectBy);",
-        footer = ""))
-
-})
-
 # .multiSelectionRestricted ----
 context(".multiSelectionRestricted")
 
-test_that(".multiSelectionRestricted handles DotPlot", {
-
+test_that(".multiSelectionRestricted handles ColumnDotPlot", {
     x <- ReducedDimensionPlot()
+    expect_false(.multiSelectionRestricted(x))
 
-    out <- .multiSelectionRestricted(x)
-    expect_false(out)
+    x[[iSEE:::.selectColRestrict]] <- TRUE
+    expect_true(.multiSelectionRestricted(x))
+})
 
-    x[[iSEE:::.selectEffect]] <- iSEE:::.selectRestrictTitle
-    out <- .multiSelectionRestricted(x)
-    expect_true(out)
+test_that(".multiSelectionRestricted handles RowDotPlot", {
+    x <- SampleAssayPlot()
+    expect_false(.multiSelectionRestricted(x))
+
+    x[[iSEE:::.selectRowRestrict]] <- TRUE
+    expect_true(.multiSelectionRestricted(x))
 })
 
 test_that(".multiSelectionRestricted handles Panel", {

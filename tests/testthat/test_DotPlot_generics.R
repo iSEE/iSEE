@@ -352,3 +352,52 @@ test_that(".addDotPlotDataFacets works for row plots with row selections", {
     expect_match(facet_out$commands["FacetRow"], "multiSelectionToFactor.*row_selected")
     expect_match(facet_out$commands["FacetColumn"], "multiSelectionToFactor.*row_selected")
 })
+
+########################################
+# .addDotPlotDataSelected
+
+test_that(".addDotPlotDataSelected handles RowDotPlot", {
+    plot_env <- new.env()
+    x <- SampleAssayPlot()
+
+    # no row_selected in plot_env
+    out <- iSEE:::.addDotPlotDataSelected(x, plot_env)
+    expect_null(out)
+
+    # row_selected exists in plot_env
+    plot_env$row_selected <- head(letters, 3)
+    plot_env$plot.data <- data.frame(row.names = letters)
+    out <- iSEE:::.addDotPlotDataSelected(x, plot_env)
+    expect_identical(out[["SelectBy"]], "plot.data$SelectBy <- rownames(plot.data) %in% unlist(row_selected);")
+
+    # row_selected exists in plot_env with effect Restrict
+    x[[iSEE:::.selectRowRestrict]] <- TRUE
+    out <- iSEE:::.addDotPlotDataSelected(x, plot_env)
+    expect_identical(out[["SelectBy"]], "plot.data$SelectBy <- rownames(plot.data) %in% unlist(row_selected);")
+    expect_identical(out[["saved"]], "plot.data.all <- plot.data;")
+    expect_identical(out[["subset"]], "plot.data <- subset(plot.data, SelectBy);")
+})
+
+test_that(".addDotPlotDataSelected handles ColumnDotPlot", {
+    plot_env <- new.env()
+    x <- FeatureAssayPlot()
+
+    # no row_selected in plot_env
+    out <- iSEE:::.addDotPlotDataSelected(x, plot_env)
+    expect_null(out)
+
+    # row_selected exists in plot_env
+    plot_env$col_selected <- head(letters, 3)
+    plot_env$plot.data <- data.frame(row.names = letters)
+    out <- iSEE:::.addDotPlotDataSelected(x, plot_env)
+    expect_identical(out[["SelectBy"]], "plot.data$SelectBy <- rownames(plot.data) %in% unlist(col_selected);")
+
+    # col_selected exists in plot_env with effect Restrict
+    x[[iSEE:::.selectColRestrict]] <- TRUE
+    out <- iSEE:::.addDotPlotDataSelected(x, plot_env)
+    expect_identical(out[["SelectBy"]], "plot.data$SelectBy <- rownames(plot.data) %in% unlist(col_selected);")
+    expect_identical(out[["saved"]], "plot.data.all <- plot.data;")
+    expect_identical(out[["subset"]], "plot.data <- subset(plot.data, SelectBy);")
+})
+
+

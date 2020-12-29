@@ -18,14 +18,9 @@
 #' \itemize{
 #' \item \code{RowSelectionSource}, a string specifying the name of the transmitting panel from which to receive a multiple row selection (e.g., \code{"RowDataPlot1"}).
 #' Defaults to \code{"---"}.
-#' \item \code{RowSelectionType}, a string specifying which of the multiple row selections from the transmitting panel should be used.
-#' Takes one of \code{"Active"}, only the active selection;
-#' \code{"Union"}, the union of active and saved selections;
-#' and \code{"Saved"}, one of the saved selections.
-#' Defaults to \code{"Active"}.
-#' \item \code{RowSelectionSaved}, an integer scalar specifying the index of the saved multiple row selection to use when \code{RowSelectionType="Saved"}.
-#' Defaults to 0.
 #' \item \code{RowSelectionDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for multiple row selections.
+#' Defaults to \code{FALSE}.
+#' \item \code{RowSelectionRestrict}, a logical scalar indicating whether the display of \code{x} should be restricted to the rows in the multiple selection received from a transmitting panel.
 #' Defaults to \code{FALSE}.
 #' }
 #'
@@ -33,14 +28,9 @@
 #' \itemize{
 #' \item \code{ColumnSelectionSource}, a string specifying the name of the transmitting panel from which to receive a multiple column selection (e.g., \code{"ColumnDataPlot1"}).
 #' Defaults to \code{"---"}.
-#' \item \code{ColumnSelectionType}, a string specifying which of the column-based selections from the transmitting panel should be used.
-#' Takes one of \code{"Active"}, only the active selection;
-#' \code{"Union"}, the union of active and saved selections;
-#' and \code{"Saved"}, one of the saved selections.
-#' Defaults to \code{"Active"}.
-#' \item \code{ColumnSelectionSaved}, an integer scalar specifying the index of the saved multiple column selection to use when \code{ColumnSelectionType="Saved"}.
-#' Defaults to 0.
 #' \item \code{ColumnSelectionDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for multiple column selections.
+#' Defaults to \code{FALSE}.
+#' \item \code{ColumnSelectionRestrict}, a logical scalar indicating whether the display of \code{x} should be restricted to the columns in the multiple selection received from a transmitting panel.
 #' Defaults to \code{FALSE}.
 #' }
 #'
@@ -172,11 +162,8 @@ setMethod("initialize", "Panel", function(.Object, ...) {
     args <- .emptyDefault(args, .selectParamBoxOpen, FALSE)
     args <- .emptyDefault(args, .selectRowSource, .noSelection)
     args <- .emptyDefault(args, .selectColSource, .noSelection)
-
-    args <- .emptyDefault(args, .selectRowType, .selectMultiActiveTitle)
-    args <- .emptyDefault(args, .selectRowSaved, 0L)
-    args <- .emptyDefault(args, .selectColType, .selectMultiActiveTitle)
-    args <- .emptyDefault(args, .selectColSaved, 0L)
+    args <- .emptyDefault(args, .selectRowRestrict, FALSE)
+    args <- .emptyDefault(args, .selectColRestrict, FALSE)
 
     args <- .emptyDefault(args, .selectRowDynamic, iSEEOptions$get("selection.dynamic.multiple"))
     args <- .emptyDefault(args, .selectColDynamic, iSEEOptions$get("selection.dynamic.multiple"))
@@ -194,7 +181,7 @@ setValidity2("Panel", function(object) {
     msg <- character(0)
 
     msg <- .validLogicalError(msg, object, c(.selectParamBoxOpen, .dataParamBoxOpen,
-        .selectRowDynamic, .selectColDynamic))
+        .selectRowDynamic, .selectColDynamic, .selectRowRestrict, .selectColRestrict))
 
     msg <- .singleStringError(msg, object, c(.selectRowSource, .selectColSource))
 
@@ -203,17 +190,6 @@ setValidity2("Panel", function(object) {
 
     if (length(val <- object[[.organizationId]])!=1 || (!is.na(val) && val <= 0L)) {
         msg <- c(msg, sprintf("'%s' must be a positive integer or NA for '%s'", .organizationId, class(object)[1]))
-    }
-
-    for (field in c(.selectRowType, .selectColType)) {
-        msg <- .allowableChoiceError(msg, object, field,
-            c(.selectMultiActiveTitle, .selectMultiUnionTitle, .selectMultiSavedTitle))
-    }
-
-    for (field in c(.selectRowSaved, .selectColSaved)) {
-        if (length(saved <- object[[field]]) > 1L || saved < 0L) {
-            msg <- c(msg, sprintf("'%s' must be a non-negative integer in '%s'", field, class(object)[1]))
-        }
     }
 
     if (length(msg)) {
@@ -287,20 +263,16 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
 
     .create_box_observers(panel_name, c(.dataParamBoxOpen, .selectParamBoxOpen), pObjects, rObjects)
 
-    .create_multi_selection_choice_observer(panel_name, by_field=.selectRowSource,
-        type_field=.selectRowType, saved_field=.selectRowSaved,
+    .create_multi_selection_choice_observer(panel_name, by_field=.selectRowSource, 
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_multi_selection_choice_observer(panel_name, by_field=.selectColSource,
-        type_field=.selectColType, saved_field=.selectColSaved,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_type_observers(panel_name, by_field=.selectRowSource,
-        type_field=.selectRowType, saved_field=.selectRowSaved,
+    .create_multi_selection_restrict_observer(panel_name, by_field=.selectRowSource, res_field=.selectRowRestrict,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_type_observers(panel_name, by_field=.selectColSource,
-        type_field=.selectColType, saved_field=.selectColSaved,
+    .create_multi_selection_restrict_observer(panel_name, by_field=.selectColSource, res_field=.selectColRestrict,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_multi_selection_history_observers(panel_name,
@@ -401,17 +373,17 @@ setMethod(".definePanelTour", "Panel", function(x) {
         if (mdim=="row") {
             src_field <- .selectRowSource
             dyn_field <- .selectRowDynamic
-            typ_field <- .selectRowType
+            res_field <- .selectRowRestrict
         } else {
             src_field <- .selectColSource
             dyn_field <- .selectColDynamic
-            typ_field <- .selectColType
+            res_field <- .selectColRestrict
         }
 
         collated <- c(collated, list(
             .addTourStep(x, src_field, paste0("PLACEHOLDER_", toupper(mdim), "_SELECT"), is_selectize=TRUE),
             .addTourStep(x, dyn_field, sprintf("Alternatively, we could turn on dynamic selection. This means that any selection in <emph>any</emph> %s-based panel would have an effect on this panel.", mdim)),
-            .addTourStep(x, typ_field, "We can choose to receive the current <i>Active</i> selection from the chosen source panel; or one of the <i>Saved</i> selections; or the <i>Union</i> of all of the selections, if more than one active/saved selection is present.")
+            .addTourStep(x, res_field, sprintf("Activating the <i>Restrict</i> mode will limit the display in the current panel to the %ss transmitted from the source panel.", mdim))
             )
         )
     }

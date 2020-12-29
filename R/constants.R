@@ -28,20 +28,10 @@
 .facetByRowSelectionsTitle <- "Row selection"
 .facetByColSelectionsTitle <- "Column selection"
 
-# Point selection parameters. ----
-
-.selectRestrictTitle <- "Restrict"
-.selectColorTitle <- "Color"
-.selectTransTitle <- "Transparent"
-
 # Multiple selection parameters. ---
 
 .multiSelectSave <- "INTERNAL_MultiSelectSave"
 .multiSelectDelete <- "INTERNAL_MultiSelectDelete"
-
-.selectMultiActiveTitle <- "Active"
-.selectMultiUnionTitle <- "Union"
-.selectMultiSavedTitle <- "Saved"
 
 .noSelection <- "---"
 .customSelection <- "Custom ..."

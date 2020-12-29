@@ -201,7 +201,7 @@ This will also call the equivalent <a href='DotPlot-class.html'>DotPlot</a> meth
 
 <p>For defining the interface:</p><ul>
 <li><p><code><a href='interface-generics.html'>.hideInterface</a>(x, field)</code> returns a logical scalar indicating whether the interface element corresponding to <code>field</code> should be hidden.
-This returns <code>TRUE</code> for row selection parameters (<code>"RowSelectionSource"</code>, <code>"RowSelectionType"</code> and <code>"RowSelectionSaved"</code>),
+This returns <code>TRUE</code> for row selection parameters (<code>"RowSelectionSource"</code> and <code>"RowSelectionRestrict"</code>),
 otherwise it dispatches to the <a href='Panel-class.html'>Panel</a> method.</p></li>
 </ul>
 
@@ -211,6 +211,7 @@ This will also call the equivalent <a href='DotPlot-class.html'>DotPlot</a> meth
 </ul>
 
 <p>For controlling selections:</p><ul>
+<li><p><code><a href='multi-select-generics.html'>.multiSelectionRestricted</a>(x)</code> returns a logical scalar indicating whether <code>x</code> is restricting the plotted points to those that were selected in a transmitting panel.</p></li>
 <li><p><code><a href='multi-select-generics.html'>.multiSelectionDimension</a>(x)</code> returns <code>"row"</code> to indicate that a multiple row selection is being transmitted.</p></li>
 <li><p><code><a href='multi-select-generics.html'>.multiSelectionInvalidated</a>(x)</code> returns <code>TRUE</code> if the faceting options usethe multiple row selections,
 such that the point coordinates/domain may change upon updates to upstream selections in transmitting panels.</p></li>

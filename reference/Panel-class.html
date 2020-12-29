@@ -174,28 +174,18 @@ This is expected to lie between 400 and 1000; defaults to 500.</p></li>
 <p>The following slots are relevant to <em>receiving</em> a multiple selection on the rows:</p><ul>
 <li><p><code>RowSelectionSource</code>, a string specifying the name of the transmitting panel from which to receive a multiple row selection (e.g., <code>"RowDataPlot1"</code>).
 Defaults to <code>"---"</code>.</p></li>
-<li><p><code>RowSelectionType</code>, a string specifying which of the multiple row selections from the transmitting panel should be used.
-Takes one of <code>"Active"</code>, only the active selection;
-<code>"Union"</code>, the union of active and saved selections;
-and <code>"Saved"</code>, one of the saved selections.
-Defaults to <code>"Active"</code>.</p></li>
-<li><p><code>RowSelectionSaved</code>, an integer scalar specifying the index of the saved multiple row selection to use when <code>RowSelectionType="Saved"</code>.
-Defaults to 0.</p></li>
 <li><p><code>RowSelectionDynamicSource</code>, a logical scalar indicating whether <code>x</code> should dynamically change its selection source for multiple row selections.
+Defaults to <code>FALSE</code>.</p></li>
+<li><p><code>RowSelectionRestrict</code>, a logical scalar indicating whether the display of <code>x</code> should be restricted to the rows in the multiple selection received from a transmitting panel.
 Defaults to <code>FALSE</code>.</p></li>
 </ul>
 
 <p>The following slots are relevant to <em>receiving</em> a multiple selection on the columns:</p><ul>
 <li><p><code>ColumnSelectionSource</code>, a string specifying the name of the transmitting panel from which to receive a multiple column selection (e.g., <code>"ColumnDataPlot1"</code>).
 Defaults to <code>"---"</code>.</p></li>
-<li><p><code>ColumnSelectionType</code>, a string specifying which of the column-based selections from the transmitting panel should be used.
-Takes one of <code>"Active"</code>, only the active selection;
-<code>"Union"</code>, the union of active and saved selections;
-and <code>"Saved"</code>, one of the saved selections.
-Defaults to <code>"Active"</code>.</p></li>
-<li><p><code>ColumnSelectionSaved</code>, an integer scalar specifying the index of the saved multiple column selection to use when <code>ColumnSelectionType="Saved"</code>.
-Defaults to 0.</p></li>
 <li><p><code>ColumnSelectionDynamicSource</code>, a logical scalar indicating whether <code>x</code> should dynamically change its selection source for multiple column selections.
+Defaults to <code>FALSE</code>.</p></li>
+<li><p><code>ColumnSelectionRestrict</code>, a logical scalar indicating whether the display of <code>x</code> should be restricted to the columns in the multiple selection received from a transmitting panel.
 Defaults to <code>FALSE</code>.</p></li>
 </ul>
 

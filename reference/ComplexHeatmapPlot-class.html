@@ -173,8 +173,10 @@ If <code>NA</code>, defaults to the first row name of the SummarizedExperiment.<
 <p>The following slots control the metadata variables that are used:</p><ul>
 <li><p><code>ColumnData</code>, a character vector specifying columns of the <code>colData</code> to show as <code>columnAnnotation</code>.
 Defaults to <code><a href='https://rdrr.io/r/base/character.html'>character(0)</a></code>.</p></li>
-<li><p><code>RowData</code>, a character vector specifying columns of the <code>rowData</code> to show as <code>columnAnnotation</code>.
+<li><p><code>RowData</code>, a character vector specifying columns of the <code>rowData</code> to show as <code>rowAnnotation</code>.
 Defaults to <code><a href='https://rdrr.io/r/base/character.html'>character(0)</a></code>.</p></li>
+<li><p><code>ShowColumnSelection</code>, a logical vector indicating whether the column selection should be shown as an extra annotation bar.
+Defaults to <code>TRUE</code>.</p></li>
 </ul>
 
 <p>The following slots control the choice of assay values:</p><ul>
@@ -216,14 +218,6 @@ Defaults to <code>"Rows"</code>.</p></li>
 Defaults to <code>"Bottom"</code> but can also be <code>"Right"</code>.</p></li>
 <li><p><code>LegendDirection</code>, string specifying the orientation of the legend on the plot for continuous covariates.
 Defaults to <code>"Horizontal"</code> but can also be <code>"Vertical"</code>.</p></li>
-</ul>
-
-<p>The following slots control the effect of the transmitted selection from another panel:</p><ul>
-<li><p><code>SelectionEffect</code>, a string specifying the selection effect.
-This should be one of <code>"Color"</code> (the default), where all selected points change to the specified color;
-<code>"Restrict"</code>, where all non-selected points are not plotted.</p></li>
-<li><p><code>SelectionColor</code>, a string specifying the color to use for selected points when <code>SelectionEffect="Color"</code>.
-Defaults to <code>"red"</code>.</p></li>
 </ul>
 
 <p>The following slots control some aspects of the user interface:</p><ul>
@@ -397,11 +391,11 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method t
 #&gt; Slot "VisualBoxOpen":
 #&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "SelectionEffect":
-#&gt; [1] "Color"
+#&gt; Slot "ShowColumnSelection":
+#&gt; [1] TRUE
 #&gt; 
-#&gt; Slot "SelectionColor":
-#&gt; [1] "red"
+#&gt; Slot "OrderColumnSelection":
+#&gt; [1] TRUE
 #&gt; 
 #&gt; Slot "VersionInfo":
 #&gt; $iSEE
@@ -429,20 +423,14 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method t
 #&gt; Slot "RowSelectionDynamicSource":
 #&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "RowSelectionType":
-#&gt; [1] "Active"
-#&gt; 
-#&gt; Slot "RowSelectionSaved":
-#&gt; [1] 0
-#&gt; 
 #&gt; Slot "ColumnSelectionDynamicSource":
 #&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "ColumnSelectionType":
-#&gt; [1] "Active"
+#&gt; Slot "RowSelectionRestrict":
+#&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "ColumnSelectionSaved":
-#&gt; [1] 0
+#&gt; Slot "ColumnSelectionRestrict":
+#&gt; [1] FALSE
 #&gt; 
 #&gt; Slot "SelectionHistory":
 #&gt; list()
@@ -512,11 +500,11 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method t
 #&gt; Slot "VisualBoxOpen":
 #&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "SelectionEffect":
-#&gt; [1] "Color"
+#&gt; Slot "ShowColumnSelection":
+#&gt; [1] TRUE
 #&gt; 
-#&gt; Slot "SelectionColor":
-#&gt; [1] "red"
+#&gt; Slot "OrderColumnSelection":
+#&gt; [1] TRUE
 #&gt; 
 #&gt; Slot "VersionInfo":
 #&gt; $iSEE
@@ -544,20 +532,14 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method t
 #&gt; Slot "RowSelectionDynamicSource":
 #&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "RowSelectionType":
-#&gt; [1] "Active"
-#&gt; 
-#&gt; Slot "RowSelectionSaved":
-#&gt; [1] 0
-#&gt; 
 #&gt; Slot "ColumnSelectionDynamicSource":
 #&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "ColumnSelectionType":
-#&gt; [1] "Active"
+#&gt; Slot "RowSelectionRestrict":
+#&gt; [1] FALSE
 #&gt; 
-#&gt; Slot "ColumnSelectionSaved":
-#&gt; [1] 0
+#&gt; Slot "ColumnSelectionRestrict":
+#&gt; [1] FALSE
 #&gt; 
 #&gt; Slot "SelectionHistory":
 #&gt; list()

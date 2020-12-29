@@ -332,8 +332,7 @@
     <span class="co"># Configuring the selection parameters.</span>
     SelectionBoxOpen<span class="op">=</span><span class="cn">TRUE</span>,
     ColumnSelectionSource<span class="op">=</span><span class="st">"ReducedDimensionPlot1"</span>,
-    SelectionEffect<span class="op">=</span><span class="st">"Color"</span>, 
-    SelectionColor<span class="op">=</span><span class="st">"purple"</span>, 
+    ColorBy<span class="op">=</span><span class="st">"Column selection"</span>, 
 
     <span class="co"># Throwing in some parameters for aesthetic reasons.</span>
     ColorByDefaultColor<span class="op">=</span><span class="st">"#BDB3B3"</span>, 
@@ -363,7 +362,7 @@
 
 <span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, initial<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">cdArgs</span>, <span class="va">rdArgs</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="screenshots/configure-ReDP-select.png" width="488"></p>
-<p>Note that in the example above, we chose to color selected data points in the receiver panel, by setting the <code>SelectionEffect</code> argument to <code>"Color"</code>, and the color of selected data points to <code>"darkgoldenrod1"</code>. Other choices include <code>"Restrict"</code>, to show only the selected data points; and <code>"Transparent"</code> (the default), to increase the transparency of unselected data points.</p>
+<p>Note that in the example above, we color selected data points in the receiver panel by setting the <code>ColorBy</code> argument to <code>"Column selection"</code>. The default is to increase the transparency of unselected data points; another option is to set <code>ColumnSelectionRestrict</code> to <code>TRUE</code> to show only the selected data points.</p>
 <p>An identical process can be followed to preconfigure a lasso point selection:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Preconfigure the sender panel, including the point selection.</span>

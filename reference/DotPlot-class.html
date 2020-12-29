@@ -184,6 +184,8 @@ Defaults to <code>"---"</code>.</p></li>
 Defaults to <code>FALSE</code>.</p></li>
 <li><p><code>ColorBySampleDynamicSource</code>, a logical scalar indicating whether <code>x</code> should dynamically change its selection source when coloring by feature.
 Defaults to <code>FALSE</code>.</p></li>
+<li><p><code>SelectionAlpha</code>, a numeric scalar in [0, 1] specifying the transparency to use for non-selected points.
+Defaults to 0.1.</p></li>
 </ul>
 
 <p>The following slots control other metadata-related aesthetic aspects of the points:</p><ul>
@@ -221,17 +223,6 @@ Defaults to <code>FALSE</code>.</p></li>
 Each line should contain the name of a row or column for <a href='RowDotPlot-class.html'>RowDotPlot</a>s and <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s, respectively.
 Leading and trailing whitespace are stripped, and all text on a line after <code>#</code> is ignored.
 Defaults to the name of the first row/column.</p></li>
-</ul>
-
-<p>The following slots control the effect of the transmitted selection from another panel:</p><ul>
-<li><p><code>SelectionEffect</code>, a string specifying the selection effect.
-This should be one of <code>"Transparent"</code> (the default), where all non-selected points become transparent;
-<code>"Color"</code>, where all selected points change to the specified color;
-<code>"Restrict"</code>, where all non-selected points are not plotted.</p></li>
-<li><p><code>SelectionAlpha</code>, a numeric scalar in [0, 1] specifying the transparency to use for non-selected points when <code>SelectionEffect="Transparent"</code>.
-Defaults to 0.1.</p></li>
-<li><p><code>SelectionColor</code>, a string specifying the color to use for selected points when <code>SelectionEffect="Color"</code>.
-Defaults to <code>"red"</code>.</p></li>
 </ul>
 
 <p>The following slots control interactions with the plot image:</p><ul>
@@ -300,7 +291,6 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method.<
 <li><p><code><a href='interface-generics.html'>.defineInterface</a>(x, se, select_info)</code> defines the user interface for manipulating all slots described above and in the parent classes.
 It will also create a data parameter box that can respond to specialized <code><a href='interface-generics.html'>.defineDataInterface</a></code>.
 This will <em>override</em> the <a href='Panel-class.html'>Panel</a> method.</p></li>
-<li><p><code><a href='interface-generics.html'>.defineSelectionEffectInterface</a>(x)</code> returns a list of interface elements for controlling the multiple selection effect.</p></li>
 <li><p><code><a href='visual-parameters-generics.html'>.defineVisualColorInterface</a>(x, se, select_info)</code> defines the user interface subpanel for manipulating the color of the points.</p></li>
 <li><p><code><a href='visual-parameters-generics.html'>.defineVisualShapeInterface</a>(x, se)</code> defines the user interface subpanel for manipulating the shape of the points.</p></li>
 <li><p><code><a href='visual-parameters-generics.html'>.defineVisualSizeInterface</a>(x, se)</code> defines the user interface subpanel for manipulating the size of the points.</p></li>
@@ -336,7 +326,6 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method t
 </ul>
 
 <p>For controlling selections:</p><ul>
-<li><p><code><a href='multi-select-generics.html'>.multiSelectionRestricted</a>(x)</code> returns a logical scalar indicating whether <code>x</code> is restricting the plotted points to those that were selected in a transmitting panel, i.e., is <code>SelectionEffect="Restrict"</code>?</p></li>
 <li><p><code><a href='multi-select-generics.html'>.multiSelectionCommands</a>(x, index)</code> returns a character vector of R expressions that - when evaluated - returns a character vector of the names of selected points in the active and/or saved selections of <code>x</code>.
 The active selection is returned if <code>index=NA</code>, otherwise one of the saved selection is returned.</p></li>
 <li><p><code><a href='multi-select-generics.html'>.multiSelectionActive</a>(x)</code> returns <code>x[["BrushData"]]</code> or <code>NULL</code> if there is no brush or closed lasso.</p></li>

@@ -192,7 +192,7 @@ In fact, any changes must go through <code>pObjects$memory</code> before they ch
 there is no direct interaction between <code>input</code> and <code>output</code> in this framework.</p>
 <p>We suggest using <code><a href='.createUnprotectedParameterObservers.html'>.createProtectedParameterObservers</a></code> and <code><a href='.createUnprotectedParameterObservers.html'>.createUnprotectedParameterObservers</a></code>, 
 which create simple observers that update the memory in response to changes in the UI elements.
-For more specific responses, there are also <code><a href='.createMultiSelectionEffectObserver.html'>.createMultiSelectionEffectObserver</a></code> and <code><a href='.createCustomDimnamesModalObservers.html'>.createCustomDimnamesModalObservers</a></code>.</p>
+For handling selectize elements filled with server-side row/column names, we can use <code><a href='.createCustomDimnamesModalObservers.html'>.createCustomDimnamesModalObservers</a></code>.</p>
 <p>Developers should not attempt to modify <code>x</code> in any observer expression.
 This value does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.
 Rather, modifications should occur to the version of <code>x</code> in <code>pObjects$memory</code>, as described in the code chunk above.</p>

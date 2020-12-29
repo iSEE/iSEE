@@ -99,6 +99,10 @@
 #' .multiSelectionInvalidated,RowDotPlot-method
 #' .singleSelectionDimension,RowDotPlot-method
 #' .definePanelTour,RowDotPlot-method
+#' [[,RowDotPlot-method
+#' [[,RowDotPlot,ANY,ANY-method
+#' [[<-,RowDotPlot-method
+#' [[<-,RowDotPlot,ANY,ANY-method
 #' updateObject,RowDotPlot-method
 #' @name RowDotPlot-class
 NULL
@@ -165,6 +169,70 @@ setValidity2("RowDotPlot", function(object) {
     }
     TRUE
 })
+
+#' @export
+setMethod("[[", "RowDotPlot", function(x, i, j, ...) {
+    if (i %in% "SelectionColor") {
+        # nocov start
+        cname <- class(x)[1]
+        .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.", cname, i))
+        NA_character_
+        # nocov end
+    } else if (i %in% "SelectionEffect") {
+        # nocov start
+        x <- updateObject(x, check=FALSE)
+
+        cname <- class(x)[1]
+        .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.\nUse <%s>[['%s']] and/or <%s>[['%s']] instead.",
+            cname, i, cname, .selectRowRestrict, cname, .colorBy))
+
+        if (x[[.selectRowRestrict]]) {
+            "Restrict" 
+        } else if (x[[.colorBy]] == .colorByRowSelectionsTitle) {
+            "Color"
+        } else {
+            "Transparent"
+        }
+        # nocov end
+    } else {
+        callNextMethod()
+
+    }
+})
+
+#' @export
+setReplaceMethod("[[", "RowDotPlot", function(x, i, j, ..., value) {
+    if (i %in% "SelectionColor") {
+        # nocov start
+        cname <- class(x)[1]
+        .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.", cname, i))
+        x 
+        # nocov end
+    } else if (i %in% "SelectionEffect") {
+        # nocov start
+        x <- updateObject(x, check=FALSE)
+
+        cname <- class(x)[1]
+        .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.\nSet <%s>[['%s']] and/or <%s>[['%s']] instead.",
+            cname, i, cname, .selectRowRestrict, cname, .colorBy))
+
+        if (value=="Restrict") {
+            x[[.selectRowRestrict]] <- TRUE
+        } else if (value=="Color") {
+            x[[.selectRowRestrict]] <- FALSE
+            x[[.colorBy]] <- .colorByRowSelectionsTitle
+        } else {
+            x[[.selectRowRestrict]] <- FALSE
+        }
+
+        x
+        # nocov end
+    } else {
+        callNextMethod()
+    }
+})
+
+###############################################################
 
 #' @export
 #' @importFrom SummarizedExperiment rowData
@@ -531,4 +599,30 @@ setMethod(".definePanelTour", "RowDotPlot", function(x) {
     collated$intro[collated$intro=="PLACEHOLDER_COLOR"] <- "We can choose to color by different per-row attributes - from the row metadata, across a specific sample of an assay, to identify a chosen feature, or based on a multiple row selection transmitted from another panel.<br/><br/><strong>Action:</strong> try out some of the different choices. Note how further options become available when each choice is selected."
 
     data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
+})
+
+#' @export
+setMethod("updateObject", "RowDotPlot", function(object, ..., verbose=FALSE) {
+    if (!.is_latest_version(object)) {
+        # nocov start
+
+        # NOTE: it is crucial that updateObject does not contain '[[' or '[[<-'
+        # calls, lest we get sucked into infinite recursion with the calls to
+        # 'updateObject' from '[['.
+        object <- callNextMethod()
+
+        if (is(try(slot(object, .selectRowRestrict), silent=TRUE), "try-error")) {
+            effect <- object@SelectionEffect
+            if (effect=="Restrict") {
+                slot(object, .selectRowRestrict) <- TRUE
+            } else if (effect=="Color") {
+                slot(object, .selectRowRestrict) <- FALSE
+                slot(object, .colorBy) <- .colorByRowSelectionsTitle
+            } else {
+                slot(object, .selectRowRestrict) <- FALSE
+            }
+        }
+    }
+
+    object
 })

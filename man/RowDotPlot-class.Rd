@@ -14,6 +14,10 @@
 \alias{.multiSelectionInvalidated,RowDotPlot-method}
 \alias{.singleSelectionDimension,RowDotPlot-method}
 \alias{.definePanelTour,RowDotPlot-method}
+\alias{[[,RowDotPlot-method}
+\alias{[[,RowDotPlot,ANY,ANY-method}
+\alias{[[<-,RowDotPlot-method}
+\alias{[[<-,RowDotPlot,ANY,ANY-method}
 \alias{updateObject,RowDotPlot-method}
 \title{The RowDotPlot virtual class}
 \description{

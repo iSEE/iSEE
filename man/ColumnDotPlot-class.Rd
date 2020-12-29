@@ -14,6 +14,10 @@
 \alias{.multiSelectionInvalidated,ColumnDotPlot-method}
 \alias{.singleSelectionDimension,ColumnDotPlot-method}
 \alias{.definePanelTour,ColumnDotPlot-method}
+\alias{[[,ColumnDotPlot-method}
+\alias{[[,ColumnDotPlot,ANY,ANY-method}
+\alias{[[<-,ColumnDotPlot-method}
+\alias{[[<-,ColumnDotPlot,ANY,ANY-method}
 \alias{updateObject,ColumnDotPlot-method}
 \title{The ColumnDotPlot virtual class}
 \description{

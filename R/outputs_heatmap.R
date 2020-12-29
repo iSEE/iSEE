@@ -148,6 +148,7 @@
 
     cmds <- "# Keep all samples to compute the full range of continuous annotations"
     cmds <- c(cmds, sprintf(".column_data <- colData(se)[, %s, drop=FALSE]", .deparse_for_viewing(x[[.heatMapColData]])))
+    .textEval(cmds, envir)
 
     # Process selected points
     if (x[[.heatMapShowSelection]]) {
@@ -156,9 +157,18 @@
         } else {
             target <- "list()"
         }
-        cmds <- c(cmds, sprintf('.column_data[["Selected points"]] <- iSEE::multiSelectionToFactor(%s, colnames(se))', target))
+
+        chosen.name <- base.name <- "Selected points"
+        counter <- 1
+        while (chosen.name %in% colnames(envir$.column_data)) {
+            chosen.name <- paste0(base.name, " (", counter, ")")
+            counter <- counter + 1L
+        }
+
+        select_cmds <- sprintf('.column_data[["%s"]] <- iSEE::multiSelectionToFactor(%s, colnames(se))', chosen.name, target)
+        .textEval(select_cmds, envir)
+        cmds <- c(cmds, select_cmds)
     }
-    .textEval(cmds, envir)
 
     # Collect color maps
     init_cmd <- ".column_col <- list()"
@@ -202,21 +212,29 @@
     additional <- character(0)
 
     if (x[[.heatMapShowSelection]]) {
-        additional <- c(additional, '.column_col[["Selected points"]] <- iSEE::columnSelectionColorMap(colormap, levels(.column_data[["Selected points"]]))', "")
+        additional <- c(
+            additional, 
+            sprintf('.column_col[["%s"]] <- iSEE::columnSelectionColorMap(colormap, levels(.column_data[["%s"]]))',
+                chosen.name, chosen.name),
+            ""
+        )
     }
 
-    additional <- c(additional, '.column_data <- .column_data[colnames(plot.data), , drop=FALSE]')
-    additional <- c(additional, '.column_data <- as.data.frame(.column_data, optional=TRUE)') # preserve colnames
+    additional <- c(additional, 
+        '.column_data <- .column_data[colnames(plot.data), , drop=FALSE]',
+        '.column_data <- as.data.frame(.column_data, optional=TRUE)' # preserve colnames
+     )
 
-    if (length(x[[.heatMapColData]])) {
-        # Reordering by the column annotations.
-        additional <- c(additional, sprintf(".column_annot_order <- order(%s)",
-            paste(sprintf(".column_data[[%s]]", vapply(x[[.heatMapColData]], deparse, "")), collapse=", ")))
-        additional <- c(additional, ".column_data <- .column_data[.column_annot_order, , drop=FALSE]")
-        additional <- c(additional, "plot.data <- plot.data[, .column_annot_order, drop=FALSE]")
+    # Reordering by the column annotations.
+    order_by <- sprintf(".column_data[[%s]]", vapply(x[[.heatMapColData]], deparse, ""))
+    if (x[[.heatMapOrderSelection]]) {
+        order_by <- c(sprintf('.column_data[["%s"]]', chosen.name), order_by)
     }
 
-    additional <- c(additional,
+    additional <- c(additional, 
+        sprintf(".column_annot_order <- order(%s)", paste(order_by, collapse=", ")),
+        ".column_data <- .column_data[.column_annot_order, , drop=FALSE]",
+        "plot.data <- plot.data[, .column_annot_order, drop=FALSE]",
         sprintf(
             ".column_annot <- ComplexHeatmap::columnAnnotation(df=.column_data, col=.column_col, annotation_legend_param=list(direction=%s))",
             deparse(tolower(x[[.plotLegendDirection]]))

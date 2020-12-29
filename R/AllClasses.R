@@ -487,8 +487,10 @@ collated[.plotLegendDirection] <- "character"
 collated[.visualParamBoxOpen] <- "logical"
 
 .heatMapShowSelection <- "ShowColumnSelection"
+.heatMapOrderSelection <- "OrderColumnSelection"
 
 collated[.heatMapShowSelection] <- "logical"
+collated[.heatMapOrderSelection] <- "logical"
 
 #' @export
 setClass("ComplexHeatmapPlot", contains="Panel", slots=collated)

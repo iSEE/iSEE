@@ -251,6 +251,7 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- .emptyDefault(args, .visualParamBoxOpen, FALSE)
 
     args <- .emptyDefault(args, .heatMapShowSelection, TRUE)
+    args <- .emptyDefault(args, .heatMapOrderSelection, TRUE)
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -282,7 +283,7 @@ setValidity2("ComplexHeatmapPlot", function(object) {
         .heatMapCustomAssayBounds,
         .assayCenterRows, .assayScaleRows,
         .visualParamBoxOpen,
-        .heatMapShowSelection))
+        .heatMapShowSelection, .heatMapOrderSelection))
 
     if (length(msg)) {
         return(msg)

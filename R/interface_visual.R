@@ -231,8 +231,10 @@
             selectizeInput(.input_FUN(.heatMapRowData), label="Row annotations:",
                 selected=x[[.heatMapRowData]], choices=all_rowdata, multiple=TRUE,
                 options=list(plugins=list('remove_button', 'drag_drop'))),
-            checkboxInput(.input_FUN(.heatMapShowSelection), label="Show column selections",
-                value=x[[.heatMapShowSelection]])
+            checkboxInput(.input_FUN(.heatMapShowSelection), label="Show column selection",
+                value=x[[.heatMapShowSelection]]),
+            checkboxInput(.input_FUN(.heatMapShowSelection), label="Order by column selection",
+                value=x[[.heatMapOrderSelection]])
         ),
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceTransformTitle,

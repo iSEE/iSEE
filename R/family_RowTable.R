@@ -20,7 +20,7 @@
 #' For defining the interface:
 #' \itemize{
 #' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
-#' This returns \code{TRUE} for column selection parameters (\code{"ColumnSelectionSource"}, \code{"ColumnSelectionType"} and \code{"ColumnSelectionSaved"}),
+#' This returns \code{TRUE} for column selection parameters (\code{"ColumnSelectionSource"} and \code{"ColumnSelectionRestrict"}),
 #' otherwise it dispatches to the \linkS4class{Panel} method.
 #' }
 #'

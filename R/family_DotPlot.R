@@ -27,7 +27,7 @@
 #' Defaults to \code{FALSE}.
 #' \item \code{ColorBySampleDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source when coloring by feature.
 #' Defaults to \code{FALSE}.
-#' \item \code{SelectionAlpha}, a numeric scalar in [0, 1] specifying the transparency to use for non-selected points when \code{SelectionEffect="Transparent"}.
+#' \item \code{SelectionAlpha}, a numeric scalar in [0, 1] specifying the transparency to use for non-selected points.
 #' Defaults to 0.1.
 #' }
 #'

@@ -1,5 +1,5 @@
 # This tests the multiple selection machinery.
-# library(testthat); library(iSEE); source("setup_sce.R"); source("setup_other.R"); source("test_multi_select.R")
+# library(testthat); library(iSEE); source("setup_sce.R"); source("setup_mimic_live_app.R"); source("test_multi_select.R")
 
 # Setting up a chain of plots.
 memory <- list(
@@ -125,14 +125,6 @@ test_that(".process_selectby_choice works with saved column selections", {
     pObjects$memory$ReducedDimensionPlot1[[iSEE:::.multiSelectHistory]] <- list(DUMMY_BRUSH)
     cdp <- pObjects$memory$ColumnDataPlot1
 
-    # No response when still looking for the active brush.
-    plot_env <- new.env()
-    cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env)
-    expect_false(exists('col_selected', envir=plot_env))
-    expect_identical(length(cmds), 0L)
-
-    # Responds after asking for the union.
-    cdp[[iSEE:::.selectColType]] <- iSEE:::.selectMultiUnionTitle
     plot_env <- new.env()
     cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env)
 
@@ -140,36 +132,13 @@ test_that(".process_selectby_choice works with saved column selections", {
     expect_true(any(grepl("ReducedDimensionPlot1", unlist(cmds))))
     expect_true(any(grepl("shiny::brushedPoints", unlist(cmds))))
 
-    # No response after asking for save... until we specify which saved element we want.
-    plot_env <- new.env()
-    cdp[[iSEE:::.selectColType]] <- iSEE:::.selectMultiSavedTitle
-    cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env)
-    expect_false(exists('col_selected', envir=plot_env))
-    expect_identical(length(cmds), 0L)
-
-    cdp[[iSEE:::.selectColSaved]] <- 1L
-    plot_env <- new.env()
-    cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env)
-
-    expect_true(exists('col_selected', envir=plot_env))
-    expect_true(any(grepl("ReducedDimensionPlot1", unlist(cmds))))
-    expect_true(any(grepl("shiny::brushedPoints", unlist(cmds))))
-
-    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- list()
+    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.multiSelectHistory]] <- list()
 })
 
 test_that(".process_selectby_choice works with saved row selections", {
     pObjects$memory$SampleAssayPlot1[[iSEE:::.multiSelectHistory]] <- list(DUMMY_BRUSH)
     cdp <- pObjects$memory$RowDataPlot1
 
-    # No response when still looking for the active brush.
-    plot_env <- new.env()
-    cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env)
-    expect_false(exists('row_selected', envir=plot_env))
-    expect_identical(length(cmds), 0L)
-
-    # Responds after asking for the union.
-    cdp[[iSEE:::.selectRowType]] <- iSEE:::.selectMultiUnionTitle
     plot_env <- new.env()
     cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env)
 
@@ -177,35 +146,18 @@ test_that(".process_selectby_choice works with saved row selections", {
     expect_true(any(grepl("SampleAssayPlot1", unlist(cmds))))
     expect_true(any(grepl("shiny::brushedPoints", unlist(cmds))))
 
-    # No response after asking for save... until we specify which saved element we want.
-    plot_env <- new.env()
-    cdp[[iSEE:::.selectRowType]] <- iSEE:::.selectMultiSavedTitle
-    cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env)
-    expect_false(exists('row_selected', envir=plot_env))
-    expect_identical(length(cmds), 0L)
-
-    cdp[[iSEE:::.selectRowSaved]] <- 1L
-    plot_env <- new.env()
-    cmds <- .processMultiSelections(cdp, pObjects$memory, pObjects$contents, plot_env)
-
-    expect_true(exists('row_selected', envir=plot_env))
-    expect_true(any(grepl("SampleAssayPlot1", unlist(cmds))))
-    expect_true(any(grepl("shiny::brushedPoints", unlist(cmds))))
-
-    pObjects$memory$SampleAssayPlot1[[iSEE:::.brushData]] <- list()
+    pObjects$memory$SampleAssayPlot1[[iSEE:::.multiSelectHistory]] <- list()
 })
 
 test_that(".any_saved_selection returns the appropriate value ", {
-
-  x <- ReducedDimensionPlot()
-
-  # Return whether there is at least one saved selection
-  out <- .any_saved_selection(x, count = FALSE)
-  expect_identical(out, FALSE)
-
-  # Return the count of selections instead
-  out <- .any_saved_selection(x, count = TRUE)
-  expect_identical(out, 0L)
-
+    x <- ReducedDimensionPlot()
+  
+    # Return whether there is at least one saved selection
+    out <- iSEE:::.any_saved_selection(x, count = FALSE)
+    expect_identical(out, FALSE)
+  
+    # Return the count of selections instead
+    out <- iSEE:::.any_saved_selection(x, count = TRUE)
+    expect_identical(out, 0L)
 })
 

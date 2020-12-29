@@ -97,8 +97,8 @@ test_that(".allowableChoiceError detects issues", {
     msg <- character(0)
 
     x <- ReducedDimensionPlot()
-    expect_error(x[[iSEE:::.selectEffect]] <- "other",
-        "'SelectionEffect' for 'ReducedDimensionPlot' should be one") 
+    expect_error(x[[iSEE:::.colorByField]] <- "other",
+        "'ColorBy' for 'ReducedDimensionPlot' should be one") 
 })
 
 test_that(".multipleChoiceError detects issues", {

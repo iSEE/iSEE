@@ -714,22 +714,22 @@ test_that(".create_points handles selection effects", {
         brushId="dummy_brush", outputId="dummy_plot"
     )
 
-    # Trying for transparency:
-    fap[[iSEE:::.selectEffect]] <- iSEE:::.selectTransTitle
+    # Trying for transparency (default):
     out <- .generateOutput(fap, sce, all_memory=all_memory, all_contents=pObjects$contents)
-
     expect_true(!is.null(out$contents$SelectBy))
     expect_true(any(grepl("geom_point.*SelectBy.*alpha", unlist(out$commands))))
 
     # Trying for color:
-    fap[[iSEE:::.selectEffect]] <- iSEE:::.selectColorTitle
+    fap[[iSEE:::.colorByField]] <- iSEE:::.colorByColSelectionsTitle
+    fap[[iSEE:::.selectTransAlpha]] <- 1
     out <- .generateOutput(fap, sce, all_memory=all_memory, all_contents=pObjects$contents)
 
     expect_true(!is.null(out$contents$SelectBy))
-    expect_true(any(grepl("geom_point.*SelectBy.*color=\"red\"", unlist(out$commands))))
+    expect_false(any(grepl("geom_point.*SelectBy.*alpha", unlist(out$commands))))
+    expect_true(any(grepl("columnSelectionColorMap", unlist(out$commands))))
 
     # Trying for restriction:
-    fap[[iSEE:::.selectEffect]] <- iSEE:::.selectRestrictTitle
+    fap[[iSEE:::.selectColRestrict]] <- TRUE
     out <- .generateOutput(fap, sce, all_memory=all_memory, all_contents=pObjects$contents)
 
     expect_true(!is.null(out$contents$SelectBy))

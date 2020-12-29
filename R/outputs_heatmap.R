@@ -188,8 +188,8 @@
         cmds <- c(cmds, cmd_get_value)
 
         if (annot %in% .getCachedCommonInfo(se, "ComplexHeatmapPlot")$continuous.colData.names) {
-            colcmds <- sprintf('.col_colors <- colDataColorMap(colormap, %s, discrete=FALSE)(21L)', deparse(annot))
-            colcmds <- c(colcmds,
+            colcmds <- c(
+                sprintf('.col_colors <- colDataColorMap(colormap, %s, discrete=FALSE)(21L)', deparse(annot)),
                 sprintf(
                     ".column_col[[%s]] <- %s",
                     deparse(annot),
@@ -197,11 +197,13 @@
                 )
             )
         } else if (annot %in% .getCachedCommonInfo(se, "ComplexHeatmapPlot")$discrete.colData.names) {
-            colcmds <- ".color_values <- setdiff(unique(.color_values), NA)"
-            colcmds <- c(colcmds, sprintf(".col_colors <- colDataColorMap(colormap, %s, discrete=TRUE)(%s)",
-                deparse(annot), 'length(.color_values)'))
-            colcmds <- c(colcmds, 'names(.col_colors) <- unique(.color_values)')
-            colcmds <- c(colcmds, sprintf(".column_col[[%s]] <- .col_colors", deparse(annot)))
+            colcmds <- c(
+                ".color_values <- setdiff(unique(.color_values), NA)",
+                sprintf(".col_colors <- colDataColorMap(colormap, %s, discrete=TRUE)(%s)",
+                    deparse(annot), 'length(.color_values)'),
+                'names(.col_colors) <- unique(.color_values)',
+                sprintf(".column_col[[%s]] <- .col_colors", deparse(annot))
+            )
         }
 
         .textEval(colcmds, envir)
@@ -276,8 +278,8 @@
         cmds <- c(cmds, cmd_get_value)
 
         if (annot %in% .getCachedCommonInfo(se, "ComplexHeatmapPlot")$continuous.rowData.names) {
-            rowcmds <- sprintf('.row_colors <- rowDataColorMap(colormap, %s, discrete=FALSE)(21L)', deparse(annot))
-            rowcmds <- c(rowcmds,
+            rowcmds <- c(
+                sprintf('.row_colors <- rowDataColorMap(colormap, %s, discrete=FALSE)(21L)', deparse(annot)),
                 sprintf(
                     ".row_col[[%s]] <- %s",
                     deparse(annot),
@@ -285,11 +287,13 @@
                 )
             )
         } else if (annot %in% .getCachedCommonInfo(se, "ComplexHeatmapPlot")$discrete.rowData.names) {
-            rowcmds <- sprintf('.color_values <- setdiff(unique(.color_values), NA)', annot)
-            rowcmds <- c(rowcmds, sprintf('.row_colors <- rowDataColorMap(colormap, %s, discrete=TRUE)(%s)',
-                deparse(annot), 'length(.color_values)'))
-            rowcmds <- c(rowcmds, 'names(.row_colors) <- .color_values')
-            rowcmds <- c(rowcmds, sprintf('.row_col[[%s]] <- .row_colors', deparse(annot)))
+            rowcmds <- c(
+                'color_values <- setdiff(unique(.color_values), NA)',
+                sprintf('.row_colors <- rowDataColorMap(colormap, %s, discrete=TRUE)(%s)',
+                    deparse(annot), 'length(.color_values)'),
+                'names(.row_colors) <- .color_values',
+                sprintf('.row_col[[%s]] <- .row_colors', deparse(annot))
+            )
         }
 
         .textEval(rowcmds, envir)

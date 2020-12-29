@@ -172,19 +172,16 @@ setValidity2("RowDotPlot", function(object) {
 
 #' @export
 setMethod("[[", "RowDotPlot", function(x, i, j, ...) {
-    if (i %in% "SelectionColor") {
-        # nocov start
+    if (i == "SelectionColor") {
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.", cname, i))
         NA_character_
-        # nocov end
-    } else if (i %in% "SelectionEffect") {
-        # nocov start
+    } else if (i == "SelectionEffect") {
         x <- updateObject(x, check=FALSE)
 
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.\nUse <%s>[['%s']] and/or <%s>[['%s']] instead.",
-            cname, i, cname, .selectRowRestrict, cname, .colorBy))
+            cname, i, cname, .selectRowRestrict, cname, .colorByField))
 
         if (x[[.selectRowRestrict]]) {
             "Restrict" 
@@ -193,40 +190,27 @@ setMethod("[[", "RowDotPlot", function(x, i, j, ...) {
         } else {
             "Transparent"
         }
-        # nocov end
     } else {
         callNextMethod()
-
     }
 })
 
 #' @export
 setReplaceMethod("[[", "RowDotPlot", function(x, i, j, ..., value) {
-    if (i %in% "SelectionColor") {
-        # nocov start
+    if (i == "SelectionColor") {
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.", cname, i))
         x 
-        # nocov end
-    } else if (i %in% "SelectionEffect") {
-        # nocov start
+    } else if (i == "SelectionEffect") {
         x <- updateObject(x, check=FALSE)
 
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.\nSet <%s>[['%s']] and/or <%s>[['%s']] instead.",
-            cname, i, cname, .selectRowRestrict, cname, .colorBy))
+            cname, i, cname, .selectRowRestrict, cname, .colorByField))
 
-        if (value=="Restrict") {
-            x[[.selectRowRestrict]] <- TRUE
-        } else if (value=="Color") {
-            x[[.selectRowRestrict]] <- FALSE
-            x[[.colorByField]] <- .colorByRowSelectionsTitle
-        } else {
-            x[[.selectRowRestrict]] <- FALSE
-        }
+        x[[.selectRowRestrict]] <- (value=="Restrict")
 
         x
-        # nocov end
     } else {
         callNextMethod()
     }
@@ -606,21 +590,17 @@ setMethod("updateObject", "RowDotPlot", function(object, ..., verbose=FALSE) {
     if (!.is_latest_version(object)) {
         # nocov start
 
+        # Do this before 'callNextMethod()', which fills in the Restrict.
+        update.2.3 <- is(try(slot(object, .selectRowRestrict), silent=TRUE), "try-error")
+
         # NOTE: it is crucial that updateObject does not contain '[[' or '[[<-'
         # calls, lest we get sucked into infinite recursion with the calls to
         # 'updateObject' from '[['.
         object <- callNextMethod()
 
-        if (is(try(slot(object, .selectRowRestrict), silent=TRUE), "try-error")) {
+        if (update.2.3) {
             effect <- object@SelectionEffect
-            if (effect=="Restrict") {
-                slot(object, .selectRowRestrict) <- TRUE
-            } else if (effect=="Color") {
-                slot(object, .selectRowRestrict) <- FALSE
-                slot(object, .colorByField) <- .colorByRowSelectionsTitle
-            } else {
-                slot(object, .selectRowRestrict) <- FALSE
-            }
+            slot(object, .selectRowRestrict) <- (effect=="Restrict")
         }
 
         # nocov end

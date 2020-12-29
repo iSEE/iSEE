@@ -298,28 +298,24 @@ setValidity2("ComplexHeatmapPlot", function(object) {
 
 #' @export
 setMethod("[[", "ComplexHeatmapPlot", function(x, i, j, ...) {
-    if (i %in% "SelectionColor") {
-        # nocov start
+    if (i == "SelectionColor") {
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.", cname, i))
         NA_character_
-        # nocov end
-    } else if (i %in% "SelectionEffect") {
-        # nocov start
+    } else if (i == "SelectionEffect") {
         x <- updateObject(x, check=FALSE)
 
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.\nUse <%s>[['%s']] and/or <%s>[['%s']] instead.",
-            cname, i, cname, .selectColRestrict, cname, .colorBy))
+            cname, i, cname, .selectColRestrict, cname, .heatMapShowSelection))
 
         if (x[[.selectColRestrict]]) {
             "Restrict" 
-        } else if (x[[.colorByField]] == .colorByColSelectionsTitle) {
+        } else if (x[[.heatMapShowSelection]]) {
             "Color"
         } else {
             "Transparent"
         }
-        # nocov end
     } else {
         callNextMethod()
     }
@@ -328,30 +324,20 @@ setMethod("[[", "ComplexHeatmapPlot", function(x, i, j, ...) {
 #' @export
 setReplaceMethod("[[", "ComplexHeatmapPlot", function(x, i, j, ..., value) {
     if (i %in% "SelectionColor") {
-        # nocov start
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.", cname, i))
         x 
-        # nocov end
     } else if (i %in% "SelectionEffect") {
-        # nocov start
         x <- updateObject(x, check=FALSE)
 
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.\nSet <%s>[['%s']] and/or <%s>[['%s']] instead.",
-            cname, i, cname, .selectColRestrict, cname, .colorBy))
+            cname, i, cname, .selectColRestrict, cname, .heatMapShowSelection))
 
-        if (value=="Restrict") {
-            x[[.selectColRestrict]] <- TRUE
-        } else if (value=="Color") {
-            x[[.selectColRestrict]] <- FALSE
-            x[[.colorByField]] <- .colorByColSelectionsTitle
-        } else {
-            x[[.selectColRestrict]] <- FALSE
-        }
+        x[[.selectColRestrict]] <- (value=="Restrict")
+        x[[.heatMapShowSelection]] <- (value!="Restrict")
 
         x
-        # nocov end
     } else {
         callNextMethod()
     }
@@ -698,21 +684,19 @@ setMethod("updateObject", "ComplexHeatmapPlot", function(object, ..., verbose=FA
     if (!.is_latest_version(object)) {
         # nocov start
 
+        # Do this before 'callNextMethod()', which fills in the Restrict.
+        update.2.3 <- is(try(slot(object, .selectColRestrict), silent=TRUE), "try-error")
+
         # NOTE: it is crucial that updateObject does not contain '[[' or '[[<-'
         # calls, lest we get sucked into infinite recursion with the calls to
         # 'updateObject' from '[['.
         object <- callNextMethod()
 
-        if (is(try(slot(object, .selectColRestrict), silent=TRUE), "try-error")) {
+        if (update.2.3) {
             effect <- object@SelectionEffect
-            if (effect=="Restrict") {
-                slot(object, .selectColRestrict) <- TRUE
-            } else if (effect=="Color") {
-                slot(object, .selectColRestrict) <- FALSE
-                slot(object, .colorByField) <- .colorByColSelectionsTitle
-            } else {
-                slot(object, .selectColRestrict) <- FALSE
-            }
+            slot(object, .selectColRestrict) <- (effect=="Restrict")
+            slot(object, .heatMapShowSelection) <- (effect!="Restrict")
+            slot(object, .heatMapOrderSelection) <- FALSE
         }
         # nocov end
     }

@@ -229,26 +229,27 @@ setReplaceMethod("[[", "Panel", function(x, i, j, ..., value) {
         return(x)
     }
 
-    .attempt <- function(y) {
-        slot(y, i) <- value
-        if (iSEEOptions$get('.check.validity')) {
-            validObject(y)
-        }
-        y
-    }
-
     # Avoid having to call updateObject unnecessarily.
-    out <- try(.attempt(x), silent=TRUE)
+    check <- iSEEOptions$get('.check.validity')
+    out <- try(.assign_and_check(x, i, value, check=check), silent=TRUE)
 
     if (is(out, "try-error")) {
         # nocov start
         x <- updateObject(x, check=FALSE)
-        out <- .attempt(x)
+        out <- .assign_and_check(x, i, value, check=check)
         # nocov end
     }
 
-    out 
+    out
 })
+
+.assign_and_check <- function(x, i, value, check) {
+    slot(x, i) <- value
+    if (check) {
+        validObject(x)
+    }
+    x
+}
 
 #' @export
 setMethod(".refineParameters", "Panel", function(x, se) {

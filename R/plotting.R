@@ -775,11 +775,6 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' This involves some work to highlight selected data points.
 #' Any color specifications are passed in via \code{aes}.
 #'
-#' When selecting points to restrict,
-#' this function relies on the availability of a
-#' \code{plot.data.all} variable in the evaluation environment.
-#' See \code{?\link{.process_selectby_choice}} for more details.
-#'
 #' A separate \code{selected} argument is necessary here, despite the fact
 #' that most point selection information can be retrieved from
 #' \code{param_choices},
@@ -816,53 +811,25 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         common_size <- sprintf(", size=%s", param_choices[[.plotPointSize]])
     }
 
-    if (selected) {
-        select_effect <- param_choices[[.selectEffect]]
-        if (select_effect == .selectColorTitle) {
-            plot_cmds[["select_other"]] <- sprintf(
-                "geom_point(%s, alpha=%s, data=subset(plot.data, !SelectBy)%s%s) +",
-                aes, param_choices[[.plotPointAlpha]], default_color,
-                common_size
-                # param_choices[[.plotPointSize]]
-            )
-            plot_cmds[["select_color"]] <- sprintf(
-                "geom_point(%s, alpha=%s, data=subset(plot.data, SelectBy), color=%s%s) +",
-                aes, param_choices[[.plotPointAlpha]],
-                deparse(param_choices[[.selectColor]]), common_size
-                # param_choices[[.plotPointSize]]
-            )
-        }
-        if (select_effect == .selectTransTitle) {
-            plot_cmds[["select_other"]] <- sprintf(
-                "geom_point(%s, subset(plot.data, !SelectBy), alpha=%.2f%s%s) +",
-                aes, param_choices[[.selectTransAlpha]], default_color,
-                common_size
-                # param_choices[[.plotPointSize]]
-            )
-            plot_cmds[["select_alpha"]] <- sprintf(
-                "geom_point(%s, subset(plot.data, SelectBy)%s%s) +",
-                aes, default_color, common_size
-                # param_choices[[.plotPointSize]]
-            )
-        }
-        if (select_effect == .selectRestrictTitle) {
-            plot_cmds[["select_restrict"]] <- sprintf(
-                "geom_point(%s, alpha=%s, plot.data%s%s) +",
-                aes, param_choices[[.plotPointAlpha]], default_color,
-                common_size
-                # param_choices[[.plotPointSize]]
-            )
-        }
+    if (selected && param_choices[[.selectTransAlpha]] < 1) {
+        plot_cmds[["select_other"]] <- sprintf(
+            "geom_point(%s, subset(plot.data, !SelectBy), alpha=%.2f%s%s) +",
+            aes, param_choices[[.selectTransAlpha]], default_color,
+            common_size
+        )
+        plot_cmds[["select_alpha"]] <- sprintf(
+            "geom_point(%s, subset(plot.data, SelectBy)%s%s) +",
+            aes, default_color, common_size
+        )
     } else {
         plot_cmds[["point"]] <- sprintf(
             "geom_point(%s, alpha=%s, plot.data%s%s) +",
             aes, param_choices[[.plotPointAlpha]], default_color,
             common_size
-            # param_choices[[.plotPointSize]]
         )
     }
 
-    return(unlist(plot_cmds))
+    unlist(plot_cmds)
 }
 
 ############################################

@@ -198,16 +198,7 @@ createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot",
         for (i in names(defaults)) {
             extra_args <- .emptyDefault(extra_args, i, defaults[[i]][1]) # select first element when multiple choice.
         }
-        extra_args <- .emptyDefault(extra_args, .selectColType, .selectMultiUnionTitle)
-        extra_args <- .emptyDefault(extra_args, .selectRowType, .selectMultiUnionTitle)
         do.call(callNextMethod, c(list(.Object), extra_args))
-    }, where=where)
-
-    setMethod(".hideInterface", className, function(x, field) {
-        if (field %in% c(.selectColType, .selectRowType)) {
-            return(TRUE)
-        }
-        callNextMethod()
     }, where=where)
 
     setMethod(".defineDataInterface", className, function(x, se, select_info) {

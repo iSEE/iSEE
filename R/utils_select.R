@@ -1,59 +1,23 @@
 #' Checks if there is a relevant selection
 #'
 #' Checks whether there is a multiple selection from a transmitter, 
-#' either active or in the saved history, that is relevant to the current panel.
+#' either active or in the saved history.
 #'
-#' @param panel_name String containing the name of the current panel.
 #' @param parent_name String containing the name of the transmitting panel.
 #' @param all_memory A named list of \linkS4class{Panel}s representing the current state of the application.
-#' @param select_type String specifying whether the current panel is receiving the \code{"Active"}, \code{"Union"} or \code{"Saved"} selections.
-#' @param select_saved Integer specifying which saved selection is received by the current panel when \code{select_type="Saved"}.
 #'
 #' @return A logical scalar specifying whether there is a relevant selection.
 #'
-#' @details
-#' This will look for saved or active selections (or both) depending on the value of \code{select_type}.
-#' An active selection will not be relevant when \code{select_type="Saved"}, and vice versa.
-#'
-#' Technically, \code{select_type} and \code{select_saved} could be pulled from \code{all_memory} for \code{panel_name}.
-#' However, we require them as arguments here as there are cases where we need to check against an old version of those values;
-#' see the relevant observer in \code{\link{.create_multi_selection_type_observers}} for more details.
-#' 
 #' @author Aaron Lun
 #' @rdname INTERNAL_transmitted_selection
-.transmitted_selection <- function(panel_name, parent_name, all_memory, select_type, select_saved) {
+.transmitted_selection <- function(parent_name, all_memory) {
     if (parent_name==.noSelection) {
-        return(FALSE)
-    }
-    panel <- all_memory[[panel_name]]
-    transmitter <- all_memory[[parent_name]]
-
-    changed <- FALSE
-    if (select_type==.selectMultiActiveTitle || select_type==.selectMultiUnionTitle) {
-        if (.multiSelectionHasActive(transmitter)) {
-            changed <- TRUE
-        }
-
-        if (select_type==.selectMultiUnionTitle) {
-            if (.any_saved_selection(transmitter)) {
-                changed <- TRUE
-            }
-        }
+        FALSE
     } else {
-        # In principle, we don't have to check the transmitter options here, because
-        # the saved index should always be valid. In practice, the saved index might
-        # not be valid if this function is called after the transmitter is changed
-        # but before the .selectMultiSaved selectize is updated. However, if it was
-        # non-zero and invalid, then the update would cause it to be zero, which
-        # would set changed=TRUE anyway.
-        if (select_saved!=0L) {
-            changed <- TRUE
-        }
+        transmitter <- all_memory[[parent_name]]
+        .multiSelectionHasActive(transmitter) || .any_saved_selection(transmitter)
     }
-
-    changed
 }
-
 
 #' Checks if there are saved selections
 #'
@@ -137,8 +101,7 @@
     # Defining the row and column selections, and hoping that the
     # plot-generating functions know what to do with them.
     select_cmds <- list()
-    row_select_cmds <- .process_selectby_choice(x,
-        by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved,
+    row_select_cmds <- .process_selectby_choice(x, by_field=.selectRowSource, 
         all_memory=all_memory, varname="row_selected")
 
     if (!is.null(row_select_cmds)) {
@@ -149,8 +112,7 @@
         select_cmds[["row"]] <- row_select_cmds
     }
 
-    col_select_cmds <- .process_selectby_choice(x,
-        by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
+    col_select_cmds <- .process_selectby_choice(x, by_field=.selectColSource, 
         all_memory=all_memory, varname="col_selected")
 
     if (!is.null(col_select_cmds)) {
@@ -174,17 +136,12 @@
 #'
 #' @param x An instance of a \linkS4class{Panel} class that is \emph{receiving} a transmission.
 #' @param by_field String specifying the name of the slot containing the identity of the transmitting panel.
-#' @param type_field String specifying the name of the slot containing the type of multiple selection to use from the transmitter.
-#' @param saved_field String specifying the name of the slot containing the index of the saved selection to use from the transmitter.
 #' @param all_memory A list of \linkS4class{Panel} objects that represents the current state of the application.
 #' @param varname String containing the name of the variable that contains all selections.
 #'
 #' @return A character vector of commands that, when executed, results in a list named \code{varname}.
 #' Each entry of the list is a character vector that contains the identities of points in the active and/or saved selections.
-#'
 #' List names are set to \code{"active"}, \code{"saved1"}, \code{"saved2"}, etc.
-#' Whether the active and/or saved selections are returned depends on the values of \code{type_field} and \code{saved_field} in \code{x}.
-#'
 #' If no selection should be applied, \code{NULL} is returned instead.
 #'
 #' @details
@@ -193,6 +150,8 @@
 #'
 #' Evaluation of the output commands require:
 #' \itemize{
+#' \item a list object called \code{all_contents} where each entry is named by the panel name.
+#' The entry corresponding to the transmitting plot should contain some values corresponding to the displayed data, as described in \code{?\link{.renderOutput}}.
 #' \item a list object called \code{all_active} where each entry is named by the panel name.
 #' The entry corresponding to the transmitting plot should contain the active selection structure defined by \code{\link{.multiSelectionActive}}.
 #' \item a list object called \code{all_saved} where each entry is named by the panel name.
@@ -207,51 +166,36 @@
 #'
 #' @importFrom mgcv in.out
 #' @importFrom shiny brushedPoints
-.process_selectby_choice <- function(x, by_field, type_field, saved_field, all_memory, varname="selected_pts") {
+.process_selectby_choice <- function(x, by_field, all_memory, varname="selected_pts") {
     transmitter <- x[[by_field]]
     cmds <- list()
 
     if (!identical(transmitter, .noSelection)) {
-        init_cmd <- sprintf("contents <- all_contents[['%s']]", transmitter)
-
+        init_cmd <- sprintf("contents <- all_contents[['%s']];", transmitter)
         transmit_param <- all_memory[[transmitter]]
-        cur_choice <- x[[type_field]]
 
-        if (.multiSelectionHasActive(transmit_param) && 
-            cur_choice %in% c(.selectMultiUnionTitle, .selectMultiActiveTitle)) 
-        {
-            select_sources <- NA_integer_
-        } else {
-            select_sources <- integer(0)
+        if (.multiSelectionHasActive(transmit_param)) {
+            cmds$active <- c(
+                sprintf("select <- all_active[['%s']];", transmitter), 
+                .multiSelectionCommands(transmit_param, NA_integer_),
+                sprintf("%s[[\"active\"]] <- selected;", varname)
+            )
         }
 
-        if (cur_choice == .selectMultiUnionTitle) {
-            select_sources <- c(select_sources, seq_along(transmit_param[[.multiSelectHistory]]))
-        } else if (cur_choice == .selectMultiSavedTitle) {
-            select_sources <- x[[saved_field]]
-            if (select_sources == 0L) {
-                # '0' selection in memory means no selection.
-                select_sources <- integer(0)
-            }
-        }
-
-        for (i in select_sources) {
-            cur_cmds <- .multiSelectionCommands(transmit_param, i)
-
-            if (is.na(i)) {
-                cur_cmds <- c(sprintf("select <- all_active[['%s']]", transmitter), cur_cmds)
-            } else {
-                cur_cmds <- c(sprintf("select <- all_saved[['%s']][[%i]]", transmitter, i), cur_cmds)
-            }
-
-            outname <- if (is.na(i)) "active" else paste0("saved", i)
-            cmds[[outname]] <- c(cur_cmds, sprintf("%s[[%s]] <- selected;", varname, deparse(outname)))
+        for (i in seq_along(transmit_param[[.multiSelectHistory]])) {
+            outname <- paste0("saved", i)
+            cmds[[outname]] <- c(
+                sprintf("select <- all_saved[['%s']][[%i]];", transmitter, i),
+                .multiSelectionCommands(transmit_param, i),
+                sprintf("%s[[%s]] <- selected;", varname, deparse(outname))
+            )
         }
 
         if (length(cmds)) {
             cmds <- c(init=c(init_cmd, paste(varname, "<- list();")), cmds)
         }
     }
+
     unlist(cmds)
 }
 

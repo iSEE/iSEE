@@ -119,49 +119,23 @@
             }
 
             transmit_dim <- .multiSelectionDimension(instance)
-            if (transmit_dim=="row") {
-                type_field <- .selectRowType
-                saved_field <- .selectRowSaved
-            } else if (transmit_dim=="column") {
-                type_field <- .selectColType
-                saved_field <- .selectColSaved
-            } else {
-                return(NULL)
+            if (transmit_dim!="row" && transmit_dim!="column") {
+                next
             }
 
             has_active <- .multiSelectionHasActive(instance)
             n_saved <- .any_saved_selection(instance, count=TRUE)
             has_saved <- n_saved > 0L
 
-            # Looping over children and deciding whether they need to be
-            # regenerated. This depends on the combination of what has changed in
-            # 'current_panel' + what the child was using (active, saved or union).
+            # Looping over children and deciding whether they need to be regenerated. 
             for (child in children) {
                 child_instance <- pObjects$memory[[child]]
-                select_mode <- child_instance[[type_field]]
 
                 regenerate <- FALSE
-                if (select_mode==.selectMultiActiveTitle) {
-                    if (re_populated && has_active) {
-                        regenerate <- TRUE
-                    } else if (re_active) {
-                        regenerate <- TRUE
-                    }
-                } else if (select_mode==.selectMultiSavedTitle) {
-                    if (re_populated && has_saved) {
-                        regenerate <- TRUE
-                    } else if (re_saved) {
-                        if (child_instance[[saved_field]] > n_saved) {
-                            pObjects$memory[[child]][[saved_field]] <- 0L
-                            regenerate <- TRUE
-                        }
-                    }
-                } else if (select_mode==.selectMultiUnionTitle) {
-                    if (re_populated && (has_active || has_saved)) {
-                        regenerate <- TRUE
-                    } else if (re_saved || re_active) {
-                        regenerate <- TRUE
-                    }
+                if (re_populated && (has_active || has_saved)) {
+                    regenerate <- TRUE
+                } else if (re_saved || re_active) {
+                    regenerate <- TRUE
                 }
 
                 if (regenerate) {
@@ -186,13 +160,6 @@
                         }
                     }
                     modified[[child]] <- previous
-                }
-
-                # Updating the saved choice selectize for the child.  Note that
-                # this is purely for the user, we've already updated the memory
-                # if the change invalidated anything.
-                if (re_saved) {
-                    .safe_reactive_bump(rObjects, paste0(child, "_", .updateSavedChoices))
                 }
             }
         }

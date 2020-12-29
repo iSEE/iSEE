@@ -132,20 +132,18 @@ collated[.selectColSource] <- "character"
 collated[.dataParamBoxOpen] <- "logical"
 
 .selectRowDynamic <- "RowSelectionDynamicSource"
-.selectRowType <- "RowSelectionType"
-.selectRowSaved <- "RowSelectionSaved"
 
 collated[.selectRowDynamic] <- "logical"
-collated[.selectRowType] <- "character"
-collated[.selectRowSaved] <- "integer"
 
 .selectColDynamic <- "ColumnSelectionDynamicSource"
-.selectColType <- "ColumnSelectionType"
-.selectColSaved <- "ColumnSelectionSaved"
 
 collated[.selectColDynamic] <- "logical"
-collated[.selectColType] <- "character"
-collated[.selectColSaved] <- "integer"
+
+.selectRowRestrict <- "RowSelectionRestrict"
+.selectColRestrict <- "ColumnSelectionRestrict"
+
+collated[.selectRowRestrict] <- "logical"
+collated[.selectColRestrict] <- "logical"
 
 # Practically, this is only a DotPlot feature, but we put it here otherwise the
 # Saved concept is not generic.
@@ -192,12 +190,8 @@ collated[.shapeByField] <- "character"
 
 collated[.sizeByField] <- "character"
 
-.selectEffect <- "SelectionEffect"
-.selectColor <- "SelectionColor"
 .selectTransAlpha <- "SelectionAlpha"
 
-collated[.selectEffect] <- "character"
-collated[.selectColor] <- "character"
 collated[.selectTransAlpha] <- "numeric"
 
 .zoomData <- "ZoomData"
@@ -491,6 +485,9 @@ collated[.showDimnames] <- "character"
 collated[.plotLegendPosition] <- "character"
 collated[.plotLegendDirection] <- "character"
 collated[.visualParamBoxOpen] <- "logical"
+
+.selectEffect <- "SelectionEffect"
+.selectColor <- "SelectionColor"
 
 collated[.selectEffect] <- "character"
 collated[.selectColor] <- "character"

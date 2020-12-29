@@ -57,6 +57,7 @@
 #'
 #' For controlling selections:
 #' \itemize{
+#' \item \code{\link{.multiSelectionRestricted}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel.
 #' \item \code{\link{.multiSelectionDimension}(x)} returns \code{"row"} to indicate that a multiple row selection is being transmitted.
 #' \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the faceting options usethe multiple row selections,
 #' such that the point coordinates/domain may change upon updates to upstream selections in transmitting panels.
@@ -94,6 +95,7 @@
 #' .createObservers,RowDotPlot-method
 #' .hideInterface,RowDotPlot-method
 #' .multiSelectionDimension,RowDotPlot-method
+#' .multiSelectionRestricted,RowDotPlot-method
 #' .multiSelectionInvalidated,RowDotPlot-method
 #' .singleSelectionDimension,RowDotPlot-method
 #' .definePanelTour,RowDotPlot-method
@@ -200,7 +202,7 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 
 #' @export
 setMethod(".hideInterface", "RowDotPlot", function(x, field) {
-    if (field %in% c(.selectColSource, .selectColType, .selectColSaved, .selectColDynamic)) {
+    if (field %in% c(.selectColSource, .selectColRestrict, .selectColDynamic)) {
         TRUE
     } else {
         callNextMethod()
@@ -224,14 +226,15 @@ setMethod(".createObservers", "RowDotPlot", function(x, se, input, session, pObj
 
     .create_dimname_propagation_observer(plot_name, choices=rownames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
-
-    .createMultiSelectionEffectObserver(plot_name,
-        by_field=.selectRowSource, type_field=.selectRowType, saved_field=.selectRowSaved,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export
 setMethod(".multiSelectionDimension", "RowDotPlot", function(x) "row")
+
+#' @export
+setMethod(".multiSelectionRestricted", "RowDotPlot", function(x) {
+    x[[.selectRowRestrict]]
+})
 
 #' @export
 setMethod(".multiSelectionInvalidated", "RowDotPlot", function(x) {
@@ -441,16 +444,14 @@ setMethod(".addDotPlotDataSelected", "RowDotPlot", function(x, envir) {
     }
 
     cmds <- c(
-        header1="",
-        header2="# Receiving row point selection",
+        header="# Receiving row point selection",
         SelectBy="plot.data$SelectBy <- rownames(plot.data) %in% unlist(row_selected);"
     )
 
-    if (x[[.selectEffect]] == .selectRestrictTitle) {
+    if (x[[.selectRowRestrict]]) {
         cmds["saved"] <- "plot.data.all <- plot.data;"
         cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"
     }
-    cmds["footer"] <- ""
 
     .textEval(cmds, envir)
 

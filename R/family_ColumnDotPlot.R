@@ -57,6 +57,7 @@
 #'
 #' For controlling selections:
 #' \itemize{
+#' \item \code{\link{.multiSelectionRestricted}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel.
 #' \item \code{\link{.multiSelectionDimension}(x)} returns \code{"column"} to indicate that a multiple column selection is being transmitted.
 #' \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the faceting options use multiple column selections,
 #' such that the point coordinates/domain may change upon updates to upstream selections in transmitting panels.
@@ -94,6 +95,7 @@
 #' .createObservers,ColumnDotPlot-method
 #' .hideInterface,ColumnDotPlot-method
 #' .multiSelectionDimension,ColumnDotPlot-method
+#' .multiSelectionRestricted,ColumnDotPlot-method
 #' .multiSelectionInvalidated,ColumnDotPlot-method
 #' .singleSelectionDimension,ColumnDotPlot-method
 #' .definePanelTour,ColumnDotPlot-method
@@ -200,7 +202,7 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 
 #' @export
 setMethod(".hideInterface", "ColumnDotPlot", function(x, field) {
-    if (field %in% c(.selectRowSource, .selectRowType, .selectRowSaved, .selectRowDynamic)) {
+    if (field %in% c(.selectRowSource, .selectRowRestrict, .selectRowDynamic)) {
         TRUE
     } else {
         callNextMethod()
@@ -224,14 +226,15 @@ setMethod(".createObservers", "ColumnDotPlot", function(x, se, input, session, p
 
     .create_dimname_propagation_observer(plot_name, choices=colnames(se),
         session=session, pObjects=pObjects, rObjects=rObjects)
-
-    .createMultiSelectionEffectObserver(plot_name,
-        by_field=.selectColSource, type_field=.selectColType, saved_field=.selectColSaved,
-        input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export
 setMethod(".multiSelectionDimension", "ColumnDotPlot", function(x) "column")
+
+#' @export
+setMethod(".multiSelectionRestricted", "ColumnDotPlot", function(x) {
+    x[[.selectColRestrict]]
+})
 
 #' @export
 setMethod(".multiSelectionInvalidated", "ColumnDotPlot", function(x) {
@@ -446,7 +449,7 @@ setMethod(".addDotPlotDataSelected", "ColumnDotPlot", function(x, envir) {
         SelectBy="plot.data$SelectBy <- rownames(plot.data) %in% unlist(col_selected);"
     )
 
-    if (x[[.selectEffect]] == .selectRestrictTitle) {
+    if (x[[.selectColRestrict]]) {
         cmds["saved"] <- "plot.data.all <- plot.data;"
         cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"
     }

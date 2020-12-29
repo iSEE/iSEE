@@ -13,7 +13,6 @@
 \alias{.cacheCommonInfo,DotPlot-method}
 \alias{.createObservers,DotPlot-method}
 \alias{.hideInterface,DotPlot-method}
-\alias{.multiSelectionRestricted,DotPlot-method}
 \alias{.multiSelectionActive,DotPlot-method}
 \alias{.multiSelectionCommands,DotPlot-method}
 \alias{.multiSelectionClear,DotPlot-method}
@@ -23,7 +22,6 @@
 \alias{.prioritizeDotPlotData,DotPlot-method}
 \alias{.colorByNoneDotPlotField,DotPlot-method}
 \alias{.colorByNoneDotPlotScale,DotPlot-method}
-\alias{.defineSelectionEffectInterface,DotPlot-method}
 \alias{.defineInterface,DotPlot-method}
 \alias{.defineVisualColorInterface,DotPlot-method}
 \alias{.defineVisualSizeInterface,DotPlot-method}
@@ -63,6 +61,8 @@ Defaults to \code{"---"}.
 Defaults to \code{FALSE}.
 \item \code{ColorBySampleDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source when coloring by feature.
 Defaults to \code{FALSE}.
+\item \code{SelectionAlpha}, a numeric scalar in [0, 1] specifying the transparency to use for non-selected points when \code{SelectionEffect="Transparent"}.
+Defaults to 0.1.
 }
 
 The following slots control other metadata-related aesthetic aspects of the points:
@@ -103,18 +103,6 @@ Defaults to \code{FALSE}.
 Each line should contain the name of a row or column for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
 Leading and trailing whitespace are stripped, and all text on a line after \code{#} is ignored.
 Defaults to the name of the first row/column.
-}
-
-The following slots control the effect of the transmitted selection from another panel:
-\itemize{
-\item \code{SelectionEffect}, a string specifying the selection effect.
-This should be one of \code{"Transparent"} (the default), where all non-selected points become transparent;
-\code{"Color"}, where all selected points change to the specified color;
-\code{"Restrict"}, where all non-selected points are not plotted.
-\item \code{SelectionAlpha}, a numeric scalar in [0, 1] specifying the transparency to use for non-selected points when \code{SelectionEffect="Transparent"}.
-Defaults to 0.1.
-\item \code{SelectionColor}, a string specifying the color to use for selected points when \code{SelectionEffect="Color"}.
-Defaults to \code{"red"}.
 }
 
 The following slots control interactions with the plot image:
@@ -191,7 +179,6 @@ For defining the interface:
 \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
 It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}}.
 This will \emph{override} the \linkS4class{Panel} method.
-\item \code{\link{.defineSelectionEffectInterface}(x)} returns a list of interface elements for controlling the multiple selection effect.
 \item \code{\link{.defineVisualColorInterface}(x, se, select_info)} defines the user interface subpanel for manipulating the color of the points.
 \item \code{\link{.defineVisualShapeInterface}(x, se)} defines the user interface subpanel for manipulating the shape of the points.
 \item \code{\link{.defineVisualSizeInterface}(x, se)} defines the user interface subpanel for manipulating the size of the points.
@@ -230,7 +217,6 @@ This will also call the equivalent \linkS4class{Panel} method to render the pane
 
 For controlling selections:
 \itemize{
-\item \code{\link{.multiSelectionRestricted}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel, i.e., is \code{SelectionEffect="Restrict"}?
 \item \code{\link{.multiSelectionCommands}(x, index)} returns a character vector of R expressions that - when evaluated - returns a character vector of the names of selected points in the active and/or saved selections of \code{x}.
 The active selection is returned if \code{index=NA}, otherwise one of the saved selection is returned.
 \item \code{\link{.multiSelectionActive}(x)} returns \code{x[["BrushData"]]} or \code{NULL} if there is no brush or closed lasso.

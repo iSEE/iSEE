@@ -164,8 +164,8 @@
     element <- c(element, paste0("#", enc_fap))
     intro <- c(intro, "The points selected in the <font color=\"#402ee8\">Reduced dimension plot 1</font> are shown as opaque in this plot, while all other points are semi-transparent.")
 
-    element <- c(element, paste0("#", enc_fap, "_", .selectEffect))
-    intro <- c(intro, 'The effect of the selection can also be altered. If set to <font color="#402ee8">Restrict</font>, only the selected points will be plotted in the receiving plot. If <font color="#402ee8">Color</font>, all points are plotted and the selected points are marked with a specified color. The default is to use <font color="#402ee8">Transparent</font>, where all non-selected points are transparent.')
+    element <- c(element, paste0("#", enc_fap, "_", .selectColRestrict))
+    intro <- c(intro, 'If <font color="#402ee8">Restrict</font> is set, only the selected points will be plotted in the receiving plot.')
 
     element <- c(element, paste0("#", enc_rdp, "_", .panelMultiSelectInfo))
     intro <- c(intro, "Some information on the number of selected points is displayed in this element.")

@@ -112,7 +112,7 @@ setMethod(".singleSelectionDimension", "ColumnTable", function(x) "sample")
 
 #' @export
 setMethod(".hideInterface", "ColumnTable", function(x, field) {
-    if (field %in% c(.selectRowSource, .selectRowType, .selectRowSaved, .selectRowDynamic)) {
+    if (field %in% c(.selectRowSource, .selectRowRestrict, .selectRowDynamic)) {
         TRUE
     } else {
         callNextMethod()

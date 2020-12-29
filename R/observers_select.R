@@ -19,9 +19,7 @@
 #' @author Aaron Lun
 #'
 #' @seealso
-#' \code{\link{.renderOutput,Panel-method}}, where \code{.create_multi_selection_choice_observer} is called.
-#'
-#' \code{\link{.renderOutput,DotPlot-method}}, where \code{\link{.createMultiSelectionEffectObserver}} is called.
+#' \code{\link{.createObservers,Panel-method}}, where these functions are called.
 #'
 #' @rdname INTERNAL_selection_parameter_observers
 #' @importFrom shiny observeEvent showNotification updateSelectInput
@@ -88,27 +86,27 @@
 
 #' @rdname INTERNAL_selection_parameter_observers
 #' @importFrom shiny observeEvent
-.create_multi_selection_restrict_observer <- function(plot_name,
+.create_multi_selection_restrict_observer <- function(panel_name,
     by_field, res_field, input, session, pObjects, rObjects)
 {
-    select_restrict_field <- paste0(plot_name, "_", res_field)
+    select_restrict_field <- paste0(panel_name, "_", res_field)
 
     # nocov start
     observeEvent(input[[select_restrict_field]], {
         cur_restrict <- input[[select_restrict_field]]
-        pObjects$memory[[plot_name]][[res_field]] <- cur_restrict
+        pObjects$memory[[panel_name]][[res_field]] <- cur_restrict
 
         # Avoiding replotting if there was no transmitting selection.
-        if (!.transmitted_selection(pObjects$memory[[plot_name]][[by_field]], all_memory=pObjects$memory)) {
+        if (!.transmitted_selection(pObjects$memory[[panel_name]][[by_field]], all_memory=pObjects$memory)) {
             return(NULL)
         }
 
         # Updating children if the selection in the current plot changes due to gain/loss of Restrict.
-        old_restrict <- pObjects$memory[[plot_name]][[res_field]]
+        old_restrict <- pObjects$memory[[panel_name]][[res_field]]
         if (cur_restrict || old_restrict) {
-            .mark_panel_as_modified(plot_name, .panelRepopulated, rObjects)
+            .mark_panel_as_modified(panel_name, .panelRepopulated, rObjects)
         } else {
-            .requestUpdate(plot_name, rObjects)
+            .requestUpdate(panel_name, rObjects)
         }
     }, ignoreInit=TRUE)
     # nocov end
@@ -227,7 +225,6 @@
 #' Multiple selection observers
 #'
 #' Observers to change the multiple selections by saving the active selection or deleting existing saved selections.
-#' This differs from \code{\link{.create_multi_selection_type_observers}}, which just involves using existing saved selections.
 #'
 #' @param panel_name String containing the name of the plot.
 #' @param input The Shiny input object from the server function.

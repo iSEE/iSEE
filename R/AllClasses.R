@@ -486,11 +486,9 @@ collated[.plotLegendPosition] <- "character"
 collated[.plotLegendDirection] <- "character"
 collated[.visualParamBoxOpen] <- "logical"
 
-.selectEffect <- "SelectionEffect"
-.selectColor <- "SelectionColor"
+.heatMapShowSelection <- "ShowColumnSelection"
 
-collated[.selectEffect] <- "character"
-collated[.selectColor] <- "character"
+collated[.heatMapShowSelection] <- "logical"
 
 #' @export
 setClass("ComplexHeatmapPlot", contains="Panel", slots=collated)

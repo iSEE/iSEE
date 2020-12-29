@@ -242,8 +242,8 @@
     element <- c(element, paste0("#", enc_chm))
     intro <- c(intro, "You can see the result of our interactions so far, including the selections applied to both rows and columns of this plot.")
 
-    element <- c(element, paste0("#", enc_chm, "_", .selectEffect))
-    intro <- c(intro, "By default, all samples are shown in the heatmap, and column selections are colored. Alternatively, the heatmap can be restricted to show only the selected samples.<br/><br/><strong>Action:</strong> Select the 'Restrict' effect.")
+    element <- c(element, paste0("#", enc_chm, "_", .selectColRestrict))
+    intro <- c(intro, "By default, all samples are shown in the heatmap and column selections are marked by a separate colored annotation bar. Alternatively, the heatmap can be restricted to show only the selected samples.<br/><br/><strong>Action:</strong> enable the 'Restrict' option.")
 
     element <- c(element, paste0("#", enc_chm, "_", .heatMapClusterFeatures))
     intro <- c(intro, "Having seleted features of interest, it is often helpful to cluster them by expression profile.<br/><br/><strong>Action:</strong> tick this box.")

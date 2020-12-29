@@ -39,7 +39,7 @@
         all_cmds[["rows"]] <- ".chosen.rows <- intersect(rownames(se), unlist(row_selected));"
     }
 
-    if (!is.null(envir$col_selected) && x[[.selectEffect]]==.selectRestrictTitle) {
+    if (!is.null(envir$col_selected) && x[[.selectColRestrict]]) {
         # TODO: implement visual effects for other forms of selection.
         all_cmds[["columns"]] <- ".chosen.columns <- intersect(colnames(se), unlist(col_selected));"
     } else {
@@ -142,8 +142,7 @@
 #' @importFrom SummarizedExperiment colData
 #' @rdname INTERNAL_process_heatmap_colormap
 .process_heatmap_column_annotations_colorscale <- function(x, se, envir) {
-    has_incoming_color <- x[[.selectEffect]]==.selectColorTitle && exists("col_selected", envir, inherits = FALSE)
-    if (length(x[[.heatMapColData]])==0 && !has_incoming_color) {
+    if (length(x[[.heatMapColData]])==0 && !x[[.heatMapShowSelection]]) {
         return(NULL)
     }
 
@@ -151,9 +150,13 @@
     cmds <- c(cmds, sprintf(".column_data <- colData(se)[, %s, drop=FALSE]", .deparse_for_viewing(x[[.heatMapColData]])))
 
     # Process selected points
-    if (has_incoming_color) {
-        cmds <- c(cmds, '.column_data[["Selected points"]] <- logical(nrow(.column_data))')
-        cmds <- c(cmds, '.column_data[unlist(col_selected), "Selected points"] <- TRUE')
+    if (x[[.heatMapShowSelection]]) {
+        if (exists("col_selected", envir=envir, inherits=FALSE)) {
+            target <- "col_selected"
+        } else {
+            target <- "list()"
+        }
+        cmds <- c(cmds, sprintf('.column_data[["Selected points"]] <- iSEE::multiSelectionToFactor(%s, colnames(se))', target))
     }
     .textEval(cmds, envir)
 
@@ -198,9 +201,8 @@
     # Add color map for selected points
     additional <- character(0)
 
-    if (has_incoming_color) {
-        additional <- c(additional, sprintf('.column_col[["Selected points"]] <- c("TRUE"=%s, "FALSE"="white")',
-            deparse(x[[.selectColor]])), "")
+    if (x[[.heatMapShowSelection]]) {
+        additional <- c(additional, '.column_col[["Selected points"]] <- iSEE::columnSelectionColorMap(colormap, levels(.column_data[["Selected points"]]))', "")
     }
 
     additional <- c(additional, '.column_data <- .column_data[colnames(plot.data), , drop=FALSE]')

@@ -12,6 +12,7 @@
 \alias{.hideInterface,Table-method}
 \alias{.multiSelectionCommands,Table-method}
 \alias{.multiSelectionActive,Table-method}
+\alias{.multiSelectionRestricted,Table-method}
 \alias{.singleSelectionValue,Table-method}
 \alias{.definePanelTour,Table-method}
 \alias{.defineDataInterface,Table-method}

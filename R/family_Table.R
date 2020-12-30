@@ -88,6 +88,7 @@
 #' .hideInterface,Table-method
 #' .multiSelectionCommands,Table-method
 #' .multiSelectionActive,Table-method
+#' .multiSelectionRestricted,Table-method
 #' .singleSelectionValue,Table-method
 #' .definePanelTour,Table-method
 #' .defineDataInterface,Table-method
@@ -146,6 +147,9 @@ setMethod(".multiSelectionActive", "Table", function(x) {
         NULL
     }
 })
+
+#' @export
+setMethod(".multiSelectionRestricted", "Table", function(x) TRUE)
 
 #' @export
 setMethod(".singleSelectionValue", "Table", function(x, contents) {

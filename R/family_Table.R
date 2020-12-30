@@ -214,7 +214,8 @@ setMethod(".defineDataInterface", "Table", function(x, se, select_info) {
 
 #' @export
 setMethod(".hideInterface", "Table", function(x, field) {
-    if (field %in% .multiSelectHistory) {
+    if (field %in% c(.multiSelectHistory, .selectColRestrict, .selectRowRestrict)) {
+        # Tables always restrict.
         TRUE
     } else {
         callNextMethod()
@@ -255,7 +256,7 @@ setMethod("updateObject", "Table", function(object, ..., verbose=FALSE) {
 
         # Backwards compatibility for new slots (added 3.12).
         if (update.2.1){ 
-            .Deprecated(msg=sprintf("'%s' is out of date, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
+            .Deprecated(msg=sprintf("detected outdated '%s' instance, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
             object[[.TableHidden]] <- character(0)
         }
         # nocov end

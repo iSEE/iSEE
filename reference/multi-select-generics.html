@@ -218,7 +218,7 @@ For example, a brush or lasso made on a PCA plot in <a href='ReducedDimensionPlo
 <p>These generics control how <code>x</code> responds to a transmitted multiple selection, not how <code>x</code> itself transmits selections.</p>
 <p><code>.multiSelectionRestricted(x)</code> should return a logical scalar indicating whether <code>x</code>'s displayed contents will be restricted to the selection transmitted from <em>another panel</em>.
 This is used to determine whether child panels of <code>x</code> need to be re-rendered when <code>x</code>'s transmitter changes its multiple selection.
-For example, in <a href='DotPlot-class.html'>DotPlot</a>s, the method for this generic would return <code>TRUE</code> if <code>SelectionEffect="Restrict"</code>.
+For example, the method for <a href='RowDotPlot-class.html'>RowDotPlot</a>s and <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s would return <code>TRUE</code> if <code>RowSelectionRestrict=TRUE</code> or <code>ColumnSelectionRestrict=TRUE</code>, respectively.
 Otherwise, it would be <code>FALSE</code> as the transmitted selection is only used for aesthetics, not for changing the identity of the displayed points.</p>
 <p><code>.multiSelectionInvalidated(x)</code> should return a logical scalar indicating whether a transmission of a multiple selection to <code>x</code> invalidates <code>x</code>'s own existing selections.
 This should only be <code>TRUE</code> in special circumstances, e.g., if receipt of a new multiple selection causes recalculation of coordinates in a <a href='DotPlot-class.html'>DotPlot</a>.</p>

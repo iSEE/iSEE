@@ -216,12 +216,13 @@ This is guaranteed to be categorical.</p></li>
 This is guaranteed to be categorical.</p></li>
 <li><p><code>"SelectBy"</code>, a logical field indicating whether the point was included in a multiple selection
 (i.e., transmitted from another plot with <code>x</code> as the receiver).
-Note that if <code>SelectionEffect="Restrict"</code>, <code>plot.data</code> will already have been subsetted
-to only retain <code>TRUE</code> values of this field.</p></li>
+Note that if <code>RowSelectionRestrict=TRUE</code> or <code>ColumnSelectionRestrict=TRUE</code> 
+(for <a href='RowDotPlot-class.html'>RowDotPlot</a>s and <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s, respectively),
+<code>plot.data</code> will already have been subsetted to only retain <code>TRUE</code> values of this field.</p></li>
 </ul>
 
 <p><code>envir</code> may also contain the following variables:</p><ul>
-<li><p><code>plot.data.all</code>, present when a multiple selection is transmitted to <code>x</code> and <code>SelectionEffect="Restrict"</code>.
+<li><p><code>plot.data.all</code>, present when a multiple selection is transmitted to <code>x</code> and <code>RowSelectionRestrict=TRUE</code> or <code>ColumnSelectionRestrict=TRUE</code> (for <a href='RowDotPlot-class.html'>RowDotPlot</a>s and <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s, respectively).
 This is a data.frame that contains all points prior to subsetting and is useful for defining the boundaries of the plot such that they do not change when the transmitted multiple selection changes.</p></li>
 <li><p><code>plot.data.pre</code>, present when downsampling is turned on.
 This is a data.frame that contains all points prior to downsampling (but after subsetting, if that was performed) and is again mainly used to fix the boundaries of the plot.</p></li>

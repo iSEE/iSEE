@@ -191,15 +191,6 @@ Each element's ID should still follow the <code>PANEL_SLOT</code> pattern descri
 New panels can write methods for this generic to add their own interface elements for altering the contents of the panel, without needing to reimplement other UI elements in the parent class's <code>.defineInterface</code> method.
 Conversely, there is no obligation to write a method for this generic if one is planning to specialize <code>.defineInterface</code>.</p>
 <p>It is the developer's responsibility to call <code>callNextMethod</code> to obtain interface elements for parent classes.</p>
-    <h2 class="hasAnchor" id="defining-the-selection-effect-interface"><a class="anchor" href="#defining-the-selection-effect-interface"></a>Defining the selection effect interface</h2>
-
-    
-
-<p><code>.defineSelectionEffectInterface(x)</code> defines the UI for controlling the effect of a multiple row/column selection.
-This should return a list of UI elements specifying how the panel should behave upon a transmitted selection;
-see the methods for <a href='DotPlot-class.html'>DotPlot</a> and <a href='ComplexHeatmapPlot-class.html'>ComplexHeatmapPlot</a> for specific examples.</p>
-<p>Like with <code>.defineDataInterface</code>, this generic aims to provide a simpler alternative to specializing <code>.defineInterface</code> when only the selection effect needs to be changed in a subclass.</p>
-<p>It is the developer's responsibility to call <code>callNextMethod</code> to obtain interface elements for parent classes.</p>
     <h2 class="hasAnchor" id="hiding-interface-elements"><a class="anchor" href="#hiding-interface-elements"></a>Hiding interface elements</h2>
 
     

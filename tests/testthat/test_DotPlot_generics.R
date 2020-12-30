@@ -207,6 +207,10 @@ test_that(".colorDotPlot returns a command for coloring by features", {
     expect_identical(color_add, c(
         "scale_color_manual(values=c(`FALSE`='black', `TRUE`=\"red\"), drop=FALSE) +",
         "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy == 'TRUE'), col=\"red\", alpha=1, size=5*1) +"))
+
+    params[[iSEE:::.sizeByField]] <- iSEE:::.sizeByRowDataTitle
+    color_add <- iSEE:::.colorDotPlot(params, assay(sce)[,1])
+    expect_match(color_add[2], "alpha=1) +", fixed=TRUE) # no size information added if we're already sizing by something else.
 })
 
 test_that(".colorDotPlot returns a command for coloring by samples", {
@@ -218,6 +222,11 @@ test_that(".colorDotPlot returns a command for coloring by samples", {
         "scale_color_manual(values=c(`FALSE`='black', `TRUE`=\"red\"), drop=FALSE) +",
         "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy == 'TRUE'), col=\"red\", alpha=1, size=5*1) +"))
 
+    params[[iSEE:::.sizeByField]] <- iSEE:::.sizeByColDataTitle
+    color_add <- iSEE:::.colorDotPlot(params, assay(sce)[,1])
+    expect_match(color_add[2], "alpha=1) +", fixed=TRUE) # no size information added if we're already sizing by something else.
+
+    # And again, for rows.
     params <- pObjects$memory$RowDataPlot1
     params[[iSEE:::.colorByField]] <- iSEE:::.colorBySampNameTitle
     params[[iSEE:::.colorByFeatName]] <- rownames(sce)[3]

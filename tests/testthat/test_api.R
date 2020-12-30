@@ -129,9 +129,13 @@ test_that(".multiSelectionRestricted handles RowDotPlot", {
 })
 
 test_that(".multiSelectionRestricted handles Panel", {
-
     x <- new("PanelChildClass")
+    out <- .multiSelectionRestricted(x)
+    expect_true(out)
+})
 
+test_that(".multiSelectionRestricted handles Tables", {
+    x <- ColumnDataTable()
     out <- .multiSelectionRestricted(x)
     expect_true(out)
 })

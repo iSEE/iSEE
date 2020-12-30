@@ -1051,6 +1051,22 @@ test_that("Jitter is properly performed for faceted plots", {
 ########################################
 # .downsample_points ----
 
+test_that(".downsample_points produces the appropriate code for scatter plots", {
+    rdp <- pObjects$memory$ReducedDimensionPlot1
+    sce <- .cacheCommonInfo(rdp, sce)
+    rdp <- .refineParameters(rdp, sce)
+
+    ref <- .generateOutput(rdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
+    expect_false(any(grepl("subsetPointsByGrid", unlist(ref$commands))))
+    expect_false(any(grepl("plot.data.pre", unlist(ref$commands))))
+
+    rdp[[iSEE:::.plotPointDownsample]] <- TRUE
+    out <- .generateOutput(rdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
+
+    expect_true(any(grepl("subsetPointsByGrid.*X.*Y", unlist(out$commands))))
+    expect_true(any(grepl("plot.data.pre", unlist(out$commands))))
+})
+
 test_that(".downsample_points produces the appropriate code for square plots", {
     cdp <- pObjects$memory$ColumnDataPlot1
     cdp[[iSEE:::.colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
@@ -1100,6 +1116,18 @@ test_that(".downsample_points produces the appropriate code for horizontal violi
 
     expect_true(any(grepl("subsetPointsByGrid.*jitteredX", unlist(out$commands))))
     expect_true(any(grepl("plot.data.pre", unlist(out$commands))))
+})
+
+test_that(".downsample_points interacts correctly with selection of a specific sample/feature", { 
+    rdp <- pObjects$memory$ReducedDimensionPlot1
+    rdp[[iSEE:::.colorByField]] <- iSEE:::.colorBySampNameTitle
+    rdp[[iSEE:::.plotPointDownsample]] <- TRUE
+
+    sce <- .cacheCommonInfo(rdp, sce)
+    rdp <- .refineParameters(rdp, sce)
+
+    out <- .generateOutput(rdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
+    expect_true(any(grepl(".subsetted | as.logical(plot.data$ColorBy)", unlist(out$commands), fixed=TRUE)))
 })
 
 ########################################

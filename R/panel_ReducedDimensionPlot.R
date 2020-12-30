@@ -160,10 +160,10 @@ setMethod(".refineParameters", "ReducedDimensionPlot", function(x, se) {
     }
 
     available <- .getCachedCommonInfo(se, "ReducedDimensionPlot")$valid.reducedDim.names
-    if (!is.na(chosen <- x[[.redDimType]]) &&
+    if (!is.na(chosen <- slot(x, .redDimType)) &&
         chosen %in% available &&
-        x[[.redDimXAxis]] <= ncol(reducedDim(se, chosen)) &&
-        x[[.redDimYAxis]] <= ncol(reducedDim(se, chosen)))
+        slot(x, .redDimXAxis) <= ncol(reducedDim(se, chosen)) &&
+        slot(x, .redDimYAxis) <= ncol(reducedDim(se, chosen)))
     {
         # All is well, nothing needs to be done here.
     } else {
@@ -173,9 +173,9 @@ setMethod(".refineParameters", "ReducedDimensionPlot", function(x, se) {
         }
 
         y <- available[1]
-        x[[.redDimType]] <- y
-        x[[.redDimXAxis]] <- 1L
-        x[[.redDimYAxis]] <- min(ncol(reducedDim(se, y)), 2L)
+        slot(x, .redDimType) <- y
+        slot(x, .redDimXAxis) <- 1L
+        slot(x, .redDimYAxis) <- min(ncol(reducedDim(se, y)), 2L)
     }
 
     x
@@ -204,7 +204,7 @@ setValidity2("ReducedDimensionPlot", function(object) {
 #' @importFrom shiny selectInput
 #' @importFrom methods callNextMethod
 setMethod(".defineDataInterface", "ReducedDimensionPlot", function(x, se, select_info) {
-    cur_reddim <- x[[.redDimType]]
+    cur_reddim <- slot(x, .redDimType)
     max_dim <- ncol(reducedDim(se, cur_reddim))
     choices <- seq_len(max_dim)
 
@@ -216,9 +216,9 @@ setMethod(".defineDataInterface", "ReducedDimensionPlot", function(x, se, select
             choices=.getCachedCommonInfo(se, "ReducedDimensionPlot")$valid.reducedDim.names,
             selected=cur_reddim),
         selectInput(.input_FUN(.redDimXAxis), label="Dimension 1",
-            choices=choices, selected=x[[.redDimXAxis]]),
+            choices=choices, selected=slot(x, .redDimXAxis)),
         selectInput(.input_FUN(.redDimYAxis), label="Dimension 2",
-            choices=choices, selected=x[[.redDimYAxis]])
+            choices=choices, selected=slot(x, .redDimYAxis))
     )
 })
 
@@ -277,14 +277,14 @@ setMethod(".generateDotPlotData", "ReducedDimensionPlot", function(x, envir) {
     data_cmds <- list()
 
     data_cmds[["reducedDim"]] <- sprintf(
-        "red.dim <- reducedDim(se, %s);", deparse(x[[.redDimType]]))
+        "red.dim <- reducedDim(se, %s);", deparse(slot(x, .redDimType)))
     data_cmds[["xy"]] <- sprintf(
         "plot.data <- data.frame(X=red.dim[, %i], Y=red.dim[, %i], row.names=colnames(se));",
-        x[[.redDimXAxis]], x[[.redDimYAxis]])
+        slot(x, .redDimXAxis), slot(x, .redDimYAxis))
 
-    plot_title <- x[[.redDimType]]
-    x_lab <- sprintf("Dimension %s", x[[.redDimXAxis]])
-    y_lab <- sprintf("Dimension %s", x[[.redDimYAxis]])
+    plot_title <- slot(x, .redDimType)
+    x_lab <- sprintf("Dimension %s", slot(x, .redDimXAxis))
+    y_lab <- sprintf("Dimension %s", slot(x, .redDimYAxis))
 
     data_cmds <- unlist(data_cmds)
     .textEval(data_cmds, envir)

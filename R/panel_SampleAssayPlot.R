@@ -191,8 +191,8 @@ setMethod(".refineParameters", "SampleAssayPlot", function(x, se) {
 
     row_covariates <- .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
     if (length(row_covariates)==0L) {
-        if (x[[.sampAssayXAxis]]==.sampAssayXAxisRowDataTitle) {
-            x[[.sampAssayXAxis]] <- .sampAssayXAxisNothingTitle
+        if (slot(x, .sampAssayXAxis)==.sampAssayXAxisRowDataTitle) {
+            slot(x, .sampAssayXAxis) <- .sampAssayXAxisNothingTitle
         }
     } else {
         x <- .replaceMissingWithFirst(x, .sampAssayXAxisRowData, row_covariates)
@@ -247,16 +247,16 @@ setMethod(".defineDataInterface", "SampleAssayPlot", function(x, se, select_info
             choices=NULL, selected=NULL, multiple=FALSE),
         selectInput(
             .input_FUN(.sampAssayYAxisColTable), label=NULL, choices=tab_by_col,
-            selected=.choose_link(x[[.sampAssayYAxisColTable]], tab_by_col)),
+            selected=.choose_link(slot(x, .sampAssayYAxisColTable), tab_by_col)),
         checkboxInput(.input_FUN(.sampAssayYAxisSampDynamic),
             label="Use dynamic sample selection for the y-axis",
-            value=x[[.sampAssayYAxisSampDynamic]]),
+            value=slot(x, .sampAssayYAxisSampDynamic)),
 
         selectInput(paste0(.getEncodedName(x), "_", .sampAssayAssay), label=NULL,
-            choices=all_assays, selected=x[[.sampAssayAssay]]),
+            choices=all_assays, selected=slot(x, .sampAssayAssay)),
         radioButtons(
             .input_FUN(.sampAssayXAxis), label="X-axis:", inline=TRUE,
-            choices=xaxis_choices, selected=x[[.sampAssayXAxis]]),
+            choices=xaxis_choices, selected=slot(x, .sampAssayXAxis)),
 
         .conditionalOnRadio(
             .input_FUN(.sampAssayXAxis),
@@ -264,7 +264,7 @@ setMethod(".defineDataInterface", "SampleAssayPlot", function(x, se, select_info
             selectInput(
                 .input_FUN(.sampAssayXAxisRowData),
                 label="Row data of interest (X-axis):",
-                choices=row_covariates, selected=x[[.sampAssayXAxisRowData]])),
+                choices=row_covariates, selected=slot(x, .sampAssayXAxisRowData))),
 
         .conditionalOnRadio(
             .input_FUN(.sampAssayXAxis),
@@ -274,10 +274,10 @@ setMethod(".defineDataInterface", "SampleAssayPlot", function(x, se, select_info
                 label="Sample of interest (X-axis):",
                 choices=NULL, selected=NULL, multiple=FALSE),
             selectInput(.input_FUN(.sampAssayXAxisColTable), label=NULL,
-                choices=tab_by_col, selected=x[[.sampAssayXAxisColTable]]),
+                choices=tab_by_col, selected=slot(x, .sampAssayXAxisColTable)),
             checkboxInput(.input_FUN(.sampAssayXAxisSampDynamic),
                 label="Use dynamic sample selection for the x-axis",
-                value=x[[.sampAssayXAxisSampDynamic]])
+                value=slot(x, .sampAssayXAxisSampDynamic))
         )
     )
 })
@@ -323,7 +323,7 @@ setMethod(".singleSelectionSlots", "SampleAssayPlot", function(x) {
 
 #' @export
 setMethod(".multiSelectionInvalidated", "SampleAssayPlot", function(x) {
-    x[[.sampAssayXAxis]] == .sampAssayXAxisSelectionsTitle || callNextMethod()
+    slot(x, .sampAssayXAxis) == .sampAssayXAxisSelectionsTitle || callNextMethod()
 })
 
 #' @export
@@ -336,8 +336,8 @@ setMethod(".panelColor", "SampleAssayPlot", function(x) "#07A274")
 setMethod(".generateDotPlotData", "SampleAssayPlot", function(x, envir) {
     data_cmds <- list()
 
-    samp_selected_y <- x[[.sampAssayYAxisSampName]]
-    assay_choice <- x[[.sampAssayAssay]]
+    samp_selected_y <- slot(x, .sampAssayYAxisSampName)
+    assay_choice <- slot(x, .sampAssayAssay)
 
     plot_title <- samp_selected_y
     y_lab <- sprintf("%s (%s)", samp_selected_y, assay_choice)
@@ -347,14 +347,14 @@ setMethod(".generateDotPlotData", "SampleAssayPlot", function(x, envir) {
     )
 
     # Prepare X-axis data.
-    x_choice <- x[[.sampAssayXAxis]]
+    x_choice <- slot(x, .sampAssayXAxis)
 
     if (x_choice == .sampAssayXAxisNothingTitle) {
         x_lab <- ''
         data_cmds[["x"]] <- "plot.data$X <- factor(character(nrow(se)));"
 
     } else if (x_choice == .sampAssayXAxisRowDataTitle) {
-        x_lab <- x[[.sampAssayXAxisRowData]]
+        x_lab <- slot(x, .sampAssayXAxisRowData)
         plot_title <- paste(plot_title, "vs", x_lab)
         data_cmds[["x"]] <- sprintf("plot.data$X <- rowData(se)[, %s];", deparse(x_lab))
 
@@ -373,7 +373,7 @@ setMethod(".generateDotPlotData", "SampleAssayPlot", function(x, envir) {
         )
 
     } else {
-        samp_selected_x <- x[[.sampAssayXAxisSampName]]
+        samp_selected_x <- slot(x, .sampAssayXAxisSampName)
         plot_title <- paste(plot_title, "vs", samp_selected_x)
         x_lab <- sprintf("%s (%s)", samp_selected_x, assay_choice)
         data_cmds[["x"]] <- sprintf(

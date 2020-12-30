@@ -57,7 +57,7 @@
     observeEvent(input[[.input_FUN(button_name)]], {
         instance <- pObjects$memory[[plot_name]]
 
-        transmitter <- instance[[source_field]]
+        transmitter <- slot(instance, source_field)
         if (transmitter==.noSelection) {
             txt <- sprintf("No panel chosen for %s selection", source_type)
             FUN <- disabled
@@ -82,7 +82,7 @@
                                  mode="text",
                                  theme="xcode",
                                  autoComplete="disabled",
-                                 value=instance[[slot_name]],
+                                 value=slot(instance, slot_name),
                                  debounce=100,
                                  height="500px")
                 ),
@@ -106,8 +106,6 @@
 
     # nocov start
     observeEvent(input[[.input_FUN(import_field)]], {
-        instance <- pObjects$memory[[plot_name]]
-
         # Compute names for the incoming selection, if any
         plot_env <- new.env()
         select_cmds <- .processMultiSelections(pObjects$memory[[plot_name]], 
@@ -141,7 +139,6 @@
 
     # nocov start
     observeEvent(input[[.input_FUN(validate_field)]], {
-        instance <- pObjects$memory[[plot_name]]
         editor_text <- input[[.input_FUN(slot_name)]]
 
         # Figuring out which ones aren't real names.
@@ -159,7 +156,6 @@
     # Button to order names alphabetically
     # nocov start
     observeEvent(input[[.input_FUN(order_field)]], {
-        instance <- pObjects$memory[[plot_name]]
         editor_text <- input[[.input_FUN(slot_name)]]
 
         editor_lines <- strsplit(editor_text, split="\n")[[1]]

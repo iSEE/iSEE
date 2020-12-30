@@ -191,8 +191,8 @@ setMethod(".refineParameters", "FeatureAssayPlot", function(x, se) {
 
     column_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$valid.colData.names
     if (length(column_covariates)==0L) {
-        if (x[[.featAssayXAxis]] == .featAssayXAxisColDataTitle) {
-            x[[.featAssayXAxis]] <- .featAssayXAxisNothingTitle
+        if (slot(x, .featAssayXAxis) == .featAssayXAxisColDataTitle) {
+            slot(x, .featAssayXAxis) <- .featAssayXAxisNothingTitle
         }
     } else {
         x <- .replaceMissingWithFirst(x, .featAssayXAxisColData, column_covariates)
@@ -244,31 +244,31 @@ setMethod(".defineDataInterface", "FeatureAssayPlot", function(x, se, select_inf
         selectizeInput(.input_FUN(.featAssayYAxisFeatName),
             label="Y-axis feature:", choices=NULL, selected=NULL, multiple=FALSE),
         selectInput(.input_FUN(.featAssayYAxisRowTable), label=NULL, choices=tab_by_row,
-            selected=.choose_link(x[[.featAssayYAxisRowTable]], tab_by_row)),
+            selected=.choose_link(slot(x, .featAssayYAxisRowTable), tab_by_row)),
         checkboxInput(.input_FUN(.featAssayYAxisFeatDynamic),
             label="Use dynamic feature selection for the y-axis",
-            value=x[[.featAssayYAxisFeatDynamic]]),
+            value=slot(x, .featAssayYAxisFeatDynamic)),
 
         selectInput(paste0(.getEncodedName(x), "_", .featAssayAssay), label=NULL,
-            choices=all_assays, selected=x[[.featAssayAssay]]),
+            choices=all_assays, selected=slot(x, .featAssayAssay)),
         radioButtons(.input_FUN(.featAssayXAxis), label="X-axis:", inline=TRUE,
-            choices=xaxis_choices, selected=x[[.featAssayXAxis]]),
+            choices=xaxis_choices, selected=slot(x, .featAssayXAxis)),
 
         .conditionalOnRadio(.input_FUN(.featAssayXAxis),
             .featAssayXAxisColDataTitle,
             selectInput(.input_FUN(.featAssayXAxisColData),
                 label="X-axis column data:",
-                choices=column_covariates, selected=x[[.featAssayXAxisColData]])),
+                choices=column_covariates, selected=slot(x, .featAssayXAxisColData))),
 
         .conditionalOnRadio(.input_FUN(.featAssayXAxis),
             .featAssayXAxisFeatNameTitle,
             selectizeInput(.input_FUN(.featAssayXAxisFeatName),
                 label="X-axis feature:", choices=NULL, selected=NULL, multiple=FALSE),
             selectInput(.input_FUN(.featAssayXAxisRowTable), label=NULL,
-                choices=tab_by_row, selected=x[[.featAssayXAxisRowTable]]),
+                choices=tab_by_row, selected=slot(x, .featAssayXAxisRowTable)),
             checkboxInput(.input_FUN(.featAssayXAxisFeatDynamic),
                 label="Use dynamic feature selection for the x-axis",
-                value=x[[.featAssayXAxisFeatDynamic]])
+                value=slot(x, .featAssayXAxisFeatDynamic))
         )
     )
 })
@@ -314,7 +314,7 @@ setMethod(".singleSelectionSlots", "FeatureAssayPlot", function(x) {
 
 #' @export
 setMethod(".multiSelectionInvalidated", "FeatureAssayPlot", function(x) {
-    x[[.featAssayXAxis]] == .featAssayXAxisSelectionsTitle || callNextMethod()
+    slot(x, .featAssayXAxis) == .featAssayXAxisSelectionsTitle || callNextMethod()
 })
 
 #' @export
@@ -328,8 +328,8 @@ setMethod(".generateDotPlotData", "FeatureAssayPlot", function(x, envir) {
     data_cmds <- list()
 
     ## Setting up the y-axis:
-    gene_selected_y <- x[[.featAssayYAxisFeatName]]
-    assay_choice <- x[[.featAssayAssay]]
+    gene_selected_y <- slot(x, .featAssayYAxisFeatName)
+    assay_choice <- slot(x, .featAssayAssay)
     plot_title <- gene_selected_y
     y_lab <- sprintf("%s (%s)", gene_selected_y, assay_choice)
     data_cmds[["y"]] <- sprintf(
@@ -338,15 +338,15 @@ setMethod(".generateDotPlotData", "FeatureAssayPlot", function(x, envir) {
     )
 
     ## Checking X axis choice:
-    x_choice <- x[[.featAssayXAxis]]
+    x_choice <- slot(x, .featAssayXAxis)
 
     if (x_choice == .featAssayXAxisColDataTitle) { # colData column selected
-        x_lab <- x[[.featAssayXAxisColData]]
+        x_lab <- slot(x, .featAssayXAxisColData)
         plot_title <- paste(plot_title, "vs", x_lab)
         data_cmds[["x"]] <- sprintf("plot.data$X <- colData(se)[, %s];", deparse(x_lab))
 
     } else if (x_choice == .featAssayXAxisFeatNameTitle) { # gene selected
-        gene_selected_x <- x[[.featAssayXAxisFeatName]]
+        gene_selected_x <- slot(x, .featAssayXAxisFeatName)
         plot_title <- paste(plot_title, "vs", gene_selected_x)
         x_lab <- sprintf("%s (%s)", gene_selected_x, assay_choice)
         data_cmds[["x"]] <- sprintf(

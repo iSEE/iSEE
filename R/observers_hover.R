@@ -32,7 +32,7 @@
 
     # nocov start
     observeEvent(input[[hover_field]], { 
-        if (!pObjects$memory[[plot_name]][[.plotHoverInfo]]) {
+        if (!slot(pObjects$memory[[plot_name]], .plotHoverInfo)) {
             return(NULL)
         }
         hover <- input[[hover_field]]

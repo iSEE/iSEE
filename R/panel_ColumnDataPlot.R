@@ -196,17 +196,17 @@ setMethod(".defineDataInterface", "ColumnDataPlot", function(x, se, select_info)
         .selectInputHidden(x, .colDataYAxis,
             label="Column of interest (Y-axis):",
             choices=.allowableYAxisChoices(x, se),
-            selected=x[[.colDataYAxis]]),
+            selected=slot(x, .colDataYAxis)),
         .radioButtonsHidden(x, .colDataXAxis, 
             label="X-axis:", inline=TRUE,
             choices=c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle, .colDataXAxisSelectionsTitle),
-            selected=x[[.colDataXAxis]]),
+            selected=slot(x, .colDataXAxis)),
         .conditionalOnRadio(.input_FUN(.colDataXAxis),
             .colDataXAxisColDataTitle,
             .selectInputHidden(x, .colDataXAxisColData,
                 label="Column of interest (X-axis):",
                 choices=.allowableXAxisChoices(x, se),
-                selected=x[[.colDataXAxisColData]]))
+                selected=slot(x, .colDataXAxisColData)))
     )
 })
 
@@ -235,7 +235,7 @@ setMethod(".createObservers", "ColumnDataPlot", function(x, se, input, session, 
 
 #' @export
 setMethod(".multiSelectionInvalidated", "ColumnDataPlot", function(x) {
-    x[[.colDataXAxis]] == .colDataXAxisSelectionsTitle || callNextMethod()
+    slot(x, .colDataXAxis) == .colDataXAxisSelectionsTitle || callNextMethod()
 })
 
 #' @export
@@ -248,7 +248,7 @@ setMethod(".panelColor", "ColumnDataPlot", function(x) "#DB0230")
 setMethod(".generateDotPlotData", "ColumnDataPlot", function(x, envir) {
     data_cmds <- list()
 
-    y_lab <- x[[.colDataYAxis]]
+    y_lab <- slot(x, .colDataYAxis)
     # NOTE: deparse() automatically adds quotes, AND protects against existing quotes/escapes.
     data_cmds[["y"]] <- sprintf(
         "plot.data <- data.frame(Y=colData(se)[, %s], row.names=colnames(se));",
@@ -256,7 +256,7 @@ setMethod(".generateDotPlotData", "ColumnDataPlot", function(x, envir) {
     )
 
     # Prepare X-axis data.
-    x_choice <- x[[.colDataXAxis]]
+    x_choice <- slot(x, .colDataXAxis)
     if (x_choice == .colDataXAxisNothingTitle) {
         x_title <- x_lab <- ''
         data_cmds[["x"]] <- "plot.data$X <- factor(character(ncol(se)))"
@@ -276,7 +276,7 @@ setMethod(".generateDotPlotData", "ColumnDataPlot", function(x, envir) {
         )
 
     } else {
-        x_lab <- x[[.colDataXAxisColData]]
+        x_lab <- slot(x, .colDataXAxisColData)
         x_title <- sprintf("vs %s", x_lab)
         data_cmds[["x"]] <- sprintf(
             "plot.data$X <- colData(se)[, %s];",

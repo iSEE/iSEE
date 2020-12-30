@@ -197,10 +197,10 @@
             return(NULL)
         }
 
-        cur.width <- org_pObjects$memory[[panel_name]][[.organizationWidth]]
+        cur.width <- slot(org_pObjects$memory[[panel_name]], .organizationWidth)
         new.width <- as.integer(input[[width_name]])
         if (!isTRUE(all.equal(new.width, cur.width))) {
-            org_pObjects$memory[[panel_name]][[.organizationWidth]] <- new.width
+            slot(org_pObjects$memory[[panel_name]], .organizationWidth) <- new.width
         }
     }, ignoreInit=TRUE)
     # nocov end
@@ -213,10 +213,10 @@
             return(NULL)
         }
 
-        cur.height <- org_pObjects$memory[[panel_name]][[.organizationHeight]]
+        cur.height <- slot(org_pObjects$memory[[panel_name]], .organizationHeight)
         new.height <- as.integer(input[[height_name]])
         if (!isTRUE(all.equal(new.height, cur.height))) {
-            org_pObjects$memory[[panel_name]][[.organizationHeight]] <- new.height
+            slot(org_pObjects$memory[[panel_name]], .organizationHeight) <- new.height
         }
     }, ignoreInit=TRUE)
     # nocov end

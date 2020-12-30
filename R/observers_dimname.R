@@ -133,19 +133,19 @@
     # consider it a protected field).
     replot <- FALSE
     if (uses_use_mode_field) {
-        old_choice <- pObjects$memory[[panel_name]][[use_mode_field]]
+        old_choice <- slot(pObjects$memory[[panel_name]], use_mode_field)
         choice <- as(choice, typeof(old_choice))
-        pObjects$memory[[panel_name]][[use_mode_field]] <- choice
+        slot(pObjects$memory[[panel_name]], use_mode_field) <- choice
         replot <- old_choice!=choice
     }
 
-    old_tab <- pObjects$memory[[panel_name]][[tab_field]]
+    old_tab <- slot(pObjects$memory[[panel_name]], tab_field)
     tab <- as(tab, typeof(old_tab))
 
     update_info <- FALSE
     if (choice==use_value) {
         if (old_tab!=tab) {
-            pObjects$memory[[panel_name]][[tab_field]] <- tab
+            slot(pObjects$memory[[panel_name]], tab_field) <- tab
             pObjects$aesthetics_links <- .choose_new_parent(pObjects$aesthetics_links,
                 panel_name, tab, old_tab, field=name_field)
             update_info <- TRUE
@@ -158,7 +158,7 @@
 
         # Updating the selection, based on the currently selected row.
         if (tab!=.noSelection) {
-            old_selected <- pObjects$memory[[panel_name]][[name_field]]
+            old_selected <- slot(pObjects$memory[[panel_name]], name_field)
             new_selected <- .singleSelectionValue(pObjects$memory[[tab]], pObjects$contents[[tab]])
 
             if (!is.null(new_selected) && new_selected != old_selected) {
@@ -236,14 +236,15 @@
         # Required to defend against empty strings before updateSelectizeInput runs upon re-render.
         req(input[[name_input]])
 
-        matched_input <- as(input[[name_input]], typeof(pObjects$memory[[panel_name]][[name_field]]))
-        if (identical(matched_input, pObjects$memory[[panel_name]][[name_field]])) {
+        current <- slot(pObjects$memory[[panel_name]], name_field) 
+        matched_input <- as(input[[name_input]], typeof(current))
+        if (identical(matched_input, current)) {
             return(NULL)
         }
-        pObjects$memory[[panel_name]][[name_field]] <- matched_input
+        slot(pObjects$memory[[panel_name]], name_field) <- matched_input
 
         # Only regenerating if the current parameter is actually in use.
-        if (always_in_use || pObjects$memory[[panel_name]][[use_mode_field]]==use_value) {
+        if (always_in_use || slot(pObjects$memory[[panel_name]], use_mode_field)==use_value) {
             if (!protected) {
                 .requestUpdate(panel_name, rObjects)
             } else {
@@ -282,7 +283,7 @@
         # Protect against re-rendering after deleting a panel.
         if (panel_name %in% names(pObjects$memory)) {
             updateSelectizeInput(session, paste0(panel_name, "_", name_field),
-                choices=choices, selected=pObjects$memory[[panel_name]][[name_field]], server=TRUE)
+                choices=choices, selected=slot(pObjects$memory[[panel_name]], name_field), server=TRUE)
         }
     })
     # nocov end

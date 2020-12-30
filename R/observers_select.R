@@ -34,7 +34,7 @@
 
     # nocov start
     observeEvent(input[[select_panel_field]], {
-        old_transmitter <- pObjects$memory[[panel_name]][[by_field]]
+        old_transmitter <- slot(pObjects$memory[[panel_name]], by_field)
         new_transmitter <- input[[select_panel_field]]
         if (old_transmitter==new_transmitter) {
             return(NULL)
@@ -52,7 +52,7 @@
         }
 
         pObjects$selection_links <- tmp
-        pObjects$memory[[panel_name]][[by_field]] <- new_transmitter
+        slot(pObjects$memory[[panel_name]], by_field) <- new_transmitter
 
         # Update the elements reporting the links between panels.
         for (relinked in setdiff(c(old_transmitter, new_transmitter, panel_name), .noSelection)) {
@@ -142,13 +142,13 @@
     # nocov start
     observeEvent(input[[save_field]], {
         instance <- pObjects$memory[[panel_name]]
-        current <- instance[[.multiSelectHistory]]
+        current <- slot(instance, .multiSelectHistory)
         to_store <- .multiSelectionActive(instance)
         if (is.null(to_store)) {
             return(NULL)
         }
 
-        pObjects$memory[[panel_name]][[.multiSelectHistory]] <- c(current, list(to_store))
+        slot(pObjects$memory[[panel_name]], .multiSelectHistory) <- c(current, list(to_store))
 
         .safe_reactive_bump(rObjects, multi_name)
 
@@ -167,10 +167,9 @@
 
     # nocov start
     observeEvent(input[[del_field]], {
-        instance <- pObjects$memory[[panel_name]]
-        current <- instance[[.multiSelectHistory]]
+        current <- slot(pObjects$memory[[panel_name]], .multiSelectHistory)
         current <- head(current, -1)
-        pObjects$memory[[panel_name]][[.multiSelectHistory]] <- current
+        slot(pObjects$memory[[panel_name]], .multiSelectHistory) <- current
 
         .safe_reactive_bump(rObjects, multi_name)
 
@@ -228,11 +227,12 @@
 
     # nocov start
     observeEvent(input[[select_dyn_field]], {
-        matched_input <- as(input[[select_dyn_field]], typeof(pObjects$memory[[panel_name]][[dyn_field]]))
-        if (identical(matched_input, pObjects$memory[[panel_name]][[dyn_field]])) {
+        current <- slot(pObjects$memory[[panel_name]], dyn_field)
+        matched_input <- as(input[[select_dyn_field]], typeof(current))
+        if (identical(matched_input, current)) {
             return(NULL)
         }
-        pObjects$memory[[panel_name]][[dyn_field]] <- matched_input
+        slot(pObjects$memory[[panel_name]], dyn_field) <- matched_input
 
         if (matched_input) {
             FUN <- .add_panel_to_dynamic_sources 

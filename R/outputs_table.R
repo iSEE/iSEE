@@ -44,9 +44,9 @@
         t.out <- .retrieveOutput(panel_name, se, pObjects, rObjects)
         full_tab <- t.out$contents
 
-        chosen <- param_choices[[.TableSelected]]
-        search <- param_choices[[.TableSearch]]
-        search_col <- param_choices[[.TableColSearch]]
+        chosen <- slot(param_choices, .TableSelected)
+        search <- slot(param_choices, .TableSearch)
+        search_col <- slot(param_choices, .TableColSearch)
 
         # Indicating to downstream observers that the table has been re-rendered;
         # required for UI elements that depend on, e.g., the table column names.
@@ -89,12 +89,9 @@
             full_tab$DUMMY <- integer(nrow(full_tab))
             columnDefs <- list(list(targets=1L, visible=FALSE))
 
-        } else if (length(param_choices[[.TableHidden]])) {
-            m <- which(colnames(full_tab) %in% param_choices[[.TableHidden]])
-            columnDefs <- list()
-            for (i in seq_along(m)) {
-                columnDefs[[i]] <- list(targets=as.integer(m[i]), visible=FALSE)
-            }
+        } else if (length(hidden <- slot(param_choices, .TableHidden))) {
+            m <- which(colnames(full_tab) %in% hidden)
+            columnDefs <- lapply(m, function(i) list(targets=i, visible=FALSE))
 
         } else {
             columnDefs <- NULL

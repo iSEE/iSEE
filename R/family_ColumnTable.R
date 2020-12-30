@@ -123,6 +123,6 @@ setMethod(".hideInterface", "ColumnTable", function(x, field) {
 setMethod(".showSelectionDetails", "ColumnTable", function(x) {
     FUN <- iSEEOptions$get("ColumnTable.select.details")
     if (!is.null(FUN)) {
-        FUN(x[[.TableSelected]])
+        FUN(slot(x, .TableSelected))
     }
 })

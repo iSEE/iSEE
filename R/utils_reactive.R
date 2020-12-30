@@ -30,12 +30,12 @@
 #' @rdname retrieveOutput
 .retrieveOutput <- function(panel_name, se, pObjects, rObjects) {
     .trackUpdate(panel_name, rObjects)
-    curpanel <- pObjects$memory[[panel_name]]
 
     if (length(pObjects$cached[[panel_name]])!=0L) {
         output <- pObjects$cached[[panel_name]]
         pObjects$cached[panel_name] <- list(NULL)
     } else {
+        curpanel <- pObjects$memory[[panel_name]]
         output <- .generateOutput(curpanel, se, 
             all_memory=pObjects$memory, all_contents=pObjects$contents)
     }
@@ -97,7 +97,7 @@
         accumulated <- c(accumulated, .panelReactivated)
     }
     if (.any_saved_selection(pObjects$memory[[panel_name]])) {
-        pObjects$memory[[panel_name]][[.multiSelectHistory]] <- list()
+        slot(pObjects$memory[[panel_name]], .multiSelectHistory) <- list()
         accumulated <- c(accumulated, .panelResaved)
     }
     .mark_panel_as_modified(panel_name, accumulated, rObjects)
@@ -167,7 +167,7 @@
         if (panel_name %in% all_affected) {
             updateSelectInput(session=session, inputId=paste0(panel_name, "_", field), selected=.noSelection)
             pObjects$selection_links <- .delete_interpanel_link(pObjects$selection_links,
-                panel_name, parent_name=target[[field]], field=field)
+                panel_name, parent_name=slot(target, field), field=field)
             all_affected <- setdiff(all_affected, panel_name)
         }
 

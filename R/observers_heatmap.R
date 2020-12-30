@@ -31,11 +31,12 @@
     # nocov start
     observeEvent(input[[.input_FUN(.heatMapAssay)]], {
         # .createUnprotectedParameterObservers with a twist
-        matched_input <- as(input[[.input_FUN(.heatMapAssay)]], typeof(pObjects$memory[[plot_name]][[.heatMapAssay]]))
-        if (identical(matched_input, pObjects$memory[[plot_name]][[.heatMapAssay]])) {
+        current <- slot(pObjects$memory[[plot_name]], .heatMapAssay)
+        matched_input <- as(input[[.input_FUN(.heatMapAssay)]], typeof(current))
+        if (identical(matched_input, current)) {
             return(NULL)
         }
-        pObjects$memory[[plot_name]][[.heatMapAssay]] <- matched_input
+        slot(pObjects$memory[[plot_name]], .heatMapAssay) <- matched_input
 
         # Twist: clear and update the limits of lower/upper bounds based on the new data
         plot_range <- range(assay(se, input[[.input_FUN(.heatMapAssay)]]), na.rm = TRUE)
@@ -66,13 +67,12 @@
     # nocov start
     observeEvent(input[[.input_FUN(.heatMapCustomAssayBounds)]], {
         # .createUnprotectedParameterObservers with a twist
-        matched_input <- as(input[[.input_FUN(.heatMapCustomAssayBounds)]],
-            typeof(pObjects$memory[[plot_name]][[.heatMapCustomAssayBounds]]))
-        
-        if (identical(matched_input, pObjects$memory[[plot_name]][[.heatMapCustomAssayBounds]])) {
+        current <- slot(pObjects$memory[[plot_name]], .heatMapCustomAssayBounds)
+        matched_input <- as(input[[.input_FUN(.heatMapCustomAssayBounds)]], typeof(current))
+        if (identical(matched_input, current)) {
             return(NULL)
         }
-        pObjects$memory[[plot_name]][[.heatMapCustomAssayBounds]] <- matched_input
+        slot(pObjects$memory[[plot_name]], .heatMapCustomAssayBounds) <- matched_input
         
         # Twist: do not rerender if both custom assay bounds UI are empty
         if (is.na(input[[.input_FUN(.assayLowerBound)]]) && is.na(input[[.input_FUN(.assayUpperBound)]])) {
@@ -89,12 +89,12 @@
             field0 <- field
             observeEvent(input[[.input_FUN(field0)]], {
                 # .createUnprotectedParameterObservers with a twist
-                matched_input <- as(input[[.input_FUN(field0)]],
-                    typeof(pObjects$memory[[plot_name]][[field0]]))
-                if (identical(matched_input, pObjects$memory[[plot_name]][[field0]])) {
+                current <- slot(pObjects$memory[[plot_name]], field0)
+                matched_input <- as(input[[.input_FUN(field0)]], typeof(current))
+                if (identical(matched_input, current)) {
                     return(NULL)
                 }
-                pObjects$memory[[plot_name]][[field0]] <- matched_input
+                slot(pObjects$memory[[plot_name]], field0) <- matched_input
 
                 # Twist: clear and update the limits of lower/upper bounds based on the new data
                 updateNumericInput(session, .input_FUN(.assayLowerBound), value = numeric(0), min = -Inf, max = 0)
@@ -119,20 +119,20 @@
                     return(NULL)
                 }
                 if (is.na(cur_value)) {
-                    pObjects$memory[[plot_name]][[bound0]] <- NA_real_
+                    slot(pObjects$memory[[plot_name]], bound0) <- NA_real_
                     .requestUpdate(plot_name, rObjects)
                     return(NULL)
                 }
-                pObjects$memory[[plot_name]][[bound0]] <- cur_value
+                slot(pObjects$memory[[plot_name]], bound0) <- cur_value
 
                 # The upper bound cannot be lower than the lower bound.
-                other_bound <- pObjects$memory[[plot_name]][[other]]
+                other_bound <- slot(pObjects$memory[[plot_name]], other)
                 if (!is.null(other_bound) && !is.na(other_bound) &&
                     ((bound0==.assayLowerBound && cur_value > other_bound) ||
                         (bound0==.assayUpperBound && cur_value < other_bound)))
                 {
                     # set identical values; 0-length range is handled later
-                    pObjects$memory[[plot_name]][[other]] <- cur_value
+                    slot(pObjects$memory[[plot_name]], other) <- cur_value
                     updateNumericInput(session, .input_FUN(other), value = cur_value)
                 }
 

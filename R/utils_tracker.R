@@ -57,13 +57,13 @@
             next
         }
 
-        brush_struct <- all_memory[[panel_name]][[.brushData]]
+        brush_struct <- slot(all_memory[[panel_name]], .brushData)
         if (!is.null(brush_struct)) {
             brush_struct <- .deparse_for_viewing(brush_struct)
             brush_code[[panel_name]] <- sprintf("all_active[['%s']] <- %s", panel_name, brush_struct)
         }
 
-        saved_struct <- all_memory[[panel_name]][[.multiSelectHistory]]
+        saved_struct <- slot(all_memory[[panel_name]], .multiSelectHistory)
         if (length(saved_struct)) {
             saved_struct <- .deparse_for_viewing(saved_struct)
             history_code[[panel_name]] <- sprintf("all_saved[['%s']] <- %s", panel_name, saved_struct)

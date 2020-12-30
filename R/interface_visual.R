@@ -160,7 +160,7 @@
     all_coldata <- .getCachedCommonInfo(se, "ComplexHeatmapPlot")$valid.colData.names
     all_rowdata <- .getCachedCommonInfo(se, "ComplexHeatmapPlot")$valid.rowData.names
 
-    assay_name <- x[[.heatMapAssay]]
+    assay_name <- slot(x, .heatMapAssay)
     assay_discrete <- assay_name %in% .getCachedCommonInfo(se, "ComplexHeatmapPlot")$discrete.assay.names
 
     .input_FUN <- function(field) paste0(plot_name, "_", field)
@@ -176,54 +176,54 @@
     collapseBox(
         id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
-        open=x[[.visualParamBoxOpen]],
+        open=slot(x, .visualParamBoxOpen),
         checkboxGroupInput(
             inputId=pchoice_field, label=NULL, inline=TRUE,
-            selected=x[[.visualParamChoice]],
+            selected=slot(x, .visualParamChoice),
             choices=c(.visualParamChoiceMetadataTitle, .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle,
                 .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle)),
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceMetadataTitle,
             hr(),
             selectizeInput(.input_FUN(.heatMapColData), label="Column annotations:",
-                selected=x[[.heatMapColData]], choices=all_coldata, multiple=TRUE,
+                selected=slot(x, .heatMapColData), choices=all_coldata, multiple=TRUE,
                 options=list(plugins=list('remove_button', 'drag_drop'))),
             selectizeInput(.input_FUN(.heatMapRowData), label="Row annotations:",
-                selected=x[[.heatMapRowData]], choices=all_rowdata, multiple=TRUE,
+                selected=slot(x, .heatMapRowData), choices=all_rowdata, multiple=TRUE,
                 options=list(plugins=list('remove_button', 'drag_drop'))),
             checkboxInput(.input_FUN(.heatMapShowSelection), label="Show column selection",
-                value=x[[.heatMapShowSelection]]),
+                value=slot(x, .heatMapShowSelection)),
             checkboxInput(.input_FUN(.heatMapShowSelection), label="Order by column selection",
-                value=x[[.heatMapOrderSelection]])
+                value=slot(x, .heatMapOrderSelection))
         ),
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceTransformTitle,
             hr(),
             strong("Row transformations:"),
-            ABLEFUN(checkboxInput(.input_FUN(.assayCenterRows), "Center", value=x[[.assayCenterRows]])),
+            ABLEFUN(checkboxInput(.input_FUN(.assayCenterRows), "Center", value=slot(x, .assayCenterRows))),
             .conditionalOnCheckSolo(.input_FUN(.assayCenterRows), on_select = TRUE,
-                ABLEFUN(checkboxInput(.input_FUN(.assayScaleRows), "Scale", value=x[[.assayScaleRows]])),
+                ABLEFUN(checkboxInput(.input_FUN(.assayScaleRows), "Scale", value=slot(x, .assayScaleRows))),
                 ABLEFUN(selectizeInput(.input_FUN(.heatMapCenteredColormap), label="Centered assay colormap:",
-                    selected=x[[.heatMapCenteredColormap]],
+                    selected=slot(x, .heatMapCenteredColormap),
                     choices=c(.colormapPurpleBlackYellow, .colormapBlueWhiteOrange, .colormapBlueWhiteRed, .colormapGreenWhiteRed))))
         ),
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceColorTitle,
             hr(),
             ABLEFUN(checkboxInput(.input_FUN(.heatMapCustomAssayBounds), "Use custom colorscale bounds",
-                value = x[[.heatMapCustomAssayBounds]])),
+                value = slot(x, .heatMapCustomAssayBounds))),
             .conditionalOnCheckSolo(.input_FUN(.heatMapCustomAssayBounds), on_select = TRUE,
                 ABLEFUN(numericInput(.input_FUN(.assayLowerBound), "Lower bound",
-                    value=x[[.assayLowerBound]], min = -Inf, max = Inf)),
+                    value=slot(x, .assayLowerBound), min = -Inf, max = Inf)),
                 ABLEFUN(numericInput(.input_FUN(.assayUpperBound), "Upper bound",
-                    value=x[[.assayUpperBound]], min = -Inf, max = Inf)))
+                    value=slot(x, .assayUpperBound), min = -Inf, max = Inf)))
         ),
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceLabelsTitle,
             hr(),
             checkboxGroupInput(
                 inputId=.input_FUN(.showDimnames), label="Show names:", inline=TRUE,
-                selected=x[[.showDimnames]],
+                selected=slot(x, .showDimnames),
                 choices=c(.showNamesRowTitle, .showNamesColumnTitle))
         ),
         .conditionalOnCheckGroup(
@@ -231,10 +231,10 @@
             hr(),
             radioButtons(.input_FUN(.plotLegendPosition), label="Legend position:", inline=TRUE,
                 choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
-                selected=x[[.plotLegendPosition]]),
+                selected=slot(x, .plotLegendPosition)),
             radioButtons(.input_FUN(.plotLegendDirection), label="Legend direction:", inline=TRUE,
                 choices=c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle),
-                selected=x[[.plotLegendDirection]])
+                selected=slot(x, .plotLegendDirection))
         )
     )
 }
@@ -263,16 +263,16 @@
     tagList(
         sliderInput(
             paste0(plot_name, "_", .plotPointAlpha), label="Point opacity",
-            min=0.1, max=1, value=x[[.plotPointAlpha]]),
+            min=0.1, max=1, value=slot(x, .plotPointAlpha)),
         hr(),
         .checkboxInputHidden(x, field=.plotPointDownsample,
             label="Downsample points for speed",
-            value=x[[.plotPointDownsample]]),
+            value=slot(x, .plotPointDownsample)),
         .conditionalOnCheckSolo(
             ds_id, on_select=TRUE,
             numericInput(
                 paste0(plot_name, "_", .plotPointSampleRes), label="Sampling resolution:",
-                min=1, value=x[[.plotPointSampleRes]])
+                min=1, value=slot(x, .plotPointSampleRes))
         )
     )
 }

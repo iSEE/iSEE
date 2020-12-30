@@ -183,9 +183,9 @@ setMethod("[[", "RowDotPlot", function(x, i, j, ...) {
         .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.\nUse <%s>[['%s']] and/or <%s>[['%s']] instead.",
             cname, i, cname, .selectRowRestrict, cname, .colorByField))
 
-        if (x[[.selectRowRestrict]]) {
+        if (slot(x, .selectRowRestrict)) {
             "Restrict" 
-        } else if (x[[.colorByField]] == .colorByRowSelectionsTitle) {
+        } else if (slot(x, .colorByField) == .colorByRowSelectionsTitle) {
             "Color"
         } else {
             "Transparent"
@@ -208,7 +208,7 @@ setReplaceMethod("[[", "RowDotPlot", function(x, i, j, ..., value) {
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.\nSet <%s>[['%s']] and/or <%s>[['%s']] instead.",
             cname, i, cname, .selectRowRestrict, cname, .colorByField))
 
-        x[[.selectRowRestrict]] <- (value=="Restrict")
+        slot(x, .selectRowRestrict) <- (value=="Restrict")
 
         x
     } else {
@@ -305,12 +305,14 @@ setMethod(".multiSelectionDimension", "RowDotPlot", function(x) "row")
 
 #' @export
 setMethod(".multiSelectionRestricted", "RowDotPlot", function(x) {
-    x[[.selectRowRestrict]]
+    slot(x, .selectRowRestrict)
 })
 
 #' @export
 setMethod(".multiSelectionInvalidated", "RowDotPlot", function(x) {
-    x[[.facetRow]] == .facetByRowSelectionsTitle || x[[.facetColumn]] == .facetByRowSelectionsTitle || callNextMethod()
+    slot(x, .facetRow) == .facetByRowSelectionsTitle || 
+        slot(x, .facetColumn) == .facetByRowSelectionsTitle || 
+        callNextMethod()
 })
 
 #' @export
@@ -399,22 +401,22 @@ setMethod(".getDotPlotFacetConstants", "RowDotPlot", function(x) {
 # See ?.addDotPlotDataColor for documentation on these methods.
 
 setMethod(".addDotPlotDataColor", "RowDotPlot", function(x, envir) {
-    color_choice <- x[[.colorByField]]
+    color_choice <- slot(x, .colorByField)
 
     if (color_choice == .colorByRowDataTitle) {
-        covariate_name <- x[[.colorByRowData]]
+        covariate_name <- slot(x, .colorByRowData)
         label <- covariate_name
         cmds <- sprintf("plot.data$ColorBy <- rowData(se)[, %s];", deparse(covariate_name))
 
     } else if (color_choice == .colorByFeatNameTitle) {
-        chosen_gene <- x[[.colorByFeatName]]
+        chosen_gene <- slot(x, .colorByFeatName)
         label <- chosen_gene
         cmds <- sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;",
             deparse(chosen_gene))
 
     } else if (color_choice  == .colorBySampNameTitle) {
-        chosen_sample <- x[[.colorBySampName]]
-        assay_choice <- x[[.colorBySampNameAssay]]
+        chosen_sample <- slot(x, .colorBySampName)
+        assay_choice <- slot(x, .colorBySampNameAssay)
         label <- sprintf("%s\n(%s)", chosen_sample, assay_choice)
         cmds <- sprintf("plot.data$ColorBy <- assay(se, %s)[, %s];",
             deparse(assay_choice), deparse(chosen_sample))
@@ -441,10 +443,10 @@ setMethod(".addDotPlotDataColor", "RowDotPlot", function(x, envir) {
 })
 
 setMethod(".addDotPlotDataShape", "RowDotPlot", function(x, envir) {
-    shape_choice <- x[[.shapeByField]]
+    shape_choice <- slot(x, .shapeByField)
 
     if (shape_choice == .shapeByRowDataTitle) {
-        covariate_name <- x[[.shapeByRowData]]
+        covariate_name <- slot(x, .shapeByRowData)
         label <- covariate_name
         cmds <- sprintf("plot.data$ShapeBy <- rowData(se)[, %s];", deparse(covariate_name))
 
@@ -458,10 +460,10 @@ setMethod(".addDotPlotDataShape", "RowDotPlot", function(x, envir) {
 })
 
 setMethod(".addDotPlotDataSize", "RowDotPlot", function(x, envir) {
-    size_choice <- x[[.sizeByField]]
+    size_choice <- slot(x, .sizeByField)
 
     if (size_choice == .sizeByRowDataTitle) {
-        covariate_name <- x[[.sizeByRowData]]
+        covariate_name <- slot(x, .sizeByRowData)
         label <- covariate_name
         cmds <- sprintf("plot.data$SizeBy <- rowData(se)[, %s];", deparse(covariate_name))
 
@@ -487,7 +489,7 @@ setMethod(".addDotPlotDataFacets", "RowDotPlot", function(x, envir) {
         current <- params[[f]]
         param_field <- current[[1]]
         pd_field <- current[[2]]
-        facet_mode <- x[[param_field]]
+        facet_mode <- slot(x, param_field)
 
         if (facet_mode == .facetByRowDataTitle) {
             facet_data <- x[[current[[3]]]]
@@ -520,7 +522,7 @@ setMethod(".addDotPlotDataSelected", "RowDotPlot", function(x, envir) {
         SelectBy="plot.data$SelectBy <- rownames(plot.data) %in% unlist(row_selected);"
     )
 
-    if (x[[.selectRowRestrict]]) {
+    if (slot(x, .selectRowRestrict)) {
         cmds["saved"] <- "plot.data.all <- plot.data;"
         cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"
     }
@@ -532,16 +534,19 @@ setMethod(".addDotPlotDataSelected", "RowDotPlot", function(x, envir) {
 
 #' @importFrom ggplot2 scale_color_manual geom_point
 setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="Y") {
-    color_choice <- x[[.colorByField]]
+    color_choice <- slot(x, .colorByField)
 
-    # This slightly duplicates the work in .define_colorby_for_row_plot(),
-    # but this is necessary to separate the function of data acquisition and plot generation.
     if (color_choice == .colorByRowDataTitle) {
-        covariate_name <- x[[.colorByRowData]]
+        covariate_name <- slot(x, .colorByRowData)
         cmds <- .create_color_scale("rowDataColorMap", deparse(covariate_name), colorby)
 
     } else if (color_choice == .colorByFeatNameTitle) {
-        col_choice <- x[[.colorByFeatNameColor]]
+        col_choice <- slot(x, .colorByFeatNameColor)
+        if (slot(x, .sizeByField) == .sizeByNothingTitle) {
+            size_cmd <- paste0(", size=5*", slot(x, .plotPointSize)) 
+        } else {
+            size_cmd <- ""
+        }
         c(
             sprintf(
                 "scale_color_manual(values=c(`FALSE`='black', `TRUE`=%s), drop=FALSE) +",
@@ -549,16 +554,12 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
             ),
             sprintf(
                 "geom_point(aes(x=%s, y=%s), data=subset(plot.data, ColorBy == 'TRUE'), col=%s, alpha=1%s) +",
-                x_aes, y_aes, deparse(col_choice),
-                ifelse(x[[.sizeByField]] == .sizeByNothingTitle,
-                    paste0(", size=5*", x[[.plotPointSize]]),
-                    ""
-                )
+                x_aes, y_aes, deparse(col_choice), size_cmd
             )
         )
 
     } else if (color_choice == .colorBySampNameTitle) {
-        assay_choice <- x[[.colorBySampNameAssay]]
+        assay_choice <- slot(x, .colorBySampNameAssay)
         .create_color_scale("assayColorMap", deparse(assay_choice), colorby)
 
     } else if (color_choice == .colorByRowSelectionsTitle) {

@@ -307,9 +307,9 @@ setMethod("[[", "ComplexHeatmapPlot", function(x, i, j, ...) {
         .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.\nUse <%s>[['%s']] and/or <%s>[['%s']] instead.",
             cname, i, cname, .selectColRestrict, cname, .heatMapShowSelection))
 
-        if (x[[.selectColRestrict]]) {
+        if (slot(x, .selectColRestrict)) {
             "Restrict" 
-        } else if (x[[.heatMapShowSelection]]) {
+        } else if (slot(x, .heatMapShowSelection)) {
             "Color"
         } else {
             "Transparent"
@@ -332,8 +332,8 @@ setReplaceMethod("[[", "ComplexHeatmapPlot", function(x, i, j, ..., value) {
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.\nSet <%s>[['%s']] and/or <%s>[['%s']] instead.",
             cname, i, cname, .selectColRestrict, cname, .heatMapShowSelection))
 
-        x[[.selectColRestrict]] <- (value=="Restrict")
-        x[[.heatMapShowSelection]] <- (value!="Restrict")
+        slot(x, .selectColRestrict) <- (value=="Restrict")
+        slot(x, .heatMapShowSelection) <- (value!="Restrict")
 
         x
     } else {
@@ -403,8 +403,8 @@ setMethod(".refineParameters", "ComplexHeatmapPlot", function(x, se) {
     all_assays <- c(intersect(iSEEOptions$get("assay"), all_assays), all_assays)
     x <- .replaceMissingWithFirst(x, .heatMapAssay, all_assays)
 
-    if (is.na(x[[.heatMapFeatNameText]])) {
-        x[[.heatMapFeatNameText]] <- rownames(se)[1]
+    if (is.na(slot(x, .heatMapFeatNameText))) {
+        slot(x, .heatMapFeatNameText) <- rownames(se)[1]
     }
 
     x
@@ -420,7 +420,7 @@ setMethod(".fullName", "ComplexHeatmapPlot", function(x) "Complex heatmap")
 #' @export
 setMethod(".defineOutput", "ComplexHeatmapPlot", function(x) {
     plot_name <- .getEncodedName(x)
-    plotOutput(plot_name, height=paste0(x[[.organizationHeight]], "px"))
+    plotOutput(plot_name, height=paste0(slot(x, .organizationHeight), "px"))
 })
 
 #' @export
@@ -433,7 +433,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 
     all_assays <- .getCachedCommonInfo(se, "ComplexHeatmapPlot")$valid.assay.names
 
-    assay_name <- x[[.heatMapAssay]]
+    assay_name <- slot(x, .heatMapAssay)
     assay_discrete <- assay_name %in% .getCachedCommonInfo(se, "ComplexHeatmapPlot")$discrete.assay.names
     ABLEFUN <- if (assay_discrete) {
         disabled
@@ -443,15 +443,15 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 
     list(
         selectInput(.input_FUN(.heatMapAssay), label="Assay choice",
-            choices=all_assays, selected=x[[.heatMapAssay]]),
+            choices=all_assays, selected=slot(x, .heatMapAssay)),
         checkboxInput(.input_FUN(.heatMapCustomFeatNames), label="Use custom rows",
-            value=x[[.heatMapCustomFeatNames]]),
+            value=slot(x, .heatMapCustomFeatNames)),
         .conditionalOnCheckSolo(
             .input_FUN(.heatMapCustomFeatNames),
             on_select=TRUE,
             actionButton(.input_FUN(.dimnamesModalOpen), label="Edit feature names")),
         ABLEFUN(checkboxInput(.input_FUN(.heatMapClusterFeatures), label="Cluster rows",
-            value=x[[.heatMapClusterFeatures]])),
+            value=slot(x, .heatMapClusterFeatures))),
         .conditionalOnCheckSolo(
             .input_FUN(.heatMapClusterFeatures),
             on_select=TRUE,
@@ -459,14 +459,14 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
                 choices=c(.clusterDistanceEuclidean, .clusterDistancePearson, .clusterDistanceSpearman,
                     .clusterDistanceManhattan, .clusterDistanceMaximum, .clusterDistanceCanberra,
                     .clusterDistanceBinary, .clusterDistanceMinkowski, .clusterDistanceKendall),
-                selected=x[[.heatMapClusterDistanceFeatures]])),
+                selected=slot(x, .heatMapClusterDistanceFeatures))),
             ABLEFUN(selectInput(.input_FUN(.heatMapClusterMethodFeatures), label="Clustering method for rows",
                 choices=c(.clusterMethodWardD, .clusterMethodWardD2, .clusterMethodSingle, .clusterMethodComplete,
                     "average (= UPGMA)"=.clusterMethodAverage,
                     "mcquitty (= WPGMA)"=.clusterMethodMcquitty,
                     "median (= WPGMC)"=.clusterMethodMedian,
                     "centroid (= UPGMC)"=.clusterMethodCentroid),
-                selected=x[[.heatMapClusterMethodFeatures]])))
+                selected=slot(x, .heatMapClusterMethodFeatures))))
     )
 })
 
@@ -526,10 +526,10 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
 
         # Row clustering.
         if (.is_heatmap_continuous(x, se)) {
-            heatmap_args[["cluster_rows"]] <- as.character(x[[.heatMapClusterFeatures]])
-            if (x[[.heatMapClusterFeatures]]) {
-                heatmap_args[["clustering_distance_rows"]] <- deparse(x[[.heatMapClusterDistanceFeatures]])
-                heatmap_args[["clustering_method_rows"]] <- deparse(x[[.heatMapClusterMethodFeatures]])
+            heatmap_args[["cluster_rows"]] <- as.character(slot(x, .heatMapClusterFeatures))
+            if (slot(x, .heatMapClusterFeatures)) {
+                heatmap_args[["clustering_distance_rows"]] <- deparse(slot(x, .heatMapClusterDistanceFeatures))
+                heatmap_args[["clustering_method_rows"]] <- deparse(slot(x, .heatMapClusterMethodFeatures))
             }
         }
     }
@@ -539,11 +539,11 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
 
     # Names
     heatmap_args[["name"]] <- deparse(.build_heatmap_assay_legend_title(x, !.is_heatmap_continuous(x, se)))
-    heatmap_args[["show_row_names"]] <- as.character(.showNamesRowTitle %in% x[[.showDimnames]])
-    heatmap_args[["show_column_names"]] <- as.character(.showNamesColumnTitle %in% x[[.showDimnames]])
+    heatmap_args[["show_row_names"]] <- as.character(.showNamesRowTitle %in% slot(x, .showDimnames))
+    heatmap_args[["show_column_names"]] <- as.character(.showNamesColumnTitle %in% slot(x, .showDimnames))
 
     # Legend parameters
-    heatmap_args[['heatmap_legend_param']] <- sprintf('list(direction=%s)', deparse(tolower(x[[.plotLegendDirection]])))
+    heatmap_args[['heatmap_legend_param']] <- sprintf('list(direction=%s)', deparse(tolower(slot(x, .plotLegendDirection))))
 
     # Heatmap
     heatmap_args <- sprintf("%s=%s", names(heatmap_args), heatmap_args)
@@ -555,8 +555,8 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     all_cmds[["heatmap"]] <- heat_cmd
 
     # Add draw command after all evaluations (avoid drawing in the plotting device)
-    heatmap_legend_side <- sprintf('heatmap_legend_side=%s', deparse(tolower(x[[.plotLegendPosition]])))
-    annotation_legend_side <- sprintf('annotation_legend_side=%s', deparse(tolower(x[[.plotLegendPosition]])))
+    heatmap_legend_side <- sprintf('heatmap_legend_side=%s', deparse(tolower(slot(x, .plotLegendPosition))))
+    annotation_legend_side <- sprintf('annotation_legend_side=%s', deparse(tolower(slot(x, .plotLegendPosition))))
     all_cmds[["draw"]] <- sprintf("ComplexHeatmap::draw(hm, %s, %s)", heatmap_legend_side, annotation_legend_side)
 
     list(commands=all_cmds, contents=plot_env$plot.data, plot=plot_out, varname="plot.data")
@@ -589,7 +589,7 @@ setMethod(".exportOutput", "ComplexHeatmapPlot", function(x, se, all_memory, all
 
     # These are reasonably satisfactory heuristics:
     # Width = Pixels -> Inches, Height = Bootstrap -> Inches.
-    pdf(newpath, width=x[[.organizationHeight]]/75, height=x[[.organizationWidth]]*2)
+    pdf(newpath, width=slot(x, .organizationHeight)/75, height=slot(x, .organizationWidth)*2)
     # print(contents$plot)
     draw(contents$plot)
     dev.off()

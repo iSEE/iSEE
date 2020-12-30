@@ -372,10 +372,10 @@ setMethod("[[", "DotPlot", function(x, i, j, ...) {
             cname, i, cname, dim, cname, dim_field))
 
         title <- facet_info$metadata$title
-        if (x[[dim]]!=title) {
+        if (slot(x, dim)!=title) {
             .noSelection
         } else {
-            x[[dim_field]]
+            slot(x, dim_field)
         }
     } else {
         callNextMethod()
@@ -405,10 +405,10 @@ setReplaceMethod("[[", "DotPlot", function(x, i, j, ..., value) {
 
         title <- facet_info$metadata$title
         if (value==.noSelection) {
-            x[[dim]] <- .facetByNothingTitle
+            slot(x, dim) <- .facetByNothingTitle
         } else {
-            x[[dim]] <- title
-            x[[dim_field]] <- value
+            slot(x, dim) <- title
+            slot(x, dim_field) <- value
         }
         x
     } else {
@@ -517,13 +517,13 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
         radioButtons(
             colorby_field, label="Color by:", inline=TRUE,
             choices=.defineDotPlotColorChoices(x, se),
-            selected=x[[.colorByField]]
+            selected=slot(x, .colorByField)
         ),
         .conditionalOnRadio(
             colorby_field, .colorByNothingTitle,
             colourInput(
                 paste0(plot_name, "_", .colorByDefaultColor), label=NULL,
-                value=x[[.colorByDefaultColor]])
+                value=slot(x, .colorByDefaultColor))
         ),
         .conditionalOnRadio(
             colorby_field, colorby$metadata$title,
@@ -561,7 +561,7 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
         sliderInput(
             paste0(plot_name, "_", .selectTransAlpha), 
             label="Unselected point opacity:",
-            min=0, max=1, value=x[[.selectTransAlpha]]
+            min=0, max=1, value=slot(x, .selectTransAlpha)
         )
     )
 })
@@ -580,7 +580,7 @@ setMethod(".defineVisualShapeInterface", "DotPlot", function(x, se) {
             radioButtons(
                 shapeby_field, label="Shape by:", inline=TRUE,
                 choices=c(.shapeByNothingTitle, if (length(discrete_covariates)) shapeby$metadata$title),
-                selected=x[[.shapeByField]]
+                selected=slot(x, .shapeByField)
             ),
             .conditionalOnRadio(
                 shapeby_field, shapeby$metadata$title,
@@ -606,13 +606,13 @@ setMethod(".defineVisualSizeInterface", "DotPlot", function(x, se) {
         radioButtons(
             sizeby_field, label="Size by:", inline=TRUE,
             choices=c(.sizeByNothingTitle, if (length(numeric_covariates)) sizeby$metadata$title),
-            selected=x[[.sizeByField]]
+            selected=slot(x, .sizeByField)
         ),
         .conditionalOnRadio(
             sizeby_field, .sizeByNothingTitle,
             numericInput(
                 paste0(plot_name, "_", .plotPointSize), label="Point size:",
-                min=0, value=x[[.plotPointSize]])
+                min=0, value=slot(x, .plotPointSize))
         ),
         .conditionalOnRadio(
             sizeby_field, sizeby$metadata$title,
@@ -637,7 +637,7 @@ setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
             on_select=TRUE,
             colourInput(
                 paste0(plot_name, "_", .contourColor), label=NULL,
-                value=x[[.contourColor]]))
+                value=slot(x, .contourColor)))
     )
 })
 
@@ -661,16 +661,16 @@ setMethod(".defineVisualFacetInterface", "DotPlot", function(x, se) {
 
     tagList(
         hr(),
-        radioButtons(rowId, label="Facet by row:", choices=title_choices, selected=x[[.facetRow]], inline=TRUE),
+        radioButtons(rowId, label="Facet by row:", choices=title_choices, selected=slot(x, .facetRow), inline=TRUE),
         if (length(covariates)) {
             .conditionalOnRadio(rowId, facet_info$metadata$title, 
-                selectInput(paste0(plot_name, "_", row_field), label=NULL, choices=covariates, selected=x[[row_field]])
+                selectInput(paste0(plot_name, "_", row_field), label=NULL, choices=covariates, selected=slot(x, row_field))
             )
         },
-        radioButtons(columnId, label="Facet by column:", choices=title_choices, selected=x[[.facetColumn]], inline=TRUE),
+        radioButtons(columnId, label="Facet by column:", choices=title_choices, selected=slot(x, .facetColumn), inline=TRUE),
         if (length(covariates)) {
             .conditionalOnRadio(columnId, facet_info$metadata$title,
-                selectInput(paste0(plot_name, "_", col_field), label=NULL, choices=covariates, selected=x[[col_field]])
+                selectInput(paste0(plot_name, "_", col_field), label=NULL, choices=covariates, selected=slot(x, col_field))
             )
         }
     )
@@ -685,11 +685,11 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
         hr(),
         checkboxInput(.input_FUN(.plotHoverInfo),
             label=sprintf("Show %s details on hover", .singleSelectionDimension(x)),
-            value=x[[.plotHoverInfo]]),
+            value=slot(x, .plotHoverInfo)),
         hr(),
         checkboxInput(.input_FUN(.plotCustomLabels),
             label=sprintf("Label custom %ss", .singleSelectionDimension(x)),
-            value=x[[.plotCustomLabels]]),
+            value=slot(x, .plotCustomLabels)),
         .conditionalOnCheckSolo(
             .input_FUN(.plotCustomLabels),
             on_select=TRUE,
@@ -699,29 +699,29 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
         hr(),
         checkboxInput(.input_FUN(.plotLabelCenters),
             label="Label centers",
-            value=x[[.plotLabelCenters]]),
+            value=slot(x, .plotLabelCenters)),
         .conditionalOnCheckSolo(
             .input_FUN(.plotLabelCenters),
             on_select=TRUE,
             selectInput(.input_FUN(.plotLabelCentersBy),
                 label="Label centers:",
                 choices=.getDiscreteMetadataChoices(x, se),
-                selected=x[[.plotLabelCentersBy]]),
+                selected=slot(x, .plotLabelCentersBy)),
             colourInput(.input_FUN(.plotLabelCentersColor),
                 label=NULL,
-                value=x[[.plotLabelCentersColor]])
+                value=slot(x, .plotLabelCentersColor))
         ),
         hr(),
         numericInput(
             paste0(plot_name, "_", .plotFontSize), label="Font size:",
-            min=0, value=x[[.plotFontSize]]),
+            min=0, value=slot(x, .plotFontSize)),
         numericInput(
             paste0(plot_name, "_", .legendPointSize), label="Legend point size:",
-            min=0, value=x[[.legendPointSize]]),
+            min=0, value=slot(x, .legendPointSize)),
         radioButtons(
             paste0(plot_name, "_", .plotLegendPosition), label="Legend position:", inline=TRUE,
             choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
-            selected=x[[.plotLegendPosition]])
+            selected=slot(x, .plotLegendPosition))
 
     )
 
@@ -739,7 +739,7 @@ setMethod(".defineOutput", "DotPlot", function(x) {
     col <- .getPanelColor(x)
 
     .define_plot_ui(plot_name, brush_direction="xy",
-        height=x[[.organizationHeight]],
+        height=slot(x, .organizationHeight),
         brush_fill=.lighten_color_for_fill(col),
         brush_stroke=col
     )
@@ -768,7 +768,7 @@ setMethod(".exportOutput", "DotPlot", function(x, se, all_memory, all_contents) 
 
     # These are reasonably satisfactory heuristics:
     # Width = Pixels -> Inches, Height = Bootstrap -> Inches.
-    pdf(newpath, width=x[[.organizationHeight]]/75, height=x[[.organizationWidth]]*2)
+    pdf(newpath, width=slot(x, .organizationHeight)/75, height=slot(x, .organizationWidth)*2)
     print(contents$plot)
     dev.off()
 
@@ -777,13 +777,13 @@ setMethod(".exportOutput", "DotPlot", function(x, se, all_memory, all_contents) 
 
 #' @export
 setMethod(".multiSelectionClear", "DotPlot", function(x) {
-    x[[.brushData]] <- list()
+    slot(x, .brushData) <- list()
     x
 })
 
 #' @export
 setMethod(".multiSelectionActive", "DotPlot", function(x) {
-    to_store <- x[[.brushData]]
+    to_store <- slot(x, .brushData)
     if (.is_brush(to_store) || .is_closed_lasso(to_store)) {
         to_store
     } else {
@@ -796,9 +796,9 @@ setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
     transmitter <- .getEncodedName(x)
 
     if (is.na(index)) {
-        brush_val <- x[[.brushData]]
+        brush_val <- slot(x, .brushData)
     } else {
-        brush_val <- x[[.multiSelectHistory]][[index]]
+        brush_val <- slot(x, .multiSelectHistory)[[index]]
     }
 
     if (.is_brush(brush_val)) {
@@ -811,7 +811,7 @@ setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
 #' @export
 setMethod(".singleSelectionValue", "DotPlot", function(x, contents) {
     plot_name <- .getEncodedName(x)
-    chosen <- .get_brushed_points(contents, x[[.brushData]])
+    chosen <- .get_brushed_points(contents, slot(x, .brushData))
     if (!length(chosen)) NULL else chosen[1]
 })
 

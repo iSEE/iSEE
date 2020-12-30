@@ -35,9 +35,9 @@ height_limits <- c(400L, 1000L)
 
         ctrl_panel <- box(
             selectInput(paste0(prefix, .organizationWidth), label="Width",
-                choices=seq(width_limits[1], width_limits[2]), selected=instance[[.organizationWidth]]),
+                choices=seq(width_limits[1], width_limits[2]), selected=slot(instance, .organizationWidth)),
             sliderInput(paste0(prefix, .organizationHeight), label="Height",
-                min=height_limits[1], max=height_limits[2], value=instance[[.organizationHeight]], step=10),
+                min=height_limits[1], max=height_limits[2], value=slot(instance, .organizationHeight), step=10),
             title=.getFullName(instance), status="danger", width=NULL, solidHeader=TRUE
         )
 
@@ -106,7 +106,7 @@ height_limits <- c(400L, 1000L)
         param <- do.call(tags$div, c(list(class="panel-group", role="tablist"), all.params))
 
         # Deciding whether to continue on the current row, or start a new row.
-        panel_width <- instance[[.organizationWidth]]
+        panel_width <- slot(instance, .organizationWidth)
         extra <- cumulative.width + panel_width
         if (extra > 12L) {
             collected[[counter]] <- do.call(fluidRow, cur.row)

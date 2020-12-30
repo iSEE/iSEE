@@ -422,17 +422,17 @@ iSEE <- function(se,
     multi_sources <- .get_selection_sources(memory, all_names)
 
     for (x in seq_along(memory)) {
-        if (!memory[[x]][[.selectRowSource]] %in% multi_sources$row) {
-            memory[[x]][[.selectRowSource]] <- .noSelection
+        if (!slot(memory[[x]], .selectRowSource) %in% multi_sources$row) {
+            slot(memory[[x]], .selectRowSource) <- .noSelection
         }
-        if (!memory[[x]][[.selectColSource]] %in% multi_sources$column) {
-            memory[[x]][[.selectColSource]] <- .noSelection
+        if (!slot(memory[[x]], .selectColSource) %in% multi_sources$column) {
+            slot(memory[[x]], .selectColSource) <- .noSelection
         }
     }
 
     for (r in seq_along(reservoir)) {
-        reservoir[[r]][[.selectRowSource]] <- .noSelection
-        reservoir[[r]][[.selectColSource]] <- .noSelection
+        slot(reservoir[[r]], .selectRowSource) <- .noSelection
+        slot(reservoir[[r]], .selectColSource) <- .noSelection
     }
 
     pObjects <- .create_persistent_objects(memory, reservoir, counter)
@@ -537,11 +537,11 @@ iSEE <- function(se,
 
     for (idx in seq_along(memory)) {
         instance <- memory[[idx]]
-        curid <- instance[[.organizationId]]
+        curid <- slot(instance, .organizationId)
         if (is.na(curid)) {
             nm <- .encodedName(instance)
             curid <- counter[nm] + 1L
-            memory[[idx]][[.organizationId]] <- curid
+            slot(memory[[idx]], .organizationId) <- curid
             counter[nm] <- curid
         }
     }

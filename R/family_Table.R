@@ -241,14 +241,25 @@ setMethod(".definePanelTour", "Table", function(x) {
 
 #' @export
 #' @importFrom BiocGenerics updateObject
-setMethod("updateObject", "Table", function(object) {
-    # Backwards compatibility for new slots (added 3.12).
-    # nocov start
-    if (is(try(object[[.TableHidden]], silent=TRUE), "try-error")) {
-        .Deprecated(msg=sprintf("'%s' is out of date, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
-        object[[.TableHidden]] <- character(0)
+setMethod("updateObject", "Table", function(object, ..., verbose=FALSE) {
+    if (!.is_latest_version(object)) {
+        # nocov start
+
+        # Do this before 'callNextMethod()', which fills in the Restrict.
+        update.2.1 <- is(try(slot(object, .plotHoverInfo), silent=TRUE), "try-error")
+
+        # NOTE: it is crucial that updateObject does not contain '[[' or '[[<-'
+        # calls, lest we get sucked into infinite recursion with the calls to
+        # 'updateObject' from '[['.
+        object <- callNextMethod()
+
+        # Backwards compatibility for new slots (added 3.12).
+        if (update.2.1){ 
+            .Deprecated(msg=sprintf("'%s' is out of date, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
+            object[[.TableHidden]] <- character(0)
+        }
+        # nocov end
     }
-    # nocov end
 
     object
 })

@@ -19,6 +19,11 @@
 \alias{.exportOutput,ComplexHeatmapPlot-method}
 \alias{initialize,ComplexHeatmapPlot-method}
 \alias{.definePanelTour,ComplexHeatmapPlot-method}
+\alias{[[,ComplexHeatmapPlot-method}
+\alias{[[,ComplexHeatmapPlot,ANY,ANY-method}
+\alias{[[<-,ComplexHeatmapPlot-method}
+\alias{[[<-,ComplexHeatmapPlot,ANY,ANY-method}
+\alias{updateObject,ComplexHeatmapPlot-method}
 \title{The ComplexHeatmapPlot panel}
 \description{
 The ComplexHeatmapPlot is a panel class for creating a \linkS4class{Panel} that displays an assay of a \linkS4class{SummarizedExperiment} object as a \code{\link{Heatmap}} with features as rows and samples and columns, respectively.

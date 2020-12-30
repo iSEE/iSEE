@@ -99,6 +99,10 @@
 #' .multiSelectionInvalidated,ColumnDotPlot-method
 #' .singleSelectionDimension,ColumnDotPlot-method
 #' .definePanelTour,ColumnDotPlot-method
+#' [[,ColumnDotPlot-method
+#' [[,ColumnDotPlot,ANY,ANY-method
+#' [[<-,ColumnDotPlot-method
+#' [[<-,ColumnDotPlot,ANY,ANY-method
 #' updateObject,ColumnDotPlot-method
 #' @name ColumnDotPlot-class
 NULL
@@ -163,6 +167,52 @@ setValidity2("ColumnDotPlot", function(object) {
         return(msg)
     }
     TRUE
+})
+
+#' @export
+setMethod("[[", "ColumnDotPlot", function(x, i, j, ...) {
+    if (i == "SelectionColor") {
+        cname <- class(x)[1]
+        .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.", cname, i))
+        NA_character_
+    } else if (i == "SelectionEffect") {
+        x <- updateObject(x, check=FALSE)
+
+        cname <- class(x)[1]
+        .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.\nUse <%s>[['%s']] and/or <%s>[['%s']] instead.",
+            cname, i, cname, .selectColRestrict, cname, .colorByField))
+
+        if (x[[.selectColRestrict]]) {
+            "Restrict" 
+        } else if (x[[.colorByField]] == .colorByColSelectionsTitle) {
+            "Color"
+        } else {
+            "Transparent"
+        }
+    } else {
+        callNextMethod()
+
+    }
+})
+
+#' @export
+setReplaceMethod("[[", "ColumnDotPlot", function(x, i, j, ..., value) {
+    if (i == "SelectionColor") {
+        cname <- class(x)[1]
+        .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.", cname, i))
+        x 
+    } else if (i == "SelectionEffect") {
+        x <- updateObject(x, check=FALSE)
+
+        cname <- class(x)[1]
+        .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.\nSet <%s>[['%s']] and/or <%s>[['%s']] instead.",
+            cname, i, cname, .selectColRestrict, cname, .colorByField))
+
+        x[[.selectColRestrict]] <- (value=="Restrict")
+        x
+    } else {
+        callNextMethod()
+    }
 })
 
 ###############################################################
@@ -530,4 +580,28 @@ setMethod(".definePanelTour", "ColumnDotPlot", function(x) {
     collated$intro[collated$intro=="PLACEHOLDER_COLOR"] <- "We can choose to color by different per-column attributes - from the column metadata, across a specific feature of an assay, to identify a chosen sample, or based on a multiple column selection transmitted from another panel.<br/><br/><strong>Action:</strong> try out some of the different choices. Note how further options become available when each choice is selected."
 
     data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
+})
+
+#' @export
+setMethod("updateObject", "ColumnDotPlot", function(object, ..., verbose=FALSE) {
+    if (!.is_latest_version(object)) {
+        # nocov start
+
+        # Do this before 'callNextMethod()', which fills in the Restrict.
+        update.2.3 <- is(try(slot(object, .selectColRestrict), silent=TRUE), "try-error")
+
+        # NOTE: it is crucial that updateObject does not contain '[[' or '[[<-'
+        # calls, lest we get sucked into infinite recursion with the calls to
+        # 'updateObject' from '[['.
+        object <- callNextMethod()
+
+        if (update.2.3) {
+            effect <- object@SelectionEffect
+            slot(object, .selectColRestrict) <- (effect=="Restrict")
+        }
+
+        # nocov end
+    }
+
+    object
 })

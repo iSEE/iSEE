@@ -200,11 +200,23 @@ setValidity2("Panel", function(object) {
 
 #' @export
 setMethod("[[", "Panel", function(x, i, j, ...) {
+    if (i %in% c("ColumnSelectionType", "RowSelectionType", "ColumnSelectionSaved", "RowSelectionSaved")) {
+        .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.", class(x)[1], i))
+        if (i %in% c("ColumnSelectionType", "RowSelectionType")) {
+            return(NA_character_)
+        } else {
+            return(NA_integer_)
+        }
+    }
+
+    # Avoid having to call updateObject unnecessarily.
     out <- try(slot(x, i), silent=TRUE)
 
     if (is(out, "try-error")) {
+        # nocov start
         x <- updateObject(x, check=FALSE)
         out <- slot(x, i)
+        # nocov end
     }
 
     out
@@ -212,20 +224,32 @@ setMethod("[[", "Panel", function(x, i, j, ...) {
 
 #' @export
 setReplaceMethod("[[", "Panel", function(x, i, j, ..., value) {
-    out <- try({
-        slot(x, i) <- value
-    }, silent=TRUE)
-
-    if (is(out, "try-error")) {
-        x <- updateObject(x, check=FALSE)
-        slot(x, i) <- value
+    if (i %in% c("ColumnSelectionType", "RowSelectionType", "ColumnSelectionSaved", "RowSelectionSaved")) {
+        .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.", class(x)[1], i))
+        return(x)
     }
 
-    if (iSEEOptions$get('.check.validity')) {
+    # Avoid having to call updateObject unnecessarily.
+    check <- iSEEOptions$get('.check.validity')
+    out <- try(.assign_and_check(x, i, value, check=check), silent=TRUE)
+
+    if (is(out, "try-error")) {
+        # nocov start
+        x <- updateObject(x, check=FALSE)
+        out <- .assign_and_check(x, i, value, check=check)
+        # nocov end
+    }
+
+    out
+})
+
+.assign_and_check <- function(x, i, value, check) {
+    slot(x, i) <- value
+    if (check) {
         validObject(x)
     }
     x
-})
+}
 
 #' @export
 setMethod(".refineParameters", "Panel", function(x, se) {
@@ -403,6 +427,10 @@ setMethod("updateObject", "Panel", function(object, ..., verbose=FALSE) {
     if (is(try(slot(object, .packageVersion), silent=TRUE), "try-error")) {
         .Deprecated(msg=sprintf("detected outdated '%s' instance, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
         slot(object, .packageVersion) <- .latest_version 
+
+        # Handling the updated restriction settings.
+        slot(object, .selectRowRestrict) <- FALSE
+        slot(object, .selectColRestrict) <- FALSE
     }
     object
     # nocov end

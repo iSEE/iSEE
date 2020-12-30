@@ -53,7 +53,7 @@ test_that("old facet getter requests are honored", {
     expect_identical(out, "WHEE")
 })
 
-test_that("old facet getter requests are honored", {
+test_that("old facet setter requests are honored", {
     # For ColumnDotPlots:
     x <- ColumnDataPlot()
     expect_warning(x[["FacetByRow"]] <- "WHEE", "deprecated")
@@ -85,4 +85,124 @@ test_that("old facet getter requests are honored", {
 
     expect_warning(x[["FacetByColumn"]] <- "---", "deprecated")
     expect_identical(x[["FacetColumnBy"]], "None")
+})
+
+test_that("old basic selection getter requests are honored", {
+    x <- ColumnDataPlot()
+    expect_warning(out <- x[["RowSelectionType"]], "deprecated")
+    expect_identical(out, NA_character_)
+
+    expect_warning(out <- x[["ColumnSelectionType"]], "deprecated")
+    expect_identical(out, NA_character_)
+
+    expect_warning(out <- x[["RowSelectionSaved"]], "deprecated")
+    expect_identical(out, NA_integer_)
+
+    expect_warning(out <- x[["ColumnSelectionSaved"]], "deprecated")
+    expect_identical(out, NA_integer_)
+})
+
+test_that("old basic selection setter requests are honored", {
+    x <- ColumnDataPlot()
+    expect_warning(x[["RowSelectionType"]] <- "Union", "deprecated")
+    expect_identical(x, ColumnDataPlot())
+
+    expect_warning(x[["ColumnSelectionType"]] <- "Union", "deprecated")
+    expect_identical(x, ColumnDataPlot())
+
+    expect_warning(x[["RowSelectionSaved"]] <- 1L, "deprecated")
+    expect_identical(x, ColumnDataPlot())
+
+    expect_warning(x[["ColumnSelectionSaved"]] <- 2L, "deprecated")
+    expect_identical(x, ColumnDataPlot())
+})
+
+test_that("old visual selection getter requests are honored", {
+    # For ColumnDotPlots
+    x <- ColumnDataPlot()
+    expect_warning(out <- x[["SelectionEffect"]], "deprecated")
+    expect_identical(out, "Transparent")
+
+    expect_warning(out <- x[["SelectionColor"]], "deprecated")
+    expect_identical(out, NA_character_)
+
+    x <- ColumnDataPlot(ColumnSelectionRestrict=TRUE)
+    expect_warning(out <- x[["SelectionEffect"]], "deprecated")
+    expect_identical(out, "Restrict")
+
+    x <- ColumnDataPlot(ColorBy="Column selection")
+    expect_warning(out <- x[["SelectionEffect"]], "deprecated")
+    expect_identical(out, "Color")
+
+    # For RowDotPlots
+    x <- RowDataPlot()
+    expect_warning(out <- x[["SelectionEffect"]], "deprecated")
+    expect_identical(out, "Transparent")
+
+    expect_warning(out <- x[["SelectionColor"]], "deprecated")
+    expect_identical(out, NA_character_)
+
+    x <- RowDataPlot(RowSelectionRestrict=TRUE)
+    expect_warning(out <- x[["SelectionEffect"]], "deprecated")
+    expect_identical(out, "Restrict")
+
+    x <- RowDataPlot(ColorBy="Row selection")
+    expect_warning(out <- x[["SelectionEffect"]], "deprecated")
+    expect_identical(out, "Color")
+
+    # For ComplexHeatmapPlots
+    x <- ComplexHeatmapPlot()
+    expect_warning(out <- x[["SelectionEffect"]], "deprecated")
+    expect_identical(out, "Color")
+
+    expect_warning(out <- x[["SelectionColor"]], "deprecated")
+    expect_identical(out, NA_character_)
+
+    x <- ComplexHeatmapPlot(ColumnSelectionRestrict=TRUE)
+    expect_warning(out <- x[["SelectionEffect"]], "deprecated")
+    expect_identical(out, "Restrict")
+
+    x <- ComplexHeatmapPlot(ShowColumnSelection=FALSE)
+    expect_warning(out <- x[["SelectionEffect"]], "deprecated")
+    expect_identical(out, "Transparent")
+})
+
+test_that("old visual selection setter requests are honored", {
+    # For ColumnDotPlots
+    x <- ColumnDataPlot()
+    expect_warning(x[["SelectionEffect"]] <- "Restrict", "deprecated")
+    expect_true(x[["ColumnSelectionRestrict"]])
+
+    expect_warning(x[["SelectionEffect"]] <- "Color", "deprecated")
+    expect_false(x[["ColumnSelectionRestrict"]])
+
+    x <- ColumnDataPlot()
+    expect_warning(x[["SelectionColor"]] <- "red", "deprecated")
+    expect_identical(x, ColumnDataPlot())
+
+    # For RowDotPlots
+    x <- RowDataPlot()
+    expect_warning(x[["SelectionEffect"]] <- "Restrict", "deprecated")
+    expect_true(x[["RowSelectionRestrict"]])
+
+    expect_warning(x[["SelectionEffect"]] <- "Color", "deprecated")
+    expect_false(x[["RowSelectionRestrict"]])
+
+    x <- RowDataPlot()
+    expect_warning(x[["SelectionColor"]] <- "red", "deprecated")
+    expect_identical(x, RowDataPlot())
+
+    # For ComplexHeatmapPlots
+    x <- ComplexHeatmapPlot()
+    expect_warning(x[["SelectionEffect"]] <- "Restrict", "deprecated")
+    expect_true(x[["ColumnSelectionRestrict"]])
+    expect_false(x[["ShowColumnSelection"]])
+
+    expect_warning(x[["SelectionEffect"]] <- "Color", "deprecated")
+    expect_false(x[["ColumnSelectionRestrict"]])
+    expect_true(x[["ShowColumnSelection"]])
+
+    x <- ComplexHeatmapPlot()
+    expect_warning(x[["SelectionColor"]] <- "red", "deprecated")
+    expect_identical(x, ComplexHeatmapPlot())
 })

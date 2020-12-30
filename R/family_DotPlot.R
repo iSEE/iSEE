@@ -353,7 +353,6 @@ setValidity2("DotPlot", function(object) {
 #' @export
 setMethod("[[", "DotPlot", function(x, i, j, ...) {
     if (i %in% c("FacetByRow", "FacetByColumn")) {
-        # nocov start
         x <- updateObject(x, check=FALSE)
 
         facet_info <- .getDotPlotFacetConstants(x)
@@ -378,7 +377,6 @@ setMethod("[[", "DotPlot", function(x, i, j, ...) {
         } else {
             x[[dim_field]]
         }
-        # nocov end
     } else {
         callNextMethod()
     }
@@ -387,7 +385,6 @@ setMethod("[[", "DotPlot", function(x, i, j, ...) {
 #' @export
 setReplaceMethod("[[", "DotPlot", function(x, i, j, ..., value) {
     if (i %in% c("FacetByRow", "FacetByColumn")) {
-        # nocov start
         x <- updateObject(x, check=FALSE)
 
         facet_info <- .getDotPlotFacetConstants(x)
@@ -414,7 +411,6 @@ setReplaceMethod("[[", "DotPlot", function(x, i, j, ..., value) {
             x[[dim_field]] <- value
         }
         x
-        # nocov end
     } else {
         callNextMethod()
     }
@@ -993,13 +989,17 @@ setMethod("updateObject", "DotPlot", function(object, ..., verbose=FALSE) {
     if (!.is_latest_version(object)) {
         # nocov start
 
+        # Do this before 'callNextMethod()', which fills in the Restrict.
+        update.2.1 <- is(try(slot(object, .plotHoverInfo), silent=TRUE), "try-error")
+        update.2.3 <- is(try(slot(object, .facetRow), silent=TRUE), "try-error")
+
         # NOTE: it is crucial that updateObject does not contain '[[' or '[[<-'
         # calls, lest we get sucked into infinite recursion with the calls to
         # 'updateObject' from '[['.
         object <- callNextMethod()
 
         # Backwards compatibility for new slots (added 3.12, preceding versioning information).
-        if (is(try(slot(object, .plotHoverInfo), silent=TRUE), "try-error")) {
+        if (update.2.1) {
             .Deprecated(msg=sprintf("detected outdated '%s' instance, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
             slot(object, .plotHoverInfo) <- TRUE
             slot(object, .legendPointSize) <- 1
@@ -1011,7 +1011,7 @@ setMethod("updateObject", "DotPlot", function(object, ..., verbose=FALSE) {
         }
 
         # Backwards compatibility for new slots (added 3.13, preceding versioning information).
-        if (is(try(slot(object, .facetRow), silent=TRUE), "try-error")) {
+        if (update.2.3) {
             .Deprecated(msg=sprintf("detected outdated '%s' instance, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
 
             facet_info <- .getDotPlotFacetConstants(object)

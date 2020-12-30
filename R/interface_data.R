@@ -18,7 +18,7 @@
     do.call(.collapseBoxHidden,
         c(
             list(x=x, field=.dataParamBoxOpen, title="Data parameters"),
-            open=x[[.dataParamBoxOpen]],
+            open=slot(x, .dataParamBoxOpen),
             .defineDataInterface(x, se, select_info)
         )
     )

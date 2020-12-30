@@ -132,8 +132,8 @@ setMethod(".refineParameters", "Table", function(x, se) {
 
 #' @export
 setMethod(".multiSelectionCommands", "Table", function(x, index) {
-    search <- x[[.TableSearch]]
-    searchcols <- x[[.TableColSearch]]
+    search <- slot(x, .TableSearch)
+    searchcols <- slot(x, .TableColSearch)
     sprintf("selected <- rownames(contents)[iSEE::filterDT(contents, global=%s,\n    column=%s)]",
         deparse(search),
         .deparse_for_viewing(searchcols, indent=2))
@@ -141,8 +141,8 @@ setMethod(".multiSelectionCommands", "Table", function(x, index) {
 
 #' @export
 setMethod(".multiSelectionActive", "Table", function(x) {
-    if (x[[.TableSearch]]!="" || any(x[[.TableColSearch]]!="")) {
-        list(Search=x[[.TableSearch]], ColumnSearch=x[[.TableColSearch]])
+    if (slot(x, .TableSearch)!="" || any(slot(x, .TableColSearch)!="")) {
+        list(Search=slot(x, .TableSearch), ColumnSearch=slot(x, .TableColSearch))
     } else {
         NULL
     }
@@ -153,7 +153,7 @@ setMethod(".multiSelectionRestricted", "Table", function(x) TRUE)
 
 #' @export
 setMethod(".singleSelectionValue", "Table", function(x, contents) {
-    x[[.TableSelected]]
+    slot(x, .TableSelected)
 })
 
 #' @export
@@ -204,13 +204,14 @@ setMethod(".exportOutput", "Table", function(x, se, all_memory, all_contents) {
 
 #' @export
 setMethod(".defineDataInterface", "Table", function(x, se, select_info) {
+    hidden <- slot(x, .TableHidden)
     c(
         callNextMethod(),
         list(
-            # Needs to be initialized with the current values,
-            # even if it is updated later by table initialization.
+            # 'choices' needs to be initialized with the current values,
+            # even if it is to be updated later by table initialization.
             selectInput(paste0(.getEncodedName(x), "_", .TableHidden),
-                choices=x[[.TableHidden]], selected=x[[.TableHidden]],
+                choices=hidden, selected=hidden,
                 label="Hidden columns:", multiple=TRUE)
         )
     )

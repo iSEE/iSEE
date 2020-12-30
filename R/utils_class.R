@@ -180,7 +180,7 @@
 #' @name validate-utils
 .singleStringError <- function(msg, x, fields) {
     for (field in fields) {
-        if (length(x[[field]]) != 1L) {
+        if (length(slot(x, field)) != 1L) {
             msg <- c(msg, sprintf("'%s' should be a single string for '%s'", field, class(x)[1]))
         }
     }
@@ -191,7 +191,8 @@
 #' @rdname validate-utils
 .validLogicalError <- function(msg, x, fields) {
     for (field in fields) {
-        if (length(val <- x[[field]])!=1 || is.na(val)) {
+        val <- slot(x, field)
+        if (length(val)!=1 || is.na(val)) {
             msg <- c(msg, sprintf("'%s' should be a non-NA logical scalar for '%s'", field, class(x)[1]))
         }
     }
@@ -202,7 +203,8 @@
 #' @rdname validate-utils
 .validStringError <- function(msg, x, fields) {
     for (field in fields) {
-        if (length(val <- x[[field]])!=1 || is.na(val)) {
+        val <- slot(x, field)
+        if (length(val)!=1 || is.na(val)) {
             msg <- c(msg, sprintf("'%s' should be a non-NA string for '%s'", field, class(x)[1]))
         }
     }
@@ -212,7 +214,7 @@
 #' @export
 #' @rdname validate-utils
 .allowableChoiceError <- function(msg, x, field, allowable) {
-    if (!x[[field]] %in% allowable) {
+    if (!slot(x, field) %in% allowable) {
         msg <- c(msg, sprintf("'%s' for '%s' should be one of %s", field, class(x)[1],
             paste(sprintf("'%s'", allowable), collapse=", ")))
     }
@@ -222,7 +224,7 @@
 #' @export
 #' @rdname validate-utils
 .multipleChoiceError <- function(msg, x, field, allowable) {
-    if (any(!x[[field]] %in% allowable)) {
+    if (any(!slot(x, field) %in% allowable)) {
         msg <- c(msg, sprintf("values of '%s' for '%s' should be in %s", field, class(x)[1],
             paste(sprintf("'%s'", allowable), collapse=", ")))
     }
@@ -232,7 +234,8 @@
 #' @export
 #' @rdname validate-utils
 .validNumberError <- function(msg, x, field, lower, upper) {
-    if (length(val <- x[[field]])!=1 || is.na(val) || val < lower || val > upper) {
+    val <- slot(x, field)
+    if (length(val)!=1 || is.na(val) || val < lower || val > upper) {
         msg <- c(msg, sprintf("'%s' for '%s' should be a numeric scalar in [%s, %s]",
             field, class(x)[1], lower, upper))
     }

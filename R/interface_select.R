@@ -40,7 +40,7 @@
     # initialize active "Delete" button only if a preconfigured selection history exists
     deleteFUN <- identity
     deleteLabel <- .buttonDeleteLabel
-    if (length(x[[.multiSelectHistory]]) == 0L) {
+    if (length(slot(x, .multiSelectHistory)) == 0L) {
         deleteFUN <- disabled
         deleteLabel <- .buttonEmptyHistoryLabel
     }
@@ -57,7 +57,7 @@
         x=x,
         field=.selectParamBoxOpen,
         title="Selection parameters",
-        open=x[[.selectParamBoxOpen]],
+        open=slot(x, .selectParamBoxOpen),
 
         .define_selection_choices(x, by_field=.selectRowSource,
             dyn_field=.selectRowDynamic, res_field=.selectRowRestrict,
@@ -91,7 +91,7 @@
         x=x, field=by_field,
         label=sprintf("Receive %s selection from:", source_type),
         choices=selectable,
-        selected=.choose_link(x[[by_field]], selectable)
+        selected=.choose_link(slot(x, by_field), selectable)
     )
 }
 
@@ -105,10 +105,10 @@
 
         .checkboxInputHidden(x, field=dyn_field,
             label=paste("Use dynamic", source_type, "selection"),
-            value=x[[dyn_field]]),
+            value=slot(x, dyn_field)),
 
         .checkboxInputHidden(x, field=res_field,
             label=paste0("Restrict to selected ", source_type, "s"),
-            value=x[[res_field]])
+            value=slot(x, res_field))
     )
 }

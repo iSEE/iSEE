@@ -107,7 +107,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @seealso
 #' \code{\link{subsetPointsByGrid}}
 .downsample_points <- function(param_choices, envir, priority=FALSE, rescaled=FALSE) {
-    if (param_choices[[.plotPointDownsample]]) {
+    if (slot(param_choices, .plotPointDownsample)) {
         xtype <- "X"
         ytype <- "Y"
 
@@ -119,7 +119,7 @@ names(.all_aes_values) <- .all_aes_names
             xtype <- "jitteredX"
         }
 
-        res <- param_choices[[.plotPointSampleRes]]
+        res <- slot(param_choices, .plotPointSampleRes)
         subset.args <- sprintf("resolution=%i", res)
         if (priority) {
             if (rescaled) {
@@ -131,9 +131,12 @@ names(.all_aes_values) <- .all_aes_names
         ## If we color by sample name in a column-based plot, or by feature name
         ## in a row-based plot, we make sure to keep the selected column/row in
         ## the downsampling
-        is_color_by_sample_name <- param_choices[[.colorByField]] == .colorBySampNameTitle && is(param_choices, "ColumnDotPlot")
-        is_color_by_feature_name <- param_choices[[.colorByField]] == .colorByFeatNameTitle && is(param_choices, "RowDotPlot")
-        always_keep <- ifelse(is_color_by_sample_name || is_color_by_feature_name, " | as.logical(plot.data$ColorBy)", "")
+        color_choice <- slot(param_choices, .colorByField) 
+        always_keep <- ""
+        if ((color_choice == .colorBySampNameTitle && is(param_choices, "ColumnDotPlot")) ||
+                (color_choice == .colorByFeatNameTitle && is(param_choices, "RowDotPlot"))) {
+            always_keep <- " | as.logical(plot.data$ColorBy)"
+        }
 
         downsample_cmds <- c(
             "plot.data.pre <- plot.data;",
@@ -143,9 +146,9 @@ names(.all_aes_values) <- .all_aes_names
         )
 
         .textEval(downsample_cmds, envir)
-        return(downsample_cmds)
+        downsample_cmds
     } else {
-        return(NULL)
+        NULL
     }
 }
 
@@ -200,8 +203,8 @@ names(.all_aes_values) <- .all_aes_names
 
     # Adding points to the plot.
     color_set <- !is.null(plot_data$ColorBy)
-    shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
-    size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
+    shape_set <- slot(param_choices, .shapeByField) != .shapeByNothingTitle
+    size_set <- slot(param_choices, .sizeByField) != .sizeByNothingTitle
 
     new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
         alt=c(color=.set_colorby_when_none(param_choices)))
@@ -217,7 +220,7 @@ names(.all_aes_values) <- .all_aes_names
     plot_cmds[["labs"]] <- .buildLabs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
 
     # Defining boundaries if zoomed.
-    bounds <- param_choices[[.zoomData]]
+    bounds <- slot(param_choices, .zoomData)
     if (length(bounds)) {
         plot_cmds[["coord"]] <- sprintf(
             "coord_cartesian(xlim=c(%s, %s), ylim=c(%s, %s), expand=FALSE) +", # FALSE, to get a literal zoom.
@@ -230,8 +233,8 @@ names(.all_aes_values) <- .all_aes_names
     ylim=range(%s$Y, na.rm=TRUE), expand=TRUE) +", full_data, full_data)
     }
 
-    if (param_choices[[.contourAdd]]) {
-        plot_cmds[["contours"]] <- sprintf("geom_density_2d(aes(x=X, y=Y), plot.data, colour='%s') +", param_choices[[.contourColor]])
+    if (slot(param_choices, .contourAdd)) {
+        plot_cmds[["contours"]] <- sprintf("geom_density_2d(aes(x=X, y=Y), plot.data, colour='%s') +", slot(param_choices, .contourColor))
     }
 
     # Retain axes when no points are present.
@@ -243,17 +246,19 @@ names(.all_aes_values) <- .all_aes_names
     plot_cmds[["scale_color"]] <- color_scale_cmd
     plot_cmds[["guides"]] <- guides_cmd
     plot_cmds[["theme_base"]] <- "theme_bw() +"
+
+    font_size <- slot(param_choices, .plotFontSize)
     plot_cmds[["theme_custom"]] <- sprintf(
         "theme(legend.position='%s', legend.box='vertical', legend.text=element_text(size=%s), legend.title=element_text(size=%s),
         axis.text=element_text(size=%s), axis.title=element_text(size=%s), title=element_text(size=%s))",
-        tolower(param_choices[[.plotLegendPosition]]),
-        param_choices[[.plotFontSize]]*.plotFontSizeLegendTextDefault,
-        param_choices[[.plotFontSize]]*.plotFontSizeLegendTitleDefault,
-        param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
-        param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault,
-        param_choices[[.plotFontSize]]*.plotFontSizeTitleDefault)
+        tolower(slot(param_choices, .plotLegendPosition)),
+        font_size * .plotFontSizeLegendTextDefault,
+        font_size * .plotFontSizeLegendTitleDefault,
+        font_size * .plotFontSizeAxisTextDefault,
+        font_size * .plotFontSizeAxisTitleDefault,
+        font_size * .plotFontSizeTitleDefault)
 
-    return(unlist(plot_cmds))
+    unlist(plot_cmds)
 }
 
 ############################################
@@ -330,8 +335,8 @@ names(.all_aes_values) <- .all_aes_names
 
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
-    shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
-    size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
+    shape_set <- slot(param_choices, .shapeByField) != .shapeByNothingTitle
+    size_set <- slot(param_choices, .sizeByField) != .sizeByNothingTitle
 
     new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
         alt=c(x="jitteredX", color=.set_colorby_when_none(param_choices)))
@@ -354,7 +359,7 @@ names(.all_aes_values) <- .all_aes_names
 
     # Defining boundaries if zoomed. This requires some finesse to deal with horizontal plots,
     # where the point selection is computed on the flipped coordinates.
-    bounds <- param_choices[[.zoomData]]
+    bounds <- slot(param_choices, .zoomData)
     if (horizontal) {
         coord_cmd <- "coord_flip"
         if (length(bounds)) {
@@ -399,24 +404,26 @@ names(.all_aes_values) <- .all_aes_names
             ", breaks=levels(plot.data$X)[%i:%i]",
             ceiling(bounds["xmin"]), floor(bounds["xmax"]))
     }
-     plot_cmds[["scale_x"]] <- sprintf(scale_x_cmd, scale_x_extra)
 
+    plot_cmds[["scale_x"]] <- sprintf(scale_x_cmd, scale_x_extra)
     plot_cmds[["theme_base"]] <- "theme_bw() +"
+
+    font_size <- slot(param_choices, .plotFontSize)
     plot_cmds[["theme_custom"]] <- sprintf(
         "theme(legend.position='%s', legend.text=element_text(size=%s),
         legend.title=element_text(size=%s), legend.box='vertical',
         axis.text.x=element_text(angle=90, size=%s, hjust=1, vjust=0.5),
         axis.text.y=element_text(size=%s),
         axis.title=element_text(size=%s), title=element_text(size=%s))",
-        tolower(param_choices[[.plotLegendPosition]]),
-        param_choices[[.plotFontSize]]*.plotFontSizeLegendTextDefault,
-        param_choices[[.plotFontSize]]*.plotFontSizeLegendTitleDefault,
-        param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
-        param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
-        param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault,
-        param_choices[[.plotFontSize]]*.plotFontSizeTitleDefault)
+        tolower(slot(param_choices, .plotLegendPosition)),
+        font_size * .plotFontSizeLegendTextDefault,
+        font_size * .plotFontSizeLegendTitleDefault,
+        font_size * .plotFontSizeAxisTextDefault,
+        font_size * .plotFontSizeAxisTextDefault,
+        font_size * .plotFontSizeAxisTitleDefault,
+        font_size * .plotFontSizeTitleDefault)
 
-    return(unlist(plot_cmds))
+    unlist(plot_cmds)
 }
 
 #' @rdname INTERNAL_violin_plot
@@ -453,7 +460,7 @@ plot.data$Y <- tmp;")
     width=0.4, varwidth=FALSE, adjust=1,
     method='quasirandom', nbins=NULL);", groupvar)
 
-    return(unlist(setup_cmds))
+    unlist(setup_cmds)
 }
 
 ############################################
@@ -519,8 +526,8 @@ plot.data$Y <- tmp;")
 
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
-    shape_set <- param_choices[[.shapeByField]] != .shapeByNothingTitle
-    size_set <- param_choices[[.sizeByField]] != .sizeByNothingTitle
+    shape_set <- slot(param_choices, .shapeByField) != .shapeByNothingTitle
+    size_set <- slot(param_choices, .sizeByField) != .sizeByNothingTitle
 
     new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
         alt=c(x="jitteredX", y="jitteredY", color=.set_colorby_when_none(param_choices)))
@@ -541,7 +548,7 @@ plot.data$Y <- tmp;")
     plot_cmds[["labs"]] <- .buildLabs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
 
     # Defining boundaries if zoomed.
-    bounds <- param_choices[[.zoomData]]
+    bounds <- slot(param_choices, .zoomData)
     if (length(bounds)) {
 
         # Ensure zoom preserves the data points and width ratio of visible groups
@@ -581,19 +588,22 @@ plot.data$Y <- tmp;")
 
     # Do not display the size legend (saves plot space, as well)
     plot_cmds[["theme_base"]] <- "theme_bw() +"
+
+    font_size <- slot(param_choices, .plotFontSize)
     plot_cmds[["theme_custom"]] <- sprintf("theme(legend.position='%s', legend.text=element_text(size=%s),
     legend.title=element_text(size=%s), legend.box='vertical',
     axis.text.x=element_text(angle=90, size=%s, hjust=1, vjust=0.5),
     axis.text.y=element_text(size=%s),
     axis.title=element_text(size=%s), title=element_text(size=%s))",
-        tolower(param_choices[[.plotLegendPosition]]),
-        param_choices[[.plotFontSize]]*.plotFontSizeLegendTextDefault,
-        param_choices[[.plotFontSize]]*.plotFontSizeLegendTitleDefault,
-        param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
-        param_choices[[.plotFontSize]]*.plotFontSizeAxisTextDefault,
-        param_choices[[.plotFontSize]]*.plotFontSizeAxisTitleDefault,
-        param_choices[[.plotFontSize]]*.plotFontSizeTitleDefault)
-    return(unlist(plot_cmds))
+        tolower(slot(param_choices, .plotLegendPosition)),
+        font_size * .plotFontSizeLegendTextDefault,
+        font_size * .plotFontSizeLegendTitleDefault,
+        font_size * .plotFontSizeAxisTextDefault,
+        font_size * .plotFontSizeAxisTextDefault,
+        font_size * .plotFontSizeAxisTitleDefault,
+        font_size * .plotFontSizeTitleDefault)
+
+    unlist(plot_cmds)
 }
 
 #' @rdname INTERNAL_square_plot
@@ -620,7 +630,8 @@ j.out <- iSEE:::jitterSquarePoints(plot.data$X, plot.data$Y%s);
 summary.data <- j.out$summary;
 plot.data$jitteredX <- j.out$X;
 plot.data$jitteredY <- j.out$Y;", groupvar)
-    return(unlist(setup_cmds))
+
+    unlist(setup_cmds)
 }
 
 ############################################
@@ -643,7 +654,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #'
 #' @rdname INTERNAL_set_colorby_when_none
 .set_colorby_when_none <- function(x) {
-    if (x[[.colorByField]]==.colorByNothingTitle) {
+    if (slot(x, .colorByField)==.colorByNothingTitle) {
         .colorByNoneDotPlotField(x)
     } else {
         NULL
@@ -738,13 +749,17 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @importFrom ggplot2 guides guide_legend
 .create_guides_command <- function(x, colorby) {
     discrete_color <- is.factor(colorby)
-    custom_point_size <- !identical(x[[.legendPointSize]], x[[.plotPointSize]])
+    legend_size <- slot(x, .legendPointSize)
+    point_size <- slot(x, .plotPointSize)
+    custom_point_size <- !identical(legend_size, point_size)
+
     if (custom_point_size && discrete_color) {
-        return(sprintf(
+        sprintf(
             "guides(colour = guide_legend(override.aes = list(size=%i)), fill = guide_legend(override.aes = list(size=%i))) +",
-            x[[.legendPointSize]], x[[.legendPointSize]]))
+            legend_size, legend_size
+        )
     } else {
-        return(NULL)
+        NULL
     }
 }
 
@@ -800,7 +815,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     if (color || !is.null(.set_colorby_when_none(param_choices))) {
         default_color <- ""
     } else {
-        default_color <- sprintf(", color='%s'", param_choices[[.colorByDefaultColor]])
+        default_color <- sprintf(", color='%s'", slot(param_choices, .colorByDefaultColor))
     }
 
     ## If there is already size information available in the aes, don't add an
@@ -808,14 +823,13 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     if (size) {
         common_size <- ""
     } else {
-        common_size <- sprintf(", size=%s", param_choices[[.plotPointSize]])
+        common_size <- sprintf(", size=%s", slot(param_choices, .plotPointSize))
     }
 
-    if (selected && param_choices[[.selectTransAlpha]] < 1) {
+    if (selected && (select_alpha <- slot(param_choices, .selectTransAlpha)) < 1) {
         plot_cmds[["select_other"]] <- sprintf(
             "geom_point(%s, subset(plot.data, !SelectBy), alpha=%.2f%s%s) +",
-            aes, param_choices[[.selectTransAlpha]], default_color,
-            common_size
+            aes, select_alpha, default_color, common_size
         )
         plot_cmds[["select_alpha"]] <- sprintf(
             "geom_point(%s, subset(plot.data, SelectBy)%s%s) +",
@@ -824,7 +838,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     } else {
         plot_cmds[["point"]] <- sprintf(
             "geom_point(%s, alpha=%s, plot.data%s%s) +",
-            aes, param_choices[[.plotPointAlpha]], default_color,
+            aes, slot(param_choices, .plotPointAlpha), default_color,
             common_size
         )
     }
@@ -1012,8 +1026,8 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #'     FacetColumnBy = "Column data", FacetColumnByColData="Covariate_2") 
 #' .addFacets(x)
 .addFacets <- function(x){
-    row_facet <- x[[.facetRow]]!=.facetByNothingTitle
-    col_facet <- x[[.facetColumn]]!=.facetByNothingTitle
+    row_facet <- slot(x, .facetRow)!=.facetByNothingTitle
+    col_facet <- slot(x, .facetColumn)!=.facetByNothingTitle
     if (!row_facet && !col_facet) {
         return(NULL)
     }
@@ -1055,8 +1069,8 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #'
 #' @importFrom ggplot2 geom_rect geom_text
 .self_select_boxes <- function(param_choices, flip=FALSE) {
-    active <- param_choices[[.brushData]]
-    saved <- param_choices[[.multiSelectHistory]]
+    active <- slot(param_choices, .brushData)
+    saved <- slot(param_choices, .multiSelectHistory)
 
     has_active <- as.integer(length(active) > 0)
     total <- has_active + length(saved)
@@ -1065,7 +1079,8 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     }
 
     # Note: Faceting simultaneously on row and column produces a 'flip' effect on the brush data
-    if (param_choices[[.facetRow]]!=.facetByNothingTitle && param_choices[[.facetColumn]]!=.facetByNothingTitle) {
+    if (slot(param_choices, .facetRow)!=.facetByNothingTitle && 
+            slot(param_choices, .facetColumn)!=.facetByNothingTitle) {
         facet_row <- 'panelvar2'
         facet_column <- 'panelvar1'
     } else {
@@ -1129,10 +1144,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
     # Collect additional panel information for the brush
     addPanels <- character(0)
-    if (param_choices[[.facetRow]]!=.facetByNothingTitle) {
+    if (slot(param_choices, .facetRow)!=.facetByNothingTitle) {
         addPanels["FacetRow"] <- sprintf("FacetRow=%s[['%s']]", brush_src, facet_row)
     }
-    if (param_choices[[.facetColumn]]!=.facetByNothingTitle) {
+    if (slot(param_choices, .facetColumn)!=.facetByNothingTitle) {
         addPanels["FacetColumn"] <- sprintf("FacetColumn=%s[['%s']]", brush_src, facet_column)
     }
 
@@ -1161,7 +1176,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         %s),
     label=%i, size=%s, colour='%s')",
             paste(text_data, collapse=",\n        "),
-            index, param_choices[[.plotFontSize]] * .plotFontSizeLegendTextDefault, stroke_color)
+            index, 
+            slot(param_choices, .plotFontSize) * .plotFontSizeLegendTextDefault, 
+            stroke_color)
+
         brush_draw_cmd <- c(brush_draw_cmd, text_cmd)
     }
 
@@ -1211,10 +1229,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 {
     if (index == 0L) {
         lasso_src <- sprintf("all_active[['%s']]", plot_name)
-        current <- param_choices[[.brushData]]
+        current <- slot(param_choices, .brushData)
     } else {
         lasso_src <- sprintf("all_saved[['%s']][[%i]]", plot_name, index)
-        current <- param_choices[[.multiSelectHistory]][[index]]
+        current <- slot(param_choices, .multiSelectHistory)[[index]]
     }
 
     # Initialize the minimal lasso information
@@ -1222,10 +1240,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
     # Collect additional panel information for the lasso.
     addPanels <- character(0)
-    if (param_choices[[.facetRow]]!=.facetByNothingTitle) {
+    if (slot(param_choices, .facetRow)!=.facetByNothingTitle) {
         addPanels["FacetRow"] <- sprintf("FacetRow=%s[['%s']]", lasso_src, facet_row)
     }
-    if (param_choices[[.facetColumn]]!=.facetByNothingTitle) {
+    if (slot(param_choices, .facetColumn)!=.facetByNothingTitle) {
         addPanels["FacetColumn"] <- sprintf("FacetColumn=%s[['%s']]", lasso_src, facet_column)
     }
     if (length(addPanels)) {
@@ -1263,7 +1281,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     label=%i, size=%s, colour='%s')",
                 current$mapping$x, current$mapping$y,
                 paste(text_data, collapse=",\n        "),
-                index, param_choices[[.plotFontSize]] * .plotFontSizeLegendTextDefault, stroke_color)
+                index, 
+                slot(param_choices, .plotFontSize) * .plotFontSizeLegendTextDefault, 
+                stroke_color)
+
             polygon_cmd <- c(polygon_cmd, text_cmd)
         }
 
@@ -1277,7 +1298,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
             current$mapping$x, current$mapping$y, lasso_data, stroke_color)
 
         # Do not control the shape of waypoints if shape is already being mapped to a covariate
-        if (param_choices[[.shapeByField]] == .shapeByNothingTitle) {
+        if (slot(param_choices, .shapeByField) == .shapeByNothingTitle) {
             point_cmd <- sprintf(
 "geom_point(aes(x=%s, y=%s, shape=First),
     data=data.frame(%s,
@@ -1349,7 +1370,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         commands <- c(commands, self_select_cmds)
 
         .populate_selection_environment(x, envir)
-        envir$all_active[[1]] <- x[[.brushData]] # as open lassos are skipped by multiSelectionActive.
+        envir$all_active[[1]] <- slot(x, .brushData) # as open lassos are skipped by multiSelectionActive.
     }
 
     commands
@@ -1369,16 +1390,16 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @export
 #' @rdname addLabelCentersCommands
 .addLabelCentersCommands <- function(x, commands) {
-    if (x[[.plotLabelCenters]]) {
+    if (slot(x, .plotLabelCenters)) {
         aggregants <- c("LabelCenters=.label_values")
 
         # Some intelligence involved in accounting for the faceting;
         # in this case, a label is shown on each facet if possible.
         # Note that the same label may differ in locations across facets.
-        if (x[[.facetRow]]!=.facetByNothingTitle) {
+        if (slot(x, .facetRow)!=.facetByNothingTitle) {
             aggregants <- c(aggregants, "FacetRow=plot.data$FacetRow")
         }
-        if (x[[.facetColumn]]!=.facetByNothingTitle) {
+        if (slot(x, .facetColumn)!=.facetByNothingTitle) {
             aggregants <- c(aggregants, "FacetColumn=plot.data$FacetColumn")
         }
 
@@ -1387,9 +1408,9 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     .aggregated <- aggregate(plot.data[,c('X', 'Y')], FUN=median, na.rm=TRUE,
         by=list(%s))
     ggplot2::geom_text(aes(x=X, y=Y, label=LabelCenters), .aggregated, color=%s, size=%s)
-})", .getDotPlotMetadataCommand(x), deparse(x[[.plotLabelCentersBy]]), .getDotPlotNamesCommand(x),
-            paste(aggregants, collapse=", "), deparse(x[[.plotLabelCentersColor]]), 
-            deparse(x[[.plotFontSize]] * 4))
+})", .getDotPlotMetadataCommand(x), deparse(slot(x, .plotLabelCentersBy)), .getDotPlotNamesCommand(x),
+            paste(aggregants, collapse=", "), deparse(slot(x, .plotLabelCentersColor)), 
+            deparse(slot(x, .plotFontSize) * 4))
 
         N <- length(commands)
         commands[[N]] <- paste(commands[[N]], "+")
@@ -1417,11 +1438,11 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @importFrom grid unit
 #' @rdname addCustomLabelsCommands
 .addCustomLabelsCommands <- function(x, commands, plot_type) {
-    if (x[[.plotCustomLabels]]) {
+    if (slot(x, .plotCustomLabels)) {
         N <- length(commands)
         commands[[N]] <- paste(commands[[N]], "+")
 
-        dn <- .convert_text_to_names(x[[.plotCustomLabelsText]])
+        dn <- .convert_text_to_names(slot(x, .plotCustomLabelsText))
 
         axes <- switch(plot_type,
             scatter=c("X", "Y"),

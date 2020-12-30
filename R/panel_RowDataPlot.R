@@ -192,17 +192,17 @@ setMethod(".defineDataInterface", "RowDataPlot", function(x, se, select_info) {
         .selectInputHidden(x, .rowDataYAxis,
             label="Column of interest (Y-axis):",
             choices=.allowableYAxisChoices(x, se), 
-            selected=x[[.rowDataYAxis]]),
+            selected=slot(x, .rowDataYAxis)),
         .radioButtonsHidden(x, .rowDataXAxis, 
             label="X-axis:", inline=TRUE,
             choices=c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle, .rowDataXAxisSelectionsTitle),
-            selected=x[[.rowDataXAxis]]),
+            selected=slot(x, .rowDataXAxis)),
         .conditionalOnRadio(.input_FUN(.rowDataXAxis),
             .rowDataXAxisRowDataTitle,
             .selectInputHidden(x, .rowDataXAxisRowData,
                 label="Column of interest (X-axis):",
                 choices=.allowableXAxisChoices(x, se), 
-                selected=x[[.rowDataXAxisRowData]]))
+                selected=slot(x, .rowDataXAxisRowData)))
     )
 })
 
@@ -231,7 +231,7 @@ setMethod(".createObservers", "RowDataPlot", function(x, se, input, session, pOb
 
 #' @export
 setMethod(".multiSelectionInvalidated", "RowDataPlot", function(x) {
-    x[[.rowDataXAxis]] == .rowDataXAxisSelectionsTitle || callNextMethod()
+    slot(x, .rowDataXAxis) == .rowDataXAxisSelectionsTitle || callNextMethod()
 })
 
 #' @export
@@ -244,7 +244,7 @@ setMethod(".panelColor", "RowDataPlot", function(x) "#F2B701")
 setMethod(".generateDotPlotData", "RowDataPlot", function(x, envir) {
     data_cmds <- list()
 
-    y_lab <- x[[.rowDataYAxis]]
+    y_lab <- slot(x, .rowDataYAxis)
 
     # NOTE: deparse() automatically adds quotes, AND protects against existing quotes/escapes.
     data_cmds[["y"]] <- sprintf(
@@ -253,7 +253,7 @@ setMethod(".generateDotPlotData", "RowDataPlot", function(x, envir) {
     )
 
     # Prepare X-axis data.
-    x_choice <- x[[.rowDataXAxis]]
+    x_choice <- slot(x, .rowDataXAxis)
     if (x_choice == .rowDataXAxisNothingTitle) {
         x_title <- x_lab <- ''
         data_cmds[["x"]] <- "plot.data$X <- factor(character(nrow(se)))"
@@ -273,7 +273,7 @@ setMethod(".generateDotPlotData", "RowDataPlot", function(x, envir) {
         )
 
     } else {
-        x_lab <- x[[.rowDataXAxisRowData]]
+        x_lab <- slot(x, .rowDataXAxisRowData)
         x_title <- sprintf("vs %s", x_lab)
         data_cmds[["x"]] <- sprintf("plot.data$X <- rowData(se)[, %s];", deparse(x_lab))
     }

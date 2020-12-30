@@ -187,7 +187,8 @@ setValidity2("Panel", function(object) {
     msg <- .validNumberError(msg, object, .organizationHeight, lower=height_limits[1], upper=height_limits[2])
     msg <- .validNumberError(msg, object, .organizationWidth, lower=width_limits[1], upper=width_limits[2])
 
-    if (length(val <- object[[.organizationId]])!=1 || (!is.na(val) && val <= 0L)) {
+    val <- slot(object, .organizationId)
+    if (length(val) !=1 || (!is.na(val) && val <= 0L)) {
         msg <- c(msg, sprintf("'%s' must be a positive integer or NA for '%s'", .organizationId, class(object)[1]))
     }
 

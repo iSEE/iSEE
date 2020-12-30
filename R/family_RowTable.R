@@ -123,6 +123,6 @@ setMethod(".singleSelectionDimension", "RowTable", function(x) "feature")
 setMethod(".showSelectionDetails", "RowTable", function(x) {
     FUN <- iSEEOptions$get("RowTable.select.details")
     if (!is.null(FUN)) {
-        FUN(x[[.TableSelected]])
+        FUN(slot(x, .TableSelected))
     }
 })

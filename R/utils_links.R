@@ -26,8 +26,9 @@
         instance <- all_memory[[x]]
 
         for (f in c(.selectRowSource, .selectColSource)) {
-            if (instance[[f]] %in% names(all_memory)) {
-                graph <- .add_interpanel_link(graph, x, instance[[f]], field=f)
+            parent <- slot(instance, f)
+            if (parent %in% names(all_memory)) {
+                graph <- .add_interpanel_link(graph, x, parent, field=f)
             }
         }
     }
@@ -48,9 +49,9 @@
         instance <- all_memory[[x]]
         fields <- .singleSelectionSlots(instance)
         for (f in fields) {
-            src <- f$source
-            if (instance[[src]] %in% names(all_memory)) {
-                graph <- .add_interpanel_link(graph, x, instance[[src]], field=f$parameter)
+            parent <- slot(instance, f$source)
+            if (parent %in% names(all_memory)) {
+                graph <- .add_interpanel_link(graph, x, parent, field=f$parameter)
             }
         }
     }
@@ -253,10 +254,10 @@
 
     for (x in all_memory) {
         panel_name <- .getEncodedName(x)
-        if (x[[.selectRowDynamic]]) {
+        if (slot(x, .selectRowDynamic)) {
             multi_rows[[panel_name]] <- .selectRowSource
         } 
-        if (x[[.selectColDynamic]]) {
+        if (slot(x, .selectColDynamic)) {
             multi_cols[[panel_name]] <- .selectColSource
         }
     }

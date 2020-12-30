@@ -40,11 +40,11 @@
         }
 
         chosen <- rownames(tab)[chosen]
-        previous <- pObjects$memory[[panel_name]][[.TableSelected]]
+        previous <- slot(pObjects$memory[[panel_name]], .TableSelected)
         if (chosen==previous) {
             return(NULL)
         }
-        pObjects$memory[[panel_name]][[.TableSelected]] <- chosen
+        slot(pObjects$memory[[panel_name]], .TableSelected) <- chosen
 
         .safe_reactive_bump(rObjects, paste0(panel_name, "_", .propagateDimnames))
     }, ignoreInit=TRUE)
@@ -55,11 +55,11 @@
     # nocov start
     observeEvent(input[[search_field]], {
         search <- input[[search_field]]
-        if (identical(search, pObjects$memory[[panel_name]][[.TableSearch]])) {
+        if (identical(search, slot(pObjects$memory[[panel_name]], .TableSearch))) {
             return(NULL)
         }
 
-        pObjects$memory[[panel_name]][[.TableSearch]] <- search
+        slot(pObjects$memory[[panel_name]], .TableSearch) <- search
         .requestActiveSelectionUpdate(panel_name, session, pObjects, rObjects, update_output=FALSE)
      }, ignoreInit=TRUE)
      # nocov end
@@ -69,12 +69,12 @@
     # nocov start
     observeEvent(input[[colsearch_field]], {
         search <- input[[colsearch_field]]
-        past <- pObjects$memory[[panel_name]][[.TableColSearch]]
+        past <- slot(pObjects$memory[[panel_name]], .TableColSearch)
         if (identical(search, past)) {
             return(NULL)
         }
 
-        pObjects$memory[[panel_name]][[.TableColSearch]] <- search
+        slot(pObjects$memory[[panel_name]], .TableColSearch) <- search
 
         if (all(search=="") && all(past=="")) {
             # No update in cases with variable numbers of columns where no
@@ -92,7 +92,7 @@
     # nocov start
     observeEvent(rObjects[[tabupdate_field]], {
         updateSelectInput(session, paste0(panel_name, "_", .TableHidden),
-            selected=pObjects$memory[[panel_name]][[.TableHidden]],
+            selected=slot(pObjects$memory[[panel_name]], .TableHidden),
             choices=colnames(pObjects$contents[[panel_name]]))
     }, ignoreInit=TRUE)
     # nocov end

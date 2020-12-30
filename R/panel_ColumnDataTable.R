@@ -109,7 +109,7 @@ setMethod(".refineParameters", "ColumnDataTable", function(x, se) {
     df <- colData(se)
 
     # First, expanding out so that we cover all columns.
-    search_vals <- x[[.TableColSearch]]
+    search_vals <- slot(x, .TableColSearch)
     search_vals <- .expand_named_colsearch(df, search_vals)
 
     N <- ncol(df)
@@ -120,7 +120,7 @@ setMethod(".refineParameters", "ColumnDataTable", function(x, se) {
     # Then, contracting only to those columns that survived.
     keep <- match(valid.names, colnames(df))
     search_vals <- search_vals[keep]
-    x[[.TableColSearch]] <- search_vals
+    slot(x, .TableColSearch) <- search_vals
 
     x
 })

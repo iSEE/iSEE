@@ -207,7 +207,7 @@ createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot",
 
         for (i in names(defaults)) {
             options <- defaults[[i]]
-            current <- x[[i]]
+            current <- slot(x, i)
             id <- paste0(tab_name, "_", i)
 
             collected[[i]] <- if (is.character(options) && length(options)==1L) {
@@ -284,7 +284,7 @@ createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot",
 
     extra_args <- list()
     for (i in fn_args) {
-        extra_args[[i]] <- deparse(x[[i]])
+        extra_args[[i]] <- deparse(slot(x, i))
     }
     extra_args <- paste(sprintf("%s=%s", names(extra_args), unlist(extra_args)), collapse=", ")
 

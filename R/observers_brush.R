@@ -35,8 +35,8 @@
     # nocov start
     observeEvent(input[[brush_field]], {
         cur_brush <- input[[brush_field]]
-        old_brush <- pObjects$memory[[plot_name]][[.brushData]]
-        pObjects$memory[[plot_name]][[.brushData]] <- cur_brush
+        old_brush <- slot(pObjects$memory[[plot_name]], .brushData)
+        slot(pObjects$memory[[plot_name]], .brushData) <- cur_brush
 
         # If the Shiny brushes have the same coordinates, we don't bother replotting.
         if (.identical_brushes(cur_brush, old_brush)) {
@@ -107,7 +107,7 @@
         # Don't add to waypoints if a Shiny brush exists in memory, but instead, destroy the brush.
         # Also destroy any closed lassos, or update open lassos.
         reactivated <- FALSE
-        prev_lasso <- pObjects$memory[[plot_name]][[.brushData]]
+        prev_lasso <- slot(pObjects$memory[[plot_name]], .brushData)
         if (.is_brush(prev_lasso)) {
             new_lasso <- list()
             reactivated <- TRUE
@@ -121,7 +121,7 @@
             }
         }
 
-        pObjects$memory[[plot_name]][[.brushData]] <- new_lasso
+        slot(pObjects$memory[[plot_name]], .brushData) <- new_lasso
 
         .disableButtonIf(
             save_field,

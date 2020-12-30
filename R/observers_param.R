@@ -23,7 +23,7 @@
 
             # nocov start
             observeEvent(input[[open_field]], {
-                pObjects$memory[[panel_name]][[box0]] <- input[[open_field]]
+                slot(pObjects$memory[[panel_name]], box0) <- input[[open_field]]
             }, ignoreInit=TRUE)
             # nocov end
         })
@@ -51,12 +51,12 @@
 
     # nocov start
     observeEvent(input[[cur_field]], {
-        existing <- pObjects$memory[[panel_name]][[.visualParamChoice]]
+        existing <- slot(pObjects$memory[[panel_name]], .visualParamChoice)
         incoming <- as(input[[cur_field]], typeof(existing))
         if (identical(incoming, existing)) {
             return(NULL)
         }
-        pObjects$memory[[panel_name]][[.visualParamChoice]] <- incoming
+        slot(pObjects$memory[[panel_name]], .visualParamChoice) <- incoming
     }, ignoreInit=TRUE, ignoreNULL=FALSE)
     # nocov end
 
@@ -102,11 +102,12 @@
 
             # nocov start
             observeEvent(input[[cur_field]], {
-                matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[panel_name]][[field0]]))
-                if (identical(matched_input, pObjects$memory[[panel_name]][[field0]])) {
+                current <- slot(pObjects$memory[[panel_name]], field0)
+                matched_input <- as(input[[cur_field]], typeof(current))
+                if (identical(matched_input, current)) {
                     return(NULL)
                 }
-                pObjects$memory[[panel_name]][[field0]] <- matched_input
+                slot(pObjects$memory[[panel_name]], field0) <- matched_input
                 .requestUpdate(panel_name, rObjects)
             }, ignoreInit=ignoreInit, ignoreNULL=ignoreNULL)
             # nocov end
@@ -126,11 +127,12 @@
 
             # nocov start
             observeEvent(input[[cur_field]], {
-                matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[panel_name]][[field0]]))
-                if (identical(matched_input, pObjects$memory[[panel_name]][[field0]])) {
+                current <- slot(pObjects$memory[[panel_name]], field0)
+                matched_input <- as(input[[cur_field]], typeof(current))
+                if (identical(matched_input, current)) {
                     return(NULL)
                 }
-                pObjects$memory[[panel_name]][[field0]] <- matched_input
+                slot(pObjects$memory[[panel_name]], field0) <- matched_input
                 .requestCleanUpdate(panel_name, pObjects, rObjects)
             }, ignoreInit=ignoreInit, ignoreNULL=ignoreNULL)
             # nocov end

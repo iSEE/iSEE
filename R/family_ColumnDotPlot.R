@@ -255,12 +255,8 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
     x <- .replaceMissingWithFirst(x, .colorByColData, available)
 
     assays <- dp_cached$valid.assay.names
-    if (length(assays)) {
-        assays <- c(intersect(iSEEOptions$get("assay"), assays), assays)
-        x <- .replaceMissingWithFirst(x, .colorByFeatNameAssay, assays)
-    } else {
-        x[[.colorByFeatNameAssay]] <- NA_character_
-    }
+    assays <- c(intersect(iSEEOptions$get("assay"), assays), assays)
+    x <- .replaceMissingWithFirst(x, .colorByFeatNameAssay, assays)
 
     discrete <- cdp_cached$discrete.colData.names
     x <- .replaceMissingWithFirst(x, .shapeByColData, discrete)

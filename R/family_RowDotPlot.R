@@ -256,12 +256,8 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
     x <- .replaceMissingWithFirst(x, .colorByRowData, available)
 
     assays <- dp_cached$valid.assay.names
-    if (length(assays)) {
-        assays <- c(intersect(iSEEOptions$get("assay"), assays), assays)
-        x <- .replaceMissingWithFirst(x, .colorBySampNameAssay, assays)
-    } else {
-        x[[.colorBySampNameAssay]] <- NA_character_
-    }
+    assays <- c(intersect(iSEEOptions$get("assay"), assays), assays)
+    x <- .replaceMissingWithFirst(x, .colorBySampNameAssay, assays)
 
     discrete <- rdp_cached$discrete.rowData.names
     x <- .replaceMissingWithFirst(x, .shapeByRowData, discrete)

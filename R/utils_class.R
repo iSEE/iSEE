@@ -255,8 +255,12 @@
 #' @export
 #' @rdname replaceMissingWithFirst
 .replaceMissingWithFirst <- function(x, field, choices) {
-    if (is.na(chosen <- x[[field]]) || !chosen %in% choices) {
-        x[[field]] <- choices[1]
+    chosen <- slot(x, field)
+    if (is.na(chosen) || !chosen %in% choices) {
+        if (is.null(choices)) {
+            choices <- vector(typeof(chosen), 0) 
+        }
+        slot(x, field) <- choices[1]
     }
     x
 }

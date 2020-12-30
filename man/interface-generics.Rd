@@ -6,7 +6,6 @@
 \alias{.defineInterface}
 \alias{.defineDataInterface}
 \alias{.hideInterface}
-\alias{.defineSelectionEffectInterface}
 \title{Generics for the panel interface}
 \description{
 An overview of the generics for defining the user interface (UI) for each panel as well as some recommendations on their implementation.
@@ -47,17 +46,6 @@ Each element's ID should still follow the \code{PANEL_SLOT} pattern described ab
 This generic aims to provide a simpler alternative to specializing \code{.defineInterface} for the most common use case.
 New panels can write methods for this generic to add their own interface elements for altering the contents of the panel, without needing to reimplement other UI elements in the parent class's \code{.defineInterface} method.
 Conversely, there is no obligation to write a method for this generic if one is planning to specialize \code{.defineInterface}.
-
-It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
-}
-
-\section{Defining the selection effect interface}{
-
-\code{.defineSelectionEffectInterface(x)} defines the UI for controlling the effect of a multiple row/column selection.
-This should return a list of UI elements specifying how the panel should behave upon a transmitted selection;
-see the methods for \linkS4class{DotPlot} and \linkS4class{ComplexHeatmapPlot} for specific examples.
-
-Like with \code{.defineDataInterface}, this generic aims to provide a simpler alternative to specializing \code{.defineInterface} when only the selection effect needs to be changed in a subclass.
 
 It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
 }

@@ -76,13 +76,14 @@ This is guaranteed to be categorical.
 This is guaranteed to be categorical.
 \item \code{"SelectBy"}, a logical field indicating whether the point was included in a multiple selection
 (i.e., transmitted from another plot with \code{x} as the receiver).
-Note that if \code{SelectionEffect="Restrict"}, \code{plot.data} will already have been subsetted
-to only retain \code{TRUE} values of this field.
+Note that if \code{RowSelectionRestrict=TRUE} or \code{ColumnSelectionRestrict=TRUE} 
+(for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively),
+\code{plot.data} will already have been subsetted to only retain \code{TRUE} values of this field.
 }
 
 \code{envir} may also contain the following variables:
 \itemize{
-\item \code{plot.data.all}, present when a multiple selection is transmitted to \code{x} and \code{SelectionEffect="Restrict"}.
+\item \code{plot.data.all}, present when a multiple selection is transmitted to \code{x} and \code{RowSelectionRestrict=TRUE} or \code{ColumnSelectionRestrict=TRUE} (for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively).
 This is a data.frame that contains all points prior to subsetting and is useful for defining the boundaries of the plot such that they do not change when the transmitted multiple selection changes.
 \item \code{plot.data.pre}, present when downsampling is turned on.
 This is a data.frame that contains all points prior to downsampling (but after subsetting, if that was performed) and is again mainly used to fix the boundaries of the plot.

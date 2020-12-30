@@ -39,11 +39,7 @@
 #'
 #' @rdname INTERNAL_create_visual_box
 .create_visual_box <- function(x, se, select_info) {
-
-    plot_name <- .getEncodedName(x)
-    pchoice_field <- paste0(plot_name, "_", .visualParamChoice)
-
-    ui <- setNames(list(
+    ui <- list(
         .defineVisualColorInterface(x, se, select_info),
         .defineVisualShapeInterface(x, se),
         .defineVisualSizeInterface(x, se),
@@ -51,7 +47,8 @@
         .defineVisualFacetInterface(x, se),
         .defineVisualTextInterface(x, se),
         .defineVisualOtherInterface(x)
-    ), c(
+    )
+    names(ui) <- c(
         .visualParamChoiceColorTitle,
         .visualParamChoiceShapeTitle,
         .visualParamChoiceSizeTitle,
@@ -59,41 +56,27 @@
         .visualParamChoiceFacetTitle,
         .visualParamChoiceTextTitle,
         .visualParamChoiceOtherTitle
-    ))
+    )
+    stopifnot(all(names(ui)!=""))
+    keep <- !vapply(ui, is.null, logical(1))
+    ui <- ui[keep]
+
+    plot_name <- .getEncodedName(x)
+    pchoice_field <- paste0(plot_name, "_", .visualParamChoice)
+    collected <- lapply(names(ui), function(title) 
+        .conditionalOnCheckGroup(pchoice_field, title, ui[[title]])
+    )
 
     collapseBox(
         id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
-        open=x[[.visualParamBoxOpen]],
+        open=slot(x, .visualParamBoxOpen),
         checkboxGroupInput(
             inputId=pchoice_field, label=NULL, inline=TRUE,
-            selected=x[[.visualParamChoice]],
-            choices=.define_visual_options(ui)),
-        # Some repeated code pattern below. lapply?
-        .conditionalOnCheckGroup(
-            pchoice_field, .visualParamChoiceColorTitle,
-            ui[[.visualParamChoiceColorTitle]]
+            selected=slot(x, .visualParamChoice),
+            choices=names(ui)
         ),
-        .conditionalOnCheckGroup(
-            pchoice_field, .visualParamChoiceShapeTitle,
-            ui[[.visualParamChoiceShapeTitle]]
-        ),
-        .conditionalOnCheckGroup(
-            pchoice_field, .visualParamChoiceSizeTitle,
-            ui[[.visualParamChoiceSizeTitle]]
-        ),
-        .conditionalOnCheckGroup(
-            pchoice_field, .visualParamChoicePointTitle,
-            ui[[.visualParamChoicePointTitle]]),
-        .conditionalOnCheckGroup(
-            pchoice_field, .visualParamChoiceFacetTitle,
-            ui[[.visualParamChoiceFacetTitle]]),
-        .conditionalOnCheckGroup(
-            pchoice_field, .visualParamChoiceTextTitle,
-            ui[[.visualParamChoiceTextTitle]]),
-        .conditionalOnCheckGroup(
-            pchoice_field, .visualParamChoiceOtherTitle,
-            ui[[.visualParamChoiceOtherTitle]])
+        do.call(tagList, collected)
     )
 }
 
@@ -127,29 +110,6 @@
         color_choices <- c(color_choices, .colorBySampNameTitle)
     }
     c(color_choices, .colorByColSelectionsTitle)
-}
-
-#' Define visual parameter check options
-#'
-#' Define the available visual parameter check boxes that can be ticked.
-#'
-#' @param X A named list of UI elements.
-#'
-#' @details
-#' Currently, the only special case is when there are no categorical covariates, in which case the shaping and faceting UI elements are \code{NULL} and the check boxes will not be available.
-#'
-#' @return A character vector of check boxes that can be clicked in the UI.
-#'
-#' @author Aaron Lun, Kevin Rue-Albrecht
-#' @rdname INTERNAL_define_visual_options
-.define_visual_options <- function(X) {
-
-    if (is.null(names(X)) || any(names(X) == "")) {
-        stop("Visual parameters UI elements must be named")
-    }
-
-    keep <- !vapply(X, is.null, logical(1))
-    names(X)[keep]
 }
 
 #' @rdname INTERNAL_define_color_options

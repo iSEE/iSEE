@@ -94,20 +94,21 @@
     # nocov start
     observeEvent(input[[select_restrict_field]], {
         cur_restrict <- input[[select_restrict_field]]
-        pObjects$memory[[panel_name]][[res_field]] <- cur_restrict
-
-        # Avoiding replotting if there was no transmitting selection.
-        if (!.transmitted_selection(pObjects$memory[[panel_name]][[by_field]], all_memory=pObjects$memory)) {
+        old_restrict <- slot(pObjects$memory[[panel_name]], res_field)
+        if (cur_restrict==old_restrict) {
             return(NULL)
         }
 
-        # Updating children if the selection in the current plot changes due to gain/loss of Restrict.
-        old_restrict <- pObjects$memory[[panel_name]][[res_field]]
-        if (cur_restrict || old_restrict) {
-            .mark_panel_as_modified(panel_name, .panelRepopulated, rObjects)
-        } else {
-            .requestUpdate(panel_name, rObjects)
+        slot(pObjects$memory[[panel_name]], res_field) <- cur_restrict
+
+        # Avoiding replotting if there was no transmitting selection from the upstream panel.
+        if (!.transmitted_selection(slot(pObjects$memory[[panel_name]], by_field), all_memory=pObjects$memory)) {
+            return(NULL)
         }
+
+        # Updating self as the selection in the current panel changes due to gain/loss of Restrict.
+        # Potentially also updating children, as any selection transmitted to those children will change.
+        .mark_panel_as_modified(panel_name, .panelRepopulated, rObjects)
     }, ignoreInit=TRUE)
     # nocov end
 

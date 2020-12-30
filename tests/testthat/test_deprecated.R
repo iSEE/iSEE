@@ -155,9 +155,16 @@ test_that("old visual selection getter requests are honored", {
     expect_warning(out <- x[["SelectionEffect"]], "deprecated")
     expect_identical(out, "Color")
 
+    expect_warning(out <- x[["SelectionColor"]], "deprecated")
+    expect_identical(out, NA_character_)
+
     x <- ComplexHeatmapPlot(ColumnSelectionRestrict=TRUE)
     expect_warning(out <- x[["SelectionEffect"]], "deprecated")
     expect_identical(out, "Restrict")
+
+    x <- ComplexHeatmapPlot(ShowColumnSelection=FALSE)
+    expect_warning(out <- x[["SelectionEffect"]], "deprecated")
+    expect_identical(out, "Transparent")
 })
 
 test_that("old visual selection setter requests are honored", {
@@ -194,4 +201,8 @@ test_that("old visual selection setter requests are honored", {
     expect_warning(x[["SelectionEffect"]] <- "Color", "deprecated")
     expect_false(x[["ColumnSelectionRestrict"]])
     expect_true(x[["ShowColumnSelection"]])
+
+    x <- ComplexHeatmapPlot()
+    expect_warning(x[["SelectionColor"]] <- "red", "deprecated")
+    expect_identical(x, ComplexHeatmapPlot())
 })

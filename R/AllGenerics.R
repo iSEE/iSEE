@@ -63,15 +63,6 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #'
 #' It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
 #'
-#' @section Defining the selection effect interface:
-#' \code{.defineSelectionEffectInterface(x)} defines the UI for controlling the effect of a multiple row/column selection.
-#' This should return a list of UI elements specifying how the panel should behave upon a transmitted selection;
-#' see the methods for \linkS4class{DotPlot} and \linkS4class{ComplexHeatmapPlot} for specific examples.
-#' 
-#' Like with \code{.defineDataInterface}, this generic aims to provide a simpler alternative to specializing \code{.defineInterface} when only the selection effect needs to be changed in a subclass.
-#' 
-#' It is the developer's responsibility to call \code{\link{callNextMethod}} to obtain interface elements for parent classes.
-#'
 #' @section Hiding interface elements:
 #' \code{.hideInterface(x, field)} determines whether certain UI elements should be hidden from the user.
 #' The required arguments are:
@@ -89,7 +80,6 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #'
 #' @docType methods
 #' @aliases .defineInterface .defineDataInterface .hideInterface
-#' .defineSelectionEffectInterface
 #' @name interface-generics
 #' @author Aaron Lun
 NULL
@@ -99,9 +89,6 @@ setGeneric(".defineInterface", function(x, se, select_info) standardGeneric(".de
 
 #' @export
 setGeneric(".defineDataInterface", function(x, se, select_info) standardGeneric(".defineDataInterface"))
-
-#' @export
-setGeneric(".defineSelectionEffectInterface", function(x) standardGeneric(".defineSelectionEffectInterface"))
 
 #' @export
 setGeneric(".hideInterface", function(x, field) standardGeneric(".hideInterface"))
@@ -372,13 +359,14 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' This is guaranteed to be categorical.
 #' \item \code{"SelectBy"}, a logical field indicating whether the point was included in a multiple selection
 #' (i.e., transmitted from another plot with \code{x} as the receiver).
-#' Note that if \code{SelectionEffect="Restrict"}, \code{plot.data} will already have been subsetted
-#' to only retain \code{TRUE} values of this field.
+#' Note that if \code{RowSelectionRestrict=TRUE} or \code{ColumnSelectionRestrict=TRUE} 
+#' (for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively),
+#' \code{plot.data} will already have been subsetted to only retain \code{TRUE} values of this field.
 #' }
 #'
 #' \code{envir} may also contain the following variables:
 #' \itemize{
-#' \item \code{plot.data.all}, present when a multiple selection is transmitted to \code{x} and \code{SelectionEffect="Restrict"}.
+#' \item \code{plot.data.all}, present when a multiple selection is transmitted to \code{x} and \code{RowSelectionRestrict=TRUE} or \code{ColumnSelectionRestrict=TRUE} (for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively).
 #' This is a data.frame that contains all points prior to subsetting and is useful for defining the boundaries of the plot such that they do not change when the transmitted multiple selection changes.
 #' \item \code{plot.data.pre}, present when downsampling is turned on.
 #' This is a data.frame that contains all points prior to downsampling (but after subsetting, if that was performed) and is again mainly used to fix the boundaries of the plot.
@@ -741,7 +729,7 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #'
 #' \code{.multiSelectionRestricted(x)} should return a logical scalar indicating whether \code{x}'s displayed contents will be restricted to the selection transmitted from \emph{another panel}.
 #' This is used to determine whether child panels of \code{x} need to be re-rendered when \code{x}'s transmitter changes its multiple selection.
-#' For example, in \linkS4class{DotPlot}s, the method for this generic would return \code{TRUE} if \code{SelectionEffect="Restrict"}.
+#' For example, the method for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s would return \code{TRUE} if \code{RowSelectionRestrict=TRUE} or \code{ColumnSelectionRestrict=TRUE}, respectively.
 #' Otherwise, it would be \code{FALSE} as the transmitted selection is only used for aesthetics, not for changing the identity of the displayed points.
 #'
 #' \code{.multiSelectionInvalidated(x)} should return a logical scalar indicating whether a transmission of a multiple selection to \code{x} invalidates \code{x}'s own existing selections.

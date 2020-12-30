@@ -135,7 +135,6 @@
 #' .createObservers,Panel-method
 #' .hideInterface,Panel-method
 #' .defineDataInterface,Panel-method
-#' .defineSelectionEffectInterface,Panel-method
 #' .renderOutput,Panel-method
 #' .exportOutput,Panel-method
 #' .multiSelectionRestricted,Panel-method
@@ -271,9 +270,6 @@ setMethod(".defineInterface", "Panel", function(x, se, select_info) {
 
 #' @export
 setMethod(".defineDataInterface", "Panel", function(x, se, select_info) list())
-
-#' @export
-setMethod(".defineSelectionEffectInterface", "Panel", function(x) list())
 
 #' @export
 setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects, rObjects) {

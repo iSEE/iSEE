@@ -7,7 +7,6 @@
 \alias{.cacheCommonInfo,ComplexHeatmapPlot-method}
 \alias{.createObservers,ComplexHeatmapPlot-method}
 \alias{.defineDataInterface,ComplexHeatmapPlot-method}
-\alias{.defineSelectionEffectInterface,ComplexHeatmapPlot-method}
 \alias{.defineInterface,ComplexHeatmapPlot-method}
 \alias{.defineOutput,ComplexHeatmapPlot-method}
 \alias{.fullName,ComplexHeatmapPlot-method}
@@ -147,7 +146,6 @@ It will also create a data parameter box that can respond to specialized \code{\
 and a visual parameter box and a selection parameter box both specific to the \code{ComplexHeatmapPlot} panel.
 This will \emph{override} the \linkS4class{Panel} method.
 \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
-\item \code{\link{.defineSelectionEffectInterface}(x)} returns a list of interface elements for controlling the multiple selection effect.
 \item \code{\link{.defineOutput}(x)} returns a UI element for a brushable plot.
 \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.

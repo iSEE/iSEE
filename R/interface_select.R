@@ -34,8 +34,6 @@
 #' @seealso
 #' \code{\link{.defineInterface}}, where this function is typically called.
 #'
-#' \code{\link{.defineSelectionEffectInterface}}, to control the interface for additional selection effects.
-#'
 #' @importFrom shiny selectInput actionButton hr strong br
 #' @importFrom shinyjs disabled
 .create_selection_param_box <- function(x, row_selectable, col_selectable) {
@@ -69,8 +67,6 @@
             dyn_field=.selectColDynamic, res_field=.selectColRestrict,
             selectable=col_selectable, "column")
     )
-
-    args <- c(args, .defineSelectionEffectInterface(x)) 
 
     if (!.hideInterface(x, .multiSelectHistory)) {
         panel_name <- .getEncodedName(x)

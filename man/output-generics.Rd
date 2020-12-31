@@ -81,12 +81,16 @@ The following arguments are required:
 Methods for this generic should return a list containing:
 \itemize{
 \item \code{contents}, some arbitrary content for the panel (usually a data.frame).
-It should be of a structure that allows it to be cross-referenced against the output of \code{\link{.multiSelectionActive}} to determine the selected rows/columns.
-This is used to ensure that the \code{pObjects$contents} of a panel is populated before attempting to render their children (i.e., those that receive a multiple selection from the current panel).
+The values therein are used by \code{\link{.multiSelectionCommands}} to determine the multiple row/column selection in \code{x} to be transmitted to other (child) panels.
+The app will ensure that the \code{pObjects$contents} of each panel is populated before attempting to render their children. 
+\code{contents} may be set to \code{NULL} if \code{x} does not transmit, i.e., \code{\link{.multiSelectionDimension}} returns \code{"none"}.
 \item \code{commands}, a list of character vectors of R commands that, when executed, produces the contents of the panel and any displayed output (e.g., a \link{ggplot} object).
 Developers should write these commands as if the evaluation environment only contains the SummarizedExperiment \code{se} and ExperimentColorMap \code{colormap}.
+It may also contain \code{col_selected}, if a multiple column selection is being transmitted to \code{x};
+and possibly \code{row_selected}, if a multiple row selection is being transmitted to \code{x}.
 \item \code{varname}, a string specifying the name of the variable in \code{commands} used to generate \code{contents}.
 This is used to fulfill code tracking obligations.
+If the current panel is not a transmitter, this may be set to \code{NULL} instead.
 }
 The output list may contain any number of other fields that can be used by \code{\link{.renderOutput}} but are otherwise ignored.
 

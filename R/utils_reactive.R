@@ -41,8 +41,10 @@
     }
 
     pObjects$commands[[panel_name]] <- output$commands
-    pObjects$contents[[panel_name]] <- output$contents
-    pObjects$varname[[panel_name]] <- output$varname # can be NULL for non-transmitting panels.
+
+    # These can be NULL for non-transmitting panels, hence the single bracket assignment.
+    pObjects$contents[panel_name] <- list(output$contents)
+    pObjects$varname[panel_name] <- list(output$varname) 
 
     output
 }

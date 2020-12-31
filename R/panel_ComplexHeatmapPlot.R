@@ -125,10 +125,9 @@
 #'
 #' For generating the output:
 #' \itemize{
-#' \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the plot;
-#' \code{plot}, a \link{ggplot} object;
+#' \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{plot}, a \link{Heatmap} object;
 #' \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot};
-#' and \code{varname}, a string containing the name of the variable in \code{commands} that was used to obtain \code{contents}.
+#' and \code{contents} and \code{varname}, both set to \code{NULL} as this is not a transmitting panel.
 #' \item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} will create a PDF file containing the current plot, and return a string containing the path to that PDF.
 #' This assumes that the \code{plot} field returned by \code{\link{.generateOutput}} is a \link{Heatmap} object.
 #' }
@@ -559,7 +558,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     annotation_legend_side <- sprintf('annotation_legend_side=%s', deparse(tolower(slot(x, .plotLegendPosition))))
     all_cmds[["draw"]] <- sprintf("ComplexHeatmap::draw(hm, %s, %s)", heatmap_legend_side, annotation_legend_side)
 
-    list(commands=all_cmds, contents=plot_env$plot.data, plot=plot_out, varname="plot.data")
+    list(commands=all_cmds, plot=plot_out, varname=NULL, contents=NULL)
 })
 
 #' @export

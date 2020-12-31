@@ -220,12 +220,16 @@ The following arguments are required:</p><ul>
 
 <p>Methods for this generic should return a list containing:</p><ul>
 <li><p><code>contents</code>, some arbitrary content for the panel (usually a data.frame).
-It should be of a structure that allows it to be cross-referenced against the output of <code><a href='multi-select-generics.html'>.multiSelectionActive</a></code> to determine the selected rows/columns.
-This is used to ensure that the <code>pObjects$contents</code> of a panel is populated before attempting to render their children (i.e., those that receive a multiple selection from the current panel).</p></li>
+The values therein are used by <code><a href='multi-select-generics.html'>.multiSelectionCommands</a></code> to determine the multiple row/column selection in <code>x</code> to be transmitted to other (child) panels.
+The app will ensure that the <code>pObjects$contents</code> of each panel is populated before attempting to render their children. 
+<code>contents</code> may be set to <code>NULL</code> if <code>x</code> does not transmit, i.e., <code><a href='multi-select-generics.html'>.multiSelectionDimension</a></code> returns <code>"none"</code>.</p></li>
 <li><p><code>commands</code>, a list of character vectors of R commands that, when executed, produces the contents of the panel and any displayed output (e.g., a ggplot object).
-Developers should write these commands as if the evaluation environment only contains the SummarizedExperiment <code>se</code> and ExperimentColorMap <code>colormap</code>.</p></li>
+Developers should write these commands as if the evaluation environment only contains the SummarizedExperiment <code>se</code> and ExperimentColorMap <code>colormap</code>.
+It may also contain <code>col_selected</code>, if a multiple column selection is being transmitted to <code>x</code>;
+and possibly <code>row_selected</code>, if a multiple row selection is being transmitted to <code>x</code>.</p></li>
 <li><p><code>varname</code>, a string specifying the name of the variable in <code>commands</code> used to generate <code>contents</code>.
-This is used to fulfill code tracking obligations.</p></li>
+This is used to fulfill code tracking obligations.
+If the current panel is not a transmitter, this may be set to <code>NULL</code> instead.</p></li>
 </ul><p>The output list may contain any number of other fields that can be used by <code>.renderOutput</code> but are otherwise ignored.</p>
 <p>We suggest implementing this method using <code><a href='https://rdrr.io/r/base/eval.html'>eval</a>(<a href='https://rdrr.io/r/base/parse.html'>parse</a>(text=...))</code> calls, which enables easy construction and evaluation of the commands and contents at the same time.
 A convenient wrapper for this call is provided by the <code><a href='manage_commands.html'>.textEval</a></code> utility.</p>

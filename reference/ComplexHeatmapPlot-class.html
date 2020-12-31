@@ -275,10 +275,9 @@ otherwise it dispatches to the <a href='Panel-class.html'>Panel</a> method.</p><
 </ul>
 
 <p>For generating the output:</p><ul>
-<li><p><code><a href='output-generics.html'>.generateOutput</a>(x, se, all_memory, all_contents)</code> returns a list containing <code>contents</code>, a data.frame with one row per point currently present in the plot;
-<code>plot</code>, a ggplot object;
+<li><p><code><a href='output-generics.html'>.generateOutput</a>(x, se, all_memory, all_contents)</code> returns a list containing <code>plot</code>, a Heatmap object;
 <code>commands</code>, a list of character vector containing the R commands required to generate <code>contents</code> and <code>plot</code>;
-and <code>varname</code>, a string containing the name of the variable in <code>commands</code> that was used to obtain <code>contents</code>.</p></li>
+and <code>contents</code> and <code>varname</code>, both set to <code>NULL</code> as this is not a transmitting panel.</p></li>
 <li><p><code><a href='output-generics.html'>.exportOutput</a>(x, se, all_memory, all_contents)</code> will create a PDF file containing the current plot, and return a string containing the path to that PDF.
 This assumes that the <code>plot</code> field returned by <code><a href='output-generics.html'>.generateOutput</a></code> is a Heatmap object.</p></li>
 </ul>

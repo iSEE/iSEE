@@ -269,9 +269,15 @@ setMethod("show", "Panel", function(object) {
         val <- slot(object, x)
         if (is.atomic(val)) {
             if (length(val) > 5) {
-                val <- c(head(val, 3), sprintf("... +%i more", length(val) - 3)) 
+                extra <- sprintf("... + %i more", length(val) - 3) 
+                val <- head(val, 3)
+            } else {
+                extra <- NULL
             }
-            cat(paste(val, collapse=" "))
+
+            val <- c(.clean_string(val), extra)
+            wrapped <- strwrap(paste(val, collapse=" "), exdent=6)
+            cat(paste(wrapped, collapse="\n"))
         } else if (is.list(val)) {
             if (length(val)) {
                 cat("list of length", length(val))

@@ -342,3 +342,29 @@
     v <- try(slot(x, .packageVersion), silent=TRUE)
     !is(v, "try-error") && identical(v$iSEE, .latest_version$iSEE)
 }
+
+#' Clean the string
+#'
+#' Clean a string for the \code{\link{show}} method.
+#'
+#' @param x A vector, possibly a character vector.
+#' @param soft_limit Integer scalar to truncate each string in \code{x} to.
+#' @param hard_limit Integer scalar to indicate the maximum width before truncation begins.
+#' 
+#' @return If \code{x} is not a character vector, it is returned directly.
+#' Otherwise, all strings greater than \code{hard_limit} are truncated to \code{soft_limit} with an added \code{"..."}.
+#' All strings containing a newline or tab are similarly truncated at that character.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_clean_string
+.clean_string <- function(x, soft_limit=50, hard_limit=60) {
+    if (is.character(x)) {
+        if (any(edit <- grepl("[\t\n]", x), na.rm=TRUE)) {
+            x[edit] <- sub("[\t\n].*", "...", x[edit])
+        }
+        if (any(edit <- (nchar(x) > hard_limit), na.rm=TRUE)) {
+            x[edit] <- paste0(substr(x[edit], 1, soft_limit), "...")
+        }
+    }
+    x
+}

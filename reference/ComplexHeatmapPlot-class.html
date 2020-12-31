@@ -329,220 +329,80 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method t
 <span class='co'># Spits out a NULL and a warning if there is nothing to plot.</span>
 <span class='va'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce</span><span class='op'>)</span>
 <span class='fu'><a href='setup-generics.html'>.refineParameters</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce0</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; An object of class "ComplexHeatmapPlot"
-#&gt; Slot "Assay":
-#&gt; [1] "logcounts"
-#&gt; 
-#&gt; Slot "CustomRows":
-#&gt; [1] TRUE
-#&gt; 
-#&gt; Slot "CustomRowsText":
-#&gt; [1] "Gene_0001"
-#&gt; 
-#&gt; Slot "ClusterRows":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "ClusterRowsDistance":
-#&gt; [1] "spearman"
-#&gt; 
-#&gt; Slot "ClusterRowsMethod":
-#&gt; [1] "ward.D2"
-#&gt; 
-#&gt; Slot "DataBoxOpen":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "VisualChoices":
-#&gt; [1] "Annotations"
-#&gt; 
-#&gt; Slot "ColumnData":
-#&gt; character(0)
-#&gt; 
-#&gt; Slot "RowData":
-#&gt; character(0)
-#&gt; 
-#&gt; Slot "CustomBounds":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "LowerBound":
-#&gt; [1] NA
-#&gt; 
-#&gt; Slot "UpperBound":
-#&gt; [1] NA
-#&gt; 
-#&gt; Slot "AssayCenterRows":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "AssayScaleRows":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "DivergentColormap":
-#&gt; [1] "purple &lt; black &lt; yellow"
-#&gt; 
-#&gt; Slot "ShowDimNames":
-#&gt; [1] "Rows"    "Columns"
-#&gt; 
-#&gt; Slot "LegendPosition":
-#&gt; [1] "Bottom"
-#&gt; 
-#&gt; Slot "LegendDirection":
-#&gt; [1] "Horizontal"
-#&gt; 
-#&gt; Slot "VisualBoxOpen":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "ShowColumnSelection":
-#&gt; [1] TRUE
-#&gt; 
-#&gt; Slot "OrderColumnSelection":
-#&gt; [1] TRUE
-#&gt; 
-#&gt; Slot "VersionInfo":
-#&gt; $iSEE
-#&gt; [1] ‘2.3.4’
-#&gt; 
-#&gt; 
-#&gt; Slot "PanelId":
-#&gt; [1] NA
-#&gt; 
-#&gt; Slot "PanelHeight":
-#&gt; [1] 500
-#&gt; 
-#&gt; Slot "PanelWidth":
-#&gt; [1] 4
-#&gt; 
-#&gt; Slot "SelectionBoxOpen":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "RowSelectionSource":
-#&gt; [1] "---"
-#&gt; 
-#&gt; Slot "ColumnSelectionSource":
-#&gt; [1] "---"
-#&gt; 
-#&gt; Slot "RowSelectionDynamicSource":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "ColumnSelectionDynamicSource":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "RowSelectionRestrict":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "ColumnSelectionRestrict":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "SelectionHistory":
-#&gt; list()
-#&gt; </div><div class='input'>
+</div><div class='output co'>#&gt; Panel object of class ComplexHeatmapPlot
+#&gt;   Get or set individual parameters with ‘[[’ 
+#&gt;   Available parameters:
+#&gt;     Assay: logcounts
+#&gt;     AssayCenterRows: FALSE
+#&gt;     AssayScaleRows: FALSE
+#&gt;     ClusterRows: FALSE
+#&gt;     ClusterRowsDistance: spearman
+#&gt;     ClusterRowsMethod: ward.D2
+#&gt;     ColumnData: 
+#&gt;     ColumnSelectionDynamicSource: FALSE
+#&gt;     ColumnSelectionRestrict: FALSE
+#&gt;     ColumnSelectionSource: ---
+#&gt;     CustomBounds: FALSE
+#&gt;     CustomRows: TRUE
+#&gt;     CustomRowsText: Gene_0001
+#&gt;     DataBoxOpen: FALSE
+#&gt;     DivergentColormap: purple &lt; black &lt; yellow
+#&gt;     LegendDirection: Horizontal
+#&gt;     LegendPosition: Bottom
+#&gt;     LowerBound: NA
+#&gt;     OrderColumnSelection: TRUE
+#&gt;     PanelHeight: 500
+#&gt;     PanelId: NA
+#&gt;     PanelWidth: 4
+#&gt;     RowData: 
+#&gt;     RowSelectionDynamicSource: FALSE
+#&gt;     RowSelectionSource: ---
+#&gt;     SelectionBoxOpen: FALSE
+#&gt;     ShowColumnSelection: TRUE
+#&gt;     ShowDimNames: Rows Columns
+#&gt;     UpperBound: NA
+#&gt;     VersionInfo: list of length 1
+#&gt;     VisualBoxOpen: FALSE
+#&gt;     VisualChoices: Annotations</div><div class='input'>
 <span class='co'># Replaces the default with something sensible.</span>
 <span class='fu'>colData</span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>old_cd</span>
 <span class='va'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce</span><span class='op'>)</span>
 <span class='fu'><a href='setup-generics.html'>.refineParameters</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce0</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; An object of class "ComplexHeatmapPlot"
-#&gt; Slot "Assay":
-#&gt; [1] "logcounts"
-#&gt; 
-#&gt; Slot "CustomRows":
-#&gt; [1] TRUE
-#&gt; 
-#&gt; Slot "CustomRowsText":
-#&gt; [1] "Gene_0001"
-#&gt; 
-#&gt; Slot "ClusterRows":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "ClusterRowsDistance":
-#&gt; [1] "spearman"
-#&gt; 
-#&gt; Slot "ClusterRowsMethod":
-#&gt; [1] "ward.D2"
-#&gt; 
-#&gt; Slot "DataBoxOpen":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "VisualChoices":
-#&gt; [1] "Annotations"
-#&gt; 
-#&gt; Slot "ColumnData":
-#&gt; character(0)
-#&gt; 
-#&gt; Slot "RowData":
-#&gt; character(0)
-#&gt; 
-#&gt; Slot "CustomBounds":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "LowerBound":
-#&gt; [1] NA
-#&gt; 
-#&gt; Slot "UpperBound":
-#&gt; [1] NA
-#&gt; 
-#&gt; Slot "AssayCenterRows":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "AssayScaleRows":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "DivergentColormap":
-#&gt; [1] "purple &lt; black &lt; yellow"
-#&gt; 
-#&gt; Slot "ShowDimNames":
-#&gt; [1] "Rows"    "Columns"
-#&gt; 
-#&gt; Slot "LegendPosition":
-#&gt; [1] "Bottom"
-#&gt; 
-#&gt; Slot "LegendDirection":
-#&gt; [1] "Horizontal"
-#&gt; 
-#&gt; Slot "VisualBoxOpen":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "ShowColumnSelection":
-#&gt; [1] TRUE
-#&gt; 
-#&gt; Slot "OrderColumnSelection":
-#&gt; [1] TRUE
-#&gt; 
-#&gt; Slot "VersionInfo":
-#&gt; $iSEE
-#&gt; [1] ‘2.3.4’
-#&gt; 
-#&gt; 
-#&gt; Slot "PanelId":
-#&gt; [1] NA
-#&gt; 
-#&gt; Slot "PanelHeight":
-#&gt; [1] 500
-#&gt; 
-#&gt; Slot "PanelWidth":
-#&gt; [1] 4
-#&gt; 
-#&gt; Slot "SelectionBoxOpen":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "RowSelectionSource":
-#&gt; [1] "---"
-#&gt; 
-#&gt; Slot "ColumnSelectionSource":
-#&gt; [1] "---"
-#&gt; 
-#&gt; Slot "RowSelectionDynamicSource":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "ColumnSelectionDynamicSource":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "RowSelectionRestrict":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "ColumnSelectionRestrict":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "SelectionHistory":
-#&gt; list()
-#&gt; </div><div class='input'>
+</div><div class='output co'>#&gt; Panel object of class ComplexHeatmapPlot
+#&gt;   Get or set individual parameters with ‘[[’ 
+#&gt;   Available parameters:
+#&gt;     Assay: logcounts
+#&gt;     AssayCenterRows: FALSE
+#&gt;     AssayScaleRows: FALSE
+#&gt;     ClusterRows: FALSE
+#&gt;     ClusterRowsDistance: spearman
+#&gt;     ClusterRowsMethod: ward.D2
+#&gt;     ColumnData: 
+#&gt;     ColumnSelectionDynamicSource: FALSE
+#&gt;     ColumnSelectionRestrict: FALSE
+#&gt;     ColumnSelectionSource: ---
+#&gt;     CustomBounds: FALSE
+#&gt;     CustomRows: TRUE
+#&gt;     CustomRowsText: Gene_0001
+#&gt;     DataBoxOpen: FALSE
+#&gt;     DivergentColormap: purple &lt; black &lt; yellow
+#&gt;     LegendDirection: Horizontal
+#&gt;     LegendPosition: Bottom
+#&gt;     LowerBound: NA
+#&gt;     OrderColumnSelection: TRUE
+#&gt;     PanelHeight: 500
+#&gt;     PanelId: NA
+#&gt;     PanelWidth: 4
+#&gt;     RowData: 
+#&gt;     RowSelectionDynamicSource: FALSE
+#&gt;     RowSelectionSource: ---
+#&gt;     SelectionBoxOpen: FALSE
+#&gt;     ShowColumnSelection: TRUE
+#&gt;     ShowDimNames: Rows Columns
+#&gt;     UpperBound: NA
+#&gt;     VersionInfo: list of length 1
+#&gt;     VisualBoxOpen: FALSE
+#&gt;     VisualChoices: Annotations</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

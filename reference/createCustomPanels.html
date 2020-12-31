@@ -267,57 +267,25 @@ serious <a href='Panel-class.html'>Panel</a> extensions should be done explicitl
 
 <span class='va'>GEN</span> <span class='op'>&lt;-</span> <span class='fu'>createCustomPlot</span><span class='op'>(</span><span class='va'>CUSTOM_DIMRED</span><span class='op'>)</span>
 <span class='fu'>GEN</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; An object of class "CustomPlot"
-#&gt; Slot "ntop":
-#&gt; [1] 500
-#&gt; 
-#&gt; Slot "scale":
-#&gt; [1] TRUE
-#&gt; 
-#&gt; Slot "mode":
-#&gt; [1] "PCA"
-#&gt; 
-#&gt; Slot "VersionInfo":
-#&gt; $iSEE
-#&gt; [1] '2.3.4'
-#&gt; 
-#&gt; 
-#&gt; Slot "PanelId":
-#&gt; [1] NA
-#&gt; 
-#&gt; Slot "PanelHeight":
-#&gt; [1] 500
-#&gt; 
-#&gt; Slot "PanelWidth":
-#&gt; [1] 4
-#&gt; 
-#&gt; Slot "SelectionBoxOpen":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "RowSelectionSource":
-#&gt; [1] "---"
-#&gt; 
-#&gt; Slot "ColumnSelectionSource":
-#&gt; [1] "---"
-#&gt; 
-#&gt; Slot "DataBoxOpen":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "RowSelectionDynamicSource":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "ColumnSelectionDynamicSource":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "RowSelectionRestrict":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "ColumnSelectionRestrict":
-#&gt; [1] FALSE
-#&gt; 
-#&gt; Slot "SelectionHistory":
-#&gt; list()
-#&gt; </div><div class='input'>
+</div><div class='output co'>#&gt; Panel object of class CustomPlot
+#&gt;   Get or set individual parameters with '[[' 
+#&gt;   Available parameters:
+#&gt;     ColumnSelectionDynamicSource: FALSE
+#&gt;     ColumnSelectionRestrict: FALSE
+#&gt;     ColumnSelectionSource: ---
+#&gt;     DataBoxOpen: FALSE
+#&gt;     mode: PCA
+#&gt;     ntop: 500
+#&gt;     PanelHeight: 500
+#&gt;     PanelId: NA
+#&gt;     PanelWidth: 4
+#&gt;     RowSelectionDynamicSource: FALSE
+#&gt;     RowSelectionRestrict: FALSE
+#&gt;     RowSelectionSource: ---
+#&gt;     scale: TRUE
+#&gt;     SelectionBoxOpen: FALSE
+#&gt;     SelectionHistory: 
+#&gt;     VersionInfo: list of length 1</div><div class='input'>
 <span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
     <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scRNAseq</span><span class='op'>)</span>
     <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span><span class='op'>(</span><span class='st'>"tophat_counts"</span><span class='op'>)</span>

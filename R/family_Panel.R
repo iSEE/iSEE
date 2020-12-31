@@ -52,6 +52,7 @@
 #' \itemize{
 #' \item \code{x[[i]]} returns the value of a slot named \code{i}.
 #' \item \code{x[[i]] <- value} modifies \code{x} so that the value in slot \code{i} is replaced with \code{value}.
+#' \item \code{show(x)} will print a summary of all (non-hidden) slots and their values.
 #' }
 #'
 #' @section Supported methods:
@@ -129,6 +130,7 @@
 #' [[<-,Panel-method
 #' [[,Panel,ANY,ANY-method
 #' [[<-,Panel,ANY,ANY-method
+#' show,Panel-method
 #' .defineInterface,Panel-method
 #' .refineParameters,Panel-method
 #' .cacheCommonInfo,Panel-method
@@ -250,6 +252,36 @@ setReplaceMethod("[[", "Panel", function(x, i, j, ..., value) {
     }
     x
 }
+
+#' @export
+setMethod("show", "Panel", function(object) {
+    cat("Panel object of class", paste0(class(object)[1], "\n"))
+    cat("  Get or set individual parameters with", sQuote('[['), '\n')
+    cat("  Available parameters:\n")
+
+    all.slots <- sort(slotNames(object))
+    for (x in all.slots) {
+        if (.hideInterface(object, x)) {
+            next
+        }
+        cat(paste0("    ", x, ": "))
+
+        val <- slot(object, x)
+        if (is.atomic(val)) {
+            if (length(val) > 5) {
+                val <- c(head(val, 3), sprintf("... +%i more", length(val) - 3)) 
+            }
+            cat(paste(val, collapse=" "))
+        } else if (is.list(val)) {
+            if (length(val)) {
+                cat("list of length", length(val))
+            }
+        } else {
+            cat("a", class(val)[1], "object")
+        }
+        cat("\n")
+    }
+})
 
 #' @export
 setMethod(".refineParameters", "Panel", function(x, se) {

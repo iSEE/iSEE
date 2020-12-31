@@ -7,6 +7,7 @@
 \alias{[[<-,Panel-method}
 \alias{[[,Panel,ANY,ANY-method}
 \alias{[[<-,Panel,ANY,ANY-method}
+\alias{show,Panel-method}
 \alias{.defineInterface,Panel-method}
 \alias{.refineParameters,Panel-method}
 \alias{.cacheCommonInfo,Panel-method}
@@ -83,6 +84,7 @@ and \code{i} is a string containing the slot name:
 \itemize{
 \item \code{x[[i]]} returns the value of a slot named \code{i}.
 \item \code{x[[i]] <- value} modifies \code{x} so that the value in slot \code{i} is replaced with \code{value}.
+\item \code{show(x)} will print a summary of all (non-hidden) slots and their values.
 }
 }
 

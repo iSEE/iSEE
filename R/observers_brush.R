@@ -187,26 +187,25 @@
                 nextx <- curbrush$css[i+1,1]
                 nexty <- curbrush$css[i+1,2]
 
-                height <- abs(nexty - prevy)
-                width <- abs(nextx - prevx)
-                angle <- atan(width/height)
-                if ((nextx < prevx) != (nexty < prevy)) {
-                    angle <- -angle
-                }
-
+                height <- nexty - prevy
+                width <- nextx - prevx
+                angle <- atan(height/width)
                 angle <- angle / pi * 180
-                skew <- sprintf("skew(%sdeg)", angle)
+                transform <- sprintf("rotate(%sdeg)", angle)
+
+                LWD <- 2
+                len <- sqrt(height^2 + width^2)
                 style_args <- c(position="absolute",
                     `z-index`=100,
-                    top=paste0(min(prevy, nexty), "px"),
-                    left=paste0((prevx + nextx)/2, "px"),
-                    height=paste0(height, "px"),
-                    width=paste0(0, "px"), # skew will take care of the actual width.
-                    `border-right`=paste("2px solid", .panelColor(instance)),
-                    `border-bottom`=paste("2px solid", .panelColor(instance)),
-                    `-moz-transform`=skew,
-                    `-webkit-transform`=skew,
-                    transform=skew
+                    top=paste0((prevy + nexty)/2 - LWD/2, "px"),
+                    left=paste0((prevx + nextx)/2 - len/2, "px"),
+                    width=paste0(len, "px"),
+                    height=paste0(LWD, "px"), 
+                    `background-color`=.panelColor(instance),
+                    `-moz-transform`=transform,
+                    `-webkit-transform`=transform,
+                    transform=transform,
+                    `transform-origin`="center center"
                  )
 
                 style_str <- sprintf("%s:%s;", names(style_args), style_args)

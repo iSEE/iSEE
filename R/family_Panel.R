@@ -269,9 +269,26 @@ setMethod("show", "Panel", function(object) {
         val <- slot(object, x)
         if (is.atomic(val)) {
             if (length(val) > 5) {
-                val <- c(head(val, 3), sprintf("... +%i more", length(val) - 3)) 
+                extra <- sprintf("... + %i more", length(val) - 3) 
+                val <- head(val, 3)
+            } else {
+                extra <- NULL
             }
-            cat(paste(val, collapse=" "))
+
+            if (is.character(val)) {
+                # All strings greater than hard_limit are truncated to soft_limit with an added "...".
+                # All strings containing a newline or tab are similarly truncated at that character.
+                if (any(edit <- grepl("[\t\n]", val), na.rm=TRUE)) {
+                    val[edit] <- sub("[\t\n].*", "...", val[edit])
+                }
+                if (any(edit <- (nchar(val) > 60), na.rm=TRUE)) {
+                    val[edit] <- paste0(substr(val[edit], 1, 50), "...")
+                }
+            }
+
+            val <- c(val, extra)
+            wrapped <- strwrap(paste(val, collapse=" "), exdent=6)
+            cat(paste(wrapped, collapse="\n"))
         } else if (is.list(val)) {
             if (length(val)) {
                 cat("list of length", length(val))

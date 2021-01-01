@@ -151,11 +151,10 @@
             style_args <- c(position="absolute",
                 `z-index`=100,
                 height=paste0(RADIUS, "px"),
-                width=paste0(RADIUS, "px"),
-                `background-color`=.panelColor(instance),
-                `border-radius`="50%"
+                width=paste0(RADIUS, "px")
             )
 
+            # Adding the spots.
             spots <- vector("list", nrow(curbrush$css))
             for (i in seq_along(spots)) {
                 tmp <- c(
@@ -163,11 +162,59 @@
                     left=paste0(curbrush$css[i,1] - RADIUS/2, "px"),
                     top=paste0(curbrush$css[i,2] - RADIUS/2, "px")
                 )
+
+                if (i==1L) {
+                    tmp <- c(tmp,
+                        border=paste("2px", "solid", .panelColor(instance)),
+                        `background-color`="white"
+                    )
+                } else {
+                    tmp <- c(tmp,
+                        `background-color`=.panelColor(instance),
+                        `border-radius`="50%"
+                    )
+                }
+
                 style_str <- sprintf("%s:%s;", names(tmp), tmp)
                 spots[[i]] <- span(style=paste(style_str, collapse=" "))
             }
 
-            insertUI(paste0("#", plot_name), where="beforeEnd", div(id=lasso_id, do.call(tagList, spots)))
+            # Adding the lines.
+            lines <- vector("list", nrow(curbrush$css)-1L)
+            for (i in seq_along(lines)) {
+                prevx <- curbrush$css[i,1]
+                prevy <- curbrush$css[i,2]
+                nextx <- curbrush$css[i+1,1]
+                nexty <- curbrush$css[i+1,2]
+
+                height <- abs(nexty - prevy)
+                width <- abs(nextx - prevx)
+                angle <- atan(width/height)
+                if ((nextx < prevx) != (nexty < prevy)) {
+                    angle <- -angle
+                }
+
+                angle <- angle / pi * 180
+                skew <- sprintf("skew(%sdeg)", angle)
+                style_args <- c(position="absolute",
+                    `z-index`=100,
+                    top=paste0(min(prevy, nexty), "px"),
+                    left=paste0((prevx + nextx)/2, "px"),
+                    height=paste0(height, "px"),
+                    width=paste0(0, "px"), # skew will take care of the actual width.
+                    `border-right`=paste("2px solid", .panelColor(instance)),
+                    `border-bottom`=paste("2px solid", .panelColor(instance)),
+                    `-moz-transform`=skew,
+                    `-webkit-transform`=skew,
+                    transform=skew
+                 )
+
+                style_str <- sprintf("%s:%s;", names(style_args), style_args)
+                lines[[i]] <- span(style=paste(style_str, collapse=" "))
+            }
+
+            insertUI(paste0("#", plot_name), where="beforeEnd", 
+                div(id=lasso_id, do.call(tagList, lines), do.call(tagList, spots)))
         }
     })
     # nocov end

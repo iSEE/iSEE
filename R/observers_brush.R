@@ -164,11 +164,22 @@
                     top=paste0(curbrush$css[i,2] - RADIUS/2, "px")
                 )
                 style_str <- sprintf("%s:%s;", names(tmp), tmp)
-                print(style_str)
                 spots[[i]] <- span(style=paste(style_str, collapse=" "))
             }
 
             insertUI(paste0("#", plot_name), where="beforeEnd", div(id=lasso_id, do.call(tagList, spots)))
+        }
+    })
+    # nocov end
+
+    # nocov start
+    observeEvent(input$iSEE_window_resize, {
+        instance <- pObjects$memory[[plot_name]]
+        curbrush <- slot(instance, .brushData)
+        lasso_id <- paste0(plot_name, "_iSEE_INTERNAL_lasso_spots")
+        if (.is_open_lasso(curbrush)) {
+            removeUI(paste0("#", lasso_id))
+            slot(pObjects$memory[[plot_name]], .brushData) <- list()
         }
     })
     # nocov end

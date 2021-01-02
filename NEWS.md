@@ -1,3 +1,12 @@
+# iSEE 2.3.5
+
+* Added functionality to use multiple row/column selections as a factor on the axes, for faceting or for coloring.
+* Moved selection transparency setter into the "Visual parameters" box.
+* Deprecated `SelectionEffect="Color"` in favor of `ColorBy="Column selection"` and `ColorBy="Row selection"`.
+* Deprecated `SelectionColor` as the coloring for selections is determined using `colDataColorMap()` instead.
+* Deprecated `SelectionEffect="Restrict"` in favor of `ColumnSelectionRestrict` and `RowSelectionRestrict`.
+* Deprecated `ColumnSelectionType` and `ColumnSelectionSaved` (ditto for rows) as all active/saved selections are now transmitted.
+
 # iSEE 2.3.4
 
 * Fix wiring of button observer to open vignette.

@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.5</span>
       </span>
     </div>
 
@@ -148,6 +148,18 @@
       <small>Source: <a href='https://github.com/iSEE/iSEE/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="isee-235" class="section level1">
+<h1 class="page-header" data-toc-text="2.3.5">
+<a href="#isee-235" class="anchor"></a>iSEE 2.3.5</h1>
+<ul>
+<li>Added functionality to use multiple row/column selections as a factor on the axes, for faceting or for coloring.</li>
+<li>Moved selection transparency setter into the “Visual parameters” box.</li>
+<li>Deprecated <code>SelectionEffect="Color"</code> in favor of <code>ColorBy="Column selection"</code> and <code>ColorBy="Row selection"</code>.</li>
+<li>Deprecated <code>SelectionColor</code> as the coloring for selections is determined using <code><a href="../reference/ExperimentColorMap-class.html">colDataColorMap()</a></code> instead.</li>
+<li>Deprecated <code>SelectionEffect="Restrict"</code> in favor of <code>ColumnSelectionRestrict</code> and <code>RowSelectionRestrict</code>.</li>
+<li>Deprecated <code>ColumnSelectionType</code> and <code>ColumnSelectionSaved</code> (ditto for rows) as all active/saved selections are now transmitted.</li>
+</ul>
+</div>
     <div id="isee-234" class="section level1">
 <h1 class="page-header" data-toc-text="2.3.4">
 <a href="#isee-234" class="anchor"></a>iSEE 2.3.4</h1>

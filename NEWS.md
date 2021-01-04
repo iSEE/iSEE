@@ -1,3 +1,7 @@
+# iSEE 2.3.6
+
+* Bugfix for graceful deprecation of old parameters in various constructors.
+
 # iSEE 2.3.5
 
 * Added functionality to use multiple row/column selections as a factor on the axes, for faceting or for coloring.

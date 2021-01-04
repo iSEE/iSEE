@@ -109,7 +109,7 @@ NULL
 
 #' @export
 #' @importFrom methods callNextMethod
-setMethod("initialize", "ColumnDotPlot", function(.Object, ..., FacetByRow=NULL, FacetByColumn=NULL) {
+setMethod("initialize", "ColumnDotPlot", function(.Object, ..., SelectionEffect=NULL, SelectionColor=NULL, FacetByRow=NULL, FacetByColumn=NULL) {
     args <- list(...)
     args <- .emptyDefault(args, .colorByColData, NA_character_)
     args <- .emptyDefault(args, .colorByFeatNameAssay, NA_character_)
@@ -142,6 +142,15 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ..., FacetByRow=NULL,
             args[[.facetColumn]] <- .facetByColDataTitle
             args[[.facetColumnByColData]] <- FacetByColumn
         }
+    }
+
+    if (!is.null(SelectionEffect)) {
+        .Deprecated(msg=sprintf("'SelectionEffect=' is deprecated.\nUse '%s=TRUE' instead.", .selectColRestrict))
+        args[[.selectColRestrict]] <- TRUE
+    }
+
+    if (!is.null(SelectionColor)) {
+        .Deprecated(msg="'SelectionColor=' is deprecated and will be ignored")
     }
 
     do.call(callNextMethod, c(list(.Object), args))

@@ -153,7 +153,7 @@
 NULL
 
 #' @export
-setMethod("initialize", "Panel", function(.Object, ...) {
+setMethod("initialize", "Panel", function(.Object, ..., RowSelectionSaved=NULL, ColumnSelectionSaved=NULL, RowSelectionType=NULL, ColumnSelectionType=NULL) {
     args <- list(...)
 
     args <- .emptyDefault(args, .organizationId, NA_integer_)
@@ -174,6 +174,19 @@ setMethod("initialize", "Panel", function(.Object, ...) {
     current <- c(.latest_version, args[[.packageVersion]])
     current <- current[!duplicated(names(current))]
     args[[.packageVersion]] <- current
+
+    if (!is.null(RowSelectionSaved)) {
+        .Deprecated(msg="'RowSelectionSaved=' is deprecated and will be ignored.")
+    }
+    if (!is.null(ColumnSelectionSaved)) {
+        .Deprecated(msg="'ColumnSelectionSaved=' is deprecated and will be ignored.")
+    }
+    if (!is.null(RowSelectionType)) {
+        .Deprecated(msg="'RowSelectionType=' is deprecated and will be ignored.")
+    }
+    if (!is.null(ColumnSelectionType)) {
+        .Deprecated(msg="'ColumnSelectionType=' is deprecated and will be ignored.")
+    }
 
     do.call(callNextMethod, c(list(.Object), args))
 })

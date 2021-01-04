@@ -109,7 +109,7 @@ NULL
 
 #' @export
 #' @importFrom methods callNextMethod
-setMethod("initialize", "RowDotPlot", function(.Object, ..., FacetByRow=NULL, FacetByColumn=NULL) {
+setMethod("initialize", "RowDotPlot", function(.Object, ..., SelectionEffect=NULL, SelectionColor=NULL, FacetByRow=NULL, FacetByColumn=NULL) {
     args <- list(...)
     args <- .emptyDefault(args, .colorByRowData, NA_character_)
     args <- .emptyDefault(args, .colorBySampNameAssay, NA_character_)
@@ -126,7 +126,6 @@ setMethod("initialize", "RowDotPlot", function(.Object, ..., FacetByRow=NULL, Fa
     args <- .emptyDefault(args, .facetRowByRowData, NA_character_)
     args <- .emptyDefault(args, .facetColumnByRowData, NA_character_)
 
-    # nocov start
     if (!is.null(FacetByRow)) {
         .Deprecated(msg="'FacetByRow=' is deprecated.\nUse 'FacetRowBy=\"Column data\"' and 'FacetRowByRowData=' instead.")
         if (FacetByRow!=.noSelection) {
@@ -142,8 +141,15 @@ setMethod("initialize", "RowDotPlot", function(.Object, ..., FacetByRow=NULL, Fa
             args[["FacetColumnByRowData"]] <- FacetByColumn
         }
     }
-    # nocov end
 
+    if (!is.null(SelectionEffect)) {
+        .Deprecated(msg=sprintf("'SelectionEffect=' is deprecated.\nUse '%s=TRUE' instead.", .selectRowRestrict))
+        args[[.selectRowRestrict]] <- TRUE
+    }
+
+    if (!is.null(SelectionColor)) {
+        .Deprecated(msg="'SelectionColor=' is deprecated and will be ignored")
+    }
 
     do.call(callNextMethod, c(list(.Object), args))
 })

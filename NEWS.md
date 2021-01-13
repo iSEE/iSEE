@@ -1,3 +1,7 @@
+# iSEE 2.3.7
+
+* Bugfix for missing import of geom_density_2d
+
 # iSEE 2.3.6
 
 * Bugfix for graceful deprecation of old parameters in various constructors.

@@ -193,7 +193,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @seealso
 #' \code{\link{.generateDotPlot}}
 #'
-#' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme element_text
+#' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme element_text geom_density_2d
 .scatter_plot <- function(plot_data, param_choices,
     x_lab, y_lab, color_lab, shape_lab, size_lab, title,
     by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE)

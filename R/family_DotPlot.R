@@ -484,6 +484,17 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
     .createCustomDimnamesModalObservers(plot_name, .plotCustomLabelsText, .dimnamesModalOpen,
         se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, 
         source_type=plot_dimension)
+
+    # nocov start
+    if (!is.null(session)) {
+        shinyjs::onclick(paste0(plot_name, "_", .colorByField, "_help"), {
+            ptour <- data.frame(element=paste0("#", plot_name, "_", .colorByField), intro="blah blah blah colors")
+            if (nrow(ptour)) {
+                introjs(session, options=list(steps=ptour))
+            }
+        })
+    }
+    # nocov end
 })
 
 # Interface ----
@@ -515,15 +526,17 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
     tagList(
         hr(),
         radioButtons(
-            colorby_field, label="Color by:", inline=TRUE,
+            colorby_field, 
+            label=HTML(sprintf("Color by<span id='%s'><sup>?</sup></span>:", paste0(colorby_field, "_help"))), 
+            inline=TRUE,
             choices=.defineDotPlotColorChoices(x, se),
             selected=slot(x, .colorByField)
         ),
         .conditionalOnRadio(
             colorby_field, .colorByNothingTitle,
-            colourInput(
-                paste0(plot_name, "_", .colorByDefaultColor), label=NULL,
-                value=slot(x, .colorByDefaultColor))
+                colourInput(
+                    paste0(plot_name, "_", .colorByDefaultColor), label=NULL,
+                    value=slot(x, .colorByDefaultColor))
         ),
         .conditionalOnRadio(
             colorby_field, colorby$metadata$title,

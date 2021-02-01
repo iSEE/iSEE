@@ -154,14 +154,13 @@ test_that(".setup_dimname_source_observer works with a mimicked app", {
     rObjects <- new.env()
     input <- list()
 
-    # The color choice has changed.
+    # The color choice has changed
+    # This is expected to make iSEE:::.setup_dimname_source_observer return TRUE
     input$ReducedDimensionPlot1_ColorBy <- "Feature name"
     input$ReducedDimensionPlot1_ColorByFeatureSource <- "RowDataTable1"
 
     # Define dummy functions called by updateSelectizeInput
     session <- shiny::MockShinySession$new()
-    session$registerDataObj <- function(inputId, choices, selectizeJSON) { NULL }
-    session$sendInputMessage <- function(inputId, message) { NULL }
 
     out <- iSEE:::.setup_dimname_source_observer(
         "ReducedDimensionPlot1",
@@ -171,6 +170,6 @@ test_that(".setup_dimname_source_observer works with a mimicked app", {
         choices=letters,
         input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
-    expect_false(out) # TODO: right now it returns FALSE, check whether this is the intended result
+    expect_true(out)
 
 })

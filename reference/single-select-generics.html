@@ -74,7 +74,7 @@ This suite of generics controls the behavior of these single selections." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.8</span>
       </span>
     </div>
 
@@ -186,7 +186,7 @@ This internal list should contain at least entries with the following names:</p>
 <li><p><code>source</code>, the name of the slot of <code>x</code> that indicates which transmitting panel to respond to, e.g., <code>ColorByFeatureSource</code> in <a href='DotPlot-class.html'>DotPlot</a>s.</p></li>
 </ul>
 
-<p>For each set of responsive slots, the expected paradigm is that the user interface will contain two <code><a href='https://shiny.rstudio.com/reference/shiny/latest/selectInput.html'>selectInput</a></code> elements, one for each of the <code>param</code> and <code>source</code> slots.
+<p>For each set of responsive slots, the expected paradigm is that the user interface will contain two <code><a href='https://rdrr.io/pkg/shiny/man/selectInput.html'>selectInput</a></code> elements, one for each of the <code>param</code> and <code>source</code> slots.
 Users are free to manually alter the choice of feature/sample in the <code>param</code>'s <code>selectInput</code>.
 Users are also allowed to change the identity of the transmitting panel via the <code>source</code>'s <code>selectInput</code>, which will automatically update the chosen entry in the <code>param</code>'s <code>selectInput</code> when the transmitter's single selection changes.</p>
 <p>Developers are strongly recommended to follow the above paradigm.
@@ -196,7 +196,7 @@ This specifies whether the slot specified by <code>param</code> contains the ide
 If this is not present, no observers will be set up.</p></li>
 <li><p><code>dynamic</code>, the name of the slot indicating whether the choice of transmitting panel should change dynamically.
 One example would be <code>"ColorByFeatureDynamicSource"</code> for <a href='DotPlot-class.html'>DotPlot</a>s.
-If supplied, a <code><a href='https://shiny.rstudio.com/reference/shiny/latest/checkboxInput.html'>checkboxInput</a></code> should also be present in the UI to turn on/off dynamic choices for this parameter.
+If supplied, a <code><a href='https://rdrr.io/pkg/shiny/man/checkboxInput.html'>checkboxInput</a></code> should also be present in the UI to turn on/off dynamic choices for this parameter.
 This field can be missing if the current panel does not support dynamic selection sources.</p></li>
 <li><p><code>use_mode</code>, the name of the slot of <code>x</code> containing the current usage mode.
 This is used in cases where there are multiple choices of which only one involves using information held in <code>source</code>.

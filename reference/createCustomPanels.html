@@ -74,7 +74,7 @@ This creates a new class with specialized methods for showing content based on a
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.8</span>
       </span>
     </div>
 
@@ -221,10 +221,10 @@ Alternatively, this may be <code>NULL</code> if no selection has been made in th
 <p>Any number of additional named arguments may also be present in <code>FUN</code>.
 All such arguments should have default values,
 as these are used to automatically generate UI elements in the panel:</p><ul>
-<li><p>Character vectors will get a <code><a href='https://shiny.rstudio.com/reference/shiny/latest/selectInput.html'>selectInput</a></code>.</p></li>
-<li><p>Strings will get a <code><a href='https://shiny.rstudio.com/reference/shiny/latest/textInput.html'>textInput</a></code>.</p></li>
-<li><p>Numeric scalars will get a <code><a href='https://shiny.rstudio.com/reference/shiny/latest/numericInput.html'>numericInput</a></code>.</p></li>
-<li><p>Logical scalars will get a <code><a href='https://shiny.rstudio.com/reference/shiny/latest/checkboxInput.html'>checkboxInput</a></code>.</p></li>
+<li><p>Character vectors will get a <code><a href='https://rdrr.io/pkg/shiny/man/selectInput.html'>selectInput</a></code>.</p></li>
+<li><p>Strings will get a <code><a href='https://rdrr.io/pkg/shiny/man/textInput.html'>textInput</a></code>.</p></li>
+<li><p>Numeric scalars will get a <code><a href='https://rdrr.io/pkg/shiny/man/numericInput.html'>numericInput</a></code>.</p></li>
+<li><p>Logical scalars will get a <code><a href='https://rdrr.io/pkg/shiny/man/checkboxInput.html'>checkboxInput</a></code>.</p></li>
 </ul><p>Arguments with other types of default values are ignored.
 If <code>restrict</code> is specified, arguments will only have corresponding UI elements if they are listed in <code>restrict</code>.
 All user interactions with these elements will automatically trigger regeneration of the panel contents.</p>

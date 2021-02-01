@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.8</span>
       </span>
     </div>
 
@@ -162,7 +162,7 @@
 
 <p><code>.defineOutput(x)</code> defines the output element of the panel (e.g., a plot or table widget),
 given an instance of a <a href='Panel-class.html'>Panel</a> subclass in <code>x</code>.</p>
-<p>Methods for this generic are expected to return a HTML element containing the visual output of the panel, such as the return value of <code><a href='https://shiny.rstudio.com/reference/shiny/latest/plotOutput.html'>plotOutput</a></code> or <code><a href='https://shiny.rstudio.com/reference/shiny/latest/tableOutput.html'>dataTableOutput</a></code>.
+<p>Methods for this generic are expected to return a HTML element containing the visual output of the panel, such as the return value of <code><a href='https://rdrr.io/pkg/shiny/man/plotOutput.html'>plotOutput</a></code> or <code><a href='https://rdrr.io/pkg/shiny/man/tableOutput.html'>dataTableOutput</a></code>.
 This element will be shown in the <span class="pkg">iSEE</span> interface above the parameter boxes for <code>x</code>.
 Multiple elements can be returned via a <code><a href='https://rdrr.io/pkg/htmltools/man/tag.html'>tagList</a></code>.</p>
 <p>The IDs of the output elements are expected to be prefixed with the panel name from <code><a href='.fullName.html'>.getEncodedName</a>(x)</code> and an underscore, e.g., <code>"ReducedDimensionPlot1_someOutput"</code>.
@@ -183,7 +183,7 @@ The following arguments are required:</p><ul>
 </ul>
 
 <p>It is expected to attach one or more reactive expressions to <code>output</code> to render the output element(s) defined by <code>.defineOutput</code>.
-This is typically done by calling <span class="pkg">shiny</span> rendering functions like <code><a href='https://shiny.rstudio.com/reference/shiny/latest/renderPlot.html'>renderPlot</a></code> or the most appropriate equivalent for the panel's output. 
+This is typically done by calling <span class="pkg">shiny</span> rendering functions like <code><a href='https://rdrr.io/pkg/shiny/man/renderPlot.html'>renderPlot</a></code> or the most appropriate equivalent for the panel's output. 
 The return value of this generic is not used; only the side-effect of the reactive output set-up is relevant.</p>
 <p>The rendering expression inside the chosen rendering function is expected to:</p><ol>
 <li><p>Call <code><a href='https://rdrr.io/r/base/force.html'>force(rObjects[[PANEL]])</a></code>, where <code>PANEL</code> is the output of <code><a href='.fullName.html'>.getEncodedName</a>(x)</code>.

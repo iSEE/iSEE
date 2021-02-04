@@ -580,16 +580,40 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
     }
 })
 
-###############################################################
+###############################################################################
+# Documentation
 
 #' @export
-setMethod(".definePanelTour", "ColumnDotPlot", function(x) {
-    collated <- callNextMethod()
-        
-    collated$intro[collated$intro=="PLACEHOLDER_COLOR"] <- "We can choose to color by different per-column attributes - from the column metadata, across a specific feature of an assay, to identify a chosen sample, or based on a multiple column selection transmitted from another panel.<br/><br/><strong>Action:</strong> try out some of the different choices. Note how further options become available when each choice is selected."
+setMethod(".getSpecificHelp", "ColumnDotPlot", function(x) {
+    all.tours <- callNextMethod()
+    plot_name <- .getEncodedName(x)
 
-    data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
+    all.tours[[.colorByField]] <- data.frame(
+        rbind(
+            c(
+                element=paste0("#", plot_name, "_", .colorByField),
+                intro="We can choose to color points by a constant (<em>None</em>) or different per-column attributes:
+<ul>
+<li><em>Column data</em>: a field of the <code>colData</code> of our <code>SummarizedExperiment</code>.</li>
+<li><em>Feature name</em>: the name of a feature of interest, to color points by the assay value of that feature.</li>
+<li><em>Sample name</em>: the name of a sample of interest, to highlight its location on the plot.</li>
+<li><em>Column selection</em>: whether or not a point is included in a multiple column selection transmitted from another panel.</li>
+</ul>
+Try out some of the different choices here. Note how further options become available when each choice is selected.
+For example, if we were to <strong>select <em>Column data</em></strong>..."
+            ),
+            c(
+                element=paste0("#", plot_name, "_", .colorByColData, " + .selectize-control"),
+                intro="... we can choose between different <code>colData</code> fields that we might want to color by."
+            )
+        )
+    )
+
+    all.tours
 })
+
+###############################################################################
+# Back compatibility
 
 #' @export
 setMethod("updateObject", "ColumnDotPlot", function(object, ..., verbose=FALSE) {

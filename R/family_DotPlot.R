@@ -977,7 +977,6 @@ setMethod(".definePanelTour", "DotPlot", function(x) {
 
     collated <- rbind(
         .addTourStep(x, .visualParamBoxOpen,  "The <i>Visual parameters</i> box contains parameters related to visual aspects like the color, shape, size and so on.<br/><br/><strong>Action:</strong> click on the header of this box to see the available options."),
-        .addTourStep(x, .colorByField, "PLACEHOLDER_COLOR"), # To be filled in by subclasses.
         .addTourStep(x, .visualParamChoice, "There are a lot of options so not all of them are shown by default. More settings are available by checking some of the boxes here; conversely, options can be hidden by unchecking some of these boxes.<br/><br/>Most of these parameters here are fairly self-explanatory and can be explored at leisure. However, we will highlight one particularly useful piece of functionality.<br/><br/><strong>Action:</strong> tick the checkbox labelled \"Text\"."),
         .addTourStep(x, .dimnamesModalOpen, sprintf("When custom labels are enabled, this button can launch a modal containing a text editor where users can specify the data points to label - in this case, using their %s names.", mdim)),
         callNextMethod(),

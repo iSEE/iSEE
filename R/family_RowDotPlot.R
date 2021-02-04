@@ -577,16 +577,40 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
     }
 })
 
-###############################################################
+###############################################################################
+# Documentation
 
 #' @export
-setMethod(".definePanelTour", "RowDotPlot", function(x) {
-    collated <- callNextMethod()
+setMethod(".getSpecificHelp", "RowDotPlot", function(x) {
+    all.tours <- callNextMethod()
+    plot_name <- .getEncodedName(x)
 
-    collated$intro[collated$intro=="PLACEHOLDER_COLOR"] <- "We can choose to color by different per-row attributes - from the row metadata, across a specific sample of an assay, to identify a chosen feature, or based on a multiple row selection transmitted from another panel.<br/><br/><strong>Action:</strong> try out some of the different choices. Note how further options become available when each choice is selected."
+    all.tours[[.colorByField]] <- data.frame(
+        rbind(
+            c(
+                element=paste0("#", plot_name, "_", .colorByField),
+                intro="We can choose to color by a constant (<em>None</em>) or different per-row attributes:
+<ul>
+<li><em>Row data</em>: a field of the <code>rowData</code> of our <code>SummarizedExperiment</code>.</li>
+<li><em>Feature name</em>: the name of a feature of interest, to color points by the assay value of that feature.</li>
+<li><em>Sample name</em>: the name of a sample of interest, to highlight its location on the plot.</li>
+<li><em>Row selection</em>: whether or not a point is included in a multiple column selection transmitted from another panel.</li>
+</ul>
+Try out some of the different choices here. Note how further options become available when each choice is selected.
+For example, if we were to <strong>select <em>Row data</em></strong>..."
+            ),
+            c(
+                element=paste0("#", plot_name, "_", .colorByRowData, " + .selectize-control"),
+                intro="... we can choose between different <code>rowData</code> fields that we might want to color by."
+            )
+        )
+    )
 
-    data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
+    all.tours
 })
+
+###############################################################################
+# Back compatibility
 
 #' @export
 setMethod("updateObject", "RowDotPlot", function(object, ..., verbose=FALSE) {

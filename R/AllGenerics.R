@@ -1041,6 +1041,9 @@ NULL
 #' @export
 setGeneric(".definePanelTour", function(x) standardGeneric(".definePanelTour"))
 
+#' @export
+setGeneric(".getSpecificHelp", function(x, field) standardGeneric(".getSpecificHelp"))
+
 ###########################
 
 #' @export

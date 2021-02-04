@@ -484,17 +484,6 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
     .createCustomDimnamesModalObservers(plot_name, .plotCustomLabelsText, .dimnamesModalOpen,
         se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, 
         source_type=plot_dimension)
-
-    # nocov start
-    if (!is.null(session)) {
-        shinyjs::onclick(paste0(plot_name, "_", .colorByField, "_help"), {
-            ptour <- data.frame(element=paste0("#", plot_name, "_", .colorByField), intro="blah blah blah colors")
-            if (nrow(ptour)) {
-                introjs(session, options=list(steps=ptour))
-            }
-        })
-    }
-    # nocov end
 })
 
 # Interface ----
@@ -527,7 +516,7 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
         hr(),
         radioButtons(
             colorby_field, 
-            label=HTML(sprintf("Color by<span id='%s'><sup>?</sup></span>:", paste0(colorby_field, "_help"))), 
+            label=.label_with_help("Color by:", id=colorby_field),
             inline=TRUE,
             choices=.defineDotPlotColorChoices(x, se),
             selected=slot(x, .colorByField)
@@ -554,8 +543,9 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
                 value=x[[colorby$name$color]]),
             checkboxInput(
                 paste0(plot_name, "_", colorby$name$dynamic),
-                label=sprintf("Use dynamic %s selection", mydim_single),
-                value=x[[colorby$name$dynamic]])
+                label="Use dynamic selection",
+                value=x[[colorby$name$dynamic]]),
+            HTML(sprintf("<span id='%s'><sup>?</sup></span>", paste0(plot_name, "_TEST", "_help"))) 
         ),
         .conditionalOnRadio(colorby_field, colorby$assay$title,
             selectizeInput(paste0(plot_name, "_", colorby$assay$field),
@@ -694,15 +684,21 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
     plot_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
+
     tagList(
         hr(),
         checkboxInput(.input_FUN(.plotHoverInfo),
             label=sprintf("Show %s details on hover", .singleSelectionDimension(x)),
             value=slot(x, .plotHoverInfo)),
         hr(),
-        checkboxInput(.input_FUN(.plotCustomLabels),
-            label=sprintf("Label custom %ss", .singleSelectionDimension(x)),
-            value=slot(x, .plotCustomLabels)),
+        {
+            label_field <- .input_FUN(.plotCustomLabels)
+            .checkbox_with_help(id=label_field,
+                checkboxInput(label_field,
+                    label=sprintf("Label custom %ss", .singleSelectionDimension(x)),
+                    value=slot(x, .plotCustomLabels))
+            )
+        },
         .conditionalOnCheckSolo(
             .input_FUN(.plotCustomLabels),
             on_select=TRUE,
@@ -972,6 +968,9 @@ setMethod(".colorByNoneDotPlotField", "DotPlot", function(x) NULL)
 #' @export
 setMethod(".colorByNoneDotPlotScale", "DotPlot", function(x) NULL)
 
+###############################################################################
+# Documentation
+
 #' @export
 setMethod(".definePanelTour", "DotPlot", function(x) {
     mdim <- .multiSelectionDimension(x)
@@ -980,7 +979,6 @@ setMethod(".definePanelTour", "DotPlot", function(x) {
         .addTourStep(x, .visualParamBoxOpen,  "The <i>Visual parameters</i> box contains parameters related to visual aspects like the color, shape, size and so on.<br/><br/><strong>Action:</strong> click on the header of this box to see the available options."),
         .addTourStep(x, .colorByField, "PLACEHOLDER_COLOR"), # To be filled in by subclasses.
         .addTourStep(x, .visualParamChoice, "There are a lot of options so not all of them are shown by default. More settings are available by checking some of the boxes here; conversely, options can be hidden by unchecking some of these boxes.<br/><br/>Most of these parameters here are fairly self-explanatory and can be explored at leisure. However, we will highlight one particularly useful piece of functionality.<br/><br/><strong>Action:</strong> tick the checkbox labelled \"Text\"."),
-        .addTourStep(x, .plotCustomLabels, sprintf("Users can show the names of certain %ss alongside the locations of their data points on the plot.<br/><br/><strong>Action:</strong> tick the checkbox to enable custom labels.", mdim)),
         .addTourStep(x, .dimnamesModalOpen, sprintf("When custom labels are enabled, this button can launch a modal containing a text editor where users can specify the data points to label - in this case, using their %s names.", mdim)),
         callNextMethod(),
         c(paste0("#", .getEncodedName(x)), sprintf("At the other end of the spectrum, brushing or creating a lasso on this plot will create a selection of multiple %ss, to be transmitted to other panels that choose this one as their selection source.<br/><br/>Drag-and-dropping will create a rectangular brush while a single click will lay down a lasso waypoint for non-rectangular selections.<br/><br/>Brushes and lassos can also be used to transmit single %s selections in which case one %s is arbitrarily chosen from the selection.", mdim, mdim, mdim)),
@@ -995,6 +993,32 @@ setMethod(".definePanelTour", "DotPlot", function(x) {
 
     collated
 })
+
+#' @export
+setMethod(".getSpecificHelp", "DotPlot", function(x) {
+    all.tours <- callNextMethod()
+
+    plot_name <- .getEncodedName(x)
+    mdim <- .multiSelectionDimension(x)
+
+    all.tours[[.plotCustomLabels]] <- data.frame(
+        rbind(
+            c(
+                element=paste0("#", plot_name, "_", .plotCustomLabels), 
+                intro=sprintf("Users can show the names of certain %ss alongside their locations on the plot. This is done by <strong>checking the highlighted box</strong>...", mdim)
+            ),
+            c(
+                element=paste0("#", plot_name, "_", .dimnamesModalOpen),
+                intro=sprintf("... and then clicking on this button to open a modal in which users can enter the names of the %ss of interest. All points named in this manner will have their names appear next to their coordinates on the plot.<br/><br/>(We don't name all points as this may result in too many names for large numbers of points.)", mdim)
+            )
+        )
+    )
+
+    all.tours
+})
+
+###############################################################################
+# Back compatibility
 
 #' @export
 #' @importFrom BiocGenerics updateObject

@@ -399,6 +399,19 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
                 introjs(session, options=list(steps=ptour))
             }
         })
+
+        all.specifics <- .getSpecificHelp(x)
+        for (i in names(all.specifics)) {
+            print(i)
+            print(all.specifics[[i]])
+            local({ 
+                i0 <- i
+                spec.df <- all.specifics[[i]]
+                shinyjs::onclick(.input_FUN(paste0(i0, "_specific_help")), {
+                    introjs(session, options=list(steps=spec.df))
+                })
+            })
+        }
     }
     # nocov end
 })
@@ -473,6 +486,11 @@ setMethod(".definePanelTour", "Panel", function(x) {
 
     collated <- do.call(rbind, collated)
     data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
+})
+
+#' @export
+setMethod(".getSpecificHelp", "Panel", function(x) {
+    list()
 })
 
 #' @export

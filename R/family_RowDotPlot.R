@@ -580,33 +580,87 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
 ###############################################################################
 # Documentation
 
-#' @export
-setMethod(".getSpecificHelp", "RowDotPlot", function(x) {
-    all.tours <- callNextMethod()
-    plot_name <- .getEncodedName(x)
+setMethod(".getDotPlotColorHelp", "RowDotPlot", function(x, color_choices) {
+    force(color_choices)
+    function(plot_name) {
+        start <- paste0("#", plot_name, "_", .colorByField)
+        base <- "We can choose to color points by a constant (<em>None</em>) or various per-rowattributes. Try out some of the different choices here, and note how further options become available when each choice is selected."
+        steps <- list(c(element=start, intro=base))
 
-    all.tours[[.colorByField]] <- data.frame(
-        rbind(
-            c(
-                element=paste0("#", plot_name, "_", .colorByField),
-                intro="We can choose to color by a constant (<em>None</em>) or different per-row attributes:
-<ul>
-<li><em>Row data</em>: a field of the <code>rowData</code> of our <code>SummarizedExperiment</code>.</li>
-<li><em>Feature name</em>: the name of a feature of interest, to color points by the assay value of that feature.</li>
-<li><em>Sample name</em>: the name of a sample of interest, to highlight its location on the plot.</li>
-<li><em>Row selection</em>: whether or not a point is included in a multiple column selection transmitted from another panel.</li>
-</ul>
-Try out some of the different choices here. Note how further options become available when each choice is selected.
-For example, if we were to <strong>select <em>Row data</em></strong>..."
-            ),
-            c(
-                element=paste0("#", plot_name, "_", .colorByRowData, " + .selectize-control"),
-                intro="... we can choose between different <code>rowData</code> fields that we might want to color by."
-            )
-        )
-    )
+        if ("Row data" %in% color_choices) {
+            steps <- c(steps, list(
+                c(
+                    element=start,
+                    intro="For example, if we <strong>select <em>Row data</em></strong>..."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorByRowData, " + .selectize-control"),
+                    intro="... we can choose between different <code>rowData</code> fields that we might want to color by."
+                )
+            ))
+        }
 
-    all.tours
+        if ("Sample name" %in% color_choices) {
+            steps <- c(steps, list(
+                c(
+                    element=start,
+                    intro="If we <strong>select <em>Sample name</em></strong>..."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorByFeatName, " + .selectize-control"),
+                    intro="... each point is colored according to the assay value of a sample of interest for the corresponding row."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorByFeatNameAssay, " + .selectize-control"),
+                    intro="We can change the choice of assay."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorByRowTable, " + .selectize-control"),
+                    intro="And we can even synchronize the choice of sample to a selection in another panel. This assumes that our current application actually has another panel that allows us to select a single sample from our <code>SummarizedExperiment</code>."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorByFeatDynamic),
+                    intro="In fact, we don't even need to manually choose another panel - if dynamic sample selection is enabled, the plot will automatically respond to any single sample selection from any applicable panel in our application."
+                )
+            ))
+        }
+
+        if ("Feature name" %in% color_choices) {
+            steps <- c(steps, list(
+                c(
+                    element=start,
+                    intro="If we <strong>select <em>Feature name</em></strong>..."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorBySampName, " + .selectize-control"),
+                    intro="... we can highlight a particular point based on the row name."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorBySampNameColor),
+                    intro="We can fiddle with the choice of color for the highlighted point."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorByColTable, " + .selectize-control"),
+                    intro="We can even synchronize the choice of sample to a selection in another panel. This assumes that our current application actually has another panel that we can use to select a single feature."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorBySampDynamic),
+                    intro="In fact, we don't even need to manually choose another panel - if dynamic sample selection is enabled, the plot will automatically respond to any single feature selection from any applicable panel in our application."
+                )
+            ))
+        }
+
+        if ("Row selection" %in% color_choices) {
+            steps <- c(steps, list(
+                c(
+                    element=start,
+                    intro="If we <strong>select <em>Row selection</em></strong>, we will color the points according to the multiple column selection transmitted from another panel (see the Selection Parameters box). If a column is included in the active selection of the other panel, the corresponding point in this panel is assigned a certain color; if the column is in one of the saved selections, it gets another color; and if the column is not in any selection, it gets the default color (usually grey). Points that are present in multiple selections also get a different color."  
+                )
+            ))
+        }
+
+        data.frame(do.call(rbind, steps))
+    }
 })
 
 ###############################################################################

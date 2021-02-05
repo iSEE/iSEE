@@ -401,13 +401,11 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
         })
 
         all.specifics <- .getSpecificHelp(x)
-        for (i in names(all.specifics)) {
-            print(i)
-            print(all.specifics[[i]])
+        for (i in all.specifics) {
             local({ 
                 i0 <- i
-                spec.df <- all.specifics[[i]]
                 shinyjs::onclick(.input_FUN(paste0(i0, "_specific_help")), {
+                    spec.df <- .getSpecificTour(class(x), i0)(panel_name)
                     introjs(session, options=list(steps=spec.df))
                 })
             })
@@ -489,9 +487,7 @@ setMethod(".definePanelTour", "Panel", function(x) {
 })
 
 #' @export
-setMethod(".getSpecificHelp", "Panel", function(x) {
-    list()
-})
+setMethod(".getSpecificHelp", "Panel", function(x) NULL)
 
 #' @export
 #' @importFrom BiocGenerics updateObject

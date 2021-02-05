@@ -512,6 +512,25 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
     mydim_choices <- select_info[[mydim_single]]
     otherdim_choices <- select_info[[otherdim_single]]
 
+    color_choices <- .defineDotPlotColorChoices(x, se)
+
+    .addSpecificTour(class(x), .colorByField, .getDotPlotColorHelp(x, color_choices))
+
+    .addSpecificTour(class(x), .selectTransAlpha, {
+        mdim <- .multiSelectionDimension(x)
+        function(plot_name) {
+            data.frame(
+                rbind(
+                    c(
+                        element=paste0("#", plot_name, "_", .selectTransAlpha, .slider_extra),
+                        intro=sprintf("When we make a multiple %s selection on another panel, we can transmit that selection to the current panel. When we do so, we can choose to highlight the selected points on this panel by making all the <em>unselected</em> points a little transparent. This slider controls the transparency level for those unselected points.", mdim)
+                    )
+                )
+            )
+        }
+    })
+
+    # Actually creating the UI.
     tagList(
         hr(),
         radioButtons(
@@ -561,11 +580,15 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
                 label=sprintf("Use dynamic %s selection", otherdim_single),
                 value=x[[colorby$assay$dynamic]])
         ),
-        sliderInput(
-            paste0(plot_name, "_", .selectTransAlpha), 
-            label="Unselected point opacity:",
-            min=0, max=1, value=slot(x, .selectTransAlpha)
-        )
+        {
+            alpha_field <- paste0(plot_name, "_", .selectTransAlpha)
+            .slider_with_help(id=alpha_field,
+                sliderInput(alpha_field,
+                    label=.label_with_help("Unselected point opacity:", alpha_field),
+                    min=0, max=1, value=slot(x, .selectTransAlpha)
+                )
+            )
+        }
     )
 })
 
@@ -578,10 +601,31 @@ setMethod(".defineVisualShapeInterface", "DotPlot", function(x, se) {
         shapeby_field <- paste0(plot_name, "_", .shapeByField)
         shapeby <- .getDotPlotShapeConstants(x)
 
+        .addSpecificTour(class(x)[1], .shapeByField, {
+            mdim <- .multiSelectionDimension(x)
+            shape_meta_field <- shapeby$metadata$field
+            function(plot_name) {
+                data.frame(
+                    rbind(
+                        c(
+                            element=paste0("#", plot_name, "_", .shapeByField),
+                            intro=sprintf("We can make the shape of each point depend on the value of a categorical %s data field. For example, if you were to <strong>select <em>%s data</em></strong>...", mdim, mdim)
+                        ),
+                        c(
+                            element=paste0("#", plot_name, "_", shape_meta_field, " + .selectize-control"),
+                            intro="We can choose a variable for shaping each point in the plot. Note that there are only a limited number of unique shapes, so past a certain number of levels, the plot will just give up."
+                        )
+                    )
+                )
+            }
+        })
+
         tagList(
             hr(),
             radioButtons(
-                shapeby_field, label="Shape by:", inline=TRUE,
+                shapeby_field, 
+                label=.label_with_help("Shape by:", shapeby_field),
+                inline=TRUE,
                 choices=c(.shapeByNothingTitle, if (length(discrete_covariates)) shapeby$metadata$title),
                 selected=slot(x, .shapeByField)
             ),
@@ -684,6 +728,23 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
     plot_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
+    .addSpecificTour(class(x)[1], .plotCustomLabels, {
+        mdim <- .multiSelectionDimension(x)
+        function(plot_name) {
+            data.frame(
+                rbind(
+                    c(
+                        element=paste0("#", plot_name, "_", .plotCustomLabels), 
+                        intro=sprintf("Users can show the names of certain %ss alongside their locations on the plot. This is done by <strong>checking the highlighted box</strong>...", mdim)
+                    ),
+                    c(
+                        element=paste0("#", plot_name, "_", .dimnamesModalOpen),
+                        intro=sprintf("... and then clicking on this button to open a modal in which users can enter the names of the %ss of interest. All points named in this manner will have their names appear next to their coordinates on the plot.<br/><br/>(By default, we don't name all points as this may result in too many names for large numbers of points.)", mdim)
+                    )
+                )
+            )
+        }
+    })
 
     tagList(
         hr(),
@@ -995,25 +1056,7 @@ setMethod(".definePanelTour", "DotPlot", function(x) {
 
 #' @export
 setMethod(".getSpecificHelp", "DotPlot", function(x) {
-    all.tours <- callNextMethod()
-
-    plot_name <- .getEncodedName(x)
-    mdim <- .multiSelectionDimension(x)
-
-    all.tours[[.plotCustomLabels]] <- data.frame(
-        rbind(
-            c(
-                element=paste0("#", plot_name, "_", .plotCustomLabels), 
-                intro=sprintf("Users can show the names of certain %ss alongside their locations on the plot. This is done by <strong>checking the highlighted box</strong>...", mdim)
-            ),
-            c(
-                element=paste0("#", plot_name, "_", .dimnamesModalOpen),
-                intro=sprintf("... and then clicking on this button to open a modal in which users can enter the names of the %ss of interest. All points named in this manner will have their names appear next to their coordinates on the plot.<br/><br/>(We don't name all points as this may result in too many names for large numbers of points.)", mdim)
-            )
-        )
-    )
-
-    all.tours
+    c(callNextMethod(), .colorByField, .shapeByField, .plotCustomLabels, .selectTransAlpha)
 })
 
 ###############################################################################

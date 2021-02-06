@@ -523,7 +523,11 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
                 rbind(
                     c(
                         element=paste0("#", plot_name, "_", .selectTransAlpha, .slider_extra),
-                        intro=sprintf("When we make a multiple %s selection on another panel, we can transmit that selection to the current panel. When we do so, we can choose to highlight the selected points on this panel by making all the <em>unselected</em> points a little transparent. This slider controls the transparency level for those unselected points.", mdim)
+                        intro=sprintf("When we make a multiple %s selection on another panel, 
+                                       we can transmit that selection to the current panel. 
+                                       When we do so, we can choose to highlight the selected points on this panel 
+                                       by making all the <em>unselected</em> points a little transparent. 
+                                       This slider controls the transparency level for those unselected points.", mdim)
                     )
                 )
             )
@@ -533,9 +537,8 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
     # Actually creating the UI.
     tagList(
         hr(),
-        radioButtons(
-            colorby_field, 
-            label=.label_with_help("Color by:", id=colorby_field),
+        .radioButtons.iSEE(x, .colorByField, 
+            label="Color by:",
             inline=TRUE,
             choices=.defineDotPlotColorChoices(x, se),
             selected=slot(x, .colorByField)
@@ -580,15 +583,10 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
                 label=sprintf("Use dynamic %s selection", otherdim_single),
                 value=x[[colorby$assay$dynamic]])
         ),
-        {
-            alpha_field <- paste0(plot_name, "_", .selectTransAlpha)
-            .slider_with_help(id=alpha_field,
-                sliderInput(alpha_field,
-                    label=.label_with_help("Unselected point opacity:", alpha_field),
-                    min=0, max=1, value=slot(x, .selectTransAlpha)
-                )
-            )
-        }
+        .sliderInput.iSEE(x, .selectTransAlpha,
+            label="Unselected point opacity:", 
+            min=0, max=1, value=slot(x, .selectTransAlpha)
+        )
     )
 })
 
@@ -609,11 +607,14 @@ setMethod(".defineVisualShapeInterface", "DotPlot", function(x, se) {
                     rbind(
                         c(
                             element=paste0("#", plot_name, "_", .shapeByField),
-                            intro=sprintf("We can make the shape of each point depend on the value of a categorical %s data field. For example, if you were to <strong>select <em>%s data</em></strong>...", mdim, mdim)
+                            intro=sprintf("We can make the shape of each point depend on the value of a categorical %s data field. 
+                                           For example, if you were to <strong>select <em>%s data</em></strong>...", mdim, mdim)
                         ),
                         c(
                             element=paste0("#", plot_name, "_", shape_meta_field, " + .selectize-control"),
-                            intro="We can choose a variable for shaping each point in the plot. Note that there are only a limited number of unique shapes, so past a certain number of levels, the plot will just give up."
+                            intro="... we can then choose a variable for shaping each point in the plot. 
+                                   Note that there are only a limited number of unique shapes, 
+                                   so past a certain number of levels, the plot will just give up."
                         )
                     )
                 )
@@ -622,11 +623,10 @@ setMethod(".defineVisualShapeInterface", "DotPlot", function(x, se) {
 
         tagList(
             hr(),
-            radioButtons(
-                shapeby_field, 
-                label=.label_with_help("Shape by:", shapeby_field),
+            .radioButtons.iSEE(x, .shapeByField,
+                label="Shape by:",
                 inline=TRUE,
-                choices=c(.shapeByNothingTitle, if (length(discrete_covariates)) shapeby$metadata$title),
+                choices=c(.shapeByNothingTitle, shapeby$metadata$title),
                 selected=slot(x, .shapeByField)
             ),
             .conditionalOnRadio(
@@ -648,37 +648,139 @@ setMethod(".defineVisualSizeInterface", "DotPlot", function(x, se) {
     sizeby_field <- paste0(plot_name, "_", .sizeByField)
     sizeby <- .getDotPlotSizeConstants(x)
 
-    tagList(
-        hr(),
-        radioButtons(
-            sizeby_field, label="Size by:", inline=TRUE,
-            choices=c(.sizeByNothingTitle, if (length(numeric_covariates)) sizeby$metadata$title),
-            selected=slot(x, .sizeByField)
-        ),
-        .conditionalOnRadio(
-            sizeby_field, .sizeByNothingTitle,
-            numericInput(
-                paste0(plot_name, "_", .plotPointSize), label="Point size:",
-                min=0, value=slot(x, .plotPointSize))
-        ),
-        .conditionalOnRadio(
-            sizeby_field, sizeby$metadata$title,
-            selectInput(paste0(plot_name, "_", sizeby$metadata$field), label=NULL,
-                choices=numeric_covariates, selected=x[[sizeby$metadata$field]])
+    pointsize_field <- paste0(plot_name, "_", .plotPointSize)
+    common_ui <- .numericInput.iSEE(x, .plotPointSize,
+        label="Point size:", min=0, value=slot(x, .plotPointSize))
+
+    .addSpecificTour(class(x)[1], .plotPointSize, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", pointsize_field),
+                    intro="This controls the size of all points... nothing much more to be said."
+                )
+            )
         )
-    )
+    })
+
+    if (length(numeric_covariates)) {
+        .addSpecificTour(class(x)[1], .sizeByField, {
+            mdim <- .multiSelectionDimension(x)
+            size_meta_field <- sizeby$metadata$field
+            function(plot_name) {
+                data.frame(
+                    rbind(
+                        c(
+                            element=paste0("#", sizeby_field),
+                            intro=sprintf("We can make the size of each point depend on the value of a numeric %s data field. 
+                                           For example, if you were to <strong>select <em>%s data</em></strong>...", mdim, mdim)
+                        ),
+                        c(
+                            element=paste0("#", plot_name, "_", size_meta_field, " + .selectize-control"),
+                            intro="... we can then choose a variable for determining the size of each point in the plot."
+                        )
+                    )
+                )
+            }
+        })
+
+        tagList(
+            hr(),
+            .radioButtons.iSEE(x, .sizeByField,
+                label="Size by:",
+                inline=TRUE,
+                choices=c(.sizeByNothingTitle, sizeby$metadata$title),
+                selected=slot(x, .sizeByField)
+            ),
+            .conditionalOnRadio(
+                sizeby_field, .sizeByNothingTitle,
+                common_ui
+            ),
+            .conditionalOnRadio(
+                sizeby_field, sizeby$metadata$title,
+                selectInput(paste0(plot_name, "_", sizeby$metadata$field), label=NULL,
+                    choices=numeric_covariates, selected=x[[sizeby$metadata$field]])
+            )
+        )
+    } else {
+        common_ui
+    }
 })
 
 #' @export
 setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
     plot_name <- .getEncodedName(x)
+    ds_id <- paste0(plot_name, "_", .plotPointDownsample)
+
+    .addSpecificTour(class(x)[1], .plotPointAlpha, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .plotPointAlpha, .slider_extra),
+                    intro="This controls the opacity of all points, with 0 being fully transparent and 1 being fully opaque.
+                    
+                    Note that, unlike the <em>Unselected point opacity</em> option,
+                    this option applies regardless of whether a point is selected or not."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .plotPointDownsample, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .plotPointDownsample),
+                    intro="For larger datasets, we downsample points in a density-dependent manner.
+                    This basically involves removing points that are covered by other points,
+                    thus reducing the number of points and speeding up the plot rendering.
+                    To demonstrate, <strong>check this box</strong>."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .plotPointSampleRes),
+                    intro="The sampling resolution determines how many points we remove.
+                    For example, if we have a sampling resolution of 100, this means that we
+                    cut up the plot into a 100-by-100 grid and keep only one point per grid cell.
+                    Higher resolutions retain more points at the cost of rendering time."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .contourAdd, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .contourAdd),
+                    intro="For scatter plots, we can add a contour representing the density of points.
+                    For all other plots, this has no effect.
+                    If we're on a scatter plot, you can <strong>check this box</strong>."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .contourColor),
+                    intro="And you can change the color of the contour lines."
+                )
+            )
+        )
+    })
+
     tagList(
         hr(),
-        .add_point_UI_elements(x),
-        checkboxInput(
-            inputId=paste0(plot_name, "_", .contourAdd),
+        .sliderInput.iSEE(x, .plotPointAlpha, label="Point opacity:", 
+            min=0.1, max=1, value=slot(x, .plotPointAlpha)),
+        hr(),
+        .checkboxInput.iSEE(x, .plotPointDownsample, 
+            label="Downsample points for speed",
+            value=slot(x, .plotPointDownsample)),
+        .conditionalOnCheckSolo(
+            ds_id, on_select=TRUE,
+            numericInput(
+                paste0(plot_name, "_", .plotPointSampleRes), label="Sampling resolution:",
+                min=1, value=slot(x, .plotPointSampleRes))
+        ),
+        .checkboxInput.iSEE(x, .contourAdd,
             label="Add contour (scatter only)",
-            value=FALSE),
+            value=slot(x, .contourAdd)),
         .conditionalOnCheckSolo(
             paste0(plot_name, "_", .contourAdd),
             on_select=TRUE,
@@ -752,14 +854,9 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
             label=sprintf("Show %s details on hover", .singleSelectionDimension(x)),
             value=slot(x, .plotHoverInfo)),
         hr(),
-        {
-            label_field <- .input_FUN(.plotCustomLabels)
-            .checkbox_with_help(id=label_field,
-                checkboxInput(label_field,
-                    label=sprintf("Label custom %ss", .singleSelectionDimension(x)),
-                    value=slot(x, .plotCustomLabels))
-            )
-        },
+        .checkboxInput.iSEE(x, .plotCustomLabels,
+            label=sprintf("Label custom %ss", .singleSelectionDimension(x)),
+            value=slot(x, .plotCustomLabels)),
         .conditionalOnCheckSolo(
             .input_FUN(.plotCustomLabels),
             on_select=TRUE,
@@ -1056,7 +1153,10 @@ setMethod(".definePanelTour", "DotPlot", function(x) {
 
 #' @export
 setMethod(".getSpecificHelp", "DotPlot", function(x) {
-    c(callNextMethod(), .colorByField, .shapeByField, .plotCustomLabels, .selectTransAlpha)
+    c(callNextMethod(), .colorByField, .shapeByField, .sizeByField, 
+        .plotPointSize, 
+        .plotCustomLabels, .selectTransAlpha, 
+        .plotPointAlpha, .plotPointDownsample, .contourAdd)
 })
 
 ###############################################################################

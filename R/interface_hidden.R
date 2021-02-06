@@ -67,6 +67,82 @@
     .hide_this_thing(x, field, selectizeInput, ...)
 }
 
+.hide_this_thing2 <- function(x, field, element) {
+    if (.hideInterface(x, field)) {
+        hidden(element)
+    } else {
+        element
+    }
+}
+
+#' @importFrom shiny HTML
+.label_with_help <- function(text, id) {
+    HTML(paste0(text, " <span id='", id, "_specific_help'><sup>?</sup></span>"))
+}
+
+#' @importFrom shiny selectInput
+.selectInput.iSEE <- function(x, field, label, ..., help=TRUE) {
+    element <- paste0(.getEncodedName(x), "_", field)
+    if (help) {
+        label <- .label_with_help(label, element)
+    }
+
+    ui <- selectInput(element, label=label, ...)
+    .hide_this_thing2(x, field, ui)
+}
+
+#' @importFrom shiny HTML span checkboxInput
+.checkboxInput.iSEE <- function(x, field, label, ..., help=TRUE) {
+    element <- paste0(.getEncodedName(x), "_", field)
+    ui <- checkboxInput(element, label=label, ...)
+
+    if (help) {
+        helper <- span(id=paste0(element, "_specific_help"), HTML("<sup>?</sup>"))
+        ui$children[[1]]$children <- c(ui$children[[1]]$children, list(helper))
+    }
+
+    .hide_this_thing2(x, field, ui)
+}
+
+.slider_extra <- "_help_anchor"
+
+#' @importFrom shiny sliderInput
+.sliderInput.iSEE <- function(x, field, label, ..., help=TRUE) {
+    element <- paste0(.getEncodedName(x), "_", field)
+    if (help) {
+        label <- .label_with_help(label, element)
+    }
+
+    ui <- sliderInput(element, label=label, ...)
+
+    if (help) {
+        ui$attribs$id <- paste0(element, .slider_extra)
+    }
+
+    .hide_this_thing2(x, field, ui)
+}
+
+#' @importFrom shiny numericInput
+.numericInput.iSEE <- function(x, field, label, ..., help=TRUE) {
+    element <- paste0(.getEncodedName(x), "_", field)
+    if (help) {
+        label <- .label_with_help(label, element)
+    }
+
+    ui <- numericInput(element, label=label, ...)
+
+    .hide_this_thing2(x, field, ui)
+}
+
+.radioButtons.iSEE <- function(x, field, label, ..., help=TRUE) {
+    element <- paste0(.getEncodedName(x), "_", field)
+    if (help) {
+        label <- .label_with_help(label, element)
+    }
+    ui <- radioButtons(element, label=label, ...)
+    .hide_this_thing2(x, field, ui)
+}
+
 #' Conditional elements on radio or checkbox selection
 #'
 #' Creates a conditional UI element that appears when the user picks a certain choice in a radio button, single checkbox or checkbox group interface element.

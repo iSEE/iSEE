@@ -826,6 +826,7 @@ setMethod(".defineVisualFacetInterface", "DotPlot", function(x, se) {
 })
 
 #' @export
+#' @importFrom shiny tagList
 setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
     plot_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
@@ -848,50 +849,130 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
         }
     })
 
-    tagList(
+    sdim <- .singleSelectionDimension(x)
+    .addSpecificTour(class(x)[1], .plotHoverInfo, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .plotHoverInfo),
+                    intro=sprintf("If this is checked, we show the name of the %s when we hover over the corresponding point in the plot.", sdim)
+                )
+            )
+        )
+    })
+
+    ui <- list(
         hr(),
-        checkboxInput(.input_FUN(.plotHoverInfo),
-            label=sprintf("Show %s details on hover", .singleSelectionDimension(x)),
+        .checkboxInput.iSEE(x, .plotHoverInfo,
+            label=sprintf("Show %s details on hover", sdim),
             value=slot(x, .plotHoverInfo)),
         hr(),
         .checkboxInput.iSEE(x, .plotCustomLabels,
-            label=sprintf("Label custom %ss", .singleSelectionDimension(x)),
+            label=sprintf("Label custom %ss", sdim),
             value=slot(x, .plotCustomLabels)),
         .conditionalOnCheckSolo(
             .input_FUN(.plotCustomLabels),
             on_select=TRUE,
             actionButton(.input_FUN(.dimnamesModalOpen),
-                label=sprintf("Edit %s names", .singleSelectionDimension(x)))
-        ),
-        hr(),
-        checkboxInput(.input_FUN(.plotLabelCenters),
-            label="Label centers",
-            value=slot(x, .plotLabelCenters)),
-        .conditionalOnCheckSolo(
-            .input_FUN(.plotLabelCenters),
-            on_select=TRUE,
-            selectInput(.input_FUN(.plotLabelCentersBy),
-                label="Label centers:",
-                choices=.getDiscreteMetadataChoices(x, se),
-                selected=slot(x, .plotLabelCentersBy)),
-            colourInput(.input_FUN(.plotLabelCentersColor),
-                label=NULL,
-                value=slot(x, .plotLabelCentersColor))
-        ),
-        hr(),
-        numericInput(
-            paste0(plot_name, "_", .plotFontSize), label="Font size:",
-            min=0, value=slot(x, .plotFontSize)),
-        numericInput(
-            paste0(plot_name, "_", .legendPointSize), label="Legend point size:",
-            min=0, value=slot(x, .legendPointSize)),
-        radioButtons(
-            paste0(plot_name, "_", .plotLegendPosition), label="Legend position:", inline=TRUE,
-            choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
-            selected=slot(x, .plotLegendPosition))
-
+                label=sprintf("Edit %s names", sdim))
+        )
     )
 
+    discrete.choices <- .getDiscreteMetadataChoices(x, se)
+    if (length(discrete.choices)) {
+        .addSpecificTour(class(x)[1], .plotLabelCenters, function(plot_name) {
+            data.frame(
+                rbind(
+                    c(
+                        element=paste0("#", plot_name, "_", .plotLabelCenters),
+                        intro="In certain applications, we may have a factor that defines groups of points in the plot. 
+                        A typical example would be that a factor that holds cluster identity on a Reduced Dimension Plot.
+                        We can then use that factor to annotate the plot by putting the group label at the center of the group's points.
+                        This can be done by <strong>checking this box</strong>..."
+                    ),
+                    c(
+                        element=paste0("#", plot_name, "_", .plotLabelCentersBy, " + .selectize-control"),
+                        intro=sprintf("... and choosing a categorical factor from the %sData to label points with.
+                        Of course, this really only makes sense for factors that are somehow associated with the plot coordinates.", substr(mdim, 1, 3))
+                    )
+                )
+            )
+        })
+
+        ui <- c(ui, 
+            list(
+                hr(),
+                .checkboxInput.iSEE(x, .plotLabelCenters,
+                    label="Label centers",
+                    value=slot(x, .plotLabelCenters)),
+                .conditionalOnCheckSolo(
+                    .input_FUN(.plotLabelCenters),
+                    on_select=TRUE,
+                    selectInput(.input_FUN(.plotLabelCentersBy),
+                        label="Label centers:",
+                        choices=discrete.choices,
+                        selected=slot(x, .plotLabelCentersBy)),
+                    colourInput(.input_FUN(.plotLabelCentersColor),
+                        label=NULL,
+                        value=slot(x, .plotLabelCentersColor))
+                )
+            )
+        )
+    }
+
+    .addSpecificTour(class(x)[1], .plotFontSize, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .plotFontSize),
+                    intro="Changes the font size, nothing much more to say here."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .legendPointSize, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .legendPointSize),
+                    intro="Changes the size of the points in the legend.
+                    To be honest, I can't remember why we put this in here,
+                    but someone must have asked for it... so here it is."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .plotLegendPosition, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .plotLegendPosition),
+                    intro="Changes the position of the legend on the plot, if any legend exists.
+                    On the bottom, on the right; the choice is yours."
+                )
+            )
+        )
+    })
+
+    ui <- c(ui,
+        list(
+            hr(),
+            .numericInput.iSEE(x, .plotFontSize,
+                label="Font size:",
+                min=0, value=slot(x, .plotFontSize)),
+            .numericInput.iSEE(x, .legendPointSize,
+                label="Legend point size:",
+                min=0, value=slot(x, .legendPointSize)),
+            .radioButtons.iSEE(x, .plotLegendPosition,
+                label="Legend position:", inline=TRUE,
+                choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
+                selected=slot(x, .plotLegendPosition))
+        )
+    )
+
+    do.call(tagList, ui)
 })
 
 #' @export
@@ -1156,6 +1237,7 @@ setMethod(".getSpecificHelp", "DotPlot", function(x) {
     c(callNextMethod(), .colorByField, .shapeByField, .sizeByField, 
         .plotPointSize, 
         .plotCustomLabels, .selectTransAlpha, 
+        .plotLabelCenters, .plotFontSize, .legendPointSize, .plotLegendPosition,
         .plotPointAlpha, .plotPointDownsample, .contourAdd)
 })
 

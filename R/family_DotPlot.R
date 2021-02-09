@@ -804,24 +804,84 @@ setMethod(".defineVisualFacetInterface", "DotPlot", function(x, se) {
     }
     title_choices <- c(title_choices, facet_info$selections$title)
 
-    row_field <- facet_info$metadata$row_field
-    col_field <- facet_info$metadata$column_field
-
-    tagList(
-        hr(),
-        radioButtons(rowId, label="Facet by row:", choices=title_choices, selected=slot(x, .facetRow), inline=TRUE),
-        if (length(covariates)) {
-            .conditionalOnRadio(rowId, facet_info$metadata$title, 
-                selectInput(paste0(plot_name, "_", row_field), label=NULL, choices=covariates, selected=slot(x, row_field))
-            )
-        },
-        radioButtons(columnId, label="Facet by column:", choices=title_choices, selected=slot(x, .facetColumn), inline=TRUE),
-        if (length(covariates)) {
-            .conditionalOnRadio(columnId, facet_info$metadata$title,
-                selectInput(paste0(plot_name, "_", col_field), label=NULL, choices=covariates, selected=slot(x, col_field))
-            )
-        }
+    things <- list(
+        row=c(.facetRow, facet_info$metadata$row_field),
+        column=c(.facetColumn, facet_info$metadata$column_field)
     )
+    ui <- list()
+
+    for (dim in names(things)) {
+        fields <- things[[dim]]
+        use_field <- fields[1]
+        choice_field <- fields[2]
+
+        local({
+            dim0 <- dim
+            use_field0 <- use_field
+            choice_field0 <- choice_field
+            .addSpecificTour(class(x)[1], use_field0, {
+                mdim <- .multiSelectionDimension(x)
+                function(plot_name) {
+                    if (length(covariates)) {
+
+                    }
+                    data.frame(
+                        rbind(
+                            c(
+                                element=paste0("#", plot_name, "_", use_field0),
+                                intro=sprintf("We can choose split the points into multiple %s facets.
+                                Points are allocated to the subplots according to the value of the factor used for faceting.", dim0)
+                            ),
+
+                            if (length(covariates)) {
+                                rbind(
+                                    c(
+                                        element=paste0("#", plot_name, "_", use_field0),
+                                        intro=sprintf("If we were to <strong>select <em>%s</em></strong>...", facet_info$metadata$title)
+                                    ),
+                                    c(
+                                        element=paste0("#", plot_name, "_", choice_field0, " + .selectize-control"),
+                                        intro=sprintf("... we can choose the <code>%sData</code> variable to use for faceting.", substr(mdim, 1, 3))
+                                    )
+                                )
+                            },
+
+                            c(
+                                element=paste0("#", plot_name, "_", use_field0),
+                                intro=sprintf("If we were to <strong>select <em>%s</em></strong>, 
+                                the factor is defined based on the multiple %s selections transmitted from another panel.
+                                All points corresponding to %ss in the active selection of another panel are assigned to one facet;
+                                all points in each saved selection of another panel are assigned to another facet;
+                                and all points not in any selection are assigned to yet another facet.
+                                Points that are present in multiple selections also get assigned to a separate facet.",
+                                    facet_info$selections$title, mdim, mdim)
+                            )
+                        )
+                    )
+                }
+            })
+        })
+
+        ui <- c(ui, list(
+            .radioButtons.iSEE(x, use_field, 
+                label=sprintf("Facet as %s:", dim),
+                choices=title_choices, 
+                selected=slot(x, use_field), 
+                inline=TRUE),
+
+            if (length(covariates)) {
+                .conditionalOnRadio(paste0(plot_name, "_", use_field), 
+                    facet_info$metadata$title, 
+                    selectInput(paste0(plot_name, "_", choice_field), 
+                        label=NULL, 
+                        choices=covariates, 
+                        selected=slot(x, choice_field))
+                )
+            }
+        ))
+    }
+
+    do.call(tagList, c(list(hr()), ui))
 })
 
 #' @export
@@ -879,23 +939,26 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
 
     discrete.choices <- .getDiscreteMetadataChoices(x, se)
     if (length(discrete.choices)) {
-        .addSpecificTour(class(x)[1], .plotLabelCenters, function(plot_name) {
-            data.frame(
-                rbind(
-                    c(
-                        element=paste0("#", plot_name, "_", .plotLabelCenters),
-                        intro="In certain applications, we may have a factor that defines groups of points in the plot. 
-                        A typical example would be that a factor that holds cluster identity on a Reduced Dimension Plot.
-                        We can then use that factor to annotate the plot by putting the group label at the center of the group's points.
-                        This can be done by <strong>checking this box</strong>..."
-                    ),
-                    c(
-                        element=paste0("#", plot_name, "_", .plotLabelCentersBy, " + .selectize-control"),
-                        intro=sprintf("... and choosing a categorical factor from the %sData to label points with.
-                        Of course, this really only makes sense for factors that are somehow associated with the plot coordinates.", substr(mdim, 1, 3))
+        .addSpecificTour(class(x)[1], .plotLabelCenters, {
+            mdim <- .multiSelectionDimension(x)
+            function(plot_name) {
+                data.frame(
+                    rbind(
+                        c(
+                            element=paste0("#", plot_name, "_", .plotLabelCenters),
+                            intro="In certain applications, we may have a factor that defines groups of points in the plot. 
+                            A typical example would be that a factor that holds cluster identity on a Reduced Dimension Plot.
+                            We can then use that factor to annotate the plot by putting the group label at the center of the group's points.
+                            This can be done by <strong>checking this box</strong>..."
+                        ),
+                        c(
+                            element=paste0("#", plot_name, "_", .plotLabelCentersBy, " + .selectize-control"),
+                            intro=sprintf("... and choosing a categorical factor from the <code>%sData</code> to label points with.
+                            Of course, this really only makes sense for factors that are somehow associated with the plot coordinates.", substr(mdim, 1, 3))
+                        )
                     )
                 )
-            )
+            }
         })
 
         ui <- c(ui, 
@@ -1237,7 +1300,8 @@ setMethod(".getSpecificHelp", "DotPlot", function(x) {
         .plotPointSize, 
         .plotCustomLabels, .selectTransAlpha, 
         .plotLabelCenters, .plotFontSize, .legendPointSize, .plotLegendPosition,
-        .plotPointAlpha, .plotPointDownsample, .contourAdd)
+        .plotPointAlpha, .plotPointDownsample, .contourAdd,
+        .facetRow, .facetColumn)
 })
 
 ###############################################################################

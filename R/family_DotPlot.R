@@ -565,9 +565,8 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
                 value=x[[colorby$name$color]]),
             checkboxInput(
                 paste0(plot_name, "_", colorby$name$dynamic),
-                label="Use dynamic selection",
+                label=sprintf("Use dynamic %s selection", mydim_single),
                 value=x[[colorby$name$dynamic]]),
-            HTML(sprintf("<span id='%s'><sup>?</sup></span>", paste0(plot_name, "_TEST", "_help"))) 
         ),
         .conditionalOnRadio(colorby_field, colorby$assay$title,
             selectizeInput(paste0(plot_name, "_", colorby$assay$field),

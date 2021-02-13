@@ -323,16 +323,201 @@ setMethod(".cacheCommonInfo", "Panel", function(x, se) {
     se
 })
 
+###############################################################################
+
 #' @export
 setMethod(".defineInterface", "Panel", function(x, se, select_info) {
     list(
-        .create_data_param_box(x, se, select_info),
+        do.call(.collapseBoxHidden,
+            c(
+                list(x=x, field=.dataParamBoxOpen, title="Data parameters"),
+                open=slot(x, .dataParamBoxOpen),
+                .defineDataInterface(x, se, select_info)
+            )
+        ),
         .create_selection_param_box(x, select_info$multi$row, select_info$multi$column)
     )
 })
 
+#' Multiple selection parameter box
+#'
+#' Create a multiple selection parameter box for a given instance of a \linkS4class{Panel}.
+#'
+#' @param x A \linkS4class{Panel} object.
+#' @param row_selectable A character vector of names for available panels that can transmit a row selection.
+#' @param col_selectable A character vector of names for available panels that can transmit a column selection.
+#' @param selectable A character vector of decoded names for available transmitting panels.
+#' @param source_type String specifying the type of the panel that is source of the selection,
+#' either \code{"row"} or \code{"column"}.
+#' @param by_field String specifying the name of the slot containing the identity of the panel transmitting to \code{x}.
+#' @param res_field String specifying the name of the slot indicating whether to restrict \code{x}'s display to the selected points.
+#' @param dyn_field String specifying the name of the slot indicating whether to use a dynamic selection source.
+#'
+#' @return
+#' For \code{.create_selection_param_box} and \code{.create_dotplot_selection_param_box},
+#' a HTML tag object is returned containing a parameter box of UI elements for changing multiple selection parameters.
+#' The latter will also contain elements to control the visual effects of the transmitted selection for \linkS4class{DotPlot}s.
+#'
+#' For \code{.define_selection_choices}, a tag list of interface elements is returned to choose the identity of transmitting panel, 
+#' the type of multiple selection and the index of the saved selection to use.
+#'
+#' All return values may potentially also be \code{NULL}, depending on \code{\link{.hideInterface}}.
+#'
+#' @details
+#' These functions are used to create a collapsible box that contains point selection options,
+#' initialized with the choices in \code{memory}.
+#' Options include the choice of transmitting plot and the type of selection effect.
+#' Each effect option, once selected, may yield a further subset of nested options.
+#' For example, choosing to colour on the selected points will open up a choice of colour to use.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_create_selection_param_box
+#' @seealso
+#' \code{\link{.defineInterface}}, where this function is typically called.
+#'
+#' @importFrom shiny selectInput actionButton hr strong br
+#' @importFrom shinyjs disabled
+.create_selection_param_box <- function(x, row_selectable, col_selectable) {
+    # initialize active "Delete" button only if a preconfigured selection history exists
+    deleteFUN <- identity
+    deleteLabel <- .buttonDeleteLabel
+    if (length(slot(x, .multiSelectHistory)) == 0L) {
+        deleteFUN <- disabled
+        deleteLabel <- .buttonEmptyHistoryLabel
+    }
+
+    # initialize active "Save" button only if a preconfigured active selection exists
+    saveFUN <- identity
+    saveLabel <- .buttonSaveLabel
+    if (!.multiSelectionHasActive(x)) {
+        saveFUN <- disabled
+        saveLabel <- .buttonNoSelectionLabel
+    }
+
+    args <- list(
+        x=x,
+        field=.selectParamBoxOpen,
+        title="Selection parameters",
+        open=slot(x, .selectParamBoxOpen),
+
+        .define_selection_choices(x, by_field=.selectRowSource,
+            dyn_field=.selectRowDynamic, res_field=.selectRowRestrict,
+            selectable=row_selectable, "row"),
+
+        .define_selection_choices(x, by_field=.selectColSource,
+            dyn_field=.selectColDynamic, res_field=.selectColRestrict,
+            selectable=col_selectable, "column")
+    )
+
+    if (!.hideInterface(x, .multiSelectHistory)) {
+        .addSpecificTour(class(x), .multiSelectHistory, {
+            mdim <- .multiSelectionDimension(x)
+            function(panel_name) {
+                data.frame(
+                    rbind(
+                        c(
+                            element=paste0("#", panel_name, "_", .multiSelectSave),
+                            intro=sprintf("Users can save the multiple %s selections made in this panel.
+When this button is clicked, any \"active\" selection is saved for later use.
+(For example, in point-based plotting panels, the current brush or lasso is the active selection.)
+The identities of the %ss in the saved and active selections can then be transmitted to other panels,
+which is useful if there are separate groups of %ss of interest;
+each group can be represented by a separate saved selection.", mdim, mdim, mdim)
+                        ),
+                        c(
+                            element=paste0("#", panel_name, "_", .multiSelectDelete),
+                            intro="Users can also delete any saved selections.
+For simplicity, this operates on a first-in-last-out basis, i.e., you can only delete the last saved selection."
+                        )
+                    )
+                )
+            }
+        })
+
+        panel_name <- .getEncodedName(x)
+        args <- c(args,
+            list(
+                hr(),
+                strong(.label_with_help("Manage multiple selections:", paste0(panel_name, "_", .multiSelectHistory))),
+                br(),
+                saveFUN(actionButton(paste0(panel_name, "_", .multiSelectSave), label=saveLabel)),
+                deleteFUN(actionButton(paste0(panel_name, "_", .multiSelectDelete), label=deleteLabel))
+            )
+        )
+    }
+
+    do.call(.collapseBoxHidden, args)
+}
+
+#' @rdname INTERNAL_create_selection_param_box
+#' @importFrom shiny tagList radioButtons selectizeInput
+.define_selection_choices <- function(x, by_field, 
+    dyn_field, res_field, selectable, source_type="row")
+{
+    force(source_type)
+
+    .addSpecificTour(class(x), by_field, function(panel_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", panel_name, "_", by_field, " + .selectize-control"),
+                    intro=sprintf("One of <strong>iSEE</strong>'s most powerful features is the ability to transmit multiple %s selections from one panel to another.
+For example, if we have another panel that visualizes each %s as a point, and we created a brush or lasso on that panel, we can transmit the identity of the selected %ss to this panel.
+This enables intuitive interactive exploration of multi-dimensional data involving different variables in our <code>SummarizedExperiment</code> object.
+<br/><br/>
+Here, we can choose the \"source\" panel to receive a multiple %s selection from, i.e., the selection made in the chosen panel will be transmitted to the current panel.
+The exact effect of receiving a selection will depend on how the current panel takes advantage of the identity of the transmitted points.
+For example, point-based panels might allow users to color, facet, or group points by whether or not they are selected in the source panel.", 
+                        source_type, source_type, source_type, source_type)
+                ),
+                c(
+                    element=paste0("#", panel_name, "_", res_field),
+                    intro=sprintf("One obvious effect would be to restrict the dataset to only those %ss in the transmitted selection.
+This is achieved by clicking this box, in which case the current panel will only use the subset of selected %ss for visualization and computation.
+Note that no restriction is performed if no multiple selection was made in the source panel;
+for example, a point-based panel that does not contain a lasso or brush will not be considered to have made any selection,
+and if that panel was chosen as the source, it would have no effect on the current panel.",
+                         source_type, source_type)
+                ),
+                c(
+                    element=paste0("#", panel_name, "_", dyn_field),
+                    intro=sprintf("Sometimes it's a bother to have to change the choice of source panel.
+If this option is checked, the source panel will change dynamically in response to <em>any</em> multiple %s selection made in any panel.
+For example, creating a brush or lasso in another plot will automatically transmit the selected points to the current panel,
+regardless of whether the brushed plot was chosen as the source panel.
+This is useful for allowing the current panel to immediately respond to any interactions elsewhere in the <strong>iSEE</strong> application.", 
+                        source_type)
+                )
+            )
+        )
+    })
+
+    tagList(
+        .selectInput.iSEE(
+            x=x, field=by_field,
+            label=sprintf("Receive %s selection from:", source_type),
+            choices=selectable,
+            selected=.choose_link(slot(x, by_field), selectable)
+        ),
+
+        .checkboxInput.iSEE(x, field=dyn_field,
+            label=paste("Use dynamic", source_type, "selection"),
+            value=slot(x, dyn_field),
+            help=FALSE
+        ),
+
+        .checkboxInput.iSEE(x, field=res_field,
+            label=paste0("Restrict to selected ", source_type, "s"),
+            value=slot(x, res_field),
+            help=FALSE
+        )
+    )
+}
+
 #' @export
 setMethod(".defineDataInterface", "Panel", function(x, se, select_info) list())
+
+###############################################################################
 
 #' @export
 setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects, rObjects) {
@@ -457,6 +642,8 @@ setMethod(".singleSelectionDimension", "Panel", function(x) "none")
 #' @export
 setMethod(".singleSelectionSlots", "Panel", function(x) list())
 
+###############################################################################
+
 #' @export
 setMethod(".definePanelTour", "Panel", function(x) {
     collated <- list(
@@ -487,7 +674,9 @@ setMethod(".definePanelTour", "Panel", function(x) {
 })
 
 #' @export
-setMethod(".getSpecificHelp", "Panel", function(x) NULL)
+setMethod(".getSpecificHelp", "Panel", function(x) c(.selectRowSource, .selectColSource, .multiSelectHistory))
+
+###############################################################################
 
 #' @export
 #' @importFrom BiocGenerics updateObject

@@ -208,17 +208,54 @@ setMethod(".defineDataInterface", "ReducedDimensionPlot", function(x, se, select
     max_dim <- ncol(reducedDim(se, cur_reddim))
     choices <- seq_len(max_dim)
 
-    panel_name <- .getEncodedName(x)
-    .input_FUN <- function(field) { paste0(panel_name, "_", field) }
+    .addSpecificTour(class(x)[1], .redDimType, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .redDimType, " + .selectize-control"),
+                    intro="Here, we can select the type of dimensionality reduction result to show.
+The choices are extracted from the <code>reducedDims</code> of a <code>SingleCellExperiment</code> object.
+These results should be loaded into the object prior to calling <strong>iSEE</strong> - they are not computed on the fly."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .redDimXAxis, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .redDimXAxis, " + .selectize-control"),
+                    intro="Given a particular <code>reducedDim</code> entry to visualize, this field specifies the dimension to show on the x-axis."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .redDimYAxis, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .redDimYAxis, " + .selectize-control"),
+                    intro="Given a particular <code>reducedDim</code> entry to visualize, this field specifies the dimension to show on the y-axis."
+                )
+            )
+        )
+    })
 
     list(
-        selectInput(.input_FUN(.redDimType), label="Type",
+        .selectInput.iSEE(x, .redDimType, 
+            label="Type:",
             choices=.getCachedCommonInfo(se, "ReducedDimensionPlot")$valid.reducedDim.names,
             selected=cur_reddim),
-        selectInput(.input_FUN(.redDimXAxis), label="Dimension 1",
-            choices=choices, selected=slot(x, .redDimXAxis)),
-        selectInput(.input_FUN(.redDimYAxis), label="Dimension 2",
-            choices=choices, selected=slot(x, .redDimYAxis))
+        .selectInput.iSEE(x, .redDimXAxis, 
+            label="Dimension 1:",
+            choices=choices, 
+            selected=slot(x, .redDimXAxis)),
+        .selectInput.iSEE(x, .redDimYAxis, 
+            label="Dimension 2:",
+            choices=choices, 
+            selected=slot(x, .redDimYAxis))
     )
 })
 
@@ -290,6 +327,11 @@ setMethod(".generateDotPlotData", "ReducedDimensionPlot", function(x, envir) {
     .textEval(data_cmds, envir)
 
     list(commands=data_cmds, labels=list(title=plot_title, X=x_lab, Y=y_lab))
+})
+
+#' @export
+setMethod(".getSpecificHelp", "ReducedDimensionPlot", function(x) {
+    c(callNextMethod(), .redDimType, .redDimXAxis, .redDimYAxis)
 })
 
 #' @export

@@ -220,7 +220,7 @@ setMethod(".defineDataInterface", "ColumnDataPlot", function(x, se, select_info)
 If this panel is receiving a multiple column selection from another panel,
 we can stratify points on the x-axis according to whether they are part of that selection or not.
 For example, if we made a brush on another panel containing a scatter plot, we could show two violin plots in this panel;
-one containing columns corresponding to points inside the brush, and another containing columns corresponding to points outside the brush.
+one containing data for columns corresponding to points inside the brush, and another containing the points outside the brush.
 If any saved selections are present, these would show up as additional violins."
                 )
             )

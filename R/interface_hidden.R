@@ -91,6 +91,17 @@
     .hide_this_thing2(x, field, ui)
 }
 
+#' @importFrom shiny selectizeInput
+.selectizeInput.iSEE <- function(x, field, label, ..., help=TRUE) {
+    element <- paste0(.getEncodedName(x), "_", field)
+    if (help) {
+        label <- .label_with_help(label, element)
+    }
+
+    ui <- selectizeInput(element, label=label, ...)
+    .hide_this_thing2(x, field, ui)
+}
+
 #' @importFrom shiny HTML span checkboxInput
 .checkboxInput.iSEE <- function(x, field, label, ..., help=TRUE) {
     element <- paste0(.getEncodedName(x), "_", field)

@@ -240,9 +240,86 @@ setMethod(".defineDataInterface", "SampleAssayPlot", function(x, se, select_info
     }
     xaxis_choices <- c(xaxis_choices, .sampAssayXAxisSampNameTitle, .sampAssayXAxisSelectionsTitle)
 
+    .addSpecificTour(class(x)[1], .sampAssayYAxisSampName, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .sampAssayYAxisSampName, " + .selectize-control"),
+                    intro="Here, we choose the sample to show on the y-axis.
+This is based on the column names of the input <code>SummarizedExperiment</code>."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .sampAssayAssay, " + .selectize-control"),
+                    intro="This specifies the assay values to be shown."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .sampAssayYAxisColTable, " + .selectize-control"),
+                    intro="We can configure the plot so that the sample on the y-axis automatically changes based on a sample selection in another panel.
+A common use case is to configure this panel so that we receive a selection from a <em>Column Data Table</em>,
+such that users browsing the table can immediately examine the assay values for a sample of interest."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .sampAssayYAxisSampDynamic),
+                    intro="And in fact, we don't have to even specify the \"other panel\" ourselves.
+If this box is checked, any column-based selection in any other panel of the <strong>iSEE</strong> application will be used to specify the sample on the y-axis in this panel.
+This is achieved by dynamically changing the identity of the designated panel from which we receive the selection."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .sampAssayXAxis, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .sampAssayXAxis),
+                    intro="Here, we can choose what to show on the x-axis."
+                ),
+                if (length(row_covariates)) {
+                    rbind(
+                        c(
+                            element=paste0("#", plot_name, "_", .sampAssayXAxis),
+                            intro="If we <strong>select <em>Row data</em></strong>..."
+                        ),
+                        c(
+                            element=paste0("#", plot_name, "_", .sampAssayXAxisRowData, " + .selectize-control"),
+                            intro="... we can stratify points on the x-axis based on a field of interest in the <code>rowData</code>." 
+                        )
+                    )
+                },
+                c(
+                    element=paste0("#", plot_name, "_", .sampAssayXAxis),
+                    intro="If we <strong>select <em>Sample name</em></strong>..."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .sampAssayXAxisSampName, " + .selectize-control"),
+                    intro="... we can show the assay values of another sample of interest on the x-axis.
+In other words, plotting one sample against another for the same set of assay values."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .sampAssayXAxisColTable, " + .selectize-control"),
+                    intro="Just like the sample on the y-axis, the x-axis sample can automatically change in response to a sample selection made in another panel.
+We can either choose the \"other panel\" manually with this dropdown..."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .sampAssayXAxisSampDynamic),
+                    intro="... or we can dynamically change the identity of the other panel. 
+If this box is checked, a column-based selection in any other panel of the <strong>iSEE</strong> application will be used to specify the sample on the x-axis in this panel."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .sampAssayXAxis),
+                    intro="Finally, we can stratify points based on whether they are included in a multiple row selection made in another panel.
+For example, if our \"other panel\" is a row-based plot containing a brush, we would see two violin plots in this panel;
+one corresponding to the selected points inside the brush, and another corresponding to the unselected points."
+                )
+            )
+        )
+    })
+
+
     list(
-        selectizeInput(
-            .input_FUN(.sampAssayYAxisSampName),
+        .selectizeInput.iSEE(
+            x, .sampAssayYAxisSampName,
             label="Sample of interest (Y-axis):",
             choices=NULL, selected=NULL, multiple=FALSE),
         selectInput(
@@ -254,8 +331,9 @@ setMethod(".defineDataInterface", "SampleAssayPlot", function(x, se, select_info
 
         selectInput(paste0(.getEncodedName(x), "_", .sampAssayAssay), label=NULL,
             choices=all_assays, selected=slot(x, .sampAssayAssay)),
-        radioButtons(
-            .input_FUN(.sampAssayXAxis), label="X-axis:", inline=TRUE,
+
+        .radioButtons.iSEE(
+            x, .sampAssayXAxis, label="X-axis:", inline=TRUE,
             choices=xaxis_choices, selected=slot(x, .sampAssayXAxis)),
 
         .conditionalOnRadio(
@@ -386,6 +464,11 @@ setMethod(".generateDotPlotData", "SampleAssayPlot", function(x, envir) {
     .textEval(data_cmds, envir)
 
     list(commands=data_cmds, labels=list(title=plot_title, X=x_lab, Y=y_lab))
+})
+
+#' @export
+setMethod(".getSpecificHelp", "SampleAssayPlot", function(x) {
+    c(callNextMethod(), .sampAssayYAxisSampName, .sampAssayXAxis)
 })
 
 #' @export

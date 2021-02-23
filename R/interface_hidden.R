@@ -75,11 +75,6 @@
     }
 }
 
-#' @importFrom shiny HTML
-.label_with_help <- function(text, id) {
-    HTML(paste0(text, " <span id='", id, "_specific_help'><sup>?</sup></span>"))
-}
-
 #' \pkg{iSEE} UI element wrappers
 #'
 #' Wrapper functions to create the standard \pkg{shiny} user interface elements, 
@@ -103,16 +98,28 @@
 #' @name interface-wrappers
 NULL
 
+#' @importFrom shiny span HTML
+.specific_help <- function(id) {
+    span(id=paste0(id, "_specific_help"), HTML("<sup>?</sup>"))
+}
+
+#' @importFrom shiny HTML
+.label_with_help <- function(text, id) {
+    HTML(paste(text, as.character(.specific_help(id))))
+}
+
 #' @export
 #' @rdname interface-wrappers
 #' @importFrom shiny selectInput
 .selectInput.iSEE <- function(x, field, label, ..., help=TRUE) {
     element <- paste0(.getEncodedName(x), "_", field)
-    if (help) {
-        label <- .label_with_help(label, element)
-    }
 
     ui <- selectInput(element, label=label, ...)
+    if (help) {
+        helper <- .specific_help(element)
+        ui$children <- c(ui$children[1], list(helper), ui$children[-1])
+    }
+
     .hide_this_thing2(x, field, ui)
 }
 
@@ -121,11 +128,13 @@ NULL
 #' @importFrom shiny selectizeInput
 .selectizeInput.iSEE <- function(x, field, label, ..., help=TRUE) {
     element <- paste0(.getEncodedName(x), "_", field)
-    if (help) {
-        label <- .label_with_help(label, element)
-    }
 
     ui <- selectizeInput(element, label=label, ...)
+    if (help) {
+        helper <- .specific_help(element)
+        ui$children <- c(ui$children[1], list(helper), ui$children[-1])
+    }
+
     .hide_this_thing2(x, field, ui)
 }
 
@@ -137,7 +146,7 @@ NULL
     ui <- checkboxInput(element, label=label, ...)
 
     if (help) {
-        helper <- span(id=paste0(element, "_specific_help"), HTML("<sup>?</sup>"))
+        helper <- .specific_help(element)
         ui$children[[1]]$children <- c(ui$children[[1]]$children, list(helper))
     }
 

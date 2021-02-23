@@ -80,6 +80,31 @@
     HTML(paste0(text, " <span id='", id, "_specific_help'><sup>?</sup></span>"))
 }
 
+#' \pkg{iSEE} UI element wrappers
+#'
+#' Wrapper functions to create the standard \pkg{shiny} user interface elements, 
+#' accompanied by an optional help icon that opens an interactive tour describing the purpose of the element.
+#' Also responds to requests to hide a particular element via \code{\link{.hideInterface}}.
+#'
+#' @param x A \linkS4class{Panel} object for which to construct an interface element.
+#' @param field String containing the name of the parameter controlled by the interface element.
+#' @param label String specifying the label to be shown.
+#' @param ... Further arguments to be passed to the corresponding \pkg{shiny} function.
+#' @param help Logical scalar indicating whether a help icon should be added to the label.
+#' 
+#' @return 
+#' The output of \code{FUN(id, ..)} is returned where \code{FUN} is set the corresponding \pkg{shiny} function, e.g., \code{\link{selectInput}} for \code{.selectInput.iSEE}.
+#' \code{id} is defined by concatenating \code{\link{.getEncodedName}(x)} and \code{field} (separated by an underscore).
+#'
+#' If \code{.hideInterface(x, field)} is \code{TRUE}, the output is wrapped inside a \code{\link{hidden}} call.
+#' 
+#' @author Aaron Lun
+#' 
+#' @name interface-wrappers
+NULL
+
+#' @export
+#' @rdname interface-wrappers
 #' @importFrom shiny selectInput
 .selectInput.iSEE <- function(x, field, label, ..., help=TRUE) {
     element <- paste0(.getEncodedName(x), "_", field)
@@ -91,6 +116,8 @@
     .hide_this_thing2(x, field, ui)
 }
 
+#' @export
+#' @rdname interface-wrappers
 #' @importFrom shiny selectizeInput
 .selectizeInput.iSEE <- function(x, field, label, ..., help=TRUE) {
     element <- paste0(.getEncodedName(x), "_", field)
@@ -102,6 +129,8 @@
     .hide_this_thing2(x, field, ui)
 }
 
+#' @export
+#' @rdname interface-wrappers
 #' @importFrom shiny HTML span checkboxInput
 .checkboxInput.iSEE <- function(x, field, label, ..., help=TRUE) {
     element <- paste0(.getEncodedName(x), "_", field)
@@ -117,6 +146,8 @@
 
 .slider_extra <- "_help_anchor"
 
+#' @export
+#' @rdname interface-wrappers
 #' @importFrom shiny sliderInput
 .sliderInput.iSEE <- function(x, field, label, ..., help=TRUE) {
     element <- paste0(.getEncodedName(x), "_", field)
@@ -133,6 +164,8 @@
     .hide_this_thing2(x, field, ui)
 }
 
+#' @export
+#' @rdname interface-wrappers
 #' @importFrom shiny numericInput
 .numericInput.iSEE <- function(x, field, label, ..., help=TRUE) {
     element <- paste0(.getEncodedName(x), "_", field)
@@ -145,6 +178,9 @@
     .hide_this_thing2(x, field, ui)
 }
 
+#' @export
+#' @rdname interface-wrappers
+#' @importFrom shiny radioButtons
 .radioButtons.iSEE <- function(x, field, label, ..., help=TRUE) {
     element <- paste0(.getEncodedName(x), "_", field)
     if (help) {

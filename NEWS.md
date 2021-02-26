@@ -1,3 +1,7 @@
+# iSEE 2.3.8
+
+* Use `shiny::MockShinySession$new()` to simulate Shiny session objects.
+
 # iSEE 2.3.7
 
 * Bugfix for missing import of geom_density_2d

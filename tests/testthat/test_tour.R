@@ -69,3 +69,25 @@ test_that(".definePanelTour works for all objects", {
 
     expect_s3_class(.definePanelTour(ComplexHeatmapPlot()), "data.frame")
 })
+
+test_that(".addSpecificTour works as expected", {
+    .clearSpecificTours()
+
+    .addSpecificTour("A", "alpha", function(x) {
+        toupper(x)
+    })
+    expect_identical(.getSpecificTours("A")$alpha("a"), "A")
+
+    .addSpecificTour("A", "bravo", function(x) {
+        tolower(x)
+    })
+    expect_identical(.getSpecificTours("A")$alpha("b"), "B")
+
+    .addSpecificTour("B", "charlie", function(x) {
+        x
+    })
+    expect_identical(.getSpecificTours("B")$charlie("x"), "x")
+
+    .clearSpecificTours()
+    expect_null(.getSpecificTours("A"))
+})

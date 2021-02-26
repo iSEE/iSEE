@@ -26,6 +26,7 @@
 \alias{.singleSelectionValue,Panel-method}
 \alias{.singleSelectionSlots,Panel-method}
 \alias{.definePanelTour,Panel-method}
+\alias{.getSpecificTour,Panel-method}
 \alias{updateObject,Panel-method}
 \title{The Panel virtual class}
 \description{
@@ -126,6 +127,8 @@ i.e., it will return an empty character vector and create no files.
 For documentation:
 \itemize{
 \item \code{\link{.definePanelTour}(x)} returns a data.frame containing the selection-related steps of the tour.
+\item \code{\link{.getSpecificTour}(x)} returns a character vector of all fields that have their own documention.
+This triggers a tour specific to a particular UI element, mostly related to the selection parameters.
 }
 
 For controlling selections:

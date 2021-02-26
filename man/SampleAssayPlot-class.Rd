@@ -14,6 +14,7 @@
 \alias{.panelColor,SampleAssayPlot-method}
 \alias{.generateDotPlotData,SampleAssayPlot-method}
 \alias{.definePanelTour,SampleAssayPlot-method}
+\alias{.getSpecificTour,SampleAssayPlot-method}
 \title{The SampleAssayPlot panel}
 \description{
 The SampleAssayPlot is a panel class for creating a \linkS4class{RowDotPlot} where the y-axis represents the expression of a sample of interest, using the \code{\link{assay}} values of the \linkS4class{SummarizedExperiment}.
@@ -106,6 +107,8 @@ Otherwise, it dispatches to the \linkS4class{RowDotPlot} method.
 For documentation:
 \itemize{
 \item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
+\item \code{\link{.getSpecificTour}(x)} returns a character vector of all fields that have their own documention.
+This triggers a tour specific to a particular UI element.
 }
 }
 

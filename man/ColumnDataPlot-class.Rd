@@ -15,6 +15,7 @@
 \alias{.allowableXAxisChoices,ColumnDataPlot-method}
 \alias{.allowableYAxisChoices,ColumnDataPlot-method}
 \alias{.definePanelTour,ColumnDataPlot-method}
+\alias{.getSpecificTour,ColumnDataPlot-method}
 \title{The ColumnDataPlot panel}
 \description{
 The ColumnDataPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents a variable from the \code{\link{colData}} of a \linkS4class{SummarizedExperiment} object.
@@ -90,6 +91,8 @@ It will return the commands required to do so as well as a list of labels.
 For documentation:
 \itemize{
 \item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
+\item \code{\link{.getSpecificTour}(x)} returns a character vector of all fields that have their own documention.
+This triggers a tour specific to a particular UI element.
 }
 }
 

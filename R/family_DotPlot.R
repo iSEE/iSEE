@@ -195,6 +195,8 @@
 #' \itemize{
 #' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
 #' mostly describing the specification of visual effects and the creation of a brush or lasso.
+#' \item \code{\link{.getSpecificTour}(x)} returns a character vector of all fields that have their own documention.
+#' This triggers a tour specific to a particular UI element.
 #' }
 #'
 #' Unless explicitly specialized above, all methods from the parent class \linkS4class{Panel} are also available.
@@ -239,6 +241,7 @@
 #' .defineVisualOtherInterface,DotPlot-method
 #' .defineVisualFacetInterface,DotPlot-method
 #' .definePanelTour,DotPlot-method
+#' .getSpecificTour,DotPlot-method
 #' updateObject,DotPlot-method
 #' [[,DotPlot-method
 #' [[,DotPlot,ANY,ANY-method

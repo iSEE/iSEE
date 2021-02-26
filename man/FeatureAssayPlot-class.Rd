@@ -14,6 +14,7 @@
 \alias{.panelColor,FeatureAssayPlot-method}
 \alias{.generateDotPlotData,FeatureAssayPlot-method}
 \alias{.definePanelTour,FeatureAssayPlot-method}
+\alias{.getSpecificTour,FeatureAssayPlot-method}
 \title{The FeatureAssayPlot panel}
 \description{
 The FeatureAssayPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents the expression of a feature of interest, using the \code{\link{assay}} values of the \linkS4class{SummarizedExperiment}.
@@ -106,6 +107,8 @@ Otherwise, it dispatches to the \linkS4class{ColumnDotPlot} method.
 For documentation:
 \itemize{
 \item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
+\item \code{\link{.getSpecificTour}(x)} returns a character vector of all fields that have their own documention.
+This triggers a tour specific to a particular UI element.
 }
 }
 

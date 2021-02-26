@@ -13,6 +13,7 @@
 \alias{.panelColor,ReducedDimensionPlot-method}
 \alias{.generateDotPlotData,ReducedDimensionPlot-method}
 \alias{.definePanelTour,ReducedDimensionPlot-method}
+\alias{.getSpecificTour,ReducedDimensionPlot-method}
 \title{The ReducedDimensionPlot panel}
 \description{
 The ReducedDimensionPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the coordinates of each column/sample are taken from the \code{\link{reducedDims}} of a \linkS4class{SingleCellExperiment} object.
@@ -78,6 +79,8 @@ It will return the commands required to do so as well as a list of labels.
 For documentation:
 \itemize{
 \item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
+\item \code{\link{.getSpecificTour}(x)} returns a character vector of all fields that have their own documention.
+This triggers a tour specific to a particular UI element.
 }
 
 Subclasses do not have to provide any methods, as this is a concrete class.

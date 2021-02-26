@@ -58,6 +58,8 @@
 #' For documentation:
 #' \itemize{
 #' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
+#' \item \code{\link{.getSpecificTour}(x)} returns a character vector of all fields that have their own documention.
+#' This triggers a tour specific to a particular UI element.
 #' }
 #'
 #' Subclasses do not have to provide any methods, as this is a concrete class.
@@ -104,6 +106,7 @@
 #' .panelColor,ReducedDimensionPlot-method
 #' .generateDotPlotData,ReducedDimensionPlot-method
 #' .definePanelTour,ReducedDimensionPlot-method
+#' .getSpecificTour,ReducedDimensionPlot-method
 #'
 #' @name ReducedDimensionPlot-class
 NULL

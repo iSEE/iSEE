@@ -68,6 +68,8 @@
 #' For documentation:
 #' \itemize{
 #' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
+#' \item \code{\link{.getSpecificTour}(x)} returns a character vector of all fields that have their own documention.
+#' This triggers a tour specific to a particular UI element.
 #' }
 #'
 #' @section Subclass expectations:
@@ -117,6 +119,7 @@
 #' .allowableXAxisChoices,RowDataPlot-method
 #' .allowableYAxisChoices,RowDataPlot-method
 #' .definePanelTour,RowDataPlot-method
+#' .getSpecificTour,RowDataPlot-method
 #'
 #' @name RowDataPlot-class
 NULL

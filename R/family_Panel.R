@@ -92,6 +92,8 @@
 #' For documentation:
 #' \itemize{
 #' \item \code{\link{.definePanelTour}(x)} returns a data.frame containing the selection-related steps of the tour.
+#' \item \code{\link{.getSpecificTour}(x)} returns a character vector of all fields that have their own documention.
+#' This triggers a tour specific to a particular UI element, mostly related to the selection parameters.
 #' }
 #'
 #' For controlling selections:
@@ -149,6 +151,7 @@
 #' .singleSelectionValue,Panel-method
 #' .singleSelectionSlots,Panel-method
 #' .definePanelTour,Panel-method
+#' .getSpecificTour,Panel-method
 #' updateObject,Panel-method
 NULL
 

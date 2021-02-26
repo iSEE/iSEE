@@ -85,6 +85,8 @@
 #' For documentation:
 #' \itemize{
 #' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
+#' \item \code{\link{.getSpecificTour}(x)} returns a character vector of all fields that have their own documention.
+#' This triggers a tour specific to a particular UI element.
 #' }
 #'
 #' @author Aaron Lun
@@ -134,6 +136,7 @@
 #' .panelColor,SampleAssayPlot-method
 #' .generateDotPlotData,SampleAssayPlot-method
 #' .definePanelTour,SampleAssayPlot-method
+#' .getSpecificTour,SampleAssayPlot-method
 #'
 #' @name SampleAssayPlot-class
 NULL

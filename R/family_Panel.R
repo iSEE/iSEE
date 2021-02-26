@@ -92,8 +92,6 @@
 #' For documentation:
 #' \itemize{
 #' \item \code{\link{.definePanelTour}(x)} returns a data.frame containing the selection-related steps of the tour.
-#' \item \code{\link{.getSpecificTour}(x)} returns a character vector of all fields that have their own documention.
-#' This triggers a tour specific to a particular UI element, mostly related to the selection parameters.
 #' }
 #'
 #' For controlling selections:
@@ -151,7 +149,6 @@
 #' .singleSelectionValue,Panel-method
 #' .singleSelectionSlots,Panel-method
 #' .definePanelTour,Panel-method
-#' .getSpecificTour,Panel-method
 #' updateObject,Panel-method
 NULL
 
@@ -588,16 +585,21 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
             }
         })
 
-        all.specifics <- .getSpecificHelp(x)
-        for (i in all.specifics) {
-            local({ 
-                i0 <- i
-                shinyjs::onclick(.input_FUN(paste0(i0, "_specific_help")), {
-                    spec.df <- .getSpecificTour(class(x), i0)(panel_name)
-                    introjs(session, options=list(steps=spec.df))
+        # We only run this _AFTER_ rendering is done, as the identities of the
+        # tour-enabled elements are only defined in the interface methods.
+        cls <- class(x)
+        observeEvent(rObjects$rerendered, {
+            tours <- .getSpecificTours(cls)
+            for (i in names(tours)) {
+                local({ 
+                    i0 <- i
+                    shinyjs::onclick(paste0(panel_name, "_", i0, "_specific_help"), {
+                        spec.df <- tours[[i0]](panel_name)
+                        introjs(session, options=list(steps=spec.df))
+                    })
                 })
-            })
-        }
+            }
+        }, once=TRUE)
     }
     # nocov end
 })
@@ -675,9 +677,6 @@ setMethod(".definePanelTour", "Panel", function(x) {
     collated <- do.call(rbind, collated)
     data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
 })
-
-#' @export
-setMethod(".getSpecificHelp", "Panel", function(x) c(.selectRowSource, .selectColSource, .multiSelectHistory))
 
 ###############################################################################
 

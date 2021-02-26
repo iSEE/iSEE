@@ -3,13 +3,13 @@
 \name{specific-tours}
 \alias{specific-tours}
 \alias{.addSpecificTour}
-\alias{.getSpecificTour}
+\alias{.getSpecificTours}
 \alias{.clearSpecificTours}
 \title{UI-specific tour management utilities}
 \usage{
 .addSpecificTour(cls, field, fun, force = FALSE)
 
-.getSpecificTour(cls, field)
+.getSpecificTours(cls)
 
 .clearSpecificTours()
 }
@@ -27,7 +27,7 @@ and returns a data.frame compatible with \pkg{rintrojs}, i.e., with a \code{elem
 \code{.addSpecificTour} registers the provided function in the tour cache for the provided \code{cls} and \code{field}.
 A \code{NULL} is invisibly returned.
 
-\code{.getSpecificTour} returns the registered function for \code{cls} and \code{field}.
+\code{.getSpecificTours} returns a list of registered tour-generating functions for the specified \code{cls}.
 
 \code{.clearSpecificTours} removes all functions in the tour cache.
 }

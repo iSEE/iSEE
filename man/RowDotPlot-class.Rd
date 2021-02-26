@@ -14,7 +14,6 @@
 \alias{.multiSelectionInvalidated,RowDotPlot-method}
 \alias{.singleSelectionDimension,RowDotPlot-method}
 \alias{.definePanelTour,RowDotPlot-method}
-\alias{.getSpecificTour,RowDotPlot-method}
 \alias{[[,RowDotPlot-method}
 \alias{[[,RowDotPlot,ANY,ANY-method}
 \alias{[[<-,RowDotPlot-method}
@@ -93,8 +92,6 @@ For documentation:
 \itemize{
 \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
 mostly tuning the more generic descriptions from the same method of the parent \linkS4class{DotPlot}.
-\item \code{\link{.getSpecificTour}(x)} returns a character vector of all fields that have their own documention.
-This triggers a tour specific to a particular UI element.
 }
 
 Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.

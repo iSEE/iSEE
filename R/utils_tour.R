@@ -14,7 +14,7 @@
 #' \code{.addSpecificTour} registers the provided function in the tour cache for the provided \code{cls} and \code{field}.
 #' A \code{NULL} is invisibly returned.
 #' 
-#' \code{.getSpecificTour} returns the registered function for \code{cls} and \code{field}.
+#' \code{.getSpecificTours} returns a list of registered tour-generating functions for the specified \code{cls}.
 #'
 #' \code{.clearSpecificTours} removes all functions in the tour cache.
 #' 
@@ -49,8 +49,8 @@ NULL
 
 #' @export
 #' @rdname specific-tours
-.getSpecificTour <- function(cls, field) {
-    .global_tour_env$tours[[cls]][[field]] 
+.getSpecificTours <- function(cls) {
+    .global_tour_env$tours[[cls]]
 }
 
 #' @export

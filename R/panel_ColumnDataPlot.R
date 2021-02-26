@@ -68,8 +68,6 @@
 #' For documentation:
 #' \itemize{
 #' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
-#' \item \code{\link{.getSpecificTour}(x)} returns a character vector of all fields that have their own documention.
-#' This triggers a tour specific to a particular UI element.
 #' }
 #'
 #' @section Subclass expectations:
@@ -122,7 +120,6 @@
 #' .allowableXAxisChoices,ColumnDataPlot-method
 #' .allowableYAxisChoices,ColumnDataPlot-method
 #' .definePanelTour,ColumnDataPlot-method
-#' .getSpecificTour,ColumnDataPlot-method
 #'
 #' @name ColumnDataPlot-class
 NULL
@@ -331,11 +328,6 @@ setMethod(".generateDotPlotData", "ColumnDataPlot", function(x, envir) {
     .textEval(data_cmds, envir)
 
     list(commands=data_cmds, labels=list(title=plot_title, X=x_lab, Y=y_lab))
-})
-
-#' @export
-setMethod(".getSpecificHelp", "ColumnDataPlot", function(x) {
-    c(callNextMethod(), .colDataYAxis, .colDataXAxis)
 })
 
 #' @export

@@ -15,7 +15,6 @@
 \alias{.allowableXAxisChoices,RowDataPlot-method}
 \alias{.allowableYAxisChoices,RowDataPlot-method}
 \alias{.definePanelTour,RowDataPlot-method}
-\alias{.getSpecificTour,RowDataPlot-method}
 \title{The RowDataPlot panel}
 \description{
 The RowDataPlot is a panel class for creating a \linkS4class{RowDotPlot} where the y-axis represents a variable from the \code{\link{rowData}} of a \linkS4class{SummarizedExperiment} object.
@@ -91,8 +90,6 @@ It will return the commands required to do so as well as a list of labels.
 For documentation:
 \itemize{
 \item \code{\link{.definePanelTour}(x)} returns an data.frame containing a panel-specific tour.
-\item \code{\link{.getSpecificTour}(x)} returns a character vector of all fields that have their own documention.
-This triggers a tour specific to a particular UI element.
 }
 }
 

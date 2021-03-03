@@ -307,7 +307,7 @@ setMethod("[[", "ComplexHeatmapPlot", function(x, i, j, ...) {
             cname, i, cname, .selectColRestrict, cname, .heatMapShowSelection))
 
         if (slot(x, .selectColRestrict)) {
-            "Restrict" 
+            "Restrict"
         } else if (slot(x, .heatMapShowSelection)) {
             "Color"
         } else {
@@ -323,7 +323,7 @@ setReplaceMethod("[[", "ComplexHeatmapPlot", function(x, i, j, ..., value) {
     if (i %in% "SelectionColor") {
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.", cname, i))
-        x 
+        x
     } else if (i %in% "SelectionEffect") {
         x <- updateObject(x, check=FALSE)
 
@@ -440,9 +440,24 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         identity
     }
 
+    .addSpecificTour(class(x)[1], .heatMapAssay, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapAssay, " + .selectize-control"),
+                    intro = "Here, we can select the name of the assay matrix to show.
+The choices are extracted from the <code>assayNames</code> of a <code>SummarizedExperiment</code> object.
+These matrices should be loaded into the object prior to calling <strong>iSEE</strong> - they are not computed on the fly."
+                )
+            )
+        )
+    })
+
     list(
-        selectInput(.input_FUN(.heatMapAssay), label="Assay choice",
-            choices=all_assays, selected=slot(x, .heatMapAssay)),
+        .selectInput.iSEE(x, .heatMapAssay,
+            label="Assay choice:",
+            choices=all_assays,
+            selected=slot(x, .heatMapAssay)),
         checkboxInput(.input_FUN(.heatMapCustomFeatNames), label="Use custom rows",
             value=slot(x, .heatMapCustomFeatNames)),
         .conditionalOnCheckSolo(

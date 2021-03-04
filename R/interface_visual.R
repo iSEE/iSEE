@@ -230,7 +230,7 @@ This is useful to compare features of selected data points to the rest of the da
             rbind(
                 c(
                     element = paste0("#", plot_name, "_", .assayCenterRows),
-                    intro = "This checkbox dynamically centers the values for each row shown in the heat map, i.e. to a mean value of 0.
+                    intro = "Here, we can dynamically center the values for each row shown in the heat map, i.e. to a mean value of 0.
 It also reveals another checkbox that can be used to scale values for each row.
 <br/><br/>
 This does not alter any value in the data set; centered values are only computed on the fly for the purpose of the heat map."
@@ -244,10 +244,23 @@ This does not alter any value in the data set; centered values are only computed
             rbind(
                 c(
                     element = paste0("#", plot_name, "_", .assayScaleRows),
-                    intro = "This checkbox dynamically scales the values for each row shown in the heat map, i.e. to a standard deviation of 1.
-This row transformation is only available when values are centered using the checkbox above.
+                    intro = "Here, we can dynamically scale the values for each row shown in the heat map, i.e. to a standard deviation of 1.
+This row transformation is only available when row values are centered using the checkbox above.
 <br/><br/>
 This does not alter any value in the data set; scaled values are only computed on the fly for the purpose of the heat map."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .heatMapCenteredColormap, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapCenteredColormap, " + .selectize-control"),
+                    intro = "Here, we can select from a choice of diverging color maps, when row values are centered using the checkbox above.
+<br/><br/>
+This is useful to visualize deviations from the mean, in particular when row values are also scaled using the second checkbox above."
                 )
             )
         )
@@ -306,9 +319,13 @@ This does not alter any value in the data set; scaled values are only computed o
                         value=slot(x, .assayScaleRows),
                         help = TRUE)
                     ),
-                ABLEFUN(selectizeInput(.input_FUN(.heatMapCenteredColormap), label="Centered assay colormap:",
-                    selected=slot(x, .heatMapCenteredColormap),
-                    choices=c(.colormapPurpleBlackYellow, .colormapBlueWhiteOrange, .colormapBlueWhiteRed, .colormapGreenWhiteRed))))
+                ABLEFUN(
+                    .selectizeInput.iSEE(x, .heatMapCenteredColormap,
+                        label = "Centered assay colormap:",
+                        selected=slot(x, .heatMapCenteredColormap),
+                        choices=c(.colormapPurpleBlackYellow, .colormapBlueWhiteOrange, .colormapBlueWhiteRed, .colormapGreenWhiteRed),
+                        help = TRUE)
+                    ))
         ),
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceColorTitle,

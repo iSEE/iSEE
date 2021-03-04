@@ -230,9 +230,24 @@ This is useful to compare features of selected data points to the rest of the da
             rbind(
                 c(
                     element = paste0("#", plot_name, "_", .assayCenterRows),
-                    intro = "This checkbox dynamically centers the values for each row shown in the heat map.
+                    intro = "This checkbox dynamically centers the values for each row shown in the heat map, i.e. to a mean value of 0.
+It also reveals another checkbox that can be used to scale values for each row.
 <br/><br/>
 This does not alter any value in the data set; centered values are only computed on the fly for the purpose of the heat map."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .assayScaleRows, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .assayScaleRows),
+                    intro = "This checkbox dynamically scales the values for each row shown in the heat map, i.e. to a standard deviation of 1.
+This row transformation is only available when values are centered using the checkbox above.
+<br/><br/>
+This does not alter any value in the data set; scaled values are only computed on the fly for the purpose of the heat map."
                 )
             )
         )
@@ -285,7 +300,12 @@ This does not alter any value in the data set; centered values are only computed
                 value=slot(x, .assayCenterRows),
                 help = TRUE)),
             .conditionalOnCheckSolo(.input_FUN(.assayCenterRows), on_select = TRUE,
-                ABLEFUN(checkboxInput(.input_FUN(.assayScaleRows), "Scale", value=slot(x, .assayScaleRows))),
+                ABLEFUN(
+                    .checkboxInput.iSEE(x, .assayScaleRows,
+                        label = "Scale",
+                        value=slot(x, .assayScaleRows),
+                        help = TRUE)
+                    ),
                 ABLEFUN(selectizeInput(.input_FUN(.heatMapCenteredColormap), label="Centered assay colormap:",
                     selected=slot(x, .heatMapCenteredColormap),
                     choices=c(.colormapPurpleBlackYellow, .colormapBlueWhiteOrange, .colormapBlueWhiteRed, .colormapGreenWhiteRed))))

@@ -657,7 +657,8 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
             .heatMapClusterFeatures,
             .heatMapClusterDistanceFeatures,
             .heatMapClusterMethodFeatures,
-            .heatMapCustomFeatNames
+            .heatMapCustomFeatNames,
+            .heatMapOrderSelection
         ),
         input=input, pObjects=pObjects, rObjects=rObjects)
 

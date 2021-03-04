@@ -493,11 +493,12 @@ This checkbox switches between using the order in <code>rownames</code> (unticke
             on_select=TRUE,
             actionButton(.input_FUN(.dimnamesModalOpen), label="Edit feature names")),
         ABLEFUN(
-            .checkboxInput.iSEE(x, .heatMapClusterFeatures,
-            label = "Cluster rows",
-            value=slot(x, .heatMapClusterFeatures),
-            help = TRUE)
-        ),
+            .checkboxInput.iSEE(
+                x, .heatMapClusterFeatures,
+                label = "Cluster rows",
+                value=slot(x, .heatMapClusterFeatures),
+                help = TRUE)
+            ),
         .conditionalOnCheckSolo(
             .input_FUN(.heatMapClusterFeatures),
             on_select=TRUE,

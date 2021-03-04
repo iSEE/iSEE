@@ -185,6 +185,19 @@ This will also order the columns of the heat map by the values of the selected a
         )
     })
 
+    .addSpecificTour(class(x)[1], .heatMapRowData, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapRowData, " + .selectize-control"),
+                    intro = "Here, we can select row annotations to show as color bars on the left of the heat map.
+<br/><br/>
+This will <em>not</em> affect the order of rows in the heat map, as this is controlled in the <i>Data parameters</i> box."
+                )
+            )
+        )
+    })
+
     collapseBox(
         id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
@@ -204,9 +217,13 @@ This will also order the columns of the heat map by the values of the selected a
                 multiple=TRUE,
                 options=list(plugins=list('remove_button', 'drag_drop')),
                 help = TRUE),
-            selectizeInput(.input_FUN(.heatMapRowData), label="Row annotations:",
-                selected=slot(x, .heatMapRowData), choices=all_rowdata, multiple=TRUE,
-                options=list(plugins=list('remove_button', 'drag_drop'))),
+            .selectizeInput.iSEE(x, .heatMapRowData,
+                label = "Row annotations:",
+                selected = slot(x, .heatMapRowData),
+                choices = all_rowdata,
+                multiple=TRUE,
+                options=list(plugins=list('remove_button', 'drag_drop')),
+                help = TRUE),
             checkboxInput(.input_FUN(.heatMapShowSelection), label="Show column selection",
                 value=slot(x, .heatMapShowSelection)),
             checkboxInput(.input_FUN(.heatMapShowSelection), label="Order by column selection",

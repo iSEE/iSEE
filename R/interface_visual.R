@@ -225,6 +225,19 @@ This is useful to compare features of selected data points to the rest of the da
         )
     })
 
+    .addSpecificTour(class(x)[1], .assayCenterRows, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .assayCenterRows),
+                    intro = "This checkbox dynamically centers the values for each row shown in the heat map.
+<br/><br/>
+This does not alter any value in the data set; centered values are only computed on the fly for the purpose of the heat map."
+                )
+            )
+        )
+    })
+
     collapseBox(
         id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
@@ -266,7 +279,11 @@ This is useful to compare features of selected data points to the rest of the da
             pchoice_field, .visualParamChoiceTransformTitle,
             hr(),
             strong("Row transformations:"),
-            ABLEFUN(checkboxInput(.input_FUN(.assayCenterRows), "Center", value=slot(x, .assayCenterRows))),
+
+            ABLEFUN(.checkboxInput.iSEE(x, .assayCenterRows,
+                label = "Center",
+                value=slot(x, .assayCenterRows),
+                help = TRUE)),
             .conditionalOnCheckSolo(.input_FUN(.assayCenterRows), on_select = TRUE,
                 ABLEFUN(checkboxInput(.input_FUN(.assayScaleRows), "Scale", value=slot(x, .assayScaleRows))),
                 ABLEFUN(selectizeInput(.input_FUN(.heatMapCenteredColormap), label="Centered assay colormap:",

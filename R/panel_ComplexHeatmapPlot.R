@@ -458,9 +458,22 @@ These matrices should be loaded into the object prior to calling <strong>iSEE</s
             rbind(
                 c(
                     element = paste0("#", plot_name, "_", .heatMapCustomFeatNames),
-                    intro = "Features displayed as rows in the heatmap can be manually specified by entering row names interactively in a modal, rather than using any multiple selection transmitted from another panel.
+                    intro = "Features displayed as rows in the heat map can be manually specified by entering row names interactively in a modal, rather than using any multiple selection transmitted from another panel.
 <br/><br/>
 This checkbox switches between using the incoming selection (unticked) and the manually specified gene list (ticked)."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .heatMapClusterFeatures, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapClusterFeatures),
+                    intro = "Features displayed as rows in the heat map can be clustered dynamically using a selection of distance metrics and clustering methods, rather than showing them in the order they appear in <code>rownames</code>.
+<br/><br/>
+This checkbox switches between using the order in <code>rownames</code> (unticked) and the result of clustering using the selected distance metric and clustering method."
                 )
             )
         )
@@ -479,8 +492,12 @@ This checkbox switches between using the incoming selection (unticked) and the m
             .input_FUN(.heatMapCustomFeatNames),
             on_select=TRUE,
             actionButton(.input_FUN(.dimnamesModalOpen), label="Edit feature names")),
-        ABLEFUN(checkboxInput(.input_FUN(.heatMapClusterFeatures), label="Cluster rows",
-            value=slot(x, .heatMapClusterFeatures))),
+        ABLEFUN(
+            .checkboxInput.iSEE(x, .heatMapClusterFeatures,
+            label = "Cluster rows",
+            value=slot(x, .heatMapClusterFeatures),
+            help = TRUE)
+        ),
         .conditionalOnCheckSolo(
             .input_FUN(.heatMapClusterFeatures),
             on_select=TRUE,

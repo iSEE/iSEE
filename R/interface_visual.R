@@ -63,7 +63,7 @@
 
     plot_name <- .getEncodedName(x)
     pchoice_field <- paste0(plot_name, "_", .visualParamChoice)
-    collected <- lapply(names(ui), function(title) 
+    collected <- lapply(names(ui), function(title)
         .conditionalOnCheckGroup(pchoice_field, title, ui[[title]])
     )
 
@@ -173,6 +173,18 @@
         identity
     }
 
+    .addSpecificTour(class(x)[1], .heatMapColData, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapColData, " + .selectize-control"),
+                    intro = "Here, we can select column annotations to show as color bars above the heat map.
+This will also order the columns of the heat map by the values of the selected annotations (in the specified order, if multiple annotations are specified). This is useful for providing some structure to the heatmap."
+                )
+            )
+        )
+    })
+
     collapseBox(
         id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
@@ -185,9 +197,13 @@
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceMetadataTitle,
             hr(),
-            selectizeInput(.input_FUN(.heatMapColData), label="Column annotations:",
-                selected=slot(x, .heatMapColData), choices=all_coldata, multiple=TRUE,
-                options=list(plugins=list('remove_button', 'drag_drop'))),
+            .selectizeInput.iSEE(x, .heatMapColData,
+                label = "Column annotations:",
+                selected = slot(x, .heatMapColData),
+                choices = all_coldata,
+                multiple=TRUE,
+                options=list(plugins=list('remove_button', 'drag_drop')),
+                help = TRUE),
             selectizeInput(.input_FUN(.heatMapRowData), label="Row annotations:",
                 selected=slot(x, .heatMapRowData), choices=all_rowdata, multiple=TRUE,
                 options=list(plugins=list('remove_button', 'drag_drop'))),

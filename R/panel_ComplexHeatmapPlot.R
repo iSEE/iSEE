@@ -453,13 +453,28 @@ These matrices should be loaded into the object prior to calling <strong>iSEE</s
         )
     })
 
+    .addSpecificTour(class(x)[1], .heatMapCustomFeatNames, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapCustomFeatNames),
+                    intro = "Features displayed as rows in the heatmap can be manually specified by entering row names interactively in a modal, rather than using any multiple selection transmitted from another panel.
+<br/><br/>
+This checkbox switches between using the incoming selection (unticked) and the manually specified gene list (ticked)."
+                )
+            )
+        )
+    })
+
     list(
         .selectInput.iSEE(x, .heatMapAssay,
             label="Assay choice:",
             choices=all_assays,
             selected=slot(x, .heatMapAssay)),
-        checkboxInput(.input_FUN(.heatMapCustomFeatNames), label="Use custom rows",
-            value=slot(x, .heatMapCustomFeatNames)),
+        .checkboxInput.iSEE(x, .heatMapCustomFeatNames,
+            label = "Use custom rows",
+            value=slot(x, .heatMapCustomFeatNames),
+            help = TRUE),
         .conditionalOnCheckSolo(
             .input_FUN(.heatMapCustomFeatNames),
             on_select=TRUE,

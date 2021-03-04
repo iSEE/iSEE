@@ -47,6 +47,8 @@ Defaults to \code{character(0)}.
 Defaults to \code{character(0)}.
 \item \code{ShowColumnSelection}, a logical vector indicating whether the column selection should be shown as an extra annotation bar.
 Defaults to \code{TRUE}.
+\item \code{OrderColumnSelection}, a logical vector indicating whether the column selection should be used to order columns in the heatmap.
+Defaults to \code{TRUE}.
 }
 
 The following slots control the choice of assay values:

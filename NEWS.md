@@ -1,3 +1,7 @@
+# iSEE 2.3.9.0001
+
+* Bugfix for ordering of selected columns in `ComplexHeatmapPlot`.
+
 # iSEE 2.3.8
 
 * Use `shiny::MockShinySession$new()` to simulate Shiny session objects.

@@ -261,11 +261,6 @@ This is useful to compare features of selected data points to the rest of the da
                     value=slot(x, .heatMapOrderSelection),
                     help = TRUE),
             )
-            # .conditionalOnCheckSolo(.input_FUN(.heatMapShowSelection), on_select = TRUE,
-            #     checkboxInput(.input_FUN(.heatMapOrderSelection),
-            #         label="Order by column selection",
-            #         value=slot(x, .heatMapOrderSelection))
-            #     )
         ),
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceTransformTitle,

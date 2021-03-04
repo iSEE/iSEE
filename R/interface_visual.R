@@ -205,7 +205,19 @@ This will <em>not</em> affect the order of rows in the heat map, as this is cont
                     element = paste0("#", plot_name, "_", .heatMapShowSelection),
                     intro = "Ticked, this checkbox displays a color bar above the heat map, indicating data points received from an incoming multiple column selection.
 <br/><br/>
-This will also order the columns of the heat map, with selected points on the left and unselected point on the right.
+It also reveals another checkbox that can be used to order columns of the heat maps using the selection, with selected points on the left and unselected point on the right."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .heatMapOrderSelection, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapOrderSelection),
+                    intro = "Ticked, this checkbox orders columns of the heat map using the incoming selection, if any, with selected points on the left and unselected point on the right.
+<br/><br/>
 This ordering takes precedence over the ordering by column annotations.
 This is useful to compare features of selected data points to the rest of the data set."
                 )
@@ -244,10 +256,16 @@ This is useful to compare features of selected data points to the rest of the da
                 value=slot(x, .heatMapShowSelection),
                 help = TRUE),
             .conditionalOnCheckSolo(.input_FUN(.heatMapShowSelection), on_select = TRUE,
-                checkboxInput(.input_FUN(.heatMapOrderSelection),
-                    label="Order by column selection",
-                    value=slot(x, .heatMapOrderSelection))
-                )
+                .checkboxInput.iSEE(x, .heatMapOrderSelection,
+                    label = "Order by column selection",
+                    value=slot(x, .heatMapOrderSelection),
+                    help = TRUE),
+            )
+            # .conditionalOnCheckSolo(.input_FUN(.heatMapShowSelection), on_select = TRUE,
+            #     checkboxInput(.input_FUN(.heatMapOrderSelection),
+            #         label="Order by column selection",
+            #         value=slot(x, .heatMapOrderSelection))
+            #     )
         ),
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceTransformTitle,

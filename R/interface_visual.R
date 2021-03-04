@@ -198,6 +198,21 @@ This will <em>not</em> affect the order of rows in the heat map, as this is cont
         )
     })
 
+    .addSpecificTour(class(x)[1], .heatMapShowSelection, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapShowSelection),
+                    intro = "Ticked, this checkbox displays a color bar above the heat map, indicating data points received from an incoming multiple column selection.
+<br/><br/>
+This will also order the columns of the heat map, with selected points on the left and unselected point on the right.
+This ordering takes precedence over the ordering by column annotations.
+This is useful to compare features of selected data points to the rest of the data set."
+                )
+            )
+        )
+    })
+
     collapseBox(
         id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
@@ -224,8 +239,10 @@ This will <em>not</em> affect the order of rows in the heat map, as this is cont
                 multiple=TRUE,
                 options=list(plugins=list('remove_button', 'drag_drop')),
                 help = TRUE),
-            checkboxInput(.input_FUN(.heatMapShowSelection), label="Show column selection",
-                value=slot(x, .heatMapShowSelection)),
+            .checkboxInput.iSEE(x, .heatMapShowSelection,
+                label = "Show column selection",
+                value=slot(x, .heatMapShowSelection),
+                help = TRUE),
             checkboxInput(.input_FUN(.heatMapShowSelection), label="Order by column selection",
                 value=slot(x, .heatMapOrderSelection))
         ),

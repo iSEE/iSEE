@@ -266,6 +266,19 @@ This is useful to visualize deviations from the mean, in particular when row val
         )
     })
 
+    .addSpecificTour(class(x)[1], .heatMapCustomAssayBounds, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapCustomAssayBounds),
+                    intro = "Ticked, this checkbox reveals numeric fields that let us manually set custom lower and upper bounds for the color scale of the heat map.
+<br/><br/>
+This is useful to override the default range of the color scale, which is automatically fit to the range of values observed in the heat map."
+                )
+            )
+        )
+    })
+
     collapseBox(
         id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
@@ -330,8 +343,11 @@ This is useful to visualize deviations from the mean, in particular when row val
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceColorTitle,
             hr(),
-            ABLEFUN(checkboxInput(.input_FUN(.heatMapCustomAssayBounds), "Use custom colorscale bounds",
-                value = slot(x, .heatMapCustomAssayBounds))),
+            ABLEFUN(
+                .checkboxInput.iSEE(x, .heatMapCustomAssayBounds,
+                    label = "Use custom colorscale bounds",
+                    value = slot(x, .heatMapCustomAssayBounds),
+                    help = TRUE)),
             .conditionalOnCheckSolo(.input_FUN(.heatMapCustomAssayBounds), on_select = TRUE,
                 ABLEFUN(numericInput(.input_FUN(.assayLowerBound), "Lower bound",
                     value=slot(x, .assayLowerBound), min = -Inf, max = Inf)),

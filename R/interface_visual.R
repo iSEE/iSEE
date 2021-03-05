@@ -301,6 +301,41 @@ This is useful to override the default range of the color scale, which is automa
         )
     })
 
+    .addSpecificTour(class(x)[1], .showDimnames, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .showDimnames),
+                    intro = "Here, we can control whether to show row names or column names."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .plotLegendPosition, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .plotLegendPosition),
+                    intro = "Changes the position of the legend on the plot, if any legend exists.
+On the bottom, on the right; the choice is yours."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .plotLegendDirection, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .plotLegendDirection),
+                    intro = "Changes the orientation of the legend on the plot, if any legend exists.
+Horizontal, vertical; the choice is yours."
+                )
+            )
+        )
+    })
+
     collapseBox(
         id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
@@ -383,20 +418,28 @@ This is useful to override the default range of the color scale, which is automa
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceLabelsTitle,
             hr(),
-            checkboxGroupInput(
-                inputId=.input_FUN(.showDimnames), label="Show names:", inline=TRUE,
+            .checkboxGroupInput.iSEE(x, .showDimnames,
+                label = "Show names:",
+                inline=TRUE,
                 selected=slot(x, .showDimnames),
-                choices=c(.showNamesRowTitle, .showNamesColumnTitle))
+                choices=c(.showNamesRowTitle, .showNamesColumnTitle),
+                help = TRUE)
         ),
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceLegendTitle,
             hr(),
-            radioButtons(.input_FUN(.plotLegendPosition), label="Legend position:", inline=TRUE,
+            .radioButtons.iSEE(x, .plotLegendPosition,
+                label = "Legend position:",
+                inline=TRUE,
+                selected=slot(x, .plotLegendPosition),
                 choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
-                selected=slot(x, .plotLegendPosition)),
-            radioButtons(.input_FUN(.plotLegendDirection), label="Legend direction:", inline=TRUE,
+                help = TRUE),
+            .radioButtons.iSEE(x, .plotLegendDirection,
+                label = "Legend direction:",
+                inline=TRUE,
+                selected=slot(x, .plotLegendDirection),
                 choices=c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle),
-                selected=slot(x, .plotLegendDirection))
+                help = TRUE)
         )
     )
 }

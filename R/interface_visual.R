@@ -279,6 +279,28 @@ This is useful to override the default range of the color scale, which is automa
         )
     })
 
+    .addSpecificTour(class(x)[1], .assayLowerBound, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .assayLowerBound),
+                    intro = "Here, we can manually override the lower bound of the heat map color scale."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .assayUpperBound, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .assayUpperBound),
+                    intro = "Here, we can manually override the upper bound of the heat map color scale."
+                )
+            )
+        )
+    })
+
     collapseBox(
         id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
@@ -349,10 +371,14 @@ This is useful to override the default range of the color scale, which is automa
                     value = slot(x, .heatMapCustomAssayBounds),
                     help = TRUE)),
             .conditionalOnCheckSolo(.input_FUN(.heatMapCustomAssayBounds), on_select = TRUE,
-                ABLEFUN(numericInput(.input_FUN(.assayLowerBound), "Lower bound",
-                    value=slot(x, .assayLowerBound), min = -Inf, max = Inf)),
-                ABLEFUN(numericInput(.input_FUN(.assayUpperBound), "Upper bound",
-                    value=slot(x, .assayUpperBound), min = -Inf, max = Inf)))
+                .numericInput.iSEE(x, .assayLowerBound,
+                    label = "Lower bound",
+                    value=slot(x, .assayLowerBound), min = -Inf, max = Inf,
+                    help = TRUE),
+                .numericInput.iSEE(x, .assayUpperBound,
+                    label = "Upper bound",
+                    value=slot(x, .assayUpperBound), min = -Inf, max = Inf,
+                    help = TRUE))
         ),
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceLabelsTitle,

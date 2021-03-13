@@ -63,7 +63,7 @@
 
     plot_name <- .getEncodedName(x)
     pchoice_field <- paste0(plot_name, "_", .visualParamChoice)
-    collected <- lapply(names(ui), function(title) 
+    collected <- lapply(names(ui), function(title)
         .conditionalOnCheckGroup(pchoice_field, title, ui[[title]])
     )
 
@@ -173,6 +173,169 @@
         identity
     }
 
+    .addSpecificTour(class(x)[1], .heatMapColData, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapColData, " + .selectize-control"),
+                    intro = "Here, we can select column annotations to show as color bars above the heat map.
+This will also order the columns of the heat map by the values of the selected annotations (in the specified order, if multiple annotations are specified). This is useful for providing some structure to the heatmap."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .heatMapRowData, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapRowData, " + .selectize-control"),
+                    intro = "Here, we can select row annotations to show as color bars on the left of the heat map.
+<br/><br/>
+This will <em>not</em> affect the order of rows in the heat map, as this is controlled in the <i>Data parameters</i> box."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .heatMapShowSelection, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapShowSelection),
+                    intro = "Ticked, this checkbox displays a color bar above the heat map, indicating data points received from an incoming multiple column selection.
+<br/><br/>
+It also reveals another checkbox that can be used to order columns of the heat maps using the selection, with selected points on the left and unselected point on the right."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .heatMapOrderSelection, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapOrderSelection),
+                    intro = "Ticked, this checkbox orders columns of the heat map using the incoming selection, if any, with selected points on the left and unselected point on the right.
+<br/><br/>
+This ordering takes precedence over the ordering by column annotations.
+This is useful to compare features of selected data points to the rest of the data set."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .assayCenterRows, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .assayCenterRows),
+                    intro = "Here, we can dynamically center the values for each row shown in the heat map, i.e. to a mean value of 0.
+It also reveals another checkbox that can be used to scale values for each row.
+<br/><br/>
+This does not alter any value in the data set; centered values are only computed on the fly for the purpose of the heat map."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .assayScaleRows, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .assayScaleRows),
+                    intro = "Here, we can dynamically scale the values for each row shown in the heat map, i.e. to a standard deviation of 1.
+This row transformation is only available when row values are centered using the checkbox above.
+<br/><br/>
+This does not alter any value in the data set; scaled values are only computed on the fly for the purpose of the heat map."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .heatMapCenteredColormap, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapCenteredColormap, " + .selectize-control"),
+                    intro = "Here, we can select from a choice of diverging color maps, when row values are centered using the checkbox above.
+<br/><br/>
+This is useful to visualize deviations from the mean, in particular when row values are also scaled using the second checkbox above."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .heatMapCustomAssayBounds, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapCustomAssayBounds),
+                    intro = "Ticked, this checkbox reveals numeric fields that let us manually set custom lower and upper bounds for the color scale of the heat map.
+<br/><br/>
+This is useful to override the default range of the color scale, which is automatically fit to the range of values observed in the heat map."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .assayLowerBound, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .assayLowerBound),
+                    intro = "Here, we can manually override the lower bound of the heat map color scale."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .assayUpperBound, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .assayUpperBound),
+                    intro = "Here, we can manually override the upper bound of the heat map color scale."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .showDimnames, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .showDimnames),
+                    intro = "Here, we can control whether to show row names or column names."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .plotLegendPosition, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .plotLegendPosition),
+                    intro = "Changes the position of the legend on the plot, if any legend exists.
+On the bottom, on the right; the choice is yours."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .plotLegendDirection, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .plotLegendDirection),
+                    intro = "Changes the orientation of the legend on the plot, if any legend exists.
+Horizontal, vertical; the choice is yours."
+                )
+            )
+        )
+    })
+
     collapseBox(
         id=paste0(plot_name, "_", .visualParamBoxOpen),
         title="Visual parameters",
@@ -185,94 +348,98 @@
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceMetadataTitle,
             hr(),
-            selectizeInput(.input_FUN(.heatMapColData), label="Column annotations:",
-                selected=slot(x, .heatMapColData), choices=all_coldata, multiple=TRUE,
-                options=list(plugins=list('remove_button', 'drag_drop'))),
-            selectizeInput(.input_FUN(.heatMapRowData), label="Row annotations:",
-                selected=slot(x, .heatMapRowData), choices=all_rowdata, multiple=TRUE,
-                options=list(plugins=list('remove_button', 'drag_drop'))),
-            checkboxInput(.input_FUN(.heatMapShowSelection), label="Show column selection",
-                value=slot(x, .heatMapShowSelection)),
-            checkboxInput(.input_FUN(.heatMapShowSelection), label="Order by column selection",
-                value=slot(x, .heatMapOrderSelection))
+            .selectizeInput.iSEE(x, .heatMapColData,
+                label = "Column annotations:",
+                selected = slot(x, .heatMapColData),
+                choices = all_coldata,
+                multiple=TRUE,
+                options=list(plugins=list('remove_button', 'drag_drop')),
+                help = TRUE),
+            .selectizeInput.iSEE(x, .heatMapRowData,
+                label = "Row annotations:",
+                selected = slot(x, .heatMapRowData),
+                choices = all_rowdata,
+                multiple=TRUE,
+                options=list(plugins=list('remove_button', 'drag_drop')),
+                help = TRUE),
+            .checkboxInput.iSEE(x, .heatMapShowSelection,
+                label = "Show column selection",
+                value=slot(x, .heatMapShowSelection),
+                help = TRUE),
+            .conditionalOnCheckSolo(.input_FUN(.heatMapShowSelection), on_select = TRUE,
+                .checkboxInput.iSEE(x, .heatMapOrderSelection,
+                    label = "Order by column selection",
+                    value=slot(x, .heatMapOrderSelection),
+                    help = TRUE),
+            )
         ),
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceTransformTitle,
             hr(),
             strong("Row transformations:"),
-            ABLEFUN(checkboxInput(.input_FUN(.assayCenterRows), "Center", value=slot(x, .assayCenterRows))),
+
+            ABLEFUN(.checkboxInput.iSEE(x, .assayCenterRows,
+                label = "Center",
+                value=slot(x, .assayCenterRows),
+                help = TRUE)),
             .conditionalOnCheckSolo(.input_FUN(.assayCenterRows), on_select = TRUE,
-                ABLEFUN(checkboxInput(.input_FUN(.assayScaleRows), "Scale", value=slot(x, .assayScaleRows))),
-                ABLEFUN(selectizeInput(.input_FUN(.heatMapCenteredColormap), label="Centered assay colormap:",
-                    selected=slot(x, .heatMapCenteredColormap),
-                    choices=c(.colormapPurpleBlackYellow, .colormapBlueWhiteOrange, .colormapBlueWhiteRed, .colormapGreenWhiteRed))))
+                ABLEFUN(
+                    .checkboxInput.iSEE(x, .assayScaleRows,
+                        label = "Scale",
+                        value=slot(x, .assayScaleRows),
+                        help = TRUE)
+                    ),
+                ABLEFUN(
+                    .selectizeInput.iSEE(x, .heatMapCenteredColormap,
+                        label = "Centered assay colormap:",
+                        selected=slot(x, .heatMapCenteredColormap),
+                        choices=c(.colormapPurpleBlackYellow, .colormapBlueWhiteOrange, .colormapBlueWhiteRed, .colormapGreenWhiteRed),
+                        help = TRUE)
+                    ))
         ),
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceColorTitle,
             hr(),
-            ABLEFUN(checkboxInput(.input_FUN(.heatMapCustomAssayBounds), "Use custom colorscale bounds",
-                value = slot(x, .heatMapCustomAssayBounds))),
+            ABLEFUN(
+                .checkboxInput.iSEE(x, .heatMapCustomAssayBounds,
+                    label = "Use custom colorscale bounds",
+                    value = slot(x, .heatMapCustomAssayBounds),
+                    help = TRUE)),
             .conditionalOnCheckSolo(.input_FUN(.heatMapCustomAssayBounds), on_select = TRUE,
-                ABLEFUN(numericInput(.input_FUN(.assayLowerBound), "Lower bound",
-                    value=slot(x, .assayLowerBound), min = -Inf, max = Inf)),
-                ABLEFUN(numericInput(.input_FUN(.assayUpperBound), "Upper bound",
-                    value=slot(x, .assayUpperBound), min = -Inf, max = Inf)))
+                .numericInput.iSEE(x, .assayLowerBound,
+                    label = "Lower bound",
+                    value=slot(x, .assayLowerBound), min = -Inf, max = Inf,
+                    help = TRUE),
+                .numericInput.iSEE(x, .assayUpperBound,
+                    label = "Upper bound",
+                    value=slot(x, .assayUpperBound), min = -Inf, max = Inf,
+                    help = TRUE))
         ),
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceLabelsTitle,
             hr(),
-            checkboxGroupInput(
-                inputId=.input_FUN(.showDimnames), label="Show names:", inline=TRUE,
+            .checkboxGroupInput.iSEE(x, .showDimnames,
+                label = "Show names:",
+                inline=TRUE,
                 selected=slot(x, .showDimnames),
-                choices=c(.showNamesRowTitle, .showNamesColumnTitle))
+                choices=c(.showNamesRowTitle, .showNamesColumnTitle),
+                help = TRUE)
         ),
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceLegendTitle,
             hr(),
-            radioButtons(.input_FUN(.plotLegendPosition), label="Legend position:", inline=TRUE,
+            .radioButtons.iSEE(x, .plotLegendPosition,
+                label = "Legend position:",
+                inline=TRUE,
+                selected=slot(x, .plotLegendPosition),
                 choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
-                selected=slot(x, .plotLegendPosition)),
-            radioButtons(.input_FUN(.plotLegendDirection), label="Legend direction:", inline=TRUE,
+                help = TRUE),
+            .radioButtons.iSEE(x, .plotLegendDirection,
+                label = "Legend direction:",
+                inline=TRUE,
+                selected=slot(x, .plotLegendDirection),
                 choices=c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle),
-                selected=slot(x, .plotLegendDirection))
-        )
-    )
-}
-
-#' General visual parameters
-#'
-#' Create UI elements for selection of general visual parameters.
-#'
-#' @param x An instance of a \linkS4class{Panel} class.
-#'
-#' @return
-#' A HTML tag object containing visual parameter inputs.
-#'
-#' @details
-#' This creates UI elements to choose the font size, point size and opacity, and legend placement.
-#'
-#' @author Aaron Lun
-#' @rdname INTERNAL_add_visual_UI_elements
-#' @seealso
-#' \code{\link{.create_visual_box}}
-#'
-#' @importFrom shiny tagList numericInput sliderInput hr checkboxInput
-.add_point_UI_elements <- function(x) {
-    plot_name <- .getEncodedName(x)
-    ds_id <- paste0(plot_name, "_", .plotPointDownsample)
-    tagList(
-        sliderInput(
-            paste0(plot_name, "_", .plotPointAlpha), label="Point opacity",
-            min=0.1, max=1, value=slot(x, .plotPointAlpha)),
-        hr(),
-        .checkboxInputHidden(x, field=.plotPointDownsample,
-            label="Downsample points for speed",
-            value=slot(x, .plotPointDownsample)),
-        .conditionalOnCheckSolo(
-            ds_id, on_select=TRUE,
-            numericInput(
-                paste0(plot_name, "_", .plotPointSampleRes), label="Sampling resolution:",
-                min=1, value=slot(x, .plotPointSampleRes))
+                help = TRUE)
         )
     )
 }

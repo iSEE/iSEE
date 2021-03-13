@@ -67,6 +67,153 @@
     .hide_this_thing(x, field, selectizeInput, ...)
 }
 
+.hide_this_thing2 <- function(x, field, element) {
+    if (.hideInterface(x, field)) {
+        hidden(element)
+    } else {
+        element
+    }
+}
+
+#' \pkg{iSEE} UI element wrappers
+#'
+#' Wrapper functions to create the standard \pkg{shiny} user interface elements,
+#' accompanied by an optional help icon that opens an interactive tour describing the purpose of the element.
+#' Also responds to requests to hide a particular element via \code{\link{.hideInterface}}.
+#'
+#' @param x A \linkS4class{Panel} object for which to construct an interface element.
+#' @param field String containing the name of the parameter controlled by the interface element.
+#' @param label String specifying the label to be shown.
+#' @param ... Further arguments to be passed to the corresponding \pkg{shiny} function.
+#' @param help Logical scalar indicating whether a help icon should be added to the label.
+#'
+#' @return
+#' The output of \code{FUN(id, ..)} is returned where \code{FUN} is set the corresponding \pkg{shiny} function, e.g., \code{\link{selectInput}} for \code{.selectInput.iSEE}.
+#' \code{id} is defined by concatenating \code{\link{.getEncodedName}(x)} and \code{field} (separated by an underscore).
+#'
+#' If \code{.hideInterface(x, field)} is \code{TRUE}, the output is wrapped inside a \code{\link{hidden}} call.
+#'
+#' @author Aaron Lun
+#'
+#' @name interface-wrappers
+NULL
+
+#' @importFrom shiny span HTML
+.specific_help <- function(id) {
+    span(id=paste0(id, "_specific_help"), HTML("<sup>?</sup>"))
+}
+
+#' @importFrom shiny HTML
+.label_with_help <- function(text, id) {
+    HTML(paste(text, as.character(.specific_help(id))))
+}
+
+#' @export
+#' @rdname interface-wrappers
+#' @importFrom shiny selectInput
+.selectInput.iSEE <- function(x, field, label, ..., help=TRUE) {
+    element <- paste0(.getEncodedName(x), "_", field)
+
+    ui <- selectInput(element, label=label, ...)
+    if (help) {
+        helper <- .specific_help(element)
+        ui$children <- c(ui$children[1], list(helper), ui$children[-1])
+    }
+
+    .hide_this_thing2(x, field, ui)
+}
+
+#' @export
+#' @rdname interface-wrappers
+#' @importFrom shiny selectizeInput
+.selectizeInput.iSEE <- function(x, field, label, ..., help=TRUE) {
+    element <- paste0(.getEncodedName(x), "_", field)
+
+    ui <- selectizeInput(element, label=label, ...)
+    if (help) {
+        helper <- .specific_help(element)
+        ui$children <- c(ui$children[1], list(helper), ui$children[-1])
+    }
+
+    .hide_this_thing2(x, field, ui)
+}
+
+#' @export
+#' @rdname interface-wrappers
+#' @importFrom shiny HTML span checkboxInput
+.checkboxInput.iSEE <- function(x, field, label, ..., help=TRUE) {
+    element <- paste0(.getEncodedName(x), "_", field)
+    ui <- checkboxInput(element, label=label, ...)
+
+    if (help) {
+        helper <- .specific_help(element)
+        ui$children[[1]]$children <- c(ui$children[[1]]$children, list(helper))
+    }
+
+    .hide_this_thing2(x, field, ui)
+}
+
+#' @export
+#' @rdname interface-wrappers
+#' @importFrom shiny HTML span checkboxGroupInput
+.checkboxGroupInput.iSEE <- function(x, field, label, ..., help=TRUE) {
+    element <- paste0(.getEncodedName(x), "_", field)
+    ui <- checkboxGroupInput(element, label=label, ...)
+
+    if (help) {
+        helper <- .specific_help(element)
+        ui$children[[1]]$children <- c(ui$children[[1]]$children, list(helper))
+    }
+
+    .hide_this_thing2(x, field, ui)
+}
+
+.slider_extra <- "_help_anchor"
+
+#' @export
+#' @rdname interface-wrappers
+#' @importFrom shiny sliderInput
+.sliderInput.iSEE <- function(x, field, label, ..., help=TRUE) {
+    element <- paste0(.getEncodedName(x), "_", field)
+    if (help) {
+        label <- .label_with_help(label, element)
+    }
+
+    ui <- sliderInput(element, label=label, ...)
+
+    if (help) {
+        ui$attribs$id <- paste0(element, .slider_extra)
+    }
+
+    .hide_this_thing2(x, field, ui)
+}
+
+#' @export
+#' @rdname interface-wrappers
+#' @importFrom shiny numericInput
+.numericInput.iSEE <- function(x, field, label, ..., help=TRUE) {
+    element <- paste0(.getEncodedName(x), "_", field)
+    if (help) {
+        label <- .label_with_help(label, element)
+    }
+
+    ui <- numericInput(element, label=label, ...)
+
+    .hide_this_thing2(x, field, ui)
+}
+
+#' @export
+#' @rdname interface-wrappers
+#' @importFrom shiny radioButtons
+.radioButtons.iSEE <- function(x, field, label, ..., help=TRUE) {
+    element <- paste0(.getEncodedName(x), "_", field)
+    if (help) {
+        label <- .label_with_help(label, element)
+    }
+    ui <- radioButtons(element, label=label, ...)
+    .hide_this_thing2(x, field, ui)
+}
+
 #' Conditional elements on radio or checkbox selection
 #'
 #' Creates a conditional UI element that appears when the user picks a certain choice in a radio button, single checkbox or checkbox group interface element.
@@ -86,7 +233,7 @@
 #' This means that we avoid cluttering the UI with options that are not immediately useful to the user.
 #'
 #' @author Aaron Lun
-#' @rdname conditional-utils 
+#' @rdname conditional-utils
 #' @seealso
 #' \code{\link{conditionalPanel}}, which is used under the hood.
 #'
@@ -97,7 +244,7 @@
 }
 
 #' @export
-#' @rdname conditional-utils 
+#' @rdname conditional-utils
 #' @importFrom shiny conditionalPanel
 .conditionalOnCheckSolo <- function(id, on_select=TRUE, ...) {
     choice <- ifelse(on_select, 'true', 'false')
@@ -105,7 +252,7 @@
 }
 
 #' @export
-#' @rdname conditional-utils 
+#' @rdname conditional-utils
 #' @importFrom shiny conditionalPanel
 .conditionalOnCheckGroup <- function(id, choice, ...) {
     conditionalPanel(condition=sprintf('(typeof input["%s"] !== "undefined" && input["%s"].includes("%s"))', id, id, choice), ...)

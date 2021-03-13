@@ -21,6 +21,8 @@
 #' Defaults to \code{character(0)}.
 #' \item \code{ShowColumnSelection}, a logical vector indicating whether the column selection should be shown as an extra annotation bar.
 #' Defaults to \code{TRUE}.
+#' \item \code{OrderColumnSelection}, a logical vector indicating whether the column selection should be used to order columns in the heatmap.
+#' Defaults to \code{TRUE}.
 #' }
 #'
 #' The following slots control the choice of assay values:
@@ -307,7 +309,7 @@ setMethod("[[", "ComplexHeatmapPlot", function(x, i, j, ...) {
             cname, i, cname, .selectColRestrict, cname, .heatMapShowSelection))
 
         if (slot(x, .selectColRestrict)) {
-            "Restrict" 
+            "Restrict"
         } else if (slot(x, .heatMapShowSelection)) {
             "Color"
         } else {
@@ -323,7 +325,7 @@ setReplaceMethod("[[", "ComplexHeatmapPlot", function(x, i, j, ..., value) {
     if (i %in% "SelectionColor") {
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.", cname, i))
-        x 
+        x
     } else if (i %in% "SelectionEffect") {
         x <- updateObject(x, check=FALSE)
 
@@ -440,17 +442,65 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         identity
     }
 
+    .addSpecificTour(class(x)[1], .heatMapAssay, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapAssay, " + .selectize-control"),
+                    intro = "Here, we can select the name of the assay matrix to show.
+The choices are extracted from the <code>assayNames</code> of a <code>SummarizedExperiment</code> object.
+These matrices should be loaded into the object prior to calling <strong>iSEE</strong> - they are not computed on the fly."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .heatMapCustomFeatNames, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapCustomFeatNames),
+                    intro = "Features displayed as rows in the heat map can be manually specified by entering row names interactively in a modal, rather than using any multiple selection transmitted from another panel.
+<br/><br/>
+This checkbox switches between using the incoming selection (unticked) and the manually specified gene list (ticked)."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .heatMapClusterFeatures, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapClusterFeatures),
+                    intro = "Features displayed as rows in the heat map can be clustered dynamically using a selection of distance metrics and clustering methods, rather than showing them in the order they appear in <code>rownames</code>.
+<br/><br/>
+This checkbox switches between using the order in <code>rownames</code> (unticked) and the result of clustering using the selected distance metric and clustering method."
+                )
+            )
+        )
+    })
+
     list(
-        selectInput(.input_FUN(.heatMapAssay), label="Assay choice",
-            choices=all_assays, selected=slot(x, .heatMapAssay)),
-        checkboxInput(.input_FUN(.heatMapCustomFeatNames), label="Use custom rows",
-            value=slot(x, .heatMapCustomFeatNames)),
+        .selectInput.iSEE(x, .heatMapAssay,
+            label="Assay choice:",
+            choices=all_assays,
+            selected=slot(x, .heatMapAssay)),
+        .checkboxInput.iSEE(x, .heatMapCustomFeatNames,
+            label = "Use custom rows",
+            value=slot(x, .heatMapCustomFeatNames),
+            help = TRUE),
         .conditionalOnCheckSolo(
             .input_FUN(.heatMapCustomFeatNames),
             on_select=TRUE,
             actionButton(.input_FUN(.dimnamesModalOpen), label="Edit feature names")),
-        ABLEFUN(checkboxInput(.input_FUN(.heatMapClusterFeatures), label="Cluster rows",
-            value=slot(x, .heatMapClusterFeatures))),
+        ABLEFUN(
+            .checkboxInput.iSEE(
+                x, .heatMapClusterFeatures,
+                label = "Cluster rows",
+                value=slot(x, .heatMapClusterFeatures),
+                help = TRUE)
+            ),
         .conditionalOnCheckSolo(
             .input_FUN(.heatMapClusterFeatures),
             on_select=TRUE,
@@ -609,7 +659,8 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
             .heatMapClusterFeatures,
             .heatMapClusterDistanceFeatures,
             .heatMapClusterMethodFeatures,
-            .heatMapCustomFeatNames
+            .heatMapCustomFeatNames,
+            .heatMapOrderSelection
         ),
         input=input, pObjects=pObjects, rObjects=rObjects)
 

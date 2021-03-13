@@ -342,7 +342,10 @@ iSEE <- function(se,
             # nocov start
             old <- iSEEOptions$get(".check.validity")
             iSEEOptions$set(.check.validity=FALSE)
-            onStop(function() iSEEOptions$set(.check.validity=old))
+            onStop(function() {
+                iSEEOptions$set(.check.validity=old)
+                .clearSpecificTours()
+            })
             # nocov end
         },
 

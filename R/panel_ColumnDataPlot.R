@@ -192,21 +192,59 @@ setMethod(".defineDataInterface", "ColumnDataPlot", function(x, se, select_info)
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
+    .addSpecificTour(class(x)[1], .colDataYAxis, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .colDataYAxis, " + .selectize-control"),
+                    intro="Here, we can specify the field of the <code>colData</code> to show on the y-axis."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .colDataXAxis, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .colDataXAxis),
+                    intro="Here, we choose what to show on the x-axis. If we were to <strong>click on <em>Column data</em></strong>..." 
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colDataXAxisColData, " + .selectize-control"),
+                    intro="We can choose the field of the <code>colData</code> to show on the x-axis."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colDataXAxis),
+                    intro="The <em>Column selections</em> choice is a bit more exotic.
+If this panel is receiving a multiple column selection from another panel,
+we can stratify points on the x-axis according to whether they are part of that selection or not.
+For example, if we made a brush on another panel containing a scatter plot, we could show two violin plots in this panel;
+one containing data for columns corresponding to points inside the brush, and another containing the points outside the brush.
+If any saved selections are present, these would show up as additional violins."
+                )
+            )
+        )
+    })
+
     list(
-        .selectInputHidden(x, .colDataYAxis,
+        .selectInput.iSEE(x, .colDataYAxis,
             label="Column of interest (Y-axis):",
             choices=.allowableYAxisChoices(x, se),
             selected=slot(x, .colDataYAxis)),
-        .radioButtonsHidden(x, .colDataXAxis, 
+        .radioButtons.iSEE(x, .colDataXAxis, 
             label="X-axis:", inline=TRUE,
             choices=c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle, .colDataXAxisSelectionsTitle),
             selected=slot(x, .colDataXAxis)),
         .conditionalOnRadio(.input_FUN(.colDataXAxis),
             .colDataXAxisColDataTitle,
-            .selectInputHidden(x, .colDataXAxisColData,
+            .selectInput.iSEE(x, .colDataXAxisColData,
                 label="Column of interest (X-axis):",
                 choices=.allowableXAxisChoices(x, se),
-                selected=slot(x, .colDataXAxisColData)))
+                selected=slot(x, .colDataXAxisColData),
+                help=FALSE
+            )
+        )
     )
 })
 

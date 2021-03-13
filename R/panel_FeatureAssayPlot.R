@@ -240,9 +240,88 @@ setMethod(".defineDataInterface", "FeatureAssayPlot", function(x, se, select_inf
     }
     xaxis_choices <- c(xaxis_choices, .featAssayXAxisFeatNameTitle, .featAssayXAxisSelectionsTitle)
 
+    .addSpecificTour(class(x)[1], .featAssayYAxisFeatName, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .featAssayYAxisFeatName, " + .selectize-control"),
+                    intro="Here, we choose the feature to show on the y-axis.
+This is based on the row names of the input <code>SummarizedExperiment</code>."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .featAssayAssay, " + .selectize-control"),
+                    intro="This specifies the assay values to be shown."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .featAssayYAxisRowTable, " + .selectize-control"),
+                    intro="We can configure the plot so that the feature on the y-axis automatically changes based on a feature selection in another panel.
+A common use case is to configure this panel so that we receive a selection from a <em>Row Data Table</em>,
+such that users browsing the table can immediately examine the assay values for a gene of interest."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .featAssayYAxisFeatDynamic),
+                    intro="And in fact, we don't have to even specify the \"other panel\" ourselves.
+If this box is checked, any row-based selection in any other panel of the <strong>iSEE</strong> application will be used to specify the feature on the y-axis in this panel.
+This is achieved by dynamically changing the identity of the designated panel from which we receive the selection."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .featAssayXAxis, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .featAssayXAxis),
+                    intro="Here, we can choose what to show on the x-axis."
+                ),
+                if (length(column_covariates)) {
+                    rbind(
+                        c(
+                            element=paste0("#", plot_name, "_", .featAssayXAxis),
+                            intro="If we <strong>select <em>Column data</em></strong>..."
+                        ),
+                        c(
+                            element=paste0("#", plot_name, "_", .featAssayXAxisColData, " + .selectize-control"),
+                            intro="... we can stratify points on the x-axis based on a field of interest in the <code>colData</code>." 
+                        )
+                    )
+                },
+                c(
+                    element=paste0("#", plot_name, "_", .featAssayXAxis),
+                    intro="If we <strong>select <em>Feature name</em></strong>..."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .featAssayXAxisFeatName, " + .selectize-control"),
+                    intro="... we can show the assay values of another feature of interest on the x-axis.
+In other words, plotting one feature against another for the same set of assay values."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .featAssayXAxisRowTable, " + .selectize-control"),
+                    intro="Just like the feature on the y-axis, the x-axis feature can automatically change in response to a feature selection made in another panel.
+We can either choose the \"other panel\" manually with this dropdown..."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .featAssayXAxisFeatDynamic),
+                    intro="... or we can dynamically change the identity of the other panel. 
+If this box is checked, any feature selection in any other panel of the <strong>iSEE</strong> application will be used to specify the feature on the x-axis in this panel."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .featAssayXAxis),
+                    intro="Finally, we can stratify points based on whether they are included in a multiple column selection made in another panel.
+For example, if our \"other panel\" is a column-based plot containing a brush, we would see two violin plots in this panel;
+one corresponding to the selected points inside the brush, and another corresponding to the unselected points."
+                )
+            )
+        )
+    })
+
     list(
-        selectizeInput(.input_FUN(.featAssayYAxisFeatName),
-            label="Y-axis feature:", choices=NULL, selected=NULL, multiple=FALSE),
+        .selectizeInput.iSEE(x, .featAssayYAxisFeatName,
+            label="Y-axis feature:", 
+            choices=NULL, 
+            selected=NULL, 
+            multiple=FALSE),
         selectInput(.input_FUN(.featAssayYAxisRowTable), label=NULL, choices=tab_by_row,
             selected=.choose_link(slot(x, .featAssayYAxisRowTable), tab_by_row)),
         checkboxInput(.input_FUN(.featAssayYAxisFeatDynamic),
@@ -251,8 +330,12 @@ setMethod(".defineDataInterface", "FeatureAssayPlot", function(x, se, select_inf
 
         selectInput(paste0(.getEncodedName(x), "_", .featAssayAssay), label=NULL,
             choices=all_assays, selected=slot(x, .featAssayAssay)),
-        radioButtons(.input_FUN(.featAssayXAxis), label="X-axis:", inline=TRUE,
-            choices=xaxis_choices, selected=slot(x, .featAssayXAxis)),
+
+        .radioButtons.iSEE(x, .featAssayXAxis, 
+            label="X-axis:", 
+            inline=TRUE,
+            choices=xaxis_choices, 
+            selected=slot(x, .featAssayXAxis)),
 
         .conditionalOnRadio(.input_FUN(.featAssayXAxis),
             .featAssayXAxisColDataTitle,
@@ -357,7 +440,7 @@ setMethod(".generateDotPlotData", "FeatureAssayPlot", function(x, envir) {
     } else if (x_choice == .featAssayXAxisSelectionsTitle) {
         x_lab <- "Column selection"
         plot_title <- paste(plot_title, "vs column selection")
-        
+
         if (exists("col_selected", envir=envir, inherits=FALSE)) {
             target <- "col_selected"
         } else {

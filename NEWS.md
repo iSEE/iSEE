@@ -1,5 +1,6 @@
-# iSEE 2.3.9.0001
+# iSEE 2.3.9
 
+* Add a distributed tour attached to each individual UI element.
 * Bugfix for ordering of selected columns in `ComplexHeatmapPlot`.
 
 # iSEE 2.3.8

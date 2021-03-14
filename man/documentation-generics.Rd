@@ -3,6 +3,7 @@
 \name{documentation-generics}
 \alias{documentation-generics}
 \alias{.definePanelTour}
+\alias{.getDotPlotColorHelp}
 \title{Documentation generics}
 \description{
 The generics power the creation of panel-specific documentation within the \code{\link{iSEE}} app.
@@ -36,6 +37,12 @@ typically explaining the behavior and effects of the associated parameter.
 The tours themselves should be registered by \code{\link{.addSpecificTour}}.
 This is best done inside the various interface-defining functions (e.g., \code{\link{.defineInterface}} and related methods)
 where the documentation can be written adjacent to the definition of the UI element itself.
+
+For a \linkS4class{DotPlot} instance \code{x}, the \code{.getDotPlotColorHelp(x, color_choices)} generic should return a function that returns a data.frame
+containing the \pkg{rintrojs} tour for the color choice UI element, i.e., \code{"ColorBy"}.
+This allows downstream Panels to tune the wording of the color documentation, given that this is commonly specialized. 
+\code{color_choices} is a character vector that contains the valid choices for the \code{"ColorBy"} radio button;
+some input datasets will not have, e.g., any column data, so the corresponding button will not be shown and its associated tour can be omitted.
 }
 
 \author{

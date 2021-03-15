@@ -610,19 +610,19 @@ setMethod(".getDotPlotColorHelp", "RowDotPlot", function(x, color_choices) {
                     intro="If we <strong>select <em>Sample name</em></strong>..."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colorByFeatName, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", .colorBySampName, " + .selectize-control"),
                     intro="... each point is colored according to the assay value of a sample of interest for the corresponding row."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colorByFeatNameAssay, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", .colorBySampNameAssay, " + .selectize-control"),
                     intro="We can change the choice of assay."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colorByRowTable, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", .colorByColTable, " + .selectize-control"),
                     intro="And we can even synchronize the choice of sample to a selection in another panel. This assumes that our current application actually has another panel that allows us to select a single sample from our <code>SummarizedExperiment</code>."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colorByFeatDynamic),
+                    element=paste0("#", plot_name, "_", .colorBySampDynamic),
                     intro="In fact, we don't even need to manually choose another panel - if dynamic sample selection is enabled, the plot will automatically respond to any single sample selection from any applicable panel in our application."
                 )
             ))
@@ -635,19 +635,19 @@ setMethod(".getDotPlotColorHelp", "RowDotPlot", function(x, color_choices) {
                     intro="If we <strong>select <em>Feature name</em></strong>..."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colorBySampName, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", .colorByFeatName, " + .selectize-control"),
                     intro="... we can highlight a particular point based on the row name."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colorBySampNameColor),
+                    element=paste0("#", plot_name, "_", .colorByFeatNameColor),
                     intro="We can fiddle with the choice of color for the highlighted point."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colorByColTable, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", .colorByRowTable, " + .selectize-control"),
                     intro="We can even synchronize the choice of sample to a selection in another panel. This assumes that our current application actually has another panel that we can use to select a single feature."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colorBySampDynamic),
+                    element=paste0("#", plot_name, "_", .colorByFeatDynamic),
                     intro="In fact, we don't even need to manually choose another panel - if dynamic sample selection is enabled, the plot will automatically respond to any single feature selection from any applicable panel in our application."
                 )
             ))

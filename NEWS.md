@@ -1,3 +1,8 @@
+# iSEE 2.3.10
+
+* Document and export the `.getDotPlotColorHelp` utility.
+* Bugfix for the `RowDotPlot` color tour.
+
 # iSEE 2.3.9
 
 * Add a distributed tour attached to each individual UI element.

@@ -14,6 +14,7 @@
 \alias{.multiSelectionInvalidated,ColumnDotPlot-method}
 \alias{.singleSelectionDimension,ColumnDotPlot-method}
 \alias{.definePanelTour,ColumnDotPlot-method}
+\alias{.getDotPlotColorHelp,ColumnDotPlot-method}
 \alias{[[,ColumnDotPlot-method}
 \alias{[[,ColumnDotPlot,ANY,ANY-method}
 \alias{[[<-,ColumnDotPlot-method}
@@ -92,6 +93,8 @@ For documentation:
 \itemize{
 \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
 mostly tuning the more generic descriptions from the same method of the parent \linkS4class{DotPlot}.
+\item \code{\link{.getDotPlotColorHelp}(x, color_choices)} returns a data.frame containing the documentation for the \code{"ColorBy"} UI element,
+specialized for column-based dot plots.
 }
 
 Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.

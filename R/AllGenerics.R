@@ -1029,6 +1029,7 @@ setGeneric(".getDotPlotFacetConstants", function(x) standardGeneric(".getDotPlot
 #' As such, these tours are not well-suited to highlighting interactions between different panels.
 #'
 #' The observer set-up for the panel tour is done in \code{\link{.createObservers}} for the base \linkS4class{Panel} class.
+#' No further action is required on behalf of developers to set up the triggers to launch the tour.
 #'
 #' @section Defining UI-specific tours:
 #' It is possible to provide tours for individual UI elements, which can be more helpful than a single large tour for the entire panel.

@@ -660,26 +660,6 @@ setMethod(".definePanelTour", "Panel", function(x) {
     collated <- list(
         .addTourStep(x, .selectParamBoxOpen, "Users can also control how this panel reacts to multiple selections being transmitted from other panels.<br/><br/><strong>Action:</strong> click on the header of this box to see the available options.")
     )
-
-    for (mdim in c("row", "column")) {
-        if (mdim=="row") {
-            src_field <- .selectRowSource
-            dyn_field <- .selectRowDynamic
-            res_field <- .selectRowRestrict
-        } else {
-            src_field <- .selectColSource
-            dyn_field <- .selectColDynamic
-            res_field <- .selectColRestrict
-        }
-
-        collated <- c(collated, list(
-            .addTourStep(x, src_field, paste0("PLACEHOLDER_", toupper(mdim), "_SELECT"), is_selectize=TRUE),
-            .addTourStep(x, dyn_field, sprintf("Alternatively, we could turn on dynamic selection. This means that any selection in <emph>any</emph> %s-based panel would have an effect on this panel.", mdim)),
-            .addTourStep(x, res_field, sprintf("Activating the <i>Restrict</i> mode will limit the display in the current panel to the %ss transmitted from the source panel.", mdim))
-            )
-        )
-    }
-
     collated <- do.call(rbind, collated)
     data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
 })

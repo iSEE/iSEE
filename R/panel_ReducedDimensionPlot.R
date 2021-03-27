@@ -335,8 +335,7 @@ setMethod(".definePanelTour", "ReducedDimensionPlot", function(x) {
 
     collated <- rbind(
         c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Reduced dimension plot</font> panel shows reduced dimensions from a <code>SingleCellExperiment</code> object or one of its subclasses. Here, each point corresponds to a column (usually a cell) of the <code>SingleCellExperiment</code> object.", .getPanelColor(x))),
-        .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
-        .addTourStep(x, .redDimType, "We can choose from any of the dimensionality reduction results available in our <code>SingleCellExperiment</code> object. We usually also take the first and second dimensions but any pair can be specified here.", is_selectize=TRUE)
+        .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options.")
     )
 
     rbind(

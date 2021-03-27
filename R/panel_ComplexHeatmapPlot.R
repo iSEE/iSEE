@@ -704,27 +704,12 @@ setMethod(".hideInterface", "ComplexHeatmapPlot", function(x, field) {
 
 #' @export
 setMethod(".definePanelTour", "ComplexHeatmapPlot", function(x) {
-    collated <- rbind(
+    rbind(
         c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">ComplexHeatmapPlot</font> panel contains a complex heatmap from the <i><a href='https://bioconductor.org/packages/ComplexHeatmap/'>ComplexHeatmap</a></i> package. This is quite conceptually different from the other panels as it shows assay data for multiple rows and columns at the same time. However, it is strictly an end-point panel, i.e., it cannot transmit to other panels.", .getPanelColor(x))),
         .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked to control the data on the heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
-        .addTourStep(x, .dimnamesModalOpen, "The most relevant parameter is the choice of features to show as rows on the heatmap. This can be manually specified by entering row names of the <code>SummarizedExperiment</code> object into this modal..."),
-        .addTourStep(x, .heatMapCustomFeatNames, "Or it can be chained to a multiple row selection from another panel, if the <i>Custom rows</i> choice is unselected - see the <i>Selection parameters</i> later."),
-        .addTourStep(x, .heatMapClusterFeatures, "We can also choose whether to cluster the features for better visibility."),
-
-        .addTourStep(x, .visualParamBoxOpen, "The <i>Visual parameters</i> box shows the available visual parameters that can be tweaked in this heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
-        .addTourStep(x, .visualParamChoice, "A large number of options are available here, so not all of them are shown by default. We can check some of the boxes here to show or hide some classes of parameters.<br/><br/><strong>Action:</strong> check the <i>Transform</i> box to expose some transformation options."),
-        .addTourStep(x, .heatMapColData, "One key parameter is to select the column annotations to show as color bars on the top of the heatmap. This will also order the columns by the values of the selected annotations (in the specified order, if multiple annotations are specified). This is useful for providing some structure to the heatmap.", is_selectize=TRUE),
-        .addTourStep(x, .assayCenterRows, "Another useful setting is to center the heatmap by row so that the colors represent deviations from the average. This better handles differences in assay values "),
-
-        callNextMethod(),
-        .addTourStep(x, .selectColRestrict, "Here, we can specify that heatmap should be explicitly restricted to only the selected columns.")
+        .addTourStep(x, .visualParamBoxOpen, "The <i>Visual parameters</i> box shows the available visual parameters that can be tweaked in this heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),        
+        callNextMethod()
     )
-
-    collated[which(collated$intro=="PLACEHOLDER_ROW_SELECT"), "intro"] <- "We can choose the \"source\" panel from which to receive a multiple row selection, which is used to control the features on the heatmap when <i>Custom rows</i> checkbox is unselected. In other words, if we selected some rows of the <code>SummarizedExperiment</code> object in the chosen source panel, those rows would make up the rows of the heatmap."
-
-    collated[which(collated$intro=="PLACEHOLDER_COLUMN_SELECT"), "intro"] <- "We can choose the \"source\" panel from which to receive a multiple column selection. That is to say, if we selected some columns of the <code>SummarizedExperiment</code> object in the chosen source panel, that selection would manifest in the appearance of the heatmap."
-
-    collated
 })
 
 #' @export

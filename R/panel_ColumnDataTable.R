@@ -156,7 +156,6 @@ setMethod(".definePanelTour", "ColumnDataTable", function(x) {
     rbind(
         c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Column data table</font> panel contains a representation of the <code>colData</code> of our <code>SummarizedExperiment</code> object. Each row here corresponds to a column (i.e., sample) of the <code>SummarizedExperiment</code> while each column of the table is a column metadata variable.", .getPanelColor(x))),
         .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this table.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
-        .addTourStep(x, .TableHidden, "We can choose to hide any number of metadata fields if the table is too wide. Note that left-to-right scrolling is also enabled for wide tables.", is_selectize=TRUE),
         callNextMethod()
     )
 })

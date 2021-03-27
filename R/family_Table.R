@@ -205,12 +205,23 @@ setMethod(".exportOutput", "Table", function(x, se, all_memory, all_contents) {
 #' @export
 setMethod(".defineDataInterface", "Table", function(x, se, select_info) {
     hidden <- slot(x, .TableHidden)
+
+    .addSpecificTour(class(x), .TableHidden, function(tab_name) {
+        data.frame(
+            element=paste0("#", tab_name, "_", .TableHidden, " + .selectize-control"),
+            intro="Here, we can hide particular columns in the table.
+This is helpful for hiding uninformative annotations so that we don't have to keep on scrolling left/right to see the interesting bits.
+Any number of column names can be specified here."
+        )
+    })
+
     c(
         callNextMethod(),
         list(
-            # 'choices' needs to be initialized with the current values,
-            # even if it is to be updated later by table initialization.
-            selectInput(paste0(.getEncodedName(x), "_", .TableHidden),
+            # At this point, we don't know the full set of column names. So,
+            # 'choices' needs to be initialized with the current values, even
+            # if it is updated later by observers upon table initialization.
+            .selectInput.iSEE(x, .TableHidden,
                 choices=hidden, selected=hidden,
                 label="Hidden columns:", multiple=TRUE)
         )
@@ -230,19 +241,10 @@ setMethod(".hideInterface", "Table", function(x, field) {
 #' @export
 setMethod(".definePanelTour", "Table", function(x) {
     mdim <- .multiSelectionDimension(x)
-
-    collated <- rbind(
+    rbind(
         callNextMethod(),
-        c(paste0("#", .getEncodedName(x)), sprintf("At the other end of the spectrum, we can apply filters to the table to select rows corresponding to %ss of the <code>SummarizedExperiment</code> object; these will be transmitted to other panels that choose this one as their selection source.<br/><br/>We can filter by individual columns of the table and/or with a regular expression search to any matching string in the table.<br/><br/>We can also click on individual rows of the table to transmit a single %s selection to other panels.", mdim, mdim, .singleSelectionDimension(x)))
+        c(paste0("#", .getEncodedName(x)), sprintf("At the other end of the spectrum, we can apply filters to the table to select rows corresponding to %ss of the <code>SummarizedExperiment</code> object; these will be transmitted to other panels that choose this one as their selection source.<br/><br/>We can filter by individual columns of the table and/or with a regular expression search to any matching string in the table.<br/><br/>We can also click on individual rows of the table to transmit a single %s selection to other panels.", mdim, .singleSelectionDimension(x)))
     )
-
-    for (mdim in c("row", "column")) {
-        edit <- paste0("PLACEHOLDER_", toupper(mdim), "_SELECT")
-        i <- which(collated$intro==edit)
-        collated[i,"intro"] <- sprintf("Here we can choose the \"source\" panel from which to receive a multiple %s selection; that is to say, if we selected some %ss of the <code>SummarizedExperiment</code> object in the chosen source panel, the table above would be subsetted to only show the rows (of the table) corresponding to the selected %ss (of the <code>SummarizedExperiment</code> object).", mdim, mdim, mdim)
-    }
-
-    collated
 })
 
 #' @export

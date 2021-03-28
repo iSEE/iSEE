@@ -1,3 +1,7 @@
+# iSEE 2.3.11
+
+* Cleaned up tours for `Table`s and the `ComplexHeatmapPlot`.
+
 # iSEE 2.3.10
 
 * Document and export the `.getDotPlotColorHelp` utility.

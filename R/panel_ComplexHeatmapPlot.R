@@ -460,9 +460,11 @@ These matrices should be loaded into the object prior to calling <strong>iSEE</s
             rbind(
                 c(
                     element = paste0("#", plot_name, "_", .heatMapCustomFeatNames),
-                    intro = "Features displayed as rows in the heat map can be manually specified by entering row names interactively in a modal, rather than using any multiple selection transmitted from another panel.
-<br/><br/>
-This checkbox switches between using the incoming selection (unticked) and the manually specified gene list (ticked)."
+                    intro = "Features displayed as rows in the heat map can be (i) manually specified by entering row names interactively in a modal, or (ii) use any multiple selection transmitted from another panel. This checkbox switches between these two options. <strong>Click on this checkbox to activate manual mode.</strong>"
+                ),
+                c(
+                    element = paste0("#", plot_name, "_", .dimnamesModalOpen),
+                    intro = "This brings up a modal that we can use to enter the names of features of interest. Each feature should be a row name in the original <code>SummarizedExperiment</code>, with one feature per line."
                 )
             )
         )
@@ -470,14 +472,24 @@ This checkbox switches between using the incoming selection (unticked) and the m
 
     .addSpecificTour(class(x)[1], .heatMapClusterFeatures, function(plot_name) {
         data.frame(
-            rbind(
-                c(
-                    element = paste0("#", plot_name, "_", .heatMapClusterFeatures),
-                    intro = "Features displayed as rows in the heat map can be clustered dynamically using a selection of distance metrics and clustering methods, rather than showing them in the order they appear in <code>rownames</code>.
-<br/><br/>
-This checkbox switches between using the order in <code>rownames</code> (unticked) and the result of clustering using the selected distance metric and clustering method."
-                )
-            )
+            element = paste0("#", plot_name, "_", .heatMapClusterFeatures),
+            intro = "Features displayed as rows in the heat map can be (i) clustered dynamically using a selection of distance metrics and clustering methods, or (ii) shown in the order they appear in <code>rownames</code>. The former choice is enabled by checking this box.<br/><br/>
+The clustering itself is done using <code>hclust</code>, i.e., hierarchical clustering. This is simple and intuitive but not particularly efficient, so should only be used for small numbers of features.<br/><br/>
+<strong>Click on this checkbox to cluster dynamically.</strong>"
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .heatMapClusterDistanceFeatures, function(plot_name) {
+        data.frame(
+            element = paste0("#", plot_name, "_", .heatMapClusterDistanceFeatures, " + .selectize-control"),
+            intro = "Here we can choose from a variety of different metrics to compute distances between features based on their assay values in the heatmap. The resulting distance is then used in <code>hclust</code> to perform hierarchical clustering. Euclidean distances are probably most common; the Spearman distance is another popular choice that is more robust to outliers."
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .heatMapClusterMethodFeatures, function(plot_name) {
+        data.frame(
+            element = paste0("#", plot_name, "_", .heatMapClusterMethodFeatures, " + .selectize-control"),
+            intro = "We can also choose from a variety of different clustering methods. Ward's method and complete linkage clustering are popular choices as they tend to yield more compact and interpretable clusters."
         )
     })
 
@@ -504,18 +516,27 @@ This checkbox switches between using the order in <code>rownames</code> (unticke
         .conditionalOnCheckSolo(
             .input_FUN(.heatMapClusterFeatures),
             on_select=TRUE,
-            ABLEFUN(selectInput(.input_FUN(.heatMapClusterDistanceFeatures), label="Clustering distance for rows",
-                choices=c(.clusterDistanceEuclidean, .clusterDistancePearson, .clusterDistanceSpearman,
-                    .clusterDistanceManhattan, .clusterDistanceMaximum, .clusterDistanceCanberra,
-                    .clusterDistanceBinary, .clusterDistanceMinkowski, .clusterDistanceKendall),
-                selected=slot(x, .heatMapClusterDistanceFeatures))),
-            ABLEFUN(selectInput(.input_FUN(.heatMapClusterMethodFeatures), label="Clustering method for rows",
-                choices=c(.clusterMethodWardD, .clusterMethodWardD2, .clusterMethodSingle, .clusterMethodComplete,
-                    "average (= UPGMA)"=.clusterMethodAverage,
-                    "mcquitty (= WPGMA)"=.clusterMethodMcquitty,
-                    "median (= WPGMC)"=.clusterMethodMedian,
-                    "centroid (= UPGMC)"=.clusterMethodCentroid),
-                selected=slot(x, .heatMapClusterMethodFeatures))))
+            ABLEFUN(
+                .selectInput.iSEE(x, .heatMapClusterDistanceFeatures, 
+                    label="Clustering distance for rows",
+                    choices=c(.clusterDistanceEuclidean, .clusterDistancePearson, .clusterDistanceSpearman,
+                        .clusterDistanceManhattan, .clusterDistanceMaximum, .clusterDistanceCanberra,
+                        .clusterDistanceBinary, .clusterDistanceMinkowski, .clusterDistanceKendall),
+                    selected=slot(x, .heatMapClusterDistanceFeatures)
+                )
+            ),
+            ABLEFUN(
+                .selectInput.iSEE(x, .heatMapClusterMethodFeatures, 
+                    label="Clustering method for rows",
+                    choices=c(.clusterMethodWardD, .clusterMethodWardD2, .clusterMethodSingle, .clusterMethodComplete,
+                        "average (= UPGMA)"=.clusterMethodAverage,
+                        "mcquitty (= WPGMA)"=.clusterMethodMcquitty,
+                        "median (= WPGMC)"=.clusterMethodMedian,
+                        "centroid (= UPGMC)"=.clusterMethodCentroid),
+                    selected=slot(x, .heatMapClusterMethodFeatures)
+                )
+            )
+        )
     )
 })
 

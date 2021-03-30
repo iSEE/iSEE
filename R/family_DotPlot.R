@@ -152,6 +152,7 @@
 #' \item \code{\link{.defineVisualOtherInterface}(x, se)} defines the user interface subpanel for manipulating other parameters.
 #' Currently this returns \code{NULL}.
 #' \item \code{\link{.defineOutput}(x)} returns a UI element for a brushable plot.
+#' \item \code{\link{.allowableColorByDataChoices}(x, se)} returns a character vector containing all atomic variables in the relevant \code{*Data} dimension.
 #' }
 #'
 #' For generating the output:
@@ -238,6 +239,7 @@
 #' .defineVisualPointInterface,DotPlot-method
 #' .defineVisualOtherInterface,DotPlot-method
 #' .defineVisualFacetInterface,DotPlot-method
+#' .allowableColorByDataChoices,DotPlot-method
 #' .definePanelTour,DotPlot-method
 #' updateObject,DotPlot-method
 #' [[,DotPlot-method
@@ -499,8 +501,12 @@ setMethod(".defineInterface", "DotPlot", function(x, se, select_info) {
 })
 
 #' @export
+setMethod(".allowableColorByDataChoices", "DotPlot", function(x, se) {
+    .getMetadataChoices(x, se)
+})
+
+#' @export
 setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info) {
-    covariates <- .getMetadataChoices(x, se)
     all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
 
     plot_name <- .getEncodedName(x)
@@ -553,7 +559,8 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
             colorby_field, colorby$metadata$title,
             selectInput(
                 paste0(plot_name, "_", colorby$metadata$field), label=NULL,
-                choices=covariates, selected=x[[colorby$metadata$field]])
+                choices=.allowableColorByDataChoices(x, se), 
+                selected=x[[colorby$metadata$field]])
         ),
         .conditionalOnRadio(colorby_field, colorby$name$title,
             selectizeInput(paste0(plot_name, "_", colorby$name$field),

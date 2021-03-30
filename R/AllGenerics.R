@@ -883,10 +883,7 @@ setGeneric(".allowableXAxisChoices", function(x, se) standardGeneric(".allowable
 #' @description
 #' These generics allow subclasses to override the user interface elements controlling visual parameters of \linkS4class{DotPlot} panels.
 #'
-#' @details
-#' When implementing methods for these generics, it is a good idea to make use of information precomputed by \code{\link{.cacheCommonInfo}}.
-#' For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link{colData}} is valid and discrete or continuous.
-#'
+#' @section Interface definition:
 #' In all of the code snippets below, \code{x} is a \linkS4class{Panel} instance and \code{se} is the \linkS4class{SummarizedExperiment} object.
 #' \itemize{
 #' \item \code{.defineVisualColorInterface(x, se, select_info)} should return a HTML tag definition that contains UI input elements controlling the \code{color} aesthetic of \code{ggplot} objects.
@@ -911,6 +908,14 @@ setGeneric(".allowableXAxisChoices", function(x, se) standardGeneric(".allowable
 #' All of these generics are called by \code{\link{.defineInterface}} for DotPlot subclasses.
 #' Developers of subclasses can simply specialize these generics to change the UI instead of reimplementing \code{.defineInterface} itself.
 #'
+#' When implementing methods for these generics, it is a good idea to make use of information precomputed by \code{\link{.cacheCommonInfo}}.
+#' For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link{colData}} is valid and discrete or continuous.
+#'
+#' @section Controlling \code{ColorBy*Data} choices:
+#' \code{.allowableColorByDataChoices(x, se)} should return a character vector of the allowable row/column data variables to use 
+#' when \code{ColorBy} is set to \code{"Row data"} or \code{"Column data"} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
+#' The default method will use all available (atomic) variables, but subclasses can specialize this to only allow, e.g., continuous or discrete variables.
+#'
 #' @author Kevin Rue-Albrecht
 #'
 #' @name visual-parameters-generics
@@ -921,6 +926,7 @@ setGeneric(".allowableXAxisChoices", function(x, se) standardGeneric(".allowable
 #' .defineVisualFacetInterface
 #' .defineVisualTextInterface
 #' .defineVisualOtherInterface
+#' .allowableColorByDataChoices
 NULL
 
 #' @export
@@ -943,6 +949,9 @@ setGeneric(".defineVisualTextInterface", function(x, se) standardGeneric(".defin
 
 #' @export
 setGeneric(".defineVisualOtherInterface", function(x) standardGeneric(".defineVisualOtherInterface"))
+
+#' @export
+setGeneric(".allowableColorByDataChoices", function(x, se) standardGeneric(".allowableColorByDataChoices"))
 
 #' Internal interface generics 
 #'

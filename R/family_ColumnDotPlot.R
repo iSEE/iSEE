@@ -344,7 +344,7 @@ setMethod(".getMetadataChoices", "ColumnDotPlot", function(x, se) {
 })
 
 setMethod(".defineDotPlotColorChoices", "ColumnDotPlot", function(x, se) {
-    covariates <- .getMetadataChoices(x, se)
+    covariates <- .allowableColorByDataChoices(x, se)
     all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
     .define_color_options_for_column_plots(se, covariates, all_assays)
 })

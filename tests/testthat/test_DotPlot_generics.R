@@ -409,4 +409,12 @@ test_that(".addDotPlotDataSelected handles ColumnDotPlot", {
     expect_identical(out[["subset"]], "plot.data <- subset(plot.data, SelectBy);")
 })
 
+test_that(".allowableColorByDataChoices defaults to all variables", {
+    sce <- .cacheCommonInfo(ColumnDataPlot(), sce)
+    choices <- .allowableColorByDataChoices(ColumnDataPlot(), sce)
+    expect_identical(choices, setdiff(colnames(colData(sce)), "nested"))
 
+    sce <- .cacheCommonInfo(RowDataPlot(), sce)
+    choices <- .allowableColorByDataChoices(RowDataPlot(), sce)
+    expect_identical(choices, colnames(rowData(sce)))
+})

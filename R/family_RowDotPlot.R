@@ -342,7 +342,7 @@ setMethod(".getMetadataChoices", "RowDotPlot", function(x, se) {
 })
 
 setMethod(".defineDotPlotColorChoices", "RowDotPlot", function(x, se) {
-    covariates <- .getMetadataChoices(x, se)
+    covariates <- .allowableColorByDataChoices(x, se)
     all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
     .define_color_options_for_row_plots(se, covariates, all_assays)
 })

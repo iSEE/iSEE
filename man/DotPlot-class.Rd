@@ -30,6 +30,7 @@
 \alias{.defineVisualPointInterface,DotPlot-method}
 \alias{.defineVisualOtherInterface,DotPlot-method}
 \alias{.defineVisualFacetInterface,DotPlot-method}
+\alias{.allowableColorByDataChoices,DotPlot-method}
 \alias{.definePanelTour,DotPlot-method}
 \alias{[[,DotPlot-method}
 \alias{[[,DotPlot,ANY,ANY-method}
@@ -192,6 +193,7 @@ This will \emph{override} the \linkS4class{Panel} method.
 \item \code{\link{.defineVisualOtherInterface}(x, se)} defines the user interface subpanel for manipulating other parameters.
 Currently this returns \code{NULL}.
 \item \code{\link{.defineOutput}(x)} returns a UI element for a brushable plot.
+\item \code{\link{.allowableColorByDataChoices}(x, se)} returns a character vector containing all atomic variables in the relevant \code{*Data} dimension.
 }
 
 For generating the output:

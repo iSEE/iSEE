@@ -1,3 +1,7 @@
+# iSEE 2.3.12
+
+* Added an `.allowableColorByDataChoices` generic for downstream panels to control `ColorBy*Data` choices.
+
 # iSEE 2.3.11
 
 * Cleaned up tours for `Table`s and the `ComplexHeatmapPlot`.

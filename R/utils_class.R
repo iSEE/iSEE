@@ -28,10 +28,10 @@
 #' @rdname setCachedCommonInfo
 #' @importFrom S4Vectors metadata metadata<-
 .setCachedCommonInfo <- function(se, cls, ...) {
-    if (is.null(metadata(se)$iSEE)) {
-        metadata(se)$iSEE <- list()
+    if (is.null(metadata(se)[["iSEE"]])) {
+        metadata(se)[["iSEE"]] <- list()
     }
-    metadata(se)$iSEE[[cls]] <- list(...)
+    metadata(se)[["iSEE"]][[cls]] <- list(...)
     se
 }
 
@@ -39,7 +39,7 @@
 #' @rdname setCachedCommonInfo
 #' @importFrom S4Vectors metadata
 .getCachedCommonInfo <- function(se, cls) {
-    metadata(se)$iSEE[[cls]]
+    metadata(se)[["iSEE"]][[cls]]
 }
 
 #' Dedicated colormap getters/setters

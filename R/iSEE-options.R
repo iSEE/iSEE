@@ -19,6 +19,7 @@ new_defaults = function(value = list()) {
         dots
     }
     set = function(...) {
+        .Deprecated(new="panelDefaults")
         dots = resolve(...)
         if (length(dots)) defaults <<- merge(dots)
         invisible(NULL)

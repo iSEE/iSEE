@@ -340,10 +340,12 @@ iSEE <- function(se,
         # given that we should internally guarantee correctness anyway.
         onStart=function() {
             # nocov start
-            old <- iSEEOptions$get(".check.validity")
-            iSEEOptions$set(.check.validity=FALSE)
+            old <- check.validity.env$check
+            check.validity.env$check <- FALSE
+
             onStop(function() {
-                iSEEOptions$set(.check.validity=old)
+                check.validity.env$check <- old
+                .deactivateAppOptionRegistry()
                 .clearSpecificTours()
             })
             # nocov end
@@ -388,6 +390,9 @@ iSEE <- function(se,
     env <- new.env()
     env$se <- se
     se <- eval(parse(text=mod_commands), envir=env)
+
+    # Activating the app option registry.
+    .activateAppOptionRegistry(se)
 
     # Display an error notifications if colormap is not compatible with se
     # Display one warning notification for each incompatibility issue

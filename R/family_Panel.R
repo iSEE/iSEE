@@ -237,6 +237,9 @@ setMethod("[[", "Panel", function(x, i, j, ...) {
     out
 })
 
+check.validity.env <- new.env()
+check.validity.env$check <- TRUE
+
 #' @export
 setReplaceMethod("[[", "Panel", function(x, i, j, ..., value) {
     if (i %in% c("ColumnSelectionType", "RowSelectionType", "ColumnSelectionSaved", "RowSelectionSaved")) {
@@ -244,8 +247,10 @@ setReplaceMethod("[[", "Panel", function(x, i, j, ..., value) {
         return(x)
     }
 
-    # Avoid having to call updateObject unnecessarily.
-    check <- iSEEOptions$get('.check.validity')
+    # Avoid having to call updateObject unnecessarily when we're operating inside 
+    # the app (and thus everything is known to be most up to date, given that
+    # .refineParameters would have run the necessary updateObject already).
+    check <- check.validity.env$check
     out <- try(.assign_and_check(x, i, value, check=check), silent=TRUE)
 
     if (is(out, "try-error")) {

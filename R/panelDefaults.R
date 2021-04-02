@@ -137,5 +137,12 @@ getPanelDefault <- function(name, error=TRUE) {
     if (error && !name %in% names(panel.default.env$options)) {
         stop("could not find '", name, "'")
     }
+
+    # For back-compatibility, for the time being.
+    back.comp <- iSEEOptions$get(.translation.panel_defaults[name])
+    if (!is.null(back.comp)) {
+        return(back.comp)
+    }
+
     panel.default.env$options[[name]]
 }

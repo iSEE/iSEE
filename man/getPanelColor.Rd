@@ -48,7 +48,6 @@ if (interactive()) {
     iSEE(sce, initial=list(rdp))
 }
 
-
 }
 \author{
 Aaron Lun

@@ -74,7 +74,8 @@ getAppOption("random.other.thing", se, default=10)
 
 getAllAppOptions(se)
 
-# For developers: you don't actually need to pass 'se' inside Panel methods!
+# For developers: you don't actually need to pass 'se' to the getters
+# if they are being called inside Panel methods.
 .activateAppOptionRegistry(se)
 getAppOption("factor.maxlevels")
 getAppOption("color.maxlevels")

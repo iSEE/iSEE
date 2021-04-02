@@ -19,8 +19,13 @@ new_defaults = function(value = list()) {
         dots
     }
     set = function(...) {
-        .Deprecated(new="panelDefaults")
         dots = resolve(...)
+        if (names(dots) %in% .translation.panel_defaults) {
+            .Deprecated(old="iSEEOptions$set", new="panelDefaults")
+        }
+        if (names(dots) %in% .translation.app_defaults) {
+            .Deprecated(old="iSEEOptions$set", new="registerAppOptions")
+        }
         if (length(dots)) defaults <<- merge(dots)
         invisible(NULL)
     }
@@ -33,10 +38,46 @@ new_defaults = function(value = list()) {
     )
 }
 
+.translation.panel_defaults <- c(
+    ColorByDefaultColor = "point.color",
+    PointSize = "point.size",
+    PointAlpha = "point.alpha",
+
+    Downsample = "downsample",
+    DownsampleResolution = "downsample.resolution",
+
+    ColorByNameColor = "selected.color",
+    SelectionAlpha = "selected.alpha",
+
+    SingleSelectionDynamicSource = "selection.dynamic.single",
+    MultipleSelectionDynamicSource = "selection.dynamic.multiple",
+
+    ContourColor = "contour.color",
+
+    FontSize = "font.size",
+    LegendPointSize = "legend.point.size",
+    LegendPosition = "legend.position",
+    LegendDirection = "legend.direction",
+
+    PanelWidth = "panel.width",
+    PanelHeight = "panel.height",
+
+    Assay = "assay"
+)
+
+.translation.app_defaults <- c(
+    "panel.color",
+    "color.maxlevels",
+    "factor.maxlevels",
+    "RowTable.extra.info",
+    "ColumnTable.extra.info"
+)
+
 #' Global \pkg{iSEE} options
 #'
 #' Get or set global values that are used by relevant panels during construction and application initialization.
-#' This allows users to easily modify parameters for multiple panels simultaneously.
+#' This has been deprecated in favor of \code{\link{panelDefaults}} (for options that apply during \linkS4class{Panel} construction)
+#' and \code{\link{registerAppOptions}} (for options that apply during application runtime).
 #'
 #' @section Commands:
 #' \code{str(iSEEOptions$get())} will show the default values for all options.
@@ -76,55 +117,16 @@ new_defaults = function(value = list()) {
 #' \item{\code{ColumnTable.select.details}}{A function that takes a string containing the name of a sample (i.e., the current selection in the \linkS4class{ColumnTable}) and returns a HTML element with more details.}
 #' }
 #'
-#' @section Comments on globals:
-#' As much as possible, these options will only affect the application during Panel construction.
-#' This enables users to reproduce the app state from one session to another by simply saving the memory. 
-#' Otherwise, users would also have to export the state of the global variables to properly recapitulate the app state.
-#' 
-#' For developers: following this guideline generally means that the globals should reflect some parameter that is already present as a formal slot in the panel class.
-#; Technically, this also means that different instances of a particular class might have different values for that same slot.
-#' If all panels must have the same value, this can be enforced via some creative use of \code{\link{.cacheCommonInfo}} (to cache the first encountered value of the global slot)
-#' followed by \code{\link{.refineParameters}} (to enforce that value on every other panel of the same class) - 
-#' see the MAPlot class in the \pkg{iSEEu} package for a working example.
-#'
 #' @author Kevin Rue-Albrecht
 #'
 #' @export
 #' @examples iSEEOptions$get('downsample'); iSEEOptions$get('selected.color')
-iSEEOptions <- new_defaults(list(
-    .check.validity=TRUE,
-
-    point.color = "black",
-    point.size = 1,
-    point.alpha = 1,
-
-    downsample = FALSE,
-    downsample.resolution = 200,
-
-    selected.color = "red",
-    selected.alpha = 0.1,
-
-    selection.dynamic.single = FALSE,
-    selection.dynamic.multiple = FALSE,
-
-    contour.color = "blue",
-
-    font.size = 1,
-    legend.point.size = 1,
-    legend.position = .plotLegendBottomTitle,
-    legend.direction = .plotLegendHorizontalTitle,
-
-    panel.width = 4L,
-    panel.height = 500L,
-    panel.color = c(),
-
-    color.maxlevels=24L,
-    factor.maxlevels=100L,
-
-    assay = c("logcounts", "normcounts"),
-    RowTable.extra.info = NULL,
-    ColumnTable.extra.info = NULL
-))
+iSEEOptions <- new_defaults({
+    x <- c(unname(.translation.panel_defaults), .translation.app_defaults)
+    y <- vector("list", length(x))
+    names(y) <- x
+    y
+})
 
 # merge elements of y into x with the same names
 # Credits: knitr

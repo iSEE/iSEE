@@ -28,10 +28,7 @@
 #' @rdname setCachedCommonInfo
 #' @importFrom S4Vectors metadata metadata<-
 .setCachedCommonInfo <- function(se, cls, ...) {
-    if (is.null(metadata(se)[["iSEE"]])) {
-        metadata(se)[["iSEE"]] <- list()
-    }
-    metadata(se)[["iSEE"]][[cls]] <- list(...)
+    metadata(se) <- .setNestedList(metadata(se), c("iSEE", "cached", cls), list(...))
     se
 }
 
@@ -39,7 +36,47 @@
 #' @rdname setCachedCommonInfo
 #' @importFrom S4Vectors metadata
 .getCachedCommonInfo <- function(se, cls) {
-    metadata(se)[["iSEE"]][[cls]]
+    metadata(se)[["iSEE"]][["cached"]][[cls]]
+}
+
+#' Set a nested list
+#' 
+#' Set a value inside a nested list, creating intermediate lists if necessary.
+#'
+#' @param x A list or \code{NULL}.
+#' @param i A character vector with at least one value, specifying the list index at each level.
+#' @param value The value to set inside the nested list.
+#'
+#' @return A list is returned containing the contents of \code{x}, except that \code{x[[i]]} is set to \code{value}.
+#'
+#' @author Aaron Lun
+#'
+#' @examples
+#' # Nested setting with creation of intermediates.
+#' .setNestedList(list(ZZ=3), c("A", "B", "C"), list(yay=20))
+#' 
+#' # NULLs auto-converted to lists.
+#' .setNestedList(NULL, c("A", "B", "C"), list(yay=20))
+#'
+#' # Overwrites non-list elements.
+#' .setNestedList(list(A=list(B=3)), c("A", "B", "C"), list(yay=20))
+#' 
+#' @seealso
+#' \code{\link{.setCachedCommonInfo}} and \code{\link{setGlobalAppOptions}}, where this function is used.
+#'
+#' @export
+#' @rdname setNestedList
+.setNestedList <- function(x, i, value) {
+    if (!is.list(x)) {
+        x <- list()
+    }
+    if (length(i)==1L) {
+        x[[i]] <- value
+    } else {
+        i1 <- i[1]
+        x[[i1]] <- .setNestedList(x[[i1]], i[-1], value)
+    }
+    x 
 }
 
 #' Dedicated colormap getters/setters

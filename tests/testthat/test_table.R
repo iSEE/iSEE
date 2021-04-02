@@ -114,17 +114,17 @@ test_that(".generateTable handles ColumnDataTable", {
 })
 
 test_that(".showSelectionDetails works as expected", {
+    se <- SummarizedExperiment()
+    se <- registerAppOptions(se, ColumnTable.select.details=identity, RowTable.select.details=identity)
+
     x <- ColumnDataTable()
     expect_null(.showSelectionDetails(x))
 
-    iSEEOptions$set(ColumnTable.select.details=identity)
-    expect_identical(.showSelectionDetails(x), x[["Selected"]])
-    iSEEOptions$set(ColumnTable.select.details=NULL)
+    y <- RowDataTable(Selected="B")
+    expect_null(.showSelectionDetails(y))
 
-    x <- RowDataTable(Selected="B")
-    expect_null(.showSelectionDetails(x))
-
-    iSEEOptions$set(RowTable.select.details=identity)
+    .activateAppOptionRegistry(se)
     expect_identical(.showSelectionDetails(x), x[["Selected"]])
-    iSEEOptions$set(RowTable.select.details=NULL)
+    expect_identical(.showSelectionDetails(x), x[["Selected"]])
+    .deactivateAppOptionRegistry()
 })

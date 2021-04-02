@@ -52,7 +52,7 @@ test_that(".addDotPlotDataColor handles feature selection in column plots", {
     expect_true(!is.null(env$plot.data$ColorBy))
 
     expect_match(color_out$labels$ColorBy, rn, fixed=TRUE)
-    expect_match(color_out$labels$ColorBy, iSEEOptions$get("assay")[1], fixed=TRUE)
+    expect_match(color_out$labels$ColorBy, "logcounts", fixed=TRUE)
 })
 
 test_that(".addDotPlotDataColor handles sample selection in column plots", {
@@ -139,7 +139,7 @@ test_that(".addDotPlotDataColor handles sample selection in row plots", {
     expect_true(!is.null(env$plot.data$ColorBy))
 
     expect_match(color_out$labels$ColorBy, cn, fixed=TRUE)
-    expect_match(color_out$labels$ColorBy, iSEEOptions$get("assay")[1], fixed=TRUE)
+    expect_match(color_out$labels$ColorBy, "logcounts", fixed=TRUE)
 })
 
 test_that(".addDotPlotDataColor handles multiple selections in row plots", {

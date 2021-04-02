@@ -28,7 +28,8 @@
 #' The following slots control the choice of assay values:
 #' \itemize{
 #' \item \code{Assay}, string specifying the name of the assay to use for obtaining expression values.
-#' Defaults to the first valid assay name (see \code{?"\link{.refineParameters,ComplexHeatmapPlot-method}"} for details).
+#' Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}},
+#' falling back to the first valid assay name (see \code{.cacheCommonInfo} below).
 #' }
 #'
 #' The following slots control the clustering of rows:
@@ -66,9 +67,9 @@
 #' This can contain zero or more of \code{"Rows"} and \code{"Columns"}.
 #' Defaults to \code{"Rows"}.
 #' \item \code{LegendPosition}, string specifying the position of the legend on the plot.
-#' Defaults to \code{"Bottom"} but can also be \code{"Right"}.
+#' Defaults to \code{"Bottom"} in \code{\link{getPanelDefault}} but can also be \code{"Right"}.
 #' \item \code{LegendDirection}, string specifying the orientation of the legend on the plot for continuous covariates.
-#' Defaults to \code{"Horizontal"} but can also be \code{"Vertical"}.
+#' Defaults to \code{"Horizontal"} in \code{\link{getPanelDefault}} but can also be \code{"Vertical"}.
 #' }
 #'
 #' The following slots control some aspects of the user interface:
@@ -91,7 +92,7 @@
 #' For setting up data values:
 #' \itemize{
 #' \item \code{\link{.cacheCommonInfo}(x)} adds a \code{"ComplexHeatmapPlot"} entry containing
-#' \code{valid.assay.names}, a character vector of valid assay names;
+#' \code{valid.assay.names}, a character vector of valid (i.e., non-empty) assay names;
 #' \code{discrete.assay.names}, a character vector of valid assay names with discrete atomic values;
 #' \code{continuous.assay.names}, a character vector of valid assay names with continuous atomic values;
 #' \code{valid.colData.names}, a character vector of names of columns in \code{colData} that are valid;
@@ -223,7 +224,7 @@ ComplexHeatmapPlot <- function(...) {
 setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- list(...)
 
-    args <- .emptyDefault(args, .heatMapAssay, NA_character_)
+    args <- .emptyDefault(args, .heatMapAssay, getPanelDefault(.heatMapAssay))
     args <- .emptyDefault(args, .heatMapCustomFeatNames, TRUE)
     args <- .emptyDefault(args, .heatMapFeatNameText, NA_character_)
 
@@ -250,8 +251,8 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
 
     args <- .emptyDefault(args, .showDimnames, c(.showNamesRowTitle))
 
-    args <- .emptyDefault(args, .plotLegendPosition, iSEEOptions$get("legend.position"))
-    args <- .emptyDefault(args, .plotLegendDirection, iSEEOptions$get("legend.direction"))
+    args <- .emptyDefault(args, .plotLegendPosition, getPanelDefault(.plotLegendPosition))
+    args <- .emptyDefault(args, .plotLegendDirection, getPanelDefault(.plotLegendDirection))
     args <- .emptyDefault(args, .visualParamBoxOpen, FALSE)
 
     args <- .emptyDefault(args, .heatMapShowSelection, TRUE)
@@ -401,7 +402,6 @@ setMethod(".refineParameters", "ComplexHeatmapPlot", function(x, se) {
         return(NULL)
     }
 
-    all_assays <- c(intersect(iSEEOptions$get("assay"), all_assays), all_assays)
     x <- .replaceMissingWithFirst(x, .heatMapAssay, all_assays)
 
     if (is.na(slot(x, .heatMapFeatNameText))) {

@@ -9,11 +9,12 @@
 #' \item \code{YAxisSampleName}, a string specifying the name of the sample to plot on the y-axis.
 #' If \code{NA}, defaults to the first column name of the SummarizedExperiment object.
 #' \item \code{Assay}, string specifying the name of the assay to use for obtaining expression values.
-#' Defaults to the first valid assay name (see \code{?"\link{.refineParameters,DotPlot-method}"} for details).
+#' Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}}, falling back to the name of the first valid assay
+#' (see \code{?"\link{.cacheCommonInfo,DotPlot-method}"} for the definition of validity).
 #' \item \code{YAxisSampleSource}, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces \code{YAxisSampleName}.
 #' Defaults to \code{"---"}, i.e., no transmission is performed.
 #' \item \code{YAxisSampleDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for the y-axis.
-#' Defaults to \code{FALSE}.
+#' Defaults to \code{FALSE} in \code{\link{getPanelDefault}}.
 #' }
 #'
 #' The following slots control the values on the x-axis:
@@ -30,7 +31,7 @@
 #' \item \code{XAxisSampleSource}, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces \code{XAxisSampleName}.
 #' Defaults to \code{"---"}, i.e., no transmission is performed.
 #' \item \code{XAxisSampleDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for the x-axis.
-#' Defaults to \code{FALSE}.
+#' Defaults to \code{FALSE} in \code{\link{getPanelDefault}}.
 #' }
 #'
 #' In addition, this class inherits all slots from its parent \linkS4class{ColumnDotPlot}, \linkS4class{DotPlot} and \linkS4class{Panel} classes.
@@ -147,17 +148,17 @@ SampleAssayPlot <- function(...) {
 #' @importFrom methods callNextMethod
 setMethod("initialize", "SampleAssayPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .emptyDefault(args, .sampAssayAssay, NA_character_)
+    args <- .emptyDefault(args, .sampAssayAssay, getPanelDefault(.sampAssayAssay))
     args <- .emptyDefault(args, .sampAssayXAxis, .sampAssayXAxisNothingTitle)
     args <- .emptyDefault(args, .sampAssayXAxisRowData, NA_character_)
 
     args <- .emptyDefault(args, .sampAssayXAxisColTable, .noSelection)
     args <- .emptyDefault(args, .sampAssayXAxisSampName, NA_character_)
-    args <- .emptyDefault(args, .sampAssayXAxisSampDynamic, iSEEOptions$get("selection.dynamic.single"))
+    args <- .emptyDefault(args, .sampAssayXAxisSampDynamic, getPanelDefault("SingleSelectionDynamicSource"))
 
     args <- .emptyDefault(args, .sampAssayYAxisColTable, .noSelection)
     args <- .emptyDefault(args, .sampAssayYAxisSampName, NA_character_)
-    args <- .emptyDefault(args, .sampAssayYAxisSampDynamic, iSEEOptions$get("selection.dynamic.single"))
+    args <- .emptyDefault(args, .sampAssayYAxisSampDynamic, getPanelDefault("SingleSelectionDynamicSource"))
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -182,7 +183,6 @@ setMethod(".refineParameters", "SampleAssayPlot", function(x, se) {
         return(NULL)
     }
 
-    all_assays <- c(intersect(iSEEOptions$get("assay"), all_assays), all_assays)
     x <- .replaceMissingWithFirst(x, .sampAssayAssay, all_assays)
 
     for (field in c(.sampAssayXAxisSampName, .sampAssayYAxisSampName)) {

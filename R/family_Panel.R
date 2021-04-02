@@ -9,9 +9,9 @@
 #' \item \code{PanelId}, an integer scalar specifying the identifier for the panel.
 #' This should be unique across panels of the same concrete class.
 #' \item \code{PanelWidth}, an integer scalar specifying the width of the panel.
-#' Bootstrap coordinates are used so this value should lie between 2 and 12; defaults to 4.
+#' Bootstrap coordinates are used so this value should lie between 2 and 12; defaults to 4 in \code{\link{getPanelDefault}}.
 #' \item \code{PanelHeight}, an integer scalar specifying the height of the panel in pixels.
-#' This is expected to lie between 400 and 1000; defaults to 500.
+#' This is expected to lie between 400 and 1000; defaults to 500 in \code{\link{getPanelDefault}}.
 #' }
 #'
 #' The following slots are relevant to \emph{receiving} a multiple selection on the rows:
@@ -19,7 +19,7 @@
 #' \item \code{RowSelectionSource}, a string specifying the name of the transmitting panel from which to receive a multiple row selection (e.g., \code{"RowDataPlot1"}).
 #' Defaults to \code{"---"}.
 #' \item \code{RowSelectionDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for multiple row selections.
-#' Defaults to \code{FALSE}.
+#' Defaults to \code{FALSE} in \code{\link{getPanelDefault}}.
 #' \item \code{RowSelectionRestrict}, a logical scalar indicating whether the display of \code{x} should be restricted to the rows in the multiple selection received from a transmitting panel.
 #' Defaults to \code{FALSE}.
 #' }
@@ -29,7 +29,7 @@
 #' \item \code{ColumnSelectionSource}, a string specifying the name of the transmitting panel from which to receive a multiple column selection (e.g., \code{"ColumnDataPlot1"}).
 #' Defaults to \code{"---"}.
 #' \item \code{ColumnSelectionDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for multiple column selections.
-#' Defaults to \code{FALSE}.
+#' Defaults to \code{FALSE} in \code{\link{getPanelDefault}}.
 #' \item \code{ColumnSelectionRestrict}, a logical scalar indicating whether the display of \code{x} should be restricted to the columns in the multiple selection received from a transmitting panel.
 #' Defaults to \code{FALSE}.
 #' }
@@ -157,8 +157,8 @@ setMethod("initialize", "Panel", function(.Object, ..., RowSelectionSaved=NULL, 
     args <- list(...)
 
     args <- .emptyDefault(args, .organizationId, NA_integer_)
-    args <- .emptyDefault(args, .organizationHeight, iSEEOptions$get("panel.height"))
-    args <- .emptyDefault(args, .organizationWidth, iSEEOptions$get("panel.width"))
+    args <- .emptyDefault(args, .organizationHeight, getPanelDefault("PanelHeight"))
+    args <- .emptyDefault(args, .organizationWidth, getPanelDefault("PanelWidth"))
 
     args <- .emptyDefault(args, .selectParamBoxOpen, FALSE)
     args <- .emptyDefault(args, .selectRowSource, .noSelection)
@@ -166,8 +166,8 @@ setMethod("initialize", "Panel", function(.Object, ..., RowSelectionSaved=NULL, 
     args <- .emptyDefault(args, .selectRowRestrict, FALSE)
     args <- .emptyDefault(args, .selectColRestrict, FALSE)
 
-    args <- .emptyDefault(args, .selectRowDynamic, iSEEOptions$get("selection.dynamic.multiple"))
-    args <- .emptyDefault(args, .selectColDynamic, iSEEOptions$get("selection.dynamic.multiple"))
+    args <- .emptyDefault(args, .selectRowDynamic, getPanelDefault("MultipleSelectionDynamicSource"))
+    args <- .emptyDefault(args, .selectColDynamic, getPanelDefault("MultipleSelectionDynamicSource"))
 
     args <- .emptyDefault(args, .dataParamBoxOpen, FALSE)
 

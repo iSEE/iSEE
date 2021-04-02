@@ -4,8 +4,7 @@
 #' These are options that do not correspond to any slot in the \linkS4class{Panel}s and cannot be changed by the user after initialization.
 #'
 #' @param se The \linkS4class{SummarizedExperiment} object to be supplied to \code{\link{iSEE}}.
-#' @param ... Named options to set.
-#' Alternatively a single named list containing the options to set.
+#' @param ... Named options to register.
 #' @param name String containing the name of the option to retrieve.
 #' @param default Value to return if \code{name} is not present in the available options.
 #'
@@ -67,17 +66,19 @@
 #' @export
 #' @importFrom S4Vectors metadata metadata<-
 registerAppOptions <- function(se, ...) {
-    current <- list(...)
-    if (length(current)==1L && is.null(names(current)) && is.list(current[[1]])) {
-        current <- current[[1]]
-    }
-    metadata(se) <- .setNestedList(metadata(se), c("iSEE", "options"), current)
+    metadata(se) <- .setNestedList(metadata(se), c("iSEE", "options"), list(...))
     se
 }
 
 #' @export
 #' @rdname registerAppOptions
 getAppOption <- function(name, se, default=NULL) {
+    # For back-compatibility, for the time being.
+    back.comp <- iSEEOptions$get(name)
+    if (!is.null(back.comp)) {
+        return(back.comp)
+    }
+
     available <- getAllAppOptions(se)
     if (name %in% names(available)) {
         available[[name]]

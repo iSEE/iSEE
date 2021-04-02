@@ -20,7 +20,13 @@ A list is returned containing the contents of \code{x}, except that \code{x[[i]]
 Set a value inside a nested list, creating intermediate lists if necessary.
 }
 \examples{
+# Nested setting with creation of intermediates.
+.setNestedList(list(ZZ=3), c("A", "B", "C"), list(yay=20))
+
+# NULLs auto-converted to lists.
 .setNestedList(NULL, c("A", "B", "C"), list(yay=20))
+
+# Overwrites non-list elements.
 .setNestedList(list(A=list(B=3)), c("A", "B", "C"), list(yay=20))
 
 }

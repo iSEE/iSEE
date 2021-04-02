@@ -8,6 +8,7 @@ panel.default.env$options <- list(
     DownsampleResolution = 200,
 
     ColorByNameColor = "red",
+    ColorByNameAssay = "logcounts",
     SelectionAlpha = 0.1,
 
     SingleSelectionDynamicSource = FALSE,
@@ -96,7 +97,7 @@ panel.default.env$options <- list(
 #' }
 #'
 #' @section For developers:
-#' Developers may add more options to this list, typically by calling \code{\link{setPanelDefaults}} in their \code{.onLoad} expressions.
+#' Developers of Panel subclasses may add more options to this list, typically by calling \code{\link{setPanelDefaults}} in their \code{.onLoad} expressions.
 #' We recommend prefixing any options with the name of the package in the form of \code{<PACKAGE>_<OPTION>},
 #' so as to avoid conflicts with other options (in the base classes, or in other downstream packages) that have the same name.
 #' Any options added in this manner should correspond to parameters that are already present as slots in the panel class.
@@ -136,5 +137,5 @@ getPanelDefault <- function(name, error=TRUE) {
     if (error && !name %in% names(panel.default.env$options)) {
         stop("could not find '", name, "'")
     }
-    ref[[name]]
+    panel.default.env$options[[name]]
 }

@@ -78,14 +78,19 @@
 #' # Still the default color:
 #' .getPanelColor(rdp)
 #'
-#' # Overriding the default colors
-#' iSEEOptions$set(panel.color=c(ReducedDimensionPlot="#1e90ff"))
+#' # Overriding the default colors (registry activation is done automatically
+#' # inside iSEE(), so we're just mimicking the procedure here).
+#' sce <- SingleCellExperiment()
+#' sce <- registerAppOptions(sce, panel.color=c(ReducedDimensionPlot="#1e90ff"))
+#'
+#' .activateAppOptionRegistry(sce)
 #' .getPanelColor(rdp)
+#' .deactivateAppOptionRegistry()
 #'
 #' @rdname getPanelColor
 #' @export
 .getPanelColor <- function(x) {
-    opts <- iSEEOptions$get("panel.color")
+    opts <- getAppOption("panel.color")
     if (.encodedName(x) %in% names(opts)) {
         as.vector(opts[.encodedName(x)])
     } else {

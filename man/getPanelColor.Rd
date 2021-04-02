@@ -39,9 +39,14 @@ rdp <- ReducedDimensionPlot()
 # Still the default color:
 .getPanelColor(rdp)
 
-# Overriding the default colors
-iSEEOptions$set(panel.color=c(ReducedDimensionPlot="#1e90ff"))
+# Overriding the default colors (mocking up an instance of an app to demonstrate).
+sce <- SingleCellExperiment()
+sce <- registerAppOptions(sce, panel.color=c(ReducedDimensionPlot="#1e90ff"))
+.activateAppOptionRegistry(sce)
+
 .getPanelColor(rdp)
+
+.deactivateAppOptionRegistry()
 
 }
 \author{

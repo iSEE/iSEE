@@ -19,10 +19,9 @@ Alternatively \code{NULL}, in which case the current values of all options are r
 \item{error}{Logical scalar indicating whether an error should be raised if \code{name} cannot be found.}
 }
 \value{
+\code{panelDefaults} will return a named list of the values of all options. 
 If \code{...} is non-empty, \code{panelDefaults} will modify the global options that are used during the constructors for the relevant \linkS4class{Panel} classes.
-A named list of the previous values of the modified options is returned.
-
-If \code{...} is empty, \code{panelDefaults} will return a named list containing the current values of all options.
+(Note that the return value still contains the values \emph{before} the modification is applied.)
 
 \code{getPanelDefault} will return the current value of the requested option.
 If \code{error=TRUE} and \code{name} is not present, an error is raised; otherwise \code{NULL} is returned.
@@ -93,14 +92,15 @@ If this is not the case, consider using \code{\link{setAppOptions}} instead.
 old <- panelDefaults(Assay="WHEE")
 getPanelDefault("Assay")
 
-old2 <- panelDefaults(PointSize=2)
+old <- panelDefaults(Assay="FOO", PointSize=5)
+getPanelDefault("Assay")
 getPanelDefault("PointSize")
 
 # We can also list out all options:
 panelDefaults()
 
 # Restoring the previous defaults.
-panelDefaults(c(old, old2))
+panelDefaults(old)
 getPanelDefault("Assay")
 getPanelDefault("PointSize")
 

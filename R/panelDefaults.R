@@ -39,10 +39,9 @@ panel.default.env$options <- list(
 #' @param error Logical scalar indicating whether an error should be raised if \code{name} cannot be found.
 #'
 #' @return
+#' \code{panelDefaults} will return a named list of the values of all options. 
 #' If \code{...} is non-empty, \code{panelDefaults} will modify the global options that are used during the constructors for the relevant \linkS4class{Panel} classes.
-#' A named list of the previous values of the modified options is returned.
-#'
-#' If \code{...} is empty, \code{panelDefaults} will return a named list containing the current values of all options.
+#' (Note that the return value still contains the values \emph{before} the modification is applied.)
 #'
 #' \code{getPanelDefault} will return the current value of the requested option.
 #' If \code{error=TRUE} and \code{name} is not present, an error is raised; otherwise \code{NULL} is returned.
@@ -109,25 +108,31 @@ panel.default.env$options <- list(
 #' old <- panelDefaults(Assay="WHEE")
 #' getPanelDefault("Assay")
 #'
-#' old2 <- panelDefaults(PointSize=2)
+#' old <- panelDefaults(Assay="FOO", PointSize=5)
+#' getPanelDefault("Assay")
 #' getPanelDefault("PointSize")
 #'
 #' # We can also list out all options:
 #' panelDefaults()
 #' 
 #' # Restoring the previous defaults.
-#' panelDefaults(c(old, old2))
+#' panelDefaults(old)
 #' getPanelDefault("Assay")
 #' getPanelDefault("PointSize")
 #'
 #' @export
 panelDefaults <- function(...) {
     current <- list(...)
+    previous <- panel.default.env$options
+
     if (length(current)==1L && is.null(names(current)) && is.list(current[[1]])) {
-        current <- current[[1]]
+        latest <- current[[1]]
+    } else {
+        latest <- previous
+        latest[names(current)] <- current
     }
-    previous <- panel.default.env$options[names(current)] 
-    panel.default.env$options[names(current)] <- current
+
+    panel.default.env$options <- latest
     invisible(previous)
 }
 

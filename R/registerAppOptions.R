@@ -5,6 +5,7 @@
 #'
 #' @param se The \linkS4class{SummarizedExperiment} object to be supplied to \code{\link{iSEE}}.
 #' @param ... Named options to register.
+#' Alternatively a single named list containing the options to register.
 #' @param name String containing the name of the option to retrieve.
 #' @param default Value to return if \code{name} is not present in the available options.
 #'
@@ -39,6 +40,11 @@
 #' The registered options are stored in the SummarizedExperiment to ensure that we can recover the application state with the combination of the SummarizedExperiment and list of Panel settings.
 #' By comparison, if we had used a global cache as in \code{\link{panelDefaults}}, we would need to save them separately to ensure that we can recover a particular application state.
 #'
+#' By default, \code{registerAppOptions} will add or replace individual arguments specified by \code{...}.
+#' This means that users can call the function multiple times to accumulate registered options in \code{se}.
+#' The exception is if \code{...} contains a single list, in which case the entire set of options is directly replaced by that list.
+#' For example, one could supply a single empty list to clear \code{se} of all existing options.
+#'
 #' @section For developers:
 #' Developers of Panel subclasses can add arbitary options to \code{...} to help control the behavior of their Panel instances.
 #' We recommend prefixing any options with the name of the package in the form of \code{<PACKAGE>_<OPTION>},
@@ -68,13 +74,27 @@
 #' getAppOption("color.maxlevels")
 #' .deactivateAppOptionRegistry()
 #' 
+#' # Wiping out all options.
+#' se <- registerAppOptions(se, list())
+#' getAllAppOptions(se)
 #' @aliases
 #' .activateAppOptionRegistry
 #' .deactivateAppOptionRegistry
 #' @export
 #' @importFrom S4Vectors metadata metadata<-
 registerAppOptions <- function(se, ...) {
-    metadata(se) <- .set_nested_list(metadata(se), c("iSEE", "options"), list(...))
+    current <- list(...)
+
+    if (.is_options_list(current)) {
+        latest <- current[[1]]
+    } else {
+        existing <- getAllAppOptions(se)
+        existing[names(current)] <- current 
+        latest <- existing
+    }
+
+    metadata(se) <- .set_nested_list(metadata(se), c("iSEE", "options"), latest)
+
     se
 }
 
@@ -95,6 +115,9 @@ getAppOption <- function(name, se, default=NULL) {
     }
 }
 
+.empty_named_list <- list()
+names(.empty_named_list) <- character(0)
+
 #' @export
 #' @rdname registerAppOptions
 #' @importFrom S4Vectors metadata
@@ -102,7 +125,11 @@ getAllAppOptions <- function(se) {
     if (missing(se)) {
         global.opt.env$options
     } else {
-        metadata(se)[["iSEE"]][["options"]]
+        existing <- metadata(se)[["iSEE"]][["options"]]
+        if (is.null(existing)) {
+            existing <- .empty_named_list
+        }
+        existing
     }
 }
 
@@ -112,13 +139,13 @@ global.opt.env$options <- list()
 #' @export
 #' @importFrom S4Vectors metadata
 .activateAppOptionRegistry <- function(se) {
-    global.opt.env$options <- metadata(se)[["iSEE"]][["options"]]
+    global.opt.env$options <- getAllAppOptions(se)
     invisible(NULL)
 }
 
 #' @export
 .deactivateAppOptionRegistry <- function() {
-    global.opt.env$options <- list()
+    global.opt.env$options <- .empty_named_list
     invisible(NULL)
 }
 

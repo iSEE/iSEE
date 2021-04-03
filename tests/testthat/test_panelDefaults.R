@@ -12,10 +12,17 @@ test_that("panelDefaults works as expected", {
     panelDefaults(FontSize=3, SelectionAlpha=0.01)
     expect_identical(getPanelDefault("FontSize"), 3)
     expect_identical(getPanelDefault("SelectionAlpha"), 0.01)
+    expect_identical(getPanelDefault("Assay"), "logcounts")
+
+    panelDefaults(list(FontSize=4, SelectionAlpha=0.25))
+    expect_identical(getPanelDefault("FontSize"), 4)
+    expect_identical(getPanelDefault("SelectionAlpha"), 0.25)
+    expect_error(getPanelDefault("Assay")) # because it's a total replacement.
 
     panelDefaults(old)
     expect_identical(getPanelDefault("FontSize"), 1)
     expect_identical(getPanelDefault("SelectionAlpha"), 0.1)
+    expect_identical(getPanelDefault("Assay"), "logcounts")
 
     out <- panelDefaults()
     expect_identical(out$FontSize, 1)

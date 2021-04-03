@@ -125,7 +125,7 @@ panelDefaults <- function(...) {
     current <- list(...)
     previous <- panel.default.env$options
 
-    if (length(current)==1L && is.null(names(current)) && is.list(current[[1]])) {
+    if (.is_options_list(current)) {
         latest <- current[[1]]
     } else {
         latest <- previous
@@ -135,6 +135,8 @@ panelDefaults <- function(...) {
     panel.default.env$options <- latest
     invisible(previous)
 }
+
+.is_options_list <- function(x) length(x)==1L && is.null(names(x)) && is.list(x[[1]])
 
 #' @export
 #' @rdname panelDefaults

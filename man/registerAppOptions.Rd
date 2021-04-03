@@ -17,7 +17,8 @@ getAllAppOptions(se)
 \arguments{
 \item{se}{The \linkS4class{SummarizedExperiment} object to be supplied to \code{\link{iSEE}}.}
 
-\item{...}{Named options to register.}
+\item{...}{Named options to register.
+Alternatively a single named list containing the options to register.}
 
 \item{name}{String containing the name of the option to retrieve.}
 
@@ -57,6 +58,11 @@ Defaults to 100.}
 
 The registered options are stored in the SummarizedExperiment to ensure that we can recover the application state with the combination of the SummarizedExperiment and list of Panel settings.
 By comparison, if we had used a global cache as in \code{\link{panelDefaults}}, we would need to save them separately to ensure that we can recover a particular application state.
+
+By default, \code{registerAppOptions} will add or replace individual arguments specified by \code{...}.
+This means that users can call the function multiple times to accumulate registered options in \code{se}.
+The exception is if \code{...} contains a single list, in which case the entire set of options is directly replaced by that list.
+For example, one could supply a single empty list to clear \code{se} of all existing options.
 }
 \section{For developers}{
 
@@ -88,6 +94,9 @@ getAppOption("factor.maxlevels")
 getAppOption("color.maxlevels")
 .deactivateAppOptionRegistry()
 
+# Wiping out all options.
+se <- registerAppOptions(se, list())
+getAllAppOptions(se)
 }
 \author{
 Aaron Lun

@@ -11,6 +11,36 @@ test_that("registerAppOptions works as expected", {
     expect_identical(getAppOption("random", se, default="A"), "A")
 
     expect_identical(getAllAppOptions(se), list(factor.maxlevels=10, color.maxlevels=20))
+
+    # Replacement as a list works as expected.
+    se <- registerAppOptions(se, list(factor.maxlevels=100, color.maxlevels=24))
+    expect_identical(getAppOption("factor.maxlevels", se), 100)
+    expect_identical(getAppOption("color.maxlevels", se), 24)
+})
+
+test_that("registerAppOptions properly appends", {
+    se <- SummarizedExperiment()
+
+    se <- registerAppOptions(se, factor.maxlevels=50)
+    se <- registerAppOptions(se, color.maxlevels=20)
+    se <- registerAppOptions(se, other.maxlevels=10)
+    expect_identical(getAppOption("factor.maxlevels", se), 50)
+    expect_identical(getAppOption("color.maxlevels", se), 20)
+    expect_identical(getAppOption("other.maxlevels", se), 10)
+
+    # Replacement of existing elements works correctly.
+    se <- registerAppOptions(se, color.maxlevels=10, factor.maxlevels=100)
+    expect_identical(getAppOption("color.maxlevels", se), 10)
+    expect_identical(getAppOption("factor.maxlevels", se), 100)
+    expect_identical(getAppOption("other.maxlevels", se), 10)
+
+    # No arguments, no-op.
+    se2 <- registerAppOptions(se)
+    expect_identical(se2, se)
+
+    # Unless we wipe.
+    se2 <- registerAppOptions(se, list())
+    expect_identical(unname(getAllAppOptions(se2)), list())
 })
 
 test_that("registerAppOptions works with the globals", {

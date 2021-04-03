@@ -96,11 +96,11 @@ panel.default.env$options <- list(
 #' }
 #'
 #' @section For developers:
-#' Developers of Panel subclasses may add more options to this list, typically by calling \code{\link{setPanelDefaults}} in their \code{.onLoad} expressions.
+#' Developers of Panel subclasses may add more options to this list, typically by calling \code{panelDefaults} in the \code{.onLoad} expressions of the package containing the subclass.
 #' We recommend prefixing any options with the name of the package in the form of \code{<PACKAGE>_<OPTION>},
 #' so as to avoid conflicts with other options (in the base classes, or in other downstream packages) that have the same name.
 #' Any options added in this manner should correspond to parameters that are already present as slots in the panel class.
-#' If this is not the case, consider using \code{\link{setAppOptions}} instead.
+#' If this is not the case, consider using \code{\link{registerAppOptions}} instead.
 #'
 #' @author Kevin Rue-Albrecht
 #'

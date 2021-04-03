@@ -17,15 +17,14 @@ getAllAppOptions(se)
 \arguments{
 \item{se}{The \linkS4class{SummarizedExperiment} object to be supplied to \code{\link{iSEE}}.}
 
-\item{...}{Named options to set.
-Alternatively a single named list containing the options to set.}
+\item{...}{Named options to register.}
 
 \item{name}{String containing the name of the option to retrieve.}
 
 \item{default}{Value to return if \code{name} is not present in the available options.}
 }
 \value{
-\code{setAppOptions} will return \code{se}, modified with the application-level options.
+\code{registerAppOptions} will return \code{se}, modified with the application-level options.
 
 \code{getAppOption} will return the value of the specified option, or \code{default} if that option is not available.
 
@@ -33,9 +32,14 @@ Alternatively a single named list containing the options to set.}
 }
 \description{
 Set and get global options for the \code{\link{iSEE}} application.
-These are options that do not correspond to any slot in the \linkS4class{Panel}s and cannot be changed by the user after initialization.
+These are options that do not correspond to any \linkS4class{Panel} slot and cannot be changed by the user after initialization.
 }
 \details{
+\code{registerAppOptions} provides an alternative mechanism for setting global options, separate from \code{\link{panelDefaults}}.
+The primary difference is that \code{registerAppOptions} allows tuning of options that do not have a corresponding slot in any \linkS4class{Panel} subclass.
+This makes it useful for parameters that the user should not or cannot change within the application,
+as well as for fine-tuning parameters that are too rarely used to have their own interface elements.
+
 Known options include:
 \itemize{
 \item{\code{panel.color}}{Named character vector of colors.
@@ -50,10 +54,13 @@ Defaults to 100.}
 \item{\code{RowTable.select.details}}{A function that takes a string containing the name of a feature (i.e., the current selection in the \linkS4class{RowTable}) and returns a HTML element with more details.} 
 \item{\code{ColumnTable.select.details}}{A function that takes a string containing the name of a sample (i.e., the current selection in the \linkS4class{ColumnTable}) and returns a HTML element with more details.}
 }
+
+The registered options are stored in the SummarizedExperiment to ensure that we can recover the application state with the combination of the SummarizedExperiment and list of Panel settings.
+By comparison, if we had used a global cache as in \code{\link{panelDefaults}}, we would need to save them separately to ensure that we can recover a particular application state.
 }
 \section{For developers}{
 
-Developers of Panel subclasses can add arbitary options to \code{...}.
+Developers of Panel subclasses can add arbitary options to \code{...} to help control the behavior of their Panel instances.
 We recommend prefixing any options with the name of the package in the form of \code{<PACKAGE>_<OPTION>},
 so as to avoid conflicts with other options (in the base classes, or in other downstream packages) that have the same name.
 

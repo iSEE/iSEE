@@ -9,13 +9,14 @@
 #' \itemize{
 #' \item \code{ColorByColumnData}, a string specifying the \code{\link{colData}} field for controlling point color,
 #' if \code{ColorBy="Column data"} (see the \linkS4class{Panel} class).
-#' Defaults to the first valid field (see \code{.refineParameters} below).
+#' Defaults to the first valid field (see \code{.cacheCommonInfo} below).
 #' \item \code{ColorByFeatureNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
 #' if \code{ColorBy="Feature name"}.
-#' Defaults to the name of the first valid assay (see \code{?"\link{.refineParameters,DotPlot-method}"} for details).
+#' Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}}, falling back to the name of the first valid assay 
+#' (see \code{?"\link{.cacheCommonInfo,DotPlot-method}"} for the definition of validity).
 #' \item \code{ColorBySampleNameColor}, a string specifying the color to use for coloring an individual sample on the plot,
 #' if \code{ColorBy="Sample name"}.
-#' Defaults to \code{"red"}.
+#' Defaults to \code{"red"} in \code{\link{getPanelDefault}}.
 #' }
 #'
 #' The following slots control other metadata-related aesthetic aspects of the points:
@@ -28,7 +29,7 @@
 #' The specified field should contain continuous values; defaults to the first such valid field.
 #' }
 #'
-#' In addition, this class inherits all slots from its \linkS4class{DotPlot} and \linkS4class{Panel} classes.
+#' In addition, this class inherits all slots from its parent \linkS4class{DotPlot} and \linkS4class{Panel} classes.
 #'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{ColumnDotPlot} class.
@@ -115,8 +116,8 @@ NULL
 setMethod("initialize", "ColumnDotPlot", function(.Object, ..., SelectionEffect=NULL, SelectionColor=NULL, FacetByRow=NULL, FacetByColumn=NULL) {
     args <- list(...)
     args <- .emptyDefault(args, .colorByColData, NA_character_)
-    args <- .emptyDefault(args, .colorByFeatNameAssay, NA_character_)
-    args <- .emptyDefault(args, .colorBySampNameColor, iSEEOptions$get("selected.color"))
+    args <- .emptyDefault(args, .colorByFeatNameAssay, getPanelDefault("ColorByNameAssay"))
+    args <- .emptyDefault(args, .colorBySampNameColor, getPanelDefault("ColorByNameColor"))
 
     args <- .emptyDefault(args, .shapeByColData, NA_character_)
 
@@ -267,7 +268,6 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
     x <- .replaceMissingWithFirst(x, .colorByColData, available)
 
     assays <- dp_cached$valid.assay.names
-    assays <- c(intersect(iSEEOptions$get("assay"), assays), assays)
     x <- .replaceMissingWithFirst(x, .colorByFeatNameAssay, assays)
 
     discrete <- cdp_cached$discrete.colData.names

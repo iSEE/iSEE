@@ -26,11 +26,12 @@ The following slots control the values on the y-axis:
 \item \code{YAxisFeatureName}, a string specifying the name of the feature to plot on the y-axis.
 If \code{NA}, defaults to the first row name of the SummarizedExperiment object.
 \item \code{Assay}, string specifying the name of the assay to use for obtaining expression values.
-Defaults to the first valid assay name (see \code{?"\link{.refineParameters,DotPlot-method}"} for details).
+Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}}, falling back to the name of the first valid assay
+(see \code{?"\link{.cacheCommonInfo,DotPlot-method}"} for the definition of validity).
 \item \code{YAxisFeatureSource}, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces \code{YAxisFeatureName}.
 Defaults to \code{"---"}, i.e., no transmission is performed.
 \item \code{YAxisFeatureDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for the y-axis.
-Defaults to \code{FALSE}.
+Defaults to \code{FALSE} in \code{\link{getPanelDefault}}.
 }
 
 The following slots control the values on the x-axis:
@@ -47,7 +48,7 @@ Defaults to the first row name.
 \item \code{XAxisFeatureSource}, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces \code{XAxisFeatureName}.
 Defaults to \code{"---"}, i.e., no transmission is performed.
 \item \code{XAxisFeatureDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for the x-axis.
-Defaults to \code{FALSE}.
+Defaults to \code{FALSE} in \code{\link{getPanelDefault}}.
 }
 
 In addition, this class inherits all slots from its parent \linkS4class{ColumnDotPlot}, \linkS4class{DotPlot} and \linkS4class{Panel} classes.

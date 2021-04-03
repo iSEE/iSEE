@@ -172,11 +172,11 @@ SCREENSHOT("screenshots/bigdata-downsample.png")
 ```
 
 Downsampling is possible in all `iSEE()` plotting panels that represent features or samples as points.
-We can turn on downsampling for all such panels using the relevant field in `iSEEOptions()`,
+We can turn on downsampling for all such panels using the relevant field in `panelDefaults()`,
 which spares us the hassle of setting `Downsample=` individually in each panel constructor.
 
 ```{r, eval=FALSE}
-iSEEOptions(downsample=TRUE)
+panelDefaults(Downsample=TRUE)
 ```
 
 The downsampling only affects the visualization and the speed of the plot rendering.

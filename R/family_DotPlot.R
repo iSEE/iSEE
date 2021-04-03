@@ -10,7 +10,7 @@
 #' This should be one of \code{"None"}, \code{"Feature name"}, \code{"Sample name"} and either \code{"Column data"} (for \linkS4class{ColumnDotPlot}s) or \code{"Row data"} (for \linkS4class{RowDotPlot}s).
 #' Defaults to \code{"None"}.
 #' \item \code{ColorByDefaultColor}, a string specifying the default color to use for all points if \code{ColorBy="None"}.
-#' Defaults to \code{"black"}.
+#' Defaults to \code{"black"} in \code{\link{getPanelDefault}}.
 #' \item \code{ColorByFeatureName}, a string specifying the feature to be used for coloring points when \code{ColorBy="Feature name"}.
 #' For \linkS4class{RowDotPlot}s, this is used to highlight the point corresponding to the selected feature;
 #' for \linkS4class{ColumnDotPlot}s, this is used to color each point according to the expression of that feature.
@@ -24,11 +24,11 @@
 #' \item \code{ColorBySampleSource}, a string specifying the name of the panel to use for transmitting the sample selection to \code{ColorBySampleNameColor}.
 #' Defaults to \code{"---"}.
 #' \item \code{ColorByFeatureDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source when coloring by feature.
-#' Defaults to \code{FALSE}.
+#' Defaults to \code{FALSE} in \code{\link{getPanelDefault}}.
 #' \item \code{ColorBySampleDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source when coloring by feature.
-#' Defaults to \code{FALSE}.
+#' Defaults to \code{FALSE} in \code{\link{getPanelDefault}}.
 #' \item \code{SelectionAlpha}, a numeric scalar in [0, 1] specifying the transparency to use for non-selected points.
-#' Defaults to 0.1.
+#' Defaults to 0.1 in \code{\link{getPanelDefault}}.
 #' }
 #'
 #' The following slots control other metadata-related aesthetic aspects of the points:
@@ -107,20 +107,21 @@
 #' \item \code{PointAlpha}, non-negative numeric scalar specifying the transparency of the points.
 #' Defaults to 1, i.e., not transparent.
 #' \item \code{Downsample}, logical scalar indicating whether to downsample points for faster plotting.
-#' Defaults to \code{FALSE}.
+#' Defaults to \code{FALSE} in \code{\link{getPanelDefault}}.
 #' \item \code{DownsampleResolution}, numeric scalar specifying the resolution of the downsampling grid (see \code{?\link{subsetPointsByGrid}}) if \code{Downsample=TRUE}.
 #' Larger values correspond to reduced downsampling at the cost of plotting speed.
-#' Defaults to 200.
+#' Defaults to 200 in \code{\link{getPanelDefault}}.
 #' }
 #'
 #' The following slots refer to general plotting parameters:
 #' \itemize{
 #' \item \code{FontSize}, positive numeric scalar specifying the relative font size.
-#' Defaults to 1.
+#' Defaults to 1 in \code{\link{getPanelDefault}}.
 #' \item \code{PointSize}, positive numeric scalar specifying the relative point size.
-#' Defaults to 1.
+#' Defaults to 1 in \code{\link{getPanelDefault}}.
 #' \item \code{LegendPosition}, string specifying the position of the legend on the plot.
-#' Defaults to \code{"Right"} but can also be \code{"Bottom"}.
+#' Defaults to \code{"Bottom"} in \code{\link{getPanelDefault}}.
+#' The other valid choice is \code{"Right"}.
 #' }
 #'
 #' In addition, this class inherits all slots from its parent \linkS4class{Panel} class.
@@ -256,38 +257,38 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     args <- .emptyDefault(args, .facetColumn, .facetByNothingTitle)
 
     args <- .emptyDefault(args, .colorByField, .colorByNothingTitle)
-    args <- .emptyDefault(args, .colorByDefaultColor, iSEEOptions$get("point.color"))
+    args <- .emptyDefault(args, .colorByDefaultColor, getPanelDefault(.colorByDefaultColor))
 
     args <- .emptyDefault(args, .colorByFeatName, NA_character_)
-    args <- .emptyDefault(args, .colorByFeatDynamic, iSEEOptions$get("selection.dynamic.single"))
+    args <- .emptyDefault(args, .colorByFeatDynamic, getPanelDefault("SingleSelectionDynamicSource"))
     args <- .emptyDefault(args, .colorByRowTable, .noSelection)
 
     args <- .emptyDefault(args, .colorBySampName, NA_character_)
-    args <- .emptyDefault(args, .colorBySampDynamic, iSEEOptions$get("selection.dynamic.single"))
+    args <- .emptyDefault(args, .colorBySampDynamic, getPanelDefault("SingleSelectionDynamicSource"))
     args <- .emptyDefault(args, .colorByColTable, .noSelection)
 
     args <- .emptyDefault(args, .shapeByField, .shapeByNothingTitle)
 
     args <- .emptyDefault(args, .sizeByField, .sizeByNothingTitle)
 
-    args <- .emptyDefault(args, .selectTransAlpha, iSEEOptions$get("selected.alpha"))
+    args <- .emptyDefault(args, .selectTransAlpha, getPanelDefault(.selectTransAlpha))
 
     args <- .emptyDefault(args, .visualParamBoxOpen, FALSE)
     args <- .emptyDefault(args, .visualParamChoice, .visualParamChoiceColorTitle)
 
     args <- .emptyDefault(args, .contourAdd, FALSE)
-    args <- .emptyDefault(args, .contourColor, iSEEOptions$get("contour.color"))
+    args <- .emptyDefault(args, .contourColor, getPanelDefault(.contourColor))
 
-    args <- .emptyDefault(args, .plotPointSize, iSEEOptions$get("point.size"))
-    args <- .emptyDefault(args, .plotPointAlpha, iSEEOptions$get("point.alpha"))
-    args <- .emptyDefault(args, .plotPointDownsample, iSEEOptions$get("downsample"))
-    args <- .emptyDefault(args, .plotPointSampleRes, iSEEOptions$get("downsample.resolution"))
+    args <- .emptyDefault(args, .plotPointSize, getPanelDefault(.plotPointSize))
+    args <- .emptyDefault(args, .plotPointAlpha, getPanelDefault(.plotPointAlpha))
+    args <- .emptyDefault(args, .plotPointDownsample, getPanelDefault(.plotPointDownsample))
+    args <- .emptyDefault(args, .plotPointSampleRes, getPanelDefault(.plotPointSampleRes))
 
     args <- .emptyDefault(args, .plotCustomLabels, FALSE)
     args <- .emptyDefault(args, .plotCustomLabelsText, NA_character_)
-    args <- .emptyDefault(args, .plotFontSize, iSEEOptions$get("font.size"))
-    args <- .emptyDefault(args, .legendPointSize, iSEEOptions$get("legend.point.size"))
-    args <- .emptyDefault(args, .plotLegendPosition, iSEEOptions$get("legend.position"))
+    args <- .emptyDefault(args, .plotFontSize, getPanelDefault(.plotFontSize))
+    args <- .emptyDefault(args, .legendPointSize, getPanelDefault(.legendPointSize))
+    args <- .emptyDefault(args, .plotLegendPosition, getPanelDefault(.plotLegendPosition))
 
     args <- .emptyDefault(args, .plotHoverInfo, TRUE)
 

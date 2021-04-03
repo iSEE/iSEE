@@ -32,13 +32,14 @@ The following slots control coloring of the points:
 \itemize{
 \item \code{ColorByRowData}, a string specifying the \code{\link{rowData}} field for controlling point color,
 if \code{ColorBy="Row data"} (see the \linkS4class{Panel} class).
-Defaults to the first field.
+Defaults to the first valid field (see \code{.cacheCommonInfo} below).
 \item \code{ColorBySampleNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
 if \code{ColorBy="Sample name"}.
-Defaults to the name of the first assay.
+Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}}, falling back to the name of the first valid assay
+(see \code{?"\link{.cacheCommonInfo,DotPlot-method}"} for the definition of validity).
 \item \code{ColorByFeatureNameColor}, a string specifying the color to use for coloring an individual sample on the plot,
 if \code{ColorBy="Feature name"}.
-Defaults to \code{"red"}.
+Defaults to \code{"red"} in \code{\link{getPanelDefault}}.
 }
 
 The following slots control other metadata-related aesthetic aspects of the points:

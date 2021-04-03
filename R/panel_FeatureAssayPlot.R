@@ -9,11 +9,12 @@
 #' \item \code{YAxisFeatureName}, a string specifying the name of the feature to plot on the y-axis.
 #' If \code{NA}, defaults to the first row name of the SummarizedExperiment object.
 #' \item \code{Assay}, string specifying the name of the assay to use for obtaining expression values.
-#' Defaults to the first valid assay name (see \code{?"\link{.refineParameters,DotPlot-method}"} for details).
+#' Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}}, falling back to the name of the first valid assay
+#' (see \code{?"\link{.cacheCommonInfo,DotPlot-method}"} for the definition of validity).
 #' \item \code{YAxisFeatureSource}, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces \code{YAxisFeatureName}.
 #' Defaults to \code{"---"}, i.e., no transmission is performed.
 #' \item \code{YAxisFeatureDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for the y-axis.
-#' Defaults to \code{FALSE}.
+#' Defaults to \code{FALSE} in \code{\link{getPanelDefault}}.
 #' }
 #'
 #' The following slots control the values on the x-axis:
@@ -30,7 +31,7 @@
 #' \item \code{XAxisFeatureSource}, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces \code{XAxisFeatureName}.
 #' Defaults to \code{"---"}, i.e., no transmission is performed.
 #' \item \code{XAxisFeatureDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for the x-axis.
-#' Defaults to \code{FALSE}.
+#' Defaults to \code{FALSE} in \code{\link{getPanelDefault}}.
 #' }
 #'
 #' In addition, this class inherits all slots from its parent \linkS4class{ColumnDotPlot}, \linkS4class{DotPlot} and \linkS4class{Panel} classes.
@@ -147,17 +148,17 @@ FeatureAssayPlot <- function(...) {
 #' @importFrom methods callNextMethod
 setMethod("initialize", "FeatureAssayPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .emptyDefault(args, .featAssayAssay, NA_character_)
+    args <- .emptyDefault(args, .featAssayAssay, getPanelDefault(.featAssayAssay))
     args <- .emptyDefault(args, .featAssayXAxis, .featAssayXAxisNothingTitle)
     args <- .emptyDefault(args, .featAssayXAxisColData, NA_character_)
 
     args <- .emptyDefault(args, .featAssayXAxisRowTable, .noSelection)
     args <- .emptyDefault(args, .featAssayXAxisFeatName, NA_character_)
-    args <- .emptyDefault(args, .featAssayXAxisFeatDynamic, iSEEOptions$get("selection.dynamic.single"))
+    args <- .emptyDefault(args, .featAssayXAxisFeatDynamic, getPanelDefault("SingleSelectionDynamicSource"))
 
     args <- .emptyDefault(args, .featAssayYAxisRowTable, .noSelection)
     args <- .emptyDefault(args, .featAssayYAxisFeatName, NA_character_)
-    args <- .emptyDefault(args, .featAssayYAxisFeatDynamic, iSEEOptions$get("selection.dynamic.single"))
+    args <- .emptyDefault(args, .featAssayYAxisFeatDynamic, getPanelDefault("SingleSelectionDynamicSource"))
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -182,7 +183,6 @@ setMethod(".refineParameters", "FeatureAssayPlot", function(x, se) {
         return(NULL)
     }
 
-    all_assays <- c(intersect(iSEEOptions$get("assay"), all_assays), all_assays)
     x <- .replaceMissingWithFirst(x, .featAssayAssay, all_assays)
 
     for (field in c(.featAssayXAxisFeatName, .featAssayYAxisFeatName)) {

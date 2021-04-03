@@ -28,10 +28,7 @@
 #' @rdname setCachedCommonInfo
 #' @importFrom S4Vectors metadata metadata<-
 .setCachedCommonInfo <- function(se, cls, ...) {
-    if (is.null(metadata(se)[["iSEE"]])) {
-        metadata(se)[["iSEE"]] <- list()
-    }
-    metadata(se)[["iSEE"]][[cls]] <- list(...)
+    metadata(se) <- .set_nested_list(metadata(se), c("iSEE", "cached", cls), list(...))
     se
 }
 
@@ -39,7 +36,20 @@
 #' @rdname setCachedCommonInfo
 #' @importFrom S4Vectors metadata
 .getCachedCommonInfo <- function(se, cls) {
-    metadata(se)[["iSEE"]][[cls]]
+    metadata(se)[["iSEE"]][["cached"]][[cls]]
+}
+
+.set_nested_list <- function(x, i, value) {
+    if (!is.list(x)) {
+        x <- list()
+    }
+    if (length(i)==1L) {
+        x[[i]] <- value
+    } else {
+        i1 <- i[1]
+        x[[i1]] <- .set_nested_list(x[[i1]], i[-1], value)
+    }
+    x 
 }
 
 #' Dedicated colormap getters/setters

@@ -56,7 +56,7 @@
     # Add commands coercing X and Y to appropriate type
     collected$coerce <- .coerce_dataframe_columns(envir, 
         fields=c("X", "Y"), df="plot.data",
-        max_levels=iSEEOptions$get("factor.maxlevels")
+        max_levels=.get_factor_maxlevels()
     )
 
     # Add commands adding optional columns to plot.data
@@ -67,7 +67,7 @@
         collected$color <- c(collected$color, 
             .coerce_dataframe_columns(envir, 
                 fields="ColorBy", df="plot.data", 
-                max_levels=iSEEOptions$get("color.maxlevels")
+                max_levels=.get_color_maxlevels()
             )
         )
     }

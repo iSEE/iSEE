@@ -12,7 +12,8 @@ iSEEOptions
 }
 \description{
 Get or set global values that are used by relevant panels during construction and application initialization.
-This allows users to easily modify parameters for multiple panels simultaneously.
+This has been deprecated in favor of \code{\link{panelDefaults}} (for options that apply during \linkS4class{Panel} construction)
+and \code{\link{registerAppOptions}} (for options that apply during application runtime).
 }
 \section{Commands}{
 
@@ -54,18 +55,6 @@ Defaults to 100.}
 \item{\code{RowTable.select.details}}{A function that takes a string containing the name of a feature (i.e., the current selection in the \linkS4class{RowTable}) and returns a HTML element with more details.} 
 \item{\code{ColumnTable.select.details}}{A function that takes a string containing the name of a sample (i.e., the current selection in the \linkS4class{ColumnTable}) and returns a HTML element with more details.}
 }
-}
-
-\section{Comments on globals}{
-
-As much as possible, these options will only affect the application during Panel construction.
-This enables users to reproduce the app state from one session to another by simply saving the memory. 
-Otherwise, users would also have to export the state of the global variables to properly recapitulate the app state.
-
-For developers: following this guideline generally means that the globals should reflect some parameter that is already present as a formal slot in the panel class.
-If all panels must have the same value, this can be enforced via some creative use of \code{\link{.cacheCommonInfo}} (to cache the first encountered value of the global slot)
-followed by \code{\link{.refineParameters}} (to enforce that value on every other panel of the same class) - 
-see the MAPlot class in the \pkg{iSEEu} package for a working example.
 }
 
 \examples{

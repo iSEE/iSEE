@@ -1,3 +1,8 @@
+# iSEE 2.3.13
+
+* Avoid partial name matching in `.getCachedCommonInfo`.
+* Deprecated `iSEEOptions` in favor of `panelDefaults` (for construction-time globals) and `registerAppOptions` (for runtime globals).
+
 # iSEE 2.3.12
 
 * Added an `.allowableColorByDataChoices` generic for downstream panels to control `ColorBy*Data` choices.

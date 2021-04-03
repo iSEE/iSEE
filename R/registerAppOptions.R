@@ -74,7 +74,7 @@
 #' @export
 #' @importFrom S4Vectors metadata metadata<-
 registerAppOptions <- function(se, ...) {
-    metadata(se) <- .setNestedList(metadata(se), c("iSEE", "options"), list(...))
+    metadata(se) <- .set_nested_list(metadata(se), c("iSEE", "options"), list(...))
     se
 }
 

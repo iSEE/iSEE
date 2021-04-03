@@ -20,10 +20,10 @@ new_defaults = function(value = list()) {
     }
     set = function(...) {
         dots = resolve(...)
-        if (names(dots) %in% .translation.panel_defaults) {
+        if (any(names(dots) %in% .translation.panel_defaults)) {
             .Deprecated(old="iSEEOptions$set", new="panelDefaults")
         }
-        if (names(dots) %in% .translation.app_defaults) {
+        if (any(names(dots) %in% .translation.app_defaults)) {
             .Deprecated(old="iSEEOptions$set", new="registerAppOptions")
         }
         if (length(dots)) defaults <<- merge(dots)

@@ -92,6 +92,8 @@ The following slots refer to general plotting parameters:
 \item \code{ShowDimNames}, a character vector specifying the dimensions for which to display names.
 This can contain zero or more of \code{"Rows"} and \code{"Columns"}.
 Defaults to \code{"Rows"}.
+\item \code{NamesRowFontSize}, a numerical value setting the font size of the row names.
+\item \code{NamesColumnFontSize}, a numerical value setting the font size of the column names.
 \item \code{LegendPosition}, string specifying the position of the legend on the plot.
 Defaults to \code{"Bottom"} in \code{\link{getPanelDefault}} but can also be \code{"Right"}.
 \item \code{LegendDirection}, string specifying the orientation of the legend on the plot for continuous covariates.

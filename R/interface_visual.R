@@ -311,7 +311,7 @@ This is useful to override the default range of the color scale, which is automa
             )
         )
     })
-    
+
     .addSpecificTour(class(x)[1], .namesRowFontSize, function(plot_name) {
         data.frame(
             rbind(
@@ -322,7 +322,7 @@ This is useful to override the default range of the color scale, which is automa
             )
         )
     })
-    
+
     .addSpecificTour(class(x)[1], .namesColumnFontSize, function(plot_name) {
         data.frame(
             rbind(
@@ -333,7 +333,7 @@ This is useful to override the default range of the color scale, which is automa
             )
         )
     })
-    
+
 
     .addSpecificTour(class(x)[1], .plotLegendPosition, function(plot_name) {
         data.frame(
@@ -449,20 +449,16 @@ Horizontal, vertical; the choice is yours."
                 help = TRUE),
             .conditionalOnCheckGroup(
                 .input_FUN(.showDimnames), .showNamesRowTitle,
-                ABLEFUN(
-                    .numericInput.iSEE(x, .namesRowFontSize, 
-                                       label="Row names fontsize",
-                                       value=slot(x, .namesRowFontSize),
-                                       help=TRUE)
-                )),
+                .numericInput.iSEE(x, .namesRowFontSize,
+                                   label="Row names fontsize",
+                                   value=slot(x, .namesRowFontSize),
+                                   help=TRUE)),
             .conditionalOnCheckGroup(
                 .input_FUN(.showDimnames), .showNamesColumnTitle,
-                ABLEFUN(
-                    .numericInput.iSEE(x, .namesColumnFontSize, 
-                                       label="Column names fontsize",
-                                       value=slot(x, .namesColumnFontSize),
-                                       help=TRUE)
-                )),
+                .numericInput.iSEE(x, .namesColumnFontSize,
+                                   label="Column names fontsize",
+                                   value=slot(x, .namesColumnFontSize),
+                                   help=TRUE)),
         ),
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceLegendTitle,

@@ -1,3 +1,8 @@
+# iSEE 2.3.14
+
+* Allow modification of font sizes for row and column names in `ComplexHeatmapPlot`.
+* Bugfix for assignment of annotation colors in `ComplexHeatmapPlot`.
+
 # iSEE 2.3.13
 
 * Avoid partial name matching in `.getCachedCommonInfo`.

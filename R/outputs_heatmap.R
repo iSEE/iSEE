@@ -201,7 +201,7 @@
                 ".color_values <- setdiff(unique(.color_values), NA)",
                 sprintf(".col_colors <- colDataColorMap(colormap, %s, discrete=TRUE)(%s)",
                     deparse(annot), 'length(.color_values)'),
-                'names(.col_colors) <- unique(.color_values)',
+                'if (is.null(names(.col_colors))) names(.col_colors) <- levels(factor(.color_values))',
                 sprintf(".column_col[[%s]] <- .col_colors", deparse(annot))
             )
         }

@@ -460,6 +460,9 @@ setClass("ColumnDataTable", contains="ColumnTable")
 .showDimnames <- "ShowDimNames"
 .plotLegendDirection <- "LegendDirection"
 
+.namesRowFontSize <- "NamesRowFontSize"
+.namesColumnFontSize <- "NamesColumnFontSize"
+
 collated <- character(0)
 
 collated[.heatMapAssay] <- "character"
@@ -485,6 +488,8 @@ collated[.showDimnames] <- "character"
 collated[.plotLegendPosition] <- "character"
 collated[.plotLegendDirection] <- "character"
 collated[.visualParamBoxOpen] <- "logical"
+collated[.namesRowFontSize] <- "numeric"
+collated[.namesColumnFontSize] <- "numeric"
 
 .heatMapShowSelection <- "ShowColumnSelection"
 .heatMapOrderSelection <- "OrderColumnSelection"

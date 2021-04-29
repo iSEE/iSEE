@@ -312,6 +312,29 @@ This is useful to override the default range of the color scale, which is automa
         )
     })
 
+    .addSpecificTour(class(x)[1], .namesRowFontSize, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .namesRowFontSize),
+                    intro = "Here, we can control the font size of the row names."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .namesColumnFontSize, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .namesColumnFontSize),
+                    intro = "Here, we can control the font size of the column names."
+                )
+            )
+        )
+    })
+
+
     .addSpecificTour(class(x)[1], .plotLegendPosition, function(plot_name) {
         data.frame(
             rbind(
@@ -423,7 +446,19 @@ Horizontal, vertical; the choice is yours."
                 inline=TRUE,
                 selected=slot(x, .showDimnames),
                 choices=c(.showNamesRowTitle, .showNamesColumnTitle),
-                help = TRUE)
+                help = TRUE),
+            .conditionalOnCheckGroup(
+                .input_FUN(.showDimnames), .showNamesRowTitle,
+                .numericInput.iSEE(x, .namesRowFontSize,
+                                   label="Row names fontsize",
+                                   value=slot(x, .namesRowFontSize),
+                                   help=TRUE)),
+            .conditionalOnCheckGroup(
+                .input_FUN(.showDimnames), .showNamesColumnTitle,
+                .numericInput.iSEE(x, .namesColumnFontSize,
+                                   label="Column names fontsize",
+                                   value=slot(x, .namesColumnFontSize),
+                                   help=TRUE)),
         ),
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceLegendTitle,

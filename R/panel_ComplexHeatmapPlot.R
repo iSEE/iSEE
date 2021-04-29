@@ -66,6 +66,8 @@
 #' \item \code{ShowDimNames}, a character vector specifying the dimensions for which to display names.
 #' This can contain zero or more of \code{"Rows"} and \code{"Columns"}.
 #' Defaults to \code{"Rows"}.
+#' \item \code{NamesRowFontSize}, a numerical value setting the font size of the row names.
+#' \item \code{NamesColumnFontSize}, a numerical value setting the font size of the column names.
 #' \item \code{LegendPosition}, string specifying the position of the legend on the plot.
 #' Defaults to \code{"Bottom"} in \code{\link{getPanelDefault}} but can also be \code{"Right"}.
 #' \item \code{LegendDirection}, string specifying the orientation of the legend on the plot for continuous covariates.
@@ -250,6 +252,9 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- .emptyDefault(args, .heatMapCenteredColormap, .colormapPurpleBlackYellow)
 
     args <- .emptyDefault(args, .showDimnames, c(.showNamesRowTitle))
+    
+    args <- .emptyDefault(args, .namesRowFontSize, .plotFontSizeAxisTextDefault)
+    args <- .emptyDefault(args, .namesColumnFontSize, .plotFontSizeAxisTextDefault)
 
     args <- .emptyDefault(args, .plotLegendPosition, getPanelDefault(.plotLegendPosition))
     args <- .emptyDefault(args, .plotLegendDirection, getPanelDefault(.plotLegendDirection))
@@ -276,6 +281,11 @@ setValidity2("ComplexHeatmapPlot", function(object) {
     msg <- .multipleChoiceError(msg, object, .showDimnames,
         c(.showNamesRowTitle, .showNamesColumnTitle))
 
+    msg <- .validNumberError(msg, object, .namesRowFontSize, 
+                             lower=0, upper=Inf)
+    msg <- .validNumberError(msg, object, .namesColumnFontSize, 
+                             lower=0, upper=Inf)
+        
     msg <- .allowableChoiceError(msg, object, .plotLegendPosition,
         c(.plotLegendRightTitle, .plotLegendBottomTitle))
 
@@ -554,6 +564,7 @@ setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info)
 #' @importFrom SummarizedExperiment assay rowData colData
 #' @importFrom ggplot2 ggplot geom_text aes theme_void
 #' @importFrom ComplexHeatmap Heatmap draw columnAnnotation rowAnnotation
+#' @importFrom grid gpar
 setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, all_contents) {
     # print(str(x))
     plot_env <- new.env()
@@ -611,6 +622,10 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     heatmap_args[["name"]] <- deparse(.build_heatmap_assay_legend_title(x, !.is_heatmap_continuous(x, se)))
     heatmap_args[["show_row_names"]] <- as.character(.showNamesRowTitle %in% slot(x, .showDimnames))
     heatmap_args[["show_column_names"]] <- as.character(.showNamesColumnTitle %in% slot(x, .showDimnames))
+    
+    # Font sizes for names
+    heatmap_args[["row_names_gp"]] <- sprintf('grid::gpar(fontsize=%s)', deparse(slot(x, .namesRowFontSize)))
+    heatmap_args[["column_names_gp"]] <- sprintf('grid::gpar(fontsize=%s)', deparse(slot(x, .namesColumnFontSize)))
 
     # Legend parameters
     heatmap_args[['heatmap_legend_param']] <- sprintf('list(direction=%s)', deparse(tolower(slot(x, .plotLegendDirection))))
@@ -690,6 +705,8 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
             .heatMapAssay,
             .heatMapCenteredColormap,
             .showDimnames,
+            .namesRowFontSize,
+            .namesColumnFontSize,
             .plotLegendPosition,
             .plotLegendDirection,
             .heatMapShowSelection

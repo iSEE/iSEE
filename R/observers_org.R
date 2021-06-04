@@ -118,10 +118,10 @@
                 .create_width_height_observers(latest, input, org_pObjects)
             }
 
-            updated_names <- .define_memory_panel_choices(adjusted)
-            updateSelectizeInput(session, 'panel_order',
-                choices=c(updated_names, available_enc), selected=updated_names)
         }
+        updated_names <- .define_memory_panel_choices(adjusted)
+        updateSelectizeInput(session, 'panel_order',
+                             choices=c(updated_names, available_enc), selected=updated_names)
 
         org_pObjects$memory <- adjusted
         org_rObjects$rerender <- .increment_counter(org_rObjects$rerender)

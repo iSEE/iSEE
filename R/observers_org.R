@@ -96,7 +96,7 @@
     observeEvent(input$panel_order, {
         ipo <- unname(input$panel_order)
         enc_names <- .define_memory_panel_choices(org_pObjects$memory, named=FALSE)
-        if (identical(ipo, enc_names)) {
+        if (identical(ipo, unname(enc_names))) {
             return(NULL)
         }
 

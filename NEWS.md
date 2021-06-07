@@ -1,3 +1,7 @@
+# iSEE 2.5.1
+
+* Bugfix for removed panels showing up among the selectable ones.
+
 # iSEE 2.3.14
 
 * Allow modification of font sizes for row and column names in `ComplexHeatmapPlot`.

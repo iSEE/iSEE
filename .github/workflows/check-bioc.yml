@@ -137,6 +137,9 @@ jobs:
 
           ## For installing usethis's dependency gert
           brew install libgit2
+          
+          ## For Cairo, based on https://stackoverflow.com/q/63648591/9374370
+          brew install xquartz --cask
 
       - name: Install Windows system dependencies
         if: runner.os == 'Windows'

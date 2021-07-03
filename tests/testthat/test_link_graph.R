@@ -1,5 +1,5 @@
 # This script tests the code related to the creation of the point transmission infrastructure.
-# library(iSEE); library(testthat); source("setup_sce.R"); source("setup_other.R"); source("test_link_graph.R")
+# library(iSEE); library(testthat); source("setup_sce.R"); source("setup_mimic_live_app.R"); source("test_link_graph.R")
 
 context("selection_links")
 
@@ -22,7 +22,7 @@ test_that("selection link creation works correctly", {
         sort(names(igraph::V(g))),
         unname(sort(vapply(pObjects$memory, .getEncodedName, "")))
     )
-    
+
     expect_true(igraph::are_adjacent(g, "ColumnDataPlot1", "FeatureAssayPlot1")) # doesn't go the other way!
     expect_false(igraph::are_adjacent(g, "FeatureAssayPlot1", "ColumnDataPlot1"))
 
@@ -80,11 +80,11 @@ test_that("select dependent identification works correctly", {
         c("ColumnDataPlot1", "ColumnDataPlot2"))
 
     expect_identical(
-        names(iSEE:::.get_direct_children(g, "ColumnDataPlot1")), 
+        names(iSEE:::.get_direct_children(g, "ColumnDataPlot1")),
         "FeatureAssayPlot1")
 
     expect_identical(
-        names(iSEE:::.get_direct_children(g, "FeatureAssayPlot1")), 
+        names(iSEE:::.get_direct_children(g, "FeatureAssayPlot1")),
         "FeatureAssayPlot2")
 
     expect_identical(
@@ -127,7 +127,7 @@ test_that("graph adding and deleting responds to fields", {
     # Adding to an existing link augments the available fields.
     id <- igraph::get.edge.ids(g, c("ReducedDimensionPlot1", "ColumnDataPlot1"))
     expect_identical(igraph::E(g)$fields[[id]], iSEE:::.selectColSource)
-    
+
     g2 <- iSEE:::.add_interpanel_link(g, "ColumnDataPlot1", "ReducedDimensionPlot1", "BLAH")
     expect_identical(igraph::E(g2)$fields[[id]], c(iSEE:::.selectColSource, "BLAH"))
 

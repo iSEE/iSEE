@@ -1,5 +1,5 @@
 # This script tests the code related to the creation of the point transmission infrastructure.
-# library(iSEE); library(testthat); source("setup_sce.R"); source("setup_other.R"); source("test_tracker.R")
+# library(iSEE); library(testthat); source("setup_sce.R"); source("test_code_tracker.R")
 
 context("codeTracker")
 
@@ -86,7 +86,7 @@ test_that("code trackers can deparse a selection history", {
 
 test_that(".snapshot_graph_linkedpanels returns NULL after plotting", {
     pObjects <- mimic_live_app(sce, memory)
-    
+
     # Note: the following command plots as a byproduct but returns nothing
     out <- iSEE:::.snapshot_graph_linkedpanels(pObjects$selection_links,
         vapply(pObjects$memory, .panelColor, ""))

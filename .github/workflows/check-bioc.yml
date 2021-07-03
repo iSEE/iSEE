@@ -34,12 +34,12 @@ name: R-CMD-check-bioc
 ## Note that you can always run a GHA test without the cache by using the word
 ## "/nocache" in the commit message.
 env:
-  has_testthat: 'false'
-  run_covr: 'false'
-  run_pkgdown: 'false'
+  has_testthat: 'true'
+  run_covr: 'true'
+  run_pkgdown: 'true'
   has_RUnit: 'false'
   cache-version: 'cache-v1'
-  run_docker: 'false'
+  run_docker: 'true'
 
 jobs:
   build-check:
@@ -138,6 +138,9 @@ jobs:
           ## For installing usethis's dependency gert
           brew install libgit2
 
+          ## For Cairo, based on https://stackoverflow.com/q/63648591/9374370
+          brew install xquartz --cask
+
       - name: Install Windows system dependencies
         if: runner.os == 'Windows'
         run: |
@@ -235,7 +238,7 @@ jobs:
         run: |
           BiocCheck::BiocCheck(
               dir('check', 'tar.gz$', full.names = TRUE),
-              `quit-with-status` = TRUE,
+              `quit-with-status` = FALSE,
               `no-check-R-ver` = TRUE,
               `no-check-bioc-help` = TRUE
           )
@@ -275,7 +278,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: isee/isee
+          repository: iseedevelopers/isee
           tag_with_ref: true
           tag_with_sha: true
           tags: latest

@@ -137,7 +137,7 @@ jobs:
 
           ## For installing usethis's dependency gert
           brew install libgit2
-          
+
           ## For Cairo, based on https://stackoverflow.com/q/63648591/9374370
           brew install xquartz --cask
 
@@ -238,7 +238,7 @@ jobs:
         run: |
           BiocCheck::BiocCheck(
               dir('check', 'tar.gz$', full.names = TRUE),
-              `quit-with-status` = TRUE,
+              `quit-with-status` = FALSE,
               `no-check-R-ver` = TRUE,
               `no-check-bioc-help` = TRUE
           )

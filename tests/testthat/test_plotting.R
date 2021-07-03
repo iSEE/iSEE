@@ -368,7 +368,7 @@ test_that(".make_featAssayPlot works for XAxis set to Column data", {
 })
 
 test_that(".make_featAssayPlot works for XAxis set to a character feature name", {
-    selected_gene <- "0610009B22Rik"
+    selected_gene <- "Lamp5"
 
     fdp <- pObjects$memory$FeatureAssayPlot1
     fdp[[iSEE:::.featAssayXAxis]] <- iSEE:::.featAssayXAxisFeatNameTitle
@@ -1118,7 +1118,7 @@ test_that(".downsample_points produces the appropriate code for horizontal violi
     expect_true(any(grepl("plot.data.pre", unlist(out$commands))))
 })
 
-test_that(".downsample_points interacts correctly with selection of a specific sample/feature", { 
+test_that(".downsample_points interacts correctly with selection of a specific sample/feature", {
     rdp <- pObjects$memory$ReducedDimensionPlot1
     rdp[[iSEE:::.colorByField]] <- iSEE:::.colorBySampNameTitle
     rdp[[iSEE:::.plotPointDownsample]] <- TRUE
@@ -1297,19 +1297,19 @@ test_that(".generateDotPlot handles custom labels", {
     rdp[[iSEE:::.plotCustomLabels]] <- TRUE
     cn <- colnames(sce)[1:3]
     rdp[[iSEE:::.plotCustomLabelsText]] <- paste0(cn, collapse = "\n")
-    
+
     p.out <- .generateOutput(rdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
-    
+
     # return value is a named list
     expect_type(p.out, "list")
     expect_named(p.out, c("commands", "contents", "plot", "varname"))
-    
+
     # cmd value is a named list
     expect_type(p.out$commands, "list")
     expect_true(all(vapply(p.out$commands, is.character, TRUE)))
     expect_true(any(grepl("LabelBy", p.out$commands)))
-    
+
     #plot
     expect_s3_class(p.out$plot, c("gg", "ggplot"))
 })
@@ -1339,7 +1339,7 @@ test_that(".generateDotPlot handles centered labels", {
 
     # Works for row-based plots.
     rdp <- pObjects$memory$RowDataPlot1
-    rdp[["XAxis"]] <- "Row data" 
+    rdp[["XAxis"]] <- "Row data"
     rdp[[iSEE:::.plotLabelCenters]] <- TRUE
 
     p.out <- .generateOutput(rdp, sce,

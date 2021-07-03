@@ -1,3 +1,6 @@
+# This tests the "bugs" feature
+# library(testthat); library(iSEE); source('test_bugs.R')
+
 context("bugs")
 
 # prepareSpeechRecognition ----

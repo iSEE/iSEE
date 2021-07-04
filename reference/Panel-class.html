@@ -73,7 +73,7 @@ It provides slots and methods to control the height and width of each panel, as 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.1</span>
       </span>
     </div>
 
@@ -166,16 +166,16 @@ It provides slots and methods to control the height and width of each panel, as 
 <li><p><code>PanelId</code>, an integer scalar specifying the identifier for the panel.
 This should be unique across panels of the same concrete class.</p></li>
 <li><p><code>PanelWidth</code>, an integer scalar specifying the width of the panel.
-Bootstrap coordinates are used so this value should lie between 2 and 12; defaults to 4.</p></li>
+Bootstrap coordinates are used so this value should lie between 2 and 12; defaults to 4 in <code><a href='panelDefaults.html'>getPanelDefault</a></code>.</p></li>
 <li><p><code>PanelHeight</code>, an integer scalar specifying the height of the panel in pixels.
-This is expected to lie between 400 and 1000; defaults to 500.</p></li>
+This is expected to lie between 400 and 1000; defaults to 500 in <code><a href='panelDefaults.html'>getPanelDefault</a></code>.</p></li>
 </ul>
 
 <p>The following slots are relevant to <em>receiving</em> a multiple selection on the rows:</p><ul>
 <li><p><code>RowSelectionSource</code>, a string specifying the name of the transmitting panel from which to receive a multiple row selection (e.g., <code>"RowDataPlot1"</code>).
 Defaults to <code>"---"</code>.</p></li>
 <li><p><code>RowSelectionDynamicSource</code>, a logical scalar indicating whether <code>x</code> should dynamically change its selection source for multiple row selections.
-Defaults to <code>FALSE</code>.</p></li>
+Defaults to <code>FALSE</code> in <code><a href='panelDefaults.html'>getPanelDefault</a></code>.</p></li>
 <li><p><code>RowSelectionRestrict</code>, a logical scalar indicating whether the display of <code>x</code> should be restricted to the rows in the multiple selection received from a transmitting panel.
 Defaults to <code>FALSE</code>.</p></li>
 </ul>
@@ -184,7 +184,7 @@ Defaults to <code>FALSE</code>.</p></li>
 <li><p><code>ColumnSelectionSource</code>, a string specifying the name of the transmitting panel from which to receive a multiple column selection (e.g., <code>"ColumnDataPlot1"</code>).
 Defaults to <code>"---"</code>.</p></li>
 <li><p><code>ColumnSelectionDynamicSource</code>, a logical scalar indicating whether <code>x</code> should dynamically change its selection source for multiple column selections.
-Defaults to <code>FALSE</code>.</p></li>
+Defaults to <code>FALSE</code> in <code><a href='panelDefaults.html'>getPanelDefault</a></code>.</p></li>
 <li><p><code>ColumnSelectionRestrict</code>, a logical scalar indicating whether the display of <code>x</code> should be restricted to the columns in the multiple selection received from a transmitting panel.
 Defaults to <code>FALSE</code>.</p></li>
 </ul>

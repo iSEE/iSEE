@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.1</span>
       </span>
     </div>
 
@@ -101,7 +101,7 @@
 
       
 
-      </header><script src="custom_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="custom_files/font-awesome-5.1.0/css/all.css" rel="stylesheet">
+      </header><script src="custom_files/header-attrs-2.9/header-attrs.js"></script><link href="custom_files/font-awesome-5.1.0/css/all.css" rel="stylesheet">
 <link href="custom_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
@@ -113,18 +113,18 @@
       </address>
                               <h4 class="author">Federico Marini</h4>
             <address class="author_afil">
-      Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz<br><a class="author_email" href="mailto:#"></a><a href="mailto:marinif@uni-mainz.de" class="email">marinif@uni-mainz.de</a>
+      Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), MainzCenter for Thrombosis and Hemostasis (CTH), Mainz<br><a class="author_email" href="mailto:#"></a><a href="mailto:marinif@uni-mainz.de" class="email">marinif@uni-mainz.de</a>
       </address>
                               <h4 class="author">Charlotte Soneson</h4>
             <address class="author_afil">
-      Friedrich Miescher Institute for Biomedical Research, Basel, Switzerland<br><a class="author_email" href="mailto:#"></a><a href="mailto:charlottesoneson@gmail.com" class="email">charlottesoneson@gmail.com</a>
+      Friedrich Miescher Institute for Biomedical Research, Basel, SwitzerlandSIB Swiss Institute of Bioinformatics<br><a class="author_email" href="mailto:#"></a><a href="mailto:charlottesoneson@gmail.com" class="email">charlottesoneson@gmail.com</a>
       </address>
                               <h4 class="author">Aaron Lun</h4>
             <address class="author_afil">
       Cancer Research UK Cambridge Institute, University of Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 class="date">1 February 2021</h4>
+            <h4 class="date">4 July 2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/custom.Rmd"><code>vignettes/custom.Rmd</code></a></small>
       <div class="hidden name"><code>custom.Rmd</code></div>
@@ -133,7 +133,7 @@
 
     
     
-<p><strong>Compiled date</strong>: 2021-02-01</p>
+<p><strong>Compiled date</strong>: 2021-07-04</p>
 <p><strong>Last edited</strong>: 2020-04-20</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="background" class="section level1">
@@ -162,7 +162,7 @@
 <div id="example-of-custom-plot-panel" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example-of-custom-plot-panel" class="anchor"></a>Example of custom plot panel</h2>
-<p>To demonstrate the use of <em>custom plot panels</em>, we define an example function <code>CUSTOM_DIMRED</code> that takes a subset of features and cells in a <code>SingleCellExperiment</code> object and performs dimensionality reduction on that subset with <em><a href="https://bioconductor.org/packages/3.13/scater">scater</a></em> function <span class="citation">(McCarthy et al. 2017)</span>.</p>
+<p>To demonstrate the use of <em>custom plot panels</em>, we define an example function <code>CUSTOM_DIMRED</code> that takes a subset of features and cells in a <code>SingleCellExperiment</code> object and performs dimensionality reduction on that subset with <em><a href="https://bioconductor.org/packages/3.14/scater">scater</a></em> function <span class="citation">(McCarthy et al. 2017)</span>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/">scater</a></span><span class="op">)</span>
 <span class="va">CUSTOM_DIMRED</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">se</span>, <span class="va">rows</span>, <span class="va">columns</span>, <span class="va">ntop</span><span class="op">=</span><span class="fl">500</span>, <span class="va">scale</span><span class="op">=</span><span class="cn">TRUE</span>,
@@ -311,7 +311,7 @@
 <div id="handling-active-and-saved-selections" class="section level1">
 <h1 class="hasAnchor">
 <a href="#handling-active-and-saved-selections" class="anchor"></a>Handling active and saved selections</h1>
-<p>Recall that the second and third arguments are actually lists containing both active and saved selections from the transmitter. More advanced custom panels can take advantage of these multiple selections to perform more sophisticated data processing. For example, we can write a function that computes log-fold changes between the samples in the active selection and the samples in each saved selection. (It would be trivial to extend this to obtain actual differential expression statistics, e.g., using <code>scran::findMarkers()</code> or functions from packages like <em><a href="https://bioconductor.org/packages/3.13/limma">limma</a></em>.)</p>
+<p>Recall that the second and third arguments are actually lists containing both active and saved selections from the transmitter. More advanced custom panels can take advantage of these multiple selections to perform more sophisticated data processing. For example, we can write a function that computes log-fold changes between the samples in the active selection and the samples in each saved selection. (It would be trivial to extend this to obtain actual differential expression statistics, e.g., using <code>scran::findMarkers()</code> or functions from packages like <em><a href="https://bioconductor.org/packages/3.14/limma">limma</a></em>.)</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">CUSTOM_DIFFEXP</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">se</span>, <span class="va">ri</span>, <span class="va">ci</span>, <span class="va">assay</span><span class="op">=</span><span class="st">"logcounts"</span><span class="op">)</span> <span class="op">{</span>
     <span class="va">ri</span> <span class="op">&lt;-</span> <span class="va">ri</span><span class="op">$</span><span class="va">active</span>
@@ -384,9 +384,9 @@
 <a href="#session-info" class="anchor"></a>Session Info</h1>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; R Under development (unstable) (2021-01-07 r79806)</span>
+<span class="co">#&gt; R version 4.1.0 (2021-05-18)</span>
 <span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span>
-<span class="co">#&gt; Running under: Ubuntu 20.04.1 LTS</span>
+<span class="co">#&gt; Running under: Ubuntu 20.04.2 LTS</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Matrix products: default</span>
 <span class="co">#&gt; BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.8.so</span>
@@ -400,84 +400,88 @@
 <span class="co">#&gt; [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; attached base packages:</span>
-<span class="co">#&gt; [1] parallel  stats4    stats     graphics  grDevices utils     datasets </span>
-<span class="co">#&gt; [8] methods   base     </span>
+<span class="co">#&gt; [1] stats4    stats     graphics  grDevices utils     datasets  methods  </span>
+<span class="co">#&gt; [8] base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt;  [1] iSEE_2.3.8                  scater_1.19.8              </span>
-<span class="co">#&gt;  [3] ggplot2_3.3.3               SingleCellExperiment_1.13.4</span>
-<span class="co">#&gt;  [5] SummarizedExperiment_1.21.1 Biobase_2.51.0             </span>
-<span class="co">#&gt;  [7] GenomicRanges_1.43.3        GenomeInfoDb_1.27.5        </span>
-<span class="co">#&gt;  [9] IRanges_2.25.6              S4Vectors_0.29.6           </span>
-<span class="co">#&gt; [11] BiocGenerics_0.37.0         MatrixGenerics_1.3.0       </span>
-<span class="co">#&gt; [13] matrixStats_0.58.0          BiocStyle_2.19.1           </span>
+<span class="co">#&gt;  [1] iSEE_2.5.1                  scater_1.21.2              </span>
+<span class="co">#&gt;  [3] ggplot2_3.3.5               scuttle_1.3.0              </span>
+<span class="co">#&gt;  [5] SingleCellExperiment_1.15.1 SummarizedExperiment_1.23.1</span>
+<span class="co">#&gt;  [7] Biobase_2.53.0              GenomicRanges_1.45.0       </span>
+<span class="co">#&gt;  [9] GenomeInfoDb_1.29.3         IRanges_2.27.0             </span>
+<span class="co">#&gt; [11] S4Vectors_0.31.0            BiocGenerics_0.39.1        </span>
+<span class="co">#&gt; [13] MatrixGenerics_1.5.1        matrixStats_0.59.0         </span>
+<span class="co">#&gt; [15] BiocStyle_2.21.3           </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
-<span class="co">#&gt;   [1] ggbeeswarm_0.6.0          colorspace_2.0-0         </span>
-<span class="co">#&gt;   [3] rjson_0.2.20              ellipsis_0.3.1           </span>
-<span class="co">#&gt;   [5] rprojroot_2.0.2           circlize_0.4.12          </span>
-<span class="co">#&gt;   [7] scuttle_1.1.6             XVector_0.31.1           </span>
-<span class="co">#&gt;   [9] GlobalOptions_0.1.2       BiocNeighbors_1.9.4      </span>
-<span class="co">#&gt;  [11] fs_1.5.0                  clue_0.3-58              </span>
-<span class="co">#&gt;  [13] ggrepel_0.9.1             DT_0.17                  </span>
-<span class="co">#&gt;  [15] splines_4.1.0             sparseMatrixStats_1.3.2  </span>
-<span class="co">#&gt;  [17] cachem_1.0.1              knitr_1.31               </span>
-<span class="co">#&gt;  [19] jsonlite_1.7.2            Cairo_1.5-12.2           </span>
-<span class="co">#&gt;  [21] cluster_2.1.0             png_0.1-7                </span>
-<span class="co">#&gt;  [23] shinydashboard_0.7.1      shiny_1.6.0              </span>
-<span class="co">#&gt;  [25] BiocManager_1.30.10       compiler_4.1.0           </span>
-<span class="co">#&gt;  [27] assertthat_0.2.1          Matrix_1.3-2             </span>
-<span class="co">#&gt;  [29] fastmap_1.1.0             later_1.1.0.1            </span>
-<span class="co">#&gt;  [31] BiocSingular_1.7.2        htmltools_0.5.1.1        </span>
-<span class="co">#&gt;  [33] tools_4.1.0               rsvd_1.0.3               </span>
-<span class="co">#&gt;  [35] igraph_1.2.6              gtable_0.3.0             </span>
-<span class="co">#&gt;  [37] glue_1.4.2                GenomeInfoDbData_1.2.4   </span>
-<span class="co">#&gt;  [39] dplyr_1.0.3               Rcpp_1.0.6               </span>
-<span class="co">#&gt;  [41] jquerylib_0.1.3           pkgdown_1.6.1            </span>
-<span class="co">#&gt;  [43] vctrs_0.3.6               nlme_3.1-151             </span>
-<span class="co">#&gt;  [45] rintrojs_0.2.2            DelayedMatrixStats_1.13.4</span>
-<span class="co">#&gt;  [47] xfun_0.20                 stringr_1.4.0            </span>
-<span class="co">#&gt;  [49] beachmat_2.7.6            mime_0.9                 </span>
-<span class="co">#&gt;  [51] miniUI_0.1.1.1            lifecycle_0.2.0          </span>
-<span class="co">#&gt;  [53] irlba_2.3.3               shinyAce_0.4.1           </span>
-<span class="co">#&gt;  [55] zlibbioc_1.37.0           scales_1.1.1             </span>
-<span class="co">#&gt;  [57] colourpicker_1.1.0        ragg_0.4.1               </span>
-<span class="co">#&gt;  [59] promises_1.1.1            RColorBrewer_1.1-2       </span>
-<span class="co">#&gt;  [61] ComplexHeatmap_2.7.5      yaml_2.2.1               </span>
-<span class="co">#&gt;  [63] memoise_2.0.0             gridExtra_2.3            </span>
-<span class="co">#&gt;  [65] sass_0.3.1                stringi_1.5.3            </span>
-<span class="co">#&gt;  [67] highr_0.8                 desc_1.2.0               </span>
-<span class="co">#&gt;  [69] ScaledMatrix_0.99.2       BiocParallel_1.25.3      </span>
-<span class="co">#&gt;  [71] shape_1.4.5               rlang_0.4.10             </span>
-<span class="co">#&gt;  [73] pkgconfig_2.0.3           systemfonts_0.3.2        </span>
-<span class="co">#&gt;  [75] bitops_1.0-6              evaluate_0.14            </span>
-<span class="co">#&gt;  [77] lattice_0.20-41           purrr_0.3.4              </span>
-<span class="co">#&gt;  [79] htmlwidgets_1.5.3         tidyselect_1.1.0         </span>
-<span class="co">#&gt;  [81] magrittr_2.0.1            bookdown_0.21            </span>
-<span class="co">#&gt;  [83] R6_2.5.0                  generics_0.1.0           </span>
-<span class="co">#&gt;  [85] DelayedArray_0.17.7       DBI_1.1.1                </span>
-<span class="co">#&gt;  [87] pillar_1.4.7              withr_2.4.1              </span>
-<span class="co">#&gt;  [89] mgcv_1.8-33               RCurl_1.98-1.2           </span>
-<span class="co">#&gt;  [91] tibble_3.0.6              crayon_1.4.0             </span>
-<span class="co">#&gt;  [93] shinyWidgets_0.5.6        rmarkdown_2.6            </span>
-<span class="co">#&gt;  [95] viridis_0.5.1             GetoptLong_1.0.5         </span>
-<span class="co">#&gt;  [97] grid_4.1.0                digest_0.6.27            </span>
-<span class="co">#&gt;  [99] xtable_1.8-4              httpuv_1.5.5             </span>
-<span class="co">#&gt; [101] textshaping_0.2.1         munsell_0.5.0            </span>
-<span class="co">#&gt; [103] beeswarm_0.2.3            viridisLite_0.3.0        </span>
-<span class="co">#&gt; [105] bslib_0.2.4               vipor_0.4.5              </span>
-<span class="co">#&gt; [107] shinyjs_2.0.0</span>
+<span class="co">#&gt;   [1] ggbeeswarm_0.6.0          colorspace_2.0-2         </span>
+<span class="co">#&gt;   [3] rjson_0.2.20              ellipsis_0.3.2           </span>
+<span class="co">#&gt;   [5] rprojroot_2.0.2           circlize_0.4.13          </span>
+<span class="co">#&gt;   [7] XVector_0.33.0            GlobalOptions_0.1.2      </span>
+<span class="co">#&gt;   [9] BiocNeighbors_1.11.0      fs_1.5.0                 </span>
+<span class="co">#&gt;  [11] clue_0.3-59               ggrepel_0.9.1            </span>
+<span class="co">#&gt;  [13] DT_0.18                   fansi_0.5.0              </span>
+<span class="co">#&gt;  [15] splines_4.1.0             codetools_0.2-18         </span>
+<span class="co">#&gt;  [17] sparseMatrixStats_1.5.0   doParallel_1.0.16        </span>
+<span class="co">#&gt;  [19] cachem_1.0.5              knitr_1.33               </span>
+<span class="co">#&gt;  [21] jsonlite_1.7.2            Cairo_1.5-12.2           </span>
+<span class="co">#&gt;  [23] cluster_2.1.2             png_0.1-7                </span>
+<span class="co">#&gt;  [25] shinydashboard_0.7.1      shiny_1.6.0              </span>
+<span class="co">#&gt;  [27] BiocManager_1.30.16       compiler_4.1.0           </span>
+<span class="co">#&gt;  [29] assertthat_0.2.1          Matrix_1.3-4             </span>
+<span class="co">#&gt;  [31] fastmap_1.1.0             later_1.2.0              </span>
+<span class="co">#&gt;  [33] BiocSingular_1.9.1        htmltools_0.5.1.1        </span>
+<span class="co">#&gt;  [35] tools_4.1.0               igraph_1.2.6             </span>
+<span class="co">#&gt;  [37] rsvd_1.0.5                gtable_0.3.0             </span>
+<span class="co">#&gt;  [39] glue_1.4.2                GenomeInfoDbData_1.2.6   </span>
+<span class="co">#&gt;  [41] dplyr_1.0.7               Rcpp_1.0.6               </span>
+<span class="co">#&gt;  [43] jquerylib_0.1.4           pkgdown_1.6.1            </span>
+<span class="co">#&gt;  [45] vctrs_0.3.8               nlme_3.1-152             </span>
+<span class="co">#&gt;  [47] rintrojs_0.3.0            iterators_1.0.13         </span>
+<span class="co">#&gt;  [49] DelayedMatrixStats_1.15.0 xfun_0.24                </span>
+<span class="co">#&gt;  [51] stringr_1.4.0             beachmat_2.9.0           </span>
+<span class="co">#&gt;  [53] mime_0.11                 miniUI_0.1.1.1           </span>
+<span class="co">#&gt;  [55] lifecycle_1.0.0           irlba_2.3.3              </span>
+<span class="co">#&gt;  [57] shinyAce_0.4.1            zlibbioc_1.39.0          </span>
+<span class="co">#&gt;  [59] scales_1.1.1              colourpicker_1.1.0       </span>
+<span class="co">#&gt;  [61] promises_1.2.0.1          ragg_1.1.3               </span>
+<span class="co">#&gt;  [63] parallel_4.1.0            RColorBrewer_1.1-2       </span>
+<span class="co">#&gt;  [65] ComplexHeatmap_2.9.0      yaml_2.2.1               </span>
+<span class="co">#&gt;  [67] memoise_2.0.0             gridExtra_2.3            </span>
+<span class="co">#&gt;  [69] sass_0.4.0                stringi_1.6.2            </span>
+<span class="co">#&gt;  [71] highr_0.9                 desc_1.3.0               </span>
+<span class="co">#&gt;  [73] foreach_1.5.1             ScaledMatrix_1.1.0       </span>
+<span class="co">#&gt;  [75] BiocParallel_1.27.0       shape_1.4.6              </span>
+<span class="co">#&gt;  [77] rlang_0.4.11              pkgconfig_2.0.3          </span>
+<span class="co">#&gt;  [79] systemfonts_1.0.2         bitops_1.0-7             </span>
+<span class="co">#&gt;  [81] evaluate_0.14             lattice_0.20-44          </span>
+<span class="co">#&gt;  [83] purrr_0.3.4               htmlwidgets_1.5.3        </span>
+<span class="co">#&gt;  [85] tidyselect_1.1.1          magrittr_2.0.1           </span>
+<span class="co">#&gt;  [87] bookdown_0.22             R6_2.5.0                 </span>
+<span class="co">#&gt;  [89] generics_0.1.0            DelayedArray_0.19.1      </span>
+<span class="co">#&gt;  [91] DBI_1.1.1                 mgcv_1.8-36              </span>
+<span class="co">#&gt;  [93] pillar_1.6.1              withr_2.4.2              </span>
+<span class="co">#&gt;  [95] RCurl_1.98-1.3            tibble_3.1.2             </span>
+<span class="co">#&gt;  [97] crayon_1.4.1              shinyWidgets_0.6.0       </span>
+<span class="co">#&gt;  [99] utf8_1.2.1                rmarkdown_2.9            </span>
+<span class="co">#&gt; [101] viridis_0.6.1             GetoptLong_1.0.5         </span>
+<span class="co">#&gt; [103] grid_4.1.0                digest_0.6.27            </span>
+<span class="co">#&gt; [105] xtable_1.8-4              httpuv_1.6.1             </span>
+<span class="co">#&gt; [107] textshaping_0.3.5         munsell_0.5.0            </span>
+<span class="co">#&gt; [109] beeswarm_0.4.0            viridisLite_0.4.0        </span>
+<span class="co">#&gt; [111] vipor_0.4.5               bslib_0.2.5.1            </span>
+<span class="co">#&gt; [113] shinyjs_2.0.0</span>
 <span class="co"># devtools::session_info()</span></code></pre></div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h1>
-<div id="refs" class="references">
-<div id="ref-mccarthy2017scater">
-<p>McCarthy, D. J., K. R. Campbell, A. T. Lun, and Q. F. Wills. 2017. “Scater: pre-processing, quality control, normalization and visualization of single-cell RNA-seq data in R.” <em>Bioinformatics</em> 33 (8): 1179–86.</p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-mccarthy2017scater" class="csl-entry">
+McCarthy, D. J., K. R. Campbell, A. T. Lun, and Q. F. Wills. 2017. <span>“<span class="nocase"><span>S</span>cater: pre-processing, quality control, normalization and visualization of single-cell <span>R</span><span>N</span><span>A</span>-seq data in <span>R</span></span>.”</span> <em>Bioinformatics</em> 33 (8): 1179–86.
 </div>
-<div id="ref-kra2018iSEE">
-<p>Rue-Albrecht, K., F. Marini, C. Soneson, and A. T. L. Lun. 2018. “ISEE: Interactive Summarizedexperiment Explorer.” <em>F1000Research</em> 7 (June): 741.</p>
+<div id="ref-kra2018iSEE" class="csl-entry">
+Rue-Albrecht, K., F. Marini, C. Soneson, and A. T. L. Lun. 2018. <span>“iSEE: Interactive SummarizedExperiment Explorer.”</span> <em>F1000Research</em> 7 (June): 741.
 </div>
 </div>
 </div>

@@ -74,7 +74,7 @@ This panel will transmit column identities in both its single and multiple selec
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.1</span>
       </span>
     </div>
 
@@ -167,13 +167,14 @@ This panel will transmit column identities in both its single and multiple selec
 <p>The following slots control coloring of the points:</p><ul>
 <li><p><code>ColorByColumnData</code>, a string specifying the <code>colData</code> field for controlling point color,
 if <code>ColorBy="Column data"</code> (see the <a href='Panel-class.html'>Panel</a> class).
-Defaults to the first valid field (see <code>.refineParameters</code> below).</p></li>
+Defaults to the first valid field (see <code>.cacheCommonInfo</code> below).</p></li>
 <li><p><code>ColorByFeatureNameAssay</code>, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
 if <code>ColorBy="Feature name"</code>.
-Defaults to the name of the first valid assay (see <code>?"<a href='DotPlot-class.html'>.refineParameters,DotPlot-method</a>"</code> for details).</p></li>
+Defaults to <code>"logcounts"</code> in <code><a href='panelDefaults.html'>getPanelDefault</a></code>, falling back to the name of the first valid assay 
+(see <code>?"<a href='DotPlot-class.html'>.cacheCommonInfo,DotPlot-method</a>"</code> for the definition of validity).</p></li>
 <li><p><code>ColorBySampleNameColor</code>, a string specifying the color to use for coloring an individual sample on the plot,
 if <code>ColorBy="Sample name"</code>.
-Defaults to <code>"red"</code>.</p></li>
+Defaults to <code>"red"</code> in <code><a href='panelDefaults.html'>getPanelDefault</a></code>.</p></li>
 </ul>
 
 <p>The following slots control other metadata-related aesthetic aspects of the points:</p><ul>
@@ -185,7 +186,7 @@ if <code>SizeBy="Column data"</code> (see the <a href='Panel-class.html'>Panel</
 The specified field should contain continuous values; defaults to the first such valid field.</p></li>
 </ul>
 
-<p>In addition, this class inherits all slots from its <a href='DotPlot-class.html'>DotPlot</a> and <a href='Panel-class.html'>Panel</a> classes.</p>
+<p>In addition, this class inherits all slots from its parent <a href='DotPlot-class.html'>DotPlot</a> and <a href='Panel-class.html'>Panel</a> classes.</p>
     <h2 class="hasAnchor" id="supported-methods"><a class="anchor" href="#supported-methods"></a>Supported methods</h2>
 
     
@@ -221,6 +222,8 @@ such that the point coordinates/domain may change upon updates to upstream selec
 <p>For documentation:</p><ul>
 <li><p><code><a href='documentation-generics.html'>.definePanelTour</a>(x)</code> returns an data.frame containing the steps of a tour relevant to subclasses,
 mostly tuning the more generic descriptions from the same method of the parent <a href='DotPlot-class.html'>DotPlot</a>.</p></li>
+<li><p><code><a href='documentation-generics.html'>.getDotPlotColorHelp</a>(x, color_choices)</code> returns a data.frame containing the documentation for the <code>"ColorBy"</code> UI element,
+specialized for column-based dot plots.</p></li>
 </ul>
 
 <p>Unless explicitly specialized above, all methods from the parent classes <a href='DotPlot-class.html'>DotPlot</a> and <a href='Panel-class.html'>Panel</a> are also available.</p>

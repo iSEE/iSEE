@@ -73,7 +73,7 @@ It provides slots and methods for specifying the sample and what to plot on the 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.1</span>
       </span>
     </div>
 
@@ -166,11 +166,12 @@ It provides slots and methods for specifying the sample and what to plot on the 
 <li><p><code>YAxisSampleName</code>, a string specifying the name of the sample to plot on the y-axis.
 If <code>NA</code>, defaults to the first column name of the SummarizedExperiment object.</p></li>
 <li><p><code>Assay</code>, string specifying the name of the assay to use for obtaining expression values.
-Defaults to the first valid assay name (see <code>?"<a href='DotPlot-class.html'>.refineParameters,DotPlot-method</a>"</code> for details).</p></li>
+Defaults to <code>"logcounts"</code> in <code><a href='panelDefaults.html'>getPanelDefault</a></code>, falling back to the name of the first valid assay
+(see <code>?"<a href='DotPlot-class.html'>.cacheCommonInfo,DotPlot-method</a>"</code> for the definition of validity).</p></li>
 <li><p><code>YAxisSampleSource</code>, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces <code>YAxisSampleName</code>.
 Defaults to <code>"---"</code>, i.e., no transmission is performed.</p></li>
 <li><p><code>YAxisSampleDynamicSource</code>, a logical scalar indicating whether <code>x</code> should dynamically change its selection source for the y-axis.
-Defaults to <code>FALSE</code>.</p></li>
+Defaults to <code>FALSE</code> in <code><a href='panelDefaults.html'>getPanelDefault</a></code>.</p></li>
 </ul>
 
 <p>The following slots control the values on the x-axis:</p><ul>
@@ -186,7 +187,7 @@ Defaults to the first column name.</p></li>
 <li><p><code>XAxisSampleSource</code>, string specifying the encoded name of the transmitting panel to obtain a single selection that replaces <code>XAxisSampleName</code>.
 Defaults to <code>"---"</code>, i.e., no transmission is performed.</p></li>
 <li><p><code>XAxisSampleDynamicSource</code>, a logical scalar indicating whether <code>x</code> should dynamically change its selection source for the x-axis.
-Defaults to <code>FALSE</code>.</p></li>
+Defaults to <code>FALSE</code> in <code><a href='panelDefaults.html'>getPanelDefault</a></code>.</p></li>
 </ul>
 
 <p>In addition, this class inherits all slots from its parent <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>, <a href='DotPlot-class.html'>DotPlot</a> and <a href='Panel-class.html'>Panel</a> classes.</p>

@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.1</span>
       </span>
     </div>
 
@@ -101,7 +101,7 @@
 
       
 
-      </header><script src="voice_files/accessible-code-block-0.0.1/empty-anchor.js"></script><link href="voice_files/font-awesome-5.1.0/css/all.css" rel="stylesheet">
+      </header><script src="voice_files/header-attrs-2.9/header-attrs.js"></script><link href="voice_files/font-awesome-5.1.0/css/all.css" rel="stylesheet">
 <link href="voice_files/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
@@ -113,17 +113,17 @@
       </address>
                               <h4 class="author">Federico Marini</h4>
             <address class="author_afil">
-      Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), Mainz<br><a class="author_email" href="mailto:#"></a><a href="mailto:marinif@uni-mainz.de" class="email">marinif@uni-mainz.de</a>
+      Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), MainzCenter for Thrombosis and Hemostasis (CTH), Mainz<br><a class="author_email" href="mailto:#"></a><a href="mailto:marinif@uni-mainz.de" class="email">marinif@uni-mainz.de</a>
       </address>
                               <h4 class="author">Charlotte Soneson</h4>
             <address class="author_afil">
-      Friedrich Miescher Institute for Biomedical Research, Basel, Switzerland<br><a class="author_email" href="mailto:#"></a><a href="mailto:charlottesoneson@gmail.com" class="email">charlottesoneson@gmail.com</a>
+      Friedrich Miescher Institute for Biomedical Research, Basel, SwitzerlandSIB Swiss Institute of Bioinformatics<br><a class="author_email" href="mailto:#"></a><a href="mailto:charlottesoneson@gmail.com" class="email">charlottesoneson@gmail.com</a>
       </address>
                               <h4 class="author">Aaron Lun</h4>
                   <a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       
                   
-            <h4 class="date">1 February 2021</h4>
+            <h4 class="date">4 July 2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/voice.Rmd"><code>vignettes/voice.Rmd</code></a></small>
       <div class="hidden name"><code>voice.Rmd</code></div>
@@ -132,13 +132,13 @@
 
     
     
-<p><strong>Compiled date</strong>: 2021-02-01</p>
+<p><strong>Compiled date</strong>: 2021-07-04</p>
 <p><strong>Last edited</strong>: 2018-11-29</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="feature" class="section level1">
 <h1 class="hasAnchor">
 <a href="#feature" class="anchor"></a>Feature</h1>
-<p>Using JavaScript, <code>iSEE</code> applications can leverage lightweight speech recognition libraries that react to specific vocal commands (think “OK Google”, “Hey Siri”) and trigger updates of the UI equivalent to one or more mouse or keyboard interaction with the UI components <span class="citation">(Rue-Albrecht et al. 2018)</span>.</p>
+<p>Using JavaScript, <code>iSEE</code> applications can leverage lightweight speech recognition libraries that react to specific vocal commands (think “OK Google,” “Hey Siri”) and trigger updates of the UI equivalent to one or more mouse or keyboard interaction with the UI components <span class="citation">(Rue-Albrecht et al. 2018)</span>.</p>
 <p><strong>Note</strong>: As we value privacy, this feature is disabled by default: <code><a href="../reference/iSEE.html">iSEE(..., voice=FALSE)</a></code>.</p>
 <p>To keep the spoken commands reasonably short, only one panel may be under voice command at any one time. All spoken commands will affect the currently active panel, until a new panel is selected for voice command. See section <a href="#availableVocalCommands">Vocal commands available</a>.</p>
 </div>
@@ -156,7 +156,7 @@
 <div id="usage" class="section level1">
 <h1 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h1>
-<p>Using the <code>sce</code> object that we generated <a href="https://bioconductor.org/packages/3.13/iSEE/vignettes/basic.html">earlier</a>, enabling speech recognition is as simple as setting <code>voice=TRUE</code> below:</p>
+<p>Using the <code>sce</code> object that we generated <a href="https://bioconductor.org/packages/3.14/iSEE/vignettes/basic.html">earlier</a>, enabling speech recognition is as simple as setting <code>voice=TRUE</code> below:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/iSEE/iSEE">iSEE</a></span><span class="op">)</span>
 <span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, voice<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
@@ -192,9 +192,9 @@
 <a href="#session-info" class="anchor"></a>Session Info</h1>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
-<span class="co">#&gt; R Under development (unstable) (2021-01-07 r79806)</span>
+<span class="co">#&gt; R version 4.1.0 (2021-05-18)</span>
 <span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span>
-<span class="co">#&gt; Running under: Ubuntu 20.04.1 LTS</span>
+<span class="co">#&gt; Running under: Ubuntu 20.04.2 LTS</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Matrix products: default</span>
 <span class="co">#&gt; BLAS/LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.8.so</span>
@@ -208,57 +208,59 @@
 <span class="co">#&gt; [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; attached base packages:</span>
-<span class="co">#&gt; [1] parallel  stats4    stats     graphics  grDevices utils     datasets </span>
-<span class="co">#&gt; [8] methods   base     </span>
+<span class="co">#&gt; [1] stats4    stats     graphics  grDevices utils     datasets  methods  </span>
+<span class="co">#&gt; [8] base     </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; other attached packages:</span>
-<span class="co">#&gt;  [1] iSEE_2.3.8                  SingleCellExperiment_1.13.4</span>
-<span class="co">#&gt;  [3] SummarizedExperiment_1.21.1 Biobase_2.51.0             </span>
-<span class="co">#&gt;  [5] GenomicRanges_1.43.3        GenomeInfoDb_1.27.5        </span>
-<span class="co">#&gt;  [7] IRanges_2.25.6              S4Vectors_0.29.6           </span>
-<span class="co">#&gt;  [9] BiocGenerics_0.37.0         MatrixGenerics_1.3.0       </span>
-<span class="co">#&gt; [11] matrixStats_0.58.0          BiocStyle_2.19.1           </span>
+<span class="co">#&gt;  [1] iSEE_2.5.1                  SingleCellExperiment_1.15.1</span>
+<span class="co">#&gt;  [3] SummarizedExperiment_1.23.1 Biobase_2.53.0             </span>
+<span class="co">#&gt;  [5] GenomicRanges_1.45.0        GenomeInfoDb_1.29.3        </span>
+<span class="co">#&gt;  [7] IRanges_2.27.0              S4Vectors_0.31.0           </span>
+<span class="co">#&gt;  [9] BiocGenerics_0.39.1         MatrixGenerics_1.5.1       </span>
+<span class="co">#&gt; [11] matrixStats_0.59.0          BiocStyle_2.21.3           </span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; loaded via a namespace (and not attached):</span>
-<span class="co">#&gt;  [1] nlme_3.1-151           bitops_1.0-6           fs_1.5.0              </span>
-<span class="co">#&gt;  [4] RColorBrewer_1.1-2     rprojroot_2.0.2        bslib_0.2.4           </span>
-<span class="co">#&gt;  [7] tools_4.1.0            R6_2.5.0               DT_0.17               </span>
-<span class="co">#&gt; [10] vipor_0.4.5            DBI_1.1.1              mgcv_1.8-33           </span>
-<span class="co">#&gt; [13] colorspace_2.0-0       GetoptLong_1.0.5       tidyselect_1.1.0      </span>
-<span class="co">#&gt; [16] compiler_4.1.0         textshaping_0.2.1      Cairo_1.5-12.2        </span>
-<span class="co">#&gt; [19] shinyjs_2.0.0          desc_1.2.0             DelayedArray_0.17.7   </span>
-<span class="co">#&gt; [22] sass_0.3.1             colourpicker_1.1.0     bookdown_0.21         </span>
-<span class="co">#&gt; [25] scales_1.1.1           pkgdown_1.6.1          systemfonts_0.3.2     </span>
-<span class="co">#&gt; [28] stringr_1.4.0          digest_0.6.27          rmarkdown_2.6         </span>
-<span class="co">#&gt; [31] XVector_0.31.1         pkgconfig_2.0.3        htmltools_0.5.1.1     </span>
-<span class="co">#&gt; [34] fastmap_1.1.0          htmlwidgets_1.5.3      rlang_0.4.10          </span>
-<span class="co">#&gt; [37] GlobalOptions_0.1.2    shiny_1.6.0            jquerylib_0.1.3       </span>
-<span class="co">#&gt; [40] shape_1.4.5            generics_0.1.0         jsonlite_1.7.2        </span>
-<span class="co">#&gt; [43] dplyr_1.0.3            RCurl_1.98-1.2         magrittr_2.0.1        </span>
-<span class="co">#&gt; [46] GenomeInfoDbData_1.2.4 Matrix_1.3-2           Rcpp_1.0.6            </span>
-<span class="co">#&gt; [49] munsell_0.5.0          lifecycle_0.2.0        rintrojs_0.2.2        </span>
-<span class="co">#&gt; [52] stringi_1.5.3          yaml_2.2.1             zlibbioc_1.37.0       </span>
-<span class="co">#&gt; [55] grid_4.1.0             promises_1.1.1         ggrepel_0.9.1         </span>
-<span class="co">#&gt; [58] shinydashboard_0.7.1   crayon_1.4.0           miniUI_0.1.1.1        </span>
-<span class="co">#&gt; [61] lattice_0.20-41        splines_4.1.0          circlize_0.4.12       </span>
-<span class="co">#&gt; [64] knitr_1.31             ComplexHeatmap_2.7.5   pillar_1.4.7          </span>
-<span class="co">#&gt; [67] igraph_1.2.6           rjson_0.2.20           glue_1.4.2            </span>
-<span class="co">#&gt; [70] evaluate_0.14          BiocManager_1.30.10    png_0.1-7             </span>
-<span class="co">#&gt; [73] vctrs_0.3.6            httpuv_1.5.5           gtable_0.3.0          </span>
-<span class="co">#&gt; [76] purrr_0.3.4            clue_0.3-58            assertthat_0.2.1      </span>
-<span class="co">#&gt; [79] cachem_1.0.1           ggplot2_3.3.3          xfun_0.20             </span>
-<span class="co">#&gt; [82] mime_0.9               xtable_1.8-4           later_1.1.0.1         </span>
-<span class="co">#&gt; [85] viridisLite_0.3.0      ragg_0.4.1             tibble_3.0.6          </span>
-<span class="co">#&gt; [88] memoise_2.0.0          cluster_2.1.0          shinyWidgets_0.5.6    </span>
-<span class="co">#&gt; [91] ellipsis_0.3.1         shinyAce_0.4.1</span>
+<span class="co">#&gt;  [1] nlme_3.1-152           bitops_1.0-7           fs_1.5.0              </span>
+<span class="co">#&gt;  [4] doParallel_1.0.16      RColorBrewer_1.1-2     rprojroot_2.0.2       </span>
+<span class="co">#&gt;  [7] tools_4.1.0            bslib_0.2.5.1          utf8_1.2.1            </span>
+<span class="co">#&gt; [10] R6_2.5.0               DT_0.18                vipor_0.4.5           </span>
+<span class="co">#&gt; [13] mgcv_1.8-36            DBI_1.1.1              colorspace_2.0-2      </span>
+<span class="co">#&gt; [16] GetoptLong_1.0.5       tidyselect_1.1.1       compiler_4.1.0        </span>
+<span class="co">#&gt; [19] textshaping_0.3.5      Cairo_1.5-12.2         shinyjs_2.0.0         </span>
+<span class="co">#&gt; [22] desc_1.3.0             DelayedArray_0.19.1    colourpicker_1.1.0    </span>
+<span class="co">#&gt; [25] bookdown_0.22          sass_0.4.0             scales_1.1.1          </span>
+<span class="co">#&gt; [28] pkgdown_1.6.1          systemfonts_1.0.2      stringr_1.4.0         </span>
+<span class="co">#&gt; [31] digest_0.6.27          rmarkdown_2.9          XVector_0.33.0        </span>
+<span class="co">#&gt; [34] pkgconfig_2.0.3        htmltools_0.5.1.1      fastmap_1.1.0         </span>
+<span class="co">#&gt; [37] htmlwidgets_1.5.3      rlang_0.4.11           GlobalOptions_0.1.2   </span>
+<span class="co">#&gt; [40] shiny_1.6.0            generics_0.1.0         shape_1.4.6           </span>
+<span class="co">#&gt; [43] jquerylib_0.1.4        jsonlite_1.7.2         dplyr_1.0.7           </span>
+<span class="co">#&gt; [46] RCurl_1.98-1.3         magrittr_2.0.1         GenomeInfoDbData_1.2.6</span>
+<span class="co">#&gt; [49] Matrix_1.3-4           Rcpp_1.0.6             munsell_0.5.0         </span>
+<span class="co">#&gt; [52] fansi_0.5.0            lifecycle_1.0.0        rintrojs_0.3.0        </span>
+<span class="co">#&gt; [55] stringi_1.6.2          yaml_2.2.1             zlibbioc_1.39.0       </span>
+<span class="co">#&gt; [58] grid_4.1.0             ggrepel_0.9.1          parallel_4.1.0        </span>
+<span class="co">#&gt; [61] promises_1.2.0.1       shinydashboard_0.7.1   crayon_1.4.1          </span>
+<span class="co">#&gt; [64] miniUI_0.1.1.1         lattice_0.20-44        splines_4.1.0         </span>
+<span class="co">#&gt; [67] circlize_0.4.13        knitr_1.33             ComplexHeatmap_2.9.0  </span>
+<span class="co">#&gt; [70] pillar_1.6.1           igraph_1.2.6           rjson_0.2.20          </span>
+<span class="co">#&gt; [73] codetools_0.2-18       glue_1.4.2             evaluate_0.14         </span>
+<span class="co">#&gt; [76] BiocManager_1.30.16    png_0.1-7              vctrs_0.3.8           </span>
+<span class="co">#&gt; [79] httpuv_1.6.1           foreach_1.5.1          purrr_0.3.4           </span>
+<span class="co">#&gt; [82] gtable_0.3.0           assertthat_0.2.1       clue_0.3-59           </span>
+<span class="co">#&gt; [85] cachem_1.0.5           ggplot2_3.3.5          xfun_0.24             </span>
+<span class="co">#&gt; [88] mime_0.11              xtable_1.8-4           later_1.2.0           </span>
+<span class="co">#&gt; [91] viridisLite_0.4.0      ragg_1.1.3             tibble_3.1.2          </span>
+<span class="co">#&gt; [94] iterators_1.0.13       memoise_2.0.0          cluster_2.1.2         </span>
+<span class="co">#&gt; [97] shinyWidgets_0.6.0     ellipsis_0.3.2         shinyAce_0.4.1</span>
 <span class="co"># devtools::session_info()</span></code></pre></div>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h1>
-<div id="refs" class="references">
-<div id="ref-kra2018iSEE">
-<p>Rue-Albrecht, K., F. Marini, C. Soneson, and A. T. L. Lun. 2018. “ISEE: Interactive Summarizedexperiment Explorer.” <em>F1000Research</em> 7 (June): 741.</p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-kra2018iSEE" class="csl-entry">
+Rue-Albrecht, K., F. Marini, C. Soneson, and A. T. L. Lun. 2018. <span>“iSEE: Interactive SummarizedExperiment Explorer.”</span> <em>F1000Research</em> 7 (June): 741.
 </div>
 </div>
 </div>

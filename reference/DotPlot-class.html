@@ -73,7 +73,7 @@ It provides slots and methods to create the plot, to control various aesthetics 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.1</span>
       </span>
     </div>
 
@@ -167,7 +167,7 @@ It provides slots and methods to create the plot, to control various aesthetics 
 This should be one of <code>"None"</code>, <code>"Feature name"</code>, <code>"Sample name"</code> and either <code>"Column data"</code> (for <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s) or <code>"Row data"</code> (for <a href='RowDotPlot-class.html'>RowDotPlot</a>s).
 Defaults to <code>"None"</code>.</p></li>
 <li><p><code>ColorByDefaultColor</code>, a string specifying the default color to use for all points if <code>ColorBy="None"</code>.
-Defaults to <code>"black"</code>.</p></li>
+Defaults to <code>"black"</code> in <code><a href='panelDefaults.html'>getPanelDefault</a></code>.</p></li>
 <li><p><code>ColorByFeatureName</code>, a string specifying the feature to be used for coloring points when <code>ColorBy="Feature name"</code>.
 For <a href='RowDotPlot-class.html'>RowDotPlot</a>s, this is used to highlight the point corresponding to the selected feature;
 for <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s, this is used to color each point according to the expression of that feature.
@@ -181,11 +181,11 @@ If <code>NA</code>, this defaults to the name of the first column.</p></li>
 <li><p><code>ColorBySampleSource</code>, a string specifying the name of the panel to use for transmitting the sample selection to <code>ColorBySampleNameColor</code>.
 Defaults to <code>"---"</code>.</p></li>
 <li><p><code>ColorByFeatureDynamicSource</code>, a logical scalar indicating whether <code>x</code> should dynamically change its selection source when coloring by feature.
-Defaults to <code>FALSE</code>.</p></li>
+Defaults to <code>FALSE</code> in <code><a href='panelDefaults.html'>getPanelDefault</a></code>.</p></li>
 <li><p><code>ColorBySampleDynamicSource</code>, a logical scalar indicating whether <code>x</code> should dynamically change its selection source when coloring by feature.
-Defaults to <code>FALSE</code>.</p></li>
+Defaults to <code>FALSE</code> in <code><a href='panelDefaults.html'>getPanelDefault</a></code>.</p></li>
 <li><p><code>SelectionAlpha</code>, a numeric scalar in [0, 1] specifying the transparency to use for non-selected points.
-Defaults to 0.1.</p></li>
+Defaults to 0.1 in <code><a href='panelDefaults.html'>getPanelDefault</a></code>.</p></li>
 </ul>
 
 <p>The following slots control other metadata-related aesthetic aspects of the points:</p><ul>
@@ -257,19 +257,20 @@ Defaults to 1.</p></li>
 <li><p><code>PointAlpha</code>, non-negative numeric scalar specifying the transparency of the points.
 Defaults to 1, i.e., not transparent.</p></li>
 <li><p><code>Downsample</code>, logical scalar indicating whether to downsample points for faster plotting.
-Defaults to <code>FALSE</code>.</p></li>
+Defaults to <code>FALSE</code> in <code><a href='panelDefaults.html'>getPanelDefault</a></code>.</p></li>
 <li><p><code>DownsampleResolution</code>, numeric scalar specifying the resolution of the downsampling grid (see <code>?<a href='subsetPointsByGrid.html'>subsetPointsByGrid</a></code>) if <code>Downsample=TRUE</code>.
 Larger values correspond to reduced downsampling at the cost of plotting speed.
-Defaults to 200.</p></li>
+Defaults to 200 in <code><a href='panelDefaults.html'>getPanelDefault</a></code>.</p></li>
 </ul>
 
 <p>The following slots refer to general plotting parameters:</p><ul>
 <li><p><code>FontSize</code>, positive numeric scalar specifying the relative font size.
-Defaults to 1.</p></li>
+Defaults to 1 in <code><a href='panelDefaults.html'>getPanelDefault</a></code>.</p></li>
 <li><p><code>PointSize</code>, positive numeric scalar specifying the relative point size.
-Defaults to 1.</p></li>
+Defaults to 1 in <code><a href='panelDefaults.html'>getPanelDefault</a></code>.</p></li>
 <li><p><code>LegendPosition</code>, string specifying the position of the legend on the plot.
-Defaults to <code>"Right"</code> but can also be <code>"Bottom"</code>.</p></li>
+Defaults to <code>"Bottom"</code> in <code><a href='panelDefaults.html'>getPanelDefault</a></code>.
+The other valid choice is <code>"Right"</code>.</p></li>
 </ul>
 
 <p>In addition, this class inherits all slots from its parent <a href='Panel-class.html'>Panel</a> class.</p>
@@ -300,6 +301,7 @@ This will <em>override</em> the <a href='Panel-class.html'>Panel</a> method.</p>
 <li><p><code><a href='visual-parameters-generics.html'>.defineVisualOtherInterface</a>(x, se)</code> defines the user interface subpanel for manipulating other parameters.
 Currently this returns <code>NULL</code>.</p></li>
 <li><p><code><a href='output-generics.html'>.defineOutput</a>(x)</code> returns a UI element for a brushable plot.</p></li>
+<li><p><code><a href='visual-parameters-generics.html'>.allowableColorByDataChoices</a>(x, se)</code> returns a character vector containing all atomic variables in the relevant <code>*Data</code> dimension.</p></li>
 </ul>
 
 <p>For generating the output:</p><ul>

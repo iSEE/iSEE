@@ -73,7 +73,7 @@ It provides slots and methods for specifying the features of interest, which ass
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.1</span>
       </span>
     </div>
 
@@ -177,11 +177,14 @@ Defaults to <code><a href='https://rdrr.io/r/base/character.html'>character(0)</
 Defaults to <code><a href='https://rdrr.io/r/base/character.html'>character(0)</a></code>.</p></li>
 <li><p><code>ShowColumnSelection</code>, a logical vector indicating whether the column selection should be shown as an extra annotation bar.
 Defaults to <code>TRUE</code>.</p></li>
+<li><p><code>OrderColumnSelection</code>, a logical vector indicating whether the column selection should be used to order columns in the heatmap.
+Defaults to <code>TRUE</code>.</p></li>
 </ul>
 
 <p>The following slots control the choice of assay values:</p><ul>
 <li><p><code>Assay</code>, string specifying the name of the assay to use for obtaining expression values.
-Defaults to the first valid assay name (see <code>?".refineParameters,ComplexHeatmapPlot-method"</code> for details).</p></li>
+Defaults to <code>"logcounts"</code> in <code><a href='panelDefaults.html'>getPanelDefault</a></code>,
+falling back to the first valid assay name (see <code>.cacheCommonInfo</code> below).</p></li>
 </ul>
 
 <p>The following slots control the clustering of rows:</p><ul>
@@ -214,10 +217,12 @@ or <code>NA</code> to disable the upper bound when <code>CustomBounds</code> is 
 <li><p><code>ShowDimNames</code>, a character vector specifying the dimensions for which to display names.
 This can contain zero or more of <code>"Rows"</code> and <code>"Columns"</code>.
 Defaults to <code>"Rows"</code>.</p></li>
+<li><p><code>NamesRowFontSize</code>, a numerical value setting the font size of the row names.</p></li>
+<li><p><code>NamesColumnFontSize</code>, a numerical value setting the font size of the column names.</p></li>
 <li><p><code>LegendPosition</code>, string specifying the position of the legend on the plot.
-Defaults to <code>"Bottom"</code> but can also be <code>"Right"</code>.</p></li>
+Defaults to <code>"Bottom"</code> in <code><a href='panelDefaults.html'>getPanelDefault</a></code> but can also be <code>"Right"</code>.</p></li>
 <li><p><code>LegendDirection</code>, string specifying the orientation of the legend on the plot for continuous covariates.
-Defaults to <code>"Horizontal"</code> but can also be <code>"Vertical"</code>.</p></li>
+Defaults to <code>"Horizontal"</code> in <code><a href='panelDefaults.html'>getPanelDefault</a></code> but can also be <code>"Vertical"</code>.</p></li>
 </ul>
 
 <p>The following slots control some aspects of the user interface:</p><ul>
@@ -241,7 +246,7 @@ Defaults to <code>FALSE</code>.</p></li>
 Refer to the documentation for each method for more details on the remaining arguments.</p>
 <p>For setting up data values:</p><ul>
 <li><p><code><a href='setup-generics.html'>.cacheCommonInfo</a>(x)</code> adds a <code>"ComplexHeatmapPlot"</code> entry containing
-<code>valid.assay.names</code>, a character vector of valid assay names;
+<code>valid.assay.names</code>, a character vector of valid (i.e., non-empty) assay names;
 <code>discrete.assay.names</code>, a character vector of valid assay names with discrete atomic values;
 <code>continuous.assay.names</code>, a character vector of valid assay names with continuous atomic values;
 <code>valid.colData.names</code>, a character vector of names of columns in <code>colData</code> that are valid;
@@ -349,6 +354,8 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method t
 #&gt;     LegendDirection: Horizontal
 #&gt;     LegendPosition: Bottom
 #&gt;     LowerBound: NA
+#&gt;     NamesColumnFontSize: 10
+#&gt;     NamesRowFontSize: 10
 #&gt;     OrderColumnSelection: TRUE
 #&gt;     PanelHeight: 500
 #&gt;     PanelId: NA
@@ -388,6 +395,8 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method t
 #&gt;     LegendDirection: Horizontal
 #&gt;     LegendPosition: Bottom
 #&gt;     LowerBound: NA
+#&gt;     NamesColumnFontSize: 10
+#&gt;     NamesRowFontSize: 10
 #&gt;     OrderColumnSelection: TRUE
 #&gt;     PanelHeight: 500
 #&gt;     PanelId: NA

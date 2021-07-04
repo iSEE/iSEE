@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.3.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.1</span>
       </span>
     </div>
 
@@ -156,10 +156,10 @@
 
 
 
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <h2 class="hasAnchor" id="interface-definition"><a class="anchor" href="#interface-definition"></a>Interface definition</h2>
 
-    <p>When implementing methods for these generics, it is a good idea to make use of information precomputed by <code><a href='setup-generics.html'>.cacheCommonInfo</a></code>.
-For example, <code><a href='ColumnDotPlot-class.html'>.cacheCommonInfo,ColumnDotPlot-method</a></code> will add vectors specifying whether a variable in the <code>colData</code> is valid and discrete or continuous.</p>
+    
+
 <p>In all of the code snippets below, <code>x</code> is a <a href='Panel-class.html'>Panel</a> instance and <code>se</code> is the SummarizedExperiment object.</p><ul>
 <li><p><code>.defineVisualColorInterface(x, se, select_info)</code> should return a HTML tag definition that contains UI input elements controlling the <code>color</code> aesthetic of <code>ggplot</code> objects.
 Here, <code>select_info</code> is a list of two character vectors named <code>row</code> and <code>column</code>, which specifies the names of panels available for transmitting single selections on the rows/columns respectively.
@@ -181,6 +181,15 @@ This is a grab-bag of other parameters that don't fit into the more defined cate
 <p>A method for any of these generics may also return <code>NULL</code>, in which case the corresponding section of the visual parameter box is completely hidden.</p>
 <p>All of these generics are called by <code><a href='interface-generics.html'>.defineInterface</a></code> for DotPlot subclasses.
 Developers of subclasses can simply specialize these generics to change the UI instead of reimplementing <code>.defineInterface</code> itself.</p>
+<p>When implementing methods for these generics, it is a good idea to make use of information precomputed by <code><a href='setup-generics.html'>.cacheCommonInfo</a></code>.
+For example, <code><a href='ColumnDotPlot-class.html'>.cacheCommonInfo,ColumnDotPlot-method</a></code> will add vectors specifying whether a variable in the <code>colData</code> is valid and discrete or continuous.</p>
+    <h2 class="hasAnchor" id="controlling-colorby-data-choices"><a class="anchor" href="#controlling-colorby-data-choices"></a>Controlling <code>ColorBy*Data</code> choices</h2>
+
+    
+
+<p><code>.allowableColorByDataChoices(x, se)</code> should return a character vector of the allowable row/column data variables to use 
+when <code>ColorBy</code> is set to <code>"Row data"</code> or <code>"Column data"</code> for <a href='RowDotPlot-class.html'>RowDotPlot</a>s and <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a>s, respectively.
+The default method will use all available (atomic) variables, but subclasses can specialize this to only allow, e.g., continuous or discrete variables.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Kevin Rue-Albrecht</p>

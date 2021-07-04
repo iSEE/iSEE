@@ -20,6 +20,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -38,12 +40,6 @@
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -87,7 +83,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/iSEE/iSEE/">
+  <a href="https://github.com/iSEE/iSEE/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -108,26 +104,26 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip></h1>
-<p>How to use <em><a href="https://bioconductor.org/packages/3.14/iSEE">iSEE</a></em> with big data</p>
-                        <h4 class="author">Kevin Rue-Albrecht</h4>
+<p>How to use <em><a href="https://bioconductor.org/packages/3.14/iSEE" class="external-link">iSEE</a></em> with big data</p>
+                        <h4 data-toc-skip class="author">Kevin Rue-Albrecht</h4>
             <address class="author_afil">
       MRC WIMM Centre for Computational Biology, University of Oxford, Oxford, OX3 9DS, UK<br><a class="author_email" href="mailto:#"></a><a href="mailto:kevinrue67@gmail.com" class="email">kevinrue67@gmail.com</a>
       </address>
-                              <h4 class="author">Federico Marini</h4>
+                              <h4 data-toc-skip class="author">Federico Marini</h4>
             <address class="author_afil">
       Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), MainzCenter for Thrombosis and Hemostasis (CTH), Mainz<br><a class="author_email" href="mailto:#"></a><a href="mailto:marinif@uni-mainz.de" class="email">marinif@uni-mainz.de</a>
       </address>
-                              <h4 class="author">Charlotte Soneson</h4>
+                              <h4 data-toc-skip class="author">Charlotte Soneson</h4>
             <address class="author_afil">
       Institute of Molecular Life Sciences, University of ZurichSIB Swiss Institute of Bioinformatics<br><a class="author_email" href="mailto:#"></a><a href="mailto:charlottesoneson@gmail.com" class="email">charlottesoneson@gmail.com</a>
       </address>
-                              <h4 class="author">Aaron Lun</h4>
+                              <h4 data-toc-skip class="author">Aaron Lun</h4>
                   <a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       
                   
-            <h4 class="date">4 July 2021</h4>
+            <h4 data-toc-skip class="date">4 July 2021</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/bigdata.Rmd"><code>vignettes/bigdata.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/bigdata.Rmd" class="external-link"><code>vignettes/bigdata.Rmd</code></a></small>
       <div class="hidden name"><code>bigdata.Rmd</code></div>
 
     </div>
@@ -139,12 +135,12 @@
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="overview" class="section level1">
 <h1 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h1>
-<p>Some tweaks can be performed to enable <em><a href="https://bioconductor.org/packages/3.14/iSEE">iSEE</a></em> to run efficiently on large datasets. This includes datasets with many features (methylation, SNPs) or many columns (cytometry, single-cell RNA-seq). To demonstate some of this functionality, we will use a dataset from the <em><a href="https://bioconductor.org/packages/3.14/TENxPBMCData">TENxPBMCData</a></em> dataset:</p>
+<a href="#overview" class="anchor" aria-hidden="true"></a>Overview</h1>
+<p>Some tweaks can be performed to enable <em><a href="https://bioconductor.org/packages/3.14/iSEE" class="external-link">iSEE</a></em> to run efficiently on large datasets. This includes datasets with many features (methylation, SNPs) or many columns (cytometry, single-cell RNA-seq). To demonstate some of this functionality, we will use a dataset from the <em><a href="https://bioconductor.org/packages/3.14/TENxPBMCData" class="external-link">TENxPBMCData</a></em> dataset:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">TENxPBMCData</span><span class="op">)</span>
-<span class="va">sce.pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/TENxPBMCData/man/TENxPBMCData.html">TENxPBMCData</a></span><span class="op">(</span><span class="st">"pbmc68k"</span><span class="op">)</span>
-<span class="va">sce.pbmc</span><span class="op">$</span><span class="va">Library</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">sce.pbmc</span><span class="op">$</span><span class="va">Library</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">TENxPBMCData</span><span class="op">)</span>
+<span class="va">sce.pbmc</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/TENxPBMCData/man/TENxPBMCData.html" class="external-link">TENxPBMCData</a></span><span class="op">(</span><span class="st">"pbmc68k"</span><span class="op">)</span>
+<span class="va">sce.pbmc</span><span class="op">$</span><span class="va">Library</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">sce.pbmc</span><span class="op">$</span><span class="va">Library</span><span class="op">)</span>
 <span class="va">sce.pbmc</span>
 <span class="co">#&gt; class: SingleCellExperiment </span>
 <span class="co">#&gt; dim: 32738 68579 </span>
@@ -161,16 +157,16 @@
 </div>
 <div id="out-of-memory" class="section level1">
 <h1 class="hasAnchor">
-<a href="#out-of-memory" class="anchor"></a>Using out-of-memory matrices</h1>
-<p>Many <code>SummarizedExperiment</code> objects store assay matrices as in-memory matrix-like objects, be they ordinary matrices or alternative representations such as sparse matrices from the <em><a href="https://CRAN.R-project.org/package=Matrix">Matrix</a></em> package. For example, if we looked at the Allen data, we would see that the counts are stored as an ordinary matrix.</p>
+<a href="#out-of-memory" class="anchor" aria-hidden="true"></a>Using out-of-memory matrices</h1>
+<p>Many <code>SummarizedExperiment</code> objects store assay matrices as in-memory matrix-like objects, be they ordinary matrices or alternative representations such as sparse matrices from the <em><a href="https://CRAN.R-project.org/package=Matrix" class="external-link">Matrix</a></em> package. For example, if we looked at the Allen data, we would see that the counts are stored as an ordinary matrix.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">scRNAseq</span><span class="op">)</span>
-<span class="va">sce.allen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html">ReprocessedAllenData</a></span><span class="op">(</span><span class="st">"tophat_counts"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="fu">assay</span><span class="op">(</span><span class="va">sce.allen</span>, <span class="st">"tophat_counts"</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">scRNAseq</span><span class="op">)</span>
+<span class="va">sce.allen</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html" class="external-link">ReprocessedAllenData</a></span><span class="op">(</span><span class="st">"tophat_counts"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">sce.allen</span>, <span class="st">"tophat_counts"</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] "matrix" "array"</span></code></pre></div>
-<p>In situations involving large datasets and limited computational resources, storing the entire assay in memory may not be feasible. Rather, we can represent the data as a file-backed matrix where contents are stored on disk and retrieved on demand. Within the Bioconductor ecosystem, the easiest way of doing this is to create a <code>HDF5Matrix</code>, which uses a <a href="https://support.hdfgroup.org/HDF5/whatishdf5.html">HDF5 file</a> to store all the assay data. We see that this has already been done for use in the 68K PBMC dataset:</p>
+<p>In situations involving large datasets and limited computational resources, storing the entire assay in memory may not be feasible. Rather, we can represent the data as a file-backed matrix where contents are stored on disk and retrieved on demand. Within the Bioconductor ecosystem, the easiest way of doing this is to create a <code>HDF5Matrix</code>, which uses a <a href="https://support.hdfgroup.org/HDF5/whatishdf5.html" class="external-link">HDF5 file</a> to store all the assay data. We see that this has already been done for use in the 68K PBMC dataset:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">counts</span><span class="op">(</span><span class="va">sce.pbmc</span>, withDimnames<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">counts</a></span><span class="op">(</span><span class="va">sce.pbmc</span>, withDimnames<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 <span class="co">#&gt; &lt;32738 x 68579&gt; sparse matrix of class HDF5Matrix and type "integer":</span>
 <span class="co">#&gt;              [,1]     [,2]     [,3]     [,4] ... [,68576] [,68577] [,68578]</span>
 <span class="co">#&gt;     [1,]        0        0        0        0   .        0        0        0</span>
@@ -198,45 +194,45 @@
 <span class="co">#&gt; [32738,]        0</span></code></pre></div>
 <p>Despite the dimensions of this matrix, the <code>HDF5Matrix</code> object occupies very little space in memory.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span><span class="op">(</span><span class="fu">counts</span><span class="op">(</span><span class="va">sce.pbmc</span>, withDimnames<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html" class="external-link">object.size</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">counts</a></span><span class="op">(</span><span class="va">sce.pbmc</span>, withDimnames<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; 2496 bytes</span></code></pre></div>
 <p>However, parts of the data can still be read in on demand. For all intents and purposes, the <code>HDF5Matrix</code> appears to be an ordinary matrix to downstream applications and can be used as such.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">first.gene</span> <span class="op">&lt;-</span> <span class="fu">counts</span><span class="op">(</span><span class="va">sce.pbmc</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">first.gene</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">first.gene</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/SingleCellExperiment/man/assays.html" class="external-link">counts</a></span><span class="op">(</span><span class="va">sce.pbmc</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">first.gene</span><span class="op">)</span>
 <span class="co">#&gt; [1] 0 0 0 0 0 0</span></code></pre></div>
 <p>This means that we can use the 68K PBMC <code>SingleCellExperiment</code> object in <code><a href="../reference/iSEE.html">iSEE()</a></code> without any extra work. The app below shows the distribution of counts for everyone’s favorite gene <em>MALAT1</em> across libraries. Here, <code><a href="../reference/iSEE.html">iSEE()</a></code> is simply retrieving data on demand from the <code>HDF5Matrix</code> without ever loading the entire assay matrix into memory. This enables it to run efficiently on arbitrary large datasets with limited resources.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/iSEE/iSEE">iSEE</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/iSEE/iSEE" class="external-link">iSEE</a></span><span class="op">)</span>
 <span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce.pbmc</span>, initial<span class="op">=</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/RowDataTable-class.html">RowDataTable</a></span><span class="op">(</span>Selected<span class="op">=</span><span class="st">"ENSG00000251562"</span>, Search<span class="op">=</span><span class="st">"MALAT1"</span><span class="op">)</span>, 
+    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/RowDataTable-class.html">RowDataTable</a></span><span class="op">(</span>Selected<span class="op">=</span><span class="st">"ENSG00000251562"</span>, Search<span class="op">=</span><span class="st">"MALAT1"</span><span class="op">)</span>, 
         <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span><span class="op">(</span>XAxis<span class="op">=</span><span class="st">"Column data"</span>, XAxisColumnData<span class="op">=</span><span class="st">"Library"</span>,
             YAxisFeatureSource<span class="op">=</span><span class="st">"RowDataTable1"</span><span class="op">)</span>
     <span class="op">)</span>
 <span class="op">)</span></code></pre></div>
 <p><img src="screenshots/bigdata-hdf5.png" width="488"></p>
-<p>Generally speaking, these HDF5 files are written once by a process with sufficient computational resources (i.e., memory and time). We typically create <code>HDF5Matrix</code> objects using the <code><a href="https://rdrr.io/pkg/HDF5Array/man/writeHDF5Array.html">writeHDF5Array()</a></code> function from the <em><a href="https://bioconductor.org/packages/3.14/HDF5Array">HDF5Array</a></em> package. After the file is created, the objects can be read many times in more deprived environments.</p>
+<p>Generally speaking, these HDF5 files are written once by a process with sufficient computational resources (i.e., memory and time). We typically create <code>HDF5Matrix</code> objects using the <code><a href="https://rdrr.io/pkg/HDF5Array/man/writeHDF5Array.html" class="external-link">writeHDF5Array()</a></code> function from the <em><a href="https://bioconductor.org/packages/3.14/HDF5Array" class="external-link">HDF5Array</a></em> package. After the file is created, the objects can be read many times in more deprived environments.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sce.h5</span> <span class="op">&lt;-</span> <span class="va">sce.allen</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/HDF5Array">HDF5Array</a></span><span class="op">)</span>
-<span class="fu">assay</span><span class="op">(</span><span class="va">sce.h5</span>, <span class="st">"tophat_counts"</span>, withDimnames<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="op">&lt;-</span> 
-    <span class="fu"><a href="https://rdrr.io/pkg/HDF5Array/man/writeHDF5Array.html">writeHDF5Array</a></span><span class="op">(</span><span class="fu">assay</span><span class="op">(</span><span class="va">sce.h5</span>, <span class="st">"tophat_counts"</span><span class="op">)</span>, file<span class="op">=</span><span class="st">"assay.h5"</span>, name<span class="op">=</span><span class="st">"counts"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="fu">assay</span><span class="op">(</span><span class="va">sce.h5</span>, <span class="st">"tophat_counts"</span>, withDimnames<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/HDF5Array" class="external-link">HDF5Array</a></span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">sce.h5</span>, <span class="st">"tophat_counts"</span>, withDimnames<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>  <span class="op">&lt;-</span> 
+    <span class="fu"><a href="https://rdrr.io/pkg/HDF5Array/man/writeHDF5Array.html" class="external-link">writeHDF5Array</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">sce.h5</span>, <span class="st">"tophat_counts"</span><span class="op">)</span>, file<span class="op">=</span><span class="st">"assay.h5"</span>, name<span class="op">=</span><span class="st">"counts"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></span><span class="op">(</span><span class="va">sce.h5</span>, <span class="st">"tophat_counts"</span>, withDimnames<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span>
 <span class="co">#&gt; [1] "HDF5Matrix"</span>
 <span class="co">#&gt; attr(,"package")</span>
 <span class="co">#&gt; [1] "HDF5Array"</span>
-<span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span><span class="st">"assay.h5"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="st">"assay.h5"</span><span class="op">)</span>
 <span class="co">#&gt; character(0)</span></code></pre></div>
-<p>It is worth noting that <code><a href="../reference/iSEE.html">iSEE()</a></code> does not know or care that the data is stored in a HDF5 file. The app is fully compatible with any matrix-like representation of the assay data that supports <code><a href="https://rdrr.io/r/base/dim.html">dim()</a></code> and <code>[,</code>. As such, <code><a href="../reference/iSEE.html">iSEE()</a></code> can be directly used with other memory-efficient objects like the <code>DeferredMatrix</code> and <code>LowRankMatrix</code> from the <em><a href="https://bioconductor.org/packages/3.14/BiocSingular">BiocSingular</a></em> package, or perhaps the <code>ResidualMatrix</code> from the <em><a href="https://bioconductor.org/packages/3.14/batchelor">batchelor</a></em> package.</p>
+<p>It is worth noting that <code><a href="../reference/iSEE.html">iSEE()</a></code> does not know or care that the data is stored in a HDF5 file. The app is fully compatible with any matrix-like representation of the assay data that supports <code><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim()</a></code> and <code>[,</code>. As such, <code><a href="../reference/iSEE.html">iSEE()</a></code> can be directly used with other memory-efficient objects like the <code>DeferredMatrix</code> and <code>LowRankMatrix</code> from the <em><a href="https://bioconductor.org/packages/3.14/BiocSingular" class="external-link">BiocSingular</a></em> package, or perhaps the <code>ResidualMatrix</code> from the <em><a href="https://bioconductor.org/packages/3.14/batchelor" class="external-link">batchelor</a></em> package.</p>
 </div>
 <div id="downsampling" class="section level1">
 <h1 class="hasAnchor">
-<a href="#downsampling" class="anchor"></a>Downsampling points</h1>
+<a href="#downsampling" class="anchor" aria-hidden="true"></a>Downsampling points</h1>
 <p>It is also possible to downsample points to reduce the time required to generate the plot. This involves subsetting the dataset so that only the most recently plotted point for an overlapping set of points is shown. In this manner, we avoid wasting time in plotting many points that would not be visible anyway. To demonstrate, we will re-use the 68K PBMC example and perform downsampling on the feature assay plot; we can see that its aesthetics are largely similar to the non-downsampled counterpart above.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/iSEE/iSEE">iSEE</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/iSEE/iSEE" class="external-link">iSEE</a></span><span class="op">)</span>
 <span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce.pbmc</span>, initial<span class="op">=</span>
-    <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/RowDataTable-class.html">RowDataTable</a></span><span class="op">(</span>Selected<span class="op">=</span><span class="st">"ENSG00000251562"</span>, Search<span class="op">=</span><span class="st">"MALAT1"</span><span class="op">)</span>, 
+    <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="../reference/RowDataTable-class.html">RowDataTable</a></span><span class="op">(</span>Selected<span class="op">=</span><span class="st">"ENSG00000251562"</span>, Search<span class="op">=</span><span class="st">"MALAT1"</span><span class="op">)</span>, 
         <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span><span class="op">(</span>XAxis<span class="op">=</span><span class="st">"Column data"</span>, XAxisColumnData<span class="op">=</span><span class="st">"Library"</span>,
             YAxisFeatureSource<span class="op">=</span><span class="st">"RowDataTable1"</span>, 
             VisualChoices<span class="op">=</span><span class="st">"Point"</span>, Downsample<span class="op">=</span><span class="cn">TRUE</span>,
@@ -255,21 +251,21 @@
 </div>
 <div id="changing-the-interface" class="section level1">
 <h1 class="hasAnchor">
-<a href="#changing-the-interface" class="anchor"></a>Changing the interface</h1>
-<p>One can generally improve the speed of the <code><a href="../reference/iSEE.html">iSEE()</a></code> interface by only initializing the app with the desired panels. For example, it makes little sense to spend time rendering a <code>RowDataPlot</code> when only the <code>ReducedDimensionPlot</code> is of interest. Specification of the initial state is straightforward with the <code>initial=</code> argument, as described in a <a href="https://bioconductor.org/packages/3.14/iSEE/vignettes/configure.html">previous vignette</a>.</p>
-<p>On occasion, there may be alternative panels with more efficient visualizations for the same data. The prime example is the <code>ReducedDimensionHexPlot</code> class from the <em><a href="https://bioconductor.org/packages/3.14/iSEEu">iSEEu</a></em> package; this will create a hexplot rather than a scatter plot, thus avoiding the need to render each point in the latter.</p>
+<a href="#changing-the-interface" class="anchor" aria-hidden="true"></a>Changing the interface</h1>
+<p>One can generally improve the speed of the <code><a href="../reference/iSEE.html">iSEE()</a></code> interface by only initializing the app with the desired panels. For example, it makes little sense to spend time rendering a <code>RowDataPlot</code> when only the <code>ReducedDimensionPlot</code> is of interest. Specification of the initial state is straightforward with the <code>initial=</code> argument, as described in a <a href="https://bioconductor.org/packages/3.14/iSEE/vignettes/configure.html" class="external-link">previous vignette</a>.</p>
+<p>On occasion, there may be alternative panels with more efficient visualizations for the same data. The prime example is the <code>ReducedDimensionHexPlot</code> class from the <em><a href="https://bioconductor.org/packages/3.14/iSEEu" class="external-link">iSEEu</a></em> package; this will create a hexplot rather than a scatter plot, thus avoiding the need to render each point in the latter.</p>
 </div>
 <div id="comments-on-deployment" class="section level1">
 <h1 class="hasAnchor">
-<a href="#comments-on-deployment" class="anchor"></a>Comments on deployment</h1>
-<p>It is straightforward to host <em><a href="https://bioconductor.org/packages/3.14/iSEE">iSEE</a></em> applications on hosting platforms like <a href="https://rstudio.com/products/shiny/shiny-server/">Shiny Server</a> or <a href="https://rstudio.com/products/connect/">Rstudio Connect</a>. All one needs to do is to create an <code>app.R</code> file that calls <code><a href="../reference/iSEE.html">iSEE()</a></code> with the desired parameters, and then follow the instructions for the target platform. For a better user experience, we suggest setting a minimum number of processes to avoid the initial delay from R start-up.</p>
-<p>It is also possible to deploy and host Shiny app on <a href="https://www.shinyapps.io/">shinyapps.io</a>, a platform as a service (PaaS) provided by RStudio. In many cases, users will need to configure the settings of their deployed apps, in particular selecting larger instances to provide sufficient memory for the app. The maximum amount of 1GB available to free accounts may not be sufficient to deploy large datasets; in which case you may consider <a href="#out-of-memory">using out-of-memory matrices</a>, filtering your dataset (e.g., removing lowly detected features), or going for a paid account. Detailed instructions to get started are available at <a href="https://shiny.rstudio.com/articles/shinyapps.html" class="uri">https://shiny.rstudio.com/articles/shinyapps.html</a>. For example, see the <a href="https://rstudio.cloud/project/230765">isee-shiny-contest</a> app, <a href="https://blog.rstudio.com/2019/04/05/first-shiny-contest-winners/">winner of the 1st Shiny Contest</a>.</p>
+<a href="#comments-on-deployment" class="anchor" aria-hidden="true"></a>Comments on deployment</h1>
+<p>It is straightforward to host <em><a href="https://bioconductor.org/packages/3.14/iSEE" class="external-link">iSEE</a></em> applications on hosting platforms like <a href="https://rstudio.com/products/shiny/shiny-server/" class="external-link">Shiny Server</a> or <a href="https://rstudio.com/products/connect/" class="external-link">Rstudio Connect</a>. All one needs to do is to create an <code>app.R</code> file that calls <code><a href="../reference/iSEE.html">iSEE()</a></code> with the desired parameters, and then follow the instructions for the target platform. For a better user experience, we suggest setting a minimum number of processes to avoid the initial delay from R start-up.</p>
+<p>It is also possible to deploy and host Shiny app on <a href="https://www.shinyapps.io/" class="external-link">shinyapps.io</a>, a platform as a service (PaaS) provided by RStudio. In many cases, users will need to configure the settings of their deployed apps, in particular selecting larger instances to provide sufficient memory for the app. The maximum amount of 1GB available to free accounts may not be sufficient to deploy large datasets; in which case you may consider <a href="#out-of-memory">using out-of-memory matrices</a>, filtering your dataset (e.g., removing lowly detected features), or going for a paid account. Detailed instructions to get started are available at <a href="https://shiny.rstudio.com/articles/shinyapps.html" class="external-link uri">https://shiny.rstudio.com/articles/shinyapps.html</a>. For example, see the <a href="https://rstudio.cloud/project/230765" class="external-link">isee-shiny-contest</a> app, <a href="https://blog.rstudio.com/2019/04/05/first-shiny-contest-winners/" class="external-link">winner of the 1st Shiny Contest</a>.</p>
 </div>
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
-<a href="#session-info" class="anchor"></a>Session Info</h1>
+<a href="#session-info" class="anchor" aria-hidden="true"></a>Session Info</h1>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; R version 4.1.0 (2021-05-18)</span>
 <span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span>
 <span class="co">#&gt; Running under: Ubuntu 20.04.2 LTS</span>
@@ -311,7 +307,7 @@
 <span class="co">#&gt;  [15] fansi_0.5.0                   magrittr_2.0.1               </span>
 <span class="co">#&gt;  [17] memoise_2.0.0                 cluster_2.1.2                </span>
 <span class="co">#&gt;  [19] doParallel_1.0.16             ComplexHeatmap_2.9.0         </span>
-<span class="co">#&gt;  [21] Biostrings_2.61.1             pkgdown_1.6.1                </span>
+<span class="co">#&gt;  [21] Biostrings_2.61.1             pkgdown_1.6.1.9001           </span>
 <span class="co">#&gt;  [23] prettyunits_1.1.1             colorspace_2.0-2             </span>
 <span class="co">#&gt;  [25] ggrepel_0.9.1                 blob_1.2.1                   </span>
 <span class="co">#&gt;  [27] rappdirs_0.3.3                textshaping_0.3.5            </span>
@@ -384,11 +380,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
+  <p></p>
+<p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
 </div>
 
       </footer>
@@ -396,6 +394,8 @@
 
   
 
+
+  
 
   </body>
 </html>

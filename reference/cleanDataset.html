@@ -45,6 +45,8 @@
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -56,9 +58,15 @@
 
 
 
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -79,12 +87,6 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -154,13 +156,13 @@
     <p>Clean the SummarizedExperiment by making sure that names of various fields are available and unique.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>cleanDataset</span><span class='op'>(</span><span class='va'>se</span><span class='op'>)</span>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>cleanDataset</span><span class='op'>(</span><span class='va'>se</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SummarizedExperiment</span>
 <span class='fu'>cleanDataset</span><span class='op'>(</span><span class='va'>se</span><span class='op'>)</span>
 
 <span class='co'># S4 method for SingleCellExperiment</span>
-<span class='fu'>cleanDataset</span><span class='op'>(</span><span class='va'>se</span><span class='op'>)</span></pre>
+<span class='fu'>cleanDataset</span><span class='op'>(</span><span class='va'>se</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -181,35 +183,43 @@ This function enforces that, adding consecutive integer names if not available a
 <p>Various <a href='Panel-class.html'>Panel</a>s further assume that the <code>assay</code>, <code>rowData</code>, <code>colData</code> names are unique;
 if this is not the case, <code>selectInput</code> behaves in unexpected (and incorrect) ways.
 This function enforces that as well by running them through <code><a href='https://rdrr.io/r/base/make.unique.html'>make.unique</a></code>.</p>
-<p>For SingleCellExperiment object, we enforce uniqueness in the <code>reducedDims</code>.</p>
+<p>For <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object, we enforce uniqueness in the <code><a href='https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html'>reducedDims</a></code>.</p>
 <p>All changes result in warnings as a &#8220;sensible&#8221; object is not expected to require any work.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Aaron Lun</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Creating a very naughty SE.</span>
-<span class='va'>se</span> <span class='op'>&lt;-</span> <span class='fu'>SummarizedExperiment</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, <span class='fl'>2</span><span class='op'>:</span><span class='fl'>11</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>:</span><span class='fl'>11</span>, <span class='fl'>3</span><span class='op'>:</span><span class='fl'>12</span><span class='op'>)</span><span class='op'>)</span>,
-   colData<span class='op'>=</span><span class='fu'>DataFrame</span><span class='op'>(</span>A<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, A<span class='op'>=</span><span class='fl'>3</span><span class='op'>:</span><span class='fl'>4</span>, check.names<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>, 
-   rowData<span class='op'>=</span><span class='fu'>DataFrame</span><span class='op'>(</span>B<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, B<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, check.names<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>se</span>
-</div><div class='output co'>#&gt; class: SummarizedExperiment 
-#&gt; dim: 10 2 
-#&gt; metadata(0):
-#&gt; assays(2): '' ''
-#&gt; rownames: NULL
-#&gt; rowData names(2): B B
-#&gt; colnames: NULL
-#&gt; colData names(2): A A</div><div class='input'>
-<span class='fu'>cleanDataset</span><span class='op'>(</span><span class='va'>se</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: filling in the missing 'rownames(se)'</span></div><div class='output co'>#&gt; <span class='warning'>Warning: filling in the missing 'colnames(se)'</span></div><div class='output co'>#&gt; <span class='warning'>Warning: duplicated 'colnames(rowData(se))' detected, making them unique</span></div><div class='output co'>#&gt; <span class='warning'>Warning: duplicated 'colnames(colData(se))' detected, making them unique</span></div><div class='output co'>#&gt; <span class='warning'>Warning: empty 'assayNames(se)' detected, renaming to 'unnamed'</span></div><div class='output co'>#&gt; <span class='warning'>Warning: duplicated 'assayNames(se)' detected, making them unique</span></div><div class='output co'>#&gt; class: SummarizedExperiment 
-#&gt; dim: 10 2 
-#&gt; metadata(0):
-#&gt; assays(2): unnamed unnamed.1
-#&gt; rownames(10): 1 2 ... 9 10
-#&gt; rowData names(2): B B.1
-#&gt; colnames(2): 1 2
-#&gt; colData names(2): A A.1</div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='co'># Creating a very naughty SE.</span></span>
+<span class='r-in'><span class='va'>se</span> <span class='op'>&lt;-</span> <span class='fu'>SummarizedExperiment</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, <span class='fl'>2</span><span class='op'>:</span><span class='fl'>11</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>cbind</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>:</span><span class='fl'>11</span>, <span class='fl'>3</span><span class='op'>:</span><span class='fl'>12</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>   colData<span class='op'>=</span><span class='fu'>DataFrame</span><span class='op'>(</span>A<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, A<span class='op'>=</span><span class='fl'>3</span><span class='op'>:</span><span class='fl'>4</span>, check.names<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>, </span>
+<span class='r-in'>   rowData<span class='op'>=</span><span class='fu'>DataFrame</span><span class='op'>(</span>B<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, B<span class='op'>=</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, check.names<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>se</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> class: SummarizedExperiment </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> dim: 10 2 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> metadata(0):</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> assays(2): '' ''</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> rownames: NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> rowData names(2): B B</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> colnames: NULL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> colData names(2): A A</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>cleanDataset</span><span class='op'>(</span><span class='va'>se</span><span class='op'>)</span></span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>filling in the missing 'rownames(se)'</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>filling in the missing 'colnames(se)'</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>duplicated 'colnames(rowData(se))' detected, making them unique</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>duplicated 'colnames(colData(se))' detected, making them unique</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>empty 'assayNames(se)' detected, renaming to 'unnamed'</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>duplicated 'assayNames(se)' detected, making them unique</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> class: SummarizedExperiment </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> dim: 10 2 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> metadata(0):</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> assays(2): unnamed unnamed.1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> rownames(10): 1 2 ... 9 10</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> rowData names(2): B B.1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> colnames(2): 1 2</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> colData names(2): A A.1</span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -221,11 +231,11 @@ This function enforces that as well by running them through <code><a href='https
 
       <footer>
       <div class="copyright">
-  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
+  <p><p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -233,6 +243,8 @@ This function enforces that as well by running them through <code><a href='https
 
   
 
+
+  
 
   </body>
 </html>

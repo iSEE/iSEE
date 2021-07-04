@@ -20,6 +20,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -38,12 +40,6 @@
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -87,7 +83,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/iSEE/iSEE/">
+  <a href="https://github.com/iSEE/iSEE/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -108,26 +104,26 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip></h1>
-<p>Sharing information across <em><a href="https://bioconductor.org/packages/3.14/iSEE">iSEE</a></em> panels</p>
-                        <h4 class="author">Kevin Rue-Albrecht</h4>
+<p>Sharing information across <em><a href="https://bioconductor.org/packages/3.14/iSEE" class="external-link">iSEE</a></em> panels</p>
+                        <h4 data-toc-skip class="author">Kevin Rue-Albrecht</h4>
             <address class="author_afil">
       MRC WIMM Centre for Computational Biology, University of Oxford, Oxford, OX3 9DS, UK<br><a class="author_email" href="mailto:#"></a><a href="mailto:kevinrue67@gmail.com" class="email">kevinrue67@gmail.com</a>
       </address>
-                              <h4 class="author">Federico Marini</h4>
+                              <h4 data-toc-skip class="author">Federico Marini</h4>
             <address class="author_afil">
       Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), MainzCenter for Thrombosis and Hemostasis (CTH), Mainz<br><a class="author_email" href="mailto:#"></a><a href="mailto:marinif@uni-mainz.de" class="email">marinif@uni-mainz.de</a>
       </address>
-                              <h4 class="author">Charlotte Soneson</h4>
+                              <h4 data-toc-skip class="author">Charlotte Soneson</h4>
             <address class="author_afil">
       Friedrich Miescher Institute for Biomedical Research, Basel, SwitzerlandSIB Swiss Institute of Bioinformatics<br><a class="author_email" href="mailto:#"></a><a href="mailto:charlottesoneson@gmail.com" class="email">charlottesoneson@gmail.com</a>
       </address>
-                              <h4 class="author">Aaron Lun</h4>
+                              <h4 data-toc-skip class="author">Aaron Lun</h4>
                   <a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       
                   
-            <h4 class="date">4 July 2021</h4>
+            <h4 data-toc-skip class="date">4 July 2021</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/links.Rmd"><code>vignettes/links.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/links.Rmd" class="external-link"><code>vignettes/links.Rmd</code></a></small>
       <div class="hidden name"><code>links.Rmd</code></div>
 
     </div>
@@ -137,22 +133,22 @@
 <p><strong>Compiled date</strong>: 2021-07-04</p>
 <p><strong>Last edited</strong>: 2020-04-20</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
-<p><img src="../../../../tmp/RtmptttBjv/temp_libpath6d61402a04a/iSEE/www/iSEE.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="../../../_temp/Library/iSEE/www/iSEE.png" width="50%" style="display: block; margin: auto;"></p>
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
-<a href="#introduction" class="anchor"></a>Introduction</h1>
-<p>One of <em><a href="https://bioconductor.org/packages/3.14/iSEE">iSEE</a></em>’s main features is the ability to share information between panels. This facilitates deeper exploration of a dataset by allowing users to visualize relationships across multiple metrics. <code><a href="../reference/iSEE.html">iSEE()</a></code> currently supports three modes of information sharing between panels - multiple selections, single selections and dynamic selections - which are demonstrated in this vignette using the Allen dataset processed in the <a href="https://bioconductor.org/packages/3.14/iSEE/vignettes/basic.html">previous vignette</a>.</p>
+<a href="#introduction" class="anchor" aria-hidden="true"></a>Introduction</h1>
+<p>One of <em><a href="https://bioconductor.org/packages/3.14/iSEE" class="external-link">iSEE</a></em>’s main features is the ability to share information between panels. This facilitates deeper exploration of a dataset by allowing users to visualize relationships across multiple metrics. <code><a href="../reference/iSEE.html">iSEE()</a></code> currently supports three modes of information sharing between panels - multiple selections, single selections and dynamic selections - which are demonstrated in this vignette using the Allen dataset processed in the <a href="https://bioconductor.org/packages/3.14/iSEE/vignettes/basic.html" class="external-link">previous vignette</a>.</p>
 </div>
 <div id="multiple-selections" class="section level1">
 <h1 class="hasAnchor">
-<a href="#multiple-selections" class="anchor"></a>Multiple selections</h1>
+<a href="#multiple-selections" class="anchor" aria-hidden="true"></a>Multiple selections</h1>
 <div id="basic-use" class="section level2">
 <h2 class="hasAnchor">
-<a href="#basic-use" class="anchor"></a>Basic use</h2>
+<a href="#basic-use" class="anchor" aria-hidden="true"></a>Basic use</h2>
 <p>As its name suggests, this involves selecting multiple features or samples in one panel and transmitting their identities to another panel to affect the visualization. To demonstrate, we will create a small app involving a single reduced dimension plot and a column metadata plot.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/iSEE/iSEE">iSEE</a></span><span class="op">)</span>
-<span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, initial<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/iSEE/iSEE" class="external-link">iSEE</a></span><span class="op">)</span>
+<span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, initial<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
     <span class="fu"><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span><span class="op">(</span><span class="op">)</span>,
     <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span><span class="op">(</span><span class="op">)</span>
 <span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -166,10 +162,10 @@
 </div>
 <div id="selection-effects" class="section level2">
 <h2 class="hasAnchor">
-<a href="#selection-effects" class="anchor"></a>Selection effects</h2>
+<a href="#selection-effects" class="anchor" aria-hidden="true"></a>Selection effects</h2>
 <p>Transparency is the default aesthetic effect used to distinguish points in multiple selections in receiving plots. Alternatively, we may use color:</p>
 <p><img src="screenshots/links-multi-color.png" width="488"></p>
-<p>Another option is to restrict the receiving plot so that it only shows the points in the multiple selection. This effectively “gates” the dataset on the selection in the reduced dimension plot, analogous to identification populations of interest in flow cytometry studies. Indeed, this gating process can be repeated as many times as desired; a multiple selection could made on the column data plot and transmitted to another panel, and so on. (See <a href="https://github.com/iSEE/iSEE2018/blob/master/tours/cytof/app.R">this mass cytometry tour</a> for an example.)</p>
+<p>Another option is to restrict the receiving plot so that it only shows the points in the multiple selection. This effectively “gates” the dataset on the selection in the reduced dimension plot, analogous to identification populations of interest in flow cytometry studies. Indeed, this gating process can be repeated as many times as desired; a multiple selection could made on the column data plot and transmitted to another panel, and so on. (See <a href="https://github.com/iSEE/iSEE2018/blob/master/tours/cytof/app.R" class="external-link">this mass cytometry tour</a> for an example.)</p>
 <p><img src="screenshots/links-multi-restrict.png" width="488"></p>
 <p>Of course, not all receiving panels need to be plots. If we transmit a multiple selection to a column data table, the effect is to subset the rows of the table corresponding to the selected points.</p>
 <p><img src="screenshots/links-multi-table.png" width="488"></p>
@@ -178,7 +174,7 @@
 </div>
 <div id="saving-selections" class="section level2">
 <h2 class="hasAnchor">
-<a href="#saving-selections" class="anchor"></a>Saving selections</h2>
+<a href="#saving-selections" class="anchor" aria-hidden="true"></a>Saving selections</h2>
 <p>In certain panels (usually plots), multiple selections can be saved to form disjoint selections. Receiving plots will respond to the union of all active and saved selections:</p>
 <p><img src="screenshots/links-multi-saved.png" width="488"></p>
 <p>The saved selection history operates on a first-in-last-out basis. Upon saving, a snapshot is taken of the current “active” selection, i.e., the brush or lasso that is just created. Deletion will only operate on the last saved selection.</p>
@@ -186,7 +182,7 @@
 </div>
 <div id="single-selections" class="section level1">
 <h1 class="hasAnchor">
-<a href="#single-selections" class="anchor"></a>Single selections</h1>
+<a href="#single-selections" class="anchor" aria-hidden="true"></a>Single selections</h1>
 <p>Another mode of information sharing involves transmitting a selection of a single feature or sample. This allows users to conveniently direct other panels to focus on a feature or sample of interest. For example, we can transmit a single selection from a row data table to a reduced dimension plot, instructing the latter to color points by the expression of the chosen feature.</p>
 <p><img src="screenshots/links-single-color.png" width="488"></p>
 <p>The same approach can be used to control what is plotted on a feature assay plot. Clicking on a different row of the table will directly change the axes (in this case, the y-axis) of the plot, allowing the user to synchronise different aspects of the <code><a href="../reference/iSEE.html">iSEE()</a></code> interface to whatever is currently of interest.</p>
@@ -198,7 +194,7 @@
 </div>
 <div id="dynamic-selections" class="section level1">
 <h1 class="hasAnchor">
-<a href="#dynamic-selections" class="anchor"></a>Dynamic selections</h1>
+<a href="#dynamic-selections" class="anchor" aria-hidden="true"></a>Dynamic selections</h1>
 <p>Most panels will have an option to dynamically change the choice of transmitting panel according to the last active selection in the app. This allows users to, for example, simply brush on any plot in the app and have all participating receiving panels immediately use that selection without requiring manual resetting of the transmitter. To illustrate, let’s set up an instance with three different plots that all represent points as samples.</p>
 <p><img src="screenshots/links-dynamic-multi.png" width="488"></p>
 <p>Notice how we have checked the dynamic source selection option in the selection parameter box for all panels. This means that, upon making a selection in any one of the plots, all of the other plots will automatically respond as if they had been manually set to receive a transmission from that plot.</p>
@@ -208,9 +204,9 @@
 </div>
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
-<a href="#session-info" class="anchor"></a>Session Info</h1>
+<a href="#session-info" class="anchor" aria-hidden="true"></a>Session Info</h1>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; R version 4.1.0 (2021-05-18)</span>
 <span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span>
 <span class="co">#&gt; Running under: Ubuntu 20.04.2 LTS</span>
@@ -248,7 +244,7 @@
 <span class="co">#&gt;  [19] textshaping_0.3.5      Cairo_1.5-12.2         shinyjs_2.0.0         </span>
 <span class="co">#&gt;  [22] desc_1.3.0             DelayedArray_0.19.1    colourpicker_1.1.0    </span>
 <span class="co">#&gt;  [25] bookdown_0.22          sass_0.4.0             scales_1.1.1          </span>
-<span class="co">#&gt;  [28] pkgdown_1.6.1          systemfonts_1.0.2      stringr_1.4.0         </span>
+<span class="co">#&gt;  [28] pkgdown_1.6.1.9001     systemfonts_1.0.2      stringr_1.4.0         </span>
 <span class="co">#&gt;  [31] digest_0.6.27          rmarkdown_2.9          XVector_0.33.0        </span>
 <span class="co">#&gt;  [34] pkgconfig_2.0.3        htmltools_0.5.1.1      fastmap_1.1.0         </span>
 <span class="co">#&gt;  [37] highr_0.9              htmlwidgets_1.5.3      rlang_0.4.11          </span>
@@ -287,11 +283,13 @@
 
 
       <footer><div class="copyright">
-  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
+  <p></p>
+<p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
 </div>
 
       </footer>
@@ -299,6 +297,8 @@
 
   
 
+
+  
 
   </body>
 </html>

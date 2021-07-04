@@ -45,6 +45,8 @@
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -56,9 +58,15 @@
 
 
 
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -79,12 +87,6 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -154,7 +156,7 @@
     <p>Identify the rows of a data.frame lying within a closed lasso polygon, analogous to <code><a href='https://rdrr.io/pkg/shiny/man/brushedPoints.html'>brushedPoints</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>lassoPoints</span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>lasso</span><span class='op'>)</span></pre>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>lassoPoints</span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>lasso</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -184,40 +186,42 @@ This involves a boundary crossing algorithm that may not be robust in the presen
     <p>Aaron Lun</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>lasso</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>coord<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0.5</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span><span class='op'>)</span><span class='op'>)</span>,
-    closed<span class='op'>=</span><span class='cn'>TRUE</span>, mapping<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='st'>"X"</span>, y<span class='op'>=</span><span class='st'>"Y"</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>values</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>X<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>, Y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>,
-    row.names<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/sprintf.html'>sprintf</a></span><span class='op'>(</span><span class='st'>"VALUE_%i"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'>lassoPoints</span><span class='op'>(</span><span class='va'>values</span>, <span class='va'>lasso</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                    X           Y
-#&gt; VALUE_6  0.349967340 0.043971138
-#&gt; VALUE_8  0.084754502 0.003632551
-#&gt; VALUE_19 0.014659769 0.341874812
-#&gt; VALUE_22 0.119741780 0.009373354
-#&gt; VALUE_23 0.049255810 0.233537052
-#&gt; VALUE_27 0.119054324 0.014021893
-#&gt; VALUE_36 0.005012375 0.324234673
-#&gt; VALUE_41 0.317547232 0.033578795
-#&gt; VALUE_55 0.420651288 0.011788648
-#&gt; VALUE_78 0.048321765 0.451294619
-#&gt; VALUE_80 0.188467675 0.244812947
-#&gt; VALUE_81 0.025653972 0.422450280
-#&gt; VALUE_82 0.086210669 0.122983353
-#&gt; VALUE_87 0.174070850 0.020299537
-#&gt; VALUE_95 0.063634377 0.223738024</div><div class='input'>
-<span class='co'># With faceting information:</span>
-<span class='va'>lasso</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>coord<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0.5</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span><span class='op'>)</span><span class='op'>)</span>,
-    panelvar1<span class='op'>=</span><span class='st'>"A"</span>, panelvar2<span class='op'>=</span><span class='st'>"B"</span>, closed<span class='op'>=</span><span class='cn'>TRUE</span>,
-    mapping<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='st'>"X"</span>, y<span class='op'>=</span><span class='st'>"Y"</span>,
-    panelvar1<span class='op'>=</span><span class='st'>"FacetRow"</span>, panelvar2<span class='op'>=</span><span class='st'>"FacetColumn"</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>values</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>X<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>, Y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>,
-    FacetRow<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>LETTERS</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span><span class='op'>]</span>, <span class='fl'>100</span>, replace<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>,
-    FacetColumn<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>LETTERS</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>]</span>, <span class='fl'>100</span>, replace<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>,
-    row.names<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/sprintf.html'>sprintf</a></span><span class='op'>(</span><span class='st'>"VALUE_%i"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'>lassoPoints</span><span class='op'>(</span><span class='va'>values</span>, <span class='va'>lasso</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                  X         Y FacetRow FacetColumn
-#&gt; VALUE_51 0.1303181 0.2821039        A           B</div><div class='input'>
-</div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='va'>lasso</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>coord<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0.5</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>    closed<span class='op'>=</span><span class='cn'>TRUE</span>, mapping<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='st'>"X"</span>, y<span class='op'>=</span><span class='st'>"Y"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>values</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>X<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>, Y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>,</span>
+<span class='r-in'>    row.names<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/sprintf.html'>sprintf</a></span><span class='op'>(</span><span class='st'>"VALUE_%i"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>lassoPoints</span><span class='op'>(</span><span class='va'>values</span>, <span class='va'>lasso</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                    X           Y</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> VALUE_6  0.349967340 0.043971138</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> VALUE_8  0.084754502 0.003632551</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> VALUE_19 0.014659769 0.341874812</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> VALUE_22 0.119741780 0.009373354</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> VALUE_23 0.049255810 0.233537052</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> VALUE_27 0.119054324 0.014021893</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> VALUE_36 0.005012375 0.324234673</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> VALUE_41 0.317547232 0.033578795</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> VALUE_55 0.420651288 0.011788648</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> VALUE_78 0.048321765 0.451294619</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> VALUE_80 0.188467675 0.244812947</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> VALUE_81 0.025653972 0.422450280</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> VALUE_82 0.086210669 0.122983353</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> VALUE_87 0.174070850 0.020299537</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> VALUE_95 0.063634377 0.223738024</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># With faceting information:</span></span>
+<span class='r-in'><span class='va'>lasso</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>coord<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/cbind.html'>rbind</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0.5</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>0</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'>    panelvar1<span class='op'>=</span><span class='st'>"A"</span>, panelvar2<span class='op'>=</span><span class='st'>"B"</span>, closed<span class='op'>=</span><span class='cn'>TRUE</span>,</span>
+<span class='r-in'>    mapping<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='st'>"X"</span>, y<span class='op'>=</span><span class='st'>"Y"</span>,</span>
+<span class='r-in'>    panelvar1<span class='op'>=</span><span class='st'>"FacetRow"</span>, panelvar2<span class='op'>=</span><span class='st'>"FacetColumn"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>values</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>X<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>, Y<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span>,</span>
+<span class='r-in'>    FacetRow<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>LETTERS</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span><span class='op'>]</span>, <span class='fl'>100</span>, replace<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>,</span>
+<span class='r-in'>    FacetColumn<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>LETTERS</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span><span class='op'>]</span>, <span class='fl'>100</span>, replace<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>,</span>
+<span class='r-in'>    row.names<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/sprintf.html'>sprintf</a></span><span class='op'>(</span><span class='st'>"VALUE_%i"</span>, <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq_len</a></span><span class='op'>(</span><span class='fl'>100</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>lassoPoints</span><span class='op'>(</span><span class='va'>values</span>, <span class='va'>lasso</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                  X         Y FacetRow FacetColumn</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> VALUE_51 0.1303181 0.2821039        A           B</span>
+<span class='r-in'></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -229,11 +233,11 @@ This involves a boundary crossing algorithm that may not be robust in the presen
 
       <footer>
       <div class="copyright">
-  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
+  <p><p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -241,6 +245,8 @@ This involves a boundary crossing algorithm that may not be robust in the presen
 
   
 
+
+  
 
   </body>
 </html>

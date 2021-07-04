@@ -45,6 +45,8 @@
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -56,9 +58,15 @@
 
 
 
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -79,12 +87,6 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -154,9 +156,9 @@
     <p>Filter a data.frame based on the <span class="pkg">DT</span> <code>datatable</code> widget column search string.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>filterDTColumn</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>search</span><span class='op'>)</span>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>filterDTColumn</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>search</span><span class='op'>)</span>
 
-<span class='fu'>filterDT</span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>column</span>, <span class='va'>global</span><span class='op'>)</span></pre>
+<span class='fu'>filterDT</span><span class='op'>(</span><span class='va'>df</span>, <span class='va'>column</span>, <span class='va'>global</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -199,7 +201,7 @@ This is also the case for logical <code>x</code>, albeit with the only choices b
 and (ii) the value in each column satisfies the filter specified in the corresponding entry of <code>column</code>.
 Setting <code>global</code> to an empty string will skip requirement (i) while 
 setting any entry of <code>column</code> to an empty string will skip requirement (ii) for the affected column.</p>
-<p>Ideally, <code><a href='https://rdrr.io/r/base/nrow.html'>ncol(df)</a></code> and <code><a href='https://rdrr.io/r/base/length.html'>length(searches)</a></code> would be the same, but if not,
+<p>Ideally, <code>ncol(df)</code> and <code>length(searches)</code> would be the same, but if not,
 <code>filterDT</code> will simply filter on the first N entries where N is the smaller of the two.</p>
 <p>Any <code>NA</code> element in <code>x</code> will be treated as a no-match.
 The same applies for each column of <code>df</code> that has non-empty <code>column</code>. 
@@ -212,33 +214,38 @@ Note that a no-match in one column does not preclude a successful match in anoth
     <p>Aaron Lun</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># Regular expression:</span>
-<span class='fu'>filterDTColumn</span><span class='op'>(</span><span class='va'>LETTERS</span>, <span class='st'>"A|B|C"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  [1]  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [25] FALSE FALSE</div><div class='input'>
-<span class='co'># Range query:</span>
-<span class='fu'>filterDTColumn</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>20</span><span class='op'>)</span>, <span class='st'>"0.1 ... 0.5"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  [1] FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE
-#&gt; [13] FALSE  TRUE FALSE FALSE FALSE FALSE  TRUE FALSE</div><div class='input'>
-<span class='co'># Factor query:</span>
-<span class='fu'>filterDTColumn</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>letters</span><span class='op'>)</span>, <span class='st'>"['a', 'b', 'c']"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  [1]  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [25] FALSE FALSE</div><div class='input'>
-<span class='co'># Works on DataFrames:</span>
-<span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>row.names<span class='op'>=</span><span class='va'>LETTERS</span>, thing<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>26</span><span class='op'>)</span>, 
-    stuff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>]</span>, <span class='fl'>26</span>, replace<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>,
-    stringsAsFactors<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span>
-
-<span class='fu'>filterDT</span><span class='op'>(</span><span class='va'>X</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"0 ... 0.5"</span>, <span class='st'>"a|b"</span><span class='op'>)</span>, global<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  [1]  TRUE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE FALSE  TRUE FALSE  TRUE
-#&gt; [13]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE
-#&gt; [25] FALSE FALSE</div><div class='input'><span class='fu'>filterDT</span><span class='op'>(</span><span class='va'>X</span>, <span class='st'>""</span>, global<span class='op'>=</span><span class='st'>"A"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  [1]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-#&gt; [25] FALSE FALSE</div><div class='input'>
-</div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='co'># Regular expression:</span></span>
+<span class='r-in'><span class='fu'>filterDTColumn</span><span class='op'>(</span><span class='va'>LETTERS</span>, <span class='st'>"A|B|C"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1]  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [25] FALSE FALSE</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Range query:</span></span>
+<span class='r-in'><span class='fu'>filterDTColumn</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>20</span><span class='op'>)</span>, <span class='st'>"0.1 ... 0.5"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1] FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13] FALSE  TRUE FALSE FALSE FALSE FALSE  TRUE FALSE</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Factor query:</span></span>
+<span class='r-in'><span class='fu'>filterDTColumn</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>letters</span><span class='op'>)</span>, <span class='st'>"['a', 'b', 'c']"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1]  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [25] FALSE FALSE</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Works on DataFrames:</span></span>
+<span class='r-in'><span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>row.names<span class='op'>=</span><span class='va'>LETTERS</span>, thing<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fl'>26</span><span class='op'>)</span>, </span>
+<span class='r-in'>    stuff<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>letters</span><span class='op'>[</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>]</span>, <span class='fl'>26</span>, replace<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>,</span>
+<span class='r-in'>    stringsAsFactors<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>filterDT</span><span class='op'>(</span><span class='va'>X</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"0 ... 0.5"</span>, <span class='st'>"a|b"</span><span class='op'>)</span>, global<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1]  TRUE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE FALSE  TRUE FALSE  TRUE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [25] FALSE FALSE</span>
+<span class='r-in'><span class='fu'>filterDT</span><span class='op'>(</span><span class='va'>X</span>, <span class='st'>""</span>, global<span class='op'>=</span><span class='st'>"A"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  [1]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [25] FALSE FALSE</span>
+<span class='r-in'></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -250,11 +257,11 @@ Note that a no-match in one column does not preclude a successful match in anoth
 
       <footer>
       <div class="copyright">
-  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
+  <p><p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -262,6 +269,8 @@ Note that a no-match in one column does not preclude a successful match in anoth
 
   
 
+
+  
 
   </body>
 </html>

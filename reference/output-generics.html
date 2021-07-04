@@ -45,6 +45,8 @@
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -56,9 +58,15 @@
 
 
 
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -79,12 +87,6 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -165,7 +167,7 @@ given an instance of a <a href='Panel-class.html'>Panel</a> subclass in <code>x<
 <p>Methods for this generic are expected to return a HTML element containing the visual output of the panel, such as the return value of <code><a href='https://rdrr.io/pkg/shiny/man/plotOutput.html'>plotOutput</a></code> or <code><a href='https://rdrr.io/pkg/shiny/man/tableOutput.html'>dataTableOutput</a></code>.
 This element will be shown in the <span class="pkg">iSEE</span> interface above the parameter boxes for <code>x</code>.
 Multiple elements can be returned via a <code><a href='https://rdrr.io/pkg/htmltools/man/tag.html'>tagList</a></code>.</p>
-<p>The IDs of the output elements are expected to be prefixed with the panel name from <code><a href='.fullName.html'>.getEncodedName</a>(x)</code> and an underscore, e.g., <code>"ReducedDimensionPlot1_someOutput"</code>.
+<p>The IDs of the output elements are expected to be prefixed with the panel name from <code><a href='getEncodedName.html'>.getEncodedName</a>(x)</code> and an underscore, e.g., <code>"ReducedDimensionPlot1_someOutput"</code>.
 One of the output elements may simply have the ID set to <code>PANEL</code> alone;
 this is usually the case for simple panels with one primary output like a <a href='DotPlot-class.html'>DotPlot</a>.</p>
     <h2 class="hasAnchor" id="defining-the-rendered-output"><a class="anchor" href="#defining-the-rendered-output"></a>Defining the rendered output</h2>
@@ -186,8 +188,8 @@ The following arguments are required:</p><ul>
 This is typically done by calling <span class="pkg">shiny</span> rendering functions like <code><a href='https://rdrr.io/pkg/shiny/man/renderPlot.html'>renderPlot</a></code> or the most appropriate equivalent for the panel's output. 
 The return value of this generic is not used; only the side-effect of the reactive output set-up is relevant.</p>
 <p>The rendering expression inside the chosen rendering function is expected to:</p><ol>
-<li><p>Call <code><a href='https://rdrr.io/r/base/force.html'>force(rObjects[[PANEL]])</a></code>, where <code>PANEL</code> is the output of <code><a href='.fullName.html'>.getEncodedName</a>(x)</code>.
-This ensures that the output is rerendered upon requesting changes in <code><a href='.requestUpdate.html'>.requestUpdate</a></code>.</p></li>
+<li><p>Call <code>force(rObjects[[PANEL]])</code>, where <code>PANEL</code> is the output of <code><a href='getEncodedName.html'>.getEncodedName</a>(x)</code>.
+This ensures that the output is rerendered upon requesting changes in <code><a href='requestUpdate.html'>.requestUpdate</a></code>.</p></li>
 <li><p>Call <code>.generateOutput</code> to generate the output content to be rendered.</p></li>
 <li><p>Fill <code>pObjects$contents[[PANEL]]</code> with some content related to the displayed output that allows cross-referencing with single/multiple selection structures.
 This will be used in other generics like <code><a href='multi-select-generics.html'>.multiSelectionCommands</a></code> and <code><a href='single-select-generics.html'>.singleSelectionValue</a></code> to determine the identity of the selected point(s).
@@ -199,8 +201,8 @@ for plotting panels, the vector should also include code to create the plot.</p>
 This is used for code reporting, and again, is only strictly necessary if the panel is a potential transmitter.</p></li>
 </ol>
 
-<p>We strongly recommend calling <code><a href='.retrieveOutput.html'>.retrieveOutput</a></code> within the rendering expression, which will automatically perform all of the tasks above, rather than calling <code>.generateOutput</code> manually.
-By doing so, the only extra work required of the rendering expression is to actually render the output (e.g., by <code>print</code>ing a ggplot object).
+<p>We strongly recommend calling <code><a href='retrieveOutput.html'>.retrieveOutput</a></code> within the rendering expression, which will automatically perform all of the tasks above, rather than calling <code>.generateOutput</code> manually.
+By doing so, the only extra work required of the rendering expression is to actually render the output (e.g., by <code>print</code>ing a <a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a> object).
 Of course, the rendering expression must itself be encapsulated by an appropriate rendering function assigned to <code>output</code>.</p>
 <p>Developers should not attempt to modify <code>x</code> in any rendering expression.
 This does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.
@@ -223,7 +225,7 @@ The following arguments are required:</p><ul>
 The values therein are used by <code><a href='multi-select-generics.html'>.multiSelectionCommands</a></code> to determine the multiple row/column selection in <code>x</code> to be transmitted to other (child) panels.
 The app will ensure that the <code>pObjects$contents</code> of each panel is populated before attempting to render their children. 
 <code>contents</code> may be set to <code>NULL</code> if <code>x</code> does not transmit, i.e., <code><a href='multi-select-generics.html'>.multiSelectionDimension</a></code> returns <code>"none"</code>.</p></li>
-<li><p><code>commands</code>, a list of character vectors of R commands that, when executed, produces the contents of the panel and any displayed output (e.g., a ggplot object).
+<li><p><code>commands</code>, a list of character vectors of R commands that, when executed, produces the contents of the panel and any displayed output (e.g., a <a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a> object).
 Developers should write these commands as if the evaluation environment only contains the SummarizedExperiment <code>se</code> and ExperimentColorMap <code>colormap</code>.
 It may also contain <code>col_selected</code>, if a multiple column selection is being transmitted to <code>x</code>;
 and possibly <code>row_selected</code>, if a multiple row selection is being transmitted to <code>x</code>.</p></li>
@@ -234,7 +236,7 @@ If the current panel is not a transmitter, this may be set to <code>NULL</code> 
 <p>We suggest implementing this method using <code><a href='https://rdrr.io/r/base/eval.html'>eval</a>(<a href='https://rdrr.io/r/base/parse.html'>parse</a>(text=...))</code> calls, which enables easy construction and evaluation of the commands and contents at the same time.
 A convenient wrapper for this call is provided by the <code><a href='manage_commands.html'>.textEval</a></code> utility.</p>
 <p>The <code>all_memory</code> and <code>all_contents</code> arguments are provided for the sole purpose of determining what multiple selections are being received by <code>x</code>.
-We strongly recommend passing them onto <code><a href='.processMultiSelections.html'>.processMultiSelections</a></code> to do the heavy lifting.
+We strongly recommend passing them onto <code><a href='processMultiSelections.html'>.processMultiSelections</a></code> to do the heavy lifting.
 It would be unusual and inadvisable to use these arguments for any other information sharing across panels.</p>
     <h2 class="hasAnchor" id="exporting-content"><a class="anchor" href="#exporting-content"></a>Exporting content</h2>
 
@@ -251,7 +253,7 @@ The following arguments are required:</p><ul>
 <p>Methods for this generic should generate appropriate files containing the content of <code>x</code>.
 (For example, plots may create PDFs while tables may create CSV files.)
 All files should be created in the working directory at the time of the function call, possibly in further subdirectories.
-Each file name should be prefixed with the <code><a href='.fullName.html'>.getEncodedName</a></code>.
+Each file name should be prefixed with the <code><a href='getEncodedName.html'>.getEncodedName</a></code>.
 The method itself should return a character vector containing <em>relative</em> paths to all newly created files.</p>
 <p>To implement this method, we suggest simply passing all arguments onto <code>.generateOutput</code> and then converting the output into an appropriate file.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
@@ -269,11 +271,11 @@ The method itself should return a character vector containing <em>relative</em> 
 
       <footer>
       <div class="copyright">
-  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
+  <p><p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -281,6 +283,8 @@ The method itself should return a character vector containing <em>relative</em> 
 
   
 
+
+  
 
   </body>
 </html>

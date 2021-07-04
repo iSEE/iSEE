@@ -45,6 +45,8 @@
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -56,9 +58,15 @@
 
 
 
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -79,12 +87,6 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -154,7 +156,7 @@
     <p>A custom collapsible box with Shiny inputs upon collapse, more or less stolen from <span class="pkg">shinyBS</span>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>collapseBox</span><span class='op'>(</span><span class='va'>id</span>, <span class='va'>title</span>, <span class='va'>...</span>, open <span class='op'>=</span> <span class='cn'>FALSE</span>, style <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>collapseBox</span><span class='op'>(</span><span class='va'>id</span>, <span class='va'>title</span>, <span class='va'>...</span>, open <span class='op'>=</span> <span class='cn'>FALSE</span>, style <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -210,59 +212,60 @@ The underlying Javascript code for this object is present in <code>inst/www</cod
     <p>Aaron Lun</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://shiny.rstudio.com/'>shiny</a></span><span class='op'>)</span>
-<span class='fu'>collapseBox</span><span class='op'>(</span><span class='st'>"SomePanelType1_ParamBoxOpen"</span>,
-    title<span class='op'>=</span><span class='st'>"Custom parameters"</span>,
-    open<span class='op'>=</span><span class='cn'>FALSE</span>,
-    <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/selectInput.html'>selectInput</a></span><span class='op'>(</span><span class='st'>"SomePanelType1_Thing"</span>,
-        label<span class='op'>=</span><span class='st'>"What thing?"</span>,
-        choices<span class='op'>=</span><span class='va'>LETTERS</span>, selected<span class='op'>=</span><span class='st'>"A"</span>
-    <span class='op'>)</span>
-<span class='op'>)</span>
-</div><div class='output co'>#&gt; &lt;div class="isee-collapse-box panel panel-default" id="SomePanelType1_ParamBoxOpen" value="Custom parameters"&gt;
-#&gt;   &lt;div class="panel-heading" role="tab" id="heading_collapse_SomePanelType1_ParamBoxOpen"&gt;
-#&gt;     &lt;h4 class="panel-title"&gt;
-#&gt;       &lt;a data-toggle="collapse" href="#collapse_SomePanelType1_ParamBoxOpen"&gt;Custom parameters&lt;/a&gt;
-#&gt;     &lt;/h4&gt;
-#&gt;   &lt;/div&gt;
-#&gt;   &lt;div id="collapse_SomePanelType1_ParamBoxOpen" class="panel-collapse collapse" role="tabpanel"&gt;
-#&gt;     &lt;div class="panel-body"&gt;
-#&gt;       &lt;div class="form-group shiny-input-container"&gt;
-#&gt;         &lt;label class="control-label" id="SomePanelType1_Thing-label" for="SomePanelType1_Thing"&gt;What thing?&lt;/label&gt;
-#&gt;         &lt;div&gt;
-#&gt;           &lt;select id="SomePanelType1_Thing"&gt;&lt;option value="A" selected&gt;A&lt;/option&gt;
-#&gt; &lt;option value="B"&gt;B&lt;/option&gt;
-#&gt; &lt;option value="C"&gt;C&lt;/option&gt;
-#&gt; &lt;option value="D"&gt;D&lt;/option&gt;
-#&gt; &lt;option value="E"&gt;E&lt;/option&gt;
-#&gt; &lt;option value="F"&gt;F&lt;/option&gt;
-#&gt; &lt;option value="G"&gt;G&lt;/option&gt;
-#&gt; &lt;option value="H"&gt;H&lt;/option&gt;
-#&gt; &lt;option value="I"&gt;I&lt;/option&gt;
-#&gt; &lt;option value="J"&gt;J&lt;/option&gt;
-#&gt; &lt;option value="K"&gt;K&lt;/option&gt;
-#&gt; &lt;option value="L"&gt;L&lt;/option&gt;
-#&gt; &lt;option value="M"&gt;M&lt;/option&gt;
-#&gt; &lt;option value="N"&gt;N&lt;/option&gt;
-#&gt; &lt;option value="O"&gt;O&lt;/option&gt;
-#&gt; &lt;option value="P"&gt;P&lt;/option&gt;
-#&gt; &lt;option value="Q"&gt;Q&lt;/option&gt;
-#&gt; &lt;option value="R"&gt;R&lt;/option&gt;
-#&gt; &lt;option value="S"&gt;S&lt;/option&gt;
-#&gt; &lt;option value="T"&gt;T&lt;/option&gt;
-#&gt; &lt;option value="U"&gt;U&lt;/option&gt;
-#&gt; &lt;option value="V"&gt;V&lt;/option&gt;
-#&gt; &lt;option value="W"&gt;W&lt;/option&gt;
-#&gt; &lt;option value="X"&gt;X&lt;/option&gt;
-#&gt; &lt;option value="Y"&gt;Y&lt;/option&gt;
-#&gt; &lt;option value="Z"&gt;Z&lt;/option&gt;&lt;/select&gt;
-#&gt;           &lt;script type="application/json" data-for="SomePanelType1_Thing" data-nonempty=""&gt;{"plugins":["selectize-plugin-a11y"]}&lt;/script&gt;
-#&gt;         &lt;/div&gt;
-#&gt;       &lt;/div&gt;
-#&gt;     &lt;/div&gt;
-#&gt;   &lt;/div&gt;
-#&gt; &lt;/div&gt;</div><div class='input'>
-</div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://shiny.rstudio.com/'>shiny</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>collapseBox</span><span class='op'>(</span><span class='st'>"SomePanelType1_ParamBoxOpen"</span>,</span>
+<span class='r-in'>    title<span class='op'>=</span><span class='st'>"Custom parameters"</span>,</span>
+<span class='r-in'>    open<span class='op'>=</span><span class='cn'>FALSE</span>,</span>
+<span class='r-in'>    <span class='fu'><a href='https://rdrr.io/pkg/shiny/man/selectInput.html'>selectInput</a></span><span class='op'>(</span><span class='st'>"SomePanelType1_Thing"</span>,</span>
+<span class='r-in'>        label<span class='op'>=</span><span class='st'>"What thing?"</span>,</span>
+<span class='r-in'>        choices<span class='op'>=</span><span class='va'>LETTERS</span>, selected<span class='op'>=</span><span class='st'>"A"</span></span>
+<span class='r-in'>    <span class='op'>)</span></span>
+<span class='r-in'><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;div class="isee-collapse-box panel panel-default" id="SomePanelType1_ParamBoxOpen" value="Custom parameters"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;div class="panel-heading" role="tab" id="heading_collapse_SomePanelType1_ParamBoxOpen"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;h4 class="panel-title"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       &lt;a data-toggle="collapse" href="#collapse_SomePanelType1_ParamBoxOpen"&gt;Custom parameters&lt;/a&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;/h4&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;div id="collapse_SomePanelType1_ParamBoxOpen" class="panel-collapse collapse" role="tabpanel"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;div class="panel-body"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       &lt;div class="form-group shiny-input-container"&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         &lt;label class="control-label" id="SomePanelType1_Thing-label" for="SomePanelType1_Thing"&gt;What thing?&lt;/label&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         &lt;div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           &lt;select id="SomePanelType1_Thing"&gt;&lt;option value="A" selected&gt;A&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="B"&gt;B&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="C"&gt;C&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="D"&gt;D&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="E"&gt;E&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="F"&gt;F&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="G"&gt;G&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="H"&gt;H&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="I"&gt;I&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="J"&gt;J&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="K"&gt;K&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="L"&gt;L&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="M"&gt;M&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="N"&gt;N&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="O"&gt;O&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="P"&gt;P&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="Q"&gt;Q&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="R"&gt;R&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="S"&gt;S&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="T"&gt;T&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="U"&gt;U&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="V"&gt;V&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="W"&gt;W&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="X"&gt;X&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="Y"&gt;Y&lt;/option&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;option value="Z"&gt;Z&lt;/option&gt;&lt;/select&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           &lt;script type="application/json" data-for="SomePanelType1_Thing" data-nonempty=""&gt;{"plugins":["selectize-plugin-a11y"]}&lt;/script&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>         &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;/div&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/div&gt;</span>
+<span class='r-in'></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -274,11 +277,11 @@ The underlying Javascript code for this object is present in <code>inst/www</cod
 
       <footer>
       <div class="copyright">
-  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
+  <p><p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -286,6 +289,8 @@ The underlying Javascript code for this object is present in <code>inst/www</cod
 
   
 
+
+  
 
   </body>
 </html>

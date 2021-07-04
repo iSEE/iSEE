@@ -113,6 +113,6 @@ test_that("persistent object setup works as expected", {
 test_that(".setup_initial_state throws an error for duplicated panel identifiers", {
     sce <- iSEE:::.prepare_SE(sce, ExperimentColorMap(), memory)
     memory <- list(ReducedDimensionPlot(PanelId=1L), ReducedDimensionPlot(PanelId=1L))
-    expect_error(.setup_initial_state(sce, memory),
+    expect_error(iSEE:::.setup_initial_state(sce, memory),
         "panels of same class with duplicated IDs 'ReducedDimensionPlot1'", fixed=TRUE)
 })

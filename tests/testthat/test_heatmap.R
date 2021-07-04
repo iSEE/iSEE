@@ -66,7 +66,7 @@ test_that(".process_heatmap_assay_colormap handles custom bounds", {
     out <- iSEE:::.process_heatmap_assay_colormap(x, sce, plot_env)
     expect_identical(out, c(
         '.assay_colors <- assayColorMap(colormap, "logcounts", discrete=FALSE)(21L)',
-        ".assay_colors <- circlize::colorRamp2(breaks = seq(0, 690, length.out = 21L), colors = .assay_colors)" ))
+        ".assay_colors <- circlize::colorRamp2(breaks = seq(0, 2581, length.out = 21L), colors = .assay_colors)" ))
 })
 
 test_that(".process_heatmap_column_annotations_colorscale handles column selections", {
@@ -130,7 +130,7 @@ test_that(".process_heatmap_column_annotations_colorscale handles other column a
     expect_true(any(out == '.color_values <- .column_data[["NREADS"]]'))
     expect_true(any(out == '.column_annot_order <- order(.column_data[["Selected points"]], .column_data[["driver_1_s"]], .column_data[["NREADS"]])'))
     expect_true(any(out == '.column_data <- .column_data[.column_annot_order, , drop=FALSE]'))
-    
+
     # What happens when we turn off column selections?
     x[[iSEE:::.heatMapOrderSelection]] <- FALSE
     out <- iSEE:::.process_heatmap_column_annotations_colorscale(x, sce, plot_env)
@@ -185,7 +185,7 @@ test_that(".generateOutput detects col_selected and row_selected", {
     memory$ComplexHeatmapPlot1 <- x
 
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
-    expect_identical(out$commands$assay[["rows"]], '.chosen.rows <- c("0610007P14Rik", "0610009B22Rik");')
+    expect_identical(out$commands$assay[["rows"]], '.chosen.rows <- c("Lamp5", "Fam19a1");')
     expect_identical(out$commands$assay[["columns"]], '.chosen.columns <- intersect(colnames(se), unlist(col_selected));')
     expect_identical(out$commands$assay[["data"]], 'plot.data <- assay(se, "logcounts")[.chosen.rows, .chosen.columns, drop=FALSE]\nplot.data <- as.matrix(plot.data);')
 })

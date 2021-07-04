@@ -7,6 +7,10 @@ stopifnot(
 sce <- ReprocessedAllenData(assays = "tophat_counts")
 
 sce <- logNormCounts(sce, exprs_values="tophat_counts")
+
+ro <- order(rowVars(assay(sce, "logcounts")), decreasing = TRUE)
+sce <- sce[head(ro, 100),]
+
 sce <- runPCA(sce)
 sce <- runTSNE(sce)
 

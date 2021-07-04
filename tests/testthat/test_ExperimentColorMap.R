@@ -1,5 +1,5 @@
 # This tests the ExperimentColorMap methods.
-# library(testthat); library(iSEE); source("setup_ecm.R"); source("setup_sce.R"); source("setup_ecm.R"); source("test_ExperimentColorMap.R")
+# library(testthat); library(iSEE); source("setup_sce.R"); source("setup_ecm.R"); source("test_ExperimentColorMap.R")
 
 context("ExperimentColorMap")
 

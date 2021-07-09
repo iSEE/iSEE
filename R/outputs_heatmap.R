@@ -229,7 +229,7 @@
 
     # Reordering by the column annotations.
     order_by <- sprintf(".column_data[[%s]]", vapply(slot(x, .heatMapColData), deparse, ""))
-    if (slot(x, .heatMapOrderSelection)) {
+    if (slot(x, .heatMapOrderSelection) && slot(x, .heatMapShowSelection)) {
         order_by <- c(sprintf('.column_data[["%s"]]', chosen.name), order_by)
     }
 

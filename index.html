@@ -26,6 +26,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -44,12 +46,6 @@
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
@@ -114,12 +110,12 @@
 <p><img src="inst/www/iSEE.png" align="right" alt="" width="120"></p>
 <div id="isee---the-interactive-summarizedexperiment-explorer" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#isee---the-interactive-summarizedexperiment-explorer" class="anchor"></a><em>iSEE</em> - The interactive SummarizedExperiment Explorer</h1></div>
+<a href="#isee---the-interactive-summarizedexperiment-explorer" class="anchor" aria-hidden="true"></a><em>iSEE</em> - The interactive SummarizedExperiment Explorer</h1></div>
 <!-- badges: start -->
-<p><a href="https://github.com/iSEE/iSEEu/actions"><img src="https://github.com/iSEE/iSEEu/workflows/build_check_deploy/badge.svg" alt="R build status"></a> <a href="https://codecov.io/github/iSEE/iSEE"><img src="https://codecov.io/github/iSEE/iSEE/coverage.svg?branch=master" alt="Codecov.io coverage status"></a> <a href="https://hub.docker.com/r/iseedevelopers/isee"><img src="https://img.shields.io/docker/cloud/automated/iseedevelopers/isee" alt="Docker Cloud Automated build"></a> <!-- badges: end --></p>
+
 <div id="bioconductor-release-status" class="section level2">
 <h2 class="hasAnchor">
-<a href="#bioconductor-release-status" class="anchor"></a>Bioconductor release status</h2>
+<a href="#bioconductor-release-status" class="anchor" aria-hidden="true"></a>Bioconductor release status</h2>
 <table class="table">
 <thead><tr class="header">
 <th align="center">Branch</th>
@@ -128,13 +124,13 @@
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="center"><a href="http://bioconductor.org/packages/devel/bioc/html/iSEE.html"><em>devel</em></a></td>
-<td align="center"><a href="http://bioconductor.org/checkResults/devel/bioc-LATEST/iSEE"><img src="http://bioconductor.org/shields/build/devel/bioc/iSEE.svg" alt="Bioconductor-devel Build Status"></a></td>
+<td align="center"><a href="http://bioconductor.org/packages/devel/bioc/html/iSEE.html" class="external-link"><em>devel</em></a></td>
+<td align="center"><a href="http://bioconductor.org/checkResults/devel/bioc-LATEST/iSEE" class="external-link"><img src="http://bioconductor.org/shields/build/devel/bioc/iSEE.svg" alt="Bioconductor-devel Build Status"></a></td>
 <td align="center"><img src="http://bioconductor.org/shields/lastcommit/devel/bioc/iSEE.svg"></td>
 </tr>
 <tr class="even">
-<td align="center"><a href="http://bioconductor.org/packages/release/bioc/html/iSEE.html"><em>release</em></a></td>
-<td align="center"><a href="http://bioconductor.org/checkResults/release/bioc-LATEST/iSEE"><img src="http://bioconductor.org/shields/build/release/bioc/iSEE.svg" alt="Bioconductor-release Build Status"></a></td>
+<td align="center"><a href="http://bioconductor.org/packages/release/bioc/html/iSEE.html" class="external-link"><em>release</em></a></td>
+<td align="center"><a href="http://bioconductor.org/checkResults/release/bioc-LATEST/iSEE" class="external-link"><img src="http://bioconductor.org/shields/build/release/bioc/iSEE.svg" alt="Bioconductor-release Build Status"></a></td>
 <td align="center"><img src="http://bioconductor.org/shields/lastcommit/release/bioc/iSEE.svg"></td>
 </tr>
 </tbody>
@@ -142,36 +138,36 @@
 </div>
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
-<a href="#overview" class="anchor"></a>Overview</h2>
-<p>The <em>iSEE</em> package provides an interactive user interface for exploring data in objects derived from the <code>SummarizedExperiment</code> class. Particular focus is given to single-cell data stored in the <code>SingleCellExperiment</code> derived class. The user interface is implemented with <a href="https://www.rstudio.com">RStudio</a>’s <a href="https://shiny.rstudio.com"><em>Shiny</em></a>, with a multi-panel setup for ease of navigation.</p>
+<a href="#overview" class="anchor" aria-hidden="true"></a>Overview</h2>
+<p>The <em>iSEE</em> package provides an interactive user interface for exploring data in objects derived from the <code>SummarizedExperiment</code> class. Particular focus is given to single-cell data stored in the <code>SingleCellExperiment</code> derived class. The user interface is implemented with <a href="https://www.rstudio.com" class="external-link">RStudio</a>’s <a href="https://shiny.rstudio.com" class="external-link"><em>Shiny</em></a>, with a multi-panel setup for ease of navigation.</p>
 <p>This initiative was proposed at the European Bioconductor Meeting in Cambridge, 2017. Current contributors include:</p>
 <ul>
-<li><a href="https://github.com/csoneson">Charlotte Soneson</a></li>
-<li><a href="https://github.com/LTLA">Aaron Lun</a></li>
-<li><a href="https://github.com/federicomarini">Federico Marini</a></li>
-<li><a href="https://github.com/kevinrue">Kévin Rue-Albrecht</a></li>
+<li><a href="https://github.com/csoneson" class="external-link">Charlotte Soneson</a></li>
+<li><a href="https://github.com/LTLA" class="external-link">Aaron Lun</a></li>
+<li><a href="https://github.com/federicomarini" class="external-link">Federico Marini</a></li>
+<li><a href="https://github.com/kevinrue" class="external-link">Kévin Rue-Albrecht</a></li>
 </ul>
-<p><a href="https://f1000research.com/articles/7-741/v1"><img src="https://f1000researchdata.s3.amazonaws.com/manuscripts/16293/6bf85f9d-8352-4a78-a8da-456f05f5c4c9_figure1.gif" title="iSEE uses a customisable multi-panel layout" alt="Figure 1. iSEE uses a customisable multi-panel layout."></a></p>
+<p><a href="https://f1000research.com/articles/7-741/v1" class="external-link"><img src="https://f1000researchdata.s3.amazonaws.com/manuscripts/16293/6bf85f9d-8352-4a78-a8da-456f05f5c4c9_figure1.gif" title="iSEE uses a customisable multi-panel layout" alt="Figure 1. iSEE uses a customisable multi-panel layout."></a></p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p><em>iSEE</em> can be easily installed from Bioconductor using <code><a href="https://rdrr.io/pkg/BiocManager/man/install.html">BiocManager::install()</a></code>:</p>
+<a href="#installation" class="anchor" aria-hidden="true"></a>Installation</h2>
+<p><em>iSEE</em> can be easily installed from Bioconductor using <code><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">BiocManager::install()</a></code>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
-<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span><span class="op">(</span><span class="st">"iSEE"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
+    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span>
+<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"iSEE"</span><span class="op">)</span>
 <span class="co"># or also...</span>
-<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html">install</a></span><span class="op">(</span><span class="st">"iSEE"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+<span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"iSEE"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>Setting <code>dependencies = TRUE</code> should ensure that all packages, including the ones in the <code>Suggests:</code> field of the <code>DESCRIPTION</code>, are installed - this can be essential if you want to reproduce the code in the vignette, for example.</p>
 </div>
 <div id="functionalities" class="section level2">
 <h2 class="hasAnchor">
-<a href="#functionalities" class="anchor"></a>Functionalities</h2>
+<a href="#functionalities" class="anchor" aria-hidden="true"></a>Functionalities</h2>
 <details><summary><b> Click to expand the list of features available in <i>iSEE</i> applications. </b>
 </summary><div id="general" class="section level3">
 <h3 class="hasAnchor">
-<a href="#general" class="anchor"></a>General</h3>
+<a href="#general" class="anchor" aria-hidden="true"></a>General</h3>
 <ul>
 <li><p>Multiple interactive plot types with selectable points.</p></li>
 <li><p>Interactive tables with selectable rows.</p></li>
@@ -183,7 +179,7 @@
 </div>
 <div id="sample-level-visualization" class="section level3">
 <h3 class="hasAnchor">
-<a href="#sample-level-visualization" class="anchor"></a>Sample-level visualization</h3>
+<a href="#sample-level-visualization" class="anchor" aria-hidden="true"></a>Sample-level visualization</h3>
 <p>The <em>iSEE</em> user interface currently contains the following components where each data point represents a single biological sample:</p>
 <ul>
 <li><p><strong>Reduced dimension plot</strong>: Scatter plot of reduced dimensionality data.</p></li>
@@ -194,7 +190,7 @@
 </div>
 <div id="feature-level-visualization" class="section level3">
 <h3 class="hasAnchor">
-<a href="#feature-level-visualization" class="anchor"></a>Feature-level visualization</h3>
+<a href="#feature-level-visualization" class="anchor" aria-hidden="true"></a>Feature-level visualization</h3>
 <p>The <em>iSEE</em> user interface currently contains the following components where each data point represents a genomic feature:</p>
 <ul>
 <li><p><strong>Row data plot</strong>: Adaptive plot of any two feature metadata. A scatter, violin, or square design is dynamically applied according to the continuous or discrete nature of the metadata.</p></li>
@@ -204,7 +200,7 @@
 </div>
 <div id="integrated-visualization" class="section level3">
 <h3 class="hasAnchor">
-<a href="#integrated-visualization" class="anchor"></a>Integrated visualization</h3>
+<a href="#integrated-visualization" class="anchor" aria-hidden="true"></a>Integrated visualization</h3>
 <p>The <em>iSEE</em> user interface contains the following components that integrate sample and feature information:</p>
 <ul>
 <li>
@@ -213,14 +209,14 @@
 </div>
 <div id="custom-panels" class="section level3">
 <h3 class="hasAnchor">
-<a href="#custom-panels" class="anchor"></a>Custom panels</h3>
+<a href="#custom-panels" class="anchor" aria-hidden="true"></a>Custom panels</h3>
 <p>The <em>iSEE</em> API allows users to programmatically define their own plotting and table panels. See the section <a href="#extending-isee">Extending <em>iSEE</em></a> further below.</p>
 </div>
 <div id="miscellaneous" class="section level3">
 <h3 class="hasAnchor">
-<a href="#miscellaneous" class="anchor"></a>Miscellaneous</h3>
+<a href="#miscellaneous" class="anchor" aria-hidden="true"></a>Miscellaneous</h3>
 <ul>
-<li><p>The <em>iSEE</em> user interface continually tracks the code corresponding to all visible plotting panels. This code is rendered in a <a href="https://cran.r-project.org/web/packages/shinyAce/index.html">shinyAce</a> text editor and can be copy-pasted into R scripts for customization and further use.</p></li>
+<li><p>The <em>iSEE</em> user interface continually tracks the code corresponding to all visible plotting panels. This code is rendered in a <a href="https://cran.r-project.org/web/packages/shinyAce/index.html" class="external-link">shinyAce</a> text editor and can be copy-pasted into R scripts for customization and further use.</p></li>
 <li><p>Speech recognition can be enabled to control the user interface using voice commands.</p></li>
 </ul>
 </div>
@@ -228,27 +224,27 @@
 </div>
 <div id="want-to-try-isee" class="section level2">
 <h2 class="hasAnchor">
-<a href="#want-to-try-isee" class="anchor"></a>Want to try <em>iSEE</em>?</h2>
+<a href="#want-to-try-isee" class="anchor" aria-hidden="true"></a>Want to try <em>iSEE</em>?</h2>
 <p>We set up instances of <em>iSEE</em> applications running on diverse types of datasets at those addresses:</p>
 <ul>
-<li><a href="http://shiny.imbei.uni-mainz.de:3838/iSEE" class="uri">http://shiny.imbei.uni-mainz.de:3838/iSEE</a></li>
-<li><a href="https://marionilab.cruk.cam.ac.uk/iSEE_allen" class="uri">https://marionilab.cruk.cam.ac.uk/iSEE_allen</a></li>
-<li><a href="https://marionilab.cruk.cam.ac.uk/iSEE_tcga" class="uri">https://marionilab.cruk.cam.ac.uk/iSEE_tcga</a></li>
-<li><a href="https://marionilab.cruk.cam.ac.uk/iSEE_pbmc4k" class="uri">https://marionilab.cruk.cam.ac.uk/iSEE_pbmc4k</a></li>
-<li><a href="https://marionilab.cruk.cam.ac.uk/iSEE_cytof" class="uri">https://marionilab.cruk.cam.ac.uk/iSEE_cytof</a></li>
+<li><a href="http://shiny.imbei.uni-mainz.de:3838/iSEE" class="external-link uri">http://shiny.imbei.uni-mainz.de:3838/iSEE</a></li>
+<li><a href="https://marionilab.cruk.cam.ac.uk/iSEE_allen" class="external-link uri">https://marionilab.cruk.cam.ac.uk/iSEE_allen</a></li>
+<li><a href="https://marionilab.cruk.cam.ac.uk/iSEE_tcga" class="external-link uri">https://marionilab.cruk.cam.ac.uk/iSEE_tcga</a></li>
+<li><a href="https://marionilab.cruk.cam.ac.uk/iSEE_pbmc4k" class="external-link uri">https://marionilab.cruk.cam.ac.uk/iSEE_pbmc4k</a></li>
+<li><a href="https://marionilab.cruk.cam.ac.uk/iSEE_cytof" class="external-link uri">https://marionilab.cruk.cam.ac.uk/iSEE_cytof</a></li>
 </ul>
 <p>Please keep in mind that those public instances are for trial purposes only; yet they demonstrate how you or your system administrator can setup <em>iSEE</em> for analyzing or sharing your precomputed <code>SummarizedExperiment</code>/<code>SingleCellExperiment</code> object.</p>
 </div>
 <div id="extending-isee" class="section level2">
 <h2 class="hasAnchor">
-<a href="#extending-isee" class="anchor"></a>Extending <em>iSEE</em>
+<a href="#extending-isee" class="anchor" aria-hidden="true"></a>Extending <em>iSEE</em>
 </h2>
-<p>If you want to extend the functionality of <em>iSEE</em>, you can create custom panels which add new possibilities to interact with your data. Custom panels can be defined in independent R packages that include <em>iSEE</em> in the <code>Imports:</code> sections of their DESCRIPTION file. You can find a collection of working examples of how to do it in <a href="https://github.com/iSEE/iSEEu">iSEEu</a>. Feel free to contact the developing team, should you need some clarifications on how <em>iSEE</em> works internally.</p>
+<p>If you want to extend the functionality of <em>iSEE</em>, you can create custom panels which add new possibilities to interact with your data. Custom panels can be defined in independent R packages that include <em>iSEE</em> in the <code>Imports:</code> sections of their DESCRIPTION file. You can find a collection of working examples of how to do it in <a href="https://github.com/iSEE/iSEEu" class="external-link">iSEEu</a>. Feel free to contact the developing team, should you need some clarifications on how <em>iSEE</em> works internally.</p>
 </div>
 <div id="code-of-conduct" class="section level2">
 <h2 class="hasAnchor">
-<a href="#code-of-conduct" class="anchor"></a>Code of Conduct</h2>
-<p>Please note that the iSEE project is released with a <a href="https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
+<a href="#code-of-conduct" class="anchor" aria-hidden="true"></a>Code of Conduct</h2>
+<p>Please note that the iSEE project is released with a <a href="https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html" class="external-link">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 </div>
 
@@ -256,7 +252,7 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
 <li>Download from BIOC at <br><a href="https://www.bioconductor.org/packages/iSEE">https://​www.bioconductor.org/​packages/​iSEE</a>
 </li>
@@ -266,28 +262,32 @@
 </li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li>
 <a href="https://opensource.org/licenses/mit-license.php">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
 </li>
 </ul>
 </div>
+
 <div class="community">
-<h2>Community</h2>
+<h2 data-toc-skip>Community</h2>
 <ul class="list-unstyled">
 <li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
 </ul>
 </div>
+
 <div class="citation">
-<h2>Citation</h2>
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
 <li><a href="authors.html">Citing iSEE</a></li>
 </ul>
 </div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Kevin Rue-Albrecht <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0003-3899-3872" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>Federico Marini <br><small class="roles"> Author </small> <a href="https://orcid.org/0000-0003-3252-7758" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
@@ -296,16 +296,27 @@
 </ul>
 </div>
 
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/iSEE/iSEEu/actions" class="external-link"><img src="https://github.com/iSEE/iSEEu/workflows/build_check_deploy/badge.svg" alt="R build status"></a></li>
+<li><a href="https://codecov.io/github/iSEE/iSEE" class="external-link"><img src="https://codecov.io/github/iSEE/iSEE/coverage.svg?branch=master" alt="Codecov.io coverage status"></a></li>
+<li><a href="https://hub.docker.com/r/iseedevelopers/isee" class="external-link"><img src="https://img.shields.io/docker/cloud/automated/iseedevelopers/isee" alt="Docker Cloud Automated build"></a></li>
+</ul>
+</div>
+
   </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
+  <p></p>
+<p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p>
 </div>
 
       </footer>
@@ -313,6 +324,8 @@
 
   
 
+
+  
 
   </body>
 </html>

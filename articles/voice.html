@@ -19,6 +19,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -37,12 +39,6 @@
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -86,7 +82,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/iSEE/iSEE/">
+  <a href="https://github.com/iSEE/iSEE/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -107,25 +103,25 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Controlling the <code>iSEE</code> interface using speech recognition</h1>
-                        <h4 class="author">Kevin Rue-Albrecht</h4>
+                        <h4 data-toc-skip class="author">Kevin Rue-Albrecht</h4>
             <address class="author_afil">
       MRC WIMM Centre for Computational Biology, University of Oxford, Oxford, OX3 9DS, UK<br><a class="author_email" href="mailto:#"></a><a href="mailto:kevinrue67@gmail.com" class="email">kevinrue67@gmail.com</a>
       </address>
-                              <h4 class="author">Federico Marini</h4>
+                              <h4 data-toc-skip class="author">Federico Marini</h4>
             <address class="author_afil">
       Institute of Medical Biostatistics, Epidemiology and Informatics (IMBEI), MainzCenter for Thrombosis and Hemostasis (CTH), Mainz<br><a class="author_email" href="mailto:#"></a><a href="mailto:marinif@uni-mainz.de" class="email">marinif@uni-mainz.de</a>
       </address>
-                              <h4 class="author">Charlotte Soneson</h4>
+                              <h4 data-toc-skip class="author">Charlotte Soneson</h4>
             <address class="author_afil">
       Friedrich Miescher Institute for Biomedical Research, Basel, SwitzerlandSIB Swiss Institute of Bioinformatics<br><a class="author_email" href="mailto:#"></a><a href="mailto:charlottesoneson@gmail.com" class="email">charlottesoneson@gmail.com</a>
       </address>
-                              <h4 class="author">Aaron Lun</h4>
+                              <h4 data-toc-skip class="author">Aaron Lun</h4>
                   <a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       
                   
-            <h4 class="date">9 July 2021</h4>
+            <h4 data-toc-skip class="date">9 July 2021</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/voice.Rmd"><code>vignettes/voice.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/master/vignettes/voice.Rmd" class="external-link"><code>vignettes/voice.Rmd</code></a></small>
       <div class="hidden name"><code>voice.Rmd</code></div>
 
     </div>
@@ -137,34 +133,34 @@
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div id="feature" class="section level1">
 <h1 class="hasAnchor">
-<a href="#feature" class="anchor"></a>Feature</h1>
+<a href="#feature" class="anchor" aria-hidden="true"></a>Feature</h1>
 <p>Using JavaScript, <code>iSEE</code> applications can leverage lightweight speech recognition libraries that react to specific vocal commands (think “OK Google,” “Hey Siri”) and trigger updates of the UI equivalent to one or more mouse or keyboard interaction with the UI components <span class="citation">(Rue-Albrecht et al. 2018)</span>.</p>
-<p><strong>Note</strong>: As we value privacy, this feature is disabled by default: <code><a href="../reference/iSEE.html">iSEE(..., voice=FALSE)</a></code>.</p>
+<p><strong>Note</strong>: As we value privacy, this feature is disabled by default: <code>iSEE(..., voice=FALSE)</code>.</p>
 <p>To keep the spoken commands reasonably short, only one panel may be under voice command at any one time. All spoken commands will affect the currently active panel, until a new panel is selected for voice command. See section <a href="#availableVocalCommands">Vocal commands available</a>.</p>
 </div>
 <div id="implementation" class="section level1">
 <h1 class="hasAnchor">
-<a href="#implementation" class="anchor"></a>Implementation</h1>
-<p>We use the <a href="https://github.com/TalAter/annyang"><em>annyang</em></a> lightweight JavaScript library to handle speech recongnition and update <em>Shiny</em> reactive values in the same way as mouse and keyboard UI elements trigger panel updates.</p>
-<p>Note that <em>annyang</em> requires an active internet connection, as it relies on the browser’s own speech recognition engine (see the <em>annyang</em> <a href="https://github.com/TalAter/annyang/blob/master/docs/FAQ.md#can-annyang-work-offline">FAQ</a>). For instance, in <em>Google Chrome</em>, this engine performs the recognition in the cloud.</p>
+<a href="#implementation" class="anchor" aria-hidden="true"></a>Implementation</h1>
+<p>We use the <a href="https://github.com/TalAter/annyang" class="external-link"><em>annyang</em></a> lightweight JavaScript library to handle speech recongnition and update <em>Shiny</em> reactive values in the same way as mouse and keyboard UI elements trigger panel updates.</p>
+<p>Note that <em>annyang</em> requires an active internet connection, as it relies on the browser’s own speech recognition engine (see the <em>annyang</em> <a href="https://github.com/TalAter/annyang/blob/master/docs/FAQ.md#can-annyang-work-offline" class="external-link">FAQ</a>). For instance, in <em>Google Chrome</em>, this engine performs the recognition in the cloud.</p>
 </div>
 <div id="supported-web-browsers" class="section level1">
 <h1 class="hasAnchor">
-<a href="#supported-web-browsers" class="anchor"></a>Supported web browsers</h1>
-<p>Note that the speech recognition library that we use does not work with every web browser. We currently only validated this feature in <em>Google Chrome</em>. Please refer to the <em>annyang</em> <a href="https://github.com/TalAter/annyang/blob/master/docs/FAQ.md#which-browsers-are-supported">FAQ</a> for details.</p>
+<a href="#supported-web-browsers" class="anchor" aria-hidden="true"></a>Supported web browsers</h1>
+<p>Note that the speech recognition library that we use does not work with every web browser. We currently only validated this feature in <em>Google Chrome</em>. Please refer to the <em>annyang</em> <a href="https://github.com/TalAter/annyang/blob/master/docs/FAQ.md#which-browsers-are-supported" class="external-link">FAQ</a> for details.</p>
 </div>
 <div id="usage" class="section level1">
 <h1 class="hasAnchor">
-<a href="#usage" class="anchor"></a>Usage</h1>
-<p>Using the <code>sce</code> object that we generated <a href="https://bioconductor.org/packages/3.14/iSEE/vignettes/basic.html">earlier</a>, enabling speech recognition is as simple as setting <code>voice=TRUE</code> below:</p>
+<a href="#usage" class="anchor" aria-hidden="true"></a>Usage</h1>
+<p>Using the <code>sce</code> object that we generated <a href="https://bioconductor.org/packages/3.14/iSEE/vignettes/basic.html" class="external-link">earlier</a>, enabling speech recognition is as simple as setting <code>voice=TRUE</code> below:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/iSEE/iSEE">iSEE</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/iSEE/iSEE" class="external-link">iSEE</a></span><span class="op">)</span>
 <span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, voice<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>With <code>voice=TRUE</code>, the lightweight JavaScript speech recognition library <em>annyang</em> is loaded and activated in any web browser tab that runs <code>app</code>.</p>
 <p>If your default browser is not compatible with the feature, or if you work in <em>RStudio</em>, you can prevent the application from opening in the default browser by setting <code>launch.browser=FALSE</code> as follows:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html">runApp</a></span><span class="op">(</span><span class="va">app</span>, port<span class="op">=</span><span class="fl">1234</span>, launch.browser<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
+    <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="va">app</span>, port<span class="op">=</span><span class="fl">1234</span>, launch.browser<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span>
 <span class="op">}</span></code></pre></div>
 <p>At that point, your R console should be displaying the address and port where <code>app</code> is running. In the example above, that would be:</p>
 <pre><code>Listening on http://127.0.0.1:1234</code></pre>
@@ -172,7 +168,7 @@
 </div>
 <div id="availableVocalCommands" class="section level1">
 <h1 class="hasAnchor">
-<a href="#availableVocalCommands" class="anchor"></a>Vocal commands available</h1>
+<a href="#availableVocalCommands" class="anchor" aria-hidden="true"></a>Vocal commands available</h1>
 <p>As a proof of concept, only a subset of spoken commands are currently implemented, compared to the full range of interactions possible using the mouse and keyboard.</p>
 <p>Note that in the commands below, words in brackets are optional.</p>
 <ul>
@@ -189,9 +185,9 @@
 </div>
 <div id="session-info" class="section level1 unnumbered">
 <h1 class="hasAnchor">
-<a href="#session-info" class="anchor"></a>Session Info</h1>
+<a href="#session-info" class="anchor" aria-hidden="true"></a>Session Info</h1>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span>
 <span class="co">#&gt; R version 4.1.0 (2021-05-18)</span>
 <span class="co">#&gt; Platform: x86_64-pc-linux-gnu (64-bit)</span>
 <span class="co">#&gt; Running under: Ubuntu 20.04.2 LTS</span>
@@ -229,7 +225,7 @@
 <span class="co">#&gt; [19] textshaping_0.3.5      Cairo_1.5-12.2         shinyjs_2.0.0         </span>
 <span class="co">#&gt; [22] desc_1.3.0             DelayedArray_0.19.1    colourpicker_1.1.0    </span>
 <span class="co">#&gt; [25] bookdown_0.22          sass_0.4.0             scales_1.1.1          </span>
-<span class="co">#&gt; [28] pkgdown_1.6.1          systemfonts_1.0.2      stringr_1.4.0         </span>
+<span class="co">#&gt; [28] pkgdown_1.6.1.9001     systemfonts_1.0.2      stringr_1.4.0         </span>
 <span class="co">#&gt; [31] digest_0.6.27          rmarkdown_2.9          XVector_0.33.0        </span>
 <span class="co">#&gt; [34] pkgconfig_2.0.3        htmltools_0.5.1.1      fastmap_1.1.0         </span>
 <span class="co">#&gt; [37] htmlwidgets_1.5.3      rlang_0.4.11           GlobalOptions_0.1.2   </span>
@@ -257,7 +253,7 @@
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
-<a href="#references" class="anchor"></a>References</h1>
+<a href="#references" class="anchor" aria-hidden="true"></a>References</h1>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-kra2018iSEE" class="csl-entry">
 Rue-Albrecht, K., F. Marini, C. Soneson, and A. T. L. Lun. 2018. <span>“iSEE: Interactive SummarizedExperiment Explorer.”</span> <em>F1000Research</em> 7 (June): 741.
@@ -277,11 +273,13 @@ Rue-Albrecht, K., F. Marini, C. Soneson, and A. T. L. Lun. 2018. <span>“iSEE: 
 
 
       <footer><div class="copyright">
-  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
+  <p></p>
+<p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
 </div>
 
       </footer>
@@ -289,6 +287,8 @@ Rue-Albrecht, K., F. Marini, C. Soneson, and A. T. L. Lun. 2018. <span>“iSEE: 
 
   
 
+
+  
 
   </body>
 </html>

@@ -47,6 +47,8 @@ Also responds to requests to hide a particular element via .hideInterface." />
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -58,9 +60,15 @@ Also responds to requests to hide a particular element via .hideInterface." />
 
 
 
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -81,12 +89,6 @@ Also responds to requests to hide a particular element via .hideInterface." />
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -158,7 +160,7 @@ accompanied by an optional help icon that opens an interactive tour describing t
 Also responds to requests to hide a particular element via <code><a href='interface-generics.html'>.hideInterface</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>.selectInput.iSEE</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>field</span>, <span class='va'>label</span>, <span class='va'>...</span>, help <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>.selectInput.iSEE</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>field</span>, <span class='va'>label</span>, <span class='va'>...</span>, help <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
 <span class='fu'>.selectizeInput.iSEE</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>field</span>, <span class='va'>label</span>, <span class='va'>...</span>, help <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
@@ -170,7 +172,7 @@ Also responds to requests to hide a particular element via <code><a href='interf
 
 <span class='fu'>.numericInput.iSEE</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>field</span>, <span class='va'>label</span>, <span class='va'>...</span>, help <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 
-<span class='fu'>.radioButtons.iSEE</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>field</span>, <span class='va'>label</span>, <span class='va'>...</span>, help <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
+<span class='fu'>.radioButtons.iSEE</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>field</span>, <span class='va'>label</span>, <span class='va'>...</span>, help <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -200,8 +202,8 @@ Also responds to requests to hide a particular element via <code><a href='interf
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>The output of <code>FUN(id, ..)</code> is returned where <code>FUN</code> is set the corresponding <span class="pkg">shiny</span> function, e.g., <code><a href='https://rdrr.io/pkg/shiny/man/selectInput.html'>selectInput</a></code> for <code>.selectInput.iSEE</code>.
-<code>id</code> is defined by concatenating <code><a href='.fullName.html'>.getEncodedName</a>(x)</code> and <code>field</code> (separated by an underscore).</p>
-<p>If <code><a href='interface-generics.html'>.hideInterface(x, field)</a></code> is <code>TRUE</code>, the output is wrapped inside a <code>hidden</code> call.</p>
+<code>id</code> is defined by concatenating <code><a href='getEncodedName.html'>.getEncodedName</a>(x)</code> and <code>field</code> (separated by an underscore).</p>
+<p>If <code>.hideInterface(x, field)</code> is <code>TRUE</code>, the output is wrapped inside a <code>hidden</code> call.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Aaron Lun</p>
@@ -217,11 +219,11 @@ Also responds to requests to hide a particular element via <code><a href='interf
 
       <footer>
       <div class="copyright">
-  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
+  <p><p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -229,6 +231,8 @@ Also responds to requests to hide a particular element via <code><a href='interf
 
   
 
+
+  
 
   </body>
 </html>

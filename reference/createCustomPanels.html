@@ -47,6 +47,8 @@ This creates a new class with specialized methods for showing content based on a
 
 
 
+
+
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -58,9 +60,15 @@ This creates a new class with specialized methods for showing content based on a
 
 
 
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -81,12 +89,6 @@ This creates a new class with specialized methods for showing content based on a
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -158,7 +160,7 @@ usually in the context of a one-off application.
 This creates a new class with specialized methods for showing content based on a user-specified function.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>createCustomTable</span><span class='op'>(</span>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>createCustomTable</span><span class='op'>(</span>
   <span class='va'>FUN</span>,
   restrict <span class='op'>=</span> <span class='cn'>NULL</span>,
   className <span class='op'>=</span> <span class='st'>"CustomTable"</span>,
@@ -172,14 +174,14 @@ This creates a new class with specialized methods for showing content based on a
   className <span class='op'>=</span> <span class='st'>"CustomPlot"</span>,
   fullName <span class='op'>=</span> <span class='st'>"Custom plot"</span>,
   where <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/ns-topenv.html'>topenv</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/sys.parent.html'>parent.frame</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-<span class='op'>)</span></pre>
+<span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>FUN</th>
-      <td><p>A function that generates a data.frame or a ggplot,
+      <td><p>A function that generates a data.frame or a <a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a>,
 for <code>createCustomTable</code> and <code>createCustomPlot</code> respectively.
 See Details for the expected arguments.</p></td>
     </tr>
@@ -237,68 +239,69 @@ serious <a href='Panel-class.html'>Panel</a> extensions should be done explicitl
     <p>Aaron Lun</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://bioconductor.org/packages/scater/'>scater</a></span><span class='op'>)</span>
-<span class='va'>CUSTOM_DIMRED</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>se</span>, <span class='va'>rows</span>, <span class='va'>columns</span>, <span class='va'>ntop</span><span class='op'>=</span><span class='fl'>500</span>, <span class='va'>scale</span><span class='op'>=</span><span class='cn'>TRUE</span>,
-    <span class='va'>mode</span><span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"PCA"</span>, <span class='st'>"TSNE"</span>, <span class='st'>"UMAP"</span><span class='op'>)</span><span class='op'>)</span>
-<span class='op'>{</span>
-    <span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/NULL.html'>is.null</a></span><span class='op'>(</span><span class='va'>columns</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
-        <span class='kw'><a href='https://rdrr.io/r/base/function.html'>return</a></span><span class='op'>(</span>
-            <span class='fu'>ggplot</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>theme_void</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>geom_text</span><span class='op'>(</span>
-                <span class='fu'>aes</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, label<span class='op'>=</span><span class='va'>label</span><span class='op'>)</span>,
-                <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fl'>0</span>, y<span class='op'>=</span><span class='fl'>0</span>, label<span class='op'>=</span><span class='st'>"No column data selected."</span><span class='op'>)</span>,
-                size<span class='op'>=</span><span class='fl'>5</span><span class='op'>)</span>
-            <span class='op'>)</span>
-    <span class='op'>}</span>
-
-    <span class='va'>mode</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/match.arg.html'>match.arg</a></span><span class='op'>(</span><span class='va'>mode</span><span class='op'>)</span>
-    <span class='kw'>if</span> <span class='op'>(</span><span class='va'>mode</span><span class='op'>==</span><span class='st'>"PCA"</span><span class='op'>)</span> <span class='op'>{</span>
-        <span class='va'>calcFUN</span> <span class='op'>&lt;-</span> <span class='va'>runPCA</span>
-    <span class='op'>}</span> <span class='kw'>else</span> <span class='kw'>if</span> <span class='op'>(</span><span class='va'>mode</span><span class='op'>==</span><span class='st'>"TSNE"</span><span class='op'>)</span> <span class='op'>{</span>
-        <span class='va'>calcFUN</span> <span class='op'>&lt;-</span> <span class='va'>runTSNE</span>
-    <span class='op'>}</span> <span class='kw'>else</span> <span class='kw'>if</span> <span class='op'>(</span><span class='va'>mode</span><span class='op'>==</span><span class='st'>"UMAP"</span><span class='op'>)</span> <span class='op'>{</span>
-        <span class='va'>calcFUN</span> <span class='op'>&lt;-</span> <span class='va'>runUMAP</span>
-    <span class='op'>}</span>
-
-    <span class='va'>kept</span> <span class='op'>&lt;-</span> <span class='va'>se</span><span class='op'>[</span>, <span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='va'>columns</span><span class='op'>)</span><span class='op'>)</span><span class='op'>]</span>
-    <span class='va'>kept</span> <span class='op'>&lt;-</span> <span class='fu'>calcFUN</span><span class='op'>(</span><span class='va'>kept</span>, ncomponents<span class='op'>=</span><span class='fl'>2</span>, ntop<span class='op'>=</span><span class='va'>ntop</span>,
-        scale<span class='op'>=</span><span class='va'>scale</span>, subset_row<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='va'>rows</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-    <span class='fu'><a href='https://rdrr.io/pkg/scater/man/plotReducedDim.html'>plotReducedDim</a></span><span class='op'>(</span><span class='va'>kept</span>, <span class='va'>mode</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-<span class='va'>GEN</span> <span class='op'>&lt;-</span> <span class='fu'>createCustomPlot</span><span class='op'>(</span><span class='va'>CUSTOM_DIMRED</span><span class='op'>)</span>
-<span class='fu'>GEN</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; Panel object of class CustomPlot
-#&gt;   Get or set individual parameters with '[[' 
-#&gt;   Available parameters:
-#&gt;     ColumnSelectionDynamicSource: FALSE
-#&gt;     ColumnSelectionRestrict: FALSE
-#&gt;     ColumnSelectionSource: ---
-#&gt;     DataBoxOpen: FALSE
-#&gt;     mode: PCA
-#&gt;     ntop: 500
-#&gt;     PanelHeight: 500
-#&gt;     PanelId: NA
-#&gt;     PanelWidth: 4
-#&gt;     RowSelectionDynamicSource: FALSE
-#&gt;     RowSelectionRestrict: FALSE
-#&gt;     RowSelectionSource: ---
-#&gt;     scale: TRUE
-#&gt;     SelectionBoxOpen: FALSE
-#&gt;     SelectionHistory: 
-#&gt;     VersionInfo: list of length 1</div><div class='input'>
-<span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span>
-    <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scRNAseq</span><span class='op'>)</span>
-    <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span><span class='op'>(</span><span class='st'>"tophat_counts"</span><span class='op'>)</span>
-    <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://bioconductor.org/packages/scater/'>scater</a></span><span class='op'>)</span>
-    <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/logNormCounts.html'>logNormCounts</a></span><span class='op'>(</span><span class='va'>sce</span>, exprs_values<span class='op'>=</span><span class='st'>"tophat_counts"</span><span class='op'>)</span>
-
-    <span class='fu'><a href='iSEE.html'>iSEE</a></span><span class='op'>(</span><span class='va'>sce</span>, initial<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-        <span class='fu'><a href='ColumnDataPlot-class.html'>ColumnDataPlot</a></span><span class='op'>(</span>PanelId<span class='op'>=</span><span class='fl'>1L</span><span class='op'>)</span>,
-        <span class='fu'>GEN</span><span class='op'>(</span>ColumnSelectionSource<span class='op'>=</span><span class='st'>"ColumnDataPlot1"</span><span class='op'>)</span>
-    <span class='op'>)</span><span class='op'>)</span>
-<span class='op'>}</span>
-
-</div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://bioconductor.org/packages/scater/'>scater</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>CUSTOM_DIMRED</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>se</span>, <span class='va'>rows</span>, <span class='va'>columns</span>, <span class='va'>ntop</span><span class='op'>=</span><span class='fl'>500</span>, <span class='va'>scale</span><span class='op'>=</span><span class='cn'>TRUE</span>,</span>
+<span class='r-in'>    <span class='va'>mode</span><span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"PCA"</span>, <span class='st'>"TSNE"</span>, <span class='st'>"UMAP"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>{</span></span>
+<span class='r-in'>    <span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/NULL.html'>is.null</a></span><span class='op'>(</span><span class='va'>columns</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'>        <span class='kw'><a href='https://rdrr.io/r/base/function.html'>return</a></span><span class='op'>(</span></span>
+<span class='r-in'>            <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_void</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_text.html'>geom_text</a></span><span class='op'>(</span></span>
+<span class='r-in'>                <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>y</span>, label<span class='op'>=</span><span class='va'>label</span><span class='op'>)</span>,</span>
+<span class='r-in'>                <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>x<span class='op'>=</span><span class='fl'>0</span>, y<span class='op'>=</span><span class='fl'>0</span>, label<span class='op'>=</span><span class='st'>"No column data selected."</span><span class='op'>)</span>,</span>
+<span class='r-in'>                size<span class='op'>=</span><span class='fl'>5</span><span class='op'>)</span></span>
+<span class='r-in'>            <span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>}</span></span>
+<span class='r-in'></span>
+<span class='r-in'>    <span class='va'>mode</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/match.arg.html'>match.arg</a></span><span class='op'>(</span><span class='va'>mode</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='kw'>if</span> <span class='op'>(</span><span class='va'>mode</span><span class='op'>==</span><span class='st'>"PCA"</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'>        <span class='va'>calcFUN</span> <span class='op'>&lt;-</span> <span class='va'>runPCA</span></span>
+<span class='r-in'>    <span class='op'>}</span> <span class='kw'>else</span> <span class='kw'>if</span> <span class='op'>(</span><span class='va'>mode</span><span class='op'>==</span><span class='st'>"TSNE"</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'>        <span class='va'>calcFUN</span> <span class='op'>&lt;-</span> <span class='va'>runTSNE</span></span>
+<span class='r-in'>    <span class='op'>}</span> <span class='kw'>else</span> <span class='kw'>if</span> <span class='op'>(</span><span class='va'>mode</span><span class='op'>==</span><span class='st'>"UMAP"</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'>        <span class='va'>calcFUN</span> <span class='op'>&lt;-</span> <span class='va'>runUMAP</span></span>
+<span class='r-in'>    <span class='op'>}</span></span>
+<span class='r-in'></span>
+<span class='r-in'>    <span class='va'>kept</span> <span class='op'>&lt;-</span> <span class='va'>se</span><span class='op'>[</span>, <span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='va'>columns</span><span class='op'>)</span><span class='op'>)</span><span class='op'>]</span></span>
+<span class='r-in'>    <span class='va'>kept</span> <span class='op'>&lt;-</span> <span class='fu'>calcFUN</span><span class='op'>(</span><span class='va'>kept</span>, ncomponents<span class='op'>=</span><span class='fl'>2</span>, ntop<span class='op'>=</span><span class='va'>ntop</span>,</span>
+<span class='r-in'>        scale<span class='op'>=</span><span class='va'>scale</span>, subset_row<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/unique.html'>unique</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span><span class='va'>rows</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='fu'><a href='https://rdrr.io/pkg/scater/man/plotReducedDim.html'>plotReducedDim</a></span><span class='op'>(</span><span class='va'>kept</span>, <span class='va'>mode</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>GEN</span> <span class='op'>&lt;-</span> <span class='fu'>createCustomPlot</span><span class='op'>(</span><span class='va'>CUSTOM_DIMRED</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>GEN</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Panel object of class CustomPlot</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Get or set individual parameters with '[[' </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Available parameters:</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColumnSelectionDynamicSource: FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColumnSelectionRestrict: FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColumnSelectionSource: ---</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     DataBoxOpen: FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     PanelHeight: 500</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     PanelId: NA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     PanelWidth: 4</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     RowSelectionDynamicSource: FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     RowSelectionRestrict: FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     RowSelectionSource: ---</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     SelectionBoxOpen: FALSE</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     SelectionHistory: </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     VersionInfo: list of length 1</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     mode: PCA</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     ntop: 500</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     scale: TRUE</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/interactive.html'>interactive</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'>    <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>scRNAseq</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html'>ReprocessedAllenData</a></span><span class='op'>(</span><span class='st'>"tophat_counts"</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://bioconductor.org/packages/scater/'>scater</a></span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/logNormCounts.html'>logNormCounts</a></span><span class='op'>(</span><span class='va'>sce</span>, exprs_values<span class='op'>=</span><span class='st'>"tophat_counts"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'>    <span class='fu'><a href='iSEE.html'>iSEE</a></span><span class='op'>(</span><span class='va'>sce</span>, initial<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
+<span class='r-in'>        <span class='fu'><a href='ColumnDataPlot-class.html'>ColumnDataPlot</a></span><span class='op'>(</span>PanelId<span class='op'>=</span><span class='fl'>1L</span><span class='op'>)</span>,</span>
+<span class='r-in'>        <span class='fu'>GEN</span><span class='op'>(</span>ColumnSelectionSource<span class='op'>=</span><span class='st'>"ColumnDataPlot1"</span><span class='op'>)</span></span>
+<span class='r-in'>    <span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+<span class='r-in'></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -310,11 +313,11 @@ serious <a href='Panel-class.html'>Panel</a> extensions should be done explicitl
 
       <footer>
       <div class="copyright">
-  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
+  <p><p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -322,6 +325,8 @@ serious <a href='Panel-class.html'>Panel</a> extensions should be done explicitl
 
   
 
+
+  
 
   </body>
 </html>

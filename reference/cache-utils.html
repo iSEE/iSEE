@@ -45,8 +45,6 @@
 
 
 
-
-
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -58,15 +56,9 @@
 
 
 
-  
-
-  
-
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    
-
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -80,13 +72,19 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -156,13 +154,13 @@
     <p>Utility functions to be used in a <code><a href='setup-generics.html'>.cacheCommonInfo</a></code> method, usually to identify names of elements of the SummarizedExperiment for later use in <code><a href='interface-generics.html'>.defineInterface</a></code> to populate the user interface.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>.findAtomicFields</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>.findAtomicFields</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 
 <span class='fu'>.whichGroupable</span><span class='op'>(</span><span class='va'>x</span>, max_levels <span class='op'>=</span> <span class='cn'>Inf</span><span class='op'>)</span>
 
 <span class='fu'>.whichNumeric</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 
-<span class='fu'>.isAssayNumeric</span><span class='op'>(</span><span class='va'>se</span>, <span class='va'>i</span><span class='op'>)</span></code></pre></div>
+<span class='fu'>.isAssayNumeric</span><span class='op'>(</span><span class='va'>se</span>, <span class='va'>i</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -193,31 +191,28 @@
 <p>For <code>.isAssayNumeric</code>, a logical scalar indicating whether the specified assay as numeric.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>.findAtomicFields</code> is necessary as many of the widgets used by <code><a href='iSEE.html'>iSEE</a></code> (e.g., <code><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></code>, <code>datatable</code>) do not know how to handle more complex types being stored as columns.
+    <p><code>.findAtomicFields</code> is necessary as many of the widgets used by <code><a href='iSEE.html'>iSEE</a></code> (e.g., <code>ggplot</code>, <code>datatable</code>) do not know how to handle more complex types being stored as columns.
 Similarly, <code>.whichNumeric</code> and <code>.whichGroupable</code> can be used to specify options for visualization modes that only make sense for continuous or discrete variables respectively (e.g., sizing, faceting).</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Aaron Lun, Kevin Rue-Albrecht, Charlotte Soneson</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>DataFrame</span><span class='op'>(</span></span>
-<span class='r-in'>    A <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>,</span>
-<span class='r-in'>    B <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>letters</span>, <span class='fl'>10</span><span class='op'>)</span>,</span>
-<span class='r-in'>    DataFrame <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span><span class='op'>(</span><span class='fu'>DataFrame</span><span class='op'>(</span></span>
-<span class='r-in'>        C <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>,</span>
-<span class='r-in'>        D <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>letters</span>, <span class='fl'>10</span><span class='op'>)</span></span>
-<span class='r-in'>    <span class='op'>)</span><span class='op'>)</span></span>
-<span class='r-in'><span class='op'>)</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='fu'>.findAtomicFields</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "A" "B"</span>
-<span class='r-in'><span class='fu'>.whichGroupable</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>         B DataFrame </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>         2         3 </span>
-<span class='r-in'><span class='fu'>.whichNumeric</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> A </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> 1 </span>
-</code></pre></div>
+    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>DataFrame</span><span class='op'>(</span>
+    A <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>,
+    B <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>letters</span>, <span class='fl'>10</span><span class='op'>)</span>,
+    DataFrame <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/AsIs.html'>I</a></span><span class='op'>(</span><span class='fu'>DataFrame</span><span class='op'>(</span>
+        C <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>,
+        D <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='va'>letters</span>, <span class='fl'>10</span><span class='op'>)</span>
+    <span class='op'>)</span><span class='op'>)</span>
+<span class='op'>)</span>
+
+<span class='fu'>.findAtomicFields</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "A" "B"</div><div class='input'><span class='fu'>.whichGroupable</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;         B DataFrame 
+#&gt;         2         3 </div><div class='input'><span class='fu'>.whichNumeric</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; A 
+#&gt; 1 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -229,11 +224,11 @@ Similarly, <code>.whichNumeric</code> and <code>.whichGroupable</code> can be us
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p></p>
+  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
@@ -241,8 +236,6 @@ Similarly, <code>.whichNumeric</code> and <code>.whichGroupable</code> can be us
 
   
 
-
-  
 
   </body>
 </html>

@@ -47,8 +47,6 @@ and registerAppOptions (for options that apply during application runtime)." />
 
 
 
-
-
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -60,15 +58,9 @@ and registerAppOptions (for options that apply during application runtime)." />
 
 
 
-  
-
-  
-
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    
-
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -82,13 +74,19 @@ and registerAppOptions (for options that apply during application runtime)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -160,7 +158,7 @@ This has been deprecated in favor of <code><a href='panelDefaults.html'>panelDef
 and <code><a href='registerAppOptions.html'>registerAppOptions</a></code> (for options that apply during application runtime).</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='va'>iSEEOptions</span></code></pre></div>
+    <pre class="usage"><span class='va'>iSEEOptions</span></pre>
 
 
     <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
@@ -170,7 +168,7 @@ and <code><a href='registerAppOptions.html'>registerAppOptions</a></code> (for o
 
     
 
-<p><code>str(iSEEOptions$get())</code> will show the default values for all options.</p>
+<p><code><a href='https://rdrr.io/r/utils/str.html'>str(iSEEOptions$get())</a></code> will show the default values for all options.</p>
 <p><code>iSEEOptions$set(name=value)</code> will set the <code>name</code>d option to <code>value</code>.</p>
 <p><code>iSEEOptions$restore()</code> will reset the global options to the package default values.</p>
     <h2 class="hasAnchor" id="available-options"><a class="anchor" href="#available-options"></a>Available options</h2>
@@ -213,10 +211,8 @@ Defaults to 100.</p></dd>
     <p>Kevin Rue-Albrecht</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='va'>iSEEOptions</span><span class='op'>$</span><span class='fu'>get</span><span class='op'>(</span><span class='st'>'downsample'</span><span class='op'>)</span>; <span class='va'>iSEEOptions</span><span class='op'>$</span><span class='fu'>get</span><span class='op'>(</span><span class='st'>'selected.color'</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
-</code></pre></div>
+    <pre class="examples"><div class='input'><span class='va'>iSEEOptions</span><span class='op'>$</span><span class='fu'>get</span><span class='op'>(</span><span class='st'>'downsample'</span><span class='op'>)</span>; <span class='va'>iSEEOptions</span><span class='op'>$</span><span class='fu'>get</span><span class='op'>(</span><span class='st'>'selected.color'</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; NULL</div><div class='output co'>#&gt; NULL</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -228,11 +224,11 @@ Defaults to 100.</p></dd>
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p></p>
+  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
@@ -240,8 +236,6 @@ Defaults to 100.</p></dd>
 
   
 
-
-  
 
   </body>
 </html>

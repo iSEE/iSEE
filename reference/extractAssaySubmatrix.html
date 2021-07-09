@@ -45,8 +45,6 @@
 
 
 
-
-
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -58,15 +56,9 @@
 
 
 
-  
-
-  
-
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    
-
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -80,13 +72,19 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -153,10 +151,10 @@
     </div>
 
     <div class="ref-description">
-    <p>Extract an assay submatrix based on the multiple row/column selection and any custom specifications from <code><a href='createCustomDimnamesModalObservers.html'>.createCustomDimnamesModalObservers</a></code>.</p>
+    <p>Extract an assay submatrix based on the multiple row/column selection and any custom specifications from <code><a href='.createCustomDimnamesModalObservers.html'>.createCustomDimnamesModalObservers</a></code>.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>.extractAssaySubmatrix</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>se</span>, <span class='va'>envir</span>, <span class='va'>use_custom_row_slot</span>, <span class='va'>custom_row_text_slot</span><span class='op'>)</span></code></pre></div>
+    <pre class="usage"><span class='fu'>.extractAssaySubmatrix</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>se</span>, <span class='va'>envir</span>, <span class='va'>use_custom_row_slot</span>, <span class='va'>custom_row_text_slot</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -172,7 +170,7 @@
     <tr>
       <th>envir</th>
       <td><p>The evaluation environment.
-This assumes that <code><a href='processMultiSelections.html'>.processMultiSelections</a></code> has already been run.</p></td>
+This assumes that <code><a href='.processMultiSelections.html'>.processMultiSelections</a></code> has already been run.</p></td>
     </tr>
     <tr>
       <th>use_custom_row_slot</th>
@@ -181,7 +179,7 @@ This assumes that <code><a href='processMultiSelections.html'>.processMultiSelec
     <tr>
       <th>custom_row_text_slot</th>
       <td><p>String specifying the name of the slot holding the custom row names.
-This is expected to be of the same format as described in <code>?<a href='createCustomDimnamesModalObservers.html'>.createCustomDimnamesModalObservers</a></code>.</p></td>
+This is expected to be of the same format as described in <code>?<a href='.createCustomDimnamesModalObservers.html'>.createCustomDimnamesModalObservers</a></code>.</p></td>
     </tr>
     </table>
 
@@ -192,7 +190,7 @@ The submatrix itself is generated within <code>envir</code> as the <code>plot.da
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This is designed to extract a matrix of assay values for a subset of rows/columns of interest, most typically for a <a href='ComplexHeatmapPlot-class.html'>ComplexHeatmapPlot</a>.
-It assumes that the class of <code>x</code> contains a slot indicating whether custom rows should be used, plus a slot to hold the selected custom row names (usually from a modal, see <code><a href='createCustomDimnamesModalObservers.html'>.createCustomDimnamesModalObservers</a></code>).</p>
+It assumes that the class of <code>x</code> contains a slot indicating whether custom rows should be used, plus a slot to hold the selected custom row names (usually from a modal, see <code><a href='.createCustomDimnamesModalObservers.html'>.createCustomDimnamesModalObservers</a></code>).</p>
 <p>If a multiple row selection is present in <code>envir</code> and custom rows are <em>not</em> to be used, that selection is used to define the rows of the submatrix.
 All columns are returned in the submatrix unless a multiple column selection is present in <code>envir</code> and the <code>SelectEffect</code> in <code>x</code> is &#8220;Restrict&#8221;, in which case only the selected columns are returned.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
@@ -210,11 +208,11 @@ All columns are returned in the submatrix unless a multiple column selection is 
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p></p>
+  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
@@ -222,8 +220,6 @@ All columns are returned in the submatrix unless a multiple column selection is 
 
   
 
-
-  
 
   </body>
 </html>

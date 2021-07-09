@@ -46,8 +46,6 @@ It provides slots and methods to specify which dimensionality reduction result t
 
 
 
-
-
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -59,15 +57,9 @@ It provides slots and methods to specify which dimensionality reduction result t
 
 
 
-  
-
-  
-
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    
-
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -81,13 +73,19 @@ It provides slots and methods to specify which dimensionality reduction result t
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.5.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -154,7 +152,7 @@ It provides slots and methods to specify which dimensionality reduction result t
     </div>
 
     <div class="ref-description">
-    <p>The ReducedDimensionPlot is a panel class for creating a <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> where the coordinates of each column/sample are taken from the <code><a href='https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html'>reducedDims</a></code> of a <a href='https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html'>SingleCellExperiment</a> object.
+    <p>The ReducedDimensionPlot is a panel class for creating a <a href='ColumnDotPlot-class.html'>ColumnDotPlot</a> where the coordinates of each column/sample are taken from the <code>reducedDims</code> of a SingleCellExperiment object.
 It provides slots and methods to specify which dimensionality reduction result to use and to create the data.frame with the coordinates of the specified results for plotting.</p>
     </div>
 
@@ -166,7 +164,7 @@ It provides slots and methods to specify which dimensionality reduction result t
 
 <p>The following slots control the dimensionality reduction result that is used:</p><ul>
 <li><p><code>Type</code>, a string specifying the name of the dimensionality reduction result.
-If <code>NA</code>, defaults to the first entry of <code><a href='https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html'>reducedDims</a></code>.</p></li>
+If <code>NA</code>, defaults to the first entry of <code>reducedDims</code>.</p></li>
 <li><p><code>XAxis</code>, integer scalar specifying the dimension to plot on the x-axis.
 Defaults to 1.</p></li>
 <li><p><code>YAxis</code>, integer scalar specifying the dimension to plot on the y-axis.
@@ -195,7 +193,7 @@ If no dimensionality reduction results are available, <code>NULL</code> is retur
 
 <p>For defining the interface:</p><ul>
 <li><p><code><a href='interface-generics.html'>.defineDataInterface</a>(x, se, select_info)</code> returns a list of interface elements for manipulating all slots described above.</p></li>
-<li><p><code><a href='getPanelColor.html'>.panelColor</a>(x)</code> will return the specified default color for this panel class.</p></li>
+<li><p><code><a href='.panelColor.html'>.panelColor</a>(x)</code> will return the specified default color for this panel class.</p></li>
 </ul>
 
 <p>For monitoring reactive expressions:</p><ul>
@@ -204,7 +202,7 @@ This will also call the equivalent <a href='ColumnDotPlot-class.html'>ColumnDotP
 </ul>
 
 <p>For defining the panel name:</p><ul>
-<li><p><code><a href='getEncodedName.html'>.fullName</a>(x)</code> will return <code>"Reduced dimension plot"</code>.</p></li>
+<li><p><code><a href='.fullName.html'>.fullName</a>(x)</code> will return <code>"Reduced dimension plot"</code>.</p></li>
 </ul>
 
 <p>For creating the plot:</p><ul>
@@ -225,90 +223,86 @@ It will return the commands required to do so as well as a list of labels.</p></
     <p>Aaron Lun</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='co'>#################</span></span>
-<span class='r-in'><span class='co'># For end-users #</span></span>
-<span class='r-in'><span class='co'>#################</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>ReducedDimensionPlot</span><span class='op'>(</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>x</span><span class='op'>[[</span><span class='st'>"Type"</span><span class='op'>]</span><span class='op'>]</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] NA</span>
-<span class='r-in'><span class='va'>x</span><span class='op'>[[</span><span class='st'>"Type"</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='st'>"TSNE"</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'>##################</span></span>
-<span class='r-in'><span class='co'># For developers #</span></span>
-<span class='r-in'><span class='co'>##################</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://bioconductor.org/packages/scater/'>scater</a></span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/mockSCE.html'>mockSCE</a></span><span class='op'>(</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/logNormCounts.html'>logNormCounts</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'># Spits out a NULL and a warning if no reducedDims are available.</span></span>
-<span class='r-in'><span class='va'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce</span><span class='op'>)</span></span>
-<span class='r-in'><span class='fu'><a href='setup-generics.html'>.refineParameters</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce0</span><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>no 'reducedDims' with non-zero dimensions for 'ReducedDimensionPlot'</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> NULL</span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'># Replaces the default with something sensible.</span></span>
-<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/runPCA.html'>runPCA</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce</span><span class='op'>)</span></span>
-<span class='r-in'><span class='fu'><a href='setup-generics.html'>.refineParameters</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce0</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Panel object of class ReducedDimensionPlot</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   Get or set individual parameters with ‘[[’ </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   Available parameters:</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     BrushData: </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColorBy: None</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColorByColumnData: Mutation_Status</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColorByDefaultColor: black</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColorByFeatureDynamicSource: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColorByFeatureName: Gene_0001</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColorByFeatureNameAssay: logcounts</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColorByFeatureSource: ---</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColorBySampleDynamicSource: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColorBySampleName: Cell_001</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColorBySampleNameColor: red</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColorBySampleSource: ---</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColumnSelectionDynamicSource: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColumnSelectionRestrict: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColumnSelectionSource: ---</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ContourAdd: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ContourColor: blue</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     CustomLabels: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     CustomLabelsText: Cell_001</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     DataBoxOpen: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     Downsample: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     DownsampleResolution: 200</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     FacetColumnBy: None</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     FacetColumnByColData: Mutation_Status</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     FacetRowBy: None</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     FacetRowByColData: Mutation_Status</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     FontSize: 1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     HoverInfo: TRUE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     LabelCenters: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     LabelCentersBy: Mutation_Status</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     LabelCentersColor: black</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     LegendPointSize: 1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     LegendPosition: Bottom</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     PanelHeight: 500</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     PanelId: NA</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     PanelWidth: 4</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     PointAlpha: 1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     PointSize: 1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     SelectionAlpha: 0.1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     SelectionBoxOpen: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     SelectionHistory: </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ShapeBy: None</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ShapeByColumnData: Mutation_Status</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     SizeBy: None</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     SizeByColumnData: sizeFactor</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     Type: PCA</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     VersionInfo: list of length 1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     VisualBoxOpen: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     VisualChoices: Color</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     XAxis: 1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     YAxis: 2</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ZoomData: </span>
-<span class='r-in'></span>
-</code></pre></div>
+    <pre class="examples"><div class='input'><span class='co'>#################</span>
+<span class='co'># For end-users #</span>
+<span class='co'>#################</span>
+
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>ReducedDimensionPlot</span><span class='op'>(</span><span class='op'>)</span>
+<span class='va'>x</span><span class='op'>[[</span><span class='st'>"Type"</span><span class='op'>]</span><span class='op'>]</span>
+</div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='va'>x</span><span class='op'>[[</span><span class='st'>"Type"</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='st'>"TSNE"</span>
+
+<span class='co'>##################</span>
+<span class='co'># For developers #</span>
+<span class='co'>##################</span>
+
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://bioconductor.org/packages/scater/'>scater</a></span><span class='op'>)</span>
+<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/mockSCE.html'>mockSCE</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/logNormCounts.html'>logNormCounts</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span>
+
+<span class='co'># Spits out a NULL and a warning if no reducedDims are available.</span>
+<span class='va'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce</span><span class='op'>)</span>
+<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce0</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: no 'reducedDims' with non-zero dimensions for 'ReducedDimensionPlot'</span></div><div class='output co'>#&gt; NULL</div><div class='input'>
+<span class='co'># Replaces the default with something sensible.</span>
+<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scater/man/runPCA.html'>runPCA</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span>
+<span class='va'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce</span><span class='op'>)</span>
+<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce0</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Panel object of class ReducedDimensionPlot
+#&gt;   Get or set individual parameters with ‘[[’ 
+#&gt;   Available parameters:
+#&gt;     BrushData: 
+#&gt;     ColorBy: None
+#&gt;     ColorByColumnData: Mutation_Status
+#&gt;     ColorByDefaultColor: black
+#&gt;     ColorByFeatureDynamicSource: FALSE
+#&gt;     ColorByFeatureName: Gene_0001
+#&gt;     ColorByFeatureNameAssay: logcounts
+#&gt;     ColorByFeatureSource: ---
+#&gt;     ColorBySampleDynamicSource: FALSE
+#&gt;     ColorBySampleName: Cell_001
+#&gt;     ColorBySampleNameColor: red
+#&gt;     ColorBySampleSource: ---
+#&gt;     ColumnSelectionDynamicSource: FALSE
+#&gt;     ColumnSelectionRestrict: FALSE
+#&gt;     ColumnSelectionSource: ---
+#&gt;     ContourAdd: FALSE
+#&gt;     ContourColor: blue
+#&gt;     CustomLabels: FALSE
+#&gt;     CustomLabelsText: Cell_001
+#&gt;     DataBoxOpen: FALSE
+#&gt;     Downsample: FALSE
+#&gt;     DownsampleResolution: 200
+#&gt;     FacetColumnBy: None
+#&gt;     FacetColumnByColData: Mutation_Status
+#&gt;     FacetRowBy: None
+#&gt;     FacetRowByColData: Mutation_Status
+#&gt;     FontSize: 1
+#&gt;     HoverInfo: TRUE
+#&gt;     LabelCenters: FALSE
+#&gt;     LabelCentersBy: Mutation_Status
+#&gt;     LabelCentersColor: black
+#&gt;     LegendPointSize: 1
+#&gt;     LegendPosition: Bottom
+#&gt;     PanelHeight: 500
+#&gt;     PanelId: NA
+#&gt;     PanelWidth: 4
+#&gt;     PointAlpha: 1
+#&gt;     PointSize: 1
+#&gt;     SelectionAlpha: 0.1
+#&gt;     SelectionBoxOpen: FALSE
+#&gt;     SelectionHistory: 
+#&gt;     ShapeBy: None
+#&gt;     ShapeByColumnData: Mutation_Status
+#&gt;     SizeBy: None
+#&gt;     SizeByColumnData: sizeFactor
+#&gt;     Type: PCA
+#&gt;     VersionInfo: list of length 1
+#&gt;     VisualBoxOpen: FALSE
+#&gt;     VisualChoices: Color
+#&gt;     XAxis: 1
+#&gt;     YAxis: 2
+#&gt;     ZoomData: </div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -320,11 +314,11 @@ It will return the commands required to do so as well as a list of labels.</p></
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p></p>
+  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
@@ -332,8 +326,6 @@ It will return the commands required to do so as well as a list of labels.</p></
 
   
 
-
-  
 
   </body>
 </html>

@@ -1,3 +1,7 @@
+# iSEE 2.5.2
+
+* Bugfix for conversion of categorical columns with too many levels to numeric ones
+
 # iSEE 2.5.1
 
 * Bugfix for removed panels showing up among the selectable ones.

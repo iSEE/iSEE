@@ -46,8 +46,6 @@ It provides slots and methods for specifying the features of interest, which ass
 
 
 
-
-
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -59,15 +57,9 @@ It provides slots and methods for specifying the features of interest, which ass
 
 
 
-  
-
-  
-
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    
-
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -88,6 +80,12 @@ It provides slots and methods for specifying the features of interest, which ass
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -174,9 +172,9 @@ If <code>NA</code>, defaults to the first row name of the SummarizedExperiment.<
 
 <p>The following slots control the metadata variables that are used:</p><ul>
 <li><p><code>ColumnData</code>, a character vector specifying columns of the <code>colData</code> to show as <code>columnAnnotation</code>.
-Defaults to <code>character(0)</code>.</p></li>
+Defaults to <code><a href='https://rdrr.io/r/base/character.html'>character(0)</a></code>.</p></li>
 <li><p><code>RowData</code>, a character vector specifying columns of the <code>rowData</code> to show as <code>rowAnnotation</code>.
-Defaults to <code>character(0)</code>.</p></li>
+Defaults to <code><a href='https://rdrr.io/r/base/character.html'>character(0)</a></code>.</p></li>
 <li><p><code>ShowColumnSelection</code>, a logical vector indicating whether the column selection should be shown as an extra annotation bar.
 Defaults to <code>TRUE</code>.</p></li>
 <li><p><code>OrderColumnSelection</code>, a logical vector indicating whether the column selection should be used to order columns in the heatmap.
@@ -275,7 +273,7 @@ and a visual parameter box and a selection parameter box both specific to the <c
 This will <em>override</em> the <a href='Panel-class.html'>Panel</a> method.</p></li>
 <li><p><code><a href='interface-generics.html'>.defineDataInterface</a>(x, se, select_info)</code> returns a list of interface elements for manipulating all slots described above.</p></li>
 <li><p><code><a href='output-generics.html'>.defineOutput</a>(x)</code> returns a UI element for a brushable plot.</p></li>
-<li><p><code><a href='getPanelColor.html'>.panelColor</a>(x)</code> will return the specified default color for this panel class.</p></li>
+<li><p><code><a href='.panelColor.html'>.panelColor</a>(x)</code> will return the specified default color for this panel class.</p></li>
 <li><p><code><a href='interface-generics.html'>.hideInterface</a>(x, field)</code> returns a logical scalar indicating whether the interface element corresponding to <code>field</code> should be hidden.
 This returns <code>TRUE</code> for the selection history (<code>"SelectionHistory"</code>),
 otherwise it dispatches to the <a href='Panel-class.html'>Panel</a> method.</p></li>
@@ -298,7 +296,7 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method t
 </ul>
 
 <p>For defining the panel name:</p><ul>
-<li><p><code><a href='getEncodedName.html'>.fullName</a>(x)</code> will return <code>"Complex heatmap"</code>.</p></li>
+<li><p><code><a href='.fullName.html'>.fullName</a>(x)</code> will return <code>"Complex heatmap"</code>.</p></li>
 </ul>
 
 <p>For documentation:</p><ul>
@@ -313,110 +311,107 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method t
     <p>Kevin Rue-Albrecht</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='co'>#################</span></span>
-<span class='r-in'><span class='co'># For end-users #</span></span>
-<span class='r-in'><span class='co'>#################</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>ComplexHeatmapPlot</span><span class='op'>(</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>x</span><span class='op'>[[</span><span class='st'>"ShowDimNames"</span><span class='op'>]</span><span class='op'>]</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "Rows"</span>
-<span class='r-in'><span class='va'>x</span><span class='op'>[[</span><span class='st'>"ShowDimNames"</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Rows"</span>, <span class='st'>"Columns"</span><span class='op'>)</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'>##################</span></span>
-<span class='r-in'><span class='co'># For developers #</span></span>
-<span class='r-in'><span class='co'>##################</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://bioconductor.org/packages/scater/'>scater</a></span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/mockSCE.html'>mockSCE</a></span><span class='op'>(</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/logNormCounts.html'>logNormCounts</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='va'>old_cd</span> <span class='op'>&lt;-</span> <span class='fu'>colData</span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span></span>
-<span class='r-in'><span class='fu'>colData</span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='cn'>NULL</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'># Spits out a NULL and a warning if there is nothing to plot.</span></span>
-<span class='r-in'><span class='va'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce</span><span class='op'>)</span></span>
-<span class='r-in'><span class='fu'><a href='setup-generics.html'>.refineParameters</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce0</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Panel object of class ComplexHeatmapPlot</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   Get or set individual parameters with ‘[[’ </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   Available parameters:</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     Assay: logcounts</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     AssayCenterRows: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     AssayScaleRows: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ClusterRows: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ClusterRowsDistance: spearman</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ClusterRowsMethod: ward.D2</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColumnData: </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColumnSelectionDynamicSource: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColumnSelectionRestrict: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColumnSelectionSource: ---</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     CustomBounds: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     CustomRows: TRUE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     CustomRowsText: Gene_0001</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     DataBoxOpen: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     DivergentColormap: purple &lt; black &lt; yellow</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     LegendDirection: Horizontal</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     LegendPosition: Bottom</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     LowerBound: NA</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     NamesColumnFontSize: 10</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     NamesRowFontSize: 10</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     OrderColumnSelection: TRUE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     PanelHeight: 500</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     PanelId: NA</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     PanelWidth: 4</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     RowData: </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     RowSelectionDynamicSource: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     RowSelectionSource: ---</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     SelectionBoxOpen: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ShowColumnSelection: TRUE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ShowDimNames: Rows Columns</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     UpperBound: NA</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     VersionInfo: list of length 1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     VisualBoxOpen: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     VisualChoices: Annotations</span>
-<span class='r-in'></span>
-<span class='r-in'><span class='co'># Replaces the default with something sensible.</span></span>
-<span class='r-in'><span class='fu'>colData</span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>old_cd</span></span>
-<span class='r-in'><span class='va'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce</span><span class='op'>)</span></span>
-<span class='r-in'><span class='fu'><a href='setup-generics.html'>.refineParameters</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce0</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Panel object of class ComplexHeatmapPlot</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   Get or set individual parameters with ‘[[’ </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>   Available parameters:</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     Assay: logcounts</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     AssayCenterRows: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     AssayScaleRows: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ClusterRows: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ClusterRowsDistance: spearman</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ClusterRowsMethod: ward.D2</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColumnData: </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColumnSelectionDynamicSource: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColumnSelectionRestrict: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ColumnSelectionSource: ---</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     CustomBounds: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     CustomRows: TRUE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     CustomRowsText: Gene_0001</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     DataBoxOpen: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     DivergentColormap: purple &lt; black &lt; yellow</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     LegendDirection: Horizontal</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     LegendPosition: Bottom</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     LowerBound: NA</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     NamesColumnFontSize: 10</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     NamesRowFontSize: 10</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     OrderColumnSelection: TRUE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     PanelHeight: 500</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     PanelId: NA</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     PanelWidth: 4</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     RowData: </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     RowSelectionDynamicSource: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     RowSelectionSource: ---</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     SelectionBoxOpen: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ShowColumnSelection: TRUE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     ShowDimNames: Rows Columns</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     UpperBound: NA</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     VersionInfo: list of length 1</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     VisualBoxOpen: FALSE</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     VisualChoices: Annotations</span>
-<span class='r-in'></span>
-</code></pre></div>
+    <pre class="examples"><div class='input'><span class='co'>#################</span>
+<span class='co'># For end-users #</span>
+<span class='co'>#################</span>
+
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>ComplexHeatmapPlot</span><span class='op'>(</span><span class='op'>)</span>
+<span class='va'>x</span><span class='op'>[[</span><span class='st'>"ShowDimNames"</span><span class='op'>]</span><span class='op'>]</span>
+</div><div class='output co'>#&gt; [1] "Rows"</div><div class='input'><span class='va'>x</span><span class='op'>[[</span><span class='st'>"ShowDimNames"</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Rows"</span>, <span class='st'>"Columns"</span><span class='op'>)</span>
+
+<span class='co'>##################</span>
+<span class='co'># For developers #</span>
+<span class='co'>##################</span>
+
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://bioconductor.org/packages/scater/'>scater</a></span><span class='op'>)</span>
+<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/mockSCE.html'>mockSCE</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='va'>sce</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/scuttle/man/logNormCounts.html'>logNormCounts</a></span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span>
+
+<span class='va'>old_cd</span> <span class='op'>&lt;-</span> <span class='fu'>colData</span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span>
+<span class='fu'>colData</span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='cn'>NULL</span>
+
+<span class='co'># Spits out a NULL and a warning if there is nothing to plot.</span>
+<span class='va'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce</span><span class='op'>)</span>
+<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce0</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Panel object of class ComplexHeatmapPlot
+#&gt;   Get or set individual parameters with ‘[[’ 
+#&gt;   Available parameters:
+#&gt;     Assay: logcounts
+#&gt;     AssayCenterRows: FALSE
+#&gt;     AssayScaleRows: FALSE
+#&gt;     ClusterRows: FALSE
+#&gt;     ClusterRowsDistance: spearman
+#&gt;     ClusterRowsMethod: ward.D2
+#&gt;     ColumnData: 
+#&gt;     ColumnSelectionDynamicSource: FALSE
+#&gt;     ColumnSelectionRestrict: FALSE
+#&gt;     ColumnSelectionSource: ---
+#&gt;     CustomBounds: FALSE
+#&gt;     CustomRows: TRUE
+#&gt;     CustomRowsText: Gene_0001
+#&gt;     DataBoxOpen: FALSE
+#&gt;     DivergentColormap: purple &lt; black &lt; yellow
+#&gt;     LegendDirection: Horizontal
+#&gt;     LegendPosition: Bottom
+#&gt;     LowerBound: NA
+#&gt;     NamesColumnFontSize: 10
+#&gt;     NamesRowFontSize: 10
+#&gt;     OrderColumnSelection: TRUE
+#&gt;     PanelHeight: 500
+#&gt;     PanelId: NA
+#&gt;     PanelWidth: 4
+#&gt;     RowData: 
+#&gt;     RowSelectionDynamicSource: FALSE
+#&gt;     RowSelectionSource: ---
+#&gt;     SelectionBoxOpen: FALSE
+#&gt;     ShowColumnSelection: TRUE
+#&gt;     ShowDimNames: Rows Columns
+#&gt;     UpperBound: NA
+#&gt;     VersionInfo: list of length 1
+#&gt;     VisualBoxOpen: FALSE
+#&gt;     VisualChoices: Annotations</div><div class='input'>
+<span class='co'># Replaces the default with something sensible.</span>
+<span class='fu'>colData</span><span class='op'>(</span><span class='va'>sce</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>old_cd</span>
+<span class='va'>sce0</span> <span class='op'>&lt;-</span> <span class='fu'><a href='setup-generics.html'>.cacheCommonInfo</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce</span><span class='op'>)</span>
+<span class='fu'><a href='setup-generics.html'>.refineParameters</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>sce0</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Panel object of class ComplexHeatmapPlot
+#&gt;   Get or set individual parameters with ‘[[’ 
+#&gt;   Available parameters:
+#&gt;     Assay: logcounts
+#&gt;     AssayCenterRows: FALSE
+#&gt;     AssayScaleRows: FALSE
+#&gt;     ClusterRows: FALSE
+#&gt;     ClusterRowsDistance: spearman
+#&gt;     ClusterRowsMethod: ward.D2
+#&gt;     ColumnData: 
+#&gt;     ColumnSelectionDynamicSource: FALSE
+#&gt;     ColumnSelectionRestrict: FALSE
+#&gt;     ColumnSelectionSource: ---
+#&gt;     CustomBounds: FALSE
+#&gt;     CustomRows: TRUE
+#&gt;     CustomRowsText: Gene_0001
+#&gt;     DataBoxOpen: FALSE
+#&gt;     DivergentColormap: purple &lt; black &lt; yellow
+#&gt;     LegendDirection: Horizontal
+#&gt;     LegendPosition: Bottom
+#&gt;     LowerBound: NA
+#&gt;     NamesColumnFontSize: 10
+#&gt;     NamesRowFontSize: 10
+#&gt;     OrderColumnSelection: TRUE
+#&gt;     PanelHeight: 500
+#&gt;     PanelId: NA
+#&gt;     PanelWidth: 4
+#&gt;     RowData: 
+#&gt;     RowSelectionDynamicSource: FALSE
+#&gt;     RowSelectionSource: ---
+#&gt;     SelectionBoxOpen: FALSE
+#&gt;     ShowColumnSelection: TRUE
+#&gt;     ShowDimNames: Rows Columns
+#&gt;     UpperBound: NA
+#&gt;     VersionInfo: list of length 1
+#&gt;     VisualBoxOpen: FALSE
+#&gt;     VisualChoices: Annotations</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -428,11 +423,11 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method t
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p></p>
+  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
@@ -440,8 +435,6 @@ This will also call the equivalent <a href='Panel-class.html'>Panel</a> method t
 
   
 
-
-  
 
   </body>
 </html>

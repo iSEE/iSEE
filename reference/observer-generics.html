@@ -45,8 +45,6 @@
 
 
 
-
-
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -58,15 +56,9 @@
 
 
 
-  
-
-  
-
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    
-
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -87,6 +79,12 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -173,28 +171,28 @@ This can be assumed to have been produced by running <code><a href='setup-generi
 </ul>
 
 <p>Methods for this generic are expected to set up all observers required to respond to changes in the interface elements set up by <code><a href='interface-generics.html'>.defineInterface</a></code>.
-Recall that each interface element has an ID of the form of <code>PANEL_SLOT</code>, where <code>PANEL</code> is the panel name (from <code><a href='getEncodedName.html'>.getEncodedName</a></code>) and <code>SLOT</code> is the name of the slot modified by the interface element.
+Recall that each interface element has an ID of the form of <code>PANEL_SLOT</code>, where <code>PANEL</code> is the panel name (from <code><a href='.fullName.html'>.getEncodedName</a></code>) and <code>SLOT</code> is the name of the slot modified by the interface element.
 Thus, observers should respond to changes in those elements in <code>input</code>.
 The return value of this generic is not used; only the side-effect of observer set-up is relevant.</p>
-<p>It is the developer's responsibility to call <code><a href='https://rdrr.io/r/methods/NextMethod.html'>callNextMethod</a></code> to set up the observers required by the parent class.
-This is best done by calling <code><a href='https://rdrr.io/r/methods/NextMethod.html'>callNextMethod</a></code> at the top of the method before defining up additional observers.
+<p>It is the developer's responsibility to call <code>callNextMethod</code> to set up the observers required by the parent class.
+This is best done by calling <code>callNextMethod</code> at the top of the method before defining up additional observers.
 Each parent class should implement observers for its slots, so it is usually only necessary to implement observers for any newly added slots in a particular class.</p>
     <h2 class="hasAnchor" id="modifying-the-memory"><a class="anchor" href="#modifying-the-memory"></a>Modifying the memory</h2>
 
     
 
 <p>Consider an observer for an interface element that modifies a slot of <code>x</code>.
-The code within this observer is expected to modify the &#8220;memory&#8221; of the app state in <code>pObjects</code>, via:</p><pre class='sourceCode r'><code>
+The code within this observer is expected to modify the &#8220;memory&#8221; of the app state in <code>pObjects</code>, via:</p><pre>
 <span class='va'>new_value</span> <span class='op'>&lt;-</span> <span class='va'>input</span><span class='op'>[[</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='va'>PANEL</span>, <span class='st'>"_"</span>, <span class='va'>SLOT</span><span class='op'>)</span><span class='op'>]</span><span class='op'>]</span>
 <span class='va'>pObjects</span><span class='op'>$</span><span class='va'>memory</span><span class='op'>[[</span><span class='va'>PANEL</span><span class='op'>]</span><span class='op'>]</span><span class='op'>[[</span><span class='va'>SLOT</span><span class='op'>]</span><span class='op'>]</span> <span class='op'>&lt;-</span> <span class='va'>new_value</span>
-</code></pre>
+</pre>
 
 <p>This enables <span class="pkg">iSEE</span> to keep a record of the current state of the application.
 In fact, any changes must go through <code>pObjects$memory</code> before they change the output in <code><a href='output-generics.html'>.renderOutput</a></code>;
 there is no direct interaction between <code>input</code> and <code>output</code> in this framework.</p>
-<p>We suggest using <code><a href='createProtectedParameterObservers.html'>.createProtectedParameterObservers</a></code> and <code><a href='createProtectedParameterObservers.html'>.createUnprotectedParameterObservers</a></code>, 
+<p>We suggest using <code><a href='.createUnprotectedParameterObservers.html'>.createProtectedParameterObservers</a></code> and <code><a href='.createUnprotectedParameterObservers.html'>.createUnprotectedParameterObservers</a></code>, 
 which create simple observers that update the memory in response to changes in the UI elements.
-For handling selectize elements filled with server-side row/column names, we can use <code><a href='createCustomDimnamesModalObservers.html'>.createCustomDimnamesModalObservers</a></code>.</p>
+For handling selectize elements filled with server-side row/column names, we can use <code><a href='.createCustomDimnamesModalObservers.html'>.createCustomDimnamesModalObservers</a></code>.</p>
 <p>Developers should not attempt to modify <code>x</code> in any observer expression.
 This value does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.
 Rather, modifications should occur to the version of <code>x</code> in <code>pObjects$memory</code>, as described in the code chunk above.</p>
@@ -202,10 +200,10 @@ Rather, modifications should occur to the version of <code>x</code> in <code>pOb
 
     
 
-<p>To trigger re-rendering of an output, observers should call <code><a href='requestUpdate.html'>.requestUpdate</a>(PANEL, rObjects)</code> where <code>PANEL</code> is the name of the current panel
+<p>To trigger re-rendering of an output, observers should call <code><a href='.requestUpdate.html'>.requestUpdate</a>(PANEL, rObjects)</code> where <code>PANEL</code> is the name of the current panel
 This will request a re-rendering of the output with no additional side effects and is most useful for responding to aesthetic parameters.</p>
 <p>In some cases, changes to some parameters may invalidate existing multiple selections, e.g., brushes and lassos are no longer valid if the variable on the axes are altered.
-Observers responding to such changes should instead call <code><a href='requestUpdate.html'>.requestCleanUpdate</a>(PANEL, pObjects, rObjects)</code>, which will destroy all existing selections in order to avoid misleading conclusions.</p>
+Observers responding to such changes should instead call <code><a href='.requestUpdate.html'>.requestCleanUpdate</a>(PANEL, pObjects, rObjects)</code>, which will destroy all existing selections in order to avoid misleading conclusions.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>Aaron Lun</p>
@@ -221,11 +219,11 @@ Observers responding to such changes should instead call <code><a href='requestU
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p></p>
+  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
@@ -233,8 +231,6 @@ Observers responding to such changes should instead call <code><a href='requestU
 
   
 
-
-  
 
   </body>
 </html>

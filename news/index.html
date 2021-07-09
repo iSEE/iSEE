@@ -44,8 +44,6 @@
 
 
 
-
-
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -57,15 +55,9 @@
 
 
 
-  
-
-  
-
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    
-
     <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -86,6 +78,12 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -152,611 +150,809 @@
 
     <div id="isee-252" class="section level1">
 <h1 class="page-header" data-toc-text="2.5.2">
-<a href="#isee-252" class="anchor" aria-hidden="true"></a>iSEE 2.5.2</h1>
-<ul><li>Bugfix for conversion of categorical columns with too many levels to numeric ones</li>
+<a href="#isee-252" class="anchor"></a>iSEE 2.5.2</h1>
+<ul>
+<li>Bugfix for conversion of categorical columns with too many levels to numeric ones</li>
 <li>Bugfix for heatmap crashing if columns were ordered by a selection that was not shown</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-251" class="section level1">
 <h1 class="page-header" data-toc-text="2.5.1">
-<a href="#isee-251" class="anchor" aria-hidden="true"></a>iSEE 2.5.1</h1>
-<ul><li>Bugfix for removed panels showing up among the selectable ones.</li>
-</ul></div>
+<a href="#isee-251" class="anchor"></a>iSEE 2.5.1</h1>
+<ul>
+<li>Bugfix for removed panels showing up among the selectable ones.</li>
+</ul>
+</div>
     <div id="isee-2314" class="section level1">
 <h1 class="page-header" data-toc-text="2.3.14">
-<a href="#isee-2314" class="anchor" aria-hidden="true"></a>iSEE 2.3.14</h1>
-<ul><li>Allow modification of font sizes for row and column names in <code>ComplexHeatmapPlot</code>.</li>
+<a href="#isee-2314" class="anchor"></a>iSEE 2.3.14</h1>
+<ul>
+<li>Allow modification of font sizes for row and column names in <code>ComplexHeatmapPlot</code>.</li>
 <li>Bugfix for assignment of annotation colors in <code>ComplexHeatmapPlot</code>.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-2313" class="section level1">
 <h1 class="page-header" data-toc-text="2.3.13">
-<a href="#isee-2313" class="anchor" aria-hidden="true"></a>iSEE 2.3.13</h1>
-<ul><li>Avoid partial name matching in <code>.getCachedCommonInfo</code>.</li>
+<a href="#isee-2313" class="anchor"></a>iSEE 2.3.13</h1>
+<ul>
+<li>Avoid partial name matching in <code>.getCachedCommonInfo</code>.</li>
 <li>Deprecated <code>iSEEOptions</code> in favor of <code>panelDefaults</code> (for construction-time globals) and <code>registerAppOptions</code> (for runtime globals).</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-2312" class="section level1">
 <h1 class="page-header" data-toc-text="2.3.12">
-<a href="#isee-2312" class="anchor" aria-hidden="true"></a>iSEE 2.3.12</h1>
-<ul><li>Added an <code>.allowableColorByDataChoices</code> generic for downstream panels to control <code>ColorBy*Data</code> choices.</li>
-</ul></div>
+<a href="#isee-2312" class="anchor"></a>iSEE 2.3.12</h1>
+<ul>
+<li>Added an <code>.allowableColorByDataChoices</code> generic for downstream panels to control <code>ColorBy*Data</code> choices.</li>
+</ul>
+</div>
     <div id="isee-2311" class="section level1">
 <h1 class="page-header" data-toc-text="2.3.11">
-<a href="#isee-2311" class="anchor" aria-hidden="true"></a>iSEE 2.3.11</h1>
-<ul><li>Cleaned up tours for <code>Table</code>s and the <code>ComplexHeatmapPlot</code>.</li>
-</ul></div>
+<a href="#isee-2311" class="anchor"></a>iSEE 2.3.11</h1>
+<ul>
+<li>Cleaned up tours for <code>Table</code>s and the <code>ComplexHeatmapPlot</code>.</li>
+</ul>
+</div>
     <div id="isee-2310" class="section level1">
 <h1 class="page-header" data-toc-text="2.3.10">
-<a href="#isee-2310" class="anchor" aria-hidden="true"></a>iSEE 2.3.10</h1>
-<ul><li>Document and export the <code>.getDotPlotColorHelp</code> utility.</li>
+<a href="#isee-2310" class="anchor"></a>iSEE 2.3.10</h1>
+<ul>
+<li>Document and export the <code>.getDotPlotColorHelp</code> utility.</li>
 <li>Bugfix for the <code>RowDotPlot</code> color tour.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-239" class="section level1">
 <h1 class="page-header" data-toc-text="2.3.9">
-<a href="#isee-239" class="anchor" aria-hidden="true"></a>iSEE 2.3.9</h1>
-<ul><li>Add a distributed tour attached to each individual UI element.</li>
+<a href="#isee-239" class="anchor"></a>iSEE 2.3.9</h1>
+<ul>
+<li>Add a distributed tour attached to each individual UI element.</li>
 <li>Bugfix for ordering of selected columns in <code>ComplexHeatmapPlot</code>.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-238" class="section level1">
 <h1 class="page-header" data-toc-text="2.3.8">
-<a href="#isee-238" class="anchor" aria-hidden="true"></a>iSEE 2.3.8</h1>
-<ul><li>Use <code>shiny::MockShinySession$new()</code> to simulate Shiny session objects.</li>
-</ul></div>
+<a href="#isee-238" class="anchor"></a>iSEE 2.3.8</h1>
+<ul>
+<li>Use <code>shiny::MockShinySession$new()</code> to simulate Shiny session objects.</li>
+</ul>
+</div>
     <div id="isee-237" class="section level1">
 <h1 class="page-header" data-toc-text="2.3.7">
-<a href="#isee-237" class="anchor" aria-hidden="true"></a>iSEE 2.3.7</h1>
-<ul><li>Bugfix for missing import of geom_density_2d</li>
-</ul></div>
+<a href="#isee-237" class="anchor"></a>iSEE 2.3.7</h1>
+<ul>
+<li>Bugfix for missing import of geom_density_2d</li>
+</ul>
+</div>
     <div id="isee-236" class="section level1">
 <h1 class="page-header" data-toc-text="2.3.6">
-<a href="#isee-236" class="anchor" aria-hidden="true"></a>iSEE 2.3.6</h1>
-<ul><li>Bugfix for graceful deprecation of old parameters in various constructors.</li>
-</ul></div>
+<a href="#isee-236" class="anchor"></a>iSEE 2.3.6</h1>
+<ul>
+<li>Bugfix for graceful deprecation of old parameters in various constructors.</li>
+</ul>
+</div>
     <div id="isee-235" class="section level1">
 <h1 class="page-header" data-toc-text="2.3.5">
-<a href="#isee-235" class="anchor" aria-hidden="true"></a>iSEE 2.3.5</h1>
-<ul><li>Added functionality to use multiple row/column selections as a factor on the axes, for faceting or for coloring.</li>
+<a href="#isee-235" class="anchor"></a>iSEE 2.3.5</h1>
+<ul>
+<li>Added functionality to use multiple row/column selections as a factor on the axes, for faceting or for coloring.</li>
 <li>Moved selection transparency setter into the “Visual parameters” box.</li>
 <li>Deprecated <code>SelectionEffect="Color"</code> in favor of <code>ColorBy="Column selection"</code> and <code>ColorBy="Row selection"</code>.</li>
 <li>Deprecated <code>SelectionColor</code> as the coloring for selections is determined using <code><a href="../reference/ExperimentColorMap-class.html">colDataColorMap()</a></code> instead.</li>
 <li>Deprecated <code>SelectionEffect="Restrict"</code> in favor of <code>ColumnSelectionRestrict</code> and <code>RowSelectionRestrict</code>.</li>
 <li>Deprecated <code>ColumnSelectionType</code> and <code>ColumnSelectionSaved</code> (ditto for rows) as all active/saved selections are now transmitted.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-234" class="section level1">
 <h1 class="page-header" data-toc-text="2.3.4">
-<a href="#isee-234" class="anchor" aria-hidden="true"></a>iSEE 2.3.4</h1>
-<ul><li>Fix wiring of button observer to open vignette.</li>
-</ul></div>
+<a href="#isee-234" class="anchor"></a>iSEE 2.3.4</h1>
+<ul>
+<li>Fix wiring of button observer to open vignette.</li>
+</ul>
+</div>
     <div id="isee-233" class="section level1">
 <h1 class="page-header" data-toc-text="2.3.3">
-<a href="#isee-233" class="anchor" aria-hidden="true"></a>iSEE 2.3.3</h1>
-<ul><li>Edge-case bugfix for correct cleaning of zero-row/column SummarizedExperiments.</li>
-</ul></div>
+<a href="#isee-233" class="anchor"></a>iSEE 2.3.3</h1>
+<ul>
+<li>Edge-case bugfix for correct cleaning of zero-row/column SummarizedExperiments.</li>
+</ul>
+</div>
     <div id="isee-232" class="section level1">
 <h1 class="page-header" data-toc-text="2.3.2">
-<a href="#isee-232" class="anchor" aria-hidden="true"></a>iSEE 2.3.2</h1>
-<ul><li>Added the <code><a href="../reference/cleanDataset.html">cleanDataset()</a></code> generic to ensure all names in the SummarizedExperiment are present and unique.</li>
-</ul></div>
+<a href="#isee-232" class="anchor"></a>iSEE 2.3.2</h1>
+<ul>
+<li>Added the <code><a href="../reference/cleanDataset.html">cleanDataset()</a></code> generic to ensure all names in the SummarizedExperiment are present and unique.</li>
+</ul>
+</div>
     <div id="isee-231" class="section level1">
 <h1 class="page-header" data-toc-text="2.3.1">
-<a href="#isee-231" class="anchor" aria-hidden="true"></a>iSEE 2.3.1</h1>
-<ul><li>Bugfix to the heatmap color selection for near-zero length ranges.</li>
-</ul></div>
+<a href="#isee-231" class="anchor"></a>iSEE 2.3.1</h1>
+<ul>
+<li>Bugfix to the heatmap color selection for near-zero length ranges.</li>
+</ul>
+</div>
     <div id="isee-2127" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.27">
-<a href="#isee-2127" class="anchor" aria-hidden="true"></a>iSEE 2.1.27</h1>
-<ul><li>Minor edits to the API documentation.</li>
-</ul></div>
+<a href="#isee-2127" class="anchor"></a>iSEE 2.1.27</h1>
+<ul>
+<li>Minor edits to the API documentation.</li>
+</ul>
+</div>
     <div id="isee-2126" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.26">
-<a href="#isee-2126" class="anchor" aria-hidden="true"></a>iSEE 2.1.26</h1>
-<ul><li>Disable the import button on the dimnames modal when transmitter has not made a selection.</li>
+<a href="#isee-2126" class="anchor"></a>iSEE 2.1.26</h1>
+<ul>
+<li>Disable the import button on the dimnames modal when transmitter has not made a selection.</li>
 <li>Separate the maximum number of factor levels for colors from other applications.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-2125" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.25">
-<a href="#isee-2125" class="anchor" aria-hidden="true"></a>iSEE 2.1.25</h1>
-<ul><li>Support a named vector in the <code>SearchColumns</code> field of the <code>Table</code> subclasses.</li>
-</ul></div>
+<a href="#isee-2125" class="anchor"></a>iSEE 2.1.25</h1>
+<ul>
+<li>Support a named vector in the <code>SearchColumns</code> field of the <code>Table</code> subclasses.</li>
+</ul>
+</div>
     <div id="isee-2124" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.24">
-<a href="#isee-2124" class="anchor" aria-hidden="true"></a>iSEE 2.1.24</h1>
-<ul><li>Enable custom saving of the application state via the new <code>saveState=</code> argument.</li>
+<a href="#isee-2124" class="anchor"></a>iSEE 2.1.24</h1>
+<ul>
+<li>Enable custom saving of the application state via the new <code>saveState=</code> argument.</li>
 <li>Switch colormap getters to use an internal cache to avoid conflicts with user entries.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-2123" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.23">
-<a href="#isee-2123" class="anchor" aria-hidden="true"></a>iSEE 2.1.23</h1>
-<ul><li>
+<a href="#isee-2123" class="anchor"></a>iSEE 2.1.23</h1>
+<ul>
+<li>
 <code>ExperimentColorMap</code> inherits from <code>Annotated</code>.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-2122" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.22">
-<a href="#isee-2122" class="anchor" aria-hidden="true"></a>iSEE 2.1.22</h1>
-<ul><li>Split and rename scripts for test setup.</li>
-</ul></div>
+<a href="#isee-2122" class="anchor"></a>iSEE 2.1.22</h1>
+<ul>
+<li>Split and rename scripts for test setup.</li>
+</ul>
+</div>
     <div id="isee-2121" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.21">
-<a href="#isee-2121" class="anchor" aria-hidden="true"></a>iSEE 2.1.21</h1>
-<ul><li>Minor fix to unit test.</li>
-</ul></div>
+<a href="#isee-2121" class="anchor"></a>iSEE 2.1.21</h1>
+<ul>
+<li>Minor fix to unit test.</li>
+</ul>
+</div>
     <div id="isee-2120" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.20">
-<a href="#isee-2120" class="anchor" aria-hidden="true"></a>iSEE 2.1.20</h1>
-<ul><li>Export even more internal utilities for re-use in downstream packages.</li>
+<a href="#isee-2120" class="anchor"></a>iSEE 2.1.20</h1>
+<ul>
+<li>Export even more internal utilities for re-use in downstream packages.</li>
 <li>Minor fixes to the <code>ComplexHeatmapPlot</code> documentation.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-2119" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.19">
-<a href="#isee-2119" class="anchor" aria-hidden="true"></a>iSEE 2.1.19</h1>
-<ul><li>Export more internal utilities for re-use in downstream packages.</li>
+<a href="#isee-2119" class="anchor"></a>iSEE 2.1.19</h1>
+<ul>
+<li>Export more internal utilities for re-use in downstream packages.</li>
 <li>Added a generic to define the selection effect UI.</li>
 <li>Fixes to the <code>ComplexHeatmapPlot</code> observers, most obviously for the assay choice.</li>
 <li>Fixes to the underlying reactive framework to avoid bugs due to unresponsiveness.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-2118" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.18">
-<a href="#isee-2118" class="anchor" aria-hidden="true"></a>iSEE 2.1.18</h1>
-<ul><li>Bugfix to properly support dynamic classes on landing page.</li>
-</ul></div>
+<a href="#isee-2118" class="anchor"></a>iSEE 2.1.18</h1>
+<ul>
+<li>Bugfix to properly support dynamic classes on landing page.</li>
+</ul>
+</div>
     <div id="isee-2117" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.17">
-<a href="#isee-2117" class="anchor" aria-hidden="true"></a>iSEE 2.1.17</h1>
-<ul><li>
+<a href="#isee-2117" class="anchor"></a>iSEE 2.1.17</h1>
+<ul>
+<li>
 <code><a href="../reference/setup-generics.html">.refineParameters()</a></code> for <code>FeatureAssayPlot</code>, <code>SampleAssayPlot</code> protects the x-axis choice against absent metadata.</li>
 <li>CSS classes for each panel are now defined at app run-time, to make it easier to write landing pages without specifying <code>initial=</code> in <code><a href="../reference/iSEE.html">iSEE()</a></code>.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-2116" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.16">
-<a href="#isee-2116" class="anchor" aria-hidden="true"></a>iSEE 2.1.16</h1>
-<ul><li>Bugfix for initialization of the <code>ColorByFeatureDynamicSource</code> UI element in <code>ColumnDotPlot</code>s.</li>
-</ul></div>
+<a href="#isee-2116" class="anchor"></a>iSEE 2.1.16</h1>
+<ul>
+<li>Bugfix for initialization of the <code>ColorByFeatureDynamicSource</code> UI element in <code>ColumnDotPlot</code>s.</li>
+</ul>
+</div>
     <div id="isee-2115" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.15">
-<a href="#isee-2115" class="anchor" aria-hidden="true"></a>iSEE 2.1.15</h1>
-<ul><li>Allow labelling of the medoid for each level of a discrete variable in a scatter-type <code>DotPlot</code>.</li>
+<a href="#isee-2115" class="anchor"></a>iSEE 2.1.15</h1>
+<ul>
+<li>Allow labelling of the medoid for each level of a discrete variable in a scatter-type <code>DotPlot</code>.</li>
 <li>Turned on validity checks during <code>[[&lt;-</code> assignment into <code>Panel</code> classes.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-2114" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.14">
-<a href="#isee-2114" class="anchor" aria-hidden="true"></a>iSEE 2.1.14</h1>
-<ul><li>Right-aligned the help icon for individual panel tour.</li>
+<a href="#isee-2114" class="anchor"></a>iSEE 2.1.14</h1>
+<ul>
+<li>Right-aligned the help icon for individual panel tour.</li>
 <li>Added tooltip for mouseovers on <code>DotPlot</code> panels.</li>
 <li>Allowed custom annotation about selected table row to to be displayed in <code>Table</code> panels.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-2113" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.13">
-<a href="#isee-2113" class="anchor" aria-hidden="true"></a>iSEE 2.1.13</h1>
-<ul><li>Refactored the heatmap feature selection modal to be reusable for selecting rows or columns in other contexts.</li>
-</ul></div>
+<a href="#isee-2113" class="anchor"></a>iSEE 2.1.13</h1>
+<ul>
+<li>Refactored the heatmap feature selection modal to be reusable for selecting rows or columns in other contexts.</li>
+</ul>
+</div>
     <div id="isee-2112" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.12">
-<a href="#isee-2112" class="anchor" aria-hidden="true"></a>iSEE 2.1.12</h1>
-<ul><li>Added panel-specific tours via the <code><a href="../reference/documentation-generics.html">.definePanelTour()</a></code> generic.</li>
+<a href="#isee-2112" class="anchor"></a>iSEE 2.1.12</h1>
+<ul>
+<li>Added panel-specific tours via the <code><a href="../reference/documentation-generics.html">.definePanelTour()</a></code> generic.</li>
 <li>Generalized the <code>HiddenColumns</code> mechanism to all <code>Table</code> subclasses.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-2111" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.11">
-<a href="#isee-2111" class="anchor" aria-hidden="true"></a>iSEE 2.1.11</h1>
-<ul><li>Added <code>HiddenColumns</code> slot to hide columns in <code>ColumnDataTable</code>s and <code>RowDataTable</code>s.</li>
-</ul></div>
+<a href="#isee-2111" class="anchor"></a>iSEE 2.1.11</h1>
+<ul>
+<li>Added <code>HiddenColumns</code> slot to hide columns in <code>ColumnDataTable</code>s and <code>RowDataTable</code>s.</li>
+</ul>
+</div>
     <div id="isee-2110" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.10">
-<a href="#isee-2110" class="anchor" aria-hidden="true"></a>iSEE 2.1.10</h1>
-<ul><li>Avoided transmitting multiple selections for <code>Table</code>s when the number of columns change.</li>
+<a href="#isee-2110" class="anchor"></a>iSEE 2.1.10</h1>
+<ul>
+<li>Avoided transmitting multiple selections for <code>Table</code>s when the number of columns change.</li>
 <li>Hid irrelevant UI elements for <code>Table</code> multiple selections.</li>
 <li>Generalized information about the number of selected rows/columns in each panel.</li>
 <li>Streamlined the <code>.defineOutput</code> signature.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-219" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.9">
-<a href="#isee-219" class="anchor" aria-hidden="true"></a>iSEE 2.1.9</h1>
-<ul><li>Improved documentation for generics and classes.</li>
+<a href="#isee-219" class="anchor"></a>iSEE 2.1.9</h1>
+<ul>
+<li>Improved documentation for generics and classes.</li>
 <li>Defined <code>.exportOutput</code> method for the <code>ComplexHeatmapPlot</code> class.</li>
 <li>Added missing documentation for slots and methods in the <code>ComplexHeatmapPlot</code> class.</li>
 <li>Enforced sensible defaults for the dynamic selection setting.</li>
 <li>Extract assays with dimnames for correct indexing.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-218" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.8">
-<a href="#isee-218" class="anchor" aria-hidden="true"></a>iSEE 2.1.8</h1>
-<ul><li>Fixed control of legend point size for continuous covariates.</li>
+<a href="#isee-218" class="anchor"></a>iSEE 2.1.8</h1>
+<ul>
+<li>Fixed control of legend point size for continuous covariates.</li>
 <li>Extended control of legend point size for violin plots and Hinton plots.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-217" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.7">
-<a href="#isee-217" class="anchor" aria-hidden="true"></a>iSEE 2.1.7</h1>
-<ul><li>Added control of legend point size under the “Text” category of teh “Visual parameters” box.</li>
-</ul></div>
+<a href="#isee-217" class="anchor"></a>iSEE 2.1.7</h1>
+<ul>
+<li>Added control of legend point size under the “Text” category of teh “Visual parameters” box.</li>
+</ul>
+</div>
     <div id="isee-216" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.6">
-<a href="#isee-216" class="anchor" aria-hidden="true"></a>iSEE 2.1.6</h1>
-<ul><li>Fixed bug for <code>sizeBy</code> observers.</li>
-</ul></div>
+<a href="#isee-216" class="anchor"></a>iSEE 2.1.6</h1>
+<ul>
+<li>Fixed bug for <code>sizeBy</code> observers.</li>
+</ul>
+</div>
     <div id="isee-215" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.5">
-<a href="#isee-215" class="anchor" aria-hidden="true"></a>iSEE 2.1.5</h1>
-<ul><li>Fixed initialization of panel size to current value when the “Organize panels” window is closed and re-opened.</li>
+<a href="#isee-215" class="anchor"></a>iSEE 2.1.5</h1>
+<ul>
+<li>Fixed initialization of panel size to current value when the “Organize panels” window is closed and re-opened.</li>
 <li>Fixed removal of last panel from the interface.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-214" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.4">
-<a href="#isee-214" class="anchor" aria-hidden="true"></a>iSEE 2.1.4</h1>
-<ul><li>Added progress bar when exporting panel outputs.</li>
+<a href="#isee-214" class="anchor"></a>iSEE 2.1.4</h1>
+<ul>
+<li>Added progress bar when exporting panel outputs.</li>
 <li>Fixed missing section in <code><a href="../reference/createLandingPage.html">createLandingPage()</a></code> man page.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-213" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.3">
-<a href="#isee-213" class="anchor" aria-hidden="true"></a>iSEE 2.1.3</h1>
-<ul><li>Fixed handling of logical &gt; 1 when processing the <code>CustomRowsText</code> slot in the <code>ComplexHeatmapPlot</code> constructor.</li>
-</ul></div>
+<a href="#isee-213" class="anchor"></a>iSEE 2.1.3</h1>
+<ul>
+<li>Fixed handling of logical &gt; 1 when processing the <code>CustomRowsText</code> slot in the <code>ComplexHeatmapPlot</code> constructor.</li>
+</ul>
+</div>
     <div id="isee-212" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.2">
-<a href="#isee-212" class="anchor" aria-hidden="true"></a>iSEE 2.1.2</h1>
-<ul><li>Added a new vignette to describe panel links.</li>
+<a href="#isee-212" class="anchor"></a>iSEE 2.1.2</h1>
+<ul>
+<li>Added a new vignette to describe panel links.</li>
 <li>Fixed documentation for <code>*DynamicSource</code> slots.</li>
 <li>Fixed reception of single selection from plot at initialization.</li>
 <li>Removed deprecated functionality.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-211" class="section level1">
 <h1 class="page-header" data-toc-text="2.1.1">
-<a href="#isee-211" class="anchor" aria-hidden="true"></a>iSEE 2.1.1</h1>
-<ul><li>Added vignette documenting the use of out-of-memory matrices for big data.</li>
+<a href="#isee-211" class="anchor"></a>iSEE 2.1.1</h1>
+<ul>
+<li>Added vignette documenting the use of out-of-memory matrices for big data.</li>
 <li>Added <code>TENxPBMCData</code> to <code>Suggests:</code>.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-1999" class="section level1">
 <h1 class="page-header" data-toc-text="1.99.9">
-<a href="#isee-1999" class="anchor" aria-hidden="true"></a>iSEE 1.99.9</h1>
-<ul><li>Fixed slot names in the <code><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot()</a></code> man page.</li>
-</ul></div>
+<a href="#isee-1999" class="anchor"></a>iSEE 1.99.9</h1>
+<ul>
+<li>Fixed slot names in the <code><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot()</a></code> man page.</li>
+</ul>
+</div>
     <div id="isee-1998" class="section level1">
 <h1 class="page-header" data-toc-text="1.99.8">
-<a href="#isee-1998" class="anchor" aria-hidden="true"></a>iSEE 1.99.8</h1>
-<ul><li>Protected against transient invalid selected index; fixes <a href='https://github.com/iSEE/iSEE/issues/400'>#400</a>.</li>
+<a href="#isee-1998" class="anchor"></a>iSEE 1.99.8</h1>
+<ul>
+<li>Protected against transient invalid selected index; fixes <a href='https://github.com/iSEE/iSEE/issues/400'>#400</a>.</li>
 <li>Forced <code>renderDT</code> to rerun expression upon panel reorg.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-1997" class="section level1">
 <h1 class="page-header" data-toc-text="1.99.7">
-<a href="#isee-1997" class="anchor" aria-hidden="true"></a>iSEE 1.99.7</h1>
-<ul><li>Fixed out-of-date vignette content.</li>
-</ul></div>
+<a href="#isee-1997" class="anchor"></a>iSEE 1.99.7</h1>
+<ul>
+<li>Fixed out-of-date vignette content.</li>
+</ul>
+</div>
     <div id="isee-1996" class="section level1">
 <h1 class="page-header" data-toc-text="1.99.6">
-<a href="#isee-1996" class="anchor" aria-hidden="true"></a>iSEE 1.99.6</h1>
-<ul><li>Added static screenshots to vignettes.</li>
+<a href="#isee-1996" class="anchor"></a>iSEE 1.99.6</h1>
+<ul>
+<li>Added static screenshots to vignettes.</li>
 <li>Added GitHub Actions for continuous integration and deployment.</li>
 <li>Updated Docker base image to <code>bioconductor/bioconductor_docker:devel</code>.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-1995" class="section level1">
 <h1 class="page-header" data-toc-text="1.99.5">
-<a href="#isee-1995" class="anchor" aria-hidden="true"></a>iSEE 1.99.5</h1>
-<ul><li>Export utilities relevant to downstream panel development.</li>
-</ul></div>
+<a href="#isee-1995" class="anchor"></a>iSEE 1.99.5</h1>
+<ul>
+<li>Export utilities relevant to downstream panel development.</li>
+</ul>
+</div>
     <div id="isee-1994" class="section level1">
 <h1 class="page-header" data-toc-text="1.99.4">
-<a href="#isee-1994" class="anchor" aria-hidden="true"></a>iSEE 1.99.4</h1>
-<ul><li>Added options for dynamic choice of single/multiple selection sources.</li>
+<a href="#isee-1994" class="anchor"></a>iSEE 1.99.4</h1>
+<ul>
+<li>Added options for dynamic choice of single/multiple selection sources.</li>
 <li>Fixed bug around <code>NA</code> groupings in <code><a href="../reference/subsetPointsByGrid.html">subsetPointsByGrid()</a></code>.</li>
 <li>Explicitly notify the user when removing invalid panels supplied by a landing page.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-1993" class="section level1">
 <h1 class="page-header" data-toc-text="1.99.3">
-<a href="#isee-1993" class="anchor" aria-hidden="true"></a>iSEE 1.99.3</h1>
-<ul><li>Fixed occurences of <code>rowData</code> in <code>RowDotPlot</code> panels.</li>
+<a href="#isee-1993" class="anchor"></a>iSEE 1.99.3</h1>
+<ul>
+<li>Fixed occurences of <code>rowData</code> in <code>RowDotPlot</code> panels.</li>
 <li>Refactored <code>.create_visual_box()</code>.</li>
 <li>Refactored visual parameter sections into generics.</li>
 <li>Apply global option <code>selected.color</code> to single selections.</li>
 <li>Added <code>panel.width</code>, <code>panel.height</code>, and <code>assay</code> to global options.</li>
 <li>Added <code>.checkboxInputHidden()</code>.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-1992" class="section level1">
 <h1 class="page-header" data-toc-text="1.99.2">
-<a href="#isee-1992" class="anchor" aria-hidden="true"></a>iSEE 1.99.2</h1>
-<ul><li>Added extension points to the API.</li>
+<a href="#isee-1992" class="anchor"></a>iSEE 1.99.2</h1>
+<ul>
+<li>Added extension points to the API.</li>
 <li>Added global settings using <code>iSEEOptions</code>.</li>
 <li>Added <code><a href="../reference/metadata-plot-generics.html">.allowableYAxisChoices()</a></code> and <code><a href="../reference/metadata-plot-generics.html">.allowableXAxisChoices()</a></code> methods to intercept choices of x/y-axis variables.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-1991" class="section level1">
 <h1 class="page-header" data-toc-text="1.99.1">
-<a href="#isee-1991" class="anchor" aria-hidden="true"></a>iSEE 1.99.1</h1>
-<ul><li>Allowed customization of landing pages (from calling <code><a href="../reference/iSEE.html">iSEE()</a></code> in no-SE mode) for enterprise deployments.</li>
+<a href="#isee-1991" class="anchor"></a>iSEE 1.99.1</h1>
+<ul>
+<li>Allowed customization of landing pages (from calling <code><a href="../reference/iSEE.html">iSEE()</a></code> in no-SE mode) for enterprise deployments.</li>
 <li>Allowed export of plot and table panel outputs as PDF and CSV files, respectively.</li>
 <li>Fixed handling of <code>se</code> objects missing <code>dimnames</code>.</li>
 <li>Added <code><a href="../reference/createCustomPanels.html">createCustomPlot()</a></code> and <code><a href="../reference/createCustomPanels.html">createCustomTable()</a></code> to provide on-ramp for making customized panels.</li>
 <li>Allowed global setting using <code>iSEEOptions</code>.</li>
 <li>Expanded class and slot names from “Feat” to “Feature”, “Samp” to “Sample”, “RedDimPlot” to “ReducedDimensionPlot”.</li>
 <li>Renamed “StatTable” to “DataTable”.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-1990" class="section level1">
 <h1 class="page-header" data-toc-text="1.99.0">
-<a href="#isee-1990" class="anchor" aria-hidden="true"></a>iSEE 1.99.0</h1>
-<ul><li>Refactored panel implementation as S4 classes.</li>
+<a href="#isee-1990" class="anchor"></a>iSEE 1.99.0</h1>
+<ul>
+<li>Refactored panel implementation as S4 classes.</li>
 <li>Display a spinner while panels are rerendering.</li>
 <li>Refactored heatmap panel to use <code>ComplexHeatmap</code>.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-172" class="section level1">
 <h1 class="page-header" data-toc-text="1.7.2">
-<a href="#isee-172" class="anchor" aria-hidden="true"></a>iSEE 1.7.2</h1>
-<ul><li>Added notification on birthday.</li>
+<a href="#isee-172" class="anchor"></a>iSEE 1.7.2</h1>
+<ul>
+<li>Added notification on birthday.</li>
 <li>Enabled hiding of the <code>*DataPlot</code> UI elements.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-171" class="section level1">
 <h1 class="page-header" data-toc-text="1.7.1">
-<a href="#isee-171" class="anchor" aria-hidden="true"></a>iSEE 1.7.1</h1>
-<ul><li>Fix <code><a href="https://rdrr.io/pkg/DelayedArray/man/DelayedArray-utils.html" class="external-link">rbind()</a></code> of <code>data.frame</code> and <code>DataFrame</code> objects.</li>
-<li>Fix error related to using <code>&amp;&amp;</code> with variable length greater than 1.</li>
+<a href="#isee-171" class="anchor"></a>iSEE 1.7.1</h1>
+<ul>
+<li>Fix <code><a href="https://rdrr.io/r/base/cbind.html">rbind()</a></code> of <code>data.frame</code> and <code>DataFrame</code> objects.</li>
+<li>Fix error related to using <code><a href="https://rdrr.io/r/base/Logic.html">&amp;&amp;</a></code> with variable length greater than 1.</li>
 <li>Replace deprecated <code>scater</code> argument.</li>
-<li>Replace deprecated functions: <code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/defunct.html" class="external-link">SingleCellExperiment::clearSpikes()</a></code>, <code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/defunct.html" class="external-link">SingleCellExperiment::clearSizeFactors()</a></code>.</li>
-</ul></div>
+<li>Replace deprecated functions: <code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/defunct.html">SingleCellExperiment::clearSpikes()</a></code>, <code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/defunct.html">SingleCellExperiment::clearSizeFactors()</a></code>.</li>
+</ul>
+</div>
     <div id="isee-170" class="section level1">
 <h1 class="page-header" data-toc-text="1.7.0">
-<a href="#isee-170" class="anchor" aria-hidden="true"></a>iSEE 1.7.0</h1>
-<ul><li>Bioconductor release.</li>
-</ul></div>
+<a href="#isee-170" class="anchor"></a>iSEE 1.7.0</h1>
+<ul>
+<li>Bioconductor release.</li>
+</ul>
+</div>
     <div id="isee-1513" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.13">
-<a href="#isee-1513" class="anchor" aria-hidden="true"></a>iSEE 1.5.13</h1>
-<ul><li>Order features selected in heat map selectize from top to bottom.</li>
-</ul></div>
+<a href="#isee-1513" class="anchor"></a>iSEE 1.5.13</h1>
+<ul>
+<li>Order features selected in heat map selectize from top to bottom.</li>
+</ul>
+</div>
     <div id="isee-1512" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.12">
-<a href="#isee-1512" class="anchor" aria-hidden="true"></a>iSEE 1.5.12</h1>
-<ul><li>Support gene list input from <code>aceEditor()</code> and <code><a href="https://rdrr.io/pkg/shiny/man/fileInput.html" class="external-link">fileInput()</a></code>.</li>
-</ul></div>
+<a href="#isee-1512" class="anchor"></a>iSEE 1.5.12</h1>
+<ul>
+<li>Support gene list input from <code>aceEditor()</code> and <code><a href="https://rdrr.io/pkg/shiny/man/fileInput.html">fileInput()</a></code>.</li>
+</ul>
+</div>
     <div id="isee-1511" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.11">
-<a href="#isee-1511" class="anchor" aria-hidden="true"></a>iSEE 1.5.11</h1>
-<ul><li>Renamed <code>isColorMapCompatible()</code> to <code><a href="../reference/checkColormapCompatibility.html">checkColormapCompatibility()</a></code>.</li>
+<a href="#isee-1511" class="anchor"></a>iSEE 1.5.11</h1>
+<ul>
+<li>Renamed <code>isColorMapCompatible()</code> to <code><a href="../reference/checkColormapCompatibility.html">checkColormapCompatibility()</a></code>.</li>
 <li>Fixed graceful server side handling of <code><a href="../reference/checkColormapCompatibility.html">checkColormapCompatibility()</a></code>.</li>
 <li>Updated documentation about panel organisation in vignette.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-1510" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.10">
-<a href="#isee-1510" class="anchor" aria-hidden="true"></a>iSEE 1.5.10</h1>
-<ul><li>Fixed test to provide a non-empty selection to custom plot function.</li>
-</ul></div>
+<a href="#isee-1510" class="anchor"></a>iSEE 1.5.10</h1>
+<ul>
+<li>Fixed test to provide a non-empty selection to custom plot function.</li>
+</ul>
+</div>
     <div id="isee-159" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.9">
-<a href="#isee-159" class="anchor" aria-hidden="true"></a>iSEE 1.5.9</h1>
-<ul><li>Introduced Bugs Easter egg.</li>
-</ul></div>
+<a href="#isee-159" class="anchor"></a>iSEE 1.5.9</h1>
+<ul>
+<li>Introduced Bugs Easter egg.</li>
+</ul>
+</div>
     <div id="isee-158" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.8">
-<a href="#isee-158" class="anchor" aria-hidden="true"></a>iSEE 1.5.8</h1>
-<ul><li>Substituted deprecated <code>scater::normalize()</code> by <code><a href="https://rdrr.io/pkg/scuttle/man/logNormCounts.html" class="external-link">scater::logNormCounts()</a></code>.</li>
-</ul></div>
+<a href="#isee-158" class="anchor"></a>iSEE 1.5.8</h1>
+<ul>
+<li>Substituted deprecated <code>scater::normalize()</code> by <code><a href="https://rdrr.io/pkg/scuttle/man/logNormCounts.html">scater::logNormCounts()</a></code>.</li>
+</ul>
+</div>
     <div id="isee-157" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.7">
-<a href="#isee-157" class="anchor" aria-hidden="true"></a>iSEE 1.5.7</h1>
-<ul><li>Simplified protection of <code>redDimPlotDefaults()</code> against empty <code>reducedDims</code>.</li>
+<a href="#isee-157" class="anchor"></a>iSEE 1.5.7</h1>
+<ul>
+<li>Simplified protection of <code>redDimPlotDefaults()</code> against empty <code>reducedDims</code>.</li>
 <li>Fix to declare all panel types not available.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-156" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.6">
-<a href="#isee-156" class="anchor" aria-hidden="true"></a>iSEE 1.5.6</h1>
-<ul><li>Updates following deprecation of <code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/defunct.html" class="external-link">isSpike()</a></code> and <code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/defunct.html" class="external-link">sizeFactorNames()</a></code>.</li>
-</ul></div>
+<a href="#isee-156" class="anchor"></a>iSEE 1.5.6</h1>
+<ul>
+<li>Updates following deprecation of <code>isSpike()</code> and <code>sizeFactorNames()</code>.</li>
+</ul>
+</div>
     <div id="isee-155" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.5">
-<a href="#isee-155" class="anchor" aria-hidden="true"></a>iSEE 1.5.5</h1>
-<ul><li>Added <code>modeEmpty()</code>.</li>
+<a href="#isee-155" class="anchor"></a>iSEE 1.5.5</h1>
+<ul>
+<li>Added <code>modeEmpty()</code>.</li>
 <li>Support zero-row <code>initialPanels</code> argument.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-154" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.4">
-<a href="#isee-154" class="anchor" aria-hidden="true"></a>iSEE 1.5.4</h1>
-<ul><li>Added support for file upload with server re-initialization.</li>
+<a href="#isee-154" class="anchor"></a>iSEE 1.5.4</h1>
+<ul>
+<li>Added support for file upload with server re-initialization.</li>
 <li>Moved observers to separate file. Exclude from code coverage.</li>
-<li>Updated calls to <code><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html" class="external-link">ReprocessedAllenData()</a></code> to load only <code>tophat_counts</code> assay.</li>
-</ul></div>
+<li>Updated calls to <code><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html">ReprocessedAllenData()</a></code> to load only <code>tophat_counts</code> assay.</li>
+</ul>
+</div>
     <div id="isee-153" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.3">
-<a href="#isee-153" class="anchor" aria-hidden="true"></a>iSEE 1.5.3</h1>
-<ul><li>Use <code><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html" class="external-link">ReprocessedAllenData()</a></code> following the deprecation of <code>data(allen)</code>.</li>
-</ul></div>
+<a href="#isee-153" class="anchor"></a>iSEE 1.5.3</h1>
+<ul>
+<li>Use <code><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html">ReprocessedAllenData()</a></code> following the deprecation of <code><a href="https://rdrr.io/r/utils/data.html">data(allen)</a></code>.</li>
+</ul>
+</div>
     <div id="isee-152" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.2">
-<a href="#isee-152" class="anchor" aria-hidden="true"></a>iSEE 1.5.2</h1>
-<ul><li>Minor doc fix.</li>
+<a href="#isee-152" class="anchor"></a>iSEE 1.5.2</h1>
+<ul>
+<li>Minor doc fix.</li>
 <li>Do not allow duplicated values in <code>Name</code> field of <code>initialPanels</code>.</li>
 <li>Downsample points randomly.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-151" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.1">
-<a href="#isee-151" class="anchor" aria-hidden="true"></a>iSEE 1.5.1</h1>
-<ul><li>Fixed report of table links.</li>
-</ul></div>
+<a href="#isee-151" class="anchor"></a>iSEE 1.5.1</h1>
+<ul>
+<li>Fixed report of table links.</li>
+</ul>
+</div>
     <div id="isee-150" class="section level1">
 <h1 class="page-header" data-toc-text="1.5.0">
-<a href="#isee-150" class="anchor" aria-hidden="true"></a>iSEE 1.5.0</h1>
-<ul><li>Bioconductor release.</li>
-</ul></div>
+<a href="#isee-150" class="anchor"></a>iSEE 1.5.0</h1>
+<ul>
+<li>Bioconductor release.</li>
+</ul>
+</div>
     <div id="isee-139" class="section level1">
 <h1 class="page-header" data-toc-text="1.3.9">
-<a href="#isee-139" class="anchor" aria-hidden="true"></a>iSEE 1.3.9</h1>
-<ul><li>Added ORCID identifiers.</li>
+<a href="#isee-139" class="anchor"></a>iSEE 1.3.9</h1>
+<ul>
+<li>Added ORCID identifiers.</li>
 <li>Fixed subscript error when tables receive a selection.</li>
 <li>Fixed panel names in panel organization selectize input.</li>
 <li>Control the application of panel organization updates using an action button.</li>
 <li>Fixed child replotting upon lasso close.</li>
 <li>Fixed code reporting for zero-length DataFrame.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-138" class="section level1">
 <h1 class="page-header" data-toc-text="1.3.8">
-<a href="#isee-138" class="anchor" aria-hidden="true"></a>iSEE 1.3.8</h1>
-<ul><li>Added support for multiple selections.</li>
+<a href="#isee-138" class="anchor"></a>iSEE 1.3.8</h1>
+<ul>
+<li>Added support for multiple selections.</li>
 <li>Avoid Javascript error with check group conditional.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-137" class="section level1">
 <h1 class="page-header" data-toc-text="1.3.7">
-<a href="#isee-137" class="anchor" aria-hidden="true"></a>iSEE 1.3.7</h1>
-<ul><li>Added “ImmunoOncology” in <code>biocViews</code>.</li>
-</ul></div>
+<a href="#isee-137" class="anchor"></a>iSEE 1.3.7</h1>
+<ul>
+<li>Added “ImmunoOncology” in <code>biocViews</code>.</li>
+</ul>
+</div>
     <div id="isee-136" class="section level1">
 <h1 class="page-header" data-toc-text="1.3.6">
-<a href="#isee-136" class="anchor" aria-hidden="true"></a>iSEE 1.3.6</h1>
-<ul><li>Control point size.</li>
-</ul></div>
+<a href="#isee-136" class="anchor"></a>iSEE 1.3.6</h1>
+<ul>
+<li>Control point size.</li>
+</ul>
+</div>
     <div id="isee-135" class="section level1">
 <h1 class="page-header" data-toc-text="1.3.5">
-<a href="#isee-135" class="anchor" aria-hidden="true"></a>iSEE 1.3.5</h1>
-<ul><li>Additional information during the default tour.</li>
-</ul></div>
+<a href="#isee-135" class="anchor"></a>iSEE 1.3.5</h1>
+<ul>
+<li>Additional information during the default tour.</li>
+</ul>
+</div>
     <div id="isee-134" class="section level1">
 <h1 class="page-header" data-toc-text="1.3.4">
-<a href="#isee-134" class="anchor" aria-hidden="true"></a>iSEE 1.3.4</h1>
-<ul><li>Fixed panel organization selectize.</li>
-</ul></div>
+<a href="#isee-134" class="anchor"></a>iSEE 1.3.4</h1>
+<ul>
+<li>Fixed panel organization selectize.</li>
+</ul>
+</div>
     <div id="isee-133" class="section level1">
 <h1 class="page-header" data-toc-text="1.3.3">
-<a href="#isee-133" class="anchor" aria-hidden="true"></a>iSEE 1.3.3</h1>
-<ul><li>Updated default tour steps to match updated user interface.</li>
+<a href="#isee-133" class="anchor"></a>iSEE 1.3.3</h1>
+<ul>
+<li>Updated default tour steps to match updated user interface.</li>
 <li>Parsed quote symbols literally in default tour steps.</li>
 <li>Fixed name-to-index conversion of feature names for heat map panel.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-132" class="section level1">
 <h1 class="page-header" data-toc-text="1.3.2">
-<a href="#isee-132" class="anchor" aria-hidden="true"></a>iSEE 1.3.2</h1>
-<ul><li>Moved panel organization to modal with selectize to control panel display and ordering, remove sidebar.</li>
+<a href="#isee-132" class="anchor"></a>iSEE 1.3.2</h1>
+<ul>
+<li>Moved panel organization to modal with selectize to control panel display and ordering, remove sidebar.</li>
 <li>Added control of width and height of new panels.</li>
 <li>Enabled voice control.</li>
 <li>Refactored internal functions.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-131" class="section level1">
 <h1 class="page-header" data-toc-text="1.3.1">
-<a href="#isee-131" class="anchor" aria-hidden="true"></a>iSEE 1.3.1</h1>
-<ul><li>Fixed invalid row index sent from tables in RStudio browser.</li>
+<a href="#isee-131" class="anchor"></a>iSEE 1.3.1</h1>
+<ul>
+<li>Fixed invalid row index sent from tables in RStudio browser.</li>
 <li>Fixed initialization of search fields for tables that are initialized with an incoming selection.</li>
 <li>Fixed constant field name.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-130" class="section level1">
 <h1 class="page-header" data-toc-text="1.3.0">
-<a href="#isee-130" class="anchor" aria-hidden="true"></a>iSEE 1.3.0</h1>
-<ul><li>Bioconductor release.</li>
-</ul></div>
+<a href="#isee-130" class="anchor"></a>iSEE 1.3.0</h1>
+<ul>
+<li>Bioconductor release.</li>
+</ul>
+</div>
     <div id="isee-1114" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.14">
-<a href="#isee-1114" class="anchor" aria-hidden="true"></a>iSEE 1.1.14</h1>
-<ul><li>Fixed unit test.</li>
-</ul></div>
+<a href="#isee-1114" class="anchor"></a>iSEE 1.1.14</h1>
+<ul>
+<li>Fixed unit test.</li>
+</ul>
+</div>
     <div id="isee-1113" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.13">
-<a href="#isee-1113" class="anchor" aria-hidden="true"></a>iSEE 1.1.13</h1>
-<ul><li>Added missing observer for assay type in row data plot panels.</li>
+<a href="#isee-1113" class="anchor"></a>iSEE 1.1.13</h1>
+<ul>
+<li>Added missing observer for assay type in row data plot panels.</li>
 <li>Added missing observer for colorpicker when colouring by feature name in row-based plots, or by sample name in column-based plots.</li>
 <li>Ignore <code>NA</code> values when computing the range of coloring scales.</li>
 <li>Added a size expansion factor (5x) to the selected point when colouring by feature name in row-based plots, or by sample name in column-based plots.</li>
 <li>Fixed redundant coloring of selected point when colouring by feature name in row-based plots, or by sample name in column-based plots.</li>
 <li>Updated basic vignette.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-1112" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.12">
-<a href="#isee-1112" class="anchor" aria-hidden="true"></a>iSEE 1.1.12</h1>
-<ul><li>Updated NEWS file.</li>
-</ul></div>
+<a href="#isee-1112" class="anchor"></a>iSEE 1.1.12</h1>
+<ul>
+<li>Updated NEWS file.</li>
+</ul>
+</div>
     <div id="isee-1111" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.11">
-<a href="#isee-1111" class="anchor" aria-hidden="true"></a>iSEE 1.1.11</h1>
-<ul><li>Exported list of panel names and codes.</li>
-</ul></div>
+<a href="#isee-1111" class="anchor"></a>iSEE 1.1.11</h1>
+<ul>
+<li>Exported list of panel names and codes.</li>
+</ul>
+</div>
     <div id="isee-1110" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.10">
-<a href="#isee-1110" class="anchor" aria-hidden="true"></a>iSEE 1.1.10</h1>
-<ul><li>Fixed colour scale to be invariant when selecting on a different color.</li>
+<a href="#isee-1110" class="anchor"></a>iSEE 1.1.10</h1>
+<ul>
+<li>Fixed colour scale to be invariant when selecting on a different color.</li>
 <li>Protected heat map plot panels against restriction on zero samples.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-119" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.9">
-<a href="#isee-119" class="anchor" aria-hidden="true"></a>iSEE 1.1.9</h1>
-<ul><li>Fixed compatibility with <code>DelayedArray</code> assays.</li>
-</ul></div>
+<a href="#isee-119" class="anchor"></a>iSEE 1.1.9</h1>
+<ul>
+<li>Fixed compatibility with <code>DelayedArray</code> assays.</li>
+</ul>
+</div>
     <div id="isee-118" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.8">
-<a href="#isee-118" class="anchor" aria-hidden="true"></a>iSEE 1.1.8</h1>
-<ul><li>Extended unit test coverage.</li>
+<a href="#isee-118" class="anchor"></a>iSEE 1.1.8</h1>
+<ul>
+<li>Extended unit test coverage.</li>
 <li>Moved generics to separate file.</li>
 <li>Minor fix to <code>annotateEnsembl()</code>.</li>
 <li>Updated list of functionalities in README.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-117" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.7">
-<a href="#isee-117" class="anchor" aria-hidden="true"></a>iSEE 1.1.7</h1>
-<ul><li>Resolved <code>BiocManager</code> message.</li>
-</ul></div>
+<a href="#isee-117" class="anchor"></a>iSEE 1.1.7</h1>
+<ul>
+<li>Resolved <code>BiocManager</code> message.</li>
+</ul>
+</div>
     <div id="isee-116" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.6">
-<a href="#isee-116" class="anchor" aria-hidden="true"></a>iSEE 1.1.6</h1>
-<ul><li>Minor fix for Windows unit test.</li>
-</ul></div>
+<a href="#isee-116" class="anchor"></a>iSEE 1.1.6</h1>
+<ul>
+<li>Minor fix for Windows unit test.</li>
+</ul>
+</div>
     <div id="isee-115" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.5">
-<a href="#isee-115" class="anchor" aria-hidden="true"></a>iSEE 1.1.5</h1>
-<ul><li>New panel colors.</li>
+<a href="#isee-115" class="anchor"></a>iSEE 1.1.5</h1>
+<ul>
+<li>New panel colors.</li>
 <li>Added control for arguments to custom panels through action buttons.</li>
 <li>Distinguished visible from active arguments for custom panels.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-114" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.4">
-<a href="#isee-114" class="anchor" aria-hidden="true"></a>iSEE 1.1.4</h1>
-<ul><li>Split <code>?defaults</code> help page by panel type.</li>
+<a href="#isee-114" class="anchor"></a>iSEE 1.1.4</h1>
+<ul>
+<li>Split <code>?defaults</code> help page by panel type.</li>
 <li>Generalized support for custom data plots and statistics tables.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-113" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.3">
-<a href="#isee-113" class="anchor" aria-hidden="true"></a>iSEE 1.1.3</h1>
-<ul><li>Added new <em>Sample assay plot</em> panel type.</li>
+<a href="#isee-113" class="anchor"></a>iSEE 1.1.3</h1>
+<ul>
+<li>Added new <em>Sample assay plot</em> panel type.</li>
 <li>Extended documentation.</li>
 <li>Split vignette into three: basic, advanced, ExperimentColorMap.</li>
 <li>Fixed initialization of reduced dimensions with a single plot axis choice.</li>
-<li>Substituted discouraged use of <code><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply()</a></code>.</li>
+<li>Substituted discouraged use of <code><a href="https://rdrr.io/r/base/lapply.html">sapply()</a></code>.</li>
 <li>Moved roxygen <code>importFrom</code> instructions closer to the relevant code.</li>
 <li>Increased unit test coverage.</li>
 <li>Consistent use of “colormap” through the package.</li>
 <li>Updated installation instructions.</li>
 <li>Added CITATION file.</li>
 <li>Added Figure 1 of article in README.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-112" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.2">
-<a href="#isee-112" class="anchor" aria-hidden="true"></a>iSEE 1.1.2</h1>
-<ul><li>Enabled faceting by row and column, with appropriate updates to brush and lasso.</li>
+<a href="#isee-112" class="anchor"></a>iSEE 1.1.2</h1>
+<ul>
+<li>Enabled faceting by row and column, with appropriate updates to brush and lasso.</li>
 <li>Enabled shaping on data points.</li>
 <li>Minor fix of jitter for violin and square plots.</li>
 <li>INTERNAL: Enabled storage of additional <code>plot.data</code> beyond <code>X</code> and <code>Y</code> in <code>all.coordinates</code>. See constant <code>.allCoordinatesNames</code>. Necessary for correct behaviour of brushes on faceted plots.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-110" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.0">
-<a href="#isee-110" class="anchor" aria-hidden="true"></a>iSEE 1.1.0</h1>
-<ul><li>Bioconductor release.</li>
-</ul></div>
+<a href="#isee-110" class="anchor"></a>iSEE 1.1.0</h1>
+<ul>
+<li>Bioconductor release.</li>
+</ul>
+</div>
     <div id="isee-101" class="section level1">
 <h1 class="page-header" data-toc-text="1.0.1">
-<a href="#isee-101" class="anchor" aria-hidden="true"></a>iSEE 1.0.1</h1>
-<ul><li>Renamed feature expression plots to feature assay plots, for generality.</li>
-</ul></div>
+<a href="#isee-101" class="anchor"></a>iSEE 1.0.1</h1>
+<ul>
+<li>Renamed feature expression plots to feature assay plots, for generality.</li>
+</ul>
+</div>
     <div id="isee-0993" class="section level1">
 <h1 class="page-header" data-toc-text="0.99.3">
-<a href="#isee-0993" class="anchor" aria-hidden="true"></a>iSEE 0.99.3</h1>
-<ul><li>Custom tours can be restarted via the dropdown menu button, overwriting the default tour.</li>
+<a href="#isee-0993" class="anchor"></a>iSEE 0.99.3</h1>
+<ul>
+<li>Custom tours can be restarted via the dropdown menu button, overwriting the default tour.</li>
 <li>Added functionality to provide a custom title to be displayed in the app.</li>
 <li>Preserved data points and width ratio upon zoom on discrete variables.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-0992" class="section level1">
 <h1 class="page-header" data-toc-text="0.99.2">
-<a href="#isee-0992" class="anchor" aria-hidden="true"></a>iSEE 0.99.2</h1>
-<ul><li>Added functionality for providing additional custom tours, to be launched directly upon starting the app.</li>
-</ul></div>
+<a href="#isee-0992" class="anchor"></a>iSEE 0.99.2</h1>
+<ul>
+<li>Added functionality for providing additional custom tours, to be launched directly upon starting the app.</li>
+</ul>
+</div>
     <div id="isee-0991" class="section level1">
 <h1 class="page-header" data-toc-text="0.99.1">
-<a href="#isee-0991" class="anchor" aria-hidden="true"></a>iSEE 0.99.1</h1>
-<ul><li>Added grid-based visual point downsampling for faster plotting, including control of resolution.</li>
+<a href="#isee-0991" class="anchor"></a>iSEE 0.99.1</h1>
+<ul>
+<li>Added grid-based visual point downsampling for faster plotting, including control of resolution.</li>
 <li>Added button “Clear features” for heat maps.</li>
 <li>Reorganized buttons in heat map panels.</li>
 <li>Transfered maintainer badge to Federico.</li>
-</ul></div>
+</ul>
+</div>
     <div id="isee-0990" class="section level1">
 <h1 class="page-header" data-toc-text="0.99.0">
-<a href="#isee-0990" class="anchor" aria-hidden="true"></a>iSEE 0.99.0</h1>
-<ul><li>Initial submission to <em>Bioconductor</em>.</li>
-</ul></div>
+<a href="#isee-0990" class="anchor"></a>iSEE 0.99.0</h1>
+<ul>
+<li>Initial submission to <em>Bioconductor</em>.</li>
+</ul>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -770,11 +966,11 @@
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p></p>
+  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
@@ -782,8 +978,6 @@
 
   
 
-
-  
 
   </body>
 </html>

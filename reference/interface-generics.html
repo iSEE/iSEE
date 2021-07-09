@@ -45,8 +45,6 @@
 
 
 
-
-
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -58,15 +56,9 @@
 
 
 
-  
-
-  
-
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    
-
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -87,6 +79,12 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -176,9 +174,9 @@ see <code>?<a href='multi-select-generics.html'>.multiSelectionDimension</a></co
 <p>Methods for this generic are expected to return a list of <code><a href='collapseBox.html'>collapseBox</a></code> elements.
 Each parameter box can contain arbitrary numbers of additional UI elements,
 each of which is expected to modify one slot of <code>x</code> upon user interaction.</p>
-<p>The ID of each interface element should follow the form of <code>PANEL_SLOT</code> where <code>PANEL</code> is the panel name (from <code><a href='getEncodedName.html'>.getEncodedName</a>(x)</code>) and <code>SLOT</code> is the name of the slot modified by the interface element, e.g., <code>"ReducedDimensionPlot1_Type"</code>.
+<p>The ID of each interface element should follow the form of <code>PANEL_SLOT</code> where <code>PANEL</code> is the panel name (from <code><a href='.fullName.html'>.getEncodedName</a>(x)</code>) and <code>SLOT</code> is the name of the slot modified by the interface element, e.g., <code>"ReducedDimensionPlot1_Type"</code>.
 Each interface element should have an equivalent observer in <code><a href='observer-generics.html'>.createObservers</a></code> unless they are hidden by <code>.hideInterface</code> (see below).</p>
-<p>It is the developer's responsibility to call <code><a href='https://rdrr.io/r/methods/NextMethod.html'>callNextMethod</a></code> to obtain interface elements for parent classes.
+<p>It is the developer's responsibility to call <code>callNextMethod</code> to obtain interface elements for parent classes.
 A common strategy is to combine the output of <code>callNextMethod</code> with additional <code><a href='collapseBox.html'>collapseBox</a></code> elements to achieve the desired UI structure.</p>
     <h2 class="hasAnchor" id="defining-the-data-parameter-interface"><a class="anchor" href="#defining-the-data-parameter-interface"></a>Defining the data parameter interface</h2>
 
@@ -192,7 +190,7 @@ Each element's ID should still follow the <code>PANEL_SLOT</code> pattern descri
 <p>This generic aims to provide a simpler alternative to specializing <code>.defineInterface</code> for the most common use case.
 New panels can write methods for this generic to add their own interface elements for altering the contents of the panel, without needing to reimplement other UI elements in the parent class's <code>.defineInterface</code> method.
 Conversely, there is no obligation to write a method for this generic if one is planning to specialize <code>.defineInterface</code>.</p>
-<p>It is the developer's responsibility to call <code><a href='https://rdrr.io/r/methods/NextMethod.html'>callNextMethod</a></code> to obtain interface elements for parent classes.</p>
+<p>It is the developer's responsibility to call <code>callNextMethod</code> to obtain interface elements for parent classes.</p>
     <h2 class="hasAnchor" id="hiding-interface-elements"><a class="anchor" href="#hiding-interface-elements"></a>Hiding interface elements</h2>
 
     
@@ -206,7 +204,7 @@ The required arguments are:</p><ul>
 <p>Methods for this generic are expected to return a logical scalar indicating whether the interface element corresponding to <code>field</code> should be hidden from the user.
 This is useful for hiding UI elements that cannot be changed or have no effect, especially in highly specialized subclasses where some concepts in the parent class may no longer be relevant.
 (The alternative would be to reimplement all of the parent's <code>.defineInterface</code> method just to omit a handful of UI elements!)</p>
-<p>It is the developer's responsibility to call <code><a href='https://rdrr.io/r/methods/NextMethod.html'>callNextMethod</a></code> to hide the same interface elements as parent classes.
+<p>It is the developer's responsibility to call <code>callNextMethod</code> to hide the same interface elements as parent classes.
 This is not strictly required if one wishes to expose previously hidden elements.</p>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
@@ -223,11 +221,11 @@ This is not strictly required if one wishes to expose previously hidden elements
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p></p>
+  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
@@ -235,8 +233,6 @@ This is not strictly required if one wishes to expose previously hidden elements
 
   
 
-
-  
 
   </body>
 </html>

@@ -45,8 +45,6 @@
 
 
 
-
-
 <!-- mathjax -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script>
@@ -58,15 +56,9 @@
 
 
 
-  
-
-  
-
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    
-
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -87,6 +79,12 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fas fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -156,7 +154,7 @@
     <p>Retrieve the results of a previous <code><a href='output-generics.html'>.generateOutput</a></code> call on this panel.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>.retrieveOutput</span><span class='op'>(</span><span class='va'>panel_name</span>, <span class='va'>se</span>, <span class='va'>pObjects</span>, <span class='va'>rObjects</span><span class='op'>)</span></code></pre></div>
+    <pre class="usage"><span class='fu'>.retrieveOutput</span><span class='op'>(</span><span class='va'>panel_name</span>, <span class='va'>se</span>, <span class='va'>pObjects</span>, <span class='va'>rObjects</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -186,7 +184,7 @@ Several fields in <code>pObjects</code> are also modified as a side-effect.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>This function should be used in the rendering expression in <code><a href='output-generics.html'>.renderOutput</a></code>.
-It takes care of a number of house-keeping tasks required to satisfy <code><a href='output-generics.html'>.renderOutput</a></code>'s requirements, e.g., responding to <code><a href='requestUpdate.html'>.requestUpdate</a></code> modifictions to <code>rObjects</code>, setting the <code>commands</code> and <code>contents</code> and <code>varname</code> in <code>pObjects</code>.</p>
+It takes care of a number of house-keeping tasks required to satisfy <code><a href='output-generics.html'>.renderOutput</a></code>'s requirements, e.g., responding to <code><a href='.requestUpdate.html'>.requestUpdate</a></code> modifictions to <code>rObjects</code>, setting the <code>commands</code> and <code>contents</code> and <code>varname</code> in <code>pObjects</code>.</p>
 <p>This function will attempt to retrieve the cached output of <code><a href='output-generics.html'>.generateOutput</a></code> if it was used elsewhere in the app.
 After retrieval, the cached value is wiped to ensure that it does not go stale.
 If no cached value is found, <code><a href='output-generics.html'>.generateOutput</a></code> is called directly.</p>
@@ -209,11 +207,11 @@ If no cached value is found, <code><a href='output-generics.html'>.generateOutpu
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p></p>
+  <p>Developed by Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun.</p>
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
@@ -221,8 +219,6 @@ If no cached value is found, <code><a href='output-generics.html'>.generateOutpu
 
   
 
-
-  
 
   </body>
 </html>

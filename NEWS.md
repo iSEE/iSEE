@@ -1,6 +1,7 @@
 # iSEE 2.5.2
 
 * Bugfix for conversion of categorical columns with too many levels to numeric ones
+* Bugfix for heatmap crashing if columns were ordered by a selection that was not shown
 
 # iSEE 2.5.1
 

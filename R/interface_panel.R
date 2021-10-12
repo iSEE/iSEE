@@ -195,7 +195,7 @@ height_limits <- c(400L, 1000L)
 .insert_help_icon <- function(in_box, id) { 
     title_elements <- in_box$children[[1]]$children[[1]]$children
     title_elements <- c(title_elements,     
-        list(div(id=id, style="display: inline-block; float: right;", icon("question-circle fa-1g")))
+        list(div(id=id, style="display: inline-block; float: right;", icon("question-circle")))
     )
     in_box$children[[1]]$children[[1]]$children <- title_elements
     in_box

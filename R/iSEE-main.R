@@ -164,7 +164,7 @@ iSEE <- function(se,
                    appTitle),
             titleWidth = 750,
             dropdownMenu(type = "tasks",
-                icon = icon("object-group fa-1g"),
+                icon = icon("object-group"),
                 badgeStatus = NULL,
                 headerText = "Organization",
                 notificationItem(
@@ -174,21 +174,21 @@ iSEE <- function(se,
                         icon = icon("object-ungroup"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon = icon(""), status = "primary"
+                    icon = icon("", verify_fa = FALSE), status = "primary"
                 ),
                 notificationItem(
                     text=actionButton(
                         .generalLinkGraph,
                         label="Examine panel chart",
-                        icon=icon("chain"),
+                        icon=icon("link"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon(""), status="primary"
+                    icon=icon("", verify_fa = FALSE), status="primary"
                 )
             ),
 
             dropdownMenu(type = "tasks",
-                icon = icon("download fa-1g"),
+                icon = icon("download"),
                 badgeStatus = NULL,
                 headerText = "Export",
 
@@ -199,7 +199,7 @@ iSEE <- function(se,
                         icon=icon("download"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon(""), status="primary"
+                    icon=icon("", verify_fa = FALSE), status="primary"
                 ),
                 notificationItem(
                     text=actionButton(
@@ -208,7 +208,7 @@ iSEE <- function(se,
                         icon=icon("magic"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon(""), status="primary"
+                    icon=icon("", verify_fa = FALSE), status="primary"
                 ),
                 notificationItem(
                     text=actionButton(
@@ -217,22 +217,22 @@ iSEE <- function(se,
                         icon=icon("clipboard"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon(""), status="primary"
+                    icon=icon("", verify_fa = FALSE), status="primary"
                 )
             ), # end of dropdownMenu
 
             dropdownMenu(type="tasks",
-                icon=icon("question-circle fa-1g"),
+                icon=icon("question-circle"),
                 badgeStatus=NULL,
                 headerText="Documentation",
                 notificationItem(
                     text=actionButton(
                         .generalTourSteps,
                         "Click me for a quick tour",
-                        icon("hand-o-right"),
+                        icon("hand-point-right"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon(""), # tricking it to not have additional icon
+                    icon=icon("", verify_fa = FALSE), # tricking it to not have additional icon
                     status="primary"
                 ),
                 notificationItem(
@@ -248,12 +248,12 @@ iSEE <- function(se,
                             )
                         )
                     ),
-                    icon=icon(""), status="primary"
+                    icon=icon("", verify_fa = FALSE), status="primary"
                 )
             ),
 
             dropdownMenu(type="tasks",
-                icon=icon("info fa-1g"),
+                icon=icon("info"),
                 badgeStatus=NULL,
                 headerText="Additional information",
                 notificationItem(
@@ -263,7 +263,7 @@ iSEE <- function(se,
                         icon=icon("window-maximize"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon(""), status="primary"
+                    icon=icon("", verify_fa = FALSE), status="primary"
                 ),
                 notificationItem(
                     text=actionButton(
@@ -272,7 +272,7 @@ iSEE <- function(se,
                         icon=icon("heart"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon(""), status="primary"
+                    icon=icon("", verify_fa = FALSE), status="primary"
                 )
             ) # end of dropdownMenu
         ), # end of dashboardHeader

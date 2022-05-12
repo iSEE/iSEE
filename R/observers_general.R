@@ -5,6 +5,8 @@
 .generalPanelSettings <- "iSEE_INTERNAL_panel_settings"
 .generalTourSteps <- "iSEE_INTERNAL_tour_steps"
 .generalVignetteOpen <- "iSEE_INTERNAL_open_vignette"
+.generalDraftTour <- "iSEE_INTERNAL_draft_tour"
+.generalDraftEditor <- "iSEE_INTERNAL_editor_tour"
 
 .generalSessionInfo <- "iSEE_INTERNAL_session_info"
 .generalCitationInfo <- "iSEE_INTERNAL_citation_info"

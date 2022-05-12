@@ -480,6 +480,8 @@ iSEE <- function(se,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_tour_observer(se, memory=pObjects$memory, tour=tour, input=input, session=session)
+    
+    .create_tour_drafter(se, input=input, pObjects=pObjects)
 
     .create_organization_observers(se=se, input=input, output=output, session=session,
         pObjects=pObjects, rObjects=rObjects)

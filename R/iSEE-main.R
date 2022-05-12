@@ -249,6 +249,16 @@ iSEE <- function(se,
                         )
                     ),
                     icon=icon("", verify_fa = FALSE), status="primary"
+                ),
+                notificationItem(
+                  text=actionButton(
+                    .generalDraftTour,
+                    "Draft out a tour",
+                    icon("lightbulb"),
+                    style=.actionbutton_biocstyle
+                  ),
+                  icon=icon("", verify_fa = FALSE), # tricking it to not have additional icon
+                  status="primary"
                 )
             ),
 

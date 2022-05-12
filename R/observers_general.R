@@ -160,31 +160,43 @@
 }
 
 
+#' Draft a tour backbone
+#' 
+#' Create a draft of a tour based on the current panel set
+#'
+#' @inheritParams .initialize_server
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' 
+#' @return An observer is created in the server function in which this is called.
+#' A \code{NULL} value is invisibly returned.
+#' 
+#' @author Federico Marini
+#' @rdname INTERNAL_create_tour_drafter
 .create_tour_drafter <- function(se, input, pObjects) {
-  observeEvent(input[[.generalDraftTour]], {
-    tour_draft <- c("element;intro")
+    observeEvent(input[[.generalDraftTour]], {
+        tour_draft <- c("element;intro")
 
-    enc_names <- .define_memory_panel_choices(pObjects$memory)
-    tour_draft <- c(tour_draft, paste0("#", enc_names, ";TOUR_TEXT"))
+        enc_names <- .define_memory_panel_choices(pObjects$memory)
+        tour_draft <- c(tour_draft, paste0("#", enc_names, ";TOUR_TEXT"))
     
-    showModal(modalDialog(
-      title="This is a draft of the tour based on the current panel selection", size="m",
-      fade=TRUE, footer=NULL, easyClose=TRUE,
-      p("You can click anywhere in the code editor and select all the code using",
-        "a keyboard shortcut that depends on your operating system (e.g. Ctrl/Cmd + A",
-        "followed by Ctrl/Cmd + C).",
-        "This will copy the selected parts to the clipboard.",
-        "While this is not guaranteed to be a fully fledged tour, it will give you",
-        "some pointers to work on the panels that you are likely to be mentioning",
-        "in the tour for your instance of iSEE.",
-        "The content of this editor should ideally reside in a text file that is read",
-        "in and stored into a data.frame."),
-      aceEditor(.generalDraftEditor, mode="r", theme="solarized_light", autoComplete="live",
-                value=tour_draft, height="300px")
-    ))
-  }, ignoreInit=TRUE)
-  
-  invisible(NULL)
+        showModal(modalDialog(
+            title="This is a draft of the tour based on the current panel selection", size="m",
+            fade=TRUE, footer=NULL, easyClose=TRUE,
+            p("You can click anywhere in the code editor and select all the code using",
+              "a keyboard shortcut that depends on your operating system (e.g. Ctrl/Cmd + A",
+              "followed by Ctrl/Cmd + C).",
+              "This will copy the selected parts to the clipboard.",
+              "While this is not guaranteed to be a fully fledged tour, it will give you",
+              "some pointers to work on the panels that you are likely to be mentioning",
+              "in the tour for your instance of iSEE.",
+              "The content of this editor should ideally reside in a text file that is read",
+              "in and stored into a data.frame."),
+            aceEditor(.generalDraftEditor, mode="r", theme="solarized_light", autoComplete="live",
+                      value=tour_draft, height="300px")
+        ))
+    }, ignoreInit=TRUE)
+    
+    invisible(NULL)
 }
 
 #' Create the export observers

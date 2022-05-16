@@ -283,6 +283,15 @@ iSEE <- function(se,
                         style=.actionbutton_biocstyle
                     ),
                     icon=icon("", verify_fa = FALSE), status="primary"
+                ),
+                notificationItem(
+                    text=actionButton(
+                        .generalMetadataInfo,
+                        label="About this dataset",
+                        icon=icon("info"),
+                        style=.actionbutton_biocstyle
+                    ),
+                    icon=icon("", verify_fa = FALSE), status="primary"
                 )
             ) # end of dropdownMenu
         ), # end of dashboardHeader

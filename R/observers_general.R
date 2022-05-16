@@ -10,6 +10,7 @@
 
 .generalSessionInfo <- "iSEE_INTERNAL_session_info"
 .generalCitationInfo <- "iSEE_INTERNAL_citation_info"
+.generalMetadataInfo <- "iSEE_INTERNAL_metadata_info"
 
 .generalCodeTracker <- "iSEE_INTERNAL_tracked_code"
 .generalMemoryTracker <- "iSEE_INTERNAL_tracked_memory"
@@ -44,6 +45,7 @@
 #' @importFrom shiny observeEvent showModal modalDialog HTML br tagList showNotification p pre downloadButton
 #' checkboxInput actionButton
 #' @importFrom shinyAce aceEditor
+#' @importFrom listviewer jsoneditOutput
 #'
 #' @rdname INTERNAL_general_observers
 .create_general_observers <- function(se, runLocal, se_name, ecm_name, mod_commands, saveState, input, session, pObjects, rObjects) {
@@ -106,7 +108,29 @@
             )
         ))
     }, ignoreInit=TRUE)
-
+    
+    observeEvent(input[[.generalMetadataInfo]], {
+        
+        showModal(modalDialog(
+            title="About this dataset", size="m", fade=TRUE,
+            footer=NULL, easyClose=TRUE,
+            
+            HTML("You can see here a schematic representation of the metadata included",
+                 "in the provided <code>SummarizedExperiment</code> object. <br><br>"),
+            # paste(names(mdd), collapse = "\n"),
+            tagList(
+                listviewer::jsoneditOutput("mdd"),
+                actionButton("export_to_json", 
+                             label = "Export metadata to json")
+            )
+            
+        ))
+    }, ignoreInit=TRUE)
+    
+    # observeEvent(input[[export_to_json]], {
+    #   
+    # }, ignoreInit=TRUE)
+    
     observeEvent(input[[.generalLinkGraph]], {
         showModal(modalDialog(
             title="Graph of inter-panel links", size="l",

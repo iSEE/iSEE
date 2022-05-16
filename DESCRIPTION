@@ -39,6 +39,7 @@ Imports:
     grDevices,
     viridisLite,
     shinyWidgets,
+    listviewer,
     ComplexHeatmap,
     circlize,
     grid

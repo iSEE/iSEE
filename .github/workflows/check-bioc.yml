@@ -81,6 +81,13 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      ## fatal: unsafe repository ('/__w/iSEE/iSEE' is owned by someone else)
+      ## see: https://github.com/actions/checkout/issues/760
+      - name: Fix Git permission
+        run: |
+          cd $HOME
+          git config --global --add safe.directory /__w/iSEE/iSEE
+
       ## R is already included in the Bioconductor docker images
       - name: Setup R from r-lib
         if: runner.os != 'Linux'

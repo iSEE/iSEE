@@ -3,7 +3,7 @@
 # _iSEE_ - The interactive SummarizedExperiment Explorer 
 
 <!-- badges: start -->
-[![R build status](https://github.com/iSEE/iSEEu/workflows/build_check_deploy/badge.svg)](https://github.com/iSEE/iSEEu/actions)
+[![R build status](https://github.com/iSEE/iSEE/workflows/build_check_deploy/badge.svg)](https://github.com/iSEE/iSEE/actions)
 [![Codecov.io coverage status](https://codecov.io/github/iSEE/iSEE/coverage.svg?branch=master)](https://codecov.io/github/iSEE/iSEE)
 [![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/iseedevelopers/isee)](https://hub.docker.com/r/iseedevelopers/isee)
 <!-- badges: end -->

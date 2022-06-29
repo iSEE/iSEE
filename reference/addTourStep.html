@@ -85,26 +85,37 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">.addTourStep</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">text</span>, is_selectize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.addTourStep</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">text</span>, is_selectize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>A <a href="Panel-class.html">Panel</a> object to be toured.</p></dd>
+
+
 <dt>field</dt>
 <dd><p>String containing the name of the slot of <code>x</code>, itself corresponding to an interface element to highlight.</p></dd>
+
+
 <dt>text</dt>
 <dd><p>String containing the text to show in the corresponding step of the tour.</p></dd>
+
+
 <dt>is_selectize</dt>
 <dd><p>Logical scalar indicating whether <code>field</code> corresponds to a selectize element.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Character vector of length two.
+    
+
+<p>Character vector of length two.
 The first entry contains the <code>element</code> tag to identify the interface element to highlight,
-while the second entry contains the <code>text</code>.
-Alternatively, <code>NULL</code> may be returned if <code><a href="interface-generics.html">.hideInterface</a>(x, field)</code> indicates that the corresponding interface element has been hidden.</p>
+while the second entry contains the <code>text</code>.</p>
+
+
+<p>Alternatively, <code>NULL</code> may be returned if <code><a href="interface-generics.html">.hideInterface</a>(x, field)</code> indicates that the corresponding interface element has been hidden.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -123,7 +134,7 @@ Alternatively, <code>NULL</code> may be returned if <code><a href="interface-gen
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

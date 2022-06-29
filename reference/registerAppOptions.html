@@ -87,30 +87,43 @@ These are options that do not correspond to any <a href="Panel-class.html">Panel
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">registerAppOptions</span><span class="op">(</span><span class="va">se</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">getAppOption</span><span class="op">(</span><span class="va">name</span>, <span class="va">se</span>, default <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>
-
-<span class="fu">getAllAppOptions</span><span class="op">(</span><span class="va">se</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">registerAppOptions</span><span class="op">(</span><span class="va">se</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">getAppOption</span><span class="op">(</span><span class="va">name</span>, <span class="va">se</span>, default <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">getAllAppOptions</span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>se</dt>
 <dd><p>The SummarizedExperiment object to be supplied to <code><a href="iSEE.html">iSEE</a></code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Named options to register.
 Alternatively a single named list containing the options to register.</p></dd>
+
+
 <dt>name</dt>
 <dd><p>String containing the name of the option to retrieve.</p></dd>
+
+
 <dt>default</dt>
 <dd><p>Value to return if <code>name</code> is not present in the available options.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>registerAppOptions</code> will return <code>se</code>, modified with the application-level options.
-<code>getAppOption</code> will return the value of the specified option, or <code>default</code> if that option is not available.
-<code>getAllAppOptions</code> will return a named list of all registered options.</p>
+    
+
+<p><code>registerAppOptions</code> will return <code>se</code>, modified with the application-level options.</p>
+
+
+<p><code>getAppOption</code> will return the value of the specified option, or <code>default</code> if that option is not available.</p>
+
+
+<p><code>getAllAppOptions</code> will return a named list of all registered options.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -156,36 +169,36 @@ Conversely, calling <code>.deactivateAppOptionRegistry</code> will reset the glo
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu">SummarizedExperiment</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu">registerAppOptions</span><span class="op">(</span><span class="va">se</span>, factor.maxlevels<span class="op">=</span><span class="fl">10</span>, color.maxlevels<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">getAppOption</span><span class="op">(</span><span class="st">"factor.maxlevels"</span>, <span class="va">se</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu">SummarizedExperiment</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu">registerAppOptions</span><span class="op">(</span><span class="va">se</span>, factor.maxlevels<span class="op">=</span><span class="fl">10</span>, color.maxlevels<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">getAppOption</span><span class="op">(</span><span class="st">"factor.maxlevels"</span>, <span class="va">se</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
-<span class="r-in"><span class="fu">getAppOption</span><span class="op">(</span><span class="st">"color.maxlevels"</span>, <span class="va">se</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">getAppOption</span><span class="op">(</span><span class="st">"color.maxlevels"</span>, <span class="va">se</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
-<span class="r-in"><span class="fu">getAppOption</span><span class="op">(</span><span class="st">"random.other.thing"</span>, <span class="va">se</span>, default<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">getAppOption</span><span class="op">(</span><span class="st">"random.other.thing"</span>, <span class="va">se</span>, default<span class="op">=</span><span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">getAllAppOptions</span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">getAllAppOptions</span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $factor.maxlevels</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $color.maxlevels</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># For developers: you don't actually need to pass 'se' to the getters</span></span>
-<span class="r-in"><span class="co"># if they are being called inside Panel methods.</span></span>
-<span class="r-in"><span class="fu">.activateAppOptionRegistry</span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">getAppOption</span><span class="op">(</span><span class="st">"factor.maxlevels"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># For developers: you don't actually need to pass 'se' to the getters</span></span></span>
+<span class="r-in"><span><span class="co"># if they are being called inside Panel methods.</span></span></span>
+<span class="r-in"><span><span class="fu">.activateAppOptionRegistry</span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">getAppOption</span><span class="op">(</span><span class="st">"factor.maxlevels"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
-<span class="r-in"><span class="fu">getAppOption</span><span class="op">(</span><span class="st">"color.maxlevels"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">getAppOption</span><span class="op">(</span><span class="st">"color.maxlevels"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10</span>
-<span class="r-in"><span class="fu">.deactivateAppOptionRegistry</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Wiping out all options.</span></span>
-<span class="r-in"><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu">registerAppOptions</span><span class="op">(</span><span class="va">se</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">getAllAppOptions</span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">.deactivateAppOptionRegistry</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Wiping out all options.</span></span></span>
+<span class="r-in"><span><span class="va">se</span> <span class="op">&lt;-</span> <span class="fu">registerAppOptions</span><span class="op">(</span><span class="va">se</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">getAllAppOptions</span><span class="op">(</span><span class="va">se</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> list()</span>
 </code></pre></div>
     </div>
@@ -201,7 +214,7 @@ Conversely, calling <code>.deactivateAppOptionRegistry</code> will reset the glo
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

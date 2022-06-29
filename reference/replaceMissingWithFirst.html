@@ -87,21 +87,28 @@ This is usually called in <code><a href="setup-generics.html">.refineParameters<
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">.replaceMissingWithFirst</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">choices</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.replaceMissingWithFirst</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">choices</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>An instance of a <a href="Panel-class.html">Panel</a> class.</p></dd>
+
+
 <dt>field</dt>
 <dd><p>String containing the name of the relevant slot.</p></dd>
+
+
 <dt>choices</dt>
 <dd><p>Character vector of permissible values for this slot.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>x</code> where the slot named <code>field</code> is replaced with <code>choices[1]</code> if its value was previously <code>NA</code> or did not exist in <code>choices</code>.</p>
+    
+
+<p><code>x</code> where the slot named <code>field</code> is replaced with <code>choices[1]</code> if its value was previously <code>NA</code> or did not exist in <code>choices</code>.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -120,7 +127,7 @@ This is usually called in <code><a href="setup-generics.html">.refineParameters<
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

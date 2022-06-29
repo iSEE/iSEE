@@ -85,27 +85,38 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">.extractAssaySubmatrix</span><span class="op">(</span><span class="va">x</span>, <span class="va">se</span>, <span class="va">envir</span>, <span class="va">use_custom_row_slot</span>, <span class="va">custom_row_text_slot</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.extractAssaySubmatrix</span><span class="op">(</span><span class="va">x</span>, <span class="va">se</span>, <span class="va">envir</span>, <span class="va">use_custom_row_slot</span>, <span class="va">custom_row_text_slot</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>A <a href="Panel-class.html">Panel</a> instance that uses the row selection modal.</p></dd>
+
+
 <dt>se</dt>
 <dd><p>The current SummarizedExperiment object.</p></dd>
+
+
 <dt>envir</dt>
 <dd><p>The evaluation environment.
 This assumes that <code><a href="processMultiSelections.html">.processMultiSelections</a></code> has already been run.</p></dd>
+
+
 <dt>use_custom_row_slot</dt>
 <dd><p>String specifying the name of the slot indicating whether to use custom rows.</p></dd>
+
+
 <dt>custom_row_text_slot</dt>
 <dd><p>String specifying the name of the slot holding the custom row names.
 This is expected to be of the same format as described in <code>?<a href="createCustomDimnamesModalObservers.html">.createCustomDimnamesModalObservers</a></code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A character vector of commands to set up the assay submatrix.
+    
+
+<p>A character vector of commands to set up the assay submatrix.
 The submatrix itself is generated within <code>envir</code> as the <code>plot.data</code> variable.</p>
     </div>
     <div id="details">
@@ -132,7 +143,7 @@ All columns are returned in the submatrix unless a multiple column selection is 
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

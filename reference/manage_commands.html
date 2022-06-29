@@ -85,19 +85,24 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">.textEval</span><span class="op">(</span><span class="va">cmd</span>, <span class="va">envir</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.textEval</span><span class="op">(</span><span class="va">cmd</span>, <span class="va">envir</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>cmd</dt>
 <dd><p>A character vector containing commands to be executed.</p></dd>
+
+
 <dt>envir</dt>
 <dd><p>An environment in which to execute the commands.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>.textEval</code> returns the output of <code>eval(parse(text=cmd), envir)</code>,
+    
+
+<p><code>.textEval</code> returns the output of <code>eval(parse(text=cmd), envir)</code>,
 unless <code>cmd</code> is empty in which case it returns <code>NULL</code>.</p>
     </div>
     <div id="author">
@@ -107,9 +112,9 @@ unless <code>cmd</code> is empty in which case it returns <code>NULL</code>.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">myenv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">myenv</span><span class="op">$</span><span class="va">x</span> <span class="op">&lt;-</span> <span class="st">"Hello world!"</span></span>
-<span class="r-in"><span class="fu">.textEval</span><span class="op">(</span><span class="st">"print(x)"</span>, <span class="va">myenv</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">myenv</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">new.env</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">myenv</span><span class="op">$</span><span class="va">x</span> <span class="op">&lt;-</span> <span class="st">"Hello world!"</span></span></span>
+<span class="r-in"><span><span class="fu">.textEval</span><span class="op">(</span><span class="st">"print(x)"</span>, <span class="va">myenv</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Hello world!"</span>
 </code></pre></div>
     </div>
@@ -125,7 +130,7 @@ unless <code>cmd</code> is empty in which case it returns <code>NULL</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

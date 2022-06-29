@@ -85,45 +85,64 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">ExperimentColorMap</span><span class="op">(</span>
-  assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,
-  all_discrete <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>assays <span class="op">=</span> <span class="cn">NULL</span>, colData <span class="op">=</span> <span class="cn">NULL</span>, rowData <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,
-  all_continuous <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>assays <span class="op">=</span> <span class="cn">NULL</span>, colData <span class="op">=</span> <span class="cn">NULL</span>, rowData <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,
-  global_discrete <span class="op">=</span> <span class="cn">NULL</span>,
-  global_continuous <span class="op">=</span> <span class="cn">NULL</span>,
-  <span class="va">...</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">ExperimentColorMap</span><span class="op">(</span></span>
+<span>  assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  colData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  rowData <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  all_discrete <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>assays <span class="op">=</span> <span class="cn">NULL</span>, colData <span class="op">=</span> <span class="cn">NULL</span>, rowData <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,</span>
+<span>  all_continuous <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>assays <span class="op">=</span> <span class="cn">NULL</span>, colData <span class="op">=</span> <span class="cn">NULL</span>, rowData <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span>,</span>
+<span>  global_discrete <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  global_continuous <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>assays</dt>
 <dd><p>List of colormaps for <code>assays</code>.</p></dd>
+
+
 <dt>colData</dt>
 <dd><p>List of colormaps for <code>colData</code>.</p></dd>
+
+
 <dt>rowData</dt>
 <dd><p>List of colormaps for <code>rowData</code>.</p></dd>
+
+
 <dt>all_discrete</dt>
 <dd><p>Colormaps applied to all undefined
 categorical <code>assays</code>, <code>colData</code>, and <code>rowData</code>, respectively.</p></dd>
+
+
 <dt>all_continuous</dt>
 <dd><p>Colormaps applied to all undefined
 continuous <code>assays</code>, <code>colData</code>, and <code>rowData</code>, respectively.</p></dd>
+
+
 <dt>global_discrete</dt>
 <dd><p>Colormap applied to all undefined
 categorical covariates.</p></dd>
+
+
 <dt>global_continuous</dt>
 <dd><p>Colormap applied to all undefined
 continuous covariates.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>additional arguments passed on to the <code>ExperimentColorMap</code>
 constructor</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <code>ExperimentColorMap</code></p>
+    
+
+<p>An object of class <code>ExperimentColorMap</code></p>
+
+
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -140,18 +159,20 @@ to produce constant colormaps.</p>
 <p>The default categorical colormap emulates the default ggplot2 categorical color palette
 (Credit: <a href="https://stackoverflow.com/questions/8197559/emulate-ggplot2-default-color-palette" class="external-link">https://stackoverflow.com/questions/8197559/emulate-ggplot2-default-color-palette</a>).
 This palette returns a set of colors sampled in steps of equal size that correspond to approximately equal perceptual changes in color:</p>
-<div class="sourceCode"><pre><code><span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span>
-    <span class="va">hues</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">375</span>, length<span class="op">=</span><span class="op">(</span><span class="va">n</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
-    <span class="fu"><a href="https://rdrr.io/r/grDevices/hcl.html" class="external-link">hcl</a></span><span class="op">(</span>h<span class="op">=</span><span class="va">hues</span>, l<span class="op">=</span><span class="fl">65</span>, c<span class="op">=</span><span class="fl">100</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">]</span>
-<span class="op">}</span></code></pre></div>
+<div class="sourceCode"><pre><code><span></span>
+<span><span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">hues</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">15</span>, <span class="fl">375</span>, length<span class="op">=</span><span class="op">(</span><span class="va">n</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/grDevices/hcl.html" class="external-link">hcl</a></span><span class="op">(</span>h<span class="op">=</span><span class="va">hues</span>, l<span class="op">=</span><span class="fl">65</span>, c<span class="op">=</span><span class="fl">100</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 
 <p>To change the palette for all categorical variables,
 users must supply a colormap that returns a similar value;
 namely, an unnamed character vector of length <code>n</code>.
 For instance, using the base R palette <code>rainbow.colors</code></p>
-<div class="sourceCode"><pre><code><span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<div class="sourceCode"><pre><code><span></span>
+<span><span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/grDevices/palettes.html" class="external-link">rainbow</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 
     </div>
     <div id="accessors">
@@ -206,39 +227,39 @@ and <code>i</code> is a character or numeric index.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="co"># Example colormaps ----</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">count_colors</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">{</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="st">"brown"</span>, <span class="st">"red"</span>, <span class="st">"orange"</span>, <span class="st">"yellow"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"><span class="va">fpkm_colors</span> <span class="op">&lt;-</span> <span class="fu">viridis</span><span class="fu">::</span><span class="va"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">inferno</a></span></span>
-<span class="r-in"><span class="va">tpm_colors</span> <span class="op">&lt;-</span> <span class="fu">viridis</span><span class="fu">::</span><span class="va"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">plasma</a></span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">qc_color_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">{</span></span>
-<span class="r-in">  <span class="va">qc_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"forestgreen"</span>, <span class="st">"firebrick1"</span><span class="op">)</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">qc_colors</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y"</span>, <span class="st">"N"</span><span class="op">)</span></span>
-<span class="r-in">  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">qc_colors</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Constructor ----</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">ecm</span> <span class="op">&lt;-</span> <span class="fu">ExperimentColorMap</span><span class="op">(</span></span>
-<span class="r-in">    assays<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">        counts<span class="op">=</span><span class="va">count_colors</span>,</span>
-<span class="r-in">        tophat_counts<span class="op">=</span><span class="va">count_colors</span>,</span>
-<span class="r-in">        cufflinks_fpkm<span class="op">=</span><span class="va">fpkm_colors</span>,</span>
-<span class="r-in">        rsem_tpm<span class="op">=</span><span class="va">tpm_colors</span></span>
-<span class="r-in">    <span class="op">)</span>,</span>
-<span class="r-in">    colData<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">        passes_qc_checks_s<span class="op">=</span><span class="va">qc_color_fun</span></span>
-<span class="r-in">    <span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Accessors ----</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># assay colormaps</span></span>
-<span class="r-in"><span class="fu">assayColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"logcounts"</span><span class="op">)</span> <span class="co"># [undefined --&gt; default]</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example colormaps ----</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">count_colors</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"black"</span>, <span class="st">"brown"</span>, <span class="st">"red"</span>, <span class="st">"orange"</span>, <span class="st">"yellow"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="va">fpkm_colors</span> <span class="op">&lt;-</span> <span class="fu">viridis</span><span class="fu">::</span><span class="va"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">inferno</a></span></span></span>
+<span class="r-in"><span><span class="va">tpm_colors</span> <span class="op">&lt;-</span> <span class="fu">viridis</span><span class="fu">::</span><span class="va"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">plasma</a></span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">qc_color_fun</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="va">qc_colors</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"forestgreen"</span>, <span class="st">"firebrick1"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">qc_colors</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Y"</span>, <span class="st">"N"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">qc_colors</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Constructor ----</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">ecm</span> <span class="op">&lt;-</span> <span class="fu">ExperimentColorMap</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    assays<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>        counts<span class="op">=</span><span class="va">count_colors</span>,</span></span>
+<span class="r-in"><span>        tophat_counts<span class="op">=</span><span class="va">count_colors</span>,</span></span>
+<span class="r-in"><span>        cufflinks_fpkm<span class="op">=</span><span class="va">fpkm_colors</span>,</span></span>
+<span class="r-in"><span>        rsem_tpm<span class="op">=</span><span class="va">tpm_colors</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span>,</span></span>
+<span class="r-in"><span>    colData<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>        passes_qc_checks_s<span class="op">=</span><span class="va">qc_color_fun</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Accessors ----</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># assay colormaps</span></span></span>
+<span class="r-in"><span><span class="fu">assayColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"logcounts"</span><span class="op">)</span> <span class="co"># [undefined --&gt; default]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (n, alpha = 1, begin = 0, end = 1, direction = 1, option = "D") </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     if (begin &lt; 0 | begin &gt; 1 | end &lt; 0 | end &gt; 1) {</span>
@@ -270,37 +291,37 @@ and <code>i</code> is a character or numeric index.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     cols &lt;- fn_cols(seq(begin, end, length.out = n))/255</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     grDevices::rgb(cols[, 1], cols[, 2], cols[, 3], alpha = alpha)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55fd14d85268&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55e9144fb1e0&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:viridisLite&gt;</span>
-<span class="r-in"><span class="fu">assayColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"counts"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">assayColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"counts"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function(n){</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   c("black", "brown", "red", "orange", "yellow")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55fd14b55218&gt;</span>
-<span class="r-in"><span class="fu">assayColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"cufflinks_fpkm"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55e9142c20f8&gt;</span>
+<span class="r-in"><span><span class="fu">assayColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"cufflinks_fpkm"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (n, alpha = 1, begin = 0, end = 1, direction = 1) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     viridis(n, alpha, begin, end, direction, option = "inferno")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55fd14bd6ad0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55e9143457d8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:viridisLite&gt;</span>
-<span class="r-in"><span class="fu">assay</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"cufflinks_fpkm"</span><span class="op">)</span> <span class="co"># alias</span></span>
+<span class="r-in"><span><span class="fu">assay</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"cufflinks_fpkm"</span><span class="op">)</span> <span class="co"># alias</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (n, alpha = 1, begin = 0, end = 1, direction = 1) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     viridis(n, alpha, begin, end, direction, option = "inferno")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55fd14bd6ad0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55e9143457d8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:viridisLite&gt;</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># colData colormaps</span></span>
-<span class="r-in"><span class="fu">colDataColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"passes_qc_checks_s"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># colData colormaps</span></span></span>
+<span class="r-in"><span><span class="fu">colDataColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"passes_qc_checks_s"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function(n){</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   qc_colors &lt;- c("forestgreen", "firebrick1")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   names(qc_colors) &lt;- c("Y", "N")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   return(qc_colors)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55fd14b55218&gt;</span>
-<span class="r-in"><span class="fu">colDataColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"undefined"</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55e9142c20f8&gt;</span>
+<span class="r-in"><span><span class="fu">colDataColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"undefined"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (n, alpha = 1, begin = 0, end = 1, direction = 1, option = "D") </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     if (begin &lt; 0 | begin &gt; 1 | end &lt; 0 | end &gt; 1) {</span>
@@ -332,11 +353,11 @@ and <code>i</code> is a character or numeric index.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     cols &lt;- fn_cols(seq(begin, end, length.out = n))/255</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     grDevices::rgb(cols[, 1], cols[, 2], cols[, 3], alpha = alpha)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55fd14d85268&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55e9144fb1e0&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:viridisLite&gt;</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># rowData colormaps</span></span>
-<span class="r-in"><span class="fu">rowDataColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"undefined"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># rowData colormaps</span></span></span>
+<span class="r-in"><span><span class="fu">rowDataColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"undefined"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (n, alpha = 1, begin = 0, end = 1, direction = 1, option = "D") </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     if (begin &lt; 0 | begin &gt; 1 | end &lt; 0 | end &gt; 1) {</span>
@@ -368,29 +389,29 @@ and <code>i</code> is a character or numeric index.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     cols &lt;- fn_cols(seq(begin, end, length.out = n))/255</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     grDevices::rgb(cols[, 1], cols[, 2], cols[, 3], alpha = alpha)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55fd14d85268&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55e9144fb1e0&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:viridisLite&gt;</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># generic accessors</span></span>
-<span class="r-in"><span class="fu">assays</span><span class="op">(</span><span class="va">ecm</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># generic accessors</span></span></span>
+<span class="r-in"><span><span class="fu">assays</span><span class="op">(</span><span class="va">ecm</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $counts</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function(n){</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   c("black", "brown", "red", "orange", "yellow")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55fd14b55218&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55e9142c20f8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tophat_counts</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function(n){</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   c("black", "brown", "red", "orange", "yellow")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55fd14b55218&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55e9142c20f8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $cufflinks_fpkm</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (n, alpha = 1, begin = 0, end = 1, direction = 1) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     viridis(n, alpha, begin, end, direction, option = "inferno")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55fd14bd6ad0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55e9143457d8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:viridisLite&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $rsem_tpm</span>
@@ -398,26 +419,26 @@ and <code>i</code> is a character or numeric index.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     viridis(n, alpha, begin, end, direction, option = "plasma")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55fd14c2ccd8&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55e91439bc58&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:viridisLite&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span class="fu">assayNames</span><span class="op">(</span><span class="va">ecm</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">assayNames</span><span class="op">(</span><span class="va">ecm</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "counts"         "tophat_counts"  "cufflinks_fpkm" "rsem_tpm"      </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Setters ----</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">assayColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"counts"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"white"</span>, <span class="st">"red"</span><span class="op">)</span><span class="op">}</span></span>
-<span class="r-in"><span class="fu">assay</span><span class="op">(</span><span class="va">ecm</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"white"</span>, <span class="st">"red"</span><span class="op">)</span><span class="op">}</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">colDataColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"passes_qc_checks_s"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">{</span><span class="cn">NULL</span><span class="op">}</span></span>
-<span class="r-in"><span class="fu">rowDataColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"undefined"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">{</span><span class="cn">NULL</span><span class="op">}</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Categorical colormaps ----</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Override all discrete colormaps using the base rainbow palette</span></span>
-<span class="r-in"><span class="va">ecm</span> <span class="op">&lt;-</span> <span class="fu">ExperimentColorMap</span><span class="op">(</span>global_discrete <span class="op">=</span> <span class="va">rainbow</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">10</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, col<span class="op">=</span><span class="fu">assayColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"undefined"</span>, discrete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, pch<span class="op">=</span><span class="fl">20</span>, cex<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Setters ----</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">assayColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"counts"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"white"</span>, <span class="st">"red"</span><span class="op">)</span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="fu">assay</span><span class="op">(</span><span class="va">ecm</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">{</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"blue"</span>, <span class="st">"white"</span>, <span class="st">"red"</span><span class="op">)</span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">colDataColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"passes_qc_checks_s"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">{</span><span class="cn">NULL</span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="fu">rowDataColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"undefined"</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">{</span><span class="cn">NULL</span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Categorical colormaps ----</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Override all discrete colormaps using the base rainbow palette</span></span></span>
+<span class="r-in"><span><span class="va">ecm</span> <span class="op">&lt;-</span> <span class="fu">ExperimentColorMap</span><span class="op">(</span>global_discrete <span class="op">=</span> <span class="va">rainbow</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">10</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="va">n</span>, col<span class="op">=</span><span class="fu">assayColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"undefined"</span>, discrete <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">(</span><span class="va">n</span><span class="op">)</span>, pch<span class="op">=</span><span class="fl">20</span>, cex<span class="op">=</span><span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="ExperimentColorMap-class-1.png" alt="" width="700" height="433"></span>
 </code></pre></div>
     </div>
@@ -433,7 +454,7 @@ and <code>i</code> is a character or numeric index.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

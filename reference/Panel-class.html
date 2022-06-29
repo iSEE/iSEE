@@ -115,7 +115,7 @@ Defaults to <code>FALSE</code>.</p></li>
 Each element of this list corresponds to one saved selection in the current panel.
 Defaults to an empty list.</p></li>
 <li><p><code>VersionInfo</code>, a named list of <a href="https://rdrr.io/r/base/numeric_version.html" class="external-link">package_version</a> objects specifying the versions of packages used to create a given Panel instance.
-This information is used to inform <code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/updateObject.html" class="external-link">updateObject</a></code> of any updates that need to be applied.
+This information is used to inform <code><a href="https://rdrr.io/pkg/BiocGenerics/man/updateObject.html" class="external-link">updateObject</a></code> of any updates that need to be applied.
 By default, it is filled with a single <code>"iSEE"</code> entry containing the current version of <span class="pkg">iSEE</span>.</p></li>
 </ul></div>
     <div id="getting-and-setting-slots">
@@ -133,7 +133,7 @@ and <code>i</code> is a string containing the slot name:</p><ul><li><p><code>x[[
 
 <p>In the following code snippets, <code>x</code> is an instance of a <a href="ColumnDotPlot-class.html">ColumnDotPlot</a> class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
-<p>For setting up data values:</p><ul><li><p><code><a href="setup-generics.html">.refineParameters</a>(x, se)</code> calls <code><a href="https://rdrr.io/pkg/SingleCellExperiment/man/updateObject.html" class="external-link">updateObject</a>(x)</code>.
+<p>For setting up data values:</p><ul><li><p><code><a href="setup-generics.html">.refineParameters</a>(x, se)</code> calls <code><a href="https://rdrr.io/pkg/BiocGenerics/man/updateObject.html" class="external-link">updateObject</a>(x)</code>.
 If <code>x</code> is up to date, this operation is a no-op and returns <code>x</code> without modification.</p></li>
 <li><p><code><a href="setup-generics.html">.cacheCommonInfo</a>(x, se)</code> is a no-op, returning <code>se</code> without modification.</p></li>
 </ul><p>For defining the interface:</p><ul><li><p><code><a href="interface-generics.html">.defineInterface</a>(x, se, select_info)</code> will return a list of collapsible boxes for changing data and selection parameters.
@@ -190,7 +190,7 @@ i.e., it will return an empty character vector and create no files.</p></li>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

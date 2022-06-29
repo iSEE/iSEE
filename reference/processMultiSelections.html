@@ -87,24 +87,33 @@ creating variables in the evaluation environment with the identity of the select
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">.processMultiSelections</span><span class="op">(</span><span class="va">x</span>, <span class="va">all_memory</span>, <span class="va">all_contents</span>, <span class="va">envir</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.processMultiSelections</span><span class="op">(</span><span class="va">x</span>, <span class="va">all_memory</span>, <span class="va">all_contents</span>, <span class="va">envir</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>An instance of a <a href="Panel-class.html">Panel</a> class.</p></dd>
+
+
 <dt>all_memory</dt>
 <dd><p>A named list of <a href="Panel-class.html">Panel</a> instances containing parameters for the current app state.</p></dd>
+
+
 <dt>all_contents</dt>
 <dd><p>A named list of arbitrary contents with one entry per panel.</p></dd>
+
+
 <dt>envir</dt>
 <dd><p>The evaluation environment.
 This is assumed to already contain <code>se</code>, the SummarizedExperiment object for the current dataset.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>envir</code> is populated with one, none or both of <code>col_selected</code> and/or <code>row_selected</code>,
+    
+
+<p><code>envir</code> is populated with one, none or both of <code>col_selected</code> and/or <code>row_selected</code>,
 depending on whether <code>x</code> is receiving a multiple selection on the rows and/or columns.
 The return value is the  character vector of commands required to construct those variables.</p>
     </div>
@@ -136,7 +145,7 @@ to determine whether any row or column selection was performed (and adjust the b
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

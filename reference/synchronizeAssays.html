@@ -95,19 +95,24 @@ in the ExperimentColorMap are assigned the appropriate default colormap.</p>
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">synchronizeAssays</span><span class="op">(</span><span class="va">ecm</span>, <span class="va">se</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">synchronizeAssays</span><span class="op">(</span><span class="va">ecm</span>, <span class="va">se</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>ecm</dt>
 <dd><p>An <a href="ExperimentColorMap-class.html">ExperimentColorMap</a>.</p></dd>
+
+
 <dt>se</dt>
 <dd><p>A <a href="https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html" class="external-link">SingleCellExperiment</a>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <a href="ExperimentColorMap-class.html">ExperimentColorMap</a> with colormaps in the
+    
+
+<p>An <a href="ExperimentColorMap-class.html">ExperimentColorMap</a> with colormaps in the
 <code>assay</code> slot synchronized to match the position of the corresponding
 assay in the SingleCellExperiment.</p>
     </div>
@@ -146,31 +151,31 @@ in the ExperimentColorMap are assigned the appropriate default colormap.</p></li
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="co"># Example ExperimentColorMap ----</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">count_colors</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">{</span></span>
-<span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"black"</span>,<span class="st">"brown"</span>,<span class="st">"red"</span>,<span class="st">"orange"</span>,<span class="st">"yellow"</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">}</span></span>
-<span class="r-in"><span class="va">fpkm_colors</span> <span class="op">&lt;-</span> <span class="fu">viridis</span><span class="fu">::</span><span class="va"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">inferno</a></span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">ecm</span> <span class="op">&lt;-</span> <span class="fu"><a href="ExperimentColorMap-class.html">ExperimentColorMap</a></span><span class="op">(</span></span>
-<span class="r-in">    assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span class="r-in">        counts <span class="op">=</span> <span class="va">count_colors</span>,</span>
-<span class="r-in">        tophat_counts <span class="op">=</span> <span class="va">count_colors</span>,</span>
-<span class="r-in">        cufflinks_fpkm <span class="op">=</span> <span class="va">fpkm_colors</span>,</span>
-<span class="r-in">        rsem_counts <span class="op">=</span> <span class="va">count_colors</span>,</span>
-<span class="r-in">        orphan <span class="op">=</span> <span class="va">count_colors</span>,</span>
-<span class="r-in">        orphan2 <span class="op">=</span> <span class="va">count_colors</span>,</span>
-<span class="r-in">        <span class="va">count_colors</span>,</span>
-<span class="r-in">        <span class="va">fpkm_colors</span></span>
-<span class="r-in">    <span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Example SingleCellExperiment ----</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">scRNAseq</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html" class="external-link">ReprocessedAllenData</a></span><span class="op">(</span>assays<span class="op">=</span><span class="st">"tophat_counts"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example ExperimentColorMap ----</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">count_colors</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n</span><span class="op">)</span><span class="op">{</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"black"</span>,<span class="st">"brown"</span>,<span class="st">"red"</span>,<span class="st">"orange"</span>,<span class="st">"yellow"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="va">fpkm_colors</span> <span class="op">&lt;-</span> <span class="fu">viridis</span><span class="fu">::</span><span class="va"><a href="https://sjmgarnier.github.io/viridisLite/reference/viridis.html" class="external-link">inferno</a></span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">ecm</span> <span class="op">&lt;-</span> <span class="fu"><a href="ExperimentColorMap-class.html">ExperimentColorMap</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    assays <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>        counts <span class="op">=</span> <span class="va">count_colors</span>,</span></span>
+<span class="r-in"><span>        tophat_counts <span class="op">=</span> <span class="va">count_colors</span>,</span></span>
+<span class="r-in"><span>        cufflinks_fpkm <span class="op">=</span> <span class="va">fpkm_colors</span>,</span></span>
+<span class="r-in"><span>        rsem_counts <span class="op">=</span> <span class="va">count_colors</span>,</span></span>
+<span class="r-in"><span>        orphan <span class="op">=</span> <span class="va">count_colors</span>,</span></span>
+<span class="r-in"><span>        orphan2 <span class="op">=</span> <span class="va">count_colors</span>,</span></span>
+<span class="r-in"><span>        <span class="va">count_colors</span>,</span></span>
+<span class="r-in"><span>        <span class="va">fpkm_colors</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example SingleCellExperiment ----</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">scRNAseq</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html" class="external-link">ReprocessedAllenData</a></span><span class="op">(</span>assays<span class="op">=</span><span class="st">"tophat_counts"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> snapshotDate(): 2022-04-26</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
@@ -178,16 +183,16 @@ in the ExperimentColorMap are assigned the appropriate default colormap.</p></li
 <span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
-<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/" class="external-link">scater</a></span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/logNormCounts.html" class="external-link">logNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, exprs_values<span class="op">=</span><span class="st">"tophat_counts"</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/runTSNE.html" class="external-link">runTSNE</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Example ----</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">ecm_sync</span> <span class="op">&lt;-</span> <span class="fu">synchronizeAssays</span><span class="op">(</span><span class="va">ecm</span>, <span class="va">sce</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/" class="external-link">scater</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/logNormCounts.html" class="external-link">logNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, exprs_values<span class="op">=</span><span class="st">"tophat_counts"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/BiocSingular/man/runPCA.html" class="external-link">runPCA</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scater/man/runTSNE.html" class="external-link">runTSNE</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Example ----</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">ecm_sync</span> <span class="op">&lt;-</span> <span class="fu">synchronizeAssays</span><span class="op">(</span><span class="va">ecm</span>, <span class="va">sce</span><span class="op">)</span></span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Unused assays dropped from ecm: unnamed [7,8], named [counts,cufflinks_fpkm,rsem_counts,orphan,orphan2]</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -202,7 +207,7 @@ in the ExperimentColorMap are assigned the appropriate default colormap.</p></li
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

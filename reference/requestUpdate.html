@@ -85,39 +85,56 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">.requestUpdate</span><span class="op">(</span><span class="va">panel_name</span>, <span class="va">rObjects</span><span class="op">)</span>
-
-<span class="fu">.requestCleanUpdate</span><span class="op">(</span><span class="va">panel_name</span>, <span class="va">pObjects</span>, <span class="va">rObjects</span><span class="op">)</span>
-
-<span class="fu">.requestActiveSelectionUpdate</span><span class="op">(</span>
-  <span class="va">panel_name</span>,
-  <span class="va">session</span>,
-  <span class="va">pObjects</span>,
-  <span class="va">rObjects</span>,
-  update_output <span class="op">=</span> <span class="cn">TRUE</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.requestUpdate</span><span class="op">(</span><span class="va">panel_name</span>, <span class="va">rObjects</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.requestCleanUpdate</span><span class="op">(</span><span class="va">panel_name</span>, <span class="va">pObjects</span>, <span class="va">rObjects</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.requestActiveSelectionUpdate</span><span class="op">(</span></span>
+<span>  <span class="va">panel_name</span>,</span>
+<span>  <span class="va">session</span>,</span>
+<span>  <span class="va">pObjects</span>,</span>
+<span>  <span class="va">rObjects</span>,</span>
+<span>  update_output <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>panel_name</dt>
 <dd><p>String containing the panel name.</p></dd>
+
+
 <dt>rObjects</dt>
 <dd><p>A reactive list of values generated in the <code><a href="iSEE.html">iSEE</a></code> app.</p></dd>
+
+
 <dt>pObjects</dt>
 <dd><p>An environment containing global parameters generated in the <code><a href="iSEE.html">iSEE</a></code> app.</p></dd>
+
+
 <dt>session</dt>
 <dd><p>The Shiny session object from the server function.</p></dd>
+
+
 <dt>update_output</dt>
 <dd><p>A logical scalar indicating whether to call <code>.requestUpdate</code> as well.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>.requestUpdate</code> will modify <code>rObjects</code> to request a re-rendering of the specified panel.
-<code>.requestCleanUpdate</code> will also remove all active/saved selections in the chosen panel.
-<code>.requestActiveSelectionUpdate</code> will modify <code>rObjects</code> to indicate that the active multiple selection for <code>panel_name</code> has changed.
-If <code>update_output=TRUE</code>, it will also request a re-rendering of the panel.
-All functions will invisibly return <code>NULL</code>.</p>
+    
+
+<p><code>.requestUpdate</code> will modify <code>rObjects</code> to request a re-rendering of the specified panel.</p>
+
+
+<p><code>.requestCleanUpdate</code> will also remove all active/saved selections in the chosen panel.</p>
+
+
+<p><code>.requestActiveSelectionUpdate</code> will modify <code>rObjects</code> to indicate that the active multiple selection for <code>panel_name</code> has changed.
+If <code>update_output=TRUE</code>, it will also request a re-rendering of the panel.</p>
+
+
+<p>All functions will invisibly return <code>NULL</code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -148,7 +165,7 @@ e.g., if the coordinates change in a <a href="DotPlot-class.html">DotPlot</a>, e
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

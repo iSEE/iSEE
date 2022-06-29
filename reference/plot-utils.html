@@ -85,7 +85,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">.addFacets</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.addFacets</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -93,10 +93,13 @@
     <dl><dt>x</dt>
 <dd><p>A single-row DataFrame that contains all the
 input settings for the current panel.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A string containing a command to define the row and column faceting
+    
+
+<p>A string containing a command to define the row and column faceting
 covariates.</p>
     </div>
     <div id="author">
@@ -106,10 +109,10 @@ covariates.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span><span class="op">(</span></span>
-<span class="r-in">    FacetRowBy <span class="op">=</span> <span class="st">"Column data"</span>, FacetRowByColData<span class="op">=</span><span class="st">"Covariate_1"</span>, </span>
-<span class="r-in">    FacetColumnBy <span class="op">=</span> <span class="st">"Column data"</span>, FacetColumnByColData<span class="op">=</span><span class="st">"Covariate_2"</span><span class="op">)</span> </span>
-<span class="r-in"><span class="fu">.addFacets</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    FacetRowBy <span class="op">=</span> <span class="st">"Column data"</span>, FacetRowByColData<span class="op">=</span><span class="st">"Covariate_1"</span>, </span></span>
+<span class="r-in"><span>    FacetColumnBy <span class="op">=</span> <span class="st">"Column data"</span>, FacetColumnByColData<span class="op">=</span><span class="st">"Covariate_2"</span><span class="op">)</span> </span></span>
+<span class="r-in"><span><span class="fu">.addFacets</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "facet_grid(FacetRow ~ FacetColumn)"</span>
 </code></pre></div>
     </div>
@@ -125,7 +128,7 @@ covariates.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

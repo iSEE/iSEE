@@ -85,27 +85,36 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">.conditionalOnRadio</span><span class="op">(</span><span class="va">id</span>, <span class="va">choice</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">.conditionalOnCheckSolo</span><span class="op">(</span><span class="va">id</span>, on_select <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span>
-
-<span class="fu">.conditionalOnCheckGroup</span><span class="op">(</span><span class="va">id</span>, <span class="va">choice</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.conditionalOnRadio</span><span class="op">(</span><span class="va">id</span>, <span class="va">choice</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.conditionalOnCheckSolo</span><span class="op">(</span><span class="va">id</span>, on_select <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.conditionalOnCheckGroup</span><span class="op">(</span><span class="va">id</span>, <span class="va">choice</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>id</dt>
 <dd><p>String containing the ID of the UI element controlling the relevant choice.</p></dd>
+
+
 <dt>choice</dt>
 <dd><p>String containing the choice for the radio button or checkbox group on which to show the conditional element(s).</p></dd>
+
+
 <dt>...</dt>
 <dd><p>UI elements to show conditionally.</p></dd>
+
+
 <dt>on_select</dt>
 <dd><p>Logical scalar specifying whether the conditional element should be shown upon selection in a check box, or upon de-selection (if <code>FALSE</code>).</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A HTML object containing interface elements in <code>...</code> that only appear when the relevant condition is satisfied.</p>
+    
+
+<p>A HTML object containing interface elements in <code>...</code> that only appear when the relevant condition is satisfied.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -135,7 +144,7 @@ This means that we avoid cluttering the UI with options that are not immediately
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

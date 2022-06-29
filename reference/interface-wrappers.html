@@ -89,39 +89,52 @@ Also responds to requests to hide a particular element via <code><a href="interf
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">.selectInput.iSEE</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">label</span>, <span class="va">...</span>, help <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu">.selectizeInput.iSEE</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">label</span>, <span class="va">...</span>, help <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu">.checkboxInput.iSEE</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">label</span>, <span class="va">...</span>, help <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu">.checkboxGroupInput.iSEE</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">label</span>, <span class="va">...</span>, help <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu">.sliderInput.iSEE</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">label</span>, <span class="va">...</span>, help <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu">.numericInput.iSEE</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">label</span>, <span class="va">...</span>, help <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="fu">.radioButtons.iSEE</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">label</span>, <span class="va">...</span>, help <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.selectInput.iSEE</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">label</span>, <span class="va">...</span>, help <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.selectizeInput.iSEE</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">label</span>, <span class="va">...</span>, help <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.checkboxInput.iSEE</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">label</span>, <span class="va">...</span>, help <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.checkboxGroupInput.iSEE</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">label</span>, <span class="va">...</span>, help <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.sliderInput.iSEE</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">label</span>, <span class="va">...</span>, help <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.numericInput.iSEE</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">label</span>, <span class="va">...</span>, help <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.radioButtons.iSEE</span><span class="op">(</span><span class="va">x</span>, <span class="va">field</span>, <span class="va">label</span>, <span class="va">...</span>, help <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>A <a href="Panel-class.html">Panel</a> object for which to construct an interface element.</p></dd>
+
+
 <dt>field</dt>
 <dd><p>String containing the name of the parameter controlled by the interface element.</p></dd>
+
+
 <dt>label</dt>
 <dd><p>String specifying the label to be shown.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Further arguments to be passed to the corresponding <span class="pkg">shiny</span> function.</p></dd>
+
+
 <dt>help</dt>
 <dd><p>Logical scalar indicating whether a help icon should be added to the label.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The output of <code>FUN(id, ..)</code> is returned where <code>FUN</code> is set the corresponding <span class="pkg">shiny</span> function, e.g., <code><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">selectInput</a></code> for <code>.selectInput.iSEE</code>.
-<code>id</code> is defined by concatenating <code><a href="getEncodedName.html">.getEncodedName</a>(x)</code> and <code>field</code> (separated by an underscore).
-If <code>.hideInterface(x, field)</code> is <code>TRUE</code>, the output is wrapped inside a <code>hidden</code> call.</p>
+    
+
+<p>The output of <code>FUN(id, ..)</code> is returned where <code>FUN</code> is set the corresponding <span class="pkg">shiny</span> function, e.g., <code><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">selectInput</a></code> for <code>.selectInput.iSEE</code>.
+<code>id</code> is defined by concatenating <code><a href="getEncodedName.html">.getEncodedName</a>(x)</code> and <code>field</code> (separated by an underscore).</p>
+
+
+<p>If <code>.hideInterface(x, field)</code> is <code>TRUE</code>, the output is wrapped inside a <code>hidden</code> call.</p>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -140,7 +153,7 @@ If <code>.hideInterface(x, field)</code> is <code>TRUE</code>, the output is wra
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

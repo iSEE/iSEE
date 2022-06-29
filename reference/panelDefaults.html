@@ -87,9 +87,9 @@ This allows users to easily change the defaults for multiple panels simultaneous
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">panelDefaults</span><span class="op">(</span><span class="va">...</span><span class="op">)</span>
-
-<span class="fu">getPanelDefault</span><span class="op">(</span><span class="va">name</span>, error <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">panelDefaults</span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">getPanelDefault</span><span class="op">(</span><span class="va">name</span>, error <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -97,18 +97,27 @@ This allows users to easily change the defaults for multiple panels simultaneous
     <dl><dt>...</dt>
 <dd><p>Named options to set.
 Alternatively a single named list containing the options to set.</p></dd>
+
+
 <dt>name</dt>
 <dd><p>String containing the name of the option to retrieve.
 Alternatively <code>NULL</code>, in which case the current values of all options are returned as a named list.</p></dd>
+
+
 <dt>error</dt>
 <dd><p>Logical scalar indicating whether an error should be raised if <code>name</code> cannot be found.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>panelDefaults</code> will return a named list of the values of all options. 
+    
+
+<p><code>panelDefaults</code> will return a named list of the values of all options. 
 If <code>...</code> is non-empty, <code>panelDefaults</code> will modify the global options that are used during the constructors for the relevant <a href="Panel-class.html">Panel</a> classes.
-(Note that the return value still contains the values <em>before</em> the modification is applied.)
-<code>getPanelDefault</code> will return the current value of the requested option.
+(Note that the return value still contains the values <em>before</em> the modification is applied.)</p>
+
+
+<p><code>getPanelDefault</code> will return the current value of the requested option.
 If <code>error=TRUE</code> and <code>name</code> is not present, an error is raised; otherwise <code>NULL</code> is returned.</p>
     </div>
     <div id="details">
@@ -158,26 +167,26 @@ If this is not the case, consider using <code><a href="registerAppOptions.html">
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">old</span> <span class="op">&lt;-</span> <span class="fu">panelDefaults</span><span class="op">(</span>Assay<span class="op">=</span><span class="st">"WHEE"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">getPanelDefault</span><span class="op">(</span><span class="st">"Assay"</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">old</span> <span class="op">&lt;-</span> <span class="fu">panelDefaults</span><span class="op">(</span>Assay<span class="op">=</span><span class="st">"WHEE"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">getPanelDefault</span><span class="op">(</span><span class="st">"Assay"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "WHEE"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">old</span> <span class="op">&lt;-</span> <span class="fu">panelDefaults</span><span class="op">(</span>Assay<span class="op">=</span><span class="st">"FOO"</span>, PointSize<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">getPanelDefault</span><span class="op">(</span><span class="st">"Assay"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">old</span> <span class="op">&lt;-</span> <span class="fu">panelDefaults</span><span class="op">(</span>Assay<span class="op">=</span><span class="st">"FOO"</span>, PointSize<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">getPanelDefault</span><span class="op">(</span><span class="st">"Assay"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "FOO"</span>
-<span class="r-in"><span class="fu">getPanelDefault</span><span class="op">(</span><span class="st">"PointSize"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">getPanelDefault</span><span class="op">(</span><span class="st">"PointSize"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># We can also list out all options:</span></span>
-<span class="r-in"><span class="fu">panelDefaults</span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># Restoring the previous defaults.</span></span>
-<span class="r-in"><span class="fu">panelDefaults</span><span class="op">(</span><span class="va">old</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">getPanelDefault</span><span class="op">(</span><span class="st">"Assay"</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># We can also list out all options:</span></span></span>
+<span class="r-in"><span><span class="fu">panelDefaults</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Restoring the previous defaults.</span></span></span>
+<span class="r-in"><span><span class="fu">panelDefaults</span><span class="op">(</span><span class="va">old</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">getPanelDefault</span><span class="op">(</span><span class="st">"Assay"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "WHEE"</span>
-<span class="r-in"><span class="fu">getPanelDefault</span><span class="op">(</span><span class="st">"PointSize"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">getPanelDefault</span><span class="op">(</span><span class="st">"PointSize"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -192,7 +201,7 @@ If this is not the case, consider using <code><a href="registerAppOptions.html">
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

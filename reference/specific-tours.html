@@ -89,31 +89,44 @@ so that developers can easily put the UI documentation next to the element defin
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">.addSpecificTour</span><span class="op">(</span><span class="va">cls</span>, <span class="va">field</span>, <span class="va">fun</span>, force <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="fu">.getSpecificTours</span><span class="op">(</span><span class="va">cls</span><span class="op">)</span>
-
-<span class="fu">.clearSpecificTours</span><span class="op">(</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.addSpecificTour</span><span class="op">(</span><span class="va">cls</span>, <span class="va">field</span>, <span class="va">fun</span>, force <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.getSpecificTours</span><span class="op">(</span><span class="va">cls</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.clearSpecificTours</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>cls</dt>
 <dd><p>String containing the name of the <a href="Panel-class.html">Panel</a> class containing the relevant UI element.</p></dd>
+
+
 <dt>field</dt>
 <dd><p>String containing the slot of the <code>cls</code> class that is controlled by the UI element.</p></dd>
+
+
 <dt>fun</dt>
 <dd><p>Function that accepts a string containing the encoded Panel name,
 and returns a data.frame compatible with <span class="pkg">rintrojs</span>, i.e., with a <code>element</code> and <code>intro</code> column.</p></dd>
+
+
 <dt>force</dt>
 <dd><p>Logical scalar indicating whether <code>fun</code> should forcibly overwrite an existing function in the tour cache for <code>cls</code> and <code>field</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p><code>.addSpecificTour</code> registers the provided function in the tour cache for the provided <code>cls</code> and <code>field</code>.
-A <code>NULL</code> is invisibly returned.
-<code>.getSpecificTours</code> returns a list of registered tour-generating functions for the specified <code>cls</code>.
-<code>.clearSpecificTours</code> removes all functions in the tour cache.</p>
+    
+
+<p><code>.addSpecificTour</code> registers the provided function in the tour cache for the provided <code>cls</code> and <code>field</code>.
+A <code>NULL</code> is invisibly returned.</p>
+
+
+<p><code>.getSpecificTours</code> returns a list of registered tour-generating functions for the specified <code>cls</code>.</p>
+
+
+<p><code>.clearSpecificTours</code> removes all functions in the tour cache.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -142,7 +155,7 @@ However, users can force a replacement with <code>force=TRUE</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

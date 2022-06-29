@@ -87,44 +87,63 @@ These observers register input changes in the app's memory and request an update
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">.createCustomDimnamesModalObservers</span><span class="op">(</span>
-  <span class="va">plot_name</span>,
-  <span class="va">slot_name</span>,
-  <span class="va">button_name</span>,
-  <span class="va">se</span>,
-  <span class="va">input</span>,
-  <span class="va">session</span>,
-  <span class="va">pObjects</span>,
-  <span class="va">rObjects</span>,
-  <span class="va">source_type</span>
-<span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.createCustomDimnamesModalObservers</span><span class="op">(</span></span>
+<span>  <span class="va">plot_name</span>,</span>
+<span>  <span class="va">slot_name</span>,</span>
+<span>  <span class="va">button_name</span>,</span>
+<span>  <span class="va">se</span>,</span>
+<span>  <span class="va">input</span>,</span>
+<span>  <span class="va">session</span>,</span>
+<span>  <span class="va">pObjects</span>,</span>
+<span>  <span class="va">rObjects</span>,</span>
+<span>  <span class="va">source_type</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>plot_name</dt>
 <dd><p>String containing the name of the current panel.</p></dd>
+
+
 <dt>slot_name</dt>
 <dd><p>String specifying the slot of containing the names of the custom features.
 This will be modified by user interactions with the modal.</p></dd>
+
+
 <dt>button_name</dt>
 <dd><p>String containing the name of the button in the panel UI that launches the modal.</p></dd>
+
+
 <dt>se</dt>
 <dd><p>A SummarizedExperiment object after running <code><a href="setup-generics.html">.cacheCommonInfo</a></code>.</p></dd>
+
+
 <dt>input</dt>
 <dd><p>The Shiny input object from the server function.</p></dd>
+
+
 <dt>session</dt>
 <dd><p>The Shiny session object from the server function.</p></dd>
+
+
 <dt>pObjects</dt>
 <dd><p>An environment containing global parameters generated in the <code><a href="iSEE.html">iSEE</a></code> app.</p></dd>
+
+
 <dt>rObjects</dt>
 <dd><p>A reactive list of values generated in the <code><a href="iSEE.html">iSEE</a></code> app.</p></dd>
+
+
 <dt>source_type</dt>
 <dd><p>String specifying the type of the panel that is source of the selection, either <code>"row"</code> or <code>"column"</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Observers are set up to launch the modal and monitor its UI elements.
+    
+
+<p>Observers are set up to launch the modal and monitor its UI elements.
 A <code>NULL</code> is invisibly returned.</p>
     </div>
     <div id="details">
@@ -154,7 +173,7 @@ Any leading and trailing whitespace is also ignored during interpretation.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

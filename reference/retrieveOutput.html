@@ -85,23 +85,32 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">.retrieveOutput</span><span class="op">(</span><span class="va">panel_name</span>, <span class="va">se</span>, <span class="va">pObjects</span>, <span class="va">rObjects</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.retrieveOutput</span><span class="op">(</span><span class="va">panel_name</span>, <span class="va">se</span>, <span class="va">pObjects</span>, <span class="va">rObjects</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>panel_name</dt>
 <dd><p>String containing the panel name.</p></dd>
+
+
 <dt>se</dt>
 <dd><p>A SummarizedExperiment object containing the current dataset.</p></dd>
+
+
 <dt>pObjects</dt>
 <dd><p>An environment containing global parameters generated in the <code><a href="iSEE.html">iSEE</a></code> app.</p></dd>
+
+
 <dt>rObjects</dt>
 <dd><p>A reactive list of values generated in the <code><a href="iSEE.html">iSEE</a></code> app.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The output of running <code><a href="output-generics.html">.generateOutput</a></code> for the current panel.
+    
+
+<p>The output of running <code><a href="output-generics.html">.generateOutput</a></code> for the current panel.
 Several fields in <code>pObjects</code> are also modified as a side-effect.</p>
     </div>
     <div id="details">
@@ -134,7 +143,7 @@ If no cached value is found, <code><a href="output-generics.html">.generateOutpu
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

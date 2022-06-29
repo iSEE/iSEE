@@ -85,32 +85,47 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">.findAtomicFields</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-
-<span class="fu">.whichGroupable</span><span class="op">(</span><span class="va">x</span>, max_levels <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span>
-
-<span class="fu">.whichNumeric</span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-
-<span class="fu">.isAssayNumeric</span><span class="op">(</span><span class="va">se</span>, <span class="va">i</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.findAtomicFields</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.whichGroupable</span><span class="op">(</span><span class="va">x</span>, max_levels <span class="op">=</span> <span class="cn">Inf</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.whichNumeric</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">.isAssayNumeric</span><span class="op">(</span><span class="va">se</span>, <span class="va">i</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>A data.frame or DataFrame, most typically the <code>rowData</code> or <code>colData</code>.</p></dd>
+
+
 <dt>max_levels</dt>
 <dd><p>Integer scalar specifying the maximum number unique values for <code>x</code> to be categorical.</p></dd>
+
+
 <dt>se</dt>
 <dd><p>The SummarizedExperiment object.</p></dd>
+
+
 <dt>i</dt>
 <dd><p>An integer scalar or string specifying the assay of interest in <code>se</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>For <code>.findAtomicFields</code>, a character vector of names of columns in <code>x</code> containing atomic R types.
-For <code>.whichNumeric</code>, an integer vector containing the indices of the numeric columns.
-For <code>.whichGroupable</code>, an integer vector containing the indices of the categorical columns.
-For <code>.isAssayNumeric</code>, a logical scalar indicating whether the specified assay as numeric.</p>
+    
+
+<p>For <code>.findAtomicFields</code>, a character vector of names of columns in <code>x</code> containing atomic R types.</p>
+
+
+<p>For <code>.whichNumeric</code>, an integer vector containing the indices of the numeric columns.</p>
+
+
+<p>For <code>.whichGroupable</code>, an integer vector containing the indices of the categorical columns.</p>
+
+
+<p>For <code>.isAssayNumeric</code>, a logical scalar indicating whether the specified assay as numeric.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -124,21 +139,21 @@ Similarly, <code>.whichNumeric</code> and <code>.whichGroupable</code> can be us
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">DataFrame</span><span class="op">(</span></span>
-<span class="r-in">    A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>,</span>
-<span class="r-in">    B <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">letters</span>, <span class="fl">10</span><span class="op">)</span>,</span>
-<span class="r-in">    DataFrame <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu">DataFrame</span><span class="op">(</span></span>
-<span class="r-in">        C <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>,</span>
-<span class="r-in">        D <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">letters</span>, <span class="fl">10</span><span class="op">)</span></span>
-<span class="r-in">    <span class="op">)</span><span class="op">)</span></span>
-<span class="r-in"><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu">.findAtomicFields</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">DataFrame</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    A <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    B <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">letters</span>, <span class="fl">10</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    DataFrame <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/AsIs.html" class="external-link">I</a></span><span class="op">(</span><span class="fu">DataFrame</span><span class="op">(</span></span></span>
+<span class="r-in"><span>        C <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>        D <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">letters</span>, <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">.findAtomicFields</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "A" "B"</span>
-<span class="r-in"><span class="fu">.whichGroupable</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">.whichGroupable</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         B DataFrame </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         2         3 </span>
-<span class="r-in"><span class="fu">.whichNumeric</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">.whichNumeric</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> A </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 </span>
 </code></pre></div>
@@ -155,7 +170,7 @@ Similarly, <code>.whichNumeric</code> and <code>.whichGroupable</code> can be us
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
       </footer></div>

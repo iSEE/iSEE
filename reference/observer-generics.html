@@ -109,9 +109,8 @@ Each parent class should implement observers for its slots, so it is usually onl
     
 
 <p>Consider an observer for an interface element that modifies a slot of <code>x</code>.
-The code within this observer is expected to modify the “memory” of the app state in <code>pObjects</code>, via:</p><div class="sourceCode"><pre><code><span></span>
-<span><span class="va">new_value</span> <span class="op">&lt;-</span> <span class="va">input</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">PANEL</span>, <span class="st">"_"</span>, <span class="va">SLOT</span><span class="op">)</span><span class="op">]</span><span class="op">]</span></span>
-<span><span class="va">pObjects</span><span class="op">$</span><span class="va">memory</span><span class="op">[[</span><span class="va">PANEL</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="va">SLOT</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">new_value</span></span></code></pre></div>
+The code within this observer is expected to modify the “memory” of the app state in <code>pObjects</code>, via:</p><div class="sourceCode"><pre><code><span class="va">new_value</span> <span class="op">&lt;-</span> <span class="va">input</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">PANEL</span>, <span class="st">"_"</span>, <span class="va">SLOT</span><span class="op">)</span><span class="op">]</span><span class="op">]</span>
+<span class="va">pObjects</span><span class="op">$</span><span class="va">memory</span><span class="op">[[</span><span class="va">PANEL</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="va">SLOT</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">new_value</span></code></pre></div>
 
 <p>This enables <span class="pkg">iSEE</span> to keep a record of the current state of the application.
 In fact, any changes must go through <code>pObjects$memory</code> before they change the output in <code><a href="output-generics.html">.renderOutput</a></code>;
@@ -149,7 +148,7 @@ Observers responding to such changes should instead call <code><a href="requestU
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.9000.</p>
 </div>
 
       </footer></div>

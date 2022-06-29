@@ -1,6 +1,6 @@
 pandoc: 2.17.1.1
-pkgdown: 2.0.5
-pkgdown_sha: ~
+pkgdown: 2.0.5.9000
+pkgdown_sha: b4096aa376773d7dee98a267fd0b5a025975a3dc
 articles:
   basic: basic.html
   bigdata: bigdata.html
@@ -9,5 +9,5 @@ articles:
   ecm: ecm.html
   links: links.html
   voice: voice.html
-last_built: 2022-06-29T13:47Z
+last_built: 2022-06-29T17:45Z
 

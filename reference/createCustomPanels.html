@@ -89,21 +89,21 @@ This creates a new class with specialized methods for showing content based on a
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">createCustomTable</span><span class="op">(</span></span>
-<span>  <span class="va">FUN</span>,</span>
-<span>  restrict <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  className <span class="op">=</span> <span class="st">"CustomTable"</span>,</span>
-<span>  fullName <span class="op">=</span> <span class="st">"Custom table"</span>,</span>
-<span>  where <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-topenv.html" class="external-link">topenv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">createCustomPlot</span><span class="op">(</span></span>
-<span>  <span class="va">FUN</span>,</span>
-<span>  restrict <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  className <span class="op">=</span> <span class="st">"CustomPlot"</span>,</span>
-<span>  fullName <span class="op">=</span> <span class="st">"Custom plot"</span>,</span>
-<span>  where <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-topenv.html" class="external-link">topenv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">createCustomTable</span><span class="op">(</span>
+  <span class="va">FUN</span>,
+  restrict <span class="op">=</span> <span class="cn">NULL</span>,
+  className <span class="op">=</span> <span class="st">"CustomTable"</span>,
+  fullName <span class="op">=</span> <span class="st">"Custom table"</span>,
+  where <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-topenv.html" class="external-link">topenv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<span class="op">)</span>
+
+<span class="fu">createCustomPlot</span><span class="op">(</span>
+  <span class="va">FUN</span>,
+  restrict <span class="op">=</span> <span class="cn">NULL</span>,
+  className <span class="op">=</span> <span class="st">"CustomPlot"</span>,
+  fullName <span class="op">=</span> <span class="st">"Custom plot"</span>,
+  where <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-topenv.html" class="external-link">topenv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -168,36 +168,36 @@ serious <a href="Panel-class.html">Panel</a> extensions should be done explicitl
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/" class="external-link">scater</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">CUSTOM_DIMRED</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">se</span>, <span class="va">rows</span>, <span class="va">columns</span>, <span class="va">ntop</span><span class="op">=</span><span class="fl">500</span>, <span class="va">scale</span><span class="op">=</span><span class="cn">TRUE</span>,</span></span>
-<span class="r-in"><span>    <span class="va">mode</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PCA"</span>, <span class="st">"TSNE"</span>, <span class="st">"UMAP"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">{</span></span></span>
-<span class="r-in"><span>    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">columns</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>        <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>            <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>                <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, label<span class="op">=</span><span class="va">label</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">0</span>, y<span class="op">=</span><span class="fl">0</span>, label<span class="op">=</span><span class="st">"No column data selected."</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>                size<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></span>
-<span class="r-in"><span>            <span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>    <span class="va">mode</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">match.arg</a></span><span class="op">(</span><span class="va">mode</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="kw">if</span> <span class="op">(</span><span class="va">mode</span><span class="op">==</span><span class="st">"PCA"</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>        <span class="va">calcFUN</span> <span class="op">&lt;-</span> <span class="va">runPCA</span></span></span>
-<span class="r-in"><span>    <span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">mode</span><span class="op">==</span><span class="st">"TSNE"</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>        <span class="va">calcFUN</span> <span class="op">&lt;-</span> <span class="va">runTSNE</span></span></span>
-<span class="r-in"><span>    <span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">mode</span><span class="op">==</span><span class="st">"UMAP"</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>        <span class="va">calcFUN</span> <span class="op">&lt;-</span> <span class="va">runUMAP</span></span></span>
-<span class="r-in"><span>    <span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>    <span class="va">kept</span> <span class="op">&lt;-</span> <span class="va">se</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">columns</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span></span>
-<span class="r-in"><span>    <span class="va">kept</span> <span class="op">&lt;-</span> <span class="fu">calcFUN</span><span class="op">(</span><span class="va">kept</span>, ncomponents<span class="op">=</span><span class="fl">2</span>, ntop<span class="op">=</span><span class="va">ntop</span>,</span></span>
-<span class="r-in"><span>        scale<span class="op">=</span><span class="va">scale</span>, subset_row<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">rows</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotReducedDim.html" class="external-link">plotReducedDim</a></span><span class="op">(</span><span class="va">kept</span>, <span class="va">mode</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">GEN</span> <span class="op">&lt;-</span> <span class="fu">createCustomPlot</span><span class="op">(</span><span class="va">CUSTOM_DIMRED</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">GEN</span><span class="op">(</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/" class="external-link">scater</a></span><span class="op">)</span></span>
+<span class="r-in"><span class="va">CUSTOM_DIMRED</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">se</span>, <span class="va">rows</span>, <span class="va">columns</span>, <span class="va">ntop</span><span class="op">=</span><span class="fl">500</span>, <span class="va">scale</span><span class="op">=</span><span class="cn">TRUE</span>,</span>
+<span class="r-in">    <span class="va">mode</span><span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PCA"</span>, <span class="st">"TSNE"</span>, <span class="st">"UMAP"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="op">{</span></span>
+<span class="r-in">    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">columns</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in">        <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span></span>
+<span class="r-in">            <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_text.html" class="external-link">geom_text</a></span><span class="op">(</span></span>
+<span class="r-in">                <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, label<span class="op">=</span><span class="va">label</span><span class="op">)</span>,</span>
+<span class="r-in">                <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fl">0</span>, y<span class="op">=</span><span class="fl">0</span>, label<span class="op">=</span><span class="st">"No column data selected."</span><span class="op">)</span>,</span>
+<span class="r-in">                size<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span>
+<span class="r-in">            <span class="op">)</span></span>
+<span class="r-in">    <span class="op">}</span></span>
+<span class="r-in"></span>
+<span class="r-in">    <span class="va">mode</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/match.arg.html" class="external-link">match.arg</a></span><span class="op">(</span><span class="va">mode</span><span class="op">)</span></span>
+<span class="r-in">    <span class="kw">if</span> <span class="op">(</span><span class="va">mode</span><span class="op">==</span><span class="st">"PCA"</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in">        <span class="va">calcFUN</span> <span class="op">&lt;-</span> <span class="va">runPCA</span></span>
+<span class="r-in">    <span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">mode</span><span class="op">==</span><span class="st">"TSNE"</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in">        <span class="va">calcFUN</span> <span class="op">&lt;-</span> <span class="va">runTSNE</span></span>
+<span class="r-in">    <span class="op">}</span> <span class="kw">else</span> <span class="kw">if</span> <span class="op">(</span><span class="va">mode</span><span class="op">==</span><span class="st">"UMAP"</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in">        <span class="va">calcFUN</span> <span class="op">&lt;-</span> <span class="va">runUMAP</span></span>
+<span class="r-in">    <span class="op">}</span></span>
+<span class="r-in"></span>
+<span class="r-in">    <span class="va">kept</span> <span class="op">&lt;-</span> <span class="va">se</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">columns</span><span class="op">)</span><span class="op">)</span><span class="op">]</span></span>
+<span class="r-in">    <span class="va">kept</span> <span class="op">&lt;-</span> <span class="fu">calcFUN</span><span class="op">(</span><span class="va">kept</span>, ncomponents<span class="op">=</span><span class="fl">2</span>, ntop<span class="op">=</span><span class="va">ntop</span>,</span>
+<span class="r-in">        scale<span class="op">=</span><span class="va">scale</span>, subset_row<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">rows</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in">    <span class="fu"><a href="https://rdrr.io/pkg/scater/man/plotReducedDim.html" class="external-link">plotReducedDim</a></span><span class="op">(</span><span class="va">kept</span>, <span class="va">mode</span><span class="op">)</span></span>
+<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">GEN</span> <span class="op">&lt;-</span> <span class="fu">createCustomPlot</span><span class="op">(</span><span class="va">CUSTOM_DIMRED</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">GEN</span><span class="op">(</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Panel object of class CustomPlot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Get or set individual parameters with '[[' </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Available parameters:</span>
@@ -217,19 +217,19 @@ serious <a href="Panel-class.html">Panel</a> extensions should be done explicitl
 <span class="r-out co"><span class="r-pr">#&gt;</span>     mode: PCA</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ntop: 500</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     scale: TRUE</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>    <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">scRNAseq</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html" class="external-link">ReprocessedAllenData</a></span><span class="op">(</span><span class="st">"tophat_counts"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/" class="external-link">scater</a></span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/logNormCounts.html" class="external-link">logNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, exprs_values<span class="op">=</span><span class="st">"tophat_counts"</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>    <span class="fu"><a href="iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, initial<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>        <span class="fu"><a href="ColumnDataPlot-class.html">ColumnDataPlot</a></span><span class="op">(</span>PanelId<span class="op">=</span><span class="fl">1L</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>        <span class="fu">GEN</span><span class="op">(</span>ColumnSelectionSource<span class="op">=</span><span class="st">"ColumnDataPlot1"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in">    <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">scRNAseq</span><span class="op">)</span></span>
+<span class="r-in">    <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html" class="external-link">ReprocessedAllenData</a></span><span class="op">(</span><span class="st">"tophat_counts"</span><span class="op">)</span></span>
+<span class="r-in">    <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/" class="external-link">scater</a></span><span class="op">)</span></span>
+<span class="r-in">    <span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/logNormCounts.html" class="external-link">logNormCounts</a></span><span class="op">(</span><span class="va">sce</span>, exprs_values<span class="op">=</span><span class="st">"tophat_counts"</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in">    <span class="fu"><a href="iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, initial<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span class="r-in">        <span class="fu"><a href="ColumnDataPlot-class.html">ColumnDataPlot</a></span><span class="op">(</span>PanelId<span class="op">=</span><span class="fl">1L</span><span class="op">)</span>,</span>
+<span class="r-in">        <span class="fu">GEN</span><span class="op">(</span>ColumnSelectionSource<span class="op">=</span><span class="st">"ColumnDataPlot1"</span><span class="op">)</span></span>
+<span class="r-in">    <span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="op">}</span></span>
+<span class="r-in"></span>
 </code></pre></div>
     </div>
   </div>
@@ -244,7 +244,7 @@ serious <a href="Panel-class.html">Panel</a> extensions should be done explicitl
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.9000.</p>
 </div>
 
       </footer></div>

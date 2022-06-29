@@ -148,38 +148,38 @@ It will return the commands required to do so as well as a list of labels.</p></
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#################</span></span></span>
-<span class="r-in"><span><span class="co"># For end-users #</span></span></span>
-<span class="r-in"><span><span class="co">#################</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">ColumnDataPlot</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">x</span><span class="op">[[</span><span class="st">"XAxis"</span><span class="op">]</span><span class="op">]</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co">#################</span></span>
+<span class="r-in"><span class="co"># For end-users #</span></span>
+<span class="r-in"><span class="co">#################</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">ColumnDataPlot</span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">x</span><span class="op">[[</span><span class="st">"XAxis"</span><span class="op">]</span><span class="op">]</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "None"</span>
-<span class="r-in"><span><span class="va">x</span><span class="op">[[</span><span class="st">"XAxis"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Column data"</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">##################</span></span></span>
-<span class="r-in"><span><span class="co"># For developers #</span></span></span>
-<span class="r-in"><span><span class="co">##################</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/" class="external-link">scater</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span class="va">x</span><span class="op">[[</span><span class="st">"XAxis"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Column data"</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co">##################</span></span>
+<span class="r-in"><span class="co"># For developers #</span></span>
+<span class="r-in"><span class="co">##################</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://bioconductor.org/packages/scater/" class="external-link">scater</a></span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: scuttle</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: ggplot2</span>
-<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/mockSCE.html" class="external-link">mockSCE</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/logNormCounts.html" class="external-link">logNormCounts</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">old_cd</span> <span class="op">&lt;-</span> <span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Spits out a NULL and a warning if there is nothing to plot.</span></span></span>
-<span class="r-in"><span><span class="va">sce0</span> <span class="op">&lt;-</span> <span class="fu"><a href="setup-generics.html">.cacheCommonInfo</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">sce</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="setup-generics.html">.refineParameters</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">sce0</span><span class="op">)</span></span></span>
+<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/mockSCE.html" class="external-link">mockSCE</a></span><span class="op">(</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scuttle/man/logNormCounts.html" class="external-link">logNormCounts</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="va">old_cd</span> <span class="op">&lt;-</span> <span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># Spits out a NULL and a warning if there is nothing to plot.</span></span>
+<span class="r-in"><span class="va">sce0</span> <span class="op">&lt;-</span> <span class="fu"><a href="setup-generics.html">.cacheCommonInfo</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">sce</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="setup-generics.html">.refineParameters</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">sce0</span><span class="op">)</span></span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no valid y-axis 'colData' fields for 'ColumnDataPlot'</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Replaces the default with something sensible.</span></span></span>
-<span class="r-in"><span><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">old_cd</span></span></span>
-<span class="r-in"><span><span class="va">sce0</span> <span class="op">&lt;-</span> <span class="fu"><a href="setup-generics.html">.cacheCommonInfo</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">sce</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="setup-generics.html">.refineParameters</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">sce0</span><span class="op">)</span></span></span>
+<span class="r-in"></span>
+<span class="r-in"><span class="co"># Replaces the default with something sensible.</span></span>
+<span class="r-in"><span class="fu">colData</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">old_cd</span></span>
+<span class="r-in"><span class="va">sce0</span> <span class="op">&lt;-</span> <span class="fu"><a href="setup-generics.html">.cacheCommonInfo</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">sce</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="setup-generics.html">.refineParameters</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">sce0</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Panel object of class ColumnDataPlot</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Get or set individual parameters with ‘[[’ </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   Available parameters:</span>
@@ -235,7 +235,7 @@ It will return the commands required to do so as well as a list of labels.</p></
 <span class="r-out co"><span class="r-pr">#&gt;</span>     XAxisColumnData: Mutation_Status</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     YAxis: Mutation_Status</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ZoomData: </span>
-<span class="r-in"><span></span></span>
+<span class="r-in"></span>
 </code></pre></div>
     </div>
   </div>
@@ -250,7 +250,7 @@ It will return the commands required to do so as well as a list of labels.</p></
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.9000.</p>
 </div>
 
       </footer></div>

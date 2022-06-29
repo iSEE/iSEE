@@ -278,8 +278,9 @@ jobs:
       - name: Build and deploy pkgdown site
         if: github.ref == 'refs/heads/master' && env.run_pkgdown == 'true' && runner.os == 'Linux'
         run: |
-          git config --local user.name "$GITHUB_ACTOR"
-          git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config --global user.name "$GITHUB_ACTOR"
+          git config --global user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config --global --add safe.directory /__w/iSEE/iSEE
           Rscript -e "pkgdown::deploy_to_branch(new_process = FALSE)"
         shell: bash {0}
         ## Note that you need to run pkgdown::deploy_to_branch(new_process = FALSE)

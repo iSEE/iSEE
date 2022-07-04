@@ -1,3 +1,7 @@
+# iSEE 2.9.1
+
+* Add spinner to `ComplexHeatmapPlot`.
+
 # iSEE 2.5.3
 
 * Replace icons with fontawesome 5 versions

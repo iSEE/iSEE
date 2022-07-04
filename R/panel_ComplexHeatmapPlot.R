@@ -252,7 +252,7 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- .emptyDefault(args, .heatMapCenteredColormap, .colormapPurpleBlackYellow)
 
     args <- .emptyDefault(args, .showDimnames, c(.showNamesRowTitle))
-    
+
     args <- .emptyDefault(args, .namesRowFontSize, .plotFontSizeAxisTextDefault)
     args <- .emptyDefault(args, .namesColumnFontSize, .plotFontSizeAxisTextDefault)
 
@@ -281,11 +281,11 @@ setValidity2("ComplexHeatmapPlot", function(object) {
     msg <- .multipleChoiceError(msg, object, .showDimnames,
         c(.showNamesRowTitle, .showNamesColumnTitle))
 
-    msg <- .validNumberError(msg, object, .namesRowFontSize, 
+    msg <- .validNumberError(msg, object, .namesRowFontSize,
                              lower=0, upper=Inf)
-    msg <- .validNumberError(msg, object, .namesColumnFontSize, 
+    msg <- .validNumberError(msg, object, .namesColumnFontSize,
                              lower=0, upper=Inf)
-        
+
     msg <- .allowableChoiceError(msg, object, .plotLegendPosition,
         c(.plotLegendRightTitle, .plotLegendBottomTitle))
 
@@ -431,7 +431,10 @@ setMethod(".fullName", "ComplexHeatmapPlot", function(x) "Complex heatmap")
 #' @export
 setMethod(".defineOutput", "ComplexHeatmapPlot", function(x) {
     plot_name <- .getEncodedName(x)
-    plotOutput(plot_name, height=paste0(slot(x, .organizationHeight), "px"))
+    addSpinner(
+        plotOutput(plot_name, height=paste0(slot(x, .organizationHeight), "px")),
+        color=.panelColor(x)
+    )
 })
 
 #' @export
@@ -527,7 +530,7 @@ The clustering itself is done using <code>hclust</code>, i.e., hierarchical clus
             .input_FUN(.heatMapClusterFeatures),
             on_select=TRUE,
             ABLEFUN(
-                .selectInput.iSEE(x, .heatMapClusterDistanceFeatures, 
+                .selectInput.iSEE(x, .heatMapClusterDistanceFeatures,
                     label="Clustering distance for rows",
                     choices=c(.clusterDistanceEuclidean, .clusterDistancePearson, .clusterDistanceSpearman,
                         .clusterDistanceManhattan, .clusterDistanceMaximum, .clusterDistanceCanberra,
@@ -536,7 +539,7 @@ The clustering itself is done using <code>hclust</code>, i.e., hierarchical clus
                 )
             ),
             ABLEFUN(
-                .selectInput.iSEE(x, .heatMapClusterMethodFeatures, 
+                .selectInput.iSEE(x, .heatMapClusterMethodFeatures,
                     label="Clustering method for rows",
                     choices=c(.clusterMethodWardD, .clusterMethodWardD2, .clusterMethodSingle, .clusterMethodComplete,
                         "average (= UPGMA)"=.clusterMethodAverage,
@@ -622,7 +625,7 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     heatmap_args[["name"]] <- deparse(.build_heatmap_assay_legend_title(x, !.is_heatmap_continuous(x, se)))
     heatmap_args[["show_row_names"]] <- as.character(.showNamesRowTitle %in% slot(x, .showDimnames))
     heatmap_args[["show_column_names"]] <- as.character(.showNamesColumnTitle %in% slot(x, .showDimnames))
-    
+
     # Font sizes for names
     heatmap_args[["row_names_gp"]] <- sprintf('grid::gpar(fontsize=%s)', deparse(slot(x, .namesRowFontSize)))
     heatmap_args[["column_names_gp"]] <- sprintf('grid::gpar(fontsize=%s)', deparse(slot(x, .namesColumnFontSize)))
@@ -745,7 +748,7 @@ setMethod(".definePanelTour", "ComplexHeatmapPlot", function(x) {
     rbind(
         c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">ComplexHeatmapPlot</font> panel contains a complex heatmap from the <i><a href='https://bioconductor.org/packages/ComplexHeatmap/'>ComplexHeatmap</a></i> package. This is quite conceptually different from the other panels as it shows assay data for multiple rows and columns at the same time. However, it is strictly an end-point panel, i.e., it cannot transmit to other panels.", .getPanelColor(x))),
         .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked to control the data on the heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
-        .addTourStep(x, .visualParamBoxOpen, "The <i>Visual parameters</i> box shows the available visual parameters that can be tweaked in this heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),        
+        .addTourStep(x, .visualParamBoxOpen, "The <i>Visual parameters</i> box shows the available visual parameters that can be tweaked in this heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
         callNextMethod()
     )
 })

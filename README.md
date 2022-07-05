@@ -3,9 +3,11 @@
 # _iSEE_ - The interactive SummarizedExperiment Explorer 
 
 <!-- badges: start -->
-[![R build status](https://github.com/iSEE/iSEEu/workflows/build_check_deploy/badge.svg)](https://github.com/iSEE/iSEEu/actions)
-[![Codecov.io coverage status](https://codecov.io/github/iSEE/iSEE/coverage.svg?branch=master)](https://codecov.io/github/iSEE/iSEE)
-[![Docker Cloud Automated build](https://img.shields.io/docker/cloud/automated/iseedevelopers/isee)](https://hub.docker.com/r/iseedevelopers/isee)
+[![GitHub issues](https://img.shields.io/github/issues/iSEE/iSEE)](https://github.com/iSEE/iSEE/issues)
+[![GitHub pulls](https://img.shields.io/github/issues-pr/iSEE/iSEE)](https://github.com/iSEE/iSEE/pulls)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-green.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
+[![R-CMD-check-bioc](https://github.com/iSEE/iSEE/workflows/R-CMD-check-bioc/badge.svg)](https://github.com/iSEE/iSEE/actions)
+[![Codecov test coverage](https://codecov.io/gh/iSEE/iSEE/branch/main/graph/badge.svg)](https://app.codecov.io/gh/iSEE/iSEE?branch=main)
 <!-- badges: end -->
 
 ## Bioconductor release status

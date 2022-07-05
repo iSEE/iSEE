@@ -7,7 +7,7 @@
 \alias{.refineParameters,ColumnTable-method}
 \alias{.defineInterface,ColumnTable-method}
 \alias{.createObservers,ColumnTable-method}
-\alias{.hideInterface,ColumnTable-method}
+\alias{hideInterface,ColumnTable-method}
 \alias{.multiSelectionDimension,ColumnTable-method}
 \alias{.singleSelectionDimension,ColumnTable-method}
 \alias{.showSelectionDetails,ColumnTable-method}
@@ -35,7 +35,7 @@ This will also call the equivalent \linkS4class{Table} method.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+\item `hideInterface(x, field)` returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"} and \code{"RowSelectionRestrict"}),
 otherwise it dispatches to the \linkS4class{Panel} method.
 }

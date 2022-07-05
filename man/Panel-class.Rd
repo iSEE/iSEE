@@ -8,12 +8,12 @@
 \alias{[[,Panel,ANY,ANY-method}
 \alias{[[<-,Panel,ANY,ANY-method}
 \alias{show,Panel-method}
-\alias{.defineInterface,Panel-method}
+\alias{defineInterface,Panel-method}
 \alias{.refineParameters,Panel-method}
 \alias{.cacheCommonInfo,Panel-method}
 \alias{.createObservers,Panel-method}
-\alias{.hideInterface,Panel-method}
-\alias{.defineDataInterface,Panel-method}
+\alias{hideInterface,Panel-method}
+\alias{defineDataInterface,Panel-method}
 \alias{.renderOutput,Panel-method}
 \alias{.exportOutput,Panel-method}
 \alias{.multiSelectionRestricted,Panel-method}
@@ -102,10 +102,10 @@ If \code{x} is up to date, this operation is a no-op and returns \code{x} withou
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineInterface}(x, se, select_info)} will return a list of collapsible boxes for changing data and selection parameters.
-The data parameter box will be populated based on \code{\link{.defineDataInterface}}.
-\item \code{\link{.defineDataInterface}(x, se, select_info)} will return an empty list.
-\item \code{\link{.hideInterface}(x, field)} will always return \code{FALSE}.
+\item `defineInterface(x, se, select_info)` will return a list of collapsible boxes for changing data and selection parameters.
+The data parameter box will be populated based on [defineDataInterface()].
+\item `defineDataInterface(x, se, select_info)` will return an empty list.
+\item `hideInterface(x, field)` will always return \code{FALSE}.
 }
 
 For monitoring reactive expressions:

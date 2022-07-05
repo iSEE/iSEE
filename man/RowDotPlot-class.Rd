@@ -8,7 +8,7 @@
 \alias{.refineParameters,RowDotPlot-method}
 \alias{.defineInterface,RowDotPlot-method}
 \alias{.createObservers,RowDotPlot-method}
-\alias{.hideInterface,RowDotPlot-method}
+\alias{hideInterface,RowDotPlot-method}
 \alias{.multiSelectionDimension,RowDotPlot-method}
 \alias{.multiSelectionRestricted,RowDotPlot-method}
 \alias{.multiSelectionInvalidated,RowDotPlot-method}
@@ -70,7 +70,7 @@ This will also call the equivalent \linkS4class{DotPlot} method.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+\item `hideInterface(x, field)` returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"} and \code{"RowSelectionRestrict"}),
 otherwise it dispatches to the \linkS4class{Panel} method.
 }

@@ -6,7 +6,7 @@
 \alias{ColumnDataPlot}
 \alias{initialize,ColumnDataPlot-method}
 \alias{.refineParameters,ColumnDataPlot-method}
-\alias{.defineDataInterface,ColumnDataPlot-method}
+\alias{defineDataInterface,ColumnDataPlot-method}
 \alias{.createObservers,ColumnDataPlot-method}
 \alias{.fullName,ColumnDataPlot-method}
 \alias{.panelColor,ColumnDataPlot-method}
@@ -55,11 +55,11 @@ If no valid column metadata variables are available, \code{NULL} is returned ins
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+\item `defineDataInterface(x, se, select_info)` returns a list of interface elements for manipulating all slots described above.
 \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
-\item \code{\link{.allowableXAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{colData}(se)} that can be used as choices for the x-axis. 
+\item \code{\link{.allowableXAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{colData}(se)} that can be used as choices for the x-axis.
 This consists of all variables with atomic values.
-\item \code{\link{.allowableYAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{colData}(se)} that can be used as choices for the y-axis. 
+\item \code{\link{.allowableYAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{colData}(se)} that can be used as choices for the y-axis.
 This consists of all variables with atomic values.
 }
 

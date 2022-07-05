@@ -6,7 +6,7 @@
 \alias{SampleAssayPlot}
 \alias{initialize,SampleAssayPlot-method}
 \alias{.refineParameters,SampleAssayPlot-method}
-\alias{.defineDataInterface,SampleAssayPlot-method}
+\alias{defineDataInterface,SampleAssayPlot-method}
 \alias{.createObservers,SampleAssayPlot-method}
 \alias{.singleSelectionSlots,SampleAssayPlot-method}
 \alias{.multiSelectionInvalidated,SampleAssayPlot-method}
@@ -73,7 +73,7 @@ If no columns or assays are present, \code{NULL} is returned instead.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+\item \code{\link{defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
 \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 }
 
@@ -96,7 +96,7 @@ It will return the commands required to do so as well as a list of labels.
 
 For managing selections:
 \itemize{
-\item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, 
+\item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels,
 mostly related to the choice of sample on the x- and y-axes.
 This includes the output of the method for the parent \linkS4class{RowDotPlot} class.
 \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the x-axis uses multiple row selections,

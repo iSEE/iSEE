@@ -33,11 +33,11 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+#' \item `defineDataInterface(x, se, select_info)` returns a list of interface elements for manipulating all slots described above.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
-#' \item \code{\link{.allowableXAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{colData}(se)} that can be used as choices for the x-axis. 
+#' \item \code{\link{.allowableXAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{colData}(se)} that can be used as choices for the x-axis.
 #' This consists of all variables with atomic values.
-#' \item \code{\link{.allowableYAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{colData}(se)} that can be used as choices for the y-axis. 
+#' \item \code{\link{.allowableYAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{colData}(se)} that can be used as choices for the y-axis.
 #' This consists of all variables with atomic values.
 #' }
 #'
@@ -72,7 +72,7 @@
 #'
 #' @section Subclass expectations:
 #' Subclasses do not have to provide any methods, as this is a concrete class.
-#' 
+#'
 #' @author Aaron Lun
 #'
 #' @seealso
@@ -111,7 +111,7 @@
 #' @aliases ColumnDataPlot ColumnDataPlot-class
 #' initialize,ColumnDataPlot-method
 #' .refineParameters,ColumnDataPlot-method
-#' .defineDataInterface,ColumnDataPlot-method
+#' defineDataInterface,ColumnDataPlot-method
 #' .createObservers,ColumnDataPlot-method
 #' .fullName,ColumnDataPlot-method
 #' .panelColor,ColumnDataPlot-method
@@ -188,7 +188,8 @@ setValidity2("ColumnDataPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineDataInterface", "ColumnDataPlot", function(x, se, select_info) {
+#' @importMethodsFrom iSEEGenerics defineDataInterface
+setMethod("defineDataInterface", "ColumnDataPlot", function(x, se, select_info) {
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -208,7 +209,7 @@ setMethod(".defineDataInterface", "ColumnDataPlot", function(x, se, select_info)
             rbind(
                 c(
                     element=paste0("#", plot_name, "_", .colDataXAxis),
-                    intro="Here, we choose what to show on the x-axis. If we were to <strong>click on <em>Column data</em></strong>..." 
+                    intro="Here, we choose what to show on the x-axis. If we were to <strong>click on <em>Column data</em></strong>..."
                 ),
                 c(
                     element=paste0("#", plot_name, "_", .colDataXAxisColData, " + .selectize-control"),
@@ -232,7 +233,7 @@ If any saved selections are present, these would show up as additional violins."
             label="Column of interest (Y-axis):",
             choices=.allowableYAxisChoices(x, se),
             selected=slot(x, .colDataYAxis)),
-        .radioButtons.iSEE(x, .colDataXAxis, 
+        .radioButtons.iSEE(x, .colDataXAxis,
             label="X-axis:", inline=TRUE,
             choices=c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle, .colDataXAxisSelectionsTitle),
             selected=slot(x, .colDataXAxis)),
@@ -302,14 +303,14 @@ setMethod(".generateDotPlotData", "ColumnDataPlot", function(x, envir) {
     } else if (x_choice == .colDataXAxisSelectionsTitle) {
         x_lab <- "Column selection"
         x_title <- "vs column selection"
-        
+
         if (exists("col_selected", envir=envir, inherits=FALSE)) {
             target <- "col_selected"
         } else {
             target <- "list()"
         }
         data_cmds[["x"]] <- sprintf(
-            "plot.data$X <- iSEE::multiSelectionToFactor(%s, colnames(se));", 
+            "plot.data$X <- iSEE::multiSelectionToFactor(%s, colnames(se));",
             target
         )
 

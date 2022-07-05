@@ -6,7 +6,7 @@
 \alias{FeatureAssayPlot}
 \alias{initialize,FeatureAssayPlot-method}
 \alias{.refineParameters,FeatureAssayPlot-method}
-\alias{.defineDataInterface,FeatureAssayPlot-method}
+\alias{defineDataInterface,FeatureAssayPlot-method}
 \alias{.createObservers,FeatureAssayPlot-method}
 \alias{.singleSelectionSlots,FeatureAssayPlot-method}
 \alias{.multiSelectionInvalidated,FeatureAssayPlot-method}
@@ -35,7 +35,7 @@ Defaults to \code{FALSE} in \code{\link{getPanelDefault}}.
 }
 
 The following slots control the values on the x-axis:
-\itemize{ 
+\itemize{
 \item \code{XAxis}, string specifying what should be plotting on the x-axis.
 This can be any one of \code{"None"}, \code{"Feature name"}, \code{"Column data"} or \code{"Column selection"}.
 Defaults to \code{"None"}.
@@ -73,7 +73,7 @@ If no rows or assays are present, \code{NULL} is returned instead.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+\item `defineDataInterface(x, se, select_info)` returns a list of interface elements for manipulating all slots described above.
 \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 }
 
@@ -96,7 +96,7 @@ It will return the commands required to do so as well as a list of labels.
 
 For managing selections:
 \itemize{
-\item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, 
+\item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels,
 mostly related to the choice of feature on the x- and y-axes.
 This includes the output of the method for the parent \linkS4class{ColumnDotPlot} class.
 \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the x-axis uses multiple column selections,

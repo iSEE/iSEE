@@ -68,10 +68,10 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineInterface}(x, se, select_info)} will return a list of collapsible boxes for changing data and selection parameters.
-#' The data parameter box will be populated based on \code{\link{.defineDataInterface}}.
-#' \item \code{\link{.defineDataInterface}(x, se, select_info)} will return an empty list.
-#' \item \code{\link{.hideInterface}(x, field)} will always return \code{FALSE}.
+#' \item `defineInterface(x, se, select_info)` will return a list of collapsible boxes for changing data and selection parameters.
+#' The data parameter box will be populated based on [defineDataInterface()].
+#' \item `defineDataInterface(x, se, select_info)` will return an empty list.
+#' \item `hideInterface(x, field)` will always return \code{FALSE}.
 #' }
 #'
 #' For monitoring reactive expressions:
@@ -131,12 +131,12 @@
 #' [[,Panel,ANY,ANY-method
 #' [[<-,Panel,ANY,ANY-method
 #' show,Panel-method
-#' .defineInterface,Panel-method
+#' defineInterface,Panel-method
 #' .refineParameters,Panel-method
 #' .cacheCommonInfo,Panel-method
 #' .createObservers,Panel-method
-#' .hideInterface,Panel-method
-#' .defineDataInterface,Panel-method
+#' hideInterface,Panel-method
+#' defineDataInterface,Panel-method
 #' .renderOutput,Panel-method
 #' .exportOutput,Panel-method
 #' .multiSelectionRestricted,Panel-method
@@ -247,7 +247,7 @@ setReplaceMethod("[[", "Panel", function(x, i, j, ..., value) {
         return(x)
     }
 
-    # Avoid having to call updateObject unnecessarily when we're operating inside 
+    # Avoid having to call updateObject unnecessarily when we're operating inside
     # the app (and thus everything is known to be most up to date, given that
     # .refineParameters would have run the necessary updateObject already).
     check <- check.validity.env$check
@@ -272,6 +272,7 @@ setReplaceMethod("[[", "Panel", function(x, i, j, ..., value) {
 }
 
 #' @export
+#' @importMethodsFrom iSEEGenerics hideInterface
 setMethod("show", "Panel", function(object) {
     cat("Panel object of class", paste0(class(object)[1], "\n"))
     cat("  Get or set individual parameters with", sQuote('[['), '\n')
@@ -279,7 +280,7 @@ setMethod("show", "Panel", function(object) {
 
     all.slots <- sort(slotNames(object))
     for (x in all.slots) {
-        if (.hideInterface(object, x)) {
+        if (hideInterface(object, x)) {
             next
         }
         cat(paste0("    ", x, ": "))
@@ -331,13 +332,14 @@ setMethod(".cacheCommonInfo", "Panel", function(x, se) {
 ###############################################################################
 
 #' @export
-setMethod(".defineInterface", "Panel", function(x, se, select_info) {
+#' @importMethodsFrom iSEEGenerics defineInterface defineDataInterface
+setMethod("defineInterface", "Panel", function(x, se, select_info) {
     list(
         do.call(.collapseBoxHidden,
             c(
                 list(x=x, field=.dataParamBoxOpen, title="Data parameters"),
                 open=slot(x, .dataParamBoxOpen),
-                .defineDataInterface(x, se, select_info)
+                defineDataInterface(x, se, select_info)
             )
         ),
         .create_selection_param_box(x, select_info$multi$row, select_info$multi$column)
@@ -366,7 +368,7 @@ setMethod(".defineInterface", "Panel", function(x, se, select_info) {
 #' For \code{.define_selection_choices}, a tag list of interface elements is returned to choose the identity of transmitting panel,
 #' the type of multiple selection and the index of the saved selection to use.
 #'
-#' All return values may potentially also be \code{NULL}, depending on \code{\link{.hideInterface}}.
+#' All return values may potentially also be \code{NULL}, depending on [hideInterface()].
 #'
 #' @details
 #' These functions are used to create a collapsible box that contains point selection options,
@@ -378,10 +380,11 @@ setMethod(".defineInterface", "Panel", function(x, se, select_info) {
 #' @author Aaron Lun
 #' @rdname INTERNAL_create_selection_param_box
 #' @seealso
-#' \code{\link{.defineInterface}}, where this function is typically called.
+#' [defineInterface()], where this function is typically called.
 #'
 #' @importFrom shiny selectInput actionButton hr strong br
 #' @importFrom shinyjs disabled
+#' @importMethodsFrom iSEEGenerics defineInterface hideInterface
 .create_selection_param_box <- function(x, row_selectable, col_selectable) {
     # initialize active "Delete" button only if a preconfigured selection history exists
     deleteFUN <- identity
@@ -414,7 +417,7 @@ setMethod(".defineInterface", "Panel", function(x, se, select_info) {
             selectable=col_selectable, "column")
     )
 
-    if (!.hideInterface(x, .multiSelectHistory)) {
+    if (!hideInterface(x, .multiSelectHistory)) {
         .addSpecificTour(class(x), .multiSelectHistory, {
             mdim <- .multiSelectionDimension(x)
             function(panel_name) {
@@ -456,6 +459,7 @@ For simplicity, this operates on a first-in-last-out basis, i.e., you can only d
 
 #' @rdname INTERNAL_create_selection_param_box
 #' @importFrom shiny tagList radioButtons selectizeInput
+#' @importMethodsFrom iSEEGenerics hideInterface
 .define_selection_choices <- function(x, by_field,
     dyn_field, res_field, selectable, source_type="row")
 {
@@ -474,7 +478,7 @@ For example, point-based panels might allow users to color, facet, or group poin
                 source_type, source_type, source_type, source_type)
             )
         # Some panel classes (e.g. ComplexHeatmapPlot) do not have the checkbox to restrict to selected rows
-        if (!.hideInterface(x, res_field)) {
+        if (!hideInterface(x, res_field)) {
             tour_df <- rbind(tour_df,
                 c(
                     element=paste0("#", panel_name, "_", res_field),
@@ -526,7 +530,8 @@ This is useful for allowing the current panel to immediately respond to any inte
 }
 
 #' @export
-setMethod(".defineDataInterface", "Panel", function(x, se, select_info) list())
+#' @importMethodsFrom iSEEGenerics defineDataInterface
+setMethod("defineDataInterface", "Panel", function(x, se, select_info) list())
 
 ###############################################################################
 
@@ -632,7 +637,8 @@ setMethod(".exportOutput", "Panel", function(x, se, all_memory, all_contents) {
 })
 
 #' @export
-setMethod(".hideInterface", "Panel", function(x, field) FALSE)
+#' @importMethodsFrom iSEEGenerics hideInterface
+setMethod("hideInterface", "Panel", function(x, field) FALSE)
 
 #' @export
 setMethod(".multiSelectionRestricted", "Panel", function(x) TRUE)

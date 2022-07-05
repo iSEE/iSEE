@@ -76,9 +76,10 @@ height_limits <- c(400L, 1000L)
 #'
 #' @author Aaron Lun
 #' @seealso
-#' \code{\link{.defineInterface}} and \code{\link{.defineOutput}}, for panel-specific definition of interface elements.
+#' [defineInterface()] and \code{\link{.defineOutput}}, for panel-specific definition of interface elements.
 #'
 #' @rdname INTERNAL_panel_generation
+#' @importMethodsFrom iSEEGenerics defineInterface
 .panel_generation <- function(se, all_memory) {
     collected <- list()
     counter <- 1L
@@ -102,7 +103,7 @@ height_limits <- c(400L, 1000L)
             single=lapply(single_sources, FUN=.setdiffWithNames, y=plot_name),
             multi=lapply(multi_sources, FUN=.setdiffWithNames, y=plot_name)
         )
-        all.params <- .defineInterface(instance, se=se, select_info=select_info)
+        all.params <- defineInterface(instance, se=se, select_info=select_info)
         param <- do.call(tags$div, c(list(class="panel-group", role="tablist"), all.params))
 
         # Deciding whether to continue on the current row, or start a new row.
@@ -120,9 +121,9 @@ height_limits <- c(400L, 1000L)
 
         # Aggregating together everything into a box, and then into a column.
         cur_box <- box(
-            .defineOutput(instance), 
+            .defineOutput(instance),
             param,
-            uiOutput(.input_FUN(.panelMultiSelectInfo)), 
+            uiOutput(.input_FUN(.panelMultiSelectInfo)),
             uiOutput(.input_FUN(.panelSelectLinkInfo)),
             title=.getFullName(instance),
             solidHeader=TRUE, width=NULL, status="danger"
@@ -192,9 +193,9 @@ height_limits <- c(400L, 1000L)
 #' @author Aaron Lun
 #' @rdname INTERNAL_insert_help_icon
 #' @importFrom shiny div
-.insert_help_icon <- function(in_box, id) { 
+.insert_help_icon <- function(in_box, id) {
     title_elements <- in_box$children[[1]]$children[[1]]$children
-    title_elements <- c(title_elements,     
+    title_elements <- c(title_elements,
         list(div(id=id, style="display: inline-block; float: right;", icon("question-circle")))
     )
     in_box$children[[1]]$children[[1]]$children <- title_elements

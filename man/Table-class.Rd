@@ -9,13 +9,13 @@
 \alias{.renderOutput,Table-method}
 \alias{.defineOutput,Table-method}
 \alias{.exportOutput,Table-method}
-\alias{.hideInterface,Table-method}
+\alias{hideInterface,Table-method}
 \alias{.multiSelectionCommands,Table-method}
 \alias{.multiSelectionActive,Table-method}
 \alias{.multiSelectionRestricted,Table-method}
 \alias{.singleSelectionValue,Table-method}
 \alias{.definePanelTour,Table-method}
-\alias{.defineDataInterface,Table-method}
+\alias{defineDataInterface,Table-method}
 \alias{updateObject,Table-method}
 \title{The Table class}
 \description{
@@ -53,7 +53,7 @@ Refer to the documentation for each method for more details on the remaining arg
 For defining the interface:
 \itemize{
 \item \code{\link{.defineOutput}(x)} returns a UI element for a \code{\link[DT]{dataTableOutput}} widget.
-\item \code{\link{.defineDataInterface}(x)} will create interface elements for modifying the table,
+\item `defineDataInterface(x)` will create interface elements for modifying the table,
 namely to choose which columns to hide.
 Note that this is populated by \code{\link{.generateOutput}} upon table rendering,
 as we do not know the available columns before that point.
@@ -68,7 +68,7 @@ This will also call the equivalent \linkS4class{Panel} method to render the pane
 \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the table;
 \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot};
 and \code{varname}, a string specifying the name of the variable in \code{commands} used to generate \code{contents}.
-\item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} will create a CSV file containing the current table, and return a string containing the path to that file. 
+\item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} will create a CSV file containing the current table, and return a string containing the path to that file.
 This assumes that the \code{contents} field returned by \code{\link{.generateOutput}} is a data.frame or can be coerced into one.
 }
 

@@ -44,12 +44,12 @@
 #' The following slots control the faceting:
 #' \itemize{
 #' \item \code{FacetRowBy}, a string indicating what to use for creating row facets.
-#' For \linkS4class{RowDotPlot}s, this should be one of \code{"None"}, \code{"Row data"} or \code{"Row selection"}. 
-#' For \linkS4class{ColumnDotPlot}s, this should be one of \code{"None"}, \code{"Column data"} or \code{"Column selection"}. 
+#' For \linkS4class{RowDotPlot}s, this should be one of \code{"None"}, \code{"Row data"} or \code{"Row selection"}.
+#' For \linkS4class{ColumnDotPlot}s, this should be one of \code{"None"}, \code{"Column data"} or \code{"Column selection"}.
 #' Defaults to \code{"None"}, i.e., no row faceting.
 #' \item \code{FacetByColumn}, a string indicating what to use for creating column facets.
-#' For \linkS4class{RowDotPlot}s, this should be one of \code{"None"}, \code{"Row data"} or \code{"Row selection"}. 
-#' For \linkS4class{ColumnDotPlot}s, this should be one of \code{"None"}, \code{"Column data"} or \code{"Column selection"}. 
+#' For \linkS4class{RowDotPlot}s, this should be one of \code{"None"}, \code{"Row data"} or \code{"Row selection"}.
+#' For \linkS4class{ColumnDotPlot}s, this should be one of \code{"None"}, \code{"Column data"} or \code{"Column selection"}.
 #' Defaults to \code{"None"}, i.e., no column faceting.
 #' }
 #'
@@ -141,7 +141,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
+#' \item `defineInterface(x, se, select_info)` defines the user interface for manipulating all slots described above and in the parent classes.
 #' It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}}.
 #' This will \emph{override} the \linkS4class{Panel} method.
 #' \item \code{\link{.defineVisualColorInterface}(x, se, select_info)} defines the user interface subpanel for manipulating the color of the points.
@@ -232,7 +232,7 @@
 #' .prioritizeDotPlotData,DotPlot-method
 #' .colorByNoneDotPlotField,DotPlot-method
 #' .colorByNoneDotPlotScale,DotPlot-method
-#' .defineInterface,DotPlot-method
+#' defineInterface,DotPlot-method
 #' .defineVisualColorInterface,DotPlot-method
 #' .defineVisualSizeInterface,DotPlot-method
 #' .defineVisualShapeInterface,DotPlot-method
@@ -322,7 +322,7 @@ setValidity2("DotPlot", function(object) {
             .plotLabelCentersColor
         ))
 
-    facet_info <- .getDotPlotFacetConstants(object) 
+    facet_info <- .getDotPlotFacetConstants(object)
     for (field in c(.facetRow, .facetColumn)) {
         msg <- .allowableChoiceError(msg, object, field,
             c(.facetByNothingTitle, facet_info$metadata$title, facet_info$selections$title))
@@ -371,7 +371,7 @@ setMethod("[[", "DotPlot", function(x, i, j, ...) {
         }
 
         cname <- class(x)[1]
-        .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.\nUse <%s>[['%s']] and/or <%s>[['%s']] instead.", 
+        .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.\nUse <%s>[['%s']] and/or <%s>[['%s']] instead.",
             cname, i, cname, dim, cname, dim_field))
 
         title <- facet_info$metadata$title
@@ -403,7 +403,7 @@ setReplaceMethod("[[", "DotPlot", function(x, i, j, ..., value) {
         }
 
         cname <- class(x)[1]
-        .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.\nSet <%s>[['%s']] and/or <%s>[['%s']] instead.", 
+        .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.\nSet <%s>[['%s']] and/or <%s>[['%s']] instead.",
             cname, i, cname, dim, cname, dim_field))
 
         title <- facet_info$metadata$title
@@ -485,14 +485,15 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
     .create_hover_observer(plot_name, input=input, session=session, pObjects=pObjects)
 
     .createCustomDimnamesModalObservers(plot_name, .plotCustomLabelsText, .dimnamesModalOpen,
-        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, 
+        se, input=input, session=session, pObjects=pObjects, rObjects=rObjects,
         source_type=plot_dimension)
 })
 
 # Interface ----
 
 #' @export
-setMethod(".defineInterface", "DotPlot", function(x, se, select_info) {
+#' @importMethodsFrom iSEEGenerics defineInterface
+setMethod("defineInterface", "DotPlot", function(x, se, select_info) {
     out <- callNextMethod()
     c(
         out[1],
@@ -530,10 +531,10 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
                 rbind(
                     c(
                         element=paste0("#", plot_name, "_", .selectTransAlpha, .slider_extra),
-                        intro=sprintf("When we make a multiple %s selection on another panel, 
-                                       we can transmit that selection to the current panel. 
-                                       When we do so, we can choose to highlight the selected points on this panel 
-                                       by making all the <em>unselected</em> points a little transparent. 
+                        intro=sprintf("When we make a multiple %s selection on another panel,
+                                       we can transmit that selection to the current panel.
+                                       When we do so, we can choose to highlight the selected points on this panel
+                                       by making all the <em>unselected</em> points a little transparent.
                                        This slider controls the transparency level for those unselected points.", mdim)
                     )
                 )
@@ -544,7 +545,7 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
     # Actually creating the UI.
     tagList(
         hr(),
-        .radioButtons.iSEE(x, .colorByField, 
+        .radioButtons.iSEE(x, .colorByField,
             label="Color by:",
             inline=TRUE,
             choices=.defineDotPlotColorChoices(x, se),
@@ -560,7 +561,7 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
             colorby_field, colorby$metadata$title,
             selectInput(
                 paste0(plot_name, "_", colorby$metadata$field), label=NULL,
-                choices=.allowableColorByDataChoices(x, se), 
+                choices=.allowableColorByDataChoices(x, se),
                 selected=x[[colorby$metadata$field]])
         ),
         .conditionalOnRadio(colorby_field, colorby$name$title,
@@ -591,7 +592,7 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
                 value=x[[colorby$assay$dynamic]])
         ),
         .sliderInput.iSEE(x, .selectTransAlpha,
-            label="Unselected point opacity:", 
+            label="Unselected point opacity:",
             min=0, max=1, value=slot(x, .selectTransAlpha)
         )
     )
@@ -614,13 +615,13 @@ setMethod(".defineVisualShapeInterface", "DotPlot", function(x, se) {
                     rbind(
                         c(
                             element=paste0("#", plot_name, "_", .shapeByField),
-                            intro=sprintf("We can make the shape of each point depend on the value of a categorical %s data field. 
+                            intro=sprintf("We can make the shape of each point depend on the value of a categorical %s data field.
                                            For example, if you were to <strong>select <em>%s data</em></strong>...", mdim, mdim)
                         ),
                         c(
                             element=paste0("#", plot_name, "_", shape_meta_field, " + .selectize-control"),
-                            intro="... we can then choose a variable for shaping each point in the plot. 
-                                   Note that there are only a limited number of unique shapes, 
+                            intro="... we can then choose a variable for shaping each point in the plot.
+                                   Note that there are only a limited number of unique shapes,
                                    so past a certain number of levels, the plot will just give up."
                         )
                     )
@@ -679,7 +680,7 @@ setMethod(".defineVisualSizeInterface", "DotPlot", function(x, se) {
                     rbind(
                         c(
                             element=paste0("#", sizeby_field),
-                            intro=sprintf("We can make the size of each point depend on the value of a numeric %s data field. 
+                            intro=sprintf("We can make the size of each point depend on the value of a numeric %s data field.
                                            For example, if you were to <strong>select <em>%s data</em></strong>...", mdim, mdim)
                         ),
                         c(
@@ -725,7 +726,7 @@ setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
                 c(
                     element=paste0("#", plot_name, "_", .plotPointAlpha, .slider_extra),
                     intro="This controls the opacity of all points, with 0 being fully transparent and 1 being fully opaque.
-                    
+
                     Note that, unlike the <em>Unselected point opacity</em> option,
                     this option applies regardless of whether a point is selected or not."
                 )
@@ -773,10 +774,10 @@ setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
 
     tagList(
         hr(),
-        .sliderInput.iSEE(x, .plotPointAlpha, label="Point opacity:", 
+        .sliderInput.iSEE(x, .plotPointAlpha, label="Point opacity:",
             min=0.1, max=1, value=slot(x, .plotPointAlpha)),
         hr(),
-        .checkboxInput.iSEE(x, .plotPointDownsample, 
+        .checkboxInput.iSEE(x, .plotPointDownsample,
             label="Downsample points for speed",
             value=slot(x, .plotPointDownsample)),
         .conditionalOnCheckSolo(
@@ -856,7 +857,7 @@ setMethod(".defineVisualFacetInterface", "DotPlot", function(x, se) {
 
                             c(
                                 element=paste0("#", plot_name, "_", use_field0),
-                                intro=sprintf("If we were to <strong>select <em>%s</em></strong>, 
+                                intro=sprintf("If we were to <strong>select <em>%s</em></strong>,
                                 the factor is defined based on the multiple %s selections transmitted from another panel.
                                 All points corresponding to %ss in the active selection of another panel are assigned to one facet;
                                 all points in each saved selection of another panel are assigned to another facet;
@@ -871,18 +872,18 @@ setMethod(".defineVisualFacetInterface", "DotPlot", function(x, se) {
         })
 
         ui <- c(ui, list(
-            .radioButtons.iSEE(x, use_field, 
+            .radioButtons.iSEE(x, use_field,
                 label=sprintf("Facet as %s:", dim),
-                choices=title_choices, 
-                selected=slot(x, use_field), 
+                choices=title_choices,
+                selected=slot(x, use_field),
                 inline=TRUE),
 
             if (length(covariates)) {
-                .conditionalOnRadio(paste0(plot_name, "_", use_field), 
-                    facet_info$metadata$title, 
-                    selectInput(paste0(plot_name, "_", choice_field), 
-                        label=NULL, 
-                        choices=covariates, 
+                .conditionalOnRadio(paste0(plot_name, "_", use_field),
+                    facet_info$metadata$title,
+                    selectInput(paste0(plot_name, "_", choice_field),
+                        label=NULL,
+                        choices=covariates,
                         selected=slot(x, choice_field))
                 )
             }
@@ -904,7 +905,7 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
             data.frame(
                 rbind(
                     c(
-                        element=paste0("#", plot_name, "_", .plotCustomLabels), 
+                        element=paste0("#", plot_name, "_", .plotCustomLabels),
                         intro=sprintf("Users can show the names of certain %ss alongside their locations on the plot. This is done by <strong>checking the highlighted box</strong>...", mdim)
                     ),
                     c(
@@ -954,7 +955,7 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
                     rbind(
                         c(
                             element=paste0("#", plot_name, "_", .plotLabelCenters),
-                            intro="In certain applications, we may have a factor that defines groups of points in the plot. 
+                            intro="In certain applications, we may have a factor that defines groups of points in the plot.
                             A typical example would be that a factor that holds cluster identity on a Reduced Dimension Plot.
                             We can then use that factor to annotate the plot by putting the group label at the center of the group's points.
                             This can be done by <strong>checking this box</strong>..."
@@ -969,7 +970,7 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
             }
         })
 
-        ui <- c(ui, 
+        ui <- c(ui,
             list(
                 hr(),
                 .checkboxInput.iSEE(x, .plotLabelCenters,

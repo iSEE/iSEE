@@ -12,7 +12,7 @@
 #' Defaults to the first valid field (see \code{.cacheCommonInfo} below).
 #' \item \code{ColorByFeatureNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
 #' if \code{ColorBy="Feature name"}.
-#' Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}}, falling back to the name of the first valid assay 
+#' Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}}, falling back to the name of the first valid assay
 #' (see \code{?"\link{.cacheCommonInfo,DotPlot-method}"} for the definition of validity).
 #' \item \code{ColorBySampleNameColor}, a string specifying the color to use for coloring an individual sample on the plot,
 #' if \code{ColorBy="Sample name"}.
@@ -45,7 +45,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+#' \item [iSEEGenerics::hideInterface()] returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 #' This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"} and \code{"RowSelectionRestrict"}),
 #' otherwise it dispatches to the \linkS4class{Panel} method.
 #' }
@@ -96,7 +96,7 @@
 #' .refineParameters,ColumnDotPlot-method
 #' .defineInterface,ColumnDotPlot-method
 #' .createObservers,ColumnDotPlot-method
-#' .hideInterface,ColumnDotPlot-method
+#' hideInterface,ColumnDotPlot-method
 #' .multiSelectionDimension,ColumnDotPlot-method
 #' .multiSelectionRestricted,ColumnDotPlot-method
 #' .multiSelectionInvalidated,ColumnDotPlot-method
@@ -123,7 +123,7 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ..., SelectionEffect=
 
     args <- .emptyDefault(args, .sizeByColData, NA_character_)
 
-    # Defensive measure to avoid problems with cyclic graphs 
+    # Defensive measure to avoid problems with cyclic graphs
     # that the user doesn't have permissions to change!
     args <- .emptyDefault(args, .selectRowDynamic, FALSE)
 
@@ -196,7 +196,7 @@ setMethod("[[", "ColumnDotPlot", function(x, i, j, ...) {
             cname, i, cname, .selectColRestrict, cname, .colorByField))
 
         if (slot(x, .selectColRestrict)) {
-            "Restrict" 
+            "Restrict"
         } else if (slot(x, .colorByField) == .colorByColSelectionsTitle) {
             "Color"
         } else {
@@ -213,7 +213,7 @@ setReplaceMethod("[[", "ColumnDotPlot", function(x, i, j, ..., value) {
     if (i == "SelectionColor") {
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.", cname, i))
-        x 
+        x
     } else if (i == "SelectionEffect") {
         x <- updateObject(x, check=FALSE)
 
@@ -277,14 +277,15 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 
     continuous <- cdp_cached$continuous.colData.names
     x <- .replaceMissingWithFirst(x, .sizeByColData, continuous)
-    
+
     x <- .replaceMissingWithFirst(x, .plotCustomLabelsText, colnames(se)[1])
 
     x
 })
 
 #' @export
-setMethod(".hideInterface", "ColumnDotPlot", function(x, field) {
+#' @importMethodsFrom iSEEGenerics hideInterface
+setMethod("hideInterface", "ColumnDotPlot", function(x, field) {
     if (field %in% c(.selectRowSource, .selectRowRestrict, .selectRowDynamic)) {
         TRUE
     } else {
@@ -321,8 +322,8 @@ setMethod(".multiSelectionRestricted", "ColumnDotPlot", function(x) {
 
 #' @export
 setMethod(".multiSelectionInvalidated", "ColumnDotPlot", function(x) {
-    slot(x, .facetRow) == .facetByColSelectionsTitle || 
-        slot(x, .facetColumn) == .facetByColSelectionsTitle || 
+    slot(x, .facetRow) == .facetByColSelectionsTitle ||
+        slot(x, .facetColumn) == .facetByColSelectionsTitle ||
         callNextMethod()
 })
 
@@ -441,7 +442,7 @@ setMethod(".addDotPlotDataColor", "ColumnDotPlot", function(x, envir) {
             target <- "list()"
         }
         cmds <- sprintf(
-            "plot.data$ColorBy <- iSEE::multiSelectionToFactor(%s, colnames(se));", 
+            "plot.data$ColorBy <- iSEE::multiSelectionToFactor(%s, colnames(se));",
             target
         )
 
@@ -575,8 +576,8 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
         )
 
     } else if (color_choice == .colorByColSelectionsTitle) {
-        sprintf("scale_color_manual(values=iSEE::columnSelectionColorMap(colormap, %s), drop=FALSE) +", 
-            paste(deparse(levels(colorby)), collapse="")) 
+        sprintf("scale_color_manual(values=iSEE::columnSelectionColorMap(colormap, %s), drop=FALSE) +",
+            paste(deparse(levels(colorby)), collapse=""))
 
     } else {
         .colorByNoneDotPlotScale(x)
@@ -660,7 +661,7 @@ setMethod(".getDotPlotColorHelp", "ColumnDotPlot", function(x, color_choices) {
             steps <- c(steps, list(
                 c(
                     element=start,
-                    intro="If we <strong>select <em>Column selection</em></strong>, we will color the points according to the multiple column selection transmitted from another panel (see the Selection Parameters box). If a column is included in the active selection of the other panel, the corresponding point in this panel is assigned a certain color; if the column is in one of the saved selections, it gets another color; and if the column is not in any selection, it gets the default color (usually grey). Points that are present in multiple selections also get a different color."  
+                    intro="If we <strong>select <em>Column selection</em></strong>, we will color the points according to the multiple column selection transmitted from another panel (see the Selection Parameters box). If a column is included in the active selection of the other panel, the corresponding point in this panel is assigned a certain color; if the column is in one of the saved selections, it gets another color; and if the column is not in any selection, it gets the default color (usually grey). Points that are present in multiple selections also get a different color."
                 )
             ))
         }

@@ -39,7 +39,7 @@ The following arguments are required:
 }
 
 It is expected to attach one or more reactive expressions to \code{output} to render the output element(s) defined by \code{.defineOutput}.
-This is typically done by calling \pkg{shiny} rendering functions like \code{\link{renderPlot}} or the most appropriate equivalent for the panel's output. 
+This is typically done by calling \pkg{shiny} rendering functions like \code{\link{renderPlot}} or the most appropriate equivalent for the panel's output.
 The return value of this generic is not used; only the side-effect of the reactive output set-up is relevant.
 
 The rendering expression inside the chosen rendering function is expected to:
@@ -82,7 +82,7 @@ Methods for this generic should return a list containing:
 \itemize{
 \item \code{contents}, some arbitrary content for the panel (usually a data.frame).
 The values therein are used by \code{\link{.multiSelectionCommands}} to determine the multiple row/column selection in \code{x} to be transmitted to other (child) panels.
-The app will ensure that the \code{pObjects$contents} of each panel is populated before attempting to render their children. 
+The app will ensure that the \code{pObjects$contents} of each panel is populated before attempting to render their children.
 \code{contents} may be set to \code{NULL} if \code{x} does not transmit, i.e., \code{\link{.multiSelectionDimension}} returns \code{"none"}.
 \item \code{commands}, a list of character vectors of R commands that, when executed, produces the contents of the panel and any displayed output (e.g., a \link{ggplot} object).
 Developers should write these commands as if the evaluation environment only contains the SummarizedExperiment \code{se} and ExperimentColorMap \code{colormap}.

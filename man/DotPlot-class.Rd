@@ -22,7 +22,7 @@
 \alias{.prioritizeDotPlotData,DotPlot-method}
 \alias{.colorByNoneDotPlotField,DotPlot-method}
 \alias{.colorByNoneDotPlotScale,DotPlot-method}
-\alias{.defineInterface,DotPlot-method}
+\alias{defineInterface,DotPlot-method}
 \alias{.defineVisualColorInterface,DotPlot-method}
 \alias{.defineVisualSizeInterface,DotPlot-method}
 \alias{.defineVisualShapeInterface,DotPlot-method}
@@ -83,12 +83,12 @@ Defaults to \code{"None"}.
 The following slots control the faceting:
 \itemize{
 \item \code{FacetRowBy}, a string indicating what to use for creating row facets.
-For \linkS4class{RowDotPlot}s, this should be one of \code{"None"}, \code{"Row data"} or \code{"Row selection"}. 
-For \linkS4class{ColumnDotPlot}s, this should be one of \code{"None"}, \code{"Column data"} or \code{"Column selection"}. 
+For \linkS4class{RowDotPlot}s, this should be one of \code{"None"}, \code{"Row data"} or \code{"Row selection"}.
+For \linkS4class{ColumnDotPlot}s, this should be one of \code{"None"}, \code{"Column data"} or \code{"Column selection"}.
 Defaults to \code{"None"}, i.e., no row faceting.
 \item \code{FacetByColumn}, a string indicating what to use for creating column facets.
-For \linkS4class{RowDotPlot}s, this should be one of \code{"None"}, \code{"Row data"} or \code{"Row selection"}. 
-For \linkS4class{ColumnDotPlot}s, this should be one of \code{"None"}, \code{"Column data"} or \code{"Column selection"}. 
+For \linkS4class{RowDotPlot}s, this should be one of \code{"None"}, \code{"Row data"} or \code{"Row selection"}.
+For \linkS4class{ColumnDotPlot}s, this should be one of \code{"None"}, \code{"Column data"} or \code{"Column selection"}.
 Defaults to \code{"None"}, i.e., no column faceting.
 }
 
@@ -182,7 +182,7 @@ This will also call the equivalent \linkS4class{Panel} method.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
+\item `defineInterface(x, se, select_info)` defines the user interface for manipulating all slots described above and in the parent classes.
 It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}}.
 This will \emph{override} the \linkS4class{Panel} method.
 \item \code{\link{.defineVisualColorInterface}(x, se, select_info)} defines the user interface subpanel for manipulating the color of the points.

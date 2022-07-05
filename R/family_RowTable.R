@@ -2,7 +2,7 @@
 #'
 #' The RowTable is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by no more than one row in a \code{\link{datatable}} widget.
 #' In panels of this class, single and multiple selections can only be transmitted on the features.
-#' 
+#'
 #' @section Slot overview:
 #' No new slots are added.
 #' All slots provided in the \linkS4class{Table} parent class are available.
@@ -19,7 +19,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+#' \item `hideInterface(x, field)` returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 #' This returns \code{TRUE} for column selection parameters (\code{"ColumnSelectionSource"} and \code{"ColumnSelectionRestrict"}),
 #' otherwise it dispatches to the \linkS4class{Panel} method.
 #' }
@@ -62,12 +62,12 @@
 #' @author Aaron Lun
 #'
 #' @docType methods
-#' @aliases 
+#' @aliases
 #' initialize,RowTable-method
 #' .refineParameters,RowTable-method
 #' .defineInterface,RowTable-method
 #' .createObservers,RowTable-method
-#' .hideInterface,RowTable-method
+#' hideInterface,RowTable-method
 #' .multiSelectionDimension,RowTable-method
 #' .singleSelectionDimension,RowTable-method
 #' .showSelectionDetails,RowTable-method
@@ -79,7 +79,7 @@ NULL
 setMethod("initialize", "RowTable", function(.Object, ...) {
     args <- list(...)
 
-    # Defensive measure to avoid problems with cyclic graphs 
+    # Defensive measure to avoid problems with cyclic graphs
     # that the user doesn't have permissions to change!
     args <- .emptyDefault(args, .selectColDynamic, FALSE)
 
@@ -107,7 +107,8 @@ setMethod(".createObservers", "RowTable", function(x, se, input, session, pObjec
 })
 
 #' @export
-setMethod(".hideInterface", "RowTable", function(x, field) {
+#' @importMethodsFrom iSEEGenerics hideInterface
+setMethod("hideInterface", "RowTable", function(x, field) {
     if (field %in% c(.selectColSource, .selectColRestrict, .selectColDynamic)) {
         TRUE
     } else {

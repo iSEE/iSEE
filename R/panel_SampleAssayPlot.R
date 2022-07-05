@@ -52,7 +52,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+#' \item \code{\link{defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 #' }
 #'
@@ -75,7 +75,7 @@
 #'
 #' For managing selections:
 #' \itemize{
-#' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, 
+#' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels,
 #' mostly related to the choice of sample on the x- and y-axes.
 #' This includes the output of the method for the parent \linkS4class{RowDotPlot} class.
 #' \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the x-axis uses multiple row selections,
@@ -127,7 +127,7 @@
 #' @aliases SampleAssayPlot SampleAssayPlot-class
 #' initialize,SampleAssayPlot-method
 #' .refineParameters,SampleAssayPlot-method
-#' .defineDataInterface,SampleAssayPlot-method
+#' defineDataInterface,SampleAssayPlot-method
 #' .createObservers,SampleAssayPlot-method
 #' .singleSelectionSlots,SampleAssayPlot-method
 #' .multiSelectionInvalidated,SampleAssayPlot-method
@@ -226,7 +226,8 @@ setValidity2("SampleAssayPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineDataInterface", "SampleAssayPlot", function(x, se, select_info) {
+#' @importMethodsFrom iSEEGenerics defineDataInterface
+setMethod("defineDataInterface", "SampleAssayPlot", function(x, se, select_info) {
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -283,7 +284,7 @@ This is achieved by dynamically changing the identity of the designated panel fr
                         ),
                         c(
                             element=paste0("#", plot_name, "_", .sampAssayXAxisRowData, " + .selectize-control"),
-                            intro="... we can stratify points on the x-axis based on a field of interest in the <code>rowData</code>." 
+                            intro="... we can stratify points on the x-axis based on a field of interest in the <code>rowData</code>."
                         )
                     )
                 },
@@ -303,7 +304,7 @@ We can either choose the \"other panel\" manually with this dropdown..."
                 ),
                 c(
                     element=paste0("#", plot_name, "_", .sampAssayXAxisSampDynamic),
-                    intro="... or we can dynamically change the identity of the other panel. 
+                    intro="... or we can dynamically change the identity of the other panel.
 If this box is checked, a column-based selection in any other panel of the <strong>iSEE</strong> application will be used to specify the sample on the x-axis in this panel."
                 ),
                 c(
@@ -439,14 +440,14 @@ setMethod(".generateDotPlotData", "SampleAssayPlot", function(x, envir) {
     } else if (x_choice == .sampAssayXAxisSelectionsTitle) {
         x_lab <- "Row selection"
         plot_title <- paste(plot_title, "vs row selection")
-        
+
         if (exists("row_selected", envir=envir, inherits=FALSE)) {
             target <- "row_selected"
         } else {
             target <- "list()"
         }
         data_cmds[["x"]] <- sprintf(
-            "plot.data$X <- iSEE::multiSelectionToFactor(%s, rownames(se));", 
+            "plot.data$X <- iSEE::multiSelectionToFactor(%s, rownames(se));",
             target
         )
 

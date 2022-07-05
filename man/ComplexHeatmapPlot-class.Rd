@@ -6,12 +6,12 @@
 \alias{ComplexHeatmapPlot}
 \alias{.cacheCommonInfo,ComplexHeatmapPlot-method}
 \alias{.createObservers,ComplexHeatmapPlot-method}
-\alias{.defineDataInterface,ComplexHeatmapPlot-method}
-\alias{.defineInterface,ComplexHeatmapPlot-method}
+\alias{defineDataInterface,ComplexHeatmapPlot-method}
+\alias{defineInterface,ComplexHeatmapPlot-method}
 \alias{.defineOutput,ComplexHeatmapPlot-method}
 \alias{.fullName,ComplexHeatmapPlot-method}
 \alias{.generateOutput,ComplexHeatmapPlot-method}
-\alias{.hideInterface,ComplexHeatmapPlot-method}
+\alias{hideInterface,ComplexHeatmapPlot-method}
 \alias{.panelColor,ComplexHeatmapPlot-method}
 \alias{.refineParameters,ComplexHeatmapPlot-method}
 \alias{.renderOutput,ComplexHeatmapPlot-method}
@@ -145,15 +145,15 @@ If no valid column metadata fields are available, \code{NULL} is returned instea
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
+\item `defineInterface(x, se, select_info)` defines the user interface for manipulating all slots described above and in the parent classes.
 TODO
-It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}},
+It will also create a data parameter box that can respond to specialized [defineDataInterface()],
 and a visual parameter box and a selection parameter box both specific to the \code{ComplexHeatmapPlot} panel.
 This will \emph{override} the \linkS4class{Panel} method.
-\item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+\item `defineDataInterface(x, se, select_info)` returns a list of interface elements for manipulating all slots described above.
 \item \code{\link{.defineOutput}(x)} returns a UI element for a brushable plot.
 \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
-\item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+\item `hideInterface(x, field)` returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 This returns \code{TRUE} for the selection history (\code{"SelectionHistory"}),
 otherwise it dispatches to the \linkS4class{Panel} method.
 }

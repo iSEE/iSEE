@@ -31,7 +31,7 @@
 #' For defining the interface:
 #' \itemize{
 #' \item \code{\link{.defineOutput}(x)} returns a UI element for a \code{\link[DT]{dataTableOutput}} widget.
-#' \item \code{\link{.defineDataInterface}(x)} will create interface elements for modifying the table,
+#' \item `defineDataInterface(x)` will create interface elements for modifying the table,
 #' namely to choose which columns to hide.
 #' Note that this is populated by \code{\link{.generateOutput}} upon table rendering,
 #' as we do not know the available columns before that point.
@@ -46,7 +46,7 @@
 #' \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the table;
 #' \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot};
 #' and \code{varname}, a string specifying the name of the variable in \code{commands} used to generate \code{contents}.
-#' \item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} will create a CSV file containing the current table, and return a string containing the path to that file. 
+#' \item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} will create a CSV file containing the current table, and return a string containing the path to that file.
 #' This assumes that the \code{contents} field returned by \code{\link{.generateOutput}} is a data.frame or can be coerced into one.
 #' }
 #'
@@ -85,13 +85,13 @@
 #' .renderOutput,Table-method
 #' .defineOutput,Table-method
 #' .exportOutput,Table-method
-#' .hideInterface,Table-method
+#' hideInterface,Table-method
 #' .multiSelectionCommands,Table-method
 #' .multiSelectionActive,Table-method
 #' .multiSelectionRestricted,Table-method
 #' .singleSelectionValue,Table-method
 #' .definePanelTour,Table-method
-#' .defineDataInterface,Table-method
+#' defineDataInterface,Table-method
 #' updateObject,Table-method
 NULL
 
@@ -160,7 +160,7 @@ setMethod(".singleSelectionValue", "Table", function(x, contents) {
 #' @importFrom DT dataTableOutput
 setMethod(".defineOutput", "Table", function(x) {
     tagList(
-        dataTableOutput(.getEncodedName(x)), 
+        dataTableOutput(.getEncodedName(x)),
         uiOutput(paste0(.getEncodedName(x), "_", .tableExtraInfo)),
         hr()
     )
@@ -203,7 +203,8 @@ setMethod(".exportOutput", "Table", function(x, se, all_memory, all_contents) {
 })
 
 #' @export
-setMethod(".defineDataInterface", "Table", function(x, se, select_info) {
+#' @importMethodsFrom iSEEGenerics defineDataInterface
+setMethod("defineDataInterface", "Table", function(x, se, select_info) {
     hidden <- slot(x, .TableHidden)
 
     .addSpecificTour(class(x), .TableHidden, function(tab_name) {
@@ -229,7 +230,8 @@ Any number of column names can be specified here."
 })
 
 #' @export
-setMethod(".hideInterface", "Table", function(x, field) {
+#' @importMethodsFrom iSEEGenerics hideInterface
+setMethod("hideInterface", "Table", function(x, field) {
     if (field %in% c(.multiSelectHistory, .selectColRestrict, .selectRowRestrict)) {
         # Tables always restrict.
         TRUE
@@ -262,7 +264,7 @@ setMethod("updateObject", "Table", function(object, ..., verbose=FALSE) {
         object <- callNextMethod()
 
         # Backwards compatibility for new slots (added 3.12).
-        if (update.2.1){ 
+        if (update.2.1){
             .Deprecated(msg=sprintf("detected outdated '%s' instance, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
             object[[.TableHidden]] <- character(0)
         }

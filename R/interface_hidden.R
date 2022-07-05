@@ -1,6 +1,6 @@
 #' Hidden interface elements
 #'
-#' Returns an interface element or \code{NULL}, depending on whether the element is hidden based on \code{\link{.hideInterface}}.
+#' Returns an interface element or \code{NULL}, depending on whether the element is hidden based on [hideInterface()].
 #' This allows panels to hide interface elements that are provided by parent classes but are not needed in the subclass.
 #'
 #' @param x An instance of a \linkS4class{Panel} class.
@@ -12,7 +12,7 @@
 #' @return
 #' The output of \code{FUN(id, ..)} is returned where \code{id} is defined by concatenating \code{\link{.getEncodedName}(x)} and \code{field} (separated by an underscore).
 #'
-#' If \code{.hideInterface(x, field)} is \code{TRUE}, the output is wrapped inside a \code{\link{hidden}} call.
+#' If `hideInterface(x, field)` is \code{TRUE}, the output is wrapped inside a \code{\link{hidden}} call.
 #'
 #' @details
 #' Wrapping the output inside a \code{\link{hidden}} call is intended to avoid problems with conditional elements.
@@ -21,7 +21,7 @@
 #'
 #' @author Aaron Lun
 #' @seealso
-#' \code{\link{.hideInterface}}, which determines whether an interface element should be hidden.
+#' [hideInterface()], which determines whether an interface element should be hidden.
 #'
 #' \code{\link{.defineInterface}}, where these functions are typically used.
 #'
@@ -29,9 +29,10 @@
 #'
 #' @rdname INTERNAL_hidden_elements
 #' @importFrom shinyjs hidden
+#' @importMethodsFrom iSEEGenerics defineInterface
 .hide_this_thing <- function(x, field, FUN, ...) {
     element <- FUN(paste0(.getEncodedName(x), "_", field), ...)
-    if (.hideInterface(x, field)) {
+    if (hideInterface(x, field)) {
         hidden(element)
     } else {
         element
@@ -67,8 +68,9 @@
     .hide_this_thing(x, field, selectizeInput, ...)
 }
 
+#' @importMethodsFrom iSEEGenerics hideInterface
 .hide_this_thing2 <- function(x, field, element) {
-    if (.hideInterface(x, field)) {
+    if (hideInterface(x, field)) {
         hidden(element)
     } else {
         element
@@ -79,7 +81,7 @@
 #'
 #' Wrapper functions to create the standard \pkg{shiny} user interface elements,
 #' accompanied by an optional help icon that opens an interactive tour describing the purpose of the element.
-#' Also responds to requests to hide a particular element via \code{\link{.hideInterface}}.
+#' Also responds to requests to hide a particular element via \code{\link{hideInterface}}.
 #'
 #' @param x A \linkS4class{Panel} object for which to construct an interface element.
 #' @param field String containing the name of the parameter controlled by the interface element.
@@ -91,7 +93,7 @@
 #' The output of \code{FUN(id, ..)} is returned where \code{FUN} is set the corresponding \pkg{shiny} function, e.g., \code{\link{selectInput}} for \code{.selectInput.iSEE}.
 #' \code{id} is defined by concatenating \code{\link{.getEncodedName}(x)} and \code{field} (separated by an underscore).
 #'
-#' If \code{.hideInterface(x, field)} is \code{TRUE}, the output is wrapped inside a \code{\link{hidden}} call.
+#' If `hideInterface(x, field)` is \code{TRUE}, the output is wrapped inside a \code{\link{hidden}} call.
 #'
 #' @author Aaron Lun
 #'

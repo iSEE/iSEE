@@ -189,6 +189,7 @@ createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot",
 #'
 #' @rdname INTERNAL_custom_panel_methods
 #' @importFrom shiny tagList textInput numericInput checkboxInput selectInput
+#' @importMethodsFrom iSEEGenerics defineDataInterface
 .spawn_custom_methods <- function(defaults, className, fullName, where=topenv(parent.frame())) {
     force(defaults)
     force(fullName)
@@ -201,7 +202,7 @@ createCustomPlot <- function(FUN, restrict=NULL, className="CustomPlot",
         do.call(callNextMethod, c(list(.Object), extra_args))
     }, where=where)
 
-    setMethod(".defineDataInterface", className, function(x, se, select_info) {
+    setMethod("defineDataInterface", className, function(x, se, select_info) {
         tab_name <- .getEncodedName(x)
         collected <- list()
 

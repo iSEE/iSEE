@@ -34,7 +34,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+#' \item `defineDataInterface(x, se, select_info)` returns a list of interface elements for manipulating all slots described above.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 #' }
 #'
@@ -98,7 +98,7 @@
 #' initialize,ReducedDimensionPlot-method
 #' .refineParameters,ReducedDimensionPlot-method
 #' .cacheCommonInfo,ReducedDimensionPlot-method
-#' .defineDataInterface,ReducedDimensionPlot-method
+#' defineDataInterface,ReducedDimensionPlot-method
 #' .createObservers,ReducedDimensionPlot-method
 #' .fullName,ReducedDimensionPlot-method
 #' .panelColor,ReducedDimensionPlot-method
@@ -203,7 +203,8 @@ setValidity2("ReducedDimensionPlot", function(object) {
 #' @importFrom SingleCellExperiment reducedDim reducedDimNames
 #' @importFrom shiny selectInput
 #' @importFrom methods callNextMethod
-setMethod(".defineDataInterface", "ReducedDimensionPlot", function(x, se, select_info) {
+#' @importMethodsFrom iSEEGenerics defineDataInterface
+setMethod("defineDataInterface", "ReducedDimensionPlot", function(x, se, select_info) {
     cur_reddim <- slot(x, .redDimType)
     max_dim <- ncol(reducedDim(se, cur_reddim))
     choices <- seq_len(max_dim)
@@ -244,17 +245,17 @@ These results should be loaded into the object prior to calling <strong>iSEE</st
     })
 
     list(
-        .selectInput.iSEE(x, .redDimType, 
+        .selectInput.iSEE(x, .redDimType,
             label="Type:",
             choices=.getCachedCommonInfo(se, "ReducedDimensionPlot")$valid.reducedDim.names,
             selected=cur_reddim),
-        .selectInput.iSEE(x, .redDimXAxis, 
+        .selectInput.iSEE(x, .redDimXAxis,
             label="Dimension 1:",
-            choices=choices, 
+            choices=choices,
             selected=slot(x, .redDimXAxis)),
-        .selectInput.iSEE(x, .redDimYAxis, 
+        .selectInput.iSEE(x, .redDimYAxis,
             label="Dimension 2:",
-            choices=choices, 
+            choices=choices,
             selected=slot(x, .redDimYAxis))
     )
 })

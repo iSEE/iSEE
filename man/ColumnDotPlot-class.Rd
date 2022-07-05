@@ -8,7 +8,7 @@
 \alias{.refineParameters,ColumnDotPlot-method}
 \alias{.defineInterface,ColumnDotPlot-method}
 \alias{.createObservers,ColumnDotPlot-method}
-\alias{.hideInterface,ColumnDotPlot-method}
+\alias{hideInterface,ColumnDotPlot-method}
 \alias{.multiSelectionDimension,ColumnDotPlot-method}
 \alias{.multiSelectionRestricted,ColumnDotPlot-method}
 \alias{.multiSelectionInvalidated,ColumnDotPlot-method}
@@ -35,7 +35,7 @@ if \code{ColorBy="Column data"} (see the \linkS4class{Panel} class).
 Defaults to the first valid field (see \code{.cacheCommonInfo} below).
 \item \code{ColorByFeatureNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
 if \code{ColorBy="Feature name"}.
-Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}}, falling back to the name of the first valid assay 
+Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}}, falling back to the name of the first valid assay
 (see \code{?"\link{.cacheCommonInfo,DotPlot-method}"} for the definition of validity).
 \item \code{ColorBySampleNameColor}, a string specifying the color to use for coloring an individual sample on the plot,
 if \code{ColorBy="Sample name"}.
@@ -70,7 +70,7 @@ This will also call the equivalent \linkS4class{DotPlot} method.
 
 For defining the interface:
 \itemize{
-\item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+\item [iSEEGenerics::hideInterface()] returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"} and \code{"RowSelectionRestrict"}),
 otherwise it dispatches to the \linkS4class{Panel} method.
 }

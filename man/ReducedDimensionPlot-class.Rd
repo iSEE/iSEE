@@ -7,7 +7,7 @@
 \alias{initialize,ReducedDimensionPlot-method}
 \alias{.refineParameters,ReducedDimensionPlot-method}
 \alias{.cacheCommonInfo,ReducedDimensionPlot-method}
-\alias{.defineDataInterface,ReducedDimensionPlot-method}
+\alias{defineDataInterface,ReducedDimensionPlot-method}
 \alias{.createObservers,ReducedDimensionPlot-method}
 \alias{.fullName,ReducedDimensionPlot-method}
 \alias{.panelColor,ReducedDimensionPlot-method}
@@ -54,7 +54,7 @@ If no dimensionality reduction results are available, \code{NULL} is returned in
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+\item `defineDataInterface(x, se, select_info)` returns a list of interface elements for manipulating all slots described above.
 \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 }
 

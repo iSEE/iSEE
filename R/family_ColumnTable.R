@@ -2,7 +2,7 @@
 #'
 #' The ColumnTable is a virtual class where each column in the \linkS4class{SummarizedExperiment} is represented by no more than row in a \code{\link{datatable}} widget.
 #' In panels of this class, single and multiple selections can only be transmitted on the samples.
-#' 
+#'
 #' @section Slot overview:
 #' No new slots are added.
 #' All slots provided in the \linkS4class{Table} parent class are available.
@@ -19,7 +19,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+#' \item `hideInterface(x, field)` returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 #' This returns \code{TRUE} for row selection parameters (\code{"RowSelectionSource"} and \code{"RowSelectionRestrict"}),
 #' otherwise it dispatches to the \linkS4class{Panel} method.
 #' }
@@ -62,12 +62,12 @@
 #' @author Aaron Lun
 #'
 #' @docType methods
-#' @aliases 
+#' @aliases
 #' initialize,ColumnTable-method
 #' .refineParameters,ColumnTable-method
 #' .defineInterface,ColumnTable-method
 #' .createObservers,ColumnTable-method
-#' .hideInterface,ColumnTable-method
+#' hideInterface,ColumnTable-method
 #' .multiSelectionDimension,ColumnTable-method
 #' .singleSelectionDimension,ColumnTable-method
 #' .showSelectionDetails,ColumnTable-method
@@ -79,7 +79,7 @@ NULL
 setMethod("initialize", "ColumnTable", function(.Object, ...) {
     args <- list(...)
 
-    # Defensive measure to avoid problems with cyclic graphs 
+    # Defensive measure to avoid problems with cyclic graphs
     # that the user doesn't have permissions to change!
     args <- .emptyDefault(args, .selectRowDynamic, FALSE)
 
@@ -113,7 +113,7 @@ setMethod(".multiSelectionDimension", "ColumnTable", function(x) "column")
 setMethod(".singleSelectionDimension", "ColumnTable", function(x) "sample")
 
 #' @export
-setMethod(".hideInterface", "ColumnTable", function(x, field) {
+setMethod("hideInterface", "ColumnTable", function(x, field) {
     if (field %in% c(.selectRowSource, .selectRowRestrict, .selectRowDynamic)) {
         TRUE
     } else {

@@ -6,7 +6,7 @@
 \alias{RowDataPlot}
 \alias{initialize,RowDataPlot-method}
 \alias{.refineParameters,RowDataPlot-method}
-\alias{.defineDataInterface,RowDataPlot-method}
+\alias{defineDataInterface,RowDataPlot-method}
 \alias{.createObservers,RowDataPlot-method}
 \alias{.fullName,RowDataPlot-method}
 \alias{.panelColor,RowDataPlot-method}
@@ -55,11 +55,11 @@ If no valid row metadata variables are available, \code{NULL} is returned instea
 
 For defining the interface:
 \itemize{
-\item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+\item `defineDataInterface(x, se, select_info)` returns a list of interface elements for manipulating all slots described above.
 \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
-\item \code{\link{.allowableXAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{rowData}(se)} that can be used as choices for the x-axis. 
+\item \code{\link{.allowableXAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{rowData}(se)} that can be used as choices for the x-axis.
 This consists of all variables with atomic values.
-\item \code{\link{.allowableYAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{rowData}(se)} that can be used as choices for the y-axis. 
+\item \code{\link{.allowableYAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{rowData}(se)} that can be used as choices for the y-axis.
 This consists of all variables with atomic values.
 }
 

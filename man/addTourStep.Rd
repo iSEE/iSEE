@@ -20,7 +20,7 @@ Character vector of length two.
 The first entry contains the \code{element} tag to identify the interface element to highlight,
 while the second entry contains the \code{text}.
 
-Alternatively, \code{NULL} may be returned if \code{\link{.hideInterface}(x, field)} indicates that the corresponding interface element has been hidden.
+Alternatively, \code{NULL} may be returned if `hideInterface(x, field)` indicates that the corresponding interface element has been hidden.
 }
 \description{
 Utility to add a step to the panel-specific \pkg{rintrojs} tour, generating the \code{element} tag automatically.

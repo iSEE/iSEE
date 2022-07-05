@@ -18,7 +18,7 @@
 #' }
 #'
 #' The following slots control the values on the x-axis:
-#' \itemize{ 
+#' \itemize{
 #' \item \code{XAxis}, string specifying what should be plotting on the x-axis.
 #' This can be any one of \code{"None"}, \code{"Feature name"}, \code{"Column data"} or \code{"Column selection"}.
 #' Defaults to \code{"None"}.
@@ -52,7 +52,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+#' \item `defineDataInterface(x, se, select_info)` returns a list of interface elements for manipulating all slots described above.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
 #' }
 #'
@@ -75,7 +75,7 @@
 #'
 #' For managing selections:
 #' \itemize{
-#' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels, 
+#' \item \code{\link{.singleSelectionSlots}(x)} will return a list specifying the slots that can be updated by single selections in transmitter panels,
 #' mostly related to the choice of feature on the x- and y-axes.
 #' This includes the output of the method for the parent \linkS4class{ColumnDotPlot} class.
 #' \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the x-axis uses multiple column selections,
@@ -127,7 +127,7 @@
 #' @aliases FeatureAssayPlot FeatureAssayPlot-class
 #' initialize,FeatureAssayPlot-method
 #' .refineParameters,FeatureAssayPlot-method
-#' .defineDataInterface,FeatureAssayPlot-method
+#' defineDataInterface,FeatureAssayPlot-method
 #' .createObservers,FeatureAssayPlot-method
 #' .singleSelectionSlots,FeatureAssayPlot-method
 #' .multiSelectionInvalidated,FeatureAssayPlot-method
@@ -226,7 +226,8 @@ setValidity2("FeatureAssayPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineDataInterface", "FeatureAssayPlot", function(x, se, select_info) {
+#' @importMethodsFrom iSEEGenerics defineDataInterface
+setMethod("defineDataInterface", "FeatureAssayPlot", function(x, se, select_info) {
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -283,7 +284,7 @@ This is achieved by dynamically changing the identity of the designated panel fr
                         ),
                         c(
                             element=paste0("#", plot_name, "_", .featAssayXAxisColData, " + .selectize-control"),
-                            intro="... we can stratify points on the x-axis based on a field of interest in the <code>colData</code>." 
+                            intro="... we can stratify points on the x-axis based on a field of interest in the <code>colData</code>."
                         )
                     )
                 },
@@ -303,7 +304,7 @@ We can either choose the \"other panel\" manually with this dropdown..."
                 ),
                 c(
                     element=paste0("#", plot_name, "_", .featAssayXAxisFeatDynamic),
-                    intro="... or we can dynamically change the identity of the other panel. 
+                    intro="... or we can dynamically change the identity of the other panel.
 If this box is checked, any feature selection in any other panel of the <strong>iSEE</strong> application will be used to specify the feature on the x-axis in this panel."
                 ),
                 c(
@@ -318,9 +319,9 @@ one corresponding to the selected points inside the brush, and another correspon
 
     list(
         .selectizeInput.iSEE(x, .featAssayYAxisFeatName,
-            label="Y-axis feature:", 
-            choices=NULL, 
-            selected=NULL, 
+            label="Y-axis feature:",
+            choices=NULL,
+            selected=NULL,
             multiple=FALSE),
         selectInput(.input_FUN(.featAssayYAxisRowTable), label=NULL, choices=tab_by_row,
             selected=.choose_link(slot(x, .featAssayYAxisRowTable), tab_by_row)),
@@ -331,10 +332,10 @@ one corresponding to the selected points inside the brush, and another correspon
         selectInput(paste0(.getEncodedName(x), "_", .featAssayAssay), label=NULL,
             choices=all_assays, selected=slot(x, .featAssayAssay)),
 
-        .radioButtons.iSEE(x, .featAssayXAxis, 
-            label="X-axis:", 
+        .radioButtons.iSEE(x, .featAssayXAxis,
+            label="X-axis:",
             inline=TRUE,
-            choices=xaxis_choices, 
+            choices=xaxis_choices,
             selected=slot(x, .featAssayXAxis)),
 
         .conditionalOnRadio(.input_FUN(.featAssayXAxis),
@@ -447,7 +448,7 @@ setMethod(".generateDotPlotData", "FeatureAssayPlot", function(x, envir) {
             target <- "list()"
         }
         data_cmds[["x"]] <- sprintf(
-            "plot.data$X <- iSEE::multiSelectionToFactor(%s, colnames(se));", 
+            "plot.data$X <- iSEE::multiSelectionToFactor(%s, colnames(se));",
             target
         )
 

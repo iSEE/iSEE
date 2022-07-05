@@ -46,7 +46,7 @@ For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vector
 
 \section{Controlling \code{ColorBy*Data} choices}{
 
-\code{.allowableColorByDataChoices(x, se)} should return a character vector of the allowable row/column data variables to use 
+\code{.allowableColorByDataChoices(x, se)} should return a character vector of the allowable row/column data variables to use
 when \code{ColorBy} is set to \code{"Row data"} or \code{"Column data"} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
 The default method will use all available (atomic) variables, but subclasses can specialize this to only allow, e.g., continuous or discrete variables.
 }

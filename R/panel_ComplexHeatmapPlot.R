@@ -115,15 +115,15 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineInterface}(x, se, select_info)} defines the user interface for manipulating all slots described above and in the parent classes.
+#' \item `defineInterface(x, se, select_info)` defines the user interface for manipulating all slots described above and in the parent classes.
 #' TODO
-#' It will also create a data parameter box that can respond to specialized \code{\link{.defineDataInterface}},
+#' It will also create a data parameter box that can respond to specialized [defineDataInterface()],
 #' and a visual parameter box and a selection parameter box both specific to the \code{ComplexHeatmapPlot} panel.
 #' This will \emph{override} the \linkS4class{Panel} method.
-#' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+#' \item `defineDataInterface(x, se, select_info)` returns a list of interface elements for manipulating all slots described above.
 #' \item \code{\link{.defineOutput}(x)} returns a UI element for a brushable plot.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
-#' \item \code{\link{.hideInterface}(x, field)} returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
+#' \item `hideInterface(x, field)` returns a logical scalar indicating whether the interface element corresponding to \code{field} should be hidden.
 #' This returns \code{TRUE} for the selection history (\code{"SelectionHistory"}),
 #' otherwise it dispatches to the \linkS4class{Panel} method.
 #' }
@@ -194,13 +194,12 @@
 #' @aliases ComplexHeatmapPlot ComplexHeatmapPlot-class
 #' .cacheCommonInfo,ComplexHeatmapPlot-method
 #' .createObservers,ComplexHeatmapPlot-method
-#' .defineDataInterface,ComplexHeatmapPlot-method
-#' .defineInterface,ComplexHeatmapPlot-method
+#' defineDataInterface,ComplexHeatmapPlot-method
+#' defineInterface,ComplexHeatmapPlot-method
 #' .defineOutput,ComplexHeatmapPlot-method
-#' .defineInterface,ComplexHeatmapPlot-method
 #' .fullName,ComplexHeatmapPlot-method
 #' .generateOutput,ComplexHeatmapPlot-method
-#' .hideInterface,ComplexHeatmapPlot-method
+#' hideInterface,ComplexHeatmapPlot-method
 #' .panelColor,ComplexHeatmapPlot-method
 #' .refineParameters,ComplexHeatmapPlot-method
 #' .renderOutput,ComplexHeatmapPlot-method
@@ -441,7 +440,8 @@ setMethod(".defineOutput", "ComplexHeatmapPlot", function(x) {
 #' @importFrom shiny selectInput radioButtons checkboxInput actionButton
 #' @importFrom shinyjs disabled
 #' @importFrom methods callNextMethod
-setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_info) {
+#' @importMethodsFrom iSEEGenerics defineDataInterface
+setMethod("defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_info) {
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -554,7 +554,8 @@ The clustering itself is done using <code>hclust</code>, i.e., hierarchical clus
 })
 
 #' @export
-setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info) {
+#' @importMethodsFrom iSEEGenerics defineInterface
+setMethod("defineInterface", "ComplexHeatmapPlot", function(x, se, select_info) {
     out <- callNextMethod()
     list(
         out[1],
@@ -733,7 +734,8 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 })
 
 #' @export
-setMethod(".hideInterface", "ComplexHeatmapPlot", function(x, field) {
+#' @importMethodsFrom iSEEGenerics hideInterface
+setMethod("hideInterface", "ComplexHeatmapPlot", function(x, field) {
     if (field %in% c(.multiSelectHistory, .selectRowRestrict)) {
         TRUE
     } else {

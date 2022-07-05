@@ -15,6 +15,7 @@ Description: Create an interactive Shiny-based graphical user interface
     is given to single-cell data in a SingleCellExperiment object with 
     visualization of dimensionality reduction results.
 Depends:
+    iSEEGenerics,
     SummarizedExperiment, 
     SingleCellExperiment
 Imports:
@@ -56,6 +57,8 @@ Suggests:
     RColorBrewer,
     viridis,
     htmltools
+Remotes:  
+    iSEE/iSEEGenerics
 URL: https://github.com/iSEE/iSEE
 BugReports: https://github.com/iSEE/iSEE/issues
 biocViews: ImmunoOncology, Visualization, GUI, DimensionReduction, 
@@ -64,4 +67,4 @@ biocViews: ImmunoOncology, Visualization, GUI, DimensionReduction,
 License: MIT + file LICENSE
 VignetteBuilder: knitr
 Encoding: UTF-8
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0

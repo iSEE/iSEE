@@ -33,11 +33,11 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
+#' \item `defineDataInterface(x, se, select_info)` returns a list of interface elements for manipulating all slots described above.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
-#' \item \code{\link{.allowableXAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{rowData}(se)} that can be used as choices for the x-axis. 
+#' \item \code{\link{.allowableXAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{rowData}(se)} that can be used as choices for the x-axis.
 #' This consists of all variables with atomic values.
-#' \item \code{\link{.allowableYAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{rowData}(se)} that can be used as choices for the y-axis. 
+#' \item \code{\link{.allowableYAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{rowData}(se)} that can be used as choices for the y-axis.
 #' This consists of all variables with atomic values.
 #' }
 #'
@@ -72,7 +72,7 @@
 #'
 #' @section Subclass expectations:
 #' Subclasses do not have to provide any methods, as this is a concrete class.
-#' 
+#'
 #' @author Aaron Lun
 #'
 #' @seealso
@@ -108,7 +108,7 @@
 #' @aliases RowDataPlot RowDataPlot-class
 #' initialize,RowDataPlot-method
 #' .refineParameters,RowDataPlot-method
-#' .defineDataInterface,RowDataPlot-method
+#' defineDataInterface,RowDataPlot-method
 #' .createObservers,RowDataPlot-method
 #' .fullName,RowDataPlot-method
 #' .panelColor,RowDataPlot-method
@@ -184,7 +184,8 @@ setValidity2("RowDataPlot", function(object) {
 #' @export
 #' @importFrom shiny selectInput radioButtons
 #' @importFrom methods callNextMethod
-setMethod(".defineDataInterface", "RowDataPlot", function(x, se, select_info) {
+#' @importMethodsFrom iSEEGenerics defineDataInterface
+setMethod("defineDataInterface", "RowDataPlot", function(x, se, select_info) {
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
@@ -204,7 +205,7 @@ setMethod(".defineDataInterface", "RowDataPlot", function(x, se, select_info) {
             rbind(
                 c(
                     element=paste0("#", plot_name, "_", .rowDataXAxis),
-                    intro="Here, we choose what to show on the x-axis. If we were to <strong>click on <em>Row data</em></strong>..." 
+                    intro="Here, we choose what to show on the x-axis. If we were to <strong>click on <em>Row data</em></strong>..."
                 ),
                 c(
                     element=paste0("#", plot_name, "_", .rowDataXAxisRowData, " + .selectize-control"),
@@ -226,9 +227,9 @@ If any saved selections are present, these would show up as additional violins."
     list(
         .selectInput.iSEE(x, .rowDataYAxis,
             label="Column of interest (Y-axis):",
-            choices=.allowableYAxisChoices(x, se), 
+            choices=.allowableYAxisChoices(x, se),
             selected=slot(x, .rowDataYAxis)),
-        .radioButtons.iSEE(x, .rowDataXAxis, 
+        .radioButtons.iSEE(x, .rowDataXAxis,
             label="X-axis:", inline=TRUE,
             choices=c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle, .rowDataXAxisSelectionsTitle),
             selected=slot(x, .rowDataXAxis)),
@@ -236,7 +237,7 @@ If any saved selections are present, these would show up as additional violins."
             .rowDataXAxisRowDataTitle,
             .selectInputHidden(x, .rowDataXAxisRowData,
                 label="Column of interest (X-axis):",
-                choices=.allowableXAxisChoices(x, se), 
+                choices=.allowableXAxisChoices(x, se),
                 selected=slot(x, .rowDataXAxisRowData)))
     )
 })
@@ -303,7 +304,7 @@ setMethod(".generateDotPlotData", "RowDataPlot", function(x, envir) {
             target <- "list()"
         }
         data_cmds[["x"]] <- sprintf(
-            "plot.data$X <- iSEE::multiSelectionToFactor(%s, rownames(se));", 
+            "plot.data$X <- iSEE::multiSelectionToFactor(%s, rownames(se));",
             target
         )
 

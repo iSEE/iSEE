@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.3</span>
       </span>
     </div>
 
@@ -156,8 +156,8 @@ Note that a no-match in one column does not preclude a successful match in anoth
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Range query:</span></span>
 <span class="r-in"><span class="fu">filterDTColumn</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span>, <span class="st">"0.1 ... 0.5"</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  TRUE FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] FALSE  TRUE  TRUE FALSE  TRUE FALSE  TRUE FALSE FALSE  TRUE FALSE  TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Factor query:</span></span>
 <span class="r-in"><span class="fu">filterDTColumn</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">letters</span><span class="op">)</span>, <span class="st">"['a', 'b', 'c']"</span><span class="op">)</span></span>
@@ -171,9 +171,9 @@ Note that a no-match in one column does not preclude a successful match in anoth
 <span class="r-in">    stringsAsFactors<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu">filterDT</span><span class="op">(</span><span class="va">X</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"0 ... 0.5"</span>, <span class="st">"a|b"</span><span class="op">)</span>, global<span class="op">=</span><span class="st">""</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] FALSE  TRUE  TRUE  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] FALSE  TRUE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE  TRUE</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] FALSE  TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] FALSE FALSE FALSE FALSE FALSE FALSE  TRUE FALSE FALSE FALSE  TRUE FALSE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] FALSE  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE  TRUE  TRUE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25]  TRUE FALSE</span>
 <span class="r-in"><span class="fu">filterDT</span><span class="op">(</span><span class="va">X</span>, <span class="st">""</span>, global<span class="op">=</span><span class="st">"A"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [13] FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE</span>

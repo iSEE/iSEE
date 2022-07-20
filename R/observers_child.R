@@ -183,10 +183,10 @@
 #' Valid modes of panel modifications are defined at the top of the file \code{R/observers_child.R}.
 #'
 #' \describe{
-#'  \item{\code{"Repopulated"}}{Change of restriction on the data shown in the panel requires an update to add or remove information.}
-#'  \item{\code{"Reactivated"}}{Change of view without change of data (e.g., change active selection, zoom).}
-#'  \item{\code{"Resaved"}}{Change in saved selections (e.g., save active selection, clear saved selections).}
-#'  \item{\code{"Norender"}}{Disable re-rendering of panel itself. Can be used to trigger re-rendering of child panels through propagation.}
+#'  \item{\code{"Repopulated"}}{Used to indicate that the panel needs re-rendering following a change of restriction on the data shown in the panel or a change in incoming multiple selection.}
+#'  \item{\code{"Reactivated"}}{Used to indicate the panel needs re-rendering following a change that does not alter data shown in the panel (e.g., clear invalidated selections, zoom)}
+#'  \item{\code{"Resaved"}}{Used to indicate that the panel needs re-rendering following a change in saved selection (e.g., add active selection to saved selections, clear saved selections).}
+#'  \item{\code{"Norender"}}{Disable re-rendering of panel itself. Used to trigger re-rendering of panels receiving selections from the panel.}
 #' }
 #'
 #' @return

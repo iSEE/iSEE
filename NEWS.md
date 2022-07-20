@@ -1,3 +1,10 @@
+# iSEE 2.9.3
+
+* Partial bugfix avoiding re-rendering of `ComplexHeatmapPlot` panel
+  when an incoming row selection changes if custom rows are in use.
+  The partial bugfix only applies if the `ComplexHeatmapPlot` also disables
+  the restriction on any incoming column selection.
+
 # iSEE 2.9.2
 
 * Document the existing panel modification modes.

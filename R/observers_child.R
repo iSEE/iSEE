@@ -159,7 +159,10 @@
                             previous <- union(previous, .panelResaved)
                         }
                     }
-                    modified[[child]] <- previous
+                    # Child panel settings may eventually void the need for regeneration
+                    if (length(previous)) {
+                        modified[[child]] <- previous
+                    }
                 }
             }
         }

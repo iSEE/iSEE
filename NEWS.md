@@ -1,3 +1,7 @@
+# iSEE 2.9.2
+
+* Document the existing panel modification modes.
+
 # iSEE 2.9.1
 
 * Add spinner to `ComplexHeatmapPlot`.

@@ -741,6 +741,11 @@ setMethod(".hideInterface", "ComplexHeatmapPlot", function(x, field) {
     }
 })
 
+#' @export
+setMethod(".multiSelectionRestricted", "ComplexHeatmapPlot", function(x) {
+    !slot(x, .heatMapCustomFeatNames) || slot(x, .selectColRestrict)
+})
+
 ###############################################################
 
 #' @export

@@ -35,7 +35,7 @@ if \code{ColorBy="Column data"} (see the \linkS4class{Panel} class).
 Defaults to the first valid field (see \code{.cacheCommonInfo} below).
 \item \code{ColorByFeatureNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
 if \code{ColorBy="Feature name"}.
-Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}}, falling back to the name of the first valid assay 
+Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}}, falling back to the name of the first valid assay
 (see \code{?"\link{.cacheCommonInfo,DotPlot-method}"} for the definition of validity).
 \item \code{ColorBySampleNameColor}, a string specifying the color to use for coloring an individual sample on the plot,
 if \code{ColorBy="Sample name"}.

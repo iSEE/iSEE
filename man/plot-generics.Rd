@@ -76,7 +76,7 @@ This is guaranteed to be categorical.
 This is guaranteed to be categorical.
 \item \code{"SelectBy"}, a logical field indicating whether the point was included in a multiple selection
 (i.e., transmitted from another plot with \code{x} as the receiver).
-Note that if \code{RowSelectionRestrict=TRUE} or \code{ColumnSelectionRestrict=TRUE} 
+Note that if \code{RowSelectionRestrict=TRUE} or \code{ColumnSelectionRestrict=TRUE}
 (for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively),
 \code{plot.data} will already have been subsetted to only retain \code{TRUE} values of this field.
 }

@@ -25,7 +25,7 @@ Methods for this generic should start by checking whether the metadata already c
 Otherwise, it should \code{\link{callNextMethod}} to fill in the cache values from the parent classes, before adding cached values under the class name for \code{x}.
 This means that any modification to \code{se} will only be performed once per class, so any cached values should be constant for all instances of the same class.
 
-Values from the cache can also be \code{\link{deparse}}d and used to assemble rendering commands in \code{\link{.generateOutput}}. 
+Values from the cache can also be \code{\link{deparse}}d and used to assemble rendering commands in \code{\link{.generateOutput}}.
 However, those same commands should not make any use of the cache itself, i.e., they should not call \code{\link{.getCachedCommonInfo}}.
 This is because the code tracker does not capture the code used to construct the cache, so the commands that are shown to the user will make use of a cache that is not present in the original \code{se} object.
 }

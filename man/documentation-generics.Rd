@@ -19,7 +19,7 @@ while the \code{"intro"} element contains the HTML-formatted text to show in the
 
 It is a good idea to \code{\link{callNextMethod}()} to obtain the tour steps for the parent class to append onto the current class's data.frame.
 In some cases, modification of the parent class's tour steps may be necessary if some of the parent's functionality has been overwritten.
-Some communication with the parent's maintainers may be necessary to establish a stable way to identify the rows corresponding to the steps to be written, 
+Some communication with the parent's maintainers may be necessary to establish a stable way to identify the rows corresponding to the steps to be written,
 e.g., based on the row names of the data.frame.
 
 A tour for a Panel \code{x} is expected to only highlight UI elements \emph{on the same panel}.
@@ -41,7 +41,7 @@ where the documentation can be written adjacent to the definition of the UI elem
 
 For a \linkS4class{DotPlot} instance \code{x}, the \code{.getDotPlotColorHelp(x, color_choices)} generic should return a function that returns a data.frame
 containing the \pkg{rintrojs} tour for the color choice UI element, i.e., \code{"ColorBy"}.
-This allows downstream Panels to tune the wording of the color documentation, given that this is commonly specialized. 
+This allows downstream Panels to tune the wording of the color documentation, given that this is commonly specialized.
 \code{color_choices} is a character vector that contains the valid choices for the \code{"ColorBy"} radio button;
 some input datasets will not have, e.g., any column data, so the corresponding button will not be shown and its associated tour can be omitted.
 }

@@ -782,3 +782,15 @@ setMethod("updateObject", "ComplexHeatmapPlot", function(object, ..., verbose=FA
 
     object
 })
+
+#' @export
+setMethod(".updateOnIncomingSelectionModes", "ComplexHeatmapPlot", function(x) {
+    modes <- character(0)
+    if (!slot(x, .heatMapCustomFeatNames)) {
+        modes <- append(modes, .panelUpdatedSelectionRow)
+    }
+    if (slot(x, .selectColRestrict)) {
+        modes <- append(modes, .panelUpdatedSelectionColumn)
+    }
+    modes
+})

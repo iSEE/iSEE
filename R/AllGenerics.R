@@ -130,14 +130,14 @@ setGeneric(".hideInterface", function(x, field) standardGeneric(".hideInterface"
 #' In fact, any changes must go through \code{pObjects$memory} before they change the output in \code{\link{.renderOutput}};
 #' there is no direct interaction between \code{input} and \code{output} in this framework.
 #'
-#' We suggest using \code{\link{.createProtectedParameterObservers}} and \code{\link{.createUnprotectedParameterObservers}}, 
+#' We suggest using \code{\link{.createProtectedParameterObservers}} and \code{\link{.createUnprotectedParameterObservers}},
 #' which create simple observers that update the memory in response to changes in the UI elements.
 #' For handling selectize elements filled with server-side row/column names, we can use \code{\link{.createCustomDimnamesModalObservers}}.
 #'
 #' Developers should not attempt to modify \code{x} in any observer expression.
 #' This value does not have pass-by-reference semantics and any changes will not propagate to other parts of the application.
 #' Rather, modifications should occur to the version of \code{x} in \code{pObjects$memory}, as described in the code chunk above.
-#' 
+#'
 #' @section Triggering re-rendering:
 #' To trigger re-rendering of an output, observers should call \code{\link{.requestUpdate}(PANEL, rObjects)} where \code{PANEL} is the name of the current panel
 #' This will request a re-rendering of the output with no additional side effects and is most useful for responding to aesthetic parameters.
@@ -184,7 +184,7 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' }
 #'
 #' It is expected to attach one or more reactive expressions to \code{output} to render the output element(s) defined by \code{.defineOutput}.
-#' This is typically done by calling \pkg{shiny} rendering functions like \code{\link{renderPlot}} or the most appropriate equivalent for the panel's output. 
+#' This is typically done by calling \pkg{shiny} rendering functions like \code{\link{renderPlot}} or the most appropriate equivalent for the panel's output.
 #' The return value of this generic is not used; only the side-effect of the reactive output set-up is relevant.
 #'
 #' The rendering expression inside the chosen rendering function is expected to:
@@ -225,7 +225,7 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' \itemize{
 #' \item \code{contents}, some arbitrary content for the panel (usually a data.frame).
 #' The values therein are used by \code{\link{.multiSelectionCommands}} to determine the multiple row/column selection in \code{x} to be transmitted to other (child) panels.
-#' The app will ensure that the \code{pObjects$contents} of each panel is populated before attempting to render their children. 
+#' The app will ensure that the \code{pObjects$contents} of each panel is populated before attempting to render their children.
 #' \code{contents} may be set to \code{NULL} if \code{x} does not transmit, i.e., \code{\link{.multiSelectionDimension}} returns \code{"none"}.
 #' \item \code{commands}, a list of character vectors of R commands that, when executed, produces the contents of the panel and any displayed output (e.g., a \link{ggplot} object).
 #' Developers should write these commands as if the evaluation environment only contains the SummarizedExperiment \code{se} and ExperimentColorMap \code{colormap}.
@@ -363,7 +363,7 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' This is guaranteed to be categorical.
 #' \item \code{"SelectBy"}, a logical field indicating whether the point was included in a multiple selection
 #' (i.e., transmitted from another plot with \code{x} as the receiver).
-#' Note that if \code{RowSelectionRestrict=TRUE} or \code{ColumnSelectionRestrict=TRUE} 
+#' Note that if \code{RowSelectionRestrict=TRUE} or \code{ColumnSelectionRestrict=TRUE}
 #' (for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively),
 #' \code{plot.data} will already have been subsetted to only retain \code{TRUE} values of this field.
 #' }
@@ -476,7 +476,7 @@ setGeneric(".colorByNoneDotPlotScale", function(x) standardGeneric(".colorByNone
 #'
 #' \code{.addDotPlotDataFacets(x, envir)} will add \code{FacetRow} and/or \code{FacetColumn} fields to \code{plot.data},
 #' representing the covariate used for faceting by row and/or column respectively.
-#' 
+#'
 #' All methods should return a list containing:
 #' \itemize{
 #' \item \code{commands}, a character vector of R commands used to modify \code{plot.data}.
@@ -602,7 +602,7 @@ setGeneric(".getDotPlotNamesCommand", function(x) standardGeneric(".getDotPlotNa
 #' The identity of the selected row should be extracted from \code{x[["Selected"]]}.
 #' The element will only be rerendered upon a single selection in the Table.
 #' Alternatively, it may return \code{NULL} in which case no selection details are shown in the interface.
-#' 
+#'
 #' @author Aaron Lun
 #'
 #' @aliases .generateTable
@@ -638,7 +638,7 @@ setGeneric(".showSelectionDetails", function(x) standardGeneric(".showSelectionD
 #' Otherwise, it should \code{\link{callNextMethod}} to fill in the cache values from the parent classes, before adding cached values under the class name for \code{x}.
 #' This means that any modification to \code{se} will only be performed once per class, so any cached values should be constant for all instances of the same class.
 #'
-#' Values from the cache can also be \code{\link{deparse}}d and used to assemble rendering commands in \code{\link{.generateOutput}}. 
+#' Values from the cache can also be \code{\link{deparse}}d and used to assemble rendering commands in \code{\link{.generateOutput}}.
 #' However, those same commands should not make any use of the cache itself, i.e., they should not call \code{\link{.getCachedCommonInfo}}.
 #' This is because the code tracker does not capture the code used to construct the cache, so the commands that are shown to the user will make use of a cache that is not present in the original \code{se} object.
 #'
@@ -857,7 +857,7 @@ setGeneric(".singleSelectionSlots", function(x) standardGeneric(".singleSelectio
 #'
 #' This generic is called by \code{\link{.defineDataInterface}} for \linkS4class{ColumnDataPlot}s and \linkS4class{RowDataPlot}s.
 #' Thus, developers wanting to restrict those choices for subclasses can simply specialize \code{.allowableYAxisChoices} rather than reimplementing \code{.defineDataInterface}.
-#' 
+#'
 #' @section Allowable x-axis choices:
 #' \code{.allowableXAxisChoices(x, se)} is the same as above but controls the variables that can be shown on the x-axis.
 #' This need not return the same subset of variables as \code{.allowableYAxisChoices}.
@@ -912,7 +912,7 @@ setGeneric(".allowableXAxisChoices", function(x, se) standardGeneric(".allowable
 #' For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link{colData}} is valid and discrete or continuous.
 #'
 #' @section Controlling \code{ColorBy*Data} choices:
-#' \code{.allowableColorByDataChoices(x, se)} should return a character vector of the allowable row/column data variables to use 
+#' \code{.allowableColorByDataChoices(x, se)} should return a character vector of the allowable row/column data variables to use
 #' when \code{ColorBy} is set to \code{"Row data"} or \code{"Column data"} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
 #' The default method will use all available (atomic) variables, but subclasses can specialize this to only allow, e.g., continuous or discrete variables.
 #'
@@ -953,7 +953,7 @@ setGeneric(".defineVisualOtherInterface", function(x) standardGeneric(".defineVi
 #' @export
 setGeneric(".allowableColorByDataChoices", function(x, se) standardGeneric(".allowableColorByDataChoices"))
 
-#' Internal interface generics 
+#' Internal interface generics
 #'
 #' @description
 #' These functions are implemented as generics so as to enable differences in the parameter interfaces between Row/Column panels,
@@ -972,11 +972,11 @@ setGeneric(".allowableColorByDataChoices", function(x, se) standardGeneric(".all
 #'
 #' @section Defining color choices:
 #' \code{.defineDotPlotColorChoices(x, se)} returns a character vector of names for the \code{"ColorBy"} slot in \linkS4class{DotPlot} classes.
-#' This is usually dependent on what is available in \code{se}, 
+#' This is usually dependent on what is available in \code{se},
 #' and should be applied on \code{se} after running \code{\link{.cacheCommonInfo}}.
 #'
 #' @section Defining DotPlot constants:
-#' These functions return a list of lists containing constant strings to use as UI labels, as well as the names of slots to use as the UI identifiers (and to populate the default UI values) from a \linkS4class{DotPlot} \code{x}. 
+#' These functions return a list of lists containing constant strings to use as UI labels, as well as the names of slots to use as the UI identifiers (and to populate the default UI values) from a \linkS4class{DotPlot} \code{x}.
 #'
 #' \code{.getDotPlotColorConstants(x)} returns color-related constants.
 #'
@@ -1019,8 +1019,8 @@ setGeneric(".getDotPlotFacetConstants", function(x) standardGeneric(".getDotPlot
 #' Documentation generics
 #'
 #' The generics power the creation of panel-specific documentation within the \code{\link{iSEE}} app.
-#' Users can click on an icon next to the panel name to open a self-guided tour for that panel's functionality. 
-#' 
+#' Users can click on an icon next to the panel name to open a self-guided tour for that panel's functionality.
+#'
 #' @section Defining the panel tour:
 #' \code{.definePanelTour(x)} takes a \linkS4class{Panel} \code{x} and is expected to return a data.frame
 #' with the character fields \code{"element"} and \code{"intro"}.
@@ -1030,7 +1030,7 @@ setGeneric(".getDotPlotFacetConstants", function(x) standardGeneric(".getDotPlot
 #'
 #' It is a good idea to \code{\link{callNextMethod}()} to obtain the tour steps for the parent class to append onto the current class's data.frame.
 #' In some cases, modification of the parent class's tour steps may be necessary if some of the parent's functionality has been overwritten.
-#' Some communication with the parent's maintainers may be necessary to establish a stable way to identify the rows corresponding to the steps to be written, 
+#' Some communication with the parent's maintainers may be necessary to establish a stable way to identify the rows corresponding to the steps to be written,
 #' e.g., based on the row names of the data.frame.
 #'
 #' A tour for a Panel \code{x} is expected to only highlight UI elements \emph{on the same panel}.
@@ -1050,11 +1050,11 @@ setGeneric(".getDotPlotFacetConstants", function(x) standardGeneric(".getDotPlot
 #'
 #' For a \linkS4class{DotPlot} instance \code{x}, the \code{.getDotPlotColorHelp(x, color_choices)} generic should return a function that returns a data.frame
 #' containing the \pkg{rintrojs} tour for the color choice UI element, i.e., \code{"ColorBy"}.
-#' This allows downstream Panels to tune the wording of the color documentation, given that this is commonly specialized. 
+#' This allows downstream Panels to tune the wording of the color documentation, given that this is commonly specialized.
 #' \code{color_choices} is a character vector that contains the valid choices for the \code{"ColorBy"} radio button;
 #' some input datasets will not have, e.g., any column data, so the corresponding button will not be shown and its associated tour can be omitted.
 #'
-#' @author 
+#' @author
 #' Aaron Lun
 #'
 #' @name documentation-generics
@@ -1074,3 +1074,13 @@ setGeneric(".getDotPlotColorHelp", function(x, ...) standardGeneric(".getDotPlot
 #' @export
 #' @rdname cleanDataset
 setGeneric("cleanDataset", function(se) standardGeneric("cleanDataset"))
+
+###########################
+
+#' @export
+#' @rdname TODO
+setGeneric(".activeSelectionUpdateMode", function(x) standardGeneric(".activeSelectionUpdateMode"))
+
+#' @export
+#' @rdname TODO
+setGeneric(".updateOnIncomingSelectionModes", function(x) standardGeneric(".updateOnIncomingSelectionModes"))

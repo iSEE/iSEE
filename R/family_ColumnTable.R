@@ -2,7 +2,7 @@
 #'
 #' The ColumnTable is a virtual class where each column in the \linkS4class{SummarizedExperiment} is represented by no more than row in a \code{\link{datatable}} widget.
 #' In panels of this class, single and multiple selections can only be transmitted on the samples.
-#' 
+#'
 #' @section Slot overview:
 #' No new slots are added.
 #' All slots provided in the \linkS4class{Table} parent class are available.
@@ -62,7 +62,7 @@
 #' @author Aaron Lun
 #'
 #' @docType methods
-#' @aliases 
+#' @aliases
 #' initialize,ColumnTable-method
 #' .refineParameters,ColumnTable-method
 #' .defineInterface,ColumnTable-method
@@ -79,7 +79,7 @@ NULL
 setMethod("initialize", "ColumnTable", function(.Object, ...) {
     args <- list(...)
 
-    # Defensive measure to avoid problems with cyclic graphs 
+    # Defensive measure to avoid problems with cyclic graphs
     # that the user doesn't have permissions to change!
     args <- .emptyDefault(args, .selectRowDynamic, FALSE)
 
@@ -128,3 +128,9 @@ setMethod(".showSelectionDetails", "ColumnTable", function(x) {
         FUN(slot(x, .TableSelected))
     }
 })
+
+#' @export
+setMethod(".activeSelectionUpdateMode", "ColumnTable", function(x) .panelUpdatedSelectionColumn)
+
+#' @export
+setMethod(".updateOnIncomingSelectionModes", "ColumnTable", function(x) .panelUpdatedSelectionColumn)

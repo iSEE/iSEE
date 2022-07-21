@@ -2,6 +2,8 @@
 .panelReactivated <- "Reactivated"
 .panelResaved <- "Resaved"
 .panelNorender <- "Norender"
+.panelUpdatedSelectionRow <- "UpdatedSelectionRow"
+.panelUpdatedSelectionColumn <- "UpdatedSelectionColumn"
 
 #' Child propagating observer
 #'
@@ -143,7 +145,7 @@
                     # the call to .generateOutput later.
                     previous <- as.character(modified[[child]])
 
-                    if (.multiSelectionRestricted(child_instance)) {
+                    if (any(status %in% .updateOnIncomingSelectionModes(child_instance))) {
                         previous <- union(previous, .panelRepopulated)
                     }
 

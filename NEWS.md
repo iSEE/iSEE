@@ -1,6 +1,12 @@
+# iSEE 2.9.4
+
+* Complete bugfix that avoids re-rendering the `ComplexHeatmapPlot` panel when
+  dimension of incoming selection is not used to restrict that dimension
+  in the `ComplexHeatmapPlot` panel (issue `#580`).
+
 # iSEE 2.9.3
 
-* Partial bugfix avoiding re-rendering of `ComplexHeatmapPlot` panel
+* Partial bugfix that avoids re-rendering the `ComplexHeatmapPlot` panel
   when an incoming row selection changes if custom rows are in use.
   The partial bugfix only applies if the `ComplexHeatmapPlot` also disables
   the restriction on any incoming column selection.

@@ -247,7 +247,7 @@ setReplaceMethod("[[", "Panel", function(x, i, j, ..., value) {
         return(x)
     }
 
-    # Avoid having to call updateObject unnecessarily when we're operating inside 
+    # Avoid having to call updateObject unnecessarily when we're operating inside
     # the app (and thus everything is known to be most up to date, given that
     # .refineParameters would have run the necessary updateObject already).
     check <- check.validity.env$check
@@ -690,3 +690,11 @@ setMethod("updateObject", "Panel", function(object, ..., verbose=FALSE) {
     object
     # nocov end
 })
+
+###############################################################################
+
+#' @export
+setMethod(".activeSelectionUpdateMode", "Panel", function(x) character(0))
+
+#' @export
+setMethod(".updateOnIncomingSelectionModes", "Panel", function(x) character(0))

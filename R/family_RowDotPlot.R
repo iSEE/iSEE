@@ -194,7 +194,7 @@ setMethod("[[", "RowDotPlot", function(x, i, j, ...) {
             cname, i, cname, .selectRowRestrict, cname, .colorByField))
 
         if (slot(x, .selectRowRestrict)) {
-            "Restrict" 
+            "Restrict"
         } else if (slot(x, .colorByField) == .colorByRowSelectionsTitle) {
             "Color"
         } else {
@@ -210,7 +210,7 @@ setReplaceMethod("[[", "RowDotPlot", function(x, i, j, ..., value) {
     if (i == "SelectionColor") {
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.", cname, i))
-        x 
+        x
     } else if (i == "SelectionEffect") {
         x <- updateObject(x, check=FALSE)
 
@@ -275,7 +275,7 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 
     continuous <- rdp_cached$continuous.rowData.names
     x <- .replaceMissingWithFirst(x, .sizeByRowData, continuous)
-    
+
     x <- .replaceMissingWithFirst(x, .plotCustomLabelsText, rownames(se)[1])
 
     x
@@ -319,8 +319,8 @@ setMethod(".multiSelectionRestricted", "RowDotPlot", function(x) {
 
 #' @export
 setMethod(".multiSelectionInvalidated", "RowDotPlot", function(x) {
-    slot(x, .facetRow) == .facetByRowSelectionsTitle || 
-        slot(x, .facetColumn) == .facetByRowSelectionsTitle || 
+    slot(x, .facetRow) == .facetByRowSelectionsTitle ||
+        slot(x, .facetColumn) == .facetByRowSelectionsTitle ||
         callNextMethod()
 })
 
@@ -438,7 +438,7 @@ setMethod(".addDotPlotDataColor", "RowDotPlot", function(x, envir) {
             target <- "list()"
         }
         cmds <- sprintf(
-            "plot.data$ColorBy <- iSEE::multiSelectionToFactor(%s, rownames(se));", 
+            "plot.data$ColorBy <- iSEE::multiSelectionToFactor(%s, rownames(se));",
             target
         )
 
@@ -552,7 +552,7 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
     } else if (color_choice == .colorByFeatNameTitle) {
         col_choice <- slot(x, .colorByFeatNameColor)
         if (slot(x, .sizeByField) == .sizeByNothingTitle) {
-            size_cmd <- paste0(", size=5*", slot(x, .plotPointSize)) 
+            size_cmd <- paste0(", size=5*", slot(x, .plotPointSize))
         } else {
             size_cmd <- ""
         }
@@ -572,9 +572,9 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
         .create_color_scale("assayColorMap", deparse(assay_choice), colorby)
 
     } else if (color_choice == .colorByRowSelectionsTitle) {
-        sprintf("scale_color_manual(values=iSEE::rowSelectionColorMap(colormap, %s), drop=FALSE) +", 
-            paste(deparse(levels(colorby)), collapse="")) 
-        
+        sprintf("scale_color_manual(values=iSEE::rowSelectionColorMap(colormap, %s), drop=FALSE) +",
+            paste(deparse(levels(colorby)), collapse=""))
+
     } else {
         .colorByNoneDotPlotScale(x)
     }
@@ -657,7 +657,7 @@ setMethod(".getDotPlotColorHelp", "RowDotPlot", function(x, color_choices) {
             steps <- c(steps, list(
                 c(
                     element=start,
-                    intro="If we <strong>select <em>Row selection</em></strong>, we will color the points according to the multiple column selection transmitted from another panel (see the Selection Parameters box). If a column is included in the active selection of the other panel, the corresponding point in this panel is assigned a certain color; if the column is in one of the saved selections, it gets another color; and if the column is not in any selection, it gets the default color (usually grey). Points that are present in multiple selections also get a different color."  
+                    intro="If we <strong>select <em>Row selection</em></strong>, we will color the points according to the multiple column selection transmitted from another panel (see the Selection Parameters box). If a column is included in the active selection of the other panel, the corresponding point in this panel is assigned a certain color; if the column is in one of the saved selections, it gets another color; and if the column is not in any selection, it gets the default color (usually grey). Points that are present in multiple selections also get a different color."
                 )
             ))
         }
@@ -691,4 +691,16 @@ setMethod("updateObject", "RowDotPlot", function(object, ..., verbose=FALSE) {
     }
 
     object
+})
+
+#' @export
+setMethod(".activeSelectionUpdateMode", "RowDotPlot", function(x) .panelUpdatedSelectionRow)
+
+#' @export
+setMethod(".updateOnIncomingSelectionModes", "RowDotPlot", function(x) {
+    modes <- character(0)
+    if (slot(x, .selectRowRestrict)) {
+        modes <- .panelUpdatedSelectionRow
+    }
+    modes
 })

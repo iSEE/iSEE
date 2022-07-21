@@ -36,7 +36,7 @@
         pObjects$cached[panel_name] <- list(NULL)
     } else {
         curpanel <- pObjects$memory[[panel_name]]
-        output <- .generateOutput(curpanel, se, 
+        output <- .generateOutput(curpanel, se,
             all_memory=pObjects$memory, all_contents=pObjects$contents)
     }
 
@@ -44,7 +44,7 @@
 
     # These can be NULL for non-transmitting panels, hence the single bracket assignment.
     pObjects$contents[panel_name] <- list(output$contents)
-    pObjects$varname[panel_name] <- list(output$varname) 
+    pObjects$varname[panel_name] <- list(output$varname)
 
     output
 }
@@ -66,7 +66,7 @@
 #'
 #' \code{.requestActiveSelectionUpdate} will modify \code{rObjects} to indicate that the active multiple selection for \code{panel_name} has changed.
 #' If \code{update_output=TRUE}, it will also request a re-rendering of the panel.
-#' 
+#'
 #' All functions will invisibly return \code{NULL}.
 #'
 #' @details
@@ -112,7 +112,9 @@
     .safe_reactive_bump(rObjects, paste0(panel_name, "_", .flagMultiSelect))
 
     modes <- if (update_output) .panelReactivated else c(.panelNorender, .panelReactivated)
-    .mark_panel_as_modified(panel_name, modes, rObjects) 
+    target <- pObjects$memory[[panel_name]]
+    modes <- append(modes, .activeSelectionUpdateMode(target))
+    .mark_panel_as_modified(panel_name, modes, rObjects)
 
     .update_dynamic_selection_source_panels(panel_name, session, pObjects)
 }
@@ -139,7 +141,7 @@
 #' Making a selection on the current panel causes it to become the transmitter for the second panel, leading to circularity.
 #' In fact, this is inevitable in the common use case where the current panel is also using a dynamic source.
 #'
-#' To avoid this phenomenon in the common case, we reset the current panel's source to \code{"---"}. 
+#' To avoid this phenomenon in the common case, we reset the current panel's source to \code{"---"}.
 #' We also manually edit \code{pObjects$selection_links} so that the current panel is no longer linked to the second panel.
 #' This is necessary because the observers for the selection source will respond in arbitrary order to the session update;
 #' it is possible for the current panel to still be linked to the previous source when observers for the second panel fire.
@@ -148,7 +150,7 @@
 #' Doing so here hopefully should not be a problem as \code{\link{.create_multi_selection_choice_observer}}
 #' (the observer responding to the change in the source choice)
 #' doesn't make any other decisions based on \code{pObjects$selection_links} anyway.
-#' 
+#'
 #' Nothing smart is done to protect against circularity in the more general case.
 #' For example, if panel A is dependent on panel B that is dependent on panel C,
 #' and C is using a dynamic selection source, any selection made on A will cause a circular dependency.
@@ -163,7 +165,7 @@
     dim <- .multiSelectionDimension(target)
     all_affected <- names(pObjects$dynamic_multi_selections[[dim]])
     field <- if (dim=="row") .selectRowSource else .selectColSource
-        
+
     # nocov start
     if (!is.null(session)) {
         if (panel_name %in% all_affected) {
@@ -201,13 +203,13 @@
 #'
 #' \code{.trackMultiSelection} will track whether the multiple selections in the current panel have changed.
 #' This will respond for both active and saved selections.
-#' 
+#'
 #' \code{.trackRelinkedSelection} will track whether the single or multiple selection sources have changed.
 #'
 #' These functions should be called within observer or rendering expressions to trigger their evaluation upon panel updates.
 #' It is only safe to call these functions within expressions for the same panel, e.g., to synchronize multiple output elements.
 #' Calling them with another \code{panel_name} would be unusual, not least because communication between panels is managed by the \code{\link{iSEE}} framework and is outside of the scope of the per-panel observers.
-#' 
+#'
 #' @author Aaron Lun
 #'
 #' @name track-utils
@@ -253,9 +255,9 @@ NULL
 #'
 #' \code{.safe_reactive_bump} will increment \code{field} in \code{rObjects}, initializing it if it was not already present.
 #' It returns the incremented value invisibly.
-#' 
+#'
 #' @author Aaron Lun
-#' 
+#'
 #' @rdname INTERNAL_safe_reactive
 #' @importFrom shiny isolate
 .safe_reactive_init <- function(rObjects, field, value=1L) {

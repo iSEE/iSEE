@@ -2,7 +2,7 @@
 #'
 #' The RowTable is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by no more than one row in a \code{\link{datatable}} widget.
 #' In panels of this class, single and multiple selections can only be transmitted on the features.
-#' 
+#'
 #' @section Slot overview:
 #' No new slots are added.
 #' All slots provided in the \linkS4class{Table} parent class are available.
@@ -62,7 +62,7 @@
 #' @author Aaron Lun
 #'
 #' @docType methods
-#' @aliases 
+#' @aliases
 #' initialize,RowTable-method
 #' .refineParameters,RowTable-method
 #' .defineInterface,RowTable-method
@@ -79,7 +79,7 @@ NULL
 setMethod("initialize", "RowTable", function(.Object, ...) {
     args <- list(...)
 
-    # Defensive measure to avoid problems with cyclic graphs 
+    # Defensive measure to avoid problems with cyclic graphs
     # that the user doesn't have permissions to change!
     args <- .emptyDefault(args, .selectColDynamic, FALSE)
 
@@ -128,3 +128,9 @@ setMethod(".showSelectionDetails", "RowTable", function(x) {
         FUN(slot(x, .TableSelected))
     }
 })
+
+#' @export
+setMethod(".activeSelectionUpdateMode", "RowTable", function(x) .panelUpdatedSelectionRow)
+
+#' @export
+setMethod(".updateOnIncomingSelectionModes", "RowTable", function(x) .panelUpdatedSelectionRow)

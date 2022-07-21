@@ -689,6 +689,12 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' \code{.multiSelectionDimension(x)} should return a string specifying whether the selection contains rows (\code{"row"}), columns (\code{"column"}) or if the Panel in \code{x} does not perform multiple selections at all (\code{"none"}).
 #' The output should be constant for all instances of \code{x} and is used to govern the interface choices for the selection parameters.
 #'
+#' @section Specifying the nature of an update to the active selection:
+#' \code{.activeSelectionUpdateMode(x)} should return a character vector specifying modes of modification in the active selection of a parent panel \code{x} that child panels can use to determine whether the nature of the update in the incoming selection meets criteria to re-render the child panel, based on the child panel's own settings.
+#' Refer to \code{.updateOnIncomingSelectionModes} below for the handling of these modes of modification by the child panel.
+#'
+#' For example, a \linkS4class{ComplexHeatmapPlot} panel does not need to be re-rendered if an incoming row selection changes, if the \linkS4class{ComplexHeatmapPlot} panel is currently set to use custom rows.
+#'
 #' @section Specifying the active selection:
 #' \code{.multiSelectionActive(x)} should return some structure containing all parameters required to identify all points in the active multiple selection of \code{x}.
 #' For example, the \linkS4class{DotPlot} method for this generic would return the contents of the \code{BrushData} slot, usually a list containing a Shiny brush or lasso waypoints for \linkS4class{DotPlot} classes.
@@ -739,7 +745,9 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' \code{.multiSelectionInvalidated(x)} should return a logical scalar indicating whether a transmission of a multiple selection to \code{x} invalidates \code{x}'s own existing selections.
 #' This should only be \code{TRUE} in special circumstances, e.g., if receipt of a new multiple selection causes recalculation of coordinates in a \linkS4class{DotPlot}.
 #'
-#' @author Aaron Lun
+#' \code{.updateOnIncomingSelectionModes(x)} should return a character vector specifying modes of modification in \code{x}'s parent panel(s) that are allowed to trigger re-rendering of \code{x}.
+#'
+#' @author Aaron Lun and Kevin Rue-Albrecht
 #' @name multi-select-generics
 #' @aliases .multiSelectionDimension
 #' .multiSelectionRestricted
@@ -748,6 +756,8 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' .multiSelectionClear
 #' .multiSelectionInvalidated
 #' .multiSelectionAvailable
+#' .activeSelectionUpdateMode
+#' .updateOnIncomingSelectionModes
 NULL
 
 #' @export
@@ -1078,9 +1088,7 @@ setGeneric("cleanDataset", function(se) standardGeneric("cleanDataset"))
 ###########################
 
 #' @export
-#' @rdname TODO
 setGeneric(".activeSelectionUpdateMode", function(x) standardGeneric(".activeSelectionUpdateMode"))
 
 #' @export
-#' @rdname TODO
 setGeneric(".updateOnIncomingSelectionModes", function(x) standardGeneric(".updateOnIncomingSelectionModes"))

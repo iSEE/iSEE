@@ -134,7 +134,7 @@
                 child_instance <- pObjects$memory[[child]]
 
                 regenerate <- FALSE
-                if (re_populated && (has_active || has_saved)) {
+                if (re_populated && (has_active || has_saved || is(instance, "Table"))) {
                     regenerate <- TRUE
                 } else if (re_saved || re_active) {
                     regenerate <- TRUE
@@ -146,7 +146,7 @@
                     previous <- as.character(modified[[child]])
 
                     if (any(status %in% .multiSelectionRerenderModes(child_instance))) {
-                        previous <- union(previous, .panelRepopulated)
+                        previous <- union(previous, c(.panelRepopulated, .multiSelectionUpdateModes(child_instance)))
                     }
 
                     # Wiping out selections in the child if receiving a new
@@ -158,7 +158,7 @@
                         }
                         if (.any_saved_selection(child_instance)) {
                             slot(pObjects$memory[[child]], .multiSelectHistory) <- list()
-                            previous <- union(previous, .panelResaved)
+                            previous <- union(previous, .multiSelectionUpdateModes(child_instance))
                         }
                     }
                     # Child panel settings may eventually void the need for regeneration

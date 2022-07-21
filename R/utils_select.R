@@ -1,6 +1,6 @@
 #' Checks if there is a relevant selection
 #'
-#' Checks whether there is a multiple selection from a transmitter, 
+#' Checks whether there is a multiple selection from a transmitter,
 #' either active or in the saved history.
 #'
 #' @param parent_name String containing the name of the transmitting panel.
@@ -15,7 +15,7 @@
         FALSE
     } else {
         transmitter <- all_memory[[parent_name]]
-        .multiSelectionHasActive(transmitter) || .any_saved_selection(transmitter)
+        .multiSelectionHasActive(transmitter) || .any_saved_selection(transmitter) || is(transmitter, "Table")
     }
 }
 
@@ -79,7 +79,7 @@
 #' @param envir The evaluation environment.
 #' This is assumed to already contain \code{se}, the \linkS4class{SummarizedExperiment} object for the current dataset.
 #'
-#' @return 
+#' @return
 #' \code{envir} is populated with one, none or both of \code{col_selected} and/or \code{row_selected},
 #' depending on whether \code{x} is receiving a multiple selection on the rows and/or columns.
 #' The return value is the  character vector of commands required to construct those variables.
@@ -101,7 +101,7 @@
     # Defining the row and column selections, and hoping that the
     # plot-generating functions know what to do with them.
     select_cmds <- list()
-    row_select_cmds <- .process_selectby_choice(x, by_field=.selectRowSource, 
+    row_select_cmds <- .process_selectby_choice(x, by_field=.selectRowSource,
         all_memory=all_memory, varname="row_selected")
 
     if (!is.null(row_select_cmds)) {
@@ -112,7 +112,7 @@
         select_cmds[["row"]] <- row_select_cmds
     }
 
-    col_select_cmds <- .process_selectby_choice(x, by_field=.selectColSource, 
+    col_select_cmds <- .process_selectby_choice(x, by_field=.selectColSource,
         all_memory=all_memory, varname="col_selected")
 
     if (!is.null(col_select_cmds)) {
@@ -176,9 +176,13 @@
 
         if (.multiSelectionHasActive(transmit_param)) {
             cmds$active <- c(
-                sprintf("select <- all_active[['%s']];", transmitter), 
+                sprintf("select <- all_active[['%s']];", transmitter),
                 .multiSelectionCommands(transmit_param, NA_integer_),
                 sprintf("%s[[\"active\"]] <- selected;", varname)
+            )
+        } else if (is(transmit_param, "Table")) {
+            cmds$table <- c(
+                sprintf("%s[[\"rownames\"]] <- rownames(all_contents[['%s']]);", varname, transmitter)
             )
         }
 
@@ -204,10 +208,10 @@
 #' Populate the environment with data structures required for multiple selection.
 #'
 #' @param x An instance of a \linkS4class{Panel} class.
-#' @param envir An environment in which multiple selection commands are to be evaluated. 
+#' @param envir An environment in which multiple selection commands are to be evaluated.
 #'
 #' @details
-#' This function provides a convenient wrapper to add active selection structures 
+#' This function provides a convenient wrapper to add active selection structures
 #' (e.g., Shiny brush and lasso objects) from any panel to the evaluation environment.
 #' These are needed for certain commands to be executed (see the \dQuote{See also} section below).
 #'

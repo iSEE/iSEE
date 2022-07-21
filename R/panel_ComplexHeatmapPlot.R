@@ -785,7 +785,7 @@ setMethod("updateObject", "ComplexHeatmapPlot", function(object, ..., verbose=FA
 
 #' @export
 setMethod(".multiSelectionRerenderModes", "ComplexHeatmapPlot", function(x) {
-    modes <- character(0)
+    modes <- callNextMethod()
     if (!slot(x, .heatMapCustomFeatNames)) {
         modes <- append(modes, .panelUpdatedSelectionRow)
     }

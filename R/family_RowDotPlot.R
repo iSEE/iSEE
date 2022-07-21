@@ -698,7 +698,7 @@ setMethod(".multiSelectionUpdateModes", "RowDotPlot", function(x) .panelUpdatedS
 
 #' @export
 setMethod(".multiSelectionRerenderModes", "RowDotPlot", function(x) {
-    modes <- character(0)
+    modes <- callNextMethod()
     if (slot(x, .selectRowRestrict)) {
         modes <- .panelUpdatedSelectionRow
     }

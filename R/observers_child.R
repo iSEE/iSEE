@@ -145,7 +145,7 @@
                     # the call to .generateOutput later.
                     previous <- as.character(modified[[child]])
 
-                    if (any(status %in% .updateOnIncomingSelectionModes(child_instance))) {
+                    if (any(status %in% .multiSelectionRerenderModes(child_instance))) {
                         previous <- union(previous, .panelRepopulated)
                     }
 

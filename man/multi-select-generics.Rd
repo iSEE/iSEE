@@ -9,8 +9,8 @@
 \alias{.multiSelectionClear}
 \alias{.multiSelectionInvalidated}
 \alias{.multiSelectionAvailable}
-\alias{.multiSelectionUpdateMode}
-\alias{.updateOnIncomingSelectionModes}
+\alias{.multiSelectionUpdateModes}
+\alias{.multiSelectionRerenderModes}
 \title{Generics for controlling multiple selections}
 \description{
 A panel can create a multiple selection on either the rows or columns and transmit this selection to another panel to affect its set of displayed points.
@@ -27,8 +27,8 @@ The output should be constant for all instances of \code{x} and is used to gover
 
 \section{Specifying the nature of an update to the active selection}{
 
-\code{.multiSelectionUpdateMode(x)} should return a character vector specifying modes of modification in the active selection of a parent panel \code{x} that child panels can use to determine whether the nature of the update in the incoming selection meets criteria to re-render the child panel, based on the child panel's own settings.
-Refer to \code{.updateOnIncomingSelectionModes} below for the handling of these modes of modification by the child panel.
+\code{.multiSelectionUpdateModes(x)} should return a character vector specifying modes of modification in the selection of \code{x} that child panels can use to determine whether the nature of the update in the incoming selection meets criteria to re-render the child panel, based on the child panel's own settings.
+Refer to \code{.multiSelectionRerenderModes} below for the handling of these modes of modification by the child panel.
 
 For example, a \linkS4class{ComplexHeatmapPlot} panel does not need to be re-rendered if an incoming row selection changes, if the \linkS4class{ComplexHeatmapPlot} panel is currently set to use custom rows.
 }
@@ -92,7 +92,8 @@ Otherwise, it would be \code{FALSE} as the transmitted selection is only used fo
 \code{.multiSelectionInvalidated(x)} should return a logical scalar indicating whether a transmission of a multiple selection to \code{x} invalidates \code{x}'s own existing selections.
 This should only be \code{TRUE} in special circumstances, e.g., if receipt of a new multiple selection causes recalculation of coordinates in a \linkS4class{DotPlot}.
 
-\code{.updateOnIncomingSelectionModes(x)} should return a character vector specifying modes of modification in \code{x}'s parent panel(s) that are allowed to trigger re-rendering of \code{x}.
+\code{.multiSelectionRerenderModes(x)} should return a character vector specifying modes of modification in \code{x}'s parent panel(s) that are allowed to trigger re-rendering of \code{x}.
+Refer to \code{.multiSelectionUpdateModes} above for the declaration of these modes of modification by the parent panel.
 }
 
 \author{

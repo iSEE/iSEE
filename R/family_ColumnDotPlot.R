@@ -700,7 +700,7 @@ setMethod("updateObject", "ColumnDotPlot", function(object, ..., verbose=FALSE) 
 setMethod(".multiSelectionUpdateModes", "ColumnDotPlot", function(x) .panelUpdatedSelectionColumn)
 
 #' @export
-setMethod(".updateOnIncomingSelectionModes", "ColumnDotPlot", function(x) {
+setMethod(".multiSelectionRerenderModes", "ColumnDotPlot", function(x) {
     modes <- character(0)
     if (slot(x, .selectColRestrict)) {
         modes <- .panelUpdatedSelectionColumn

@@ -15,7 +15,7 @@
         FALSE
     } else {
         transmitter <- all_memory[[parent_name]]
-        .multiSelectionHasActive(transmitter) || .any_saved_selection(transmitter) || is(transmitter, "Table")
+        .multiSelectionHasActive(transmitter) || .any_saved_selection(transmitter)
     }
 }
 
@@ -179,10 +179,6 @@
                 sprintf("select <- all_active[['%s']];", transmitter),
                 .multiSelectionCommands(transmit_param, NA_integer_),
                 sprintf("%s[[\"active\"]] <- selected;", varname)
-            )
-        } else if (is(transmit_param, "Table")) {
-            cmds$table <- c(
-                sprintf("%s[[\"rownames\"]] <- rownames(all_contents[['%s']]);", varname, transmitter)
             )
         }
 

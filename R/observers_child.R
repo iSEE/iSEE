@@ -134,7 +134,7 @@
                 child_instance <- pObjects$memory[[child]]
 
                 regenerate <- FALSE
-                if (re_populated && (has_active || has_saved || is(instance, "Table"))) {
+                if (re_populated && (has_active || has_saved)) {
                     regenerate <- TRUE
                 } else if (re_saved || re_active) {
                     regenerate <- TRUE
@@ -154,11 +154,11 @@
                     if (.multiSelectionInvalidated(child_instance)) {
                         if (.multiSelectionHasActive(child_instance)) {
                             pObjects$memory[[child]] <- .multiSelectionClear(pObjects$memory[[child]])
-                            previous <- union(previous, .panelReactivated)
+                            previous <- union(previous, c(.panelReactivated, .multiSelectionUpdateModes(child_instance)))
                         }
                         if (.any_saved_selection(child_instance)) {
                             slot(pObjects$memory[[child]], .multiSelectHistory) <- list()
-                            previous <- union(previous, .multiSelectionUpdateModes(child_instance))
+                            previous <- union(previous, c(.panelResaved, .multiSelectionUpdateModes(child_instance)))
                         }
                     }
                     # Child panel settings may eventually void the need for regeneration

@@ -70,7 +70,7 @@ test_that(".singleStringError detects issues", {
     msg <- character(0)
 
     x <- ReducedDimensionPlot()
-    expect_error(x[[iSEE:::.colorByField]] <- character(0), 
+    expect_error(x[[iSEE:::.colorByField]] <- character(0),
         "'ColorBy' should be a single string for 'ReducedDimensionPlot'")
 })
 
@@ -89,7 +89,7 @@ test_that(".validStringError detects issues", {
 
     x <- ReducedDimensionPlot()
     expect_error(x[[iSEE:::.colorByDefaultColor]] <- c("a", "b"),
-        "'ColorByDefaultColor' should be a non-NA string") 
+        "'ColorByDefaultColor' should be a non-NA string")
 })
 
 test_that(".allowableChoiceError detects issues", {
@@ -98,7 +98,7 @@ test_that(".allowableChoiceError detects issues", {
 
     x <- ReducedDimensionPlot()
     expect_error(x[[iSEE:::.colorByField]] <- "other",
-        "'ColorBy' for 'ReducedDimensionPlot' should be one") 
+        "'ColorBy' for 'ReducedDimensionPlot' should be one")
 })
 
 test_that(".multipleChoiceError detects issues", {
@@ -174,16 +174,16 @@ test_that(".requestActiveSelectionUpdate updates rObjects", {
     rObjects$modified <- list()
     pObjects <- new.env()
     pObjects$memory <- list(ReducedDimensionPlot1=ReducedDimensionPlot())
-    
+
     .requestActiveSelectionUpdate("ReducedDimensionPlot1", session=NULL, pObjects, rObjects, update_output = TRUE)
 
     expect_identical(rObjects$ReducedDimensionPlot1_INTERNAL_multi_select, 2L)
-    expect_identical(rObjects$modified, list(ReducedDimensionPlot1 = "Reactivated"))
+    expect_identical(rObjects$modified, list(ReducedDimensionPlot1 = c("Reactivated", "UpdatedSelectionColumn")))
 
     .requestActiveSelectionUpdate("ReducedDimensionPlot1", session=NULL, pObjects, rObjects, update_output = FALSE)
 
     expect_identical(rObjects$ReducedDimensionPlot1_INTERNAL_multi_select, 3L)
-    expect_identical(rObjects$modified, list(ReducedDimensionPlot1 = c("Reactivated", "Norender")))
+    expect_identical(rObjects$modified, list(ReducedDimensionPlot1 = c("Reactivated", "UpdatedSelectionColumn", "Norender")))
 })
 
 test_that(".trackSingleSelection forces evaluation of .flagSingleSelect", {

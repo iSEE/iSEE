@@ -694,7 +694,7 @@ setMethod("updateObject", "Panel", function(object, ..., verbose=FALSE) {
 ###############################################################################
 
 #' @export
-setMethod(".multiSelectionUpdateMode", "Panel", function(x) character(0))
+setMethod(".multiSelectionUpdateModes", "Panel", function(x) character(0))
 
 #' @export
 setMethod(".updateOnIncomingSelectionModes", "Panel", function(x) character(0))

@@ -697,7 +697,7 @@ setMethod("updateObject", "ColumnDotPlot", function(object, ..., verbose=FALSE) 
 })
 
 #' @export
-setMethod(".multiSelectionUpdateMode", "ColumnDotPlot", function(x) .panelUpdatedSelectionColumn)
+setMethod(".multiSelectionUpdateModes", "ColumnDotPlot", function(x) .panelUpdatedSelectionColumn)
 
 #' @export
 setMethod(".updateOnIncomingSelectionModes", "ColumnDotPlot", function(x) {

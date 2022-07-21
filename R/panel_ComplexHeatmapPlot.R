@@ -789,7 +789,7 @@ setMethod(".updateOnIncomingSelectionModes", "ComplexHeatmapPlot", function(x) {
     if (!slot(x, .heatMapCustomFeatNames)) {
         modes <- append(modes, .panelUpdatedSelectionRow)
     }
-    if (slot(x, .selectColRestrict)) {
+    if (slot(x, .selectColRestrict) || slot(x, .heatMapShowSelection)) {
         modes <- append(modes, .panelUpdatedSelectionColumn)
     }
     modes

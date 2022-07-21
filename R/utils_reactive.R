@@ -113,7 +113,7 @@
 
     modes <- if (update_output) .panelReactivated else c(.panelNorender, .panelReactivated)
     target <- pObjects$memory[[panel_name]]
-    modes <- append(modes, .multiSelectionUpdateMode(target))
+    modes <- append(modes, .multiSelectionUpdateModes(target))
     .mark_panel_as_modified(panel_name, modes, rObjects)
 
     .update_dynamic_selection_source_panels(panel_name, session, pObjects)

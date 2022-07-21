@@ -690,7 +690,7 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' The output should be constant for all instances of \code{x} and is used to govern the interface choices for the selection parameters.
 #'
 #' @section Specifying the nature of an update to the active selection:
-#' \code{.activeSelectionUpdateMode(x)} should return a character vector specifying modes of modification in the active selection of a parent panel \code{x} that child panels can use to determine whether the nature of the update in the incoming selection meets criteria to re-render the child panel, based on the child panel's own settings.
+#' \code{.multiSelectionUpdateMode(x)} should return a character vector specifying modes of modification in the active selection of a parent panel \code{x} that child panels can use to determine whether the nature of the update in the incoming selection meets criteria to re-render the child panel, based on the child panel's own settings.
 #' Refer to \code{.updateOnIncomingSelectionModes} below for the handling of these modes of modification by the child panel.
 #'
 #' For example, a \linkS4class{ComplexHeatmapPlot} panel does not need to be re-rendered if an incoming row selection changes, if the \linkS4class{ComplexHeatmapPlot} panel is currently set to use custom rows.
@@ -756,7 +756,7 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' .multiSelectionClear
 #' .multiSelectionInvalidated
 #' .multiSelectionAvailable
-#' .activeSelectionUpdateMode
+#' .multiSelectionUpdateMode
 #' .updateOnIncomingSelectionModes
 NULL
 
@@ -780,6 +780,12 @@ setGeneric(".multiSelectionInvalidated", function(x) standardGeneric(".multiSele
 
 #' @export
 setGeneric(".multiSelectionAvailable", function(x, contents) standardGeneric(".multiSelectionAvailable"))
+
+#' @export
+setGeneric(".multiSelectionUpdateMode", function(x) standardGeneric(".multiSelectionUpdateMode"))
+
+#' @export
+setGeneric(".updateOnIncomingSelectionModes", function(x) standardGeneric(".updateOnIncomingSelectionModes"))
 
 #' Generics for controlling single selections
 #'
@@ -1084,11 +1090,3 @@ setGeneric(".getDotPlotColorHelp", function(x, ...) standardGeneric(".getDotPlot
 #' @export
 #' @rdname cleanDataset
 setGeneric("cleanDataset", function(se) standardGeneric("cleanDataset"))
-
-###########################
-
-#' @export
-setGeneric(".activeSelectionUpdateMode", function(x) standardGeneric(".activeSelectionUpdateMode"))
-
-#' @export
-setGeneric(".updateOnIncomingSelectionModes", function(x) standardGeneric(".updateOnIncomingSelectionModes"))

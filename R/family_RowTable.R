@@ -130,7 +130,7 @@ setMethod(".showSelectionDetails", "RowTable", function(x) {
 })
 
 #' @export
-setMethod(".activeSelectionUpdateMode", "RowTable", function(x) .panelUpdatedSelectionRow)
+setMethod(".multiSelectionUpdateMode", "RowTable", function(x) .panelUpdatedSelectionRow)
 
 #' @export
 setMethod(".updateOnIncomingSelectionModes", "RowTable", function(x) .panelUpdatedSelectionRow)

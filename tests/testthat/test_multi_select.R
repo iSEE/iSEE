@@ -239,3 +239,39 @@ test_that(".multiSelectionRerenderModes returns the appropriate values for Compl
     expect_identical(out, character(0))
 
 })
+
+test_that(".multiSelectionRerenderModes returns the appropriate values for ColumnDotPlot", {
+
+    x <- ColumnDataPlot(
+        ColumnSelectionRestrict = FALSE
+    )
+
+    out <- .multiSelectionRerenderModes(x)
+    expect_identical(out, character(0))
+
+    x <- ColumnDataPlot(
+        ColumnSelectionRestrict = TRUE
+    )
+
+    out <- .multiSelectionRerenderModes(x)
+    expect_identical(out, iSEE:::.panelUpdatedSelectionColumn)
+
+})
+
+test_that(".multiSelectionRerenderModes returns the appropriate values for RowDotPlot", {
+
+    x <- RowDataPlot(
+        RowSelectionRestrict = FALSE
+    )
+
+    out <- .multiSelectionRerenderModes(x)
+    expect_identical(out, character(0))
+
+    x <- RowDataPlot(
+        RowSelectionRestrict = TRUE
+    )
+
+    out <- .multiSelectionRerenderModes(x)
+    expect_identical(out, iSEE:::.panelUpdatedSelectionRow)
+
+})

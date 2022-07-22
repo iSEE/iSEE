@@ -41,15 +41,26 @@
             .textEval(cmds, env)
             n_brushed <- length(env$selected)
 
-            all_output <- append(all_output,
-                list(
-                    sprintf(
-                        "%i of %i %ss in active selection (%.1f%%)",
-                        n_brushed, n_total, .multiSelectionDimension(instance), 100*n_brushed/n_total
-                    ),
-                    br()
+            if (is(instance, "Table")) {
+                # Table panels don't rerender when their selection changes,
+                # which makes the info output out-of-date most of the time.
+                all_output <- append(all_output,
+                    list(
+                        "Active selections are shown below the table (if any).",
+                        br()
+                    )
                 )
-            )
+            } else {
+                all_output <- append(all_output,
+                    list(
+                        sprintf(
+                            "%i of %i %ss in active selection (%.1f%%)",
+                            n_brushed, n_total, .multiSelectionDimension(instance), 100*n_brushed/n_total
+                        ),
+                        br()
+                    )
+                )
+            }
         }
 
         saved <- slot(instance, .multiSelectHistory)

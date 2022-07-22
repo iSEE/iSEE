@@ -3,6 +3,9 @@
 * Complete bugfix that avoids re-rendering the `ComplexHeatmapPlot` panel when
   dimension of incoming selection is not used to restrict that dimension
   in the `ComplexHeatmapPlot` panel (issue `#580`).
+* Bugfix info output message of `Table` panels that are not rerendered when
+  their selection changes to the built-in information displayed by
+  `DT::dataTableOutput`.
 
 # iSEE 2.9.3
 

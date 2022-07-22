@@ -275,3 +275,25 @@ test_that(".multiSelectionRerenderModes returns the appropriate values for RowDo
     expect_identical(out, iSEE:::.panelUpdatedSelectionRow)
 
 })
+
+test_that(".multiSelectionRerenderModes returns the appropriate values for RowDataTable", {
+
+    x <- RowDataTable(
+        RowSelectionRestrict = FALSE
+    )
+
+    out <- .multiSelectionRerenderModes(x)
+    expect_identical(out, iSEE:::.panelUpdatedSelectionRow)
+
+})
+
+test_that(".multiSelectionRerenderModes returns the appropriate values for ColumnDataTable", {
+
+    x <- ColumnDataTable(
+        ColumnSelectionRestrict = FALSE
+    )
+
+    out <- .multiSelectionRerenderModes(x)
+    expect_identical(out, iSEE:::.panelUpdatedSelectionColumn)
+
+})

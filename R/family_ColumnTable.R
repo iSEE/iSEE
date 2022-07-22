@@ -130,7 +130,7 @@ setMethod(".showSelectionDetails", "ColumnTable", function(x) {
 })
 
 #' @export
-setMethod(".multiSelectionUpdateModes", "ColumnTable", function(x) .panelUpdatedSelectionColumn)
+setMethod(".multiSelectionUpdateModes", "ColumnTable", function(x) c(callNextMethod(), .panelUpdatedSelectionColumn))
 
 #' @export
 setMethod(".multiSelectionRerenderModes", "ColumnTable", function(x) c(callNextMethod(), .panelUpdatedSelectionColumn))

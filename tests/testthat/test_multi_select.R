@@ -151,13 +151,91 @@ test_that(".process_selectby_choice works with saved row selections", {
 
 test_that(".any_saved_selection returns the appropriate value ", {
     x <- ReducedDimensionPlot()
-  
+
     # Return whether there is at least one saved selection
     out <- iSEE:::.any_saved_selection(x, count = FALSE)
     expect_identical(out, FALSE)
-  
+
     # Return the count of selections instead
     out <- iSEE:::.any_saved_selection(x, count = TRUE)
     expect_identical(out, 0L)
 })
 
+###############################################
+
+test_that(".multiSelectionUpdateModes returns the appropriate values", {
+
+    out <- .multiSelectionUpdateModes(ColumnDataPlot())
+    expect_identical(out, iSEE:::.panelUpdatedSelectionColumn)
+
+    out <- .multiSelectionUpdateModes(ColumnDataTable())
+    expect_identical(out, iSEE:::.panelUpdatedSelectionColumn)
+
+    out <- .multiSelectionUpdateModes(ComplexHeatmapPlot())
+    expect_identical(out, character(0))
+
+    out <- .multiSelectionUpdateModes(FeatureAssayPlot())
+    expect_identical(out, iSEE:::.panelUpdatedSelectionColumn)
+
+    out <- .multiSelectionUpdateModes(ReducedDimensionPlot())
+    expect_identical(out, iSEE:::.panelUpdatedSelectionColumn)
+
+    out <- .multiSelectionUpdateModes(RowDataPlot())
+    expect_identical(out, iSEE:::.panelUpdatedSelectionRow)
+
+    out <- .multiSelectionUpdateModes(RowDataTable())
+    expect_identical(out, iSEE:::.panelUpdatedSelectionRow)
+
+    out <- .multiSelectionUpdateModes(SampleAssayPlot())
+    expect_identical(out, iSEE:::.panelUpdatedSelectionRow)
+
+})
+
+test_that(".multiSelectionRerenderModes returns the appropriate values for ComplexHeatmapPlot", {
+
+    x <- ComplexHeatmapPlot(
+        CustomRows = FALSE,             # default -> use incoming rows
+        ShowColumnSelection = TRUE,     # default -> use incoming columns
+        ColumnSelectionRestrict = FALSE # default
+    )
+
+    out <- .multiSelectionRerenderModes(x)
+    expect_identical(out, c(iSEE:::.panelUpdatedSelectionRow, iSEE:::.panelUpdatedSelectionColumn))
+
+    x <- ComplexHeatmapPlot(
+        CustomRows = TRUE,
+        ShowColumnSelection = TRUE,     # default -> use incoming columns
+        ColumnSelectionRestrict = FALSE # default
+    )
+
+    out <- .multiSelectionRerenderModes(x)
+    expect_identical(out, iSEE:::.panelUpdatedSelectionColumn)
+
+    x <- ComplexHeatmapPlot(
+        CustomRows = FALSE,             # default -> use incoming rows
+        ShowColumnSelection = FALSE,
+        ColumnSelectionRestrict = FALSE # default
+    )
+
+    out <- .multiSelectionRerenderModes(x)
+    expect_identical(out, iSEE:::.panelUpdatedSelectionRow)
+
+    x <- ComplexHeatmapPlot(
+        CustomRows = FALSE,             # default -> use incoming rows
+        ShowColumnSelection = TRUE,     # default -> use incoming columns
+        ColumnSelectionRestrict = TRUE  #         -> use incoming columns
+    )
+
+    out <- .multiSelectionRerenderModes(x)
+    expect_identical(out, c(iSEE:::.panelUpdatedSelectionRow, iSEE:::.panelUpdatedSelectionColumn))
+
+    x <- ComplexHeatmapPlot(
+        CustomRows = TRUE,
+        ShowColumnSelection = FALSE,
+        ColumnSelectionRestrict = FALSE
+    )
+
+    out <- .multiSelectionRerenderModes(x)
+    expect_identical(out, character(0))
+
+})

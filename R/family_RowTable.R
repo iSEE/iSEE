@@ -130,7 +130,7 @@ setMethod(".showSelectionDetails", "RowTable", function(x) {
 })
 
 #' @export
-setMethod(".multiSelectionUpdateModes", "RowTable", function(x) .panelUpdatedSelectionRow)
+setMethod(".multiSelectionUpdateModes", "RowTable", function(x) c(callNextMethod(), .panelUpdatedSelectionRow))
 
 #' @export
 setMethod(".multiSelectionRerenderModes", "RowTable", function(x) c(callNextMethod(), .panelUpdatedSelectionRow))

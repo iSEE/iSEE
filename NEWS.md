@@ -1,3 +1,8 @@
+# iSEE 2.9.4
+
+* Bugfix setting the active multi-selection info of `Table` panels to a fixed
+  message, as the panel is not re-rendered when search boxes are used.
+
 # iSEE 2.9.3
 
 * Partial bugfix avoiding re-rendering of `ComplexHeatmapPlot` panel

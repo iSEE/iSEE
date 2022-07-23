@@ -34,8 +34,15 @@
         env <- new.env()
         env$contents <- cur_coords
         env$se <- se
-
-        if (.multiSelectionHasActive(instance)) {
+        
+        if (is(instance, "Table")) {
+            all_output <- append(all_output,
+                list(
+                    "Active selection shown below table (if any).",
+                    br()
+                )
+            )
+        } else if (.multiSelectionHasActive(instance)) {
             env$select <- .multiSelectionActive(instance)
             cmds <- .multiSelectionCommands(instance, NA)
             .textEval(cmds, env)

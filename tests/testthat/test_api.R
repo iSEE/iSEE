@@ -140,6 +140,12 @@ test_that(".multiSelectionRestricted handles Tables", {
     expect_true(out)
 })
 
+test_that(".multiSelectionRestricted handles ComplexHeatmapPlot", {
+    x <- ComplexHeatmapPlot()
+    out <- .multiSelectionRestricted(x)
+    expect_true(out)
+})
+
 # .multiSelectionClear ----
 context(".multiSelectionClear")
 

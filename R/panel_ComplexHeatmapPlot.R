@@ -743,7 +743,8 @@ setMethod(".hideInterface", "ComplexHeatmapPlot", function(x, field) {
 
 #' @export
 setMethod(".multiSelectionRestricted", "ComplexHeatmapPlot", function(x) {
-    !slot(x, .heatMapCustomFeatNames) || slot(x, .selectColRestrict)
+    ## .heatMapShowSelection is not technically restricted, but requires rerendering nonetheless
+    !slot(x, .heatMapCustomFeatNames) || slot(x, .selectColRestrict) || slot(x, .heatMapShowSelection)
 })
 
 ###############################################################

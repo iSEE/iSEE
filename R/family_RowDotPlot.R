@@ -326,8 +326,6 @@ setMethod(".multiSelectionInvalidated", "RowDotPlot", function(x) {
 
 #' @export
 setMethod(".multiSelectionResponsive", "RowDotPlot", function(x, dims = character(0)) {
-    message(".multiSelectionResponsive", "(RowDotPlot)")
-    print(dims)
     if ("row" %in% dims) {
         return(TRUE)
     }

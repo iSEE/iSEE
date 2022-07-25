@@ -658,6 +658,9 @@ setMethod(".singleSelectionDimension", "Panel", function(x) "none")
 #' @export
 setMethod(".singleSelectionSlots", "Panel", function(x) list())
 
+#' @export
+setMethod(".multiSelectionResponsive", "Panel", function(x, dims = character(0)) FALSE)
+
 ###############################################################################
 
 #' @export

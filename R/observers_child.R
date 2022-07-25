@@ -130,6 +130,11 @@
             # Looping over children and deciding whether they need to be regenerated.
             for (child in children) {
                 child_instance <- pObjects$memory[[child]]
+            
+                if (!.multiSelectionResponsive(child_instance, transmit_dim)) {
+                    message("Skip rerendering of: ", iSEE:::.getEncodedName(child_instance))
+                    next
+                }
 
                 regenerate <- FALSE
                 if (re_populated && (has_active || has_saved)) {

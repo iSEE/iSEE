@@ -750,7 +750,7 @@ setMethod(".multiSelectionRestricted", "ComplexHeatmapPlot", function(x) {
 #' @export
 setMethod(".multiSelectionResponsive", "ComplexHeatmapPlot", function(x, dims = character(0)) {
     if ("row" %in% dims) {
-        if (!slot(x, .heatMapCustomFeatNames)) {
+        if (slot(x, .selectRowRestrict) || !slot(x, .heatMapCustomFeatNames)) {
             return(TRUE)
         }
     }

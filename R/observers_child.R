@@ -132,7 +132,6 @@
                 child_instance <- pObjects$memory[[child]]
             
                 if (!.multiSelectionResponsive(child_instance, transmit_dim)) {
-                    message("Skip rerendering of: ", iSEE:::.getEncodedName(child_instance))
                     next
                 }
 
@@ -164,10 +163,7 @@
                             previous <- union(previous, .panelResaved)
                         }
                     }
-                    # Child panel settings may eventually void the need for regeneration
-                    if (length(previous)) {
-                        modified[[child]] <- previous
-                    }
+                    modified[[child]] <- previous
                 }
             }
         }

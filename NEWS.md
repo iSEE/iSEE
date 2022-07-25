@@ -1,3 +1,10 @@
+# iSEE 2.9.5
+
+* Bugfix reverting a change in `2.9.3` breaking re-rendering of reactivated panels.
+* Complete bugfix to prevent unnecessary re-rendering of `ComplexHeatmapPlot` panel
+  when dimension of an incoming multiple selection is dismissed by the options
+  of the child panel.
+
 # iSEE 2.9.4
 
 * Bugfix setting the active multi-selection info of `Table` panels to a fixed

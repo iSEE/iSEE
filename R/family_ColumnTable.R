@@ -113,6 +113,14 @@ setMethod(".multiSelectionDimension", "ColumnTable", function(x) "column")
 setMethod(".singleSelectionDimension", "ColumnTable", function(x) "sample")
 
 #' @export
+setMethod(".multiSelectionResponsive", "ColumnTable", function(x, dims = character(0)) {
+    if ("column" %in% dims) {
+        return(TRUE)
+    }
+    return(FALSE)
+})
+
+#' @export
 setMethod(".hideInterface", "ColumnTable", function(x, field) {
     if (field %in% c(.selectRowSource, .selectRowRestrict, .selectRowDynamic)) {
         TRUE

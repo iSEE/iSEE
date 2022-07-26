@@ -327,6 +327,14 @@ setMethod(".multiSelectionInvalidated", "ColumnDotPlot", function(x) {
 })
 
 #' @export
+setMethod(".multiSelectionResponsive", "ColumnDotPlot", function(x, dims = character(0)) {
+    if ("column" %in% dims) {
+        return(TRUE)
+    }
+    return(FALSE)
+})
+
+#' @export
 setMethod(".singleSelectionDimension", "ColumnDotPlot", function(x) "sample")
 
 ###############################################################

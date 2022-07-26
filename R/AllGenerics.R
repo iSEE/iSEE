@@ -738,6 +738,10 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #'
 #' \code{.multiSelectionInvalidated(x)} should return a logical scalar indicating whether a transmission of a multiple selection to \code{x} invalidates \code{x}'s own existing selections.
 #' This should only be \code{TRUE} in special circumstances, e.g., if receipt of a new multiple selection causes recalculation of coordinates in a \linkS4class{DotPlot}.
+#' 
+#' \code{.multiSelectionResponsive(x, dims)} should return a logical scalar indicating whether \code{x} is responsive to an incoming multiple selection on dimensions \code{dims}.
+#' For example, the method for \linkS4class{ComplexHeatmapPlot} would return \code{TRUE} when an incoming selection originates from a row-oriented panel and \code{CustomRows=FALSE}.
+#' Otherwise, it would be \code{FALSE} as the dimension of the transmitted selection is dismissed by the options of the child panel.
 #'
 #' @author Aaron Lun
 #' @name multi-select-generics
@@ -748,6 +752,7 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' .multiSelectionClear
 #' .multiSelectionInvalidated
 #' .multiSelectionAvailable
+#' .multiSelectionResponsive
 NULL
 
 #' @export
@@ -770,6 +775,9 @@ setGeneric(".multiSelectionInvalidated", function(x) standardGeneric(".multiSele
 
 #' @export
 setGeneric(".multiSelectionAvailable", function(x, contents) standardGeneric(".multiSelectionAvailable"))
+
+#' @export
+setGeneric(".multiSelectionResponsive", function(x, dims) standardGeneric(".multiSelectionResponsive"))
 
 #' Generics for controlling single selections
 #'

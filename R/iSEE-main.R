@@ -320,6 +320,7 @@ iSEE <- function(se,
                     tour=TOUR, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name, saveState=saveState,
                     input=input, output=output, session=session, rObjects=rObjects)
                 rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
+                message("rObjects$rerendered: ", rObjects$rerendered)
             }
             landingPage(FUN, input=input, output=output, session=session)
         } else {
@@ -414,7 +415,6 @@ iSEE <- function(se,
 
     # Preparing app state variables.
     se <- .prepare_SE(se, colormap, c(initial, extra))
-
     init_out <- .setup_initial_state(se, initial)
     memory <- init_out$memory
     counter <- init_out$counter
@@ -457,10 +457,13 @@ iSEE <- function(se,
     eval_order <- .establish_eval_order(pObjects$selection_links)
     eval_extra <- .has_child(pObjects$aesthetics_links)
     eval_order <- union(eval_order, eval_extra)
-
+    message("eval_order")
+    print(eval_order)
     for (panel_name in eval_order) {
+        message("panel_name: ", panel_name)
         p.out <- .generateOutput(pObjects$memory[[panel_name]], se,
             all_memory=pObjects$memory, all_contents=pObjects$contents)
+        print(p.out$contents)
         pObjects$contents[[panel_name]] <- p.out$contents
     }
 
@@ -475,8 +478,10 @@ iSEE <- function(se,
         pObjects=pObjects, rObjects=rObjects)
 
     .create_child_propagation_observer(se, session=session, pObjects=pObjects, rObjects=rObjects)
-
+    message("pObjects$memory")
+    print(pObjects$memory)
     for (idx in seq_along(pObjects$memory)) {
+        message("seq_along(pObjects$memory): ", idx)
         instance <- pObjects$memory[[idx]]
         .createObservers(instance, se=se, input=input,
             session=session, pObjects=pObjects, rObjects=rObjects)

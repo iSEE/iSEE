@@ -16,6 +16,7 @@
 #' @importFrom shinyWidgets addSpinner
 #' @importFrom shiny brushOpts plotOutput uiOutput tagList hoverOpts
 .define_plot_ui <- function(plot_name, height, brush_direction, brush_fill, brush_stroke) {
+    message(".define_plot_ui: ", plot_name)
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
     brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=TRUE, delay=2000,

@@ -1053,7 +1053,9 @@ setMethod(".defineVisualOtherInterface", "DotPlot", function(x) {
 
 #' @export
 setMethod(".defineOutput", "DotPlot", function(x) {
+    message(".defineOutput")
     plot_name <- .getEncodedName(x)
+    message("plot_name: ", plot_name)
     col <- .getPanelColor(x)
 
     .define_plot_ui(plot_name, brush_direction="xy",
@@ -1066,11 +1068,14 @@ setMethod(".defineOutput", "DotPlot", function(x) {
 #' @export
 #' @importFrom shiny renderPlot tagList wellPanel nearPoints renderUI
 setMethod(".renderOutput", "DotPlot", function(x, se, output, pObjects, rObjects) {
+    message(".renderOutput: DotPlot")
     plot_name <- .getEncodedName(x)
+    message("plot_name: ", plot_name)
     force(se) # defensive programming to avoid difficult bugs due to delayed evaluation.
-
+    print(se)
     # nocov start
     output[[plot_name]] <- renderPlot({
+        message("renderPlot: ", plot_name)
         .retrieveOutput(plot_name, se, pObjects, rObjects)$plot
     })
     # nocov end
@@ -1161,6 +1166,7 @@ setMethod(".singleSelectionSlots", "DotPlot", function(x) {
 #' @importFrom S4Vectors metadata
 #' @importFrom grid unit
 setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents) {
+    message(".generateOutput: DotPlot")
     # Initialize an environment storing information for generating ggplot commands
     plot_env <- new.env()
     plot_env$se <- se

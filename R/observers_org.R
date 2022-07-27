@@ -29,8 +29,10 @@
 #' @importFrom shiny renderUI reactiveValues observeEvent
 #' showModal modalDialog isolate removeModal
 .create_organization_observers <- function(se, input, output, session, pObjects, rObjects) {
+    message(".create_organization_observers")
     # nocov start
     output$allPanels <- renderUI({
+        message("renderUI: output$allPanels")
         force(rObjects$rerender)
         rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
         .panel_generation(se, pObjects$memory)

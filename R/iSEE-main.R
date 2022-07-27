@@ -285,6 +285,10 @@ iSEE <- function(se,
             prepareSpeechRecognition(voice),
             .prepareBugsEasterEgg(bugs),
             introjsUI(), # must be included in UI
+            # bugfix
+            # https://github.com/iSEE/iSEE/issues/594
+            # https://github.com/rstudio/shiny/issues/3125#issuecomment-876787895
+            htmltools::findDependencies(selectInput("test", "test", NULL)),
 
             # for error message handling
             tags$head(

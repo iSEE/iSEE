@@ -29,15 +29,12 @@
 #' @export
 #' @rdname retrieveOutput
 .retrieveOutput <- function(panel_name, se, pObjects, rObjects) {
-    message(".retrieveOutput: ", panel_name)
     .trackUpdate(panel_name, rObjects)
 
     if (length(pObjects$cached[[panel_name]])!=0L) {
-        message("cached: ", panel_name)
         output <- pObjects$cached[[panel_name]]
         pObjects$cached[panel_name] <- list(NULL)
     } else {
-        message(".generateOutput: ", panel_name)
         curpanel <- pObjects$memory[[panel_name]]
         output <- .generateOutput(curpanel, se, 
             all_memory=pObjects$memory, all_contents=pObjects$contents)

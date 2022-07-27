@@ -198,8 +198,6 @@ names(.all_aes_values) <- .all_aes_names
     x_lab, y_lab, color_lab, shape_lab, size_lab, title,
     by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE)
 {
-    message(".scatter_plot")
-    print(head(plot_data))
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "dot.plot <- ggplot() +"
 

@@ -1,3 +1,9 @@
+# iSEE 2.9.6
+
+* Bugfix related to <https://github.com/rstudio/shiny/issues/3125>,
+  mainly applicable to custom landing pages that render a `DT::datatable()`
+  prior to `selectInput()`.
+
 # iSEE 2.9.5
 
 * Bugfix reverting a change in `2.9.3` breaking re-rendering of reactivated panels.

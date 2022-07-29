@@ -222,7 +222,7 @@ iSEE <- function(se,
             ), # end of dropdownMenu
 
             dropdownMenu(type="tasks",
-                icon=icon("question-circle"),
+                icon=icon("circle-question"),
                 badgeStatus=NULL,
                 headerText="Documentation",
                 notificationItem(

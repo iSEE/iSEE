@@ -18,7 +18,7 @@ SummarizedExperiment object, using a Shiny interface."><!-- mathjax --><script s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.7</span>
       </span>
     </div>
 
@@ -266,6 +266,12 @@ iSEE: Interactive SummarizedExperiment Explorer
 <span class="r-in"><span class="co"># launch the app itself ----</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">iSEE</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> This Font Awesome icon ('wand-magic-sparkles') does not exist:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> * if providing a custom `html_dependency` these `name` checks can </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   be deactivated with `verify_fa = FALSE`</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> This Font Awesome icon ('circle-question') does not exist:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> * if providing a custom `html_dependency` these `name` checks can </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   be deactivated with `verify_fa = FALSE`</span>
 <span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in">  <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="va">app</span>, port<span class="op">=</span><span class="fl">1234</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>

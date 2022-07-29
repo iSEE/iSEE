@@ -1,3 +1,7 @@
+# iSEE 2.9.7
+
+* Update FontAwesome icon `question-circle` to `circle-question` (v6).
+
 # iSEE 2.9.6
 
 * Bugfix related to <https://github.com/rstudio/shiny/issues/3125>,

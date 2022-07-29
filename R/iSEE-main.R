@@ -205,7 +205,7 @@ iSEE <- function(se,
                     text=actionButton(
                         .generalTrackedCode,
                         label="Extract the R code",
-                        icon=icon("magic"),
+                        icon=icon("wand-magic-sparkles"),
                         style=.actionbutton_biocstyle
                     ),
                     icon=icon("", verify_fa = FALSE), status="primary"
@@ -222,7 +222,7 @@ iSEE <- function(se,
             ), # end of dropdownMenu
 
             dropdownMenu(type="tasks",
-                icon=icon("question-circle"),
+                icon=icon("circle-question"),
                 badgeStatus=NULL,
                 headerText="Documentation",
                 notificationItem(

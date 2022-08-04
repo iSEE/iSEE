@@ -1,3 +1,7 @@
+# iSEE 2.9.8
+
+* Enable autocompletion for feature names in the heatmap feature selection modal.
+
 # iSEE 2.9.7
 
 * Update FontAwesome icon `question-circle` to `circle-question` (v6).

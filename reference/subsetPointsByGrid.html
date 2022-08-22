@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.9</span>
       </span>
     </div>
 
@@ -85,7 +85,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">subsetPointsByGrid</span><span class="op">(</span><span class="va">X</span>, <span class="va">Y</span>, resolution <span class="op">=</span> <span class="fl">200</span>, grouping <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">subsetPointsByGrid</span><span class="op">(</span><span class="va">X</span>, <span class="va">Y</span>, resolution <span class="op">=</span> <span class="fl">200</span>, grouping <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -136,21 +136,21 @@ while points corresponding to DE genes should generally be retained.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100000</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">Y</span> <span class="op">&lt;-</span> <span class="va">X</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100000</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu">subsetPointsByGrid</span><span class="op">(</span><span class="va">X</span>, <span class="va">Y</span>, resolution<span class="op">=</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100000</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">Y</span> <span class="op">&lt;-</span> <span class="va">X</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">100000</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu">subsetPointsByGrid</span><span class="op">(</span><span class="va">X</span>, <span class="va">Y</span>, resolution<span class="op">=</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Mode   FALSE    TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> logical   96593    3407 </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu">subsetPointsByGrid</span><span class="op">(</span><span class="va">X</span>, <span class="va">Y</span>, resolution<span class="op">=</span><span class="fl">200</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> logical   96536    3464 </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu">subsetPointsByGrid</span><span class="op">(</span><span class="va">X</span>, <span class="va">Y</span>, resolution<span class="op">=</span><span class="fl">200</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Mode   FALSE    TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> logical   89671   10329 </span>
-<span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu">subsetPointsByGrid</span><span class="op">(</span><span class="va">X</span>, <span class="va">Y</span>, resolution<span class="op">=</span><span class="fl">1000</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> logical   89571   10429 </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu">subsetPointsByGrid</span><span class="op">(</span><span class="va">X</span>, <span class="va">Y</span>, resolution<span class="op">=</span><span class="fl">1000</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Mode   FALSE    TRUE </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> logical   30204   69796 </span>
-<span class="r-in"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> logical   29764   70236 </span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

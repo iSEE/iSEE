@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.9</span>
       </span>
     </div>
 
@@ -85,9 +85,9 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">columnSelectionColorMap</span><span class="op">(</span><span class="va">x</span>, <span class="va">levels</span><span class="op">)</span>
-
-<span class="fu">rowSelectionColorMap</span><span class="op">(</span><span class="va">x</span>, <span class="va">levels</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">columnSelectionColorMap</span><span class="op">(</span><span class="va">x</span>, <span class="va">levels</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">rowSelectionColorMap</span><span class="op">(</span><span class="va">x</span>, <span class="va">levels</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -121,20 +121,20 @@ This aims to provide some consistency in the coloring when the selections change
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">ecm</span> <span class="op">&lt;-</span> <span class="fu"><a href="ExperimentColorMap-class.html">ExperimentColorMap</a></span><span class="op">(</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">columnSelectionColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"active"</span>, <span class="st">"unselected"</span><span class="op">)</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">ecm</span> <span class="op">&lt;-</span> <span class="fu"><a href="ExperimentColorMap-class.html">ExperimentColorMap</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">columnSelectionColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"active"</span>, <span class="st">"unselected"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     active unselected </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  "#F8766D"     "grey" </span>
-<span class="r-in"><span class="fu">columnSelectionColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"active"</span>, <span class="st">"saved1"</span>, <span class="st">"unselected"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">columnSelectionColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"active"</span>, <span class="st">"saved1"</span>, <span class="st">"unselected"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     active     saved1 unselected </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  "#F8766D"  "#00BFC4"     "grey" </span>
-<span class="r-in"><span class="fu">columnSelectionColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"saved1"</span>, <span class="st">"unselected"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">columnSelectionColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"saved1"</span>, <span class="st">"unselected"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     active     saved1 unselected </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  "#F8766D"  "#00BFC4"     "grey" </span>
-<span class="r-in"><span class="fu">columnSelectionColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"saved1"</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">columnSelectionColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"saved1"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     active     saved1 unselected </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  "#F8766D"  "#00BFC4"     "grey" </span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>

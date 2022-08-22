@@ -55,7 +55,7 @@ unlink("assay.h5")
 ```
 
 ```{r, eval=!exists("SCREENSHOT"), include=FALSE}
-SCREENSHOT <- function(x, ...) knitr::include_graphics(x)
+SCREENSHOT <- function(x, ...) knitr::include_graphics(x, dpi = NA)
 ```
 
 # Overview

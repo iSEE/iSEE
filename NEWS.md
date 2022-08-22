@@ -1,3 +1,7 @@
+# iSEE 2.9.9
+
+* Allow screenshots in vignettes to use full width of pkgdown site.
+
 # iSEE 2.9.8
 
 * Enable autocompletion for feature names in the heatmap feature selection modal.

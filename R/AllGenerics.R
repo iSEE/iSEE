@@ -1082,3 +1082,10 @@ setGeneric(".getDotPlotColorHelp", function(x, ...) standardGeneric(".getDotPlot
 #' @export
 #' @rdname cleanDataset
 setGeneric("cleanDataset", function(se) standardGeneric("cleanDataset"))
+
+
+###########################
+
+#' @export
+#' @rdname tooltip-generics
+setGeneric(".getTooltipUI", function(x, se, name) standardGeneric(".getTooltipUI"))

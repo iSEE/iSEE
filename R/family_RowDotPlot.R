@@ -588,6 +588,24 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
     }
 })
 
+###############################################################
+# Tooltip
+
+setMethod(".getTooltipUI", "RowDotPlot", function(x, se, name) {
+    if (length(x[[.tooltipSelection]]) > 0) {
+        info <- c(unlist(rowData(se)[name, x[[.tooltipSelection]], drop=FALSE]))
+        ui <- HTML(
+            paste0(c(
+                sprintf("<strong>%s</strong>", name),
+                sprintf("%s: %s", names(info), info)
+                ), collapse = "<br />")
+            )
+        ui
+    } else {
+        name
+    }
+})
+
 ###############################################################################
 # Documentation
 

@@ -151,6 +151,9 @@ collated[.selectColRestrict] <- "logical"
 
 collated[.multiSelectHistory] <- "list"
 
+.tooltipSelection <- "TooltipSelection"
+collated[.tooltipSelection] <- "character"
+
 #' @export
 setClass("Panel", contains="VIRTUAL", slots=collated)
 

@@ -591,6 +591,24 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
     }
 })
 
+###############################################################
+# Tooltip
+
+setMethod(".getTooltipUI", "ColumnDotPlot", function(x, se, name) {
+    if (length(x[[.tooltipSelection]]) > 0) {
+        info <- c(unlist(colData(se)[name, x[[.tooltipSelection]], drop=FALSE]))
+        ui <- HTML(
+            paste0(c(
+                sprintf("<strong>%s</strong>", name),
+                sprintf("%s: %s", names(info), info)
+                ), collapse = "<br />")
+            )
+        ui
+    } else {
+        name
+    }
+})
+
 ###############################################################################
 # Documentation
 

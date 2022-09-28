@@ -598,7 +598,8 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
 
 setMethod(".getTooltipUI", "ColumnDotPlot", function(x, se, name) {
     if (length(x[[.tooltipSelection]]) > 0) {
-        info <- c(unlist(colData(se)[name, x[[.tooltipSelection]], drop=FALSE]))
+        # as.data.frame sometimes needed to fix names of items in vector
+        info <- unlist(as.data.frame(colData(se)[name, x[[.tooltipSelection]], drop=FALSE]))
         ui <- HTML(
             paste0(c(
                 sprintf("<strong>%s</strong>", name),

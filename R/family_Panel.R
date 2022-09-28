@@ -170,8 +170,6 @@ setMethod("initialize", "Panel", function(.Object, ..., RowSelectionSaved=NULL, 
     args <- .emptyDefault(args, .selectColDynamic, getPanelDefault("MultipleSelectionDynamicSource"))
 
     args <- .emptyDefault(args, .dataParamBoxOpen, FALSE)
-    
-    args <- .emptyDefault(args, .tooltipSelection, character(0))
 
     current <- c(.latest_version, args[[.packageVersion]])
     current <- current[!duplicated(names(current))]

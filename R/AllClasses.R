@@ -151,9 +151,6 @@ collated[.selectColRestrict] <- "logical"
 
 collated[.multiSelectHistory] <- "list"
 
-.tooltipSelection <- "TooltipSelection"
-collated[.tooltipSelection] <- "character"
-
 #' @export
 setClass("Panel", contains="VIRTUAL", slots=collated)
 
@@ -248,6 +245,9 @@ collated[.plotHoverInfo] <- "logical"
 collated[.plotLabelCenters] <- "logical"
 collated[.plotLabelCentersBy] <- "character"
 collated[.plotLabelCentersColor] <- "character"
+
+.tooltipSelection <- "TooltipSelection"
+collated[.tooltipSelection] <- "character"
 
 #' @export
 setClass("DotPlot", contains=c("Panel", "VIRTUAL"), slots=collated)

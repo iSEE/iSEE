@@ -235,8 +235,10 @@ collated[.legendPointSize] <- "numeric"
 collated[.plotLegendPosition] <- "character"
 
 .plotHoverInfo <- "HoverInfo"
+.tooltipSelection <- "TooltipData"
 
 collated[.plotHoverInfo] <- "logical"
+collated[.tooltipSelection] <- "character"
 
 .plotLabelCenters <- "LabelCenters"
 .plotLabelCentersBy <- "LabelCentersBy"
@@ -245,9 +247,6 @@ collated[.plotHoverInfo] <- "logical"
 collated[.plotLabelCenters] <- "logical"
 collated[.plotLabelCentersBy] <- "character"
 collated[.plotLabelCentersColor] <- "character"
-
-.tooltipSelection <- "TooltipSelection"
-collated[.tooltipSelection] <- "character"
 
 #' @export
 setClass("DotPlot", contains=c("Panel", "VIRTUAL"), slots=collated)

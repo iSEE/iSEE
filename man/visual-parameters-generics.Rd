@@ -10,6 +10,7 @@
 \alias{.defineVisualTextInterface}
 \alias{.defineVisualOtherInterface}
 \alias{.allowableColorByDataChoices}
+\alias{.getTooltipUI}
 \title{Generics for visual DotPlot parameters}
 \description{
 These generics allow subclasses to override the user interface elements controlling visual parameters of \linkS4class{DotPlot} panels.
@@ -49,6 +50,12 @@ For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vector
 \code{.allowableColorByDataChoices(x, se)} should return a character vector of the allowable row/column data variables to use 
 when \code{ColorBy} is set to \code{"Row data"} or \code{"Column data"} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
 The default method will use all available (atomic) variables, but subclasses can specialize this to only allow, e.g., continuous or discrete variables.
+}
+
+\section{Controlling hover choices}{
+
+\code{.getTooltipUI(x, se, name)} should return an \code{HTML} tag definition that details information from selected columns in \code{rowData(se)} or \code{colData(se)} for a data point that is hovered.
+The data point is identified by \code{name}, its \code{rownames} or \code{colnames} value in \code{se}.
 }
 
 \author{

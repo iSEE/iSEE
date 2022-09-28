@@ -155,7 +155,7 @@ setMethod("initialize", "RowDotPlot", function(.Object, ..., SelectionEffect=NUL
         .Deprecated(msg="'SelectionColor=' is deprecated and will be ignored")
     }
     
-    args <- .emptyDefault(args, .tooltipSelection, getAppOption("tooltip.rowdata", sce, default=character(0)))
+    args <- .emptyDefault(args, .tooltipSelection, getAppOption("tooltip.rowdata", default=character(0)))
 
     do.call(callNextMethod, c(list(.Object), args))
 })

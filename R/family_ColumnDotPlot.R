@@ -157,7 +157,7 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ..., SelectionEffect=
         .Deprecated(msg="'SelectionColor=' is deprecated and will be ignored")
     }
     
-    args <- .emptyDefault(args, .tooltipSelection, getAppOption("tooltip.coldata", sce, default=character(0)))
+    args <- .emptyDefault(args, .tooltipSelection, getAppOption("tooltip.coldata", default=character(0)))
 
     do.call(callNextMethod, c(list(.Object), args))
 })

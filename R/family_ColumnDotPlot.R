@@ -270,6 +270,7 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 
     available <- cdp_cached$valid.colData.names
     x <- .replaceMissingWithFirst(x, .colorByColData, available)
+    x <- .removeInvalidChoices(x, .tooltipColData, available)
 
     assays <- dp_cached$valid.assay.names
     x <- .replaceMissingWithFirst(x, .colorByFeatNameAssay, assays)

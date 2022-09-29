@@ -268,6 +268,7 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 
     available <- rdp_cached$valid.rowData.names
     x <- .replaceMissingWithFirst(x, .colorByRowData, available)
+    x <- .removeInvalidChoices(x, .tooltipRowData, available)
 
     assays <- dp_cached$valid.assay.names
     x <- .replaceMissingWithFirst(x, .colorBySampNameAssay, assays)

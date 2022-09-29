@@ -596,7 +596,8 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
 setMethod(".getTooltipUI", "RowDotPlot", function(x, se, name) {
     if (length(x[[.tooltipRowData]]) > 0) {
         # as.data.frame sometimes needed to fix names of items in vector
-        info <- unlist(as.data.frame(rowData(se)[name, x[[.tooltipRowData]], drop=FALSE]))
+        info <- as.data.frame(rowData(se)[name, x[[.tooltipRowData]], drop=FALSE])
+        info <- sapply(info, function(x) as.character(x))
         ui <- HTML(
             paste0(c(
                 sprintf("<strong>%s</strong>", name),

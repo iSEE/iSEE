@@ -1,6 +1,7 @@
 # iSEE 2.9.10
 
-* Enable customisation of hovering tooltip with `colData` or `rowData` information.
+* Enable customisation of hovering tooltip in `DotPlot` panels
+  including `colData` or `rowData` information.
 
 # iSEE 2.9.9
 

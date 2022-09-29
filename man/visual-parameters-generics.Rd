@@ -54,7 +54,7 @@ The default method will use all available (atomic) variables, but subclasses can
 
 \section{Controlling hover choices}{
 
-\code{.getTooltipUI(x, se, name)} should return an \code{HTML} tag definition that details information from selected columns in \code{rowData(se)} or \code{colData(se)} for a data point that is hovered.
+\code{.getTooltipUI(x, se, name)} should return an \code{HTML} tag definition representing information to display in the tooltip that is displayed in \code{DotPlot} panels when hovering over a data point.
 The data point is identified by \code{name}, its \code{rownames} or \code{colnames} value in \code{se}.
 }
 

@@ -50,6 +50,8 @@ The specified field should contain categorical values; defaults to the first suc
 \item \code{SizeByColumnData}, a string specifying the \code{\link{colData}} field for controlling point size,
 if \code{SizeBy="Column data"} (see the \linkS4class{Panel} class).
 The specified field should contain continuous values; defaults to the first such valid field.
+\item \code{TooltipColumnData}, a character vector specifying \code{\link{colData}} fields to show in the tooltip.
+Defaults to `character(0)`, which displays only the `colnames` value of the data point.
 }
 
 In addition, this class inherits all slots from its parent \linkS4class{DotPlot} and \linkS4class{Panel} classes.

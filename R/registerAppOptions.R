@@ -35,8 +35,6 @@
 #' Defaults to 100.}
 #' \item{\code{RowTable.select.details}}{A function that takes a string containing the name of a feature (i.e., the current selection in the \linkS4class{RowTable}) and returns a HTML element with more details.} 
 #' \item{\code{ColumnTable.select.details}}{A function that takes a string containing the name of a sample (i.e., the current selection in the \linkS4class{ColumnTable}) and returns a HTML element with more details.}
-#' \item{\code{tooltip.rowdata}}{A character vector specifying columns of the \code{\link{rowData}} to show in the tooltip for \linkS4class{ColumnDotPlot} instances. Defaults to \code{character(0)}, which displays only the `colnames` value.}
-#' \item{\code{tooltip.coldata}}{A character vector specifying columns of the \code{\link{colData}} to show in the tooltip for \linkS4class{RowDotPlot} instances. Defaults to \code{character(0)}, which displays only the `rownames` value.}
 #' }
 #'
 #' The registered options are stored in the SummarizedExperiment to ensure that we can recover the application state with the combination of the SummarizedExperiment and list of Panel settings.

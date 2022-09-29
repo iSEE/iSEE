@@ -79,7 +79,6 @@
 #' Defaults to an empty list, i.e., no brush or lasso.
 #' \item \code{HoverInfo}, a logical scalar indicating whether the feature/sample name should be shown upon mouse-over of the point.
 #' Defaults to \code{TRUE}.
-#' \item \code{TooltipData}, a character vector specifying columns of the \code{\link{rowData}} or \code{\link{colData}} to show in the tooltip. Defaults to `character(0)`, which displays only the `rownames` or `colnames` value.
 #' }
 #'
 #' The following slots control some aspects of the user interface:

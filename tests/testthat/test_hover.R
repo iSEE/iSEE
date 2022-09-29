@@ -14,7 +14,7 @@ test_that(".getTooltipUI returns expected HTML tag for ColumnDotPlot when config
     sce0 <- sce
     
     x <- ColumnDataPlot(
-        TooltipData = "NREADS"
+        TooltipColumnData = "NREADS"
     )
     
     out <- .getTooltipUI(x, sce0, "SRR2140028")
@@ -34,7 +34,7 @@ test_that(".getTooltipUI returns expected HTML tag for ColumnDotPlot when config
     sce0 <- sce
     
     x <- SampleAssayPlot(
-        TooltipData = "num_cells"
+        TooltipRowData = "num_cells"
     )
     
     out <- .getTooltipUI(x, sce0, "Lamp5")

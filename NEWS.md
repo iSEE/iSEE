@@ -1,3 +1,7 @@
+# iSEE 2.9.10
+
+* Enable customisation of hovering tooltip with `colData` or `rowData` information.
+
 # iSEE 2.9.9
 
 * Allow screenshots in vignettes to use full width of pkgdown site.

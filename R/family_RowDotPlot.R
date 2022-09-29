@@ -155,7 +155,7 @@ setMethod("initialize", "RowDotPlot", function(.Object, ..., SelectionEffect=NUL
         .Deprecated(msg="'SelectionColor=' is deprecated and will be ignored")
     }
     
-    args <- .emptyDefault(args, .tooltipSelection, getAppOption("tooltip.rowdata", default=character(0)))
+    args <- .emptyDefault(args, .tooltipRowData, getPanelDefault(.tooltipRowData))
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -594,9 +594,9 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
 # Tooltip
 
 setMethod(".getTooltipUI", "RowDotPlot", function(x, se, name) {
-    if (length(x[[.tooltipSelection]]) > 0) {
+    if (length(x[[.tooltipRowData]]) > 0) {
         # as.data.frame sometimes needed to fix names of items in vector
-        info <- unlist(as.data.frame(rowData(se)[name, x[[.tooltipSelection]], drop=FALSE]))
+        info <- unlist(as.data.frame(rowData(se)[name, x[[.tooltipRowData]], drop=FALSE]))
         ui <- HTML(
             paste0(c(
                 sprintf("<strong>%s</strong>", name),

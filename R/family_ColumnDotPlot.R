@@ -157,7 +157,7 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ..., SelectionEffect=
         .Deprecated(msg="'SelectionColor=' is deprecated and will be ignored")
     }
     
-    args <- .emptyDefault(args, .tooltipSelection, getAppOption("tooltip.coldata", default=character(0)))
+    args <- .emptyDefault(args, .tooltipColData, getPanelDefault(.tooltipColData))
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -597,9 +597,9 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
 # Tooltip
 
 setMethod(".getTooltipUI", "ColumnDotPlot", function(x, se, name) {
-    if (length(x[[.tooltipSelection]]) > 0) {
+    if (length(x[[.tooltipColData]]) > 0) {
         # as.data.frame sometimes needed to fix names of items in vector
-        info <- unlist(as.data.frame(colData(se)[name, x[[.tooltipSelection]], drop=FALSE]))
+        info <- unlist(as.data.frame(colData(se)[name, x[[.tooltipColData]], drop=FALSE]))
         ui <- HTML(
             paste0(c(
                 sprintf("<strong>%s</strong>", name),

@@ -24,7 +24,10 @@ panel.default.env$options <- list(
     PanelWidth = 4L,
     PanelHeight = 500L,
 
-    Assay = "logcounts"
+    Assay = "logcounts",
+    
+    TooltipColumnData = character(0),
+    TooltipRowData = character(0)
 )
 
 #' Panel defaults

@@ -53,6 +53,16 @@ For \linkS4class{DotPlot}s:
 \item \code{LegendPointSize}, defaults to 1.
 }
 
+For \linkS4class{RowDotPlot}s:
+\itemize{
+\item \code{TooltipRowData}, defaults to \code{character(0)}.
+}
+
+For \linkS4class{ColumnDotPlot}s:
+\itemize{
+\item \code{TooltipColumnData}, defaults to \code{character(0)}.
+}
+
 For \linkS4class{ComplexHeatmapPlot}s:
 \itemize{
 \item \code{LegendDirection}, defaults to \code{"Horizontal"}.

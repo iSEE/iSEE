@@ -923,6 +923,10 @@ setGeneric(".allowableXAxisChoices", function(x, se) standardGeneric(".allowable
 #' \code{.allowableColorByDataChoices(x, se)} should return a character vector of the allowable row/column data variables to use 
 #' when \code{ColorBy} is set to \code{"Row data"} or \code{"Column data"} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
 #' The default method will use all available (atomic) variables, but subclasses can specialize this to only allow, e.g., continuous or discrete variables.
+#' 
+#' @section Controlling hover choices:
+#' \code{.getTooltipUI(x, se, name)} should return an \code{HTML} tag definition representing information to display in the tooltip that is displayed in \code{DotPlot} panels when hovering over a data point.
+#' The data point is identified by \code{name}, its \code{rownames} or \code{colnames} value in \code{se}.
 #'
 #' @author Kevin Rue-Albrecht
 #'
@@ -935,6 +939,7 @@ setGeneric(".allowableXAxisChoices", function(x, se) standardGeneric(".allowable
 #' .defineVisualTextInterface
 #' .defineVisualOtherInterface
 #' .allowableColorByDataChoices
+#' .getTooltipUI
 NULL
 
 #' @export
@@ -960,6 +965,9 @@ setGeneric(".defineVisualOtherInterface", function(x) standardGeneric(".defineVi
 
 #' @export
 setGeneric(".allowableColorByDataChoices", function(x, se) standardGeneric(".allowableColorByDataChoices"))
+
+#' @export
+setGeneric(".getTooltipUI", function(x, se, name) standardGeneric(".getTooltipUI"))
 
 #' Internal interface generics 
 #'

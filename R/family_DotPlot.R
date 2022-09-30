@@ -482,7 +482,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
     .create_zoom_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
-    .create_hover_observer(plot_name, input=input, session=session, pObjects=pObjects)
+    .create_hover_observer(plot_name, se, input=input, session=session, pObjects=pObjects)
 
     .createCustomDimnamesModalObservers(plot_name, .plotCustomLabelsText, .dimnamesModalOpen,
         se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, 

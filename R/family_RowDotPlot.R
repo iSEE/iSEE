@@ -27,6 +27,8 @@
 #' \item \code{SizeByRowData}, a string specifying the \code{\link{rowData}} field for controlling point size,
 #' if \code{SizeBy="Row data"} (see the \linkS4class{Panel} class).
 #' The specified field should contain continuous values; defaults to the first such field.
+#' \item \code{TooltipColumnData}, a character vector specifying \code{\link{rowData}} fields to show in the tooltip.
+#' Defaults to `character(0)`, which displays only the `rownames` value of the data point.
 #' }
 #'
 #' In addition, this class inherits all slots from its parent \linkS4class{DotPlot} and \linkS4class{Panel} classes.
@@ -154,6 +156,8 @@ setMethod("initialize", "RowDotPlot", function(.Object, ..., SelectionEffect=NUL
     if (!is.null(SelectionColor)) {
         .Deprecated(msg="'SelectionColor=' is deprecated and will be ignored")
     }
+    
+    args <- .emptyDefault(args, .tooltipRowData, getPanelDefault(.tooltipRowData))
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -264,6 +268,7 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 
     available <- rdp_cached$valid.rowData.names
     x <- .replaceMissingWithFirst(x, .colorByRowData, available)
+    x <- .removeInvalidChoices(x, .tooltipRowData, available)
 
     assays <- dp_cached$valid.assay.names
     x <- .replaceMissingWithFirst(x, .colorBySampNameAssay, assays)
@@ -585,6 +590,26 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
         
     } else {
         .colorByNoneDotPlotScale(x)
+    }
+})
+
+###############################################################
+# Tooltip
+
+setMethod(".getTooltipUI", "RowDotPlot", function(x, se, name) {
+    if (length(x[[.tooltipRowData]]) > 0) {
+        # as.data.frame sometimes needed to fix names of items in vector
+        info <- as.data.frame(rowData(se)[name, x[[.tooltipRowData]], drop=FALSE])
+        info <- sapply(info, function(x) as.character(x))
+        ui <- HTML(
+            paste0(c(
+                sprintf("<strong>%s</strong>", name),
+                sprintf("%s: %s", names(info), info)
+                ), collapse = "<br />")
+            )
+        ui
+    } else {
+        name
     }
 })
 

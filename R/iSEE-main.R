@@ -144,7 +144,6 @@ iSEE <- function(se,
             ColumnDataTable(), 
             ComplexHeatmapPlot()
         )
-
         if (is.null(initial)) {
             initial <- all_defaults
         }

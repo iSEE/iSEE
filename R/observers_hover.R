@@ -26,7 +26,7 @@
 #' 
 #' @rdname INTERNAL_create_dotplot_hover_observer
 #' @importFrom shiny observeEvent insertUI removeUI div
-.create_hover_observer <- function(plot_name, input, pObjects, session) {
+.create_hover_observer <- function(plot_name, se, input, pObjects, session) {
     hover_field <- paste0(plot_name, "_", .hoverTooltip)
     hover_info <- paste0(plot_name, "_", .hoverInfo)
 
@@ -57,16 +57,19 @@
             point <- nearPoints(df, hover, threshold = 5, maxpoints = 1)
 
             if (nrow(point)!=0) {
-                bg <- .panelColor(pObjects$memory[[plot_name]])
+                panel <- pObjects$memory[[plot_name]]
+                bg <- .panelColor(panel)
                 rgb <- .lighten_color_for_fill(bg, as.vector=TRUE)
                 rgb <- as.integer(rgb)
+                
+                ui <- .getTooltipUI(panel, se, rownames(point))
 
                 # z-index ensures that the tooltip will be on top. I don't
                 # really know why we use coords_css, but it seems to work.
                 style <- paste0("position:absolute; z-index:100; padding: 2px; background-color:",
                     sprintf("rgba(%i, %i, %i, 1); ", rgb[1], rgb[2], rgb[3]),
                     "left:", hover$coords_css$x + 2, "px; top:", hover$coords_css$y + 2, "px;")
-                insertUI(paste0("#", plot_name), where="beforeEnd", div(id=hover_info, style=style, rownames(point)))
+                insertUI(paste0("#", plot_name), where="beforeEnd", div(id=hover_info, style=style, ui))
             }
         }
     }, ignoreNULL=FALSE)

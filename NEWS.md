@@ -1,3 +1,7 @@
+# iSEE 2.9.11
+
+* Fix R CMD check warnings about missing documentation.
+
 # iSEE 2.9.10
 
 * Enable customisation of hovering tooltip in `DotPlot` panels

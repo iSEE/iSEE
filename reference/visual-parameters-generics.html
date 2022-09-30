@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.10</span>
       </span>
     </div>
 
@@ -117,6 +117,13 @@ For example, <code><a href="ColumnDotPlot-class.html">.cacheCommonInfo,ColumnDot
 <p><code>.allowableColorByDataChoices(x, se)</code> should return a character vector of the allowable row/column data variables to use 
 when <code>ColorBy</code> is set to <code>"Row data"</code> or <code>"Column data"</code> for <a href="RowDotPlot-class.html">RowDotPlot</a>s and <a href="ColumnDotPlot-class.html">ColumnDotPlot</a>s, respectively.
 The default method will use all available (atomic) variables, but subclasses can specialize this to only allow, e.g., continuous or discrete variables.</p>
+    </div>
+    <div id="controlling-hover-choices">
+    <h2>Controlling hover choices</h2>
+    
+
+<p><code>.getTooltipUI(x, se, name)</code> should return an <code>HTML</code> tag definition representing information to display in the tooltip that is displayed in <code>DotPlot</code> panels when hovering over a data point.
+The data point is identified by <code>name</code>, its <code>rownames</code> or <code>colnames</code> value in <code>se</code>.</p>
     </div>
     <div id="author">
     <h2>Author</h2>

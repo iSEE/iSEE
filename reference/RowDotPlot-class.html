@@ -19,7 +19,7 @@ This panel will transmit row identities in both its single and multiple selectio
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.9</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.10</span>
       </span>
     </div>
 
@@ -109,6 +109,8 @@ The specified field should contain categorical values; defaults to the first suc
 <li><p><code>SizeByRowData</code>, a string specifying the <code>rowData</code> field for controlling point size,
 if <code>SizeBy="Row data"</code> (see the <a href="Panel-class.html">Panel</a> class).
 The specified field should contain continuous values; defaults to the first such field.</p></li>
+<li><p><code>TooltipColumnData</code>, a character vector specifying <code>rowData</code> fields to show in the tooltip.
+Defaults to `character(0)`, which displays only the `rownames` value of the data point.</p></li>
 </ul><p>In addition, this class inherits all slots from its parent <a href="DotPlot-class.html">DotPlot</a> and <a href="Panel-class.html">Panel</a> classes.</p>
     </div>
     <div id="supported-methods">

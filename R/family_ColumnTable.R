@@ -69,6 +69,7 @@
 #' .createObservers,ColumnTable-method
 #' .hideInterface,ColumnTable-method
 #' .multiSelectionDimension,ColumnTable-method
+#' .multiSelectionResponsive,ColumnTable-method
 #' .singleSelectionDimension,ColumnTable-method
 #' .showSelectionDetails,ColumnTable-method
 #' @name ColumnTable-class

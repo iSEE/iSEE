@@ -101,6 +101,7 @@
 #' .getTooltipUI,RowDotPlot-method
 #' .hideInterface,ColumnDotPlot-method
 #' .multiSelectionDimension,ColumnDotPlot-method
+#' .multiSelectionResponsive,ColumnDotPlot-method
 #' .multiSelectionRestricted,ColumnDotPlot-method
 #' .multiSelectionInvalidated,ColumnDotPlot-method
 #' .singleSelectionDimension,ColumnDotPlot-method

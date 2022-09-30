@@ -11,6 +11,7 @@
 \alias{.getTooltipUI,RowDotPlot-method}
 \alias{.hideInterface,ColumnDotPlot-method}
 \alias{.multiSelectionDimension,ColumnDotPlot-method}
+\alias{.multiSelectionResponsive,ColumnDotPlot-method}
 \alias{.multiSelectionRestricted,ColumnDotPlot-method}
 \alias{.multiSelectionInvalidated,ColumnDotPlot-method}
 \alias{.singleSelectionDimension,ColumnDotPlot-method}

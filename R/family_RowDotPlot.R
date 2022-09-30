@@ -101,6 +101,7 @@
 #' .getTooltipUI,RowDotPlot-method
 #' .hideInterface,RowDotPlot-method
 #' .multiSelectionDimension,RowDotPlot-method
+#' .multiSelectionResponsive,RowDotPlot-method
 #' .multiSelectionRestricted,RowDotPlot-method
 #' .multiSelectionInvalidated,RowDotPlot-method
 #' .singleSelectionDimension,RowDotPlot-method

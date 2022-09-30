@@ -201,6 +201,8 @@
 #' .fullName,ComplexHeatmapPlot-method
 #' .generateOutput,ComplexHeatmapPlot-method
 #' .hideInterface,ComplexHeatmapPlot-method
+#' .multiSelectionResponsive,ComplexHeatmapPlot-method
+#' .multiSelectionRestricted,ComplexHeatmapPlot-method
 #' .panelColor,ComplexHeatmapPlot-method
 #' .refineParameters,ComplexHeatmapPlot-method
 #' .renderOutput,ComplexHeatmapPlot-method

@@ -112,7 +112,9 @@ collated <- character(0)
 collated[.packageVersion] <- "list"
 
 .organizationId <- "PanelId"
+#' @export
 .organizationWidth <- "PanelWidth"
+#' @export
 .organizationHeight <- "PanelHeight"
 
 collated[.organizationId] <- "integer"

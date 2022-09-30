@@ -1,3 +1,23 @@
+#' Constants
+#'
+#' Constant values used throughout iSEE panels and extensions.
+#' 
+#' @section Class slot names:
+#' \describe{
+#' \item{\code{.organizationWidth}}{Name of panel class slot that stores panel width. See \linkS4class{Panel}.}
+#' \item{\code{.organizationHeight}}{Name of panel class slot that stores panel height See \linkS4class{Panel}.}
+#' }
+#' 
+#' @section Multiple selection parameters:
+#' \describe{
+#' \item{\code{.noSelection}}{Value displayed in the absence of selection.}
+#' }
+#'
+#' @author Kevin Rue-Albrecht
+#' 
+#' @name constants
+NULL
+
 # Point colouring parameters. ----
 
 .colorByNothingTitle <- "None"
@@ -33,7 +53,9 @@
 .multiSelectSave <- "INTERNAL_MultiSelectSave"
 .multiSelectDelete <- "INTERNAL_MultiSelectDelete"
 
-.noSelection <- "---"
+
+#' @export
+.noSelection <- "---" # imported by e.g. iSEEu::AggregatedDotPlot
 .customSelection <- "Custom ..."
 
 # Zooming parameters. ----

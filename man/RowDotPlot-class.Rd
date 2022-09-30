@@ -8,8 +8,10 @@
 \alias{.refineParameters,RowDotPlot-method}
 \alias{.defineInterface,RowDotPlot-method}
 \alias{.createObservers,RowDotPlot-method}
+\alias{.getTooltipUI,RowDotPlot-method}
 \alias{.hideInterface,RowDotPlot-method}
 \alias{.multiSelectionDimension,RowDotPlot-method}
+\alias{.multiSelectionResponsive,RowDotPlot-method}
 \alias{.multiSelectionRestricted,RowDotPlot-method}
 \alias{.multiSelectionInvalidated,RowDotPlot-method}
 \alias{.singleSelectionDimension,RowDotPlot-method}

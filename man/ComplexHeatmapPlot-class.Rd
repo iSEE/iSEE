@@ -12,6 +12,8 @@
 \alias{.fullName,ComplexHeatmapPlot-method}
 \alias{.generateOutput,ComplexHeatmapPlot-method}
 \alias{.hideInterface,ComplexHeatmapPlot-method}
+\alias{.multiSelectionResponsive,ComplexHeatmapPlot-method}
+\alias{.multiSelectionRestricted,ComplexHeatmapPlot-method}
 \alias{.panelColor,ComplexHeatmapPlot-method}
 \alias{.refineParameters,ComplexHeatmapPlot-method}
 \alias{.renderOutput,ComplexHeatmapPlot-method}

@@ -2,6 +2,11 @@
 % Please edit documentation in R/constants.R
 \name{constants}
 \alias{constants}
+\alias{.dataParamBoxOpen}
+\alias{.multiSelectHistory}
+\alias{.noSelection}
+\alias{.organizationHeight}
+\alias{.organizationWidth}
 \title{Constants}
 \description{
 Constant values used throughout iSEE panels and extensions.

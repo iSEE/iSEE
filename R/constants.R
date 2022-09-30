@@ -4,8 +4,8 @@
 #' 
 #' @section Class slot names:
 #' \describe{
-#' \item{\code{.organizationWidth}}{Name of panel class slot that stores panel width. See \linkS4class{Panel}.}
-#' \item{\code{.organizationHeight}}{Name of panel class slot that stores panel height See \linkS4class{Panel}.}
+#' \item{\code{.organizationWidth}}{Name of panel class slot that stores panel width.}
+#' \item{\code{.organizationHeight}}{Name of panel class slot that stores panel height.}
 #' }
 #' 
 #' @section Multiple selection parameters:

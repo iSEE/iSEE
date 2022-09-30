@@ -2,10 +2,12 @@
 #'
 #' Constant values used throughout iSEE panels and extensions.
 #' 
-#' @section Class slot names:
+#' @section Panel slot names:
 #' \describe{
-#' \item{\code{.organizationWidth}}{Name of panel class slot that stores panel width.}
-#' \item{\code{.organizationHeight}}{Name of panel class slot that stores panel height.}
+#' \item{\code{.dataParamBoxOpen}}{Name of slot that indicates whether the 'Data parameter' box is open.}
+#' \item{\code{.multiSelectHistory}}{Name of slot that stores the list of saved selections.}
+#' \item{\code{.organizationHeight}}{Name of slot that stores the panel height.}
+#' \item{\code{.organizationWidth}}{Name of slot that stores the panel width.}
 #' }
 #' 
 #' @section Multiple selection parameters:

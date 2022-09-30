@@ -8,7 +8,7 @@
 \alias{.refineParameters,ColumnDotPlot-method}
 \alias{.defineInterface,ColumnDotPlot-method}
 \alias{.createObservers,ColumnDotPlot-method}
-\alias{.getTooltipUI,RowDotPlot-method}
+\alias{.getTooltipUI,ColumnDotPlot-method}
 \alias{.hideInterface,ColumnDotPlot-method}
 \alias{.multiSelectionDimension,ColumnDotPlot-method}
 \alias{.multiSelectionResponsive,ColumnDotPlot-method}

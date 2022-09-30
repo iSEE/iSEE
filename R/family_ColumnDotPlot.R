@@ -98,6 +98,7 @@
 #' .refineParameters,ColumnDotPlot-method
 #' .defineInterface,ColumnDotPlot-method
 #' .createObservers,ColumnDotPlot-method
+#' .getTooltipUI,RowDotPlot-method
 #' .hideInterface,ColumnDotPlot-method
 #' .multiSelectionDimension,ColumnDotPlot-method
 #' .multiSelectionRestricted,ColumnDotPlot-method

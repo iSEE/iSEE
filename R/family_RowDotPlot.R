@@ -98,6 +98,7 @@
 #' .refineParameters,RowDotPlot-method
 #' .defineInterface,RowDotPlot-method
 #' .createObservers,RowDotPlot-method
+#' .getTooltipUI,RowDotPlot-method
 #' .hideInterface,RowDotPlot-method
 #' .multiSelectionDimension,RowDotPlot-method
 #' .multiSelectionRestricted,RowDotPlot-method

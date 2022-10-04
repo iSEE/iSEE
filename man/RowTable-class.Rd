@@ -9,6 +9,7 @@
 \alias{.createObservers,RowTable-method}
 \alias{.hideInterface,RowTable-method}
 \alias{.multiSelectionDimension,RowTable-method}
+\alias{.multiSelectionResponsive,RowTable-method}
 \alias{.singleSelectionDimension,RowTable-method}
 \alias{.showSelectionDetails,RowTable-method}
 \title{The RowTable class}

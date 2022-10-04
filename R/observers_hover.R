@@ -3,6 +3,7 @@
 #' Create observers to insert or remove the feature/sample name box when hovering over a point in a \linkS4class{DotPlot}.
 #'
 #' @param plot_name String containing the name of the plot panel containing the brush.
+#' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
 #' @param input The Shiny input object from the server function.
 #' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.

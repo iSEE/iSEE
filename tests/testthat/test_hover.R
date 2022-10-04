@@ -18,7 +18,7 @@ test_that(".getTooltipUI returns expected HTML tag for ColumnDotPlot when config
     )
     
     out <- .getTooltipUI(x, sce0, "SRR2140028")
-    expect_identical(out, HTML("<strong>SRR2140028</strong><br />NREADS: 13743900"))
+    expect_identical(out, HTML("<strong>SRR2140028</strong><br />NREADS: <i>13743900</i>"))
 })
 
 test_that(".getTooltipUI returns only rownames for RowDotPlot when not configured", {
@@ -38,5 +38,5 @@ test_that(".getTooltipUI returns expected HTML tag for ColumnDotPlot when config
     )
     
     out <- .getTooltipUI(x, sce0, "Lamp5")
-    expect_identical(out, HTML("<strong>Lamp5</strong><br />num_cells: 310"))
+    expect_identical(out, HTML("<strong>Lamp5</strong><br />num_cells: <i>310</i>"))
 })

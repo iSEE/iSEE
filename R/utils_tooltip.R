@@ -15,13 +15,18 @@
 #'
 #' @rdname INTERNAL_generate_tooltip_html
 .generate_tooltip_html <- function(name, fields) {
-    fields <- sapply(fields, function(x) as.character(x))
-    print(name)
-    print(fields)
+    fields <- sapply(fields, function(x) .process_tooltip_field(x))
     HTML(
         paste0(c(
             sprintf("<strong>%s</strong>", name),
             sprintf("%s: %s", names(fields), fields)
             ), collapse = "<br />")
         )
+}
+
+.process_tooltip_field <- function(x) {
+    if (is.double(x)) {
+        x <- signif(x, digits = getAppOption("tooltip.signif", default = 6))
+    }
+    x
 }

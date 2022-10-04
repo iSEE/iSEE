@@ -55,5 +55,5 @@ test_that(".process_tooltip_field works for double values", {
 test_that(".process_tooltip_field works for character values", {
     se <- SummarizedExperiment()
     out <- iSEE:::.process_tooltip_field(c(dummy = "DUMMY"))
-    expect_identical(out, c(dummy = "DUMMY"))
+    expect_identical(out, "DUMMY")
 })

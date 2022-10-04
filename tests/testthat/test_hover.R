@@ -40,3 +40,14 @@ test_that(".getTooltipUI returns expected HTML tag for ColumnDotPlot when config
     out <- .getTooltipUI(x, sce0, "Lamp5")
     expect_identical(out, HTML("<strong>Lamp5</strong><br />num_cells: <i>310</i>"))
 })
+
+test_that(".process_tooltip_field works for factor values", {
+    out <- iSEE:::.process_tooltip_field(factor(c(dummy = "DUMMY")))
+    expect_identical(out, "DUMMY")
+})
+
+test_that(".process_tooltip_field works for double values", {
+    se <- SummarizedExperiment()
+    out <- iSEE:::.process_tooltip_field(c(dummy = 1.1234567890))
+    expect_identical(out, "1.12346(...)")
+})

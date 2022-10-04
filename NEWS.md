@@ -1,3 +1,8 @@
+# iSEE 2.9.13
+
+* Add `tooltip.signif` to `registerAppOptions()` to regulate the number of
+  significant digits shown in the tooltip.
+
 # iSEE 2.9.12
 
 * Export constants used in `iSEEu`.

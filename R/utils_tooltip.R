@@ -44,7 +44,7 @@
     } else if (is.factor(value)) {
         value <- as.character(value)
     } else {
-        as.character(value)
+        value <- as.character(value)
     }
     value
 }

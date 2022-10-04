@@ -18,7 +18,7 @@ These are options that do not correspond to any Panel slot and cannot be changed
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.12</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.13</span>
       </span>
     </div>
 
@@ -142,6 +142,7 @@ Variables with more levels are coerced to numeric to avoid rendering delays.
 Defaults to 100.</p></li>
 <li><p><code>RowTable.select.details</code>A function that takes a string containing the name of a feature (i.e., the current selection in the <a href="RowTable-class.html">RowTable</a>) and returns a HTML element with more details.</p></li>
 <li><p><code>ColumnTable.select.details</code>A function that takes a string containing the name of a sample (i.e., the current selection in the <a href="ColumnTable-class.html">ColumnTable</a>) and returns a HTML element with more details.</p></li>
+<li><p><code>tooltip.signif</code>Number of <em>significant</em> digits to display in the tooltip. Defaults to 6.</p></li>
 </ul><p>The registered options are stored in the SummarizedExperiment to ensure that we can recover the application state with the combination of the SummarizedExperiment and list of Panel settings.
 By comparison, if we had used a global cache as in <code><a href="panelDefaults.html">panelDefaults</a></code>, we would need to save them separately to ensure that we can recover a particular application state.</p>
 <p>By default, <code>registerAppOptions</code> will add or replace individual arguments specified by <code>...</code>.

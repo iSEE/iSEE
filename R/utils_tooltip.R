@@ -26,7 +26,7 @@
     HTML(
         paste0(c(
             sprintf("<strong>%s</strong>", name),
-            sprintf("%s: %s", names(fields), fields)
+            sprintf("%s: <i>%s</i>", names(fields), fields)
             ), collapse = "<br />")
         )
 }
@@ -43,6 +43,8 @@
             )
     } else if (is.factor(value)) {
         value <- as.character(value)
+    } else {
+        as.character(value)
     }
     value
 }

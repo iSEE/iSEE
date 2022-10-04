@@ -1,3 +1,7 @@
+# iSEE 2.9.12
+
+* Export constants used in `iSEEu`.
+
 # iSEE 2.9.11
 
 * Fix R CMD check warnings about missing documentation.

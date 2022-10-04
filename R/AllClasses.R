@@ -112,7 +112,9 @@ collated <- character(0)
 collated[.packageVersion] <- "list"
 
 .organizationId <- "PanelId"
+#' @export
 .organizationWidth <- "PanelWidth"
+#' @export
 .organizationHeight <- "PanelHeight"
 
 collated[.organizationId] <- "integer"
@@ -127,6 +129,7 @@ collated[.selectParamBoxOpen] <- "logical"
 collated[.selectRowSource] <- "character"
 collated[.selectColSource] <- "character"
 
+#' @export
 .dataParamBoxOpen <- "DataBoxOpen"
 
 collated[.dataParamBoxOpen] <- "logical"
@@ -147,6 +150,7 @@ collated[.selectColRestrict] <- "logical"
 
 # Practically, this is only a DotPlot feature, but we put it here otherwise the
 # Saved concept is not generic.
+#' @export
 .multiSelectHistory <- "SelectionHistory"
 
 collated[.multiSelectHistory] <- "list"

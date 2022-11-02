@@ -22,6 +22,9 @@
 #' @param bugs Set to \code{TRUE} to enable the bugs Easter egg.
 #' Alternatively, a named numeric vector control the respective number of each bug type (e.g., \code{c(bugs=3L, spiders=1L)}).
 #' @param saveState A function that accepts a single argument containing the current application state and saves it to some appropriate location.
+#' @param customizeSession A function that accepts a single argument containing the Shiny session object to be used in the \pkg[iSEE} instance.
+#' This can be modified as described in \code{\link{session}}.
+#' @param customTags Additional HTML tags to insert onto the page, see \code{\link{tag}}.
 #' @param ... Further arguments to pass to \code{\link{shinyApp}}.
 #'
 #' @details
@@ -123,6 +126,8 @@ iSEE <- function(se,
     voice=FALSE,
     bugs=FALSE,
     saveState=NULL,
+    customizeSession=NULL,
+    customTags= NULL,
     ...)
 {
     # Save the original name of the input object for renaming in the tracker
@@ -301,6 +306,9 @@ iSEE <- function(se,
                 )
             ),
 
+            # Custom head tags.
+            customTags,
+
             uiOutput("allPanels")
         ), # end of dashboardBody
         skin="black"
@@ -313,6 +321,10 @@ iSEE <- function(se,
     #nocov start
     iSEE_server <- function(input, output, session) {
         rObjects <- reactiveValues(rerender=1L, rerendered=1L, modified=list())
+
+        if (!is.null(customizeSession)) {
+            customizeSession(session)
+        }
 
         if (!has_se) {
             FUN <- function(SE, INITIAL, TOUR=NULL) {

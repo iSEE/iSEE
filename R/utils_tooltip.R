@@ -34,9 +34,7 @@
 
 #' @rdname INTERNAL_generate_tooltip_html
 .process_tooltip_field <- function(query, metadata) {
-    label <- names(query)
-    cmd <- paste0("metadata", paste0(sprintf("[['%s']]", query), collapse = ''))
-    value <- eval(parse(text = cmd))
+    value <- extractNestedColumn(metadata, query)
     original <- value
     if (is.double(value)) {
         value <- signif(value, digits = getAppOption("tooltip.signif", default = 6))
@@ -50,7 +48,7 @@
     } else {
         value <- as.character(value)
     }
-    names(value) <- label
+    names(value) <- names(query)
     value
 }
 
@@ -60,6 +58,6 @@ extractNestedColumn <- function(x, i) {
   if (identical(length(i), 1L)) {
     x[[i]]
   } else {
-    getNestedColumn(x[[1]], i[-1])
+    extractNestedColumn(x[[1]], i[-1])
   }
 }

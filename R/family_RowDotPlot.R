@@ -27,7 +27,7 @@
 #' \item \code{SizeByRowData}, a string specifying the \code{\link{rowData}} field for controlling point size,
 #' if \code{SizeBy="Row data"} (see the \linkS4class{Panel} class).
 #' The specified field should contain continuous values; defaults to the first such field.
-#' \item \code{TooltipColumnData}, a character vector specifying \code{\link{rowData}} fields to show in the tooltip.
+#' \item \code{TooltipRowData}, a character vector specifying \code{\link{rowData}} fields to show in the tooltip.
 #' Defaults to `character(0)`, which displays only the `rownames` value of the data point.
 #' }
 #'
@@ -270,7 +270,7 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 
     available <- rdp_cached$valid.rowData.names
     x <- .replaceMissingWithFirst(x, .colorByRowData, available)
-    x <- .removeInvalidChoices(x, .tooltipRowData, available)
+    # x <- .removeInvalidChoices(x, .tooltipRowData, available)
 
     assays <- dp_cached$valid.assay.names
     x <- .replaceMissingWithFirst(x, .colorBySampNameAssay, assays)
@@ -601,8 +601,8 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
 setMethod(".getTooltipUI", "RowDotPlot", function(x, se, name) {
     if (length(x[[.tooltipRowData]]) > 0) {
         # as.data.frame sometimes needed before as.list to fix names of items in vector
-        info <- as.list(as.data.frame(rowData(se)[name, x[[.tooltipRowData]], drop=FALSE]))
-        ui <- .generate_tooltip_html(name, info)
+        metadata <- rowData(se)[name, , drop=FALSE]
+        ui <- .generate_tooltip_html(x[[.tooltipRowData]], metadata)
         ui
     } else {
         name

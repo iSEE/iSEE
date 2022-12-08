@@ -21,8 +21,9 @@
 #' @author Kevin Rue-Albrecht
 #'
 #' @rdname INTERNAL_generate_tooltip_html
-.generate_tooltip_html <- function(name, fields) {
-    fields <- sapply(fields, function(x) .process_tooltip_field(x), USE.NAMES = TRUE)
+.generate_tooltip_html <- function(query, metadata) {
+    name <- rownames(metadata)
+    fields <- sapply(query, .process_tooltip_field, metadata = metadata, USE.NAMES = TRUE)
     HTML(
         paste0(c(
             sprintf("<strong>%s</strong>", name),
@@ -32,7 +33,10 @@
 }
 
 #' @rdname INTERNAL_generate_tooltip_html
-.process_tooltip_field <- function(value) {
+.process_tooltip_field <- function(query, metadata) {
+    label <- names(query)
+    cmd <- paste0("metadata", paste0(sprintf("[['%s']]", query), collapse = ''))
+    value <- eval(parse(text = cmd))
     original <- value
     if (is.double(value)) {
         value <- signif(value, digits = getAppOption("tooltip.signif", default = 6))
@@ -46,5 +50,16 @@
     } else {
         value <- as.character(value)
     }
+    names(value) <- label
     value
+}
+
+# x: DataFrame
+# i: vector of nested indices
+extractNestedColumn <- function(x, i) {
+  if (identical(length(i), 1L)) {
+    x[[i]]
+  } else {
+    getNestedColumn(x[[1]], i[-1])
+  }
 }

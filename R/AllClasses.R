@@ -280,7 +280,7 @@ collated[.shapeByColData] <- "character"
 collated[.sizeByColData] <- "character"
 
 .tooltipColData <- "TooltipColumnData"
-collated[.tooltipColData] <- "character"
+collated[.tooltipColData] <- "list"
 
 #' @export
 setClass("ColumnDotPlot", contains=c("DotPlot", "VIRTUAL"), slots=collated)
@@ -312,7 +312,7 @@ collated[.shapeByRowData] <- "character"
 collated[.sizeByRowData] <- "character"
 
 .tooltipRowData <- "TooltipRowData"
-collated[.tooltipRowData] <- "character"
+collated[.tooltipRowData] <- "list"
 
 #' @export
 setClass("RowDotPlot", contains=c("DotPlot", "VIRTUAL"), slots=collated)

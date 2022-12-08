@@ -272,7 +272,7 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 
     available <- cdp_cached$valid.colData.names
     x <- .replaceMissingWithFirst(x, .colorByColData, available)
-    x <- .removeInvalidChoices(x, .tooltipColData, available)
+    # x <- .removeInvalidChoices(x, .tooltipColData, available)
 
     assays <- dp_cached$valid.assay.names
     x <- .replaceMissingWithFirst(x, .colorByFeatNameAssay, assays)
@@ -604,8 +604,8 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
 setMethod(".getTooltipUI", "ColumnDotPlot", function(x, se, name) {
     if (length(x[[.tooltipColData]]) > 0) {
         # as.data.frame sometimes needed before as.list to fix names of items in vector
-        info <- as.list(as.data.frame(colData(se)[name, x[[.tooltipColData]], drop=FALSE]))
-        ui <- .generate_tooltip_html(name, info)
+        metadata <- colData(se)[name, , drop=FALSE]
+        ui <- .generate_tooltip_html(x[[.tooltipColData]], metadata)
         ui
     } else {
         name

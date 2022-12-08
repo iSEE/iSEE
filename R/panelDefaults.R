@@ -26,8 +26,8 @@ panel.default.env$options <- list(
 
     Assay = "logcounts",
     
-    TooltipColumnData = character(0),
-    TooltipRowData = character(0)
+    TooltipColumnData = list(),
+    TooltipRowData = list()
 )
 
 #' Panel defaults

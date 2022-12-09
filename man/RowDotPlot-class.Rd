@@ -52,7 +52,7 @@ The specified field should contain categorical values; defaults to the first suc
 \item \code{SizeByRowData}, a string specifying the \code{\link{rowData}} field for controlling point size,
 if \code{SizeBy="Row data"} (see the \linkS4class{Panel} class).
 The specified field should contain continuous values; defaults to the first such field.
-\item \code{TooltipColumnData}, a character vector specifying \code{\link{rowData}} fields to show in the tooltip.
+\item \code{TooltipRowData}, a character vector specifying \code{\link{rowData}} fields to show in the tooltip.
 Defaults to `character(0)`, which displays only the `rownames` value of the data point.
 }
 

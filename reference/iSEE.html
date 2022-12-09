@@ -18,7 +18,7 @@ SummarizedExperiment object, using a Shiny interface."><!-- mathjax --><script s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.11.1</span>
       </span>
     </div>
 
@@ -158,7 +158,7 @@ Alternatively, a named numeric vector control the respective number of each bug 
 
 
 <dt>...</dt>
-<dd><p>Further arguments to pass to <code><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></code>.</p></dd>
+<dd><p>Further arguments to pass to <code><a href="https://shiny.rstudio.com/reference/shiny/latest/shinyApp.html" class="external-link">shinyApp</a></code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -166,7 +166,7 @@ Alternatively, a named numeric vector control the respective number of each bug 
     
 
 <p>A Shiny app object is returned for interactive data exploration of <code>se</code>,
-either by simply printing the object or by explicitly running it with <code><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></code>.</p>
+either by simply printing the object or by explicitly running it with <code><a href="https://shiny.rstudio.com/reference/shiny/latest/runApp.html" class="external-link">runApp</a></code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -231,7 +231,7 @@ iSEE: Interactive SummarizedExperiment Explorer
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example data ----</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html" class="external-link">ReprocessedAllenData</a></span><span class="op">(</span>assays<span class="op">=</span><span class="st">"tophat_counts"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> snapshotDate(): 2022-10-03</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> snapshotDate(): 2022-11-29</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span>
@@ -266,8 +266,17 @@ iSEE: Interactive SummarizedExperiment Explorer
 <span class="r-in"><span><span class="co"># launch the app itself ----</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu">iSEE</span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The `name` provided ('') does not correspond to a known icon</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The `name` provided ('') does not correspond to a known icon</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The `name` provided ('') does not correspond to a known icon</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The `name` provided ('') does not correspond to a known icon</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The `name` provided ('') does not correspond to a known icon</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The `name` provided ('') does not correspond to a known icon</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The `name` provided ('') does not correspond to a known icon</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The `name` provided ('') does not correspond to a known icon</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The `name` provided ('') does not correspond to a known icon</span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="va">app</span>, port<span class="op">=</span><span class="fl">1234</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="va">app</span>, port<span class="op">=</span><span class="fl">1234</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

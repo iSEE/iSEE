@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.9.13</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.11.1</span>
       </span>
     </div>
 
@@ -91,9 +91,9 @@
 
 <p><code>.defineOutput(x)</code> defines the output element of the panel (e.g., a plot or table widget),
 given an instance of a <a href="Panel-class.html">Panel</a> subclass in <code>x</code>.</p>
-<p>Methods for this generic are expected to return a HTML element containing the visual output of the panel, such as the return value of <code><a href="https://rdrr.io/pkg/shiny/man/plotOutput.html" class="external-link">plotOutput</a></code> or <code><a href="https://rdrr.io/pkg/shiny/man/renderDataTable.html" class="external-link">dataTableOutput</a></code>.
+<p>Methods for this generic are expected to return a HTML element containing the visual output of the panel, such as the return value of <code><a href="https://shiny.rstudio.com/reference/shiny/latest/plotOutput.html" class="external-link">plotOutput</a></code> or <code><a href="https://shiny.rstudio.com/reference/shiny/latest/renderDataTable.html" class="external-link">dataTableOutput</a></code>.
 This element will be shown in the <span class="pkg">iSEE</span> interface above the parameter boxes for <code>x</code>.
-Multiple elements can be returned via a <code><a href="https://rdrr.io/pkg/htmltools/man/tagList.html" class="external-link">tagList</a></code>.</p>
+Multiple elements can be returned via a <code><a href="https://rstudio.github.io/htmltools/reference/tagList.html" class="external-link">tagList</a></code>.</p>
 <p>The IDs of the output elements are expected to be prefixed with the panel name from <code><a href="getEncodedName.html">.getEncodedName</a>(x)</code> and an underscore, e.g., <code>"ReducedDimensionPlot1_someOutput"</code>.
 One of the output elements may simply have the ID set to <code>PANEL</code> alone;
 this is usually the case for simple panels with one primary output like a <a href="DotPlot-class.html">DotPlot</a>.</p>
@@ -110,7 +110,7 @@ The following arguments are required:</p><ul><li><p><code>x</code>, an instance 
 <li><p><code>pObjects</code>, an environment containing global parameters generated in the <code><a href="iSEE.html">iSEE</a></code> app.</p></li>
 <li><p><code>rObjects</code>, a reactive list of values generated in the <code><a href="iSEE.html">iSEE</a></code> app.</p></li>
 </ul><p>It is expected to attach one or more reactive expressions to <code>output</code> to render the output element(s) defined by <code>.defineOutput</code>.
-This is typically done by calling <span class="pkg">shiny</span> rendering functions like <code><a href="https://rdrr.io/pkg/shiny/man/renderPlot.html" class="external-link">renderPlot</a></code> or the most appropriate equivalent for the panel's output. 
+This is typically done by calling <span class="pkg">shiny</span> rendering functions like <code><a href="https://shiny.rstudio.com/reference/shiny/latest/renderPlot.html" class="external-link">renderPlot</a></code> or the most appropriate equivalent for the panel's output. 
 The return value of this generic is not used; only the side-effect of the reactive output set-up is relevant.</p>
 <p>The rendering expression inside the chosen rendering function is expected to:</p><ol><li><p>Call <code>force(rObjects[[PANEL]])</code>, where <code>PANEL</code> is the output of <code><a href="getEncodedName.html">.getEncodedName</a>(x)</code>.
 This ensures that the output is rerendered upon requesting changes in <code><a href="requestUpdate.html">.requestUpdate</a></code>.</p></li>

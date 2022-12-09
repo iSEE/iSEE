@@ -1,4 +1,4 @@
-# iSEE 2.9.13
+# iSEE 2.11.1
 
 * Add `tooltip.signif` to `registerAppOptions()` to regulate the number of
   significant digits shown in the tooltip.

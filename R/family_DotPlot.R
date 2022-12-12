@@ -801,19 +801,19 @@ setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
 setMethod(".defineVisualFacetInterface", "DotPlot", function(x, se) {
     covariates <- .getDiscreteMetadataChoices(x, se)
     plot_name <- .getEncodedName(x)
-    rowId <- paste0(plot_name, "_", .facetRow)
-    columnId <- paste0(plot_name, "_", .facetColumn)
+    rowId <- paste0(plot_name, "_", iSEEslots$facetRow)
+    columnId <- paste0(plot_name, "_", iSEEslots$facetColumn)
 
     facet_info <- .getDotPlotFacetConstants(x)
-    title_choices <- .facetByNothingTitle
+    title_choices <- iSEEconstants$facetByNothingTitle
     if (length(covariates)) {
         title_choices <- c(title_choices, facet_info$metadata$title)
     }
     title_choices <- c(title_choices, facet_info$selections$title)
 
     things <- list(
-        row=c(.facetRow, facet_info$metadata$row_field),
-        column=c(.facetColumn, facet_info$metadata$column_field)
+        row=c(iSEEslots$facetRow, facet_info$metadata$row_field),
+        column=c(iSEEslots$facetColumn, facet_info$metadata$column_field)
     )
     ui <- list()
 
@@ -897,17 +897,17 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
     plot_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
-    .addSpecificTour(class(x)[1], .plotCustomLabels, {
+    .addSpecificTour(class(x)[1], iSEEslots$plotCustomLabels, {
         mdim <- .multiSelectionDimension(x)
         function(plot_name) {
             data.frame(
                 rbind(
                     c(
-                        element=paste0("#", plot_name, "_", .plotCustomLabels), 
+                        element=paste0("#", plot_name, "_", iSEEslots$plotCustomLabels), 
                         intro=sprintf("Users can show the names of certain %ss alongside their locations on the plot. This is done by <strong>checking the highlighted box</strong>...", mdim)
                     ),
                     c(
-                        element=paste0("#", plot_name, "_", .dimnamesModalOpen),
+                        element=paste0("#", plot_name, "_", iSEEconstants$dimnamesModalOpen),
                         intro=sprintf("... and then clicking on this button to open a modal in which users can enter the names of the %ss of interest. All points named in this manner will have their names appear next to their coordinates on the plot.<br/><br/>(By default, we don't name all points as this may result in too many names for large numbers of points.)", mdim)
                     )
                 )
@@ -916,11 +916,11 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
     })
 
     sdim <- .singleSelectionDimension(x)
-    .addSpecificTour(class(x)[1], .plotHoverInfo, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$plotHoverInfo, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element=paste0("#", plot_name, "_", .plotHoverInfo),
+                    element=paste0("#", plot_name, "_", iSEEslots$plotHoverInfo),
                     intro=sprintf("If this is checked, we show the name of the %s when we hover over the corresponding point in the plot.", sdim)
                 )
             )
@@ -929,37 +929,37 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
 
     ui <- list(
         hr(),
-        .checkboxInput.iSEE(x, .plotHoverInfo,
+        .checkboxInput.iSEE(x, iSEEslots$plotHoverInfo,
             label=sprintf("Show %s details on hover", sdim),
-            value=slot(x, .plotHoverInfo)),
+            value=slot(x, iSEEslots$plotHoverInfo)),
         hr(),
-        .checkboxInput.iSEE(x, .plotCustomLabels,
+        .checkboxInput.iSEE(x, iSEEslots$plotCustomLabels,
             label=sprintf("Label custom %ss", sdim),
-            value=slot(x, .plotCustomLabels)),
+            value=slot(x, iSEEslots$plotCustomLabels)),
         .conditionalOnCheckSolo(
-            .input_FUN(.plotCustomLabels),
+            .input_FUN(iSEEslots$plotCustomLabels),
             on_select=TRUE,
-            actionButton(.input_FUN(.dimnamesModalOpen),
+            actionButton(.input_FUN(iSEEconstants$dimnamesModalOpen),
                 label=sprintf("Edit %s names", sdim))
         )
     )
 
     discrete.choices <- .getDiscreteMetadataChoices(x, se)
     if (length(discrete.choices)) {
-        .addSpecificTour(class(x)[1], .plotLabelCenters, {
+        .addSpecificTour(class(x)[1], iSEEslots$plotLabelCenters, {
             mdim <- .multiSelectionDimension(x)
             function(plot_name) {
                 data.frame(
                     rbind(
                         c(
-                            element=paste0("#", plot_name, "_", .plotLabelCenters),
+                            element=paste0("#", plot_name, "_", iSEEslots$plotLabelCenters),
                             intro="In certain applications, we may have a factor that defines groups of points in the plot. 
                             A typical example would be that a factor that holds cluster identity on a Reduced Dimension Plot.
                             We can then use that factor to annotate the plot by putting the group label at the center of the group's points.
                             This can be done by <strong>checking this box</strong>..."
                         ),
                         c(
-                            element=paste0("#", plot_name, "_", .plotLabelCentersBy, " + .selectize-control"),
+                            element=paste0("#", plot_name, "_", iSEEslots$plotLabelCentersBy, " + .selectize-control"),
                             intro=sprintf("... and choosing a categorical factor from the <code>%sData</code> to label points with.
                             Of course, this really only makes sense for factors that are somehow associated with the plot coordinates.", substr(mdim, 1, 3))
                         )
@@ -971,40 +971,40 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
         ui <- c(ui, 
             list(
                 hr(),
-                .checkboxInput.iSEE(x, .plotLabelCenters,
+                .checkboxInput.iSEE(x, iSEEslots$plotLabelCenters,
                     label="Label centers",
-                    value=slot(x, .plotLabelCenters)),
+                    value=slot(x, iSEEslots$plotLabelCenters)),
                 .conditionalOnCheckSolo(
-                    .input_FUN(.plotLabelCenters),
+                    .input_FUN(iSEEslots$plotLabelCenters),
                     on_select=TRUE,
-                    selectInput(.input_FUN(.plotLabelCentersBy),
+                    selectInput(.input_FUN(iSEEslots$plotLabelCentersBy),
                         label="Label centers:",
                         choices=discrete.choices,
-                        selected=slot(x, .plotLabelCentersBy)),
-                    colourInput(.input_FUN(.plotLabelCentersColor),
+                        selected=slot(x, iSEEslots$plotLabelCentersBy)),
+                    colourInput(.input_FUN(iSEEslots$plotLabelCentersColor),
                         label=NULL,
-                        value=slot(x, .plotLabelCentersColor))
+                        value=slot(x, iSEEslots$plotLabelCentersColor))
                 )
             )
         )
     }
 
-    .addSpecificTour(class(x)[1], .plotFontSize, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$plotFontSize, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element=paste0("#", plot_name, "_", .plotFontSize),
+                    element=paste0("#", plot_name, "_", iSEEslots$plotFontSize),
                     intro="Changes the font size, nothing much more to say here."
                 )
             )
         )
     })
 
-    .addSpecificTour(class(x)[1], .legendPointSize, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$legendPointSize, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element=paste0("#", plot_name, "_", .legendPointSize),
+                    element=paste0("#", plot_name, "_", iSEEslots$legendPointSize),
                     intro="Changes the size of the points in the legend.
                     To be honest, I can't remember why we put this in here,
                     but someone must have asked for it... so here it is."
@@ -1013,11 +1013,11 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
         )
     })
 
-    .addSpecificTour(class(x)[1], .plotLegendPosition, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$plotLegendPosition, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element=paste0("#", plot_name, "_", .plotLegendPosition),
+                    element=paste0("#", plot_name, "_", iSEEslots$plotLegendPosition),
                     intro="Changes the position of the legend on the plot, if any legend exists.
                     On the bottom, on the right; the choice is yours."
                 )
@@ -1028,16 +1028,16 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
     ui <- c(ui,
         list(
             hr(),
-            .numericInput.iSEE(x, .plotFontSize,
+            .numericInput.iSEE(x, iSEEslots$plotFontSize,
                 label="Font size:",
-                min=0, value=slot(x, .plotFontSize)),
-            .numericInput.iSEE(x, .legendPointSize,
+                min=0, value=slot(x, iSEEslots$plotFontSize)),
+            .numericInput.iSEE(x, iSEEslots$legendPointSize,
                 label="Legend point size:",
-                min=0, value=slot(x, .legendPointSize)),
-            .radioButtons.iSEE(x, .plotLegendPosition,
+                min=0, value=slot(x, iSEEslots$legendPointSize)),
+            .radioButtons.iSEE(x, iSEEslots$plotLegendPosition,
                 label="Legend position:", inline=TRUE,
-                choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
-                selected=slot(x, .plotLegendPosition))
+                choices=c(iSEEconstants$plotLegendBottomTitle, iSEEconstants$plotLegendRightTitle),
+                selected=slot(x, iSEEslots$plotLegendPosition))
         )
     )
 

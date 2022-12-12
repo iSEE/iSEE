@@ -125,6 +125,9 @@ setClass("ExperimentColorMap",
 #' 
 #' @name iSEEslots
 #' @aliases iSEEslots
+#' 
+#' @examples 
+#' iSEEslots
 NULL
 
 # .iSEEslots ----

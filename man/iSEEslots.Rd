@@ -23,6 +23,9 @@ unique across panels of the same concrete class.}
 }
 }
 
+\examples{
+iSEEslots
+}
 \author{
 Kevin Rue-Albrecht
 }

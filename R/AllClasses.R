@@ -108,17 +108,27 @@ setClass("ExperimentColorMap",
 #' Access the name of slots in \pkg{iSEE} panel classes.
 #' 
 #' The \code{iSEEslots} object exports the name of slots for \pkg{iSEE} panel classes, and should only be used by developers of packages that extend \pkg{iSEE} functionality.
-#' The name of slots should be accessed using the \code{$} operator and the identifier of the slot name, e.g. `iSEEslots$packageVersion`.
+#' Developers should access the name of slots using the \code{$} operator and the identifier of the slot name, e.g. \code{iSEEslots$organizationWidth}.
+#' This is in contrast to end-users creating instances of panel classes to design initial configuration states using constructor functions and the actual slot names, e.g. \code{ColumnDataPlot(PanelWidth=4L)}.
 #' 
 #' Developers of new panels that extend \pkg{iSEE} functionality should add any new slot name to the \code{iSEEslots} object using a new slot identifier, e.g. \code{iSEEslots$myNewSlotIdentifier <- "MyNewSlotName"}.
 #' 
-#' @section Slot names for the virtual class `Panel`:
+#' @section Slot identifiers for the virtual class `Panel`:
 #' \describe{
 #' \item{\code{packageVersion}}{Named list of package versions active when the panel object was generated or last updated.}
 #' \item{\code{organizationId}}{Integer scalar specifying the width of the panel;
 #' unique across panels of the same concrete class.}
-#' \item{\code{organizationWidth}}{Width of the panel, in Shiny's grid layout units (minimum: 2, maximum 12).}
-#' \item{\code{organizationHeight}}{Height of the panel, in pixels (minimum: 400, maximum 1000).}
+#' \item{\code{organizationWidth}}{Width of the panel, in Shiny's grid layout units.}
+#' \item{\code{organizationHeight}}{Height of the panel, in pixels.}
+#' \item{\code{selectParamBoxOpen}}{Logical scalar indicating whether the selection parameter box should be open at initialization.}
+#' \item{\code{selectRowSource}}{String specifying the name of the transmitting panel from which to receive a multiple row selection.}
+#' \item{\code{selectColSource}}{String specifying the name of the transmitting panel from which to receive a multiple column.}
+#' \item{\code{dataParamBoxOpen}}{Logical scalar indicating whether the data parameter box should be open.}
+#' \item{\code{selectRowDynamic}}{Logical scalar indicating whether the panel should dynamically change its selection source for multiple row selections.}
+#' \item{\code{selectColDynamic}}{Logical scalar indicating whether the panel should dynamically change its selection source for multiple column selections.}
+#' \item{\code{selectRowRestrict}}{Logical scalar indicating whether the display of the panel should be restricted to the rows in the multiple selection received from a transmitting panel.}
+#' \item{\code{selectColRestrict}}{Logical scalar indicating whether the display of the panel should be restricted to the columns in the multiple selection received from a transmitting panel.}
+#' \item{\code{multiSelectHistory}}{List of arbitrary elements that contain parameters for saved multiple selections. Each element of this list corresponds to one saved selection in the current panel.}
 #' }
 #'
 #' @author Kevin Rue-Albrecht
@@ -145,7 +155,7 @@ iSEEslots <- list(
     selectRowSource = "RowSelectionSource",
     selectColSource = "ColumnSelectionSource",
     
-    dataParamBoxOpen = "DataBoxOpen",
+    dataParamBoxOpen = "DataBoxOpen", # TODO: dataParamBoxOpen is added to Panel class, but DataBoxOpen is documented in family_DotPlot.R
     
     selectRowDynamic = "RowSelectionDynamicSource",
     

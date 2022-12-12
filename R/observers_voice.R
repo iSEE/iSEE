@@ -34,7 +34,7 @@
         # Set panel ID
         mode <- class(new_panel)
         idx <- pObjects$counter[[mode]] + 1L
-        new_panel[[.organizationId]] <- idx
+        new_panel[[iSEEslots$organizationId]] <- idx
 
         # Update memory and counter
         new_panel_list <- list(new_panel)

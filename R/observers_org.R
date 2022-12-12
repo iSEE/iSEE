@@ -109,7 +109,7 @@
                 mode <- ipo[a]
                 latest <- pObjects$reservoir[[mode]]
                 idx <- org_pObjects$counter[[mode]] + 1L
-                latest[[.organizationId]] <- idx
+                latest[[iSEEslots$organizationId]] <- idx
 
                 adjusted[[a]] <- latest
                 names(adjusted)[a] <- paste0(mode, idx)

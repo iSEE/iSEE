@@ -375,6 +375,6 @@
 #' @author Aaron Lun
 #' @rdname INTERNAL_is_latest_version
 .is_latest_version <- function(x) {
-    v <- try(slot(x, .packageVersion), silent=TRUE)
+    v <- try(slot(x, iSEEslots$packageVersion), silent=TRUE)
     !is(v, "try-error") && identical(v$iSEE, .latest_version$iSEE)
 }

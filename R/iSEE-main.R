@@ -542,17 +542,17 @@ iSEE <- function(se,
 
     # Assigning names and IDs to each panel.
     all_modes <- vapply(memory, .encodedName, "")
-    all_ids <- vapply(memory, "[[", i=.organizationId, 0L)
+    all_ids <- vapply(memory, "[[", i=iSEEslots$organizationId, 0L)
     by_mode <- split(all_ids, all_modes)
     counter <- vapply(by_mode, function(x) max(c(0L, x), na.rm=TRUE), 0L)
 
     for (idx in seq_along(memory)) {
         instance <- memory[[idx]]
-        curid <- slot(instance, .organizationId)
+        curid <- slot(instance, iSEEslots$organizationId)
         if (is.na(curid)) {
             nm <- .encodedName(instance)
             curid <- counter[nm] + 1L
-            slot(memory[[idx]], .organizationId) <- curid
+            slot(memory[[idx]], iSEEslots$organizationId) <- curid
             counter[nm] <- curid
         }
     }

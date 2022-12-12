@@ -156,7 +156,7 @@ NULL
 setMethod("initialize", "Panel", function(.Object, ..., RowSelectionSaved=NULL, ColumnSelectionSaved=NULL, RowSelectionType=NULL, ColumnSelectionType=NULL) {
     args <- list(...)
 
-    args <- .emptyDefault(args, .organizationId, NA_integer_)
+    args <- .emptyDefault(args, iSEEslots$organizationId, NA_integer_)
     args <- .emptyDefault(args, .organizationHeight, getPanelDefault("PanelHeight"))
     args <- .emptyDefault(args, .organizationWidth, getPanelDefault("PanelWidth"))
 
@@ -171,9 +171,9 @@ setMethod("initialize", "Panel", function(.Object, ..., RowSelectionSaved=NULL, 
 
     args <- .emptyDefault(args, .dataParamBoxOpen, FALSE)
 
-    current <- c(.latest_version, args[[.packageVersion]])
+    current <- c(.latest_version, args[[iSEEslots$packageVersion]])
     current <- current[!duplicated(names(current))]
-    args[[.packageVersion]] <- current
+    args[[iSEEslots$packageVersion]] <- current
 
     if (!is.null(RowSelectionSaved)) {
         .Deprecated(msg="'RowSelectionSaved=' is deprecated and will be ignored.")
@@ -202,9 +202,9 @@ setValidity2("Panel", function(object) {
     msg <- .validNumberError(msg, object, .organizationHeight, lower=height_limits[1], upper=height_limits[2])
     msg <- .validNumberError(msg, object, .organizationWidth, lower=width_limits[1], upper=width_limits[2])
 
-    val <- slot(object, .organizationId)
+    val <- slot(object, iSEEslots$organizationId)
     if (length(val) !=1 || (!is.na(val) && val <= 0L)) {
-        msg <- c(msg, sprintf("'%s' must be a positive integer or NA for '%s'", .organizationId, class(object)[1]))
+        msg <- c(msg, sprintf("'%s' must be a positive integer or NA for '%s'", iSEEslots$organizationId, class(object)[1]))
     }
 
     if (length(msg)) {
@@ -679,9 +679,9 @@ setMethod("updateObject", "Panel", function(object, ..., verbose=FALSE) {
     # 'updateObject' from '[['.
 
     # nocov start
-    if (is(try(slot(object, .packageVersion), silent=TRUE), "try-error")) {
+    if (is(try(slot(object, iSEEslots$packageVersion), silent=TRUE), "try-error")) {
         .Deprecated(msg=sprintf("detected outdated '%s' instance, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
-        slot(object, .packageVersion) <- .latest_version
+        slot(object, iSEEslots$packageVersion) <- .latest_version
 
         # Handling the updated restriction settings.
         slot(object, .selectRowRestrict) <- FALSE

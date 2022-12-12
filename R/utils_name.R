@@ -19,13 +19,13 @@
 #' @export
 #' @rdname getEncodedName
 .getEncodedName <- function(x) {
-    paste0(class(x), slot(x, .organizationId))
+    paste0(class(x), slot(x, iSEEslots$organizationId))
 }
 
 #' @export
 #' @rdname getEncodedName
 .getFullName <- function(x) {
-    paste(.fullName(x), slot(x, .organizationId))
+    paste(.fullName(x), slot(x, iSEEslots$organizationId))
 }
 
 .encodedName <- function(x) {

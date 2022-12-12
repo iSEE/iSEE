@@ -18,8 +18,8 @@ panel.default.env$options <- list(
 
     FontSize = 1,
     LegendPointSize = 1,
-    LegendPosition = .plotLegendBottomTitle,
-    LegendDirection = .plotLegendHorizontalTitle,
+    LegendPosition = iSEEslots$plotLegendBottomTitle,
+    LegendDirection = iSEEslots$plotLegendHorizontalTitle,
 
     PanelWidth = 4L,
     PanelHeight = 500L,

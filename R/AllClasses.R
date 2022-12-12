@@ -103,57 +103,222 @@ setClass("ExperimentColorMap",
     validity=.valid.Colormap
 )
 
+#' iSEE Panel Slot Names 
+#'
+#' Access the name of slots in \pkg{iSEE} panel classes.
+#' 
+#' The \code{iSEEslots} object exports the name of slots for \pkg{iSEE} panel classes, and should only be used by developers of packages that extend \pkg{iSEE} functionality.
+#' The name of slots should be accessed using the \code{$} operator and the identifier of the slot name, e.g. `iSEEslots$packageVersion`.
+#' 
+#' Developers of new panels that extend \pkg{iSEE} functionality should add any new slot name to the \code{iSEEslots} object using a new slot identifier, e.g. \code{iSEEslots$myNewSlotIdentifier <- "MyNewSlotName"}.
+#' 
+#' @section Slot names for the virtual class `Panel`:
+#' \describe{
+#' \item{\code{packageVersion}}{Named list of package versions active when the panel object was generated or last updated.}
+#' \item{\code{organizationId}}{Integer scalar specifying the width of the panel;
+#' unique across panels of the same concrete class.}
+#' \item{\code{organizationWidth}}{Width of the panel, in Shiny's grid layout units (minimum: 2, maximum 12).}
+#' \item{\code{organizationHeight}}{Height of the panel, in pixels (minimum: 400, maximum 1000).}
+#' }
+#'
+#' @author Kevin Rue-Albrecht
+#' 
+#' @name iSEEslots
+#' @aliases iSEEslots
+NULL
+
+# .iSEEslots ----
+
+#' @export
+iSEEslots <- list(
+    # Panel ----
+    packageVersion = "VersionInfo",
+    
+    organizationId = "PanelId",
+    organizationWidth = "PanelWidth",
+    organizationHeight = "PanelHeight",
+    
+    selectParamBoxOpen = "SelectionBoxOpen",
+    selectRowSource = "RowSelectionSource",
+    selectColSource = "ColumnSelectionSource",
+    
+    dataParamBoxOpen = "DataBoxOpen",
+    
+    selectRowDynamic = "RowSelectionDynamicSource",
+    
+    selectColDynamic = "ColumnSelectionDynamicSource",
+    
+    selectRowRestrict = "RowSelectionRestrict",
+    selectColRestrict = "ColumnSelectionRestrict",
+    
+    multiSelectHistory = "SelectionHistory",
+    # DotPlot ----
+    facetRow = "FacetRowBy",
+    facetColumn = "FacetColumnBy",
+    
+    colorByField = "ColorBy",
+    colorByDefaultColor = "ColorByDefaultColor",
+    colorByFeatName = "ColorByFeatureName",
+    colorByRowTable = "ColorByFeatureSource",
+    colorByFeatDynamic = "ColorByFeatureDynamicSource",
+    colorBySampName = "ColorBySampleName",
+    colorByColTable = "ColorBySampleSource",
+    colorBySampDynamic = "ColorBySampleDynamicSource",
+    
+    shapeByField = "ShapeBy",
+    
+    sizeByField = "SizeBy",
+    
+    selectTransAlpha = "SelectionAlpha",
+    
+    zoomData = "ZoomData",
+    brushData = "BrushData",
+    
+    visualParamBoxOpen = "VisualBoxOpen",
+    visualParamChoice = "VisualChoices",
+    
+    contourColor = "ContourColor",
+    contourAdd = "ContourAdd",
+    
+    plotPointSize = "PointSize",
+    plotPointAlpha = "PointAlpha",
+    plotPointDownsample = "Downsample",
+    plotPointSampleRes = "DownsampleResolution",
+    
+    plotCustomLabels = "CustomLabels",
+    plotCustomLabelsText = "CustomLabelsText",
+    plotFontSize = "FontSize",
+    legendPointSize = "LegendPointSize",
+    plotLegendPosition = "LegendPosition",
+    
+    plotHoverInfo = "HoverInfo",
+    
+    plotLabelCenters = "LabelCenters",
+    plotLabelCentersBy = "LabelCentersBy",
+    plotLabelCentersColor = "LabelCentersColor",
+    # ColumnDotPlot ----
+    facetRowByColData = "FacetRowByColData",
+    facetColumnByColData = "FacetColumnByColData",
+
+    colorByColData = "ColorByColumnData",
+    colorByFeatNameAssay = "ColorByFeatureNameAssay",
+    colorBySampNameColor = "ColorBySampleNameColor",
+
+    shapeByColData = "ShapeByColumnData",
+
+    sizeByColData = "SizeByColumnData",
+    
+    tooltipColData = "TooltipColumnData",
+    # RowDotPlot ----
+    facetRowByRowData = "FacetRowByRowData",
+    facetColumnByRowData = "FacetColumnByRowData",
+
+    colorByRowData = "ColorByRowData",
+    colorBySampNameAssay = "ColorBySampleNameAssay",
+    colorByFeatNameColor = "ColorByFeatureNameColor",
+    
+    shapeByRowData = "ShapeByRowData",
+    
+    sizeByRowData = "SizeByRowData",
+    
+    tooltipRowData = "TooltipRowData",
+    # ReducedDimensionPlot ----
+    redDimType = "Type",
+    redDimXAxis = "XAxis",
+    redDimYAxis = "YAxis",
+    # FeatureAssayPlot ----
+    featAssayAssay = "Assay",
+    featAssayXAxis = "XAxis",
+    featAssayXAxisColData = "XAxisColumnData",
+    
+    featAssayXAxisFeatName = "XAxisFeatureName",
+    featAssayXAxisRowTable = "XAxisFeatureSource",
+    featAssayXAxisFeatDynamic = "XAxisFeatureDynamicSource",
+    
+    featAssayYAxisFeatName = "YAxisFeatureName",
+    featAssayYAxisRowTable = "YAxisFeatureSource",
+    featAssayYAxisFeatDynamic = "YAxisFeatureDynamicSource",
+    # ColumnDataPlot ----
+    colDataYAxis = "YAxis",
+    colDataXAxis = "XAxis",
+    colDataXAxisColData = "XAxisColumnData",
+    # RowDataPlot ----
+    rowDataYAxis = "YAxis",
+    rowDataXAxis = "XAxis",
+    rowDataXAxisRowData = "XAxisRowData",
+    # SampleAssayPlot ----
+    sampAssayAssay = "Assay",
+    sampAssayXAxis = "XAxis",
+    sampAssayXAxisRowData = "XAxisRowData",
+    
+    sampAssayXAxisSampName = "XAxisSampleName",
+    sampAssayXAxisColTable = "XAxisSampleSource",
+    sampAssayXAxisSampDynamic = "XAxisSampleDynamicSource",
+    
+    sampAssayYAxisSampName = "YAxisSampleName",
+    sampAssayYAxisColTable = "YAxisSampleSource",
+    sampAssayYAxisSampDynamic = "YAxisSampleDynamicSource",
+    # Table ----
+    TableSelected = "Selected",
+    TableSearch = "Search",
+    TableColSearch = "SearchColumns",
+    
+    TableHidden = "HiddenColumns",
+    # ComplexHeatmapPlot ----
+    heatMapAssay = "Assay",
+    heatMapCustomFeatNames = "CustomRows",
+    heatMapFeatNameText = "CustomRowsText",
+    heatMapClusterFeatures = "ClusterRows",
+    heatMapClusterDistanceFeatures = "ClusterRowsDistance",
+    heatMapClusterMethodFeatures = "ClusterRowsMethod",
+    
+    heatMapColData = "ColumnData",
+    heatMapRowData = "RowData",
+    
+    heatMapCustomAssayBounds = "CustomBounds",
+    assayLowerBound = "LowerBound",
+    assayUpperBound = "UpperBound",
+    assayCenterRows = "AssayCenterRows",
+    assayScaleRows = "AssayScaleRows",
+    heatMapCenteredColormap = "DivergentColormap",
+    
+    showDimnames = "ShowDimNames",
+    plotLegendDirection = "LegendDirection",
+    
+    namesRowFontSize = "NamesRowFontSize",
+    namesColumnFontSize = "NamesColumnFontSize",
+    
+    heatMapShowSelection = "ShowColumnSelection",
+    heatMapOrderSelection = "OrderColumnSelection"
+)
+
 ####################################################
 
 collated <- character(0)
 
-.packageVersion <- "VersionInfo"
+collated[iSEEslots$packageVersion] <- "list"
 
-collated[.packageVersion] <- "list"
+collated[iSEEslots$organizationId] <- "integer"
+collated[iSEEslots$organizationHeight] <- "integer"
+collated[iSEEslots$organizationWidth] <- "integer"
 
-.organizationId <- "PanelId"
-#' @export
-.organizationWidth <- "PanelWidth"
-#' @export
-.organizationHeight <- "PanelHeight"
+collated[iSEEslots$selectParamBoxOpen] <- "logical"
+collated[iSEEslots$selectRowSource] <- "character"
+collated[iSEEslots$selectColSource] <- "character"
 
-collated[.organizationId] <- "integer"
-collated[.organizationHeight] <- "integer"
-collated[.organizationWidth] <- "integer"
+collated[iSEEslots$dataParamBoxOpen] <- "logical"
 
-.selectParamBoxOpen <- "SelectionBoxOpen"
-.selectRowSource <- "RowSelectionSource"
-.selectColSource <- "ColumnSelectionSource"
+collated[iSEEslots$selectRowDynamic] <- "logical"
 
-collated[.selectParamBoxOpen] <- "logical"
-collated[.selectRowSource] <- "character"
-collated[.selectColSource] <- "character"
+collated[iSEEslots$selectColDynamic] <- "logical"
 
-#' @export
-.dataParamBoxOpen <- "DataBoxOpen"
-
-collated[.dataParamBoxOpen] <- "logical"
-
-.selectRowDynamic <- "RowSelectionDynamicSource"
-
-collated[.selectRowDynamic] <- "logical"
-
-.selectColDynamic <- "ColumnSelectionDynamicSource"
-
-collated[.selectColDynamic] <- "logical"
-
-.selectRowRestrict <- "RowSelectionRestrict"
-.selectColRestrict <- "ColumnSelectionRestrict"
-
-collated[.selectRowRestrict] <- "logical"
-collated[.selectColRestrict] <- "logical"
+collated[iSEEslots$selectRowRestrict] <- "logical"
+collated[iSEEslots$selectColRestrict] <- "logical"
 
 # Practically, this is only a DotPlot feature, but we put it here otherwise the
 # Saved concept is not generic.
-#' @export
-.multiSelectHistory <- "SelectionHistory"
 
-collated[.multiSelectHistory] <- "list"
+collated[iSEEslots$multiSelectHistory] <- "list"
 
 #' @export
 setClass("Panel", contains="VIRTUAL", slots=collated)
@@ -162,93 +327,48 @@ setClass("Panel", contains="VIRTUAL", slots=collated)
 
 collated <- character(0)
 
-.facetRow <- "FacetRowBy"
-.facetColumn <- "FacetColumnBy"
+collated[iSEEslots$facetRow] <- "character"
+collated[iSEEslots$facetColumn] <- "character"
 
-collated[.facetRow] <- "character"
-collated[.facetColumn] <- "character"
+collated[iSEEslots$colorByField] <- "character"
+collated[iSEEslots$colorByDefaultColor] <- "character"
+collated[iSEEslots$colorByFeatName] <- "character"
+collated[iSEEslots$colorByRowTable] <- "character"
+collated[iSEEslots$colorByFeatDynamic] <- "logical"
+collated[iSEEslots$colorBySampName] <- "character"
+collated[iSEEslots$colorByColTable] <- "character"
+collated[iSEEslots$colorBySampDynamic] <- "logical"
 
-.colorByField <- "ColorBy"
-.colorByDefaultColor <- "ColorByDefaultColor"
-.colorByFeatName <- "ColorByFeatureName"
-.colorByRowTable <- "ColorByFeatureSource"
-.colorByFeatDynamic <- "ColorByFeatureDynamicSource"
-.colorBySampName <- "ColorBySampleName"
-.colorByColTable <- "ColorBySampleSource"
-.colorBySampDynamic <- "ColorBySampleDynamicSource"
+collated[iSEEslots$shapeByField] <- "character"
 
-collated[.colorByField] <- "character"
-collated[.colorByDefaultColor] <- "character"
-collated[.colorByFeatName] <- "character"
-collated[.colorByRowTable] <- "character"
-collated[.colorByFeatDynamic] <- "logical"
-collated[.colorBySampName] <- "character"
-collated[.colorByColTable] <- "character"
-collated[.colorBySampDynamic] <- "logical"
+collated[iSEEslots$sizeByField] <- "character"
 
-.shapeByField <- "ShapeBy"
+collated[iSEEslots$selectTransAlpha] <- "numeric"
 
-collated[.shapeByField] <- "character"
+collated[iSEEslots$brushData] <- "list"
 
-.sizeByField <- "SizeBy"
+collated[iSEEslots$visualParamBoxOpen] <- "logical"
+collated[iSEEslots$visualParamChoice] <- "character"
 
-collated[.sizeByField] <- "character"
+collated[iSEEslots$contourAdd] <- "logical"
+collated[iSEEslots$contourColor] <- "character"
 
-.selectTransAlpha <- "SelectionAlpha"
+collated[iSEEslots$plotPointSize] <- "numeric"
+collated[iSEEslots$plotPointAlpha] <- "numeric"
+collated[iSEEslots$plotPointDownsample] <- "logical"
+collated[iSEEslots$plotPointSampleRes] <- "numeric"
 
-collated[.selectTransAlpha] <- "numeric"
+collated[iSEEslots$plotCustomLabels] <- "logical"
+collated[iSEEslots$plotCustomLabelsText] <- "character"
+collated[iSEEslots$plotFontSize] <- "numeric"
+collated[iSEEslots$legendPointSize] <- "numeric"
+collated[iSEEslots$plotLegendPosition] <- "character"
 
-.zoomData <- "ZoomData"
-.brushData <- "BrushData"
+collated[iSEEslots$plotHoverInfo] <- "logical"
 
-collated[.zoomData] <- "numeric"
-collated[.brushData] <- "list"
-
-.visualParamBoxOpen <- "VisualBoxOpen"
-.visualParamChoice <- "VisualChoices"
-
-collated[.visualParamBoxOpen] <- "logical"
-collated[.visualParamChoice] <- "character"
-
-.contourColor <- "ContourColor"
-.contourAdd <- "ContourAdd"
-
-collated[.contourAdd] <- "logical"
-collated[.contourColor] <- "character"
-
-.plotPointSize <- "PointSize"
-.plotPointAlpha <- "PointAlpha"
-.plotPointDownsample <- "Downsample"
-.plotPointSampleRes <- "DownsampleResolution"
-
-collated[.plotPointSize] <- "numeric"
-collated[.plotPointAlpha] <- "numeric"
-collated[.plotPointDownsample] <- "logical"
-collated[.plotPointSampleRes] <- "numeric"
-
-.plotCustomLabels <- "CustomLabels"
-.plotCustomLabelsText <- "CustomLabelsText"
-.plotFontSize <- "FontSize"
-.legendPointSize <- "LegendPointSize"
-.plotLegendPosition <- "LegendPosition"
-
-collated[.plotCustomLabels] <- "logical"
-collated[.plotCustomLabelsText] <- "character"
-collated[.plotFontSize] <- "numeric"
-collated[.legendPointSize] <- "numeric"
-collated[.plotLegendPosition] <- "character"
-
-.plotHoverInfo <- "HoverInfo"
-
-collated[.plotHoverInfo] <- "logical"
-
-.plotLabelCenters <- "LabelCenters"
-.plotLabelCentersBy <- "LabelCentersBy"
-.plotLabelCentersColor <- "LabelCentersColor"
-
-collated[.plotLabelCenters] <- "logical"
-collated[.plotLabelCentersBy] <- "character"
-collated[.plotLabelCentersColor] <- "character"
+collated[iSEEslots$plotLabelCenters] <- "logical"
+collated[iSEEslots$plotLabelCentersBy] <- "character"
+collated[iSEEslots$plotLabelCentersColor] <- "character"
 
 #' @export
 setClass("DotPlot", contains=c("Panel", "VIRTUAL"), slots=collated)
@@ -257,30 +377,18 @@ setClass("DotPlot", contains=c("Panel", "VIRTUAL"), slots=collated)
 
 collated <- character(0)
 
-.facetRowByColData <- "FacetRowByColData"
-.facetColumnByColData <- "FacetColumnByColData"
+collated[iSEEslots$facetRowByColData] <- "character"
+collated[iSEEslots$facetColumnByColData] <- "character"
 
-collated[.facetRowByColData] <- "character"
-collated[.facetColumnByColData] <- "character"
+collated[iSEEslots$colorByColData] <- "character"
+collated[iSEEslots$colorByFeatNameAssay] <- "character"
+collated[iSEEslots$colorBySampNameColor] <- "character"
 
-.colorByColData <- "ColorByColumnData"
-.colorByFeatNameAssay <- "ColorByFeatureNameAssay"
-.colorBySampNameColor <- "ColorBySampleNameColor"
+collated[iSEEslots$shapeByColData] <- "character"
 
-collated[.colorByColData] <- "character"
-collated[.colorByFeatNameAssay] <- "character"
-collated[.colorBySampNameColor] <- "character"
+collated[iSEEslots$sizeByColData] <- "character"
 
-.shapeByColData <- "ShapeByColumnData"
-
-collated[.shapeByColData] <- "character"
-
-.sizeByColData <- "SizeByColumnData"
-
-collated[.sizeByColData] <- "character"
-
-.tooltipColData <- "TooltipColumnData"
-collated[.tooltipColData] <- "character"
+collated[iSEEslots$tooltipColData] <- "character"
 
 #' @export
 setClass("ColumnDotPlot", contains=c("DotPlot", "VIRTUAL"), slots=collated)
@@ -289,149 +397,96 @@ setClass("ColumnDotPlot", contains=c("DotPlot", "VIRTUAL"), slots=collated)
 
 collated <- character(0)
 
-.facetRowByRowData <- "FacetRowByRowData"
-.facetColumnByRowData <- "FacetColumnByRowData"
+collated[iSEEslots$facetRowByRowData] <- "character"
+collated[iSEEslots$facetColumnByRowData] <- "character"
 
-collated[.facetRowByRowData] <- "character"
-collated[.facetColumnByRowData] <- "character"
+collated[iSEEslots$colorByRowData] <- "character"
+collated[iSEEslots$colorBySampNameAssay] <- "character"
+collated[iSEEslots$colorByFeatNameColor] <- "character"
 
-.colorByRowData <- "ColorByRowData"
-.colorBySampNameAssay <- "ColorBySampleNameAssay"
-.colorByFeatNameColor <- "ColorByFeatureNameColor"
+collated[iSEEslots$shapeByRowData] <- "character"
 
-collated[.colorByRowData] <- "character"
-collated[.colorBySampNameAssay] <- "character"
-collated[.colorByFeatNameColor] <- "character"
+collated[iSEEslots$sizeByRowData] <- "character"
 
-.shapeByRowData <- "ShapeByRowData"
-
-collated[.shapeByRowData] <- "character"
-
-.sizeByRowData <- "SizeByRowData"
-
-collated[.sizeByRowData] <- "character"
-
-.tooltipRowData <- "TooltipRowData"
-collated[.tooltipRowData] <- "character"
+collated[iSEEslots$tooltipRowData] <- "character"
 
 #' @export
 setClass("RowDotPlot", contains=c("DotPlot", "VIRTUAL"), slots=collated)
 
 ####################################################
 
-.redDimType <- "Type"
-.redDimXAxis <- "XAxis"
-.redDimYAxis <- "YAxis"
-
 collated <- character(0)
-collated[.redDimType] <- "character"
-collated[.redDimXAxis] <- "integer"
-collated[.redDimYAxis] <- "integer"
+collated[iSEEslots$redDimType] <- "character"
+collated[iSEEslots$redDimXAxis] <- "integer"
+collated[iSEEslots$redDimYAxis] <- "integer"
 
 #' @export
 setClass("ReducedDimensionPlot", contains="ColumnDotPlot", slots=collated)
 
 ####################################################
 
-.featAssayAssay <- "Assay"
-.featAssayXAxis <- "XAxis"
-.featAssayXAxisColData <- "XAxisColumnData"
-
-.featAssayXAxisFeatName <- "XAxisFeatureName"
-.featAssayXAxisRowTable <- "XAxisFeatureSource"
-.featAssayXAxisFeatDynamic <- "XAxisFeatureDynamicSource"
-
-.featAssayYAxisFeatName <- "YAxisFeatureName"
-.featAssayYAxisRowTable <- "YAxisFeatureSource"
-.featAssayYAxisFeatDynamic <- "YAxisFeatureDynamicSource"
-
 collated <- character(0)
-collated[.featAssayAssay] <- "character"
-collated[.featAssayXAxis] <- "character"
-collated[.featAssayXAxisColData] <- "character"
+collated[iSEEslots$featAssayAssay] <- "character"
+collated[iSEEslots$featAssayXAxis] <- "character"
+collated[iSEEslots$featAssayXAxisColData] <- "character"
 
-collated[.featAssayXAxisFeatName] <- "character"
-collated[.featAssayXAxisRowTable] <- "character"
-collated[.featAssayXAxisFeatDynamic] <- "logical"
+collated[iSEEslots$featAssayXAxisFeatName] <- "character"
+collated[iSEEslots$featAssayXAxisRowTable] <- "character"
+collated[iSEEslots$featAssayXAxisFeatDynamic] <- "logical"
 
-collated[.featAssayYAxisFeatName] <- "character"
-collated[.featAssayYAxisRowTable] <- "character"
-collated[.featAssayYAxisFeatDynamic] <- "logical"
+collated[iSEEslots$featAssayYAxisFeatName] <- "character"
+collated[iSEEslots$featAssayYAxisRowTable] <- "character"
+collated[iSEEslots$featAssayYAxisFeatDynamic] <- "logical"
 
 #' @export
 setClass("FeatureAssayPlot", contains="ColumnDotPlot", slots=collated)
 
 ####################################################
 
-.colDataYAxis <- "YAxis"
-.colDataXAxis <- "XAxis"
-.colDataXAxisColData <- "XAxisColumnData"
-
 collated <- character(0)
-collated[.colDataXAxis] <- "character"
-collated[.colDataYAxis] <- "character"
-collated[.colDataXAxisColData] <- "character"
+collated[iSEEslots$colDataXAxis] <- "character"
+collated[iSEEslots$colDataYAxis] <- "character"
+collated[iSEEslots$colDataXAxisColData] <- "character"
 
 #' @export
 setClass("ColumnDataPlot", contains="ColumnDotPlot", slots=collated)
 
 ####################################################
 
-.rowDataYAxis <- "YAxis"
-.rowDataXAxis <- "XAxis"
-.rowDataXAxisRowData <- "XAxisRowData"
-
 collated <- character(0)
-collated[.rowDataXAxis] <- "character"
-collated[.rowDataYAxis] <- "character"
-collated[.rowDataXAxisRowData] <- "character"
+collated[iSEEslots$rowDataXAxis] <- "character"
+collated[iSEEslots$rowDataYAxis] <- "character"
+collated[iSEEslots$rowDataXAxisRowData] <- "character"
 
 #' @export
 setClass("RowDataPlot", contains="RowDotPlot", slots=collated)
 
 ####################################################
 
-.sampAssayAssay <- "Assay"
-.sampAssayXAxis <- "XAxis"
-.sampAssayXAxisRowData <- "XAxisRowData"
-
-.sampAssayXAxisSampName <- "XAxisSampleName"
-.sampAssayXAxisColTable <- "XAxisSampleSource"
-.sampAssayXAxisSampDynamic <- "XAxisSampleDynamicSource"
-
-.sampAssayYAxisSampName <- "YAxisSampleName"
-.sampAssayYAxisColTable <- "YAxisSampleSource"
-.sampAssayYAxisSampDynamic <- "YAxisSampleDynamicSource"
-
 collated <- character(0)
-collated[.sampAssayAssay] <- "character"
-collated[.sampAssayXAxis] <- "character"
-collated[.sampAssayXAxisRowData] <- "character"
+collated[iSEEslots$sampAssayAssay] <- "character"
+collated[iSEEslots$sampAssayXAxis] <- "character"
+collated[iSEEslots$sampAssayXAxisRowData] <- "character"
 
-collated[.sampAssayXAxisSampName] <- "character"
-collated[.sampAssayXAxisColTable] <- "character"
-collated[.sampAssayXAxisSampDynamic] <- "logical"
+collated[iSEEslots$sampAssayXAxisSampName] <- "character"
+collated[iSEEslots$sampAssayXAxisColTable] <- "character"
+collated[iSEEslots$sampAssayXAxisSampDynamic] <- "logical"
 
-collated[.sampAssayYAxisSampName] <- "character"
-collated[.sampAssayYAxisColTable] <- "character"
-collated[.sampAssayYAxisSampDynamic] <- "logical"
+collated[iSEEslots$sampAssayYAxisSampName] <- "character"
+collated[iSEEslots$sampAssayYAxisColTable] <- "character"
+collated[iSEEslots$sampAssayYAxisSampDynamic] <- "logical"
 
 #' @export
 setClass("SampleAssayPlot", contains="RowDotPlot", slots=collated)
 
 ####################################################
 
-.TableSelected <- "Selected"
-.TableSearch <- "Search"
-.TableColSearch <- "SearchColumns"
-
 collated <- character(0)
-collated[.TableSelected] <- "character"
-collated[.TableSearch] <- "character"
-collated[.TableColSearch] <- "character"
+collated[iSEEslots$TableSelected] <- "character"
+collated[iSEEslots$TableSearch] <- "character"
+collated[iSEEslots$TableColSearch] <- "character"
 
-.TableHidden <- "HiddenColumns"
-collated[.TableHidden] <- "character"
+collated[iSEEslots$TableHidden] <- "character"
 
 #' @export
 setClass("Table", contains=c("Panel", "VIRTUAL"), slots=collated)
@@ -450,62 +505,36 @@ setClass("ColumnDataTable", contains="ColumnTable")
 
 ####################################################
 
-.heatMapAssay <- "Assay"
-.heatMapCustomFeatNames <- "CustomRows"
-.heatMapFeatNameText <- "CustomRowsText"
-.heatMapClusterFeatures <- "ClusterRows"
-.heatMapClusterDistanceFeatures <- "ClusterRowsDistance"
-.heatMapClusterMethodFeatures <- "ClusterRowsMethod"
-
-.heatMapColData <- "ColumnData"
-.heatMapRowData <- "RowData"
-
-.heatMapCustomAssayBounds <- "CustomBounds"
-.assayLowerBound <- "LowerBound"
-.assayUpperBound <- "UpperBound"
-.assayCenterRows <- "AssayCenterRows"
-.assayScaleRows <- "AssayScaleRows"
-.heatMapCenteredColormap <- "DivergentColormap"
-
-.showDimnames <- "ShowDimNames"
-.plotLegendDirection <- "LegendDirection"
-
-.namesRowFontSize <- "NamesRowFontSize"
-.namesColumnFontSize <- "NamesColumnFontSize"
-
 collated <- character(0)
 
-collated[.heatMapAssay] <- "character"
-collated[.heatMapCustomFeatNames] <- "logical"
-collated[.heatMapFeatNameText] <- "character"
-collated[.heatMapClusterFeatures] <- "logical"
-collated[.heatMapClusterDistanceFeatures] <- "character"
-collated[.heatMapClusterMethodFeatures] <- "character"
-collated[.dataParamBoxOpen] <- "logical"
+collated[iSEEslots$heatMapAssay] <- "character"
+collated[iSEEslots$heatMapCustomFeatNames] <- "logical"
+collated[iSEEslots$heatMapFeatNameText] <- "character"
+collated[iSEEslots$heatMapClusterFeatures] <- "logical"
+collated[iSEEslots$heatMapClusterDistanceFeatures] <- "character"
+collated[iSEEslots$heatMapClusterMethodFeatures] <- "character"
+collated[iSEEslots$dataParamBoxOpen] <- "logical"
 
-collated[.visualParamChoice] <- "character"
-collated[.heatMapColData] <- "character"
-collated[.heatMapRowData] <- "character"
+collated[iSEEslots$visualParamChoice] <- "character"
+collated[iSEEslots$heatMapColData] <- "character"
+collated[iSEEslots$heatMapRowData] <- "character"
 
-collated[.heatMapCustomAssayBounds] <- "logical"
-collated[.assayLowerBound] <- "numeric"
-collated[.assayUpperBound] <- "numeric"
-collated[.assayCenterRows] <- "logical"
-collated[.assayScaleRows] <- "logical"
-collated[.heatMapCenteredColormap] <- "character"
+collated[iSEEslots$heatMapCustomAssayBounds] <- "logical"
+collated[iSEEslots$assayLowerBound] <- "numeric"
+collated[iSEEslots$assayUpperBound] <- "numeric"
+collated[iSEEslots$assayCenterRows] <- "logical"
+collated[iSEEslots$assayScaleRows] <- "logical"
+collated[iSEEslots$heatMapCenteredColormap] <- "character"
 
-collated[.showDimnames] <- "character"
-collated[.plotLegendPosition] <- "character"
-collated[.plotLegendDirection] <- "character"
-collated[.visualParamBoxOpen] <- "logical"
-collated[.namesRowFontSize] <- "numeric"
-collated[.namesColumnFontSize] <- "numeric"
+collated[iSEEslots$showDimnames] <- "character"
+collated[iSEEslots$plotLegendPosition] <- "character"
+collated[iSEEslots$plotLegendDirection] <- "character"
+collated[iSEEslots$visualParamBoxOpen] <- "logical"
+collated[iSEEslots$namesRowFontSize] <- "numeric"
+collated[iSEEslots$namesColumnFontSize] <- "numeric"
 
-.heatMapShowSelection <- "ShowColumnSelection"
-.heatMapOrderSelection <- "OrderColumnSelection"
-
-collated[.heatMapShowSelection] <- "logical"
-collated[.heatMapOrderSelection] <- "logical"
+collated[iSEEslots$heatMapShowSelection] <- "logical"
+collated[iSEEslots$heatMapOrderSelection] <- "logical"
 
 #' @export
 setClass("ComplexHeatmapPlot", contains="Panel", slots=collated)

@@ -253,48 +253,48 @@ NULL
 #' @importFrom methods callNextMethod
 setMethod("initialize", "DotPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .emptyDefault(args, .facetRow, .facetByNothingTitle)
-    args <- .emptyDefault(args, .facetColumn, .facetByNothingTitle)
+    args <- .emptyDefault(args, iSEEslots$facetRow, .facetByNothingTitle)
+    args <- .emptyDefault(args, iSEEslots$facetColumn, .facetByNothingTitle)
 
-    args <- .emptyDefault(args, .colorByField, .colorByNothingTitle)
-    args <- .emptyDefault(args, .colorByDefaultColor, getPanelDefault(.colorByDefaultColor))
+    args <- .emptyDefault(args, iSEEslots$colorByField, .colorByNothingTitle)
+    args <- .emptyDefault(args, iSEEslots$colorByDefaultColor, getPanelDefault(.colorByDefaultColor))
 
-    args <- .emptyDefault(args, .colorByFeatName, NA_character_)
-    args <- .emptyDefault(args, .colorByFeatDynamic, getPanelDefault("SingleSelectionDynamicSource"))
-    args <- .emptyDefault(args, .colorByRowTable, .noSelection)
+    args <- .emptyDefault(args, iSEEslots$colorByFeatName, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$colorByFeatDynamic, getPanelDefault("SingleSelectionDynamicSource"))
+    args <- .emptyDefault(args, iSEEslots$colorByRowTable, .noSelection)
 
-    args <- .emptyDefault(args, .colorBySampName, NA_character_)
-    args <- .emptyDefault(args, .colorBySampDynamic, getPanelDefault("SingleSelectionDynamicSource"))
-    args <- .emptyDefault(args, .colorByColTable, .noSelection)
+    args <- .emptyDefault(args, iSEEslots$colorBySampName, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$colorBySampDynamic, getPanelDefault("SingleSelectionDynamicSource"))
+    args <- .emptyDefault(args, iSEEslots$colorByColTable, .noSelection)
 
-    args <- .emptyDefault(args, .shapeByField, .shapeByNothingTitle)
+    args <- .emptyDefault(args, iSEEslots$shapeByField, .shapeByNothingTitle)
 
-    args <- .emptyDefault(args, .sizeByField, .sizeByNothingTitle)
+    args <- .emptyDefault(args, iSEEslots$sizeByField, .sizeByNothingTitle)
 
-    args <- .emptyDefault(args, .selectTransAlpha, getPanelDefault(.selectTransAlpha))
+    args <- .emptyDefault(args, iSEEslots$selectTransAlpha, getPanelDefault(.selectTransAlpha))
 
-    args <- .emptyDefault(args, .visualParamBoxOpen, FALSE)
-    args <- .emptyDefault(args, .visualParamChoice, .visualParamChoiceColorTitle)
+    args <- .emptyDefault(args, iSEEslots$visualParamBoxOpen, FALSE)
+    args <- .emptyDefault(args, iSEEslots$visualParamChoice, .visualParamChoiceColorTitle)
 
-    args <- .emptyDefault(args, .contourAdd, FALSE)
-    args <- .emptyDefault(args, .contourColor, getPanelDefault(.contourColor))
+    args <- .emptyDefault(args, iSEEslots$contourAdd, FALSE)
+    args <- .emptyDefault(args, iSEEslots$contourColor, getPanelDefault(.contourColor))
 
-    args <- .emptyDefault(args, .plotPointSize, getPanelDefault(.plotPointSize))
-    args <- .emptyDefault(args, .plotPointAlpha, getPanelDefault(.plotPointAlpha))
-    args <- .emptyDefault(args, .plotPointDownsample, getPanelDefault(.plotPointDownsample))
-    args <- .emptyDefault(args, .plotPointSampleRes, getPanelDefault(.plotPointSampleRes))
+    args <- .emptyDefault(args, iSEEslots$plotPointSize, getPanelDefault(.plotPointSize))
+    args <- .emptyDefault(args, iSEEslots$plotPointAlpha, getPanelDefault(.plotPointAlpha))
+    args <- .emptyDefault(args, iSEEslots$plotPointDownsample, getPanelDefault(.plotPointDownsample))
+    args <- .emptyDefault(args, iSEEslots$plotPointSampleRes, getPanelDefault(.plotPointSampleRes))
 
-    args <- .emptyDefault(args, .plotCustomLabels, FALSE)
-    args <- .emptyDefault(args, .plotCustomLabelsText, NA_character_)
-    args <- .emptyDefault(args, .plotFontSize, getPanelDefault(.plotFontSize))
-    args <- .emptyDefault(args, .legendPointSize, getPanelDefault(.legendPointSize))
-    args <- .emptyDefault(args, .plotLegendPosition, getPanelDefault(.plotLegendPosition))
+    args <- .emptyDefault(args, iSEEslots$plotCustomLabels, FALSE)
+    args <- .emptyDefault(args, iSEEslots$plotCustomLabelsText, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$plotFontSize, getPanelDefault(.plotFontSize))
+    args <- .emptyDefault(args, iSEEslots$legendPointSize, getPanelDefault(.legendPointSize))
+    args <- .emptyDefault(args, iSEEslots$plotLegendPosition, getPanelDefault(.plotLegendPosition))
 
-    args <- .emptyDefault(args, .plotHoverInfo, TRUE)
+    args <- .emptyDefault(args, iSEEslots$plotHoverInfo, TRUE)
 
-    args <- .emptyDefault(args, .plotLabelCenters, FALSE)
-    args <- .emptyDefault(args, .plotLabelCentersBy, NA_character_)
-    args <- .emptyDefault(args, .plotLabelCentersColor, "black")
+    args <- .emptyDefault(args, iSEEslots$plotLabelCenters, FALSE)
+    args <- .emptyDefault(args, iSEEslots$plotLabelCentersBy, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$plotLabelCentersColor, "black")
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -304,48 +304,46 @@ setValidity2("DotPlot", function(object) {
     msg <- character(0)
 
     msg <- .validLogicalError(msg, object,
-        c(.plotCustomLabels, .visualParamBoxOpen, .contourAdd, .plotPointDownsample,
-            .plotHoverInfo,
-            .plotLabelCenters
+        c(iSEEslots$plotCustomLabels, iSEEslots$visualParamBoxOpen, iSEEslots$contourAdd,
+            iSEEslots$plotPointDownsample, iSEEslots$plotHoverInfo, iSEEslots$plotLabelCenters
         ))
 
     msg <- .singleStringError(msg, object,
-        c(.plotCustomLabelsText, .colorByField, .colorByFeatName, .colorByRowTable, .colorBySampName, .colorByColTable,
-            .shapeByField,
-            .sizeByField,
-            .plotLabelCentersBy
+        c(iSEEslots$plotCustomLabelsText, iSEEslots$colorByField, iSEEslots$colorByFeatName,
+            iSEEslots$colorByRowTable, iSEEslots$colorBySampName, iSEEslots$colorByColTable,
+            iSEEslots$shapeByField, iSEEslots$sizeByField, iSEEslots$plotLabelCentersBy
         ))
 
     msg <- .validStringError(msg, object,
-        c(.colorByDefaultColor,
-            .contourColor,
-            .plotLabelCentersColor
+        c(iSEEslots$colorByDefaultColor, iSEEslots$contourColor, iSEEslots$plotLabelCentersColor
         ))
 
     facet_info <- .getDotPlotFacetConstants(object) 
-    for (field in c(.facetRow, .facetColumn)) {
+    for (field in c(iSEEslots$facetRow, iSEEslots$facetColumn)) {
         msg <- .allowableChoiceError(msg, object, field,
-            c(.facetByNothingTitle, facet_info$metadata$title, facet_info$selections$title))
+            c(iSEEconstants$facetByNothingTitle, facet_info$metadata$title, facet_info$selections$title))
     }
 
-    msg <- .validNumberError(msg, object, .selectTransAlpha, lower=0, upper=1)
+    msg <- .validNumberError(msg, object, iSEEslots$selectTransAlpha, lower=0, upper=1)
 
-    msg <- .multipleChoiceError(msg, object, .visualParamChoice,
-        c(.visualParamChoiceColorTitle, .visualParamChoiceShapeTitle, .visualParamChoiceSizeTitle, .visualParamChoicePointTitle,
-            .visualParamChoiceFacetTitle, .visualParamChoiceTextTitle, .visualParamChoiceOtherTitle))
+    msg <- .multipleChoiceError(msg, object, iSEEslots$visualParamChoice,
+        c(iSEEconstants$visualParamChoiceColorTitle, iSEEconstants$visualParamChoiceShapeTitle,
+            iSEEconstants$visualParamChoiceSizeTitle, iSEEconstants$visualParamChoicePointTitle,
+            iSEEconstants$visualParamChoiceFacetTitle, iSEEconstants$visualParamChoiceTextTitle,
+            iSEEconstants$visualParamChoiceOtherTitle))
 
-    msg <- .validNumberError(msg, object, .plotPointSize, lower=0, upper=Inf)
+    msg <- .validNumberError(msg, object, iSEEslots$plotPointSize, lower=0, upper=Inf)
 
-    msg <- .validNumberError(msg, object, .plotPointAlpha, lower=0, upper=1)
+    msg <- .validNumberError(msg, object, iSEEslots$plotPointAlpha, lower=0, upper=1)
 
-    msg <- .validNumberError(msg, object, .plotPointSampleRes, lower=1, upper=Inf)
+    msg <- .validNumberError(msg, object, iSEEslots$plotPointSampleRes, lower=1, upper=Inf)
 
-    msg <- .validNumberError(msg, object, .plotFontSize, lower=0, upper=Inf)
+    msg <- .validNumberError(msg, object, iSEEslots$plotFontSize, lower=0, upper=Inf)
 
-    msg <- .validNumberError(msg, object, .legendPointSize, lower=0, upper=Inf)
+    msg <- .validNumberError(msg, object, iSEEslots$legendPointSize, lower=0, upper=Inf)
 
-    msg <- .allowableChoiceError(msg, object, .plotLegendPosition,
-        c(.plotLegendRightTitle, .plotLegendBottomTitle))
+    msg <- .allowableChoiceError(msg, object, iSEEslots$plotLegendPosition,
+        c(iSEEconstants$plotLegendRightTitle, iSEEconstants$plotLegendBottomTitle))
 
     if (length(msg)) {
         return(msg)
@@ -407,8 +405,8 @@ setReplaceMethod("[[", "DotPlot", function(x, i, j, ..., value) {
             cname, i, cname, dim, cname, dim_field))
 
         title <- facet_info$metadata$title
-        if (value==.noSelection) {
-            slot(x, dim) <- .facetByNothingTitle
+        if (value==iSEEconstants$noSelection) {
+            slot(x, dim) <- iSEEconstants$facetByNothingTitle
         } else {
             slot(x, dim) <- title
             slot(x, dim_field) <- value
@@ -440,9 +438,9 @@ setMethod(".refineParameters", "DotPlot", function(x, se) {
         return(NULL)
     }
 
-    x <- .replaceMissingWithFirst(x, .colorByFeatName, rownames(se))
-    x <- .replaceMissingWithFirst(x, .colorBySampName, colnames(se))
-    x <- .replaceMissingWithFirst(x, .plotLabelCentersBy, .getDiscreteMetadataChoices(x, se))
+    x <- .replaceMissingWithFirst(x, iSEEslots$colorByFeatName, rownames(se))
+    x <- .replaceMissingWithFirst(x, iSEEslots$colorBySampName, colnames(se))
+    x <- .replaceMissingWithFirst(x, iSEEslots$plotLabelCentersBy, .getDiscreteMetadataChoices(x, se))
 
     x
 })
@@ -454,22 +452,23 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
     plot_name <- .getEncodedName(x)
     plot_dimension <- .multiSelectionDimension(x)
 
-    .create_box_observers(plot_name, .visualParamBoxOpen, input, pObjects)
+    .create_box_observers(plot_name, iSEEslots$visualParamBoxOpen, input, pObjects)
 
     .create_visual_parameter_choice_observer(plot_name, input, pObjects)
 
     .createProtectedParameterObservers(plot_name,
-        fields=c(.facetRow, .facetColumn),
+        fields=c(iSEEslots$facetRow, iSEEslots$facetColumn),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     .createUnprotectedParameterObservers(plot_name,
         fields=c(
-            .colorByDefaultColor, .selectTransAlpha,
-            .shapeByField, .sizeByField,
-            .plotPointSize, .plotPointAlpha, .plotFontSize, .legendPointSize, .plotLegendPosition,
-            .plotPointDownsample, .plotPointSampleRes, .contourAdd,
-            .contourColor, .plotCustomLabels, .plotHoverInfo,
-            .plotLabelCenters, .plotLabelCentersBy, .plotLabelCentersColor),
+            iSEEslots$colorByDefaultColor, iSEEslots$selectTransAlpha,
+            iSEEslots$shapeByField, iSEEslots$sizeByField,
+            iSEEslots$plotPointSize, iSEEslots$plotPointAlpha, iSEEslots$plotFontSize,
+            iSEEslots$legendPointSize, iSEEslots$plotLegendPosition,
+            iSEEslots$plotPointDownsample, iSEEslots$plotPointSampleRes, iSEEslots$contourAdd,
+            iSEEslots$contourColor, iSEEslots$plotCustomLabels, iSEEslots$plotHoverInfo,
+            iSEEslots$plotLabelCenters, iSEEslots$plotLabelCentersBy, iSEEslots$plotLabelCentersColor),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     # Filling the plot interaction observers:
@@ -484,7 +483,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 
     .create_hover_observer(plot_name, se, input=input, session=session, pObjects=pObjects)
 
-    .createCustomDimnamesModalObservers(plot_name, .plotCustomLabelsText, .dimnamesModalOpen,
+    .createCustomDimnamesModalObservers(plot_name, iSEEslots$plotCustomLabelsText, iSEEconstants$dimnamesModalOpen,
         se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, 
         source_type=plot_dimension)
 })
@@ -511,7 +510,7 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
     all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
 
     plot_name <- .getEncodedName(x)
-    colorby_field <- paste0(plot_name, "_", .colorByField)
+    colorby_field <- paste0(plot_name, "_", iSEEslots$colorByField)
 
     colorby <- .getDotPlotColorConstants(x)
     mydim_single <- .singleSelectionDimension(x)
@@ -521,15 +520,15 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
 
     color_choices <- .defineDotPlotColorChoices(x, se)
 
-    .addSpecificTour(class(x), .colorByField, .getDotPlotColorHelp(x, color_choices))
+    .addSpecificTour(class(x), iSEEslots$colorByField, .getDotPlotColorHelp(x, color_choices))
 
-    .addSpecificTour(class(x), .selectTransAlpha, {
+    .addSpecificTour(class(x), iSEEslots$selectTransAlpha, {
         mdim <- .multiSelectionDimension(x)
         function(plot_name) {
             data.frame(
                 rbind(
                     c(
-                        element=paste0("#", plot_name, "_", .selectTransAlpha, .slider_extra),
+                        element=paste0("#", plot_name, "_", iSEEslots$selectTransAlpha, .slider_extra),
                         intro=sprintf("When we make a multiple %s selection on another panel, 
                                        we can transmit that selection to the current panel. 
                                        When we do so, we can choose to highlight the selected points on this panel 
@@ -717,13 +716,13 @@ setMethod(".defineVisualSizeInterface", "DotPlot", function(x, se) {
 #' @export
 setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
     plot_name <- .getEncodedName(x)
-    ds_id <- paste0(plot_name, "_", .plotPointDownsample)
+    ds_id <- paste0(plot_name, "_", iSEEslots$plotPointDownsample)
 
-    .addSpecificTour(class(x)[1], .plotPointAlpha, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$plotPointAlpha, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element=paste0("#", plot_name, "_", .plotPointAlpha, .slider_extra),
+                    element=paste0("#", plot_name, "_", iSEEslots$plotPointAlpha, .slider_extra),
                     intro="This controls the opacity of all points, with 0 being fully transparent and 1 being fully opaque.
                     
                     Note that, unlike the <em>Unselected point opacity</em> option,
@@ -733,18 +732,18 @@ setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
         )
     })
 
-    .addSpecificTour(class(x)[1], .plotPointDownsample, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$plotPointDownsample, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element=paste0("#", plot_name, "_", .plotPointDownsample),
+                    element=paste0("#", plot_name, "_", iSEEslots$plotPointDownsample),
                     intro="For larger datasets, we downsample points in a density-dependent manner.
                     This basically involves removing points that are covered by other points,
                     thus reducing the number of points and speeding up the plot rendering.
                     To demonstrate, <strong>check this box</strong>."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .plotPointSampleRes),
+                    element=paste0("#", plot_name, "_", iSEEslots$plotPointSampleRes),
                     intro="The sampling resolution determines how many points we remove.
                     For example, if we have a sampling resolution of 100, this means that we
                     cut up the plot into a 100-by-100 grid and keep only one point per grid cell.
@@ -754,17 +753,17 @@ setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
         )
     })
 
-    .addSpecificTour(class(x)[1], .contourAdd, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$contourAdd, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element=paste0("#", plot_name, "_", .contourAdd),
+                    element=paste0("#", plot_name, "_", iSEEslots$contourAdd),
                     intro="For scatter plots, we can add a contour representing the density of points.
                     For all other plots, this has no effect.
                     If we're on a scatter plot, you can <strong>check this box</strong>."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .contourColor),
+                    element=paste0("#", plot_name, "_", iSEEslots$contourColor),
                     intro="And you can change the color of the contour lines."
                 )
             )
@@ -773,27 +772,27 @@ setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
 
     tagList(
         hr(),
-        .sliderInput.iSEE(x, .plotPointAlpha, label="Point opacity:", 
-            min=0.1, max=1, value=slot(x, .plotPointAlpha)),
+        .sliderInput.iSEE(x, iSEEslots$plotPointAlpha, label="Point opacity:", 
+            min=0.1, max=1, value=slot(x, iSEEslots$plotPointAlpha)),
         hr(),
-        .checkboxInput.iSEE(x, .plotPointDownsample, 
+        .checkboxInput.iSEE(x, iSEEslots$plotPointDownsample, 
             label="Downsample points for speed",
-            value=slot(x, .plotPointDownsample)),
+            value=slot(x, iSEEslots$plotPointDownsample)),
         .conditionalOnCheckSolo(
             ds_id, on_select=TRUE,
             numericInput(
-                paste0(plot_name, "_", .plotPointSampleRes), label="Sampling resolution:",
-                min=1, value=slot(x, .plotPointSampleRes))
+                paste0(plot_name, "_", iSEEslots$plotPointSampleRes), label="Sampling resolution:",
+                min=1, value=slot(x, iSEEslots$plotPointSampleRes))
         ),
-        .checkboxInput.iSEE(x, .contourAdd,
+        .checkboxInput.iSEE(x, iSEEslots$contourAdd,
             label="Add contour (scatter only)",
-            value=slot(x, .contourAdd)),
+            value=slot(x, iSEEslots$contourAdd)),
         .conditionalOnCheckSolo(
-            paste0(plot_name, "_", .contourAdd),
+            paste0(plot_name, "_", iSEEslots$contourAdd),
             on_select=TRUE,
             colourInput(
-                paste0(plot_name, "_", .contourColor), label=NULL,
-                value=slot(x, .contourColor)))
+                paste0(plot_name, "_", iSEEslots$contourColor), label=NULL,
+                value=slot(x, iSEEslots$contourColor)))
     )
 })
 
@@ -1086,7 +1085,7 @@ setMethod(".exportOutput", "DotPlot", function(x, se, all_memory, all_contents) 
 
     # These are reasonably satisfactory heuristics:
     # Width = Pixels -> Inches, Height = Bootstrap -> Inches.
-    pdf(newpath, width=slot(x, .organizationHeight)/75, height=slot(x, .organizationWidth)*2)
+    pdf(newpath, width=slot(x, iSEEslots$organizationHeight)/75, height=slot(x, iSEEslots$organizationWidth)*2)
     print(contents$plot)
     dev.off()
 
@@ -1095,13 +1094,13 @@ setMethod(".exportOutput", "DotPlot", function(x, se, all_memory, all_contents) 
 
 #' @export
 setMethod(".multiSelectionClear", "DotPlot", function(x) {
-    slot(x, .brushData) <- list()
+    slot(x, iSEEslots$brushData) <- list()
     x
 })
 
 #' @export
 setMethod(".multiSelectionActive", "DotPlot", function(x) {
-    to_store <- slot(x, .brushData)
+    to_store <- slot(x, iSEEslots$brushData)
     if (.is_brush(to_store) || .is_closed_lasso(to_store)) {
         to_store
     } else {
@@ -1114,9 +1113,9 @@ setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
     transmitter <- .getEncodedName(x)
 
     if (is.na(index)) {
-        brush_val <- slot(x, .brushData)
+        brush_val <- slot(x, iSEEslots$brushData)
     } else {
-        brush_val <- slot(x, .multiSelectHistory)[[index]]
+        brush_val <- slot(x, iSEEslots$multiSelectHistory)[[index]]
     }
 
     if (.is_brush(brush_val)) {
@@ -1129,7 +1128,7 @@ setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
 #' @export
 setMethod(".singleSelectionValue", "DotPlot", function(x, contents) {
     plot_name <- .getEncodedName(x)
-    chosen <- .get_brushed_points(contents, slot(x, .brushData))
+    chosen <- .get_brushed_points(contents, slot(x, iSEEslots$brushData))
     if (!length(chosen)) NULL else chosen[1]
 })
 
@@ -1137,20 +1136,20 @@ setMethod(".singleSelectionValue", "DotPlot", function(x, contents) {
 setMethod(".singleSelectionSlots", "DotPlot", function(x) {
     c(callNextMethod(),
         list(
-            list(parameter=.colorByFeatName,
-                source=.colorByRowTable,
+            list(parameter=iSEEslots$colorByFeatName,
+                source=iSEEslots$colorByRowTable,
                 dimension="feature",
-                use_mode=.colorByField,
-                use_value=.colorByFeatNameTitle,
-                dynamic=.colorByFeatDynamic,
+                use_mode=iSEEslots$colorByField,
+                use_value=iSEEconstants$colorByFeatNameTitle,
+                dynamic=iSEEslots$colorByFeatDynamic,
                 protected=FALSE
             ),
-            list(parameter=.colorBySampName,
-                source=.colorByColTable,
+            list(parameter=iSEEslots$colorBySampName,
+                source=iSEEslots$colorByColTable,
                 dimension="sample",
-                use_mode=.colorByField,
-                use_value=.colorBySampNameTitle,
-                dynamic=.colorBySampDynamic,
+                use_mode=iSEEslots$colorByField,
+                use_value=iSEEconstants$colorBySampNameTitle,
+                dynamic=iSEEslots$colorBySampDynamic,
                 protected=FALSE
             )
         )
@@ -1284,8 +1283,8 @@ setMethod(".colorByNoneDotPlotScale", "DotPlot", function(x) NULL)
 setMethod(".definePanelTour", "DotPlot", function(x) {
     mdim <- .multiSelectionDimension(x)
     rbind(
-        .addTourStep(x, .visualParamBoxOpen,  "The <i>Visual parameters</i> box contains parameters related to visual aspects like the color, shape, size and so on.<br/><br/><strong>Action:</strong> click on the header of this box to see the available options."),
-        .addTourStep(x, .visualParamChoice, "There are a lot of options so not all of them are shown by default. More settings are available by checking some of the boxes here; conversely, options can be hidden by unchecking some of these boxes.<br/><br/>Most of these parameters here are fairly self-explanatory and can be explored at leisure."),
+        .addTourStep(x, iSEEslots$visualParamBoxOpen,  "The <i>Visual parameters</i> box contains parameters related to visual aspects like the color, shape, size and so on.<br/><br/><strong>Action:</strong> click on the header of this box to see the available options."),
+        .addTourStep(x, iSEEslots$visualParamChoice, "There are a lot of options so not all of them are shown by default. More settings are available by checking some of the boxes here; conversely, options can be hidden by unchecking some of these boxes.<br/><br/>Most of these parameters here are fairly self-explanatory and can be explored at leisure."),
         callNextMethod(),
         c(paste0("#", .getEncodedName(x)), sprintf("At the other end of the spectrum, brushing or creating a lasso on this plot will create a selection of multiple %ss, to be transmitted to other panels that choose this one as their selection source.<br/><br/>Drag-and-dropping will create a rectangular brush while a single click will lay down a lasso waypoint for non-rectangular selections.<br/><br/>Brushes and lassos can also be used to transmit single %s selections in which case one %s is arbitrarily chosen from the selection.", mdim, mdim, mdim))
     )
@@ -1301,8 +1300,8 @@ setMethod("updateObject", "DotPlot", function(object, ..., verbose=FALSE) {
         # nocov start
 
         # Do this before 'callNextMethod()', which fills in the Restrict.
-        update.2.1 <- is(try(slot(object, .plotHoverInfo), silent=TRUE), "try-error")
-        update.2.3 <- is(try(slot(object, .facetRow), silent=TRUE), "try-error")
+        update.2.1 <- is(try(slot(object, iSEEslots$plotHoverInfo), silent=TRUE), "try-error")
+        update.2.3 <- is(try(slot(object, iSEEslots$facetRow), silent=TRUE), "try-error")
 
         # NOTE: it is crucial that updateObject does not contain '[[' or '[[<-'
         # calls, lest we get sucked into infinite recursion with the calls to
@@ -1312,13 +1311,13 @@ setMethod("updateObject", "DotPlot", function(object, ..., verbose=FALSE) {
         # Backwards compatibility for new slots (added 3.12, preceding versioning information).
         if (update.2.1) {
             .Deprecated(msg=sprintf("detected outdated '%s' instance, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
-            slot(object, .plotHoverInfo) <- TRUE
-            slot(object, .legendPointSize) <- 1
-            slot(object, .plotLabelCenters) <- FALSE
-            slot(object, .plotLabelCentersBy) <- NA_character_
-            slot(object, .plotLabelCentersColor) <- "black"
-            slot(object, .plotCustomLabels) <- FALSE
-            slot(object, .plotCustomLabelsText) <- NA_character_
+            slot(object, iSEEslots$plotHoverInfo) <- TRUE
+            slot(object, iSEEslots$legendPointSize) <- 1
+            slot(object, iSEEslots$plotLabelCenters) <- FALSE
+            slot(object, iSEEslots$plotLabelCentersBy) <- NA_character_
+            slot(object, iSEEslots$plotLabelCentersColor) <- "black"
+            slot(object, iSEEslots$plotCustomLabels) <- FALSE
+            slot(object, iSEEslots$plotCustomLabelsText) <- NA_character_
         }
 
         # Backwards compatibility for new slots (added 3.13, preceding versioning information).
@@ -1331,20 +1330,20 @@ setMethod("updateObject", "DotPlot", function(object, ..., verbose=FALSE) {
             title <- facet_info$metadata$title
 
             oldr <- object@FacetByRow
-            if (oldr==.noSelection) {
-                slot(object, .facetRow) <- .facetByNothingTitle
+            if (oldr==iSEEconstants$noSelection) {
+                slot(object, iSEEslots$facetRow) <- iSEEconstants$facetByNothingTitle
                 slot(object, row_field) <- NA_character_
             } else {
-                slot(object, .facetRow) <- title
+                slot(object, iSEEslots$facetRow) <- title
                 slot(object, row_field) <- oldr
             }
 
             oldc <- object@FacetByColumn
-            if (oldc==.noSelection) {
-                slot(object, .facetColumn) <- .facetByNothingTitle
+            if (oldc==iSEEconstants$noSelection) {
+                slot(object, iSEEslots$facetColumn) <- iSEEconstants$facetByNothingTitle
                 slot(object, col_field) <- NA_character_
             } else {
-                slot(object, .facetColumn) <- title
+                slot(object, iSEEslots$facetColumn) <- title
                 slot(object, col_field) <- oldc
             }
         }

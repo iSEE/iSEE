@@ -45,28 +45,28 @@
     element <- c(element, paste0("#", enc_rdp))
     intro <- c(intro, "For example, you can construct a <font color=\"#402ee8\">Reduced dimension plot</font> to visualize a low-dimensional representation (e.g., PCA, <i>t</i>-SNE) of our dataset of interest. Here, each point represents a cell.")
 
-    element <- c(element, paste0("#", enc_rdp, "_", .dataParamBoxOpen))
+    element <- c(element, paste0("#", enc_rdp, "_", iSEEslots$dataParamBoxOpen))
     intro <- c(intro, "For each plot panel, a variety of parameters are available to control the appearance and behaviour of the plot. These parameters are located in these collapsible boxes, such as the <font color=\"#402ee8\">Data parameters</font> box that contains parameters related to the type of data being shown.<br /><br /><strong>Action:</strong> click on the header of this collapsible box to see the available options.")
 
     if (check && (!is(se, "SingleCellExperiment") || !all(c("PCA", "TSNE") %in% reducedDimNames(se)))) {
         return(.truncated_tour)
     }
-    element <- c(element, paste0("#", enc_rdp, "_", .redDimType, " + .selectize-control"))
+    element <- c(element, paste0("#", enc_rdp, "_", iSEEslots$redDimType, " + .selectize-control"))
     intro <- c(intro, "<strong>Action:</strong> change this to <code>TSNE</code> to see the two-dimensional <i>t</i>-SNE representation.")
 
     element <- c(element, paste0("#", enc_rdp))
     intro <- c(intro, "You can see how the panel immediately switched to the requested dimensionality reduction result.")
 
-    element <- c(element, paste0("#", enc_rdp, "_", .visualParamBoxOpen))
+    element <- c(element, paste0("#", enc_rdp, "_", iSEEslots$visualParamBoxOpen))
     intro <- c(intro, "The <font color=\"#402ee8\">Visual parameters</font> box contains parameters related to coloring, point appearance, and other visual aspects.<br /><br /><strong>Action:</strong> please click on the header of this box to see the available options.")
 
-    element <- c(element, paste0("#", enc_rdp, "_", .colorByField))
+    element <- c(element, paste0("#", enc_rdp, "_", iSEEslots$colorByField))
     intro <- c(intro, "By default, the points (cells) are not colored.<br/><br/><strong>Action:</strong> select <code>Column data</code> to colour the cells by a column metadata variable.")
 
     if (check && !"passes_qc_checks_s" %in% colnames(colData(se))) {
         return(.truncated_tour)
     }
-    element <- c(element, paste0("#", enc_rdp, "_", .colorByColData, " + .selectize-control"))
+    element <- c(element, paste0("#", enc_rdp, "_", iSEEslots$colorByColData, " + .selectize-control"))
     intro <- c(intro, "Currently, the points are colored by the first available column in the <code>colData</code> slot.<br/><br/><strong>Action:</strong> choose <code>passes_qc_checks_s</code> to colour cells based on whether they passed quality control (QC) checks.")
 
     element <- c(element, paste0("#", enc_rdp))
@@ -81,10 +81,10 @@
     element <- c(element, paste0("#", enc_cdp))
     intro <- c(intro, "You can construct a <font color=\"#402ee8\">Column data plot</font> involving column-level metadata, where each point represents a column (in this case, a cell) in the <code>SummarizedExperiment</code> object. Points can be displayed using violin plots stratified by an experimental factor on the x-axis, or as a scatter plot involving continuous variables on both the x- and y-axes.")
 
-    element <- c(element, paste0("#", enc_cdp, "_", .dataParamBoxOpen))
+    element <- c(element, paste0("#", enc_cdp, "_", iSEEslots$dataParamBoxOpen))
     intro <- c(intro, "The plotting behaviour will also change depending on the type of data being plotted. This is best illustrated with <font color=\"#402ee8\">Column data plot 1</font>.<br/><br/><strong>Action:</strong> click on the header of this collapsible box.")
 
-    element <- c(element, paste0("#", enc_cdp, "_", .colDataXAxis))
+    element <- c(element, paste0("#", enc_cdp, "_", iSEEslots$colDataXAxis))
     intro <- c(intro, "Currently, there is only one violin plot.<br/><br/><strong>Action:</strong> click on <code>Column data</code>.")
 
     element <- c(element, paste0("#", enc_cdp))
@@ -93,7 +93,7 @@
     if (check && !"driver_1_s" %in% colnames(colData(se))) {
         return(.truncated_tour)
     }
-    element <- c(element, paste0("#", enc_cdp, "_", .colDataXAxisColData, " + .selectize-control"))
+    element <- c(element, paste0("#", enc_cdp, "_", iSEEslots$colDataXAxisColData, " + .selectize-control"))
     intro <- c(intro, "<strong>Action:</strong> click on (or type) <code>driver_1_s</code>.")
 
     element <- c(element, paste0("#", enc_cdp))
@@ -102,7 +102,7 @@
     if (check && !"dissection_s" %in% colnames(colData(se))) {
         return(.truncated_tour)
     }
-    element <- c(element, paste0("#", enc_cdp, "_", .colDataYAxis, " + .selectize-control"))
+    element <- c(element, paste0("#", enc_cdp, "_", iSEEslots$colDataYAxis, " + .selectize-control"))
     intro <- c(intro, "<strong>Action:</strong> click on (or type) <code>dissection_s</code>.")
 
     element <- c(element, paste0("#", enc_cdp))
@@ -152,10 +152,10 @@
     intro <- c(intro, "You can produce a <font color=\"#402ee8\">Complex heat map</font> to visualize a feature-by-sample matrix of assay values, for a selected subset of features.")
 
     # Highlighting the multiple selection modes.
-    element <- c(element, paste0("#", enc_fap, "_", .selectParamBoxOpen))
+    element <- c(element, paste0("#", enc_fap, "_", iSEEslots$selectParamBoxOpen))
     intro <- c(intro, 'The <font color="#402ee8">Selection parameters</font> box contains parameters to handle sharing of multiple point selections across panels. The idea is that points selected in a "transmitting" panel can be visualized in a "receiving" panel.<br/><br/><strong>Action:</strong> click on the header of this collapsible box to see the available options.')
 
-    element <- c(element, paste0("#", enc_fap, "_", .selectColSource, " + .selectize-control"))
+    element <- c(element, paste0("#", enc_fap, "_", iSEEslots$selectColSource, " + .selectize-control"))
     intro <- c(intro, "<strong>Action:</strong> select <font color=\"#402ee8\">Reduced dimension plot 1</font>.<br /><br />This means that multiple point selections from <font color=\"#402ee8\">Reduced dimension plot 1</font> will be transmitted to the current <font color=\"#402ee8\">Feature assay plot 1</font>.")
 
     element <- c(element, paste0("#", enc_rdp))
@@ -164,23 +164,23 @@
     element <- c(element, paste0("#", enc_fap))
     intro <- c(intro, "The points selected in the <font color=\"#402ee8\">Reduced dimension plot 1</font> are shown as opaque in this plot, while all other points are semi-transparent.")
 
-    element <- c(element, paste0("#", enc_fap, "_", .selectColRestrict))
+    element <- c(element, paste0("#", enc_fap, "_", iSEEslots$selectColRestrict))
     intro <- c(intro, 'If <font color="#402ee8">Restrict</font> is set, only the selected points will be plotted in the receiving plot.')
 
-    element <- c(element, paste0("#", enc_rdp, "_", .panelMultiSelectInfo))
+    element <- c(element, paste0("#", enc_rdp, "_", iSEEconstants$panelMultiSelectInfo))
     intro <- c(intro, "Some information on the number of selected points is displayed in this element.")
 
-    element <- c(element, paste0("#", enc_rdp, "_", .panelSelectLinkInfo))
+    element <- c(element, paste0("#", enc_rdp, "_", iSEEconstants$panelSelectLinkInfo))
     intro <- c(intro, "Similarly, a summary of the relationships between panels is displayed here.")
 
     element <- c(element, paste0("#", enc_fap))
     intro <- c(intro, 'Even though this panel is receiving a selection, it is still able to transmit a selection to other panels. In this manner, we can construct arbitrarily complex (non-circular) networks between panels to display only a subset of points that match a certain criteria. This is equivalent to multi-step gating schemes in flow cytometry, provided the selection effect is set to <font color="#402ee8">Restrict</font>.<br/><br/>Another important thing to keep in mind when selecting points from violin plots is that points will be selected only if the brushed area includes the center of the x-tick, i.e., the center of the violin plot. This simplifies point selection as users do not need to capture the width of the violin plot, the values of which have no real meaning for individual points.')
 
     # Highlighting the single selection mode.
-    element <- c(element, paste0("#", enc_fap, "_", .dataParamBoxOpen))
+    element <- c(element, paste0("#", enc_fap, "_", iSEEslots$dataParamBoxOpen))
     intro <- c(intro, 'Certain parameters can also respond to single selections from other panels, which we will demonstrate with the <font color="#402ee8">Feature assay plot</font>.<br/><br/><strong>Action:</strong> open this box.')
 
-    element <- c(element, paste0("#", enc_fap, "_", .featAssayYAxisRowTable, " + .selectize-control"))
+    element <- c(element, paste0("#", enc_fap, "_", iSEEslots$featAssayYAxisRowTable, " + .selectize-control"))
     intro <- c(intro, '<strong>Action:</strong> select <font color="#402ee8">Row data table 1</font>.')
 
     element <- c(element, paste0("#", enc_rdt))
@@ -194,43 +194,43 @@
     intro <- c(intro, 'A zooming functionality is also available by first brushing, then double-clicking on the brushed area.<br /><br /><strong>Action:</strong> click and drag to brush over an area. Now, double click inside the marked area to zoom in. To zoom out to the original plot, double-click on the plot.')
 
     # Highlighting the heatmap:
-    element <- c(element, paste0("#", enc_chm, "_", .dataParamBoxOpen))
+    element <- c(element, paste0("#", enc_chm, "_", iSEEslots$dataParamBoxOpen))
     intro <- c(intro, "The <font color=\"#402ee8\">Complex heat map</font> panel provides a powerful and responsive visualisation of any assay matrix in the <code>SummarizedExperiment</code> object.<br/><br/><strong>Action:</strong> open this box.")
 
-    element <- c(element, paste0("#", enc_chm, "_", .heatMapAssay, " + .selectize-control"))
+    element <- c(element, paste0("#", enc_chm, "_", iSEEslots$heatMapAssay, " + .selectize-control"))
     intro <- c(intro, "The assay displayed can be changed here.")
 
-    element <- c(element, paste0("#", enc_chm, "_", .heatMapCustomFeatNames))
+    element <- c(element, paste0("#", enc_chm, "_", iSEEslots$heatMapCustomFeatNames))
     intro <- c(intro, "This checkbox switches the selection of features between two modes:<ul><li>A manual selection using a text editor to paste and edit a custom list of features.</li><li>The same dynamic selection mechanism used for other row-based panels.</li></ul><strong>Action:</strong> untick the box to enable dynamic selection (i.e. disable the custom list of features).")
 
-    element <- c(element, paste0("#", enc_chm, "_", .visualParamBoxOpen))
+    element <- c(element, paste0("#", enc_chm, "_", iSEEslots$visualParamBoxOpen))
     intro <- c(intro, "The <font color=\"#402ee8\">Complex heat map</font> panel also includes a number of visual effects to augment the plot with additional integrated information.<br/><br/><strong>Action:</strong> open this box.")
 
-    element <- c(element, paste0("#", enc_chm, "_", .heatMapColData, " + .selectize-control"))
+    element <- c(element, paste0("#", enc_chm, "_", iSEEslots$heatMapColData, " + .selectize-control"))
     intro <- c(intro, "Column-level metadata can be selected and displayed above the heatmap.<br/><br/><strong>Action:</strong> Select a few metadata fields. Note how items can be reordered by drag-and-drop.")
 
-    element <- c(element, paste0("#", enc_chm, "_", .heatMapRowData, " + .selectize-control"))
+    element <- c(element, paste0("#", enc_chm, "_", iSEEslots$heatMapRowData, " + .selectize-control"))
     intro <- c(intro, "The same can be done to display row-level metadata on the left of the heatmap.<br/><br/><strong>Action:</strong> Select a few metadata fields.")
 
-    element <- c(element, paste0("#", enc_chm, "_", .visualParamChoice))
+    element <- c(element, paste0("#", enc_chm, "_", iSEEslots$visualParamChoice))
     intro <- c(intro, "Data transformation can also be applied to rows of the matrix, to facilitate intepretation without the need to store additional assay matrices.<br/><br/><strong>Action:</strong> tick the 'Transform' box. You may also untick the 'Annotations' box to free up space in the Visual parameters box.")
 
-    element <- c(element, paste0("#", enc_chm, "_", .assayCenterRows))
+    element <- c(element, paste0("#", enc_chm, "_", iSEEslots$assayCenterRows))
     intro <- c(intro, "Row values can be centered using this checkbox.<br/><br/><strong>Action:</strong> tick the box.")
 
-    element <- c(element, paste0("#", enc_chm, "_", .assayScaleRows))
+    element <- c(element, paste0("#", enc_chm, "_", iSEEslots$assayScaleRows))
     intro <- c(intro, "Once centered, row values can additional be scaled using this checkbox.<br/><br/><strong>Action:</strong> tick this box.")
 
-    element <- c(element, paste0("#", enc_chm, "_", .heatMapCenteredColormap, " + .selectize-control"))
+    element <- c(element, paste0("#", enc_chm, "_", iSEEslots$heatMapCenteredColormap, " + .selectize-control"))
     intro <- c(intro, "Similarly, if rows are centered, a colormap suitable for centered values can be selected in this menu.<br/><br/><strong>Action:</strong> choose any colormap.")
 
-    element <- c(element, paste0("#", enc_chm, "_", .selectParamBoxOpen))
+    element <- c(element, paste0("#", enc_chm, "_", iSEEslots$selectParamBoxOpen))
     intro <- c(intro, "The two-dimensional nature of the <font color=\"#402ee8\">Complex heat map</font> panel makes it the only builtin panel capable of receiving selections on both dimensions simultaneously.<br/><br/><strong>Action:</strong> open this box.")
 
-    element <- c(element, paste0("#", enc_chm, "_", .selectRowSource, " + .selectize-control"))
+    element <- c(element, paste0("#", enc_chm, "_", iSEEslots$selectRowSource, " + .selectize-control"))
     intro <- c(intro, "The source of incoming row selections (i.e., features) can be selected here.<br/><br/><strong>Action:</strong> Select the panel <font color=\"#402ee8\">Row data plot 1</font>")
 
-    element <- c(element, paste0("#", enc_chm, "_", .selectColSource, " + .selectize-control"))
+    element <- c(element, paste0("#", enc_chm, "_", iSEEslots$selectColSource, " + .selectize-control"))
     intro <- c(intro, "Similarly, the source of incoming column selections (i.e., samples) can be selected here.<br/><br/><strong>Action:</strong> Select the panel <font color=\"#402ee8\">Column data plot 1</font>")
 
     element <- c(element, paste0("#", enc_rop))
@@ -242,16 +242,16 @@
     element <- c(element, paste0("#", enc_chm))
     intro <- c(intro, "You can see the result of our interactions so far, including the selections applied to both rows and columns of this plot.")
 
-    element <- c(element, paste0("#", enc_chm, "_", .selectColRestrict))
+    element <- c(element, paste0("#", enc_chm, "_", iSEEslots$selectColRestrict))
     intro <- c(intro, "By default, all samples are shown in the heatmap and column selections are marked by a separate colored annotation bar. Alternatively, the heatmap can be restricted to show only the selected samples.<br/><br/><strong>Action:</strong> enable the 'Restrict' option.")
 
-    element <- c(element, paste0("#", enc_chm, "_", .heatMapClusterFeatures))
+    element <- c(element, paste0("#", enc_chm, "_", iSEEslots$heatMapClusterFeatures))
     intro <- c(intro, "Having seleted features of interest, it is often helpful to cluster them by expression profile.<br/><br/><strong>Action:</strong> tick this box.")
 
-    element <- c(element, paste0("#", enc_chm, "_", .heatMapClusterDistanceFeatures, " + .selectize-control"))
+    element <- c(element, paste0("#", enc_chm, "_", iSEEslots$heatMapClusterDistanceFeatures, " + .selectize-control"))
     intro <- c(intro, "A number of clustering distances are available to choose from.")
 
-    element <- c(element, paste0("#", enc_chm, "_", .heatMapClusterMethodFeatures, " + .selectize-control"))
+    element <- c(element, paste0("#", enc_chm, "_", iSEEslots$heatMapClusterMethodFeatures, " + .selectize-control"))
     intro <- c(intro, "So are clustering methods.")
 
     element <- c(element, paste0("#", enc_chm))

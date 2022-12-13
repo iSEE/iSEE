@@ -99,7 +99,7 @@
         accumulated <- c(accumulated, .panelReactivated)
     }
     if (.any_saved_selection(pObjects$memory[[panel_name]])) {
-        slot(pObjects$memory[[panel_name]], .multiSelectHistory) <- list()
+        slot(pObjects$memory[[panel_name]], iSEEslots$multiSelectHistory) <- list()
         accumulated <- c(accumulated, .panelResaved)
     }
     .mark_panel_as_modified(panel_name, accumulated, rObjects)
@@ -109,7 +109,7 @@
 #' @export
 #' @rdname requestUpdate
 .requestActiveSelectionUpdate <- function(panel_name, session, pObjects, rObjects, update_output=TRUE) {
-    .safe_reactive_bump(rObjects, paste0(panel_name, "_", .flagMultiSelect))
+    .safe_reactive_bump(rObjects, paste0(panel_name, "_", iSEEconstants$flagMultiSelect))
 
     modes <- if (update_output) .panelReactivated else c(.panelNorender, .panelReactivated)
     .mark_panel_as_modified(panel_name, modes, rObjects) 
@@ -162,12 +162,12 @@
     target <- pObjects$memory[[panel_name]]
     dim <- .multiSelectionDimension(target)
     all_affected <- names(pObjects$dynamic_multi_selections[[dim]])
-    field <- if (dim=="row") .selectRowSource else .selectColSource
+    field <- if (dim=="row") iSEEslots$selectRowSource else iSEEslots$selectColSource
         
     # nocov start
     if (!is.null(session)) {
         if (panel_name %in% all_affected) {
-            updateSelectInput(session=session, inputId=paste0(panel_name, "_", field), selected=.noSelection)
+            updateSelectInput(session=session, inputId=paste0(panel_name, "_", field), selected=iSEEconstants$noSelection)
             pObjects$selection_links <- .delete_interpanel_link(pObjects$selection_links,
                 panel_name, parent_name=slot(target, field), field=field)
             all_affected <- setdiff(all_affected, panel_name)
@@ -216,25 +216,25 @@ NULL
 #' @export
 #' @rdname track-utils
 .trackUpdate <- function(panel_name, rObjects) {
-    force(rObjects[[paste0(panel_name, "_", .flagOutputUpdate)]])
+    force(rObjects[[paste0(panel_name, "_", iSEEconstants$flagOutputUpdate)]])
 }
 
 #' @export
 #' @rdname track-utils
 .trackSingleSelection <- function(panel_name, rObjects) {
-    force(rObjects[[paste0(panel_name, "_", .flagSingleSelect)]])
+    force(rObjects[[paste0(panel_name, "_", iSEEconstants$flagSingleSelect)]])
 }
 
 #' @export
 #' @rdname track-utils
 .trackMultiSelection <- function(panel_name, rObjects) {
-    force(rObjects[[paste0(panel_name, "_", .flagMultiSelect)]])
+    force(rObjects[[paste0(panel_name, "_", iSEEconstants$flagMultiSelect)]])
 }
 
 #' @export
 #' @rdname track-utils
 .trackRelinkedSelection <- function(panel_name, rObjects) {
-    force(rObjects[[paste0(panel_name, "_", .flagRelinkedSelect)]])
+    force(rObjects[[paste0(panel_name, "_", iSEEconstants$flagRelinkedSelect)]])
 }
 
 #' Safely use reactive values

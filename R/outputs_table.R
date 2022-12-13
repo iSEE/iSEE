@@ -44,13 +44,13 @@
         t.out <- .retrieveOutput(panel_name, se, pObjects, rObjects)
         full_tab <- t.out$contents
 
-        chosen <- slot(param_choices, .TableSelected)
-        search <- slot(param_choices, .TableSearch)
-        search_col <- slot(param_choices, .TableColSearch)
+        chosen <- slot(param_choices, iSEEslots$TableSelected)
+        search <- slot(param_choices, iSEEslots$TableSearch)
+        search_col <- slot(param_choices, iSEEslots$TableColSearch)
 
         # Indicating to downstream observers that the table has been re-rendered;
         # required for UI elements that depend on, e.g., the table column names.
-        tabupdate_field <- paste0(panel_name, "_", .flagTableUpdate)
+        tabupdate_field <- paste0(panel_name, "_", iSEEconstants$flagTableUpdate)
         .safe_reactive_bump(rObjects, tabupdate_field)
 
         # Protection against a change in the number of columns from .generateOutput.
@@ -89,7 +89,7 @@
             full_tab$DUMMY <- integer(nrow(full_tab))
             columnDefs <- list(list(targets=1L, visible=FALSE))
 
-        } else if (length(hidden <- slot(param_choices, .TableHidden))) {
+        } else if (length(hidden <- slot(param_choices, iSEEslots$TableHidden))) {
             m <- which(colnames(full_tab) %in% hidden)
             columnDefs <- lapply(m, function(i) list(targets=i, visible=FALSE))
 
@@ -110,7 +110,7 @@
     # nocov end
 
     # nocov start
-    output[[paste0(panel_name, "_", .tableExtraInfo)]] <- renderUI({
+    output[[paste0(panel_name, "_", iSEEconstants$tableExtraInfo)]] <- renderUI({
         .trackSingleSelection(panel_name, rObjects)
         .showSelectionDetails(pObjects$memory[[panel_name]])
     })

@@ -57,7 +57,7 @@
             next
         }
 
-        brush_struct <- slot(all_memory[[panel_name]], .brushData)
+        brush_struct <- slot(all_memory[[panel_name]], iSEEslots$brushData)
         if (!is.null(brush_struct)) {
             brush_struct <- .deparse_for_viewing(brush_struct)
             brush_code[[panel_name]] <- sprintf("all_active[['%s']] <- %s", panel_name, brush_struct)

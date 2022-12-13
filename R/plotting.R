@@ -204,7 +204,7 @@ names(.all_aes_values) <- .all_aes_names
     # Adding points to the plot.
     color_set <- !is.null(plot_data$ColorBy)
     shape_set <- slot(param_choices, iSEEslots$shapeByField) != .shapeByNothingTitle
-    size_set <- slot(param_choices, .sizeByField) != .sizeByNothingTitle
+    size_set <- slot(param_choices, iSEEslots$sizeByField) != .sizeByNothingTitle
 
     new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
         alt=c(color=.set_colorby_when_none(param_choices)))
@@ -220,7 +220,7 @@ names(.all_aes_values) <- .all_aes_names
     plot_cmds[["labs"]] <- .buildLabs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
 
     # Defining boundaries if zoomed.
-    bounds <- slot(param_choices, .zoomData)
+    bounds <- slot(param_choices, iSEEslots$zoomData)
     if (length(bounds)) {
         plot_cmds[["coord"]] <- sprintf(
             "coord_cartesian(xlim=c(%s, %s), ylim=c(%s, %s), expand=FALSE) +", # FALSE, to get a literal zoom.
@@ -336,7 +336,7 @@ names(.all_aes_values) <- .all_aes_names
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
     shape_set <- slot(param_choices, iSEEslots$shapeByField) != .shapeByNothingTitle
-    size_set <- slot(param_choices, .sizeByField) != .sizeByNothingTitle
+    size_set <- slot(param_choices, iSEEslots$sizeByField) != .sizeByNothingTitle
 
     new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
         alt=c(x="jitteredX", color=.set_colorby_when_none(param_choices)))
@@ -359,7 +359,7 @@ names(.all_aes_values) <- .all_aes_names
 
     # Defining boundaries if zoomed. This requires some finesse to deal with horizontal plots,
     # where the point selection is computed on the flipped coordinates.
-    bounds <- slot(param_choices, .zoomData)
+    bounds <- slot(param_choices, iSEEslots$zoomData)
     if (horizontal) {
         coord_cmd <- "coord_flip"
         if (length(bounds)) {
@@ -527,7 +527,7 @@ plot.data$Y <- tmp;")
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
     shape_set <- slot(param_choices, iSEEslots$shapeByField) != .shapeByNothingTitle
-    size_set <- slot(param_choices, .sizeByField) != .sizeByNothingTitle
+    size_set <- slot(param_choices, iSEEslots$sizeByField) != .sizeByNothingTitle
 
     new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
         alt=c(x="jitteredX", y="jitteredY", color=.set_colorby_when_none(param_choices)))
@@ -548,7 +548,7 @@ plot.data$Y <- tmp;")
     plot_cmds[["labs"]] <- .buildLabs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
 
     # Defining boundaries if zoomed.
-    bounds <- slot(param_choices, .zoomData)
+    bounds <- slot(param_choices, iSEEslots$zoomData)
     if (length(bounds)) {
 
         # Ensure zoom preserves the data points and width ratio of visible groups
@@ -826,7 +826,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         common_size <- sprintf(", size=%s", slot(param_choices, .plotPointSize))
     }
 
-    if (selected && (select_alpha <- slot(param_choices, .selectTransAlpha)) < 1) {
+    if (selected && (select_alpha <- slot(param_choices, iSEEslots$selectTransAlpha)) < 1) {
         plot_cmds[["select_other"]] <- sprintf(
             "geom_point(%s, subset(plot.data, !SelectBy), alpha=%.2f%s%s) +",
             aes, select_alpha, default_color, common_size
@@ -1056,7 +1056,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' Evaluation of the output commands require:
 #' \itemize{
 #' \item a list object called \code{all_active} where each entry is named by the plot name.
-#' The entry corresponding to the current plot should contain the contents of \code{.brushData} in \code{param_choices}.
+#' The entry corresponding to the current plot should contain the contents of \code{iSEEslots$brushData} in \code{param_choices}.
 #' \item a list object called \code{all_saved} where each entry is named by the plot name.
 #' The entry corresponding to the current plot should contain the contents of \code{iSEEslots$multiSelectHistory} in \code{param_choices}.
 #' }
@@ -1370,7 +1370,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         commands <- c(commands, self_select_cmds)
 
         .populate_selection_environment(x, envir)
-        envir$all_active[[1]] <- slot(x, .brushData) # as open lassos are skipped by multiSelectionActive.
+        envir$all_active[[1]] <- slot(x, iSEEslots$brushData) # as open lassos are skipped by multiSelectionActive.
     }
 
     commands

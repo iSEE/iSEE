@@ -13,7 +13,7 @@
 #' \itemize{
 #' \item the Javascript (JS) brush, which is what the user draws and the observer responds to.
 #' This is eliminated upon replotting for various consistency reasons.
-#' \item the active brush, which is what is stored in the \code{.brushData} field of the memory.
+#' \item the active brush, which is what is stored in the \code{iSEEslots$brushData} field of the memory.
 #' \item the saved brush(es), stored in the \code{iSEEslots$multiSelectHistory} field of the memory.
 #' }
 #' This particular observer only deals with the first and second elements, updating the latter with the former as necessary.
@@ -35,8 +35,8 @@
     # nocov start
     observeEvent(input[[brush_field]], {
         cur_brush <- input[[brush_field]]
-        old_brush <- slot(pObjects$memory[[plot_name]], .brushData)
-        slot(pObjects$memory[[plot_name]], .brushData) <- cur_brush
+        old_brush <- slot(pObjects$memory[[plot_name]], iSEEslots$brushData)
+        slot(pObjects$memory[[plot_name]], iSEEslots$brushData) <- cur_brush
 
         # If the Shiny brushes have the same coordinates, we don't bother replotting.
         if (.identical_brushes(cur_brush, old_brush)) {
@@ -75,7 +75,7 @@
 #' Only a closed lasso will result in rendering the children of \code{plot_name};
 #' before that, no selection is considered to have been made.
 #'
-#' Like brushing, the lasso structure itself is stored in the \code{.brushData} slot.
+#' Like brushing, the lasso structure itself is stored in the \code{iSEEslots$brushData} slot.
 #' Both lassos and Shiny brushes are considered to be specializations of the \dQuote{brush} concept.
 #' Practically, we re-use this slot to make it clear that we can only have one brush or lasso at any given time.
 #'
@@ -107,7 +107,7 @@
         # Don't add to waypoints if a Shiny brush exists in memory, but instead, destroy the brush.
         # Also destroy any closed lassos, or update open lassos.
         reactivated <- FALSE
-        prev_lasso <- slot(pObjects$memory[[plot_name]], .brushData)
+        prev_lasso <- slot(pObjects$memory[[plot_name]], iSEEslots$brushData)
         if (.is_brush(prev_lasso)) {
             new_lasso <- list()
             reactivated <- TRUE
@@ -121,7 +121,7 @@
             }
         }
 
-        slot(pObjects$memory[[plot_name]], .brushData) <- new_lasso
+        slot(pObjects$memory[[plot_name]], iSEEslots$brushData) <- new_lasso
 
         .disableButtonIf(
             save_field,

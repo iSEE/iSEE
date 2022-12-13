@@ -62,18 +62,18 @@
     ui <- ui[keep]
 
     plot_name <- .getEncodedName(x)
-    pchoice_field <- paste0(plot_name, "_", .visualParamChoice)
+    pchoice_field <- paste0(plot_name, "_", iSEEslots$visualParamChoice)
     collected <- lapply(names(ui), function(title)
         .conditionalOnCheckGroup(pchoice_field, title, ui[[title]])
     )
 
     collapseBox(
-        id=paste0(plot_name, "_", .visualParamBoxOpen),
+        id=paste0(plot_name, "_", iSEEslots$visualParamBoxOpen),
         title="Visual parameters",
-        open=slot(x, .visualParamBoxOpen),
+        open=slot(x, iSEEslots$visualParamBoxOpen),
         checkboxGroupInput(
             inputId=pchoice_field, label=NULL, inline=TRUE,
-            selected=slot(x, .visualParamChoice),
+            selected=slot(x, iSEEslots$visualParamChoice),
             choices=names(ui)
         ),
         do.call(tagList, collected)
@@ -165,7 +165,7 @@
 
     .input_FUN <- function(field) paste0(plot_name, "_", field)
 
-    pchoice_field <- .input_FUN(.visualParamChoice)
+    pchoice_field <- .input_FUN(iSEEslots$visualParamChoice)
 
     ABLEFUN <- if (assay_discrete) {
         disabled
@@ -360,12 +360,12 @@ Horizontal, vertical; the choice is yours."
     })
 
     collapseBox(
-        id=paste0(plot_name, "_", .visualParamBoxOpen),
+        id=paste0(plot_name, "_", iSEEslots$visualParamBoxOpen),
         title="Visual parameters",
-        open=slot(x, .visualParamBoxOpen),
+        open=slot(x, iSEEslots$visualParamBoxOpen),
         checkboxGroupInput(
             inputId=pchoice_field, label=NULL, inline=TRUE,
-            selected=slot(x, .visualParamChoice),
+            selected=slot(x, iSEEslots$visualParamChoice),
             choices=c(.visualParamChoiceMetadataTitle, .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle,
                 .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle)),
         .conditionalOnCheckGroup(

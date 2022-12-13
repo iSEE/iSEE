@@ -589,7 +589,7 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
                 label=sprintf("Use dynamic %s selection", otherdim_single),
                 value=x[[colorby$assay$dynamic]])
         ),
-        .sliderInput.iSEE(x, .selectTransAlpha,
+        .sliderInput.iSEE(x, iSEEslots$selectTransAlpha,
             label="Unselected point opacity:", 
             min=0, max=1, value=slot(x, iSEEslots$selectTransAlpha)
         )

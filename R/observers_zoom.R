@@ -23,10 +23,10 @@
 
     # nocov start
     observeEvent(input[[dblclick_field]], {
-        existing_brush <- slot(pObjects$memory[[plot_name]], .brushData)
+        existing_brush <- slot(pObjects$memory[[plot_name]], iSEEslots$brushData)
 
         # Zooming destroys all active brushes or lassos.
-        slot(pObjects$memory[[plot_name]], .brushData) <- list()
+        slot(pObjects$memory[[plot_name]], iSEEslots$brushData) <- list()
 
         new_coords <- numeric(0)
         if (.is_brush(existing_brush)) {
@@ -50,7 +50,7 @@
             )
         }
 
-        slot(pObjects$memory[[plot_name]], .zoomData) <- new_coords
+        slot(pObjects$memory[[plot_name]], iSEEslots$zoomData) <- new_coords
 
         # While re-creating the plot clears the brush, it doesn't
         # re-trigger the observer as the observer ignores NULLs.

@@ -433,17 +433,17 @@ iSEE <- function(se,
     multi_sources <- .get_selection_sources(memory, all_names)
 
     for (x in seq_along(memory)) {
-        if (!slot(memory[[x]], .selectRowSource) %in% multi_sources$row) {
-            slot(memory[[x]], .selectRowSource) <- .noSelection
+        if (!slot(memory[[x]], iSEEslots$selectRowSource) %in% multi_sources$row) {
+            slot(memory[[x]], iSEEslots$selectRowSource) <- iSEEconstants$noSelection
         }
-        if (!slot(memory[[x]], .selectColSource) %in% multi_sources$column) {
-            slot(memory[[x]], .selectColSource) <- .noSelection
+        if (!slot(memory[[x]], iSEEslots$selectColSource) %in% multi_sources$column) {
+            slot(memory[[x]], iSEEslots$selectColSource) <- iSEEconstants$noSelection
         }
     }
 
     for (r in seq_along(reservoir)) {
-        slot(reservoir[[r]], .selectRowSource) <- .noSelection
-        slot(reservoir[[r]], .selectColSource) <- .noSelection
+        slot(reservoir[[r]], iSEEslots$selectRowSource) <- iSEEconstants$noSelection
+        slot(reservoir[[r]], iSEEslots$selectColSource) <- iSEEconstants$noSelection
     }
 
     pObjects <- .create_persistent_objects(memory, reservoir, counter)
@@ -665,7 +665,7 @@ iSEE <- function(se,
     pObjects$dynamic_multi_selections <- .spawn_dynamic_multi_selection_list(memory)
     pObjects$dynamic_single_selections <- .spawn_dynamic_single_selection_list(memory)
 
-    pObjects[[.voiceActivePanel]] <- NA_character_
+    pObjects[[iSEEconstants$voiceActivePanel]] <- NA_character_
 
     pObjects
 }

@@ -300,7 +300,7 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 setMethod(".hideInterface", "RowDotPlot", function(x, field) {
     if (field %in% c(
         iSEEslots$selectColSource,
-        iSEEslots$.selectColRestrict,
+        iSEEslots$selectColRestrict,
         iSEEslots$selectColDynamic)) {
         TRUE
     } else {

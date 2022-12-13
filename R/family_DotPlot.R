@@ -253,42 +253,42 @@ NULL
 #' @importFrom methods callNextMethod
 setMethod("initialize", "DotPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .emptyDefault(args, iSEEslots$facetRow, .facetByNothingTitle)
-    args <- .emptyDefault(args, iSEEslots$facetColumn, .facetByNothingTitle)
+    args <- .emptyDefault(args, iSEEslots$facetRow, iSEEconstants$facetByNothingTitle)
+    args <- .emptyDefault(args, iSEEslots$facetColumn, iSEEconstants$facetByNothingTitle)
 
-    args <- .emptyDefault(args, iSEEslots$colorByField, .colorByNothingTitle)
-    args <- .emptyDefault(args, iSEEslots$colorByDefaultColor, getPanelDefault(.colorByDefaultColor))
+    args <- .emptyDefault(args, iSEEslots$colorByField, iSEEconstants$colorByNothingTitle)
+    args <- .emptyDefault(args, iSEEslots$colorByDefaultColor, getPanelDefault(iSEEslots$colorByDefaultColor))
 
     args <- .emptyDefault(args, iSEEslots$colorByFeatName, NA_character_)
     args <- .emptyDefault(args, iSEEslots$colorByFeatDynamic, getPanelDefault("SingleSelectionDynamicSource"))
-    args <- .emptyDefault(args, iSEEslots$colorByRowTable, .noSelection)
+    args <- .emptyDefault(args, iSEEslots$colorByRowTable, iSEEconstants$noSelection)
 
     args <- .emptyDefault(args, iSEEslots$colorBySampName, NA_character_)
     args <- .emptyDefault(args, iSEEslots$colorBySampDynamic, getPanelDefault("SingleSelectionDynamicSource"))
-    args <- .emptyDefault(args, iSEEslots$colorByColTable, .noSelection)
+    args <- .emptyDefault(args, iSEEslots$colorByColTable, iSEEconstants$noSelection)
 
-    args <- .emptyDefault(args, iSEEslots$shapeByField, .shapeByNothingTitle)
+    args <- .emptyDefault(args, iSEEslots$shapeByField, iSEEconstants$shapeByNothingTitle)
 
-    args <- .emptyDefault(args, iSEEslots$sizeByField, .sizeByNothingTitle)
+    args <- .emptyDefault(args, iSEEslots$sizeByField, iSEEconstants$sizeByNothingTitle)
 
-    args <- .emptyDefault(args, iSEEslots$selectTransAlpha, getPanelDefault(.selectTransAlpha))
+    args <- .emptyDefault(args, iSEEslots$selectTransAlpha, getPanelDefault(iSEEslots$selectTransAlpha))
 
     args <- .emptyDefault(args, iSEEslots$visualParamBoxOpen, FALSE)
-    args <- .emptyDefault(args, iSEEslots$visualParamChoice, .visualParamChoiceColorTitle)
+    args <- .emptyDefault(args, iSEEslots$visualParamChoice, iSEEconstants$visualParamChoiceColorTitle)
 
     args <- .emptyDefault(args, iSEEslots$contourAdd, FALSE)
-    args <- .emptyDefault(args, iSEEslots$contourColor, getPanelDefault(.contourColor))
+    args <- .emptyDefault(args, iSEEslots$contourColor, getPanelDefault(iSEEslots$contourColor))
 
-    args <- .emptyDefault(args, iSEEslots$plotPointSize, getPanelDefault(.plotPointSize))
-    args <- .emptyDefault(args, iSEEslots$plotPointAlpha, getPanelDefault(.plotPointAlpha))
-    args <- .emptyDefault(args, iSEEslots$plotPointDownsample, getPanelDefault(.plotPointDownsample))
-    args <- .emptyDefault(args, iSEEslots$plotPointSampleRes, getPanelDefault(.plotPointSampleRes))
+    args <- .emptyDefault(args, iSEEslots$plotPointSize, getPanelDefault(iSEEslots$plotPointSize))
+    args <- .emptyDefault(args, iSEEslots$plotPointAlpha, getPanelDefault(iSEEslots$plotPointAlpha))
+    args <- .emptyDefault(args, iSEEslots$plotPointDownsample, getPanelDefault(iSEEslots$plotPointDownsample))
+    args <- .emptyDefault(args, iSEEslots$plotPointSampleRes, getPanelDefault(iSEEslots$plotPointSampleRes))
 
     args <- .emptyDefault(args, iSEEslots$plotCustomLabels, FALSE)
     args <- .emptyDefault(args, iSEEslots$plotCustomLabelsText, NA_character_)
-    args <- .emptyDefault(args, iSEEslots$plotFontSize, getPanelDefault(.plotFontSize))
-    args <- .emptyDefault(args, iSEEslots$legendPointSize, getPanelDefault(.legendPointSize))
-    args <- .emptyDefault(args, iSEEslots$plotLegendPosition, getPanelDefault(.plotLegendPosition))
+    args <- .emptyDefault(args, iSEEslots$plotFontSize, getPanelDefault(iSEEslots$plotFontSize))
+    args <- .emptyDefault(args, iSEEslots$legendPointSize, getPanelDefault(iSEEslots$legendPointSize))
+    args <- .emptyDefault(args, iSEEslots$plotLegendPosition, getPanelDefault(iSEEslots$plotLegendPosition))
 
     args <- .emptyDefault(args, iSEEslots$plotHoverInfo, TRUE)
 
@@ -361,10 +361,10 @@ setMethod("[[", "DotPlot", function(x, i, j, ...) {
         col_field <- facet_info$metadata$column_field
 
         if (i=="FacetByRow") {
-            dim <- .facetRow
+            dim <- iSEEslots$facetRow
             dim_field <- row_field
         } else {
-            dim <- .facetColumn
+            dim <- iSEEslots$facetColumn
             dim_field <- col_field
         }
 
@@ -374,7 +374,7 @@ setMethod("[[", "DotPlot", function(x, i, j, ...) {
 
         title <- facet_info$metadata$title
         if (slot(x, dim)!=title) {
-            .noSelection
+            iSEEconstants$noSelection
         } else {
             slot(x, dim_field)
         }
@@ -393,10 +393,10 @@ setReplaceMethod("[[", "DotPlot", function(x, i, j, ..., value) {
         col_field <- facet_info$metadata$column_field
 
         if (i=="FacetByRow") {
-            dim <- .facetRow
+            dim <- iSEEslots$facetRow
             dim_field <- row_field
         } else {
-            dim <- .facetColumn
+            dim <- iSEEslots$facetColumn
             dim_field <- col_field
         }
 
@@ -543,17 +543,17 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
     # Actually creating the UI.
     tagList(
         hr(),
-        .radioButtons.iSEE(x, .colorByField, 
+        .radioButtons.iSEE(x, iSEEslots$colorByField, 
             label="Color by:",
             inline=TRUE,
             choices=.defineDotPlotColorChoices(x, se),
-            selected=slot(x, .colorByField)
+            selected=slot(x, iSEEslots$colorByField)
         ),
         .conditionalOnRadio(
-            colorby_field, .colorByNothingTitle,
+            colorby_field, iSEEconstants$colorByNothingTitle,
                 colourInput(
-                    paste0(plot_name, "_", .colorByDefaultColor), label=NULL,
-                    value=slot(x, .colorByDefaultColor))
+                    paste0(plot_name, "_", iSEEslots$colorByDefaultColor), label=NULL,
+                    value=slot(x, iSEEslots$colorByDefaultColor))
         ),
         .conditionalOnRadio(
             colorby_field, colorby$metadata$title,
@@ -591,7 +591,7 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
         ),
         .sliderInput.iSEE(x, .selectTransAlpha,
             label="Unselected point opacity:", 
-            min=0, max=1, value=slot(x, .selectTransAlpha)
+            min=0, max=1, value=slot(x, iSEEslots$selectTransAlpha)
         )
     )
 })
@@ -602,17 +602,17 @@ setMethod(".defineVisualShapeInterface", "DotPlot", function(x, se) {
 
     if (length(discrete_covariates)) {
         plot_name <- .getEncodedName(x)
-        shapeby_field <- paste0(plot_name, "_", .shapeByField)
+        shapeby_field <- paste0(plot_name, "_", iSEEslots$shapeByField)
         shapeby <- .getDotPlotShapeConstants(x)
 
-        .addSpecificTour(class(x)[1], .shapeByField, {
+        .addSpecificTour(class(x)[1], iSEEslots$shapeByField, {
             mdim <- .multiSelectionDimension(x)
             shape_meta_field <- shapeby$metadata$field
             function(plot_name) {
                 data.frame(
                     rbind(
                         c(
-                            element=paste0("#", plot_name, "_", .shapeByField),
+                            element=paste0("#", plot_name, "_", iSEEslots$shapeByField),
                             intro=sprintf("We can make the shape of each point depend on the value of a categorical %s data field. 
                                            For example, if you were to <strong>select <em>%s data</em></strong>...", mdim, mdim)
                         ),
@@ -629,11 +629,11 @@ setMethod(".defineVisualShapeInterface", "DotPlot", function(x, se) {
 
         tagList(
             hr(),
-            .radioButtons.iSEE(x, .shapeByField,
+            .radioButtons.iSEE(x, iSEEslots$shapeByField,
                 label="Shape by:",
                 inline=TRUE,
-                choices=c(.shapeByNothingTitle, shapeby$metadata$title),
-                selected=slot(x, .shapeByField)
+                choices=c(iSEEconstants$shapeByNothingTitle, shapeby$metadata$title),
+                selected=slot(x, iSEEslots$shapeByField)
             ),
             .conditionalOnRadio(
                 shapeby_field, shapeby$metadata$title,
@@ -651,14 +651,14 @@ setMethod(".defineVisualShapeInterface", "DotPlot", function(x, se) {
 setMethod(".defineVisualSizeInterface", "DotPlot", function(x, se) {
     numeric_covariates <- .getContinuousMetadataChoices(x, se)
     plot_name <- .getEncodedName(x)
-    sizeby_field <- paste0(plot_name, "_", .sizeByField)
+    sizeby_field <- paste0(plot_name, "_", iSEEslots$sizeByField)
     sizeby <- .getDotPlotSizeConstants(x)
 
-    pointsize_field <- paste0(plot_name, "_", .plotPointSize)
-    common_ui <- .numericInput.iSEE(x, .plotPointSize,
-        label="Point size:", min=0, value=slot(x, .plotPointSize))
+    pointsize_field <- paste0(plot_name, "_", iSEEslots$plotPointSize)
+    common_ui <- .numericInput.iSEE(x, iSEEslots$plotPointSize,
+        label="Point size:", min=0, value=slot(x, iSEEslots$plotPointSize))
 
-    .addSpecificTour(class(x)[1], .plotPointSize, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$plotPointSize, function(plot_name) {
         data.frame(
             rbind(
                 c(
@@ -670,7 +670,7 @@ setMethod(".defineVisualSizeInterface", "DotPlot", function(x, se) {
     })
 
     if (length(numeric_covariates)) {
-        .addSpecificTour(class(x)[1], .sizeByField, {
+        .addSpecificTour(class(x)[1], iSEEslots$sizeByField, {
             mdim <- .multiSelectionDimension(x)
             size_meta_field <- sizeby$metadata$field
             function(plot_name) {
@@ -692,14 +692,14 @@ setMethod(".defineVisualSizeInterface", "DotPlot", function(x, se) {
 
         tagList(
             hr(),
-            .radioButtons.iSEE(x, .sizeByField,
+            .radioButtons.iSEE(x, iSEEslots$sizeByField,
                 label="Size by:",
                 inline=TRUE,
-                choices=c(.sizeByNothingTitle, sizeby$metadata$title),
-                selected=slot(x, .sizeByField)
+                choices=c(iSEEconstants$sizeByNothingTitle, sizeby$metadata$title),
+                selected=slot(x, iSEEslots$sizeByField)
             ),
             .conditionalOnRadio(
-                sizeby_field, .sizeByNothingTitle,
+                sizeby_field, iSEEconstants$sizeByNothingTitle,
                 common_ui
             ),
             .conditionalOnRadio(

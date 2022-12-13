@@ -148,17 +148,17 @@ SampleAssayPlot <- function(...) {
 #' @importFrom methods callNextMethod
 setMethod("initialize", "SampleAssayPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .emptyDefault(args, .sampAssayAssay, getPanelDefault(.sampAssayAssay))
-    args <- .emptyDefault(args, .sampAssayXAxis, .sampAssayXAxisNothingTitle)
-    args <- .emptyDefault(args, .sampAssayXAxisRowData, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$sampAssayAssay, getPanelDefault(iSEEslots$sampAssayAssay))
+    args <- .emptyDefault(args, iSEEslots$sampAssayXAxis, .sampAssayXAxisNothingTitle)
+    args <- .emptyDefault(args, iSEEslots$sampAssayXAxisRowData, NA_character_)
 
-    args <- .emptyDefault(args, .sampAssayXAxisColTable, .noSelection)
-    args <- .emptyDefault(args, .sampAssayXAxisSampName, NA_character_)
-    args <- .emptyDefault(args, .sampAssayXAxisSampDynamic, getPanelDefault("SingleSelectionDynamicSource"))
+    args <- .emptyDefault(args, iSEEslots$sampAssayXAxisColTable, iSEEconstants$noSelection)
+    args <- .emptyDefault(args, iSEEslots$sampAssayXAxisSampName, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$sampAssayXAxisSampDynamic, getPanelDefault("SingleSelectionDynamicSource"))
 
-    args <- .emptyDefault(args, .sampAssayYAxisColTable, .noSelection)
-    args <- .emptyDefault(args, .sampAssayYAxisSampName, NA_character_)
-    args <- .emptyDefault(args, .sampAssayYAxisSampDynamic, getPanelDefault("SingleSelectionDynamicSource"))
+    args <- .emptyDefault(args, iSEEslots$sampAssayYAxisColTable, iSEEconstants$noSelection)
+    args <- .emptyDefault(args, iSEEslots$sampAssayYAxisSampName, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$sampAssayYAxisSampDynamic, getPanelDefault("SingleSelectionDynamicSource"))
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -183,19 +183,19 @@ setMethod(".refineParameters", "SampleAssayPlot", function(x, se) {
         return(NULL)
     }
 
-    x <- .replaceMissingWithFirst(x, .sampAssayAssay, all_assays)
+    x <- .replaceMissingWithFirst(x, iSEEslots$sampAssayAssay, all_assays)
 
-    for (field in c(.sampAssayXAxisSampName, .sampAssayYAxisSampName)) {
+    for (field in c(iSEEslots$sampAssayXAxisSampName, iSEEslots$sampAssayYAxisSampName)) {
         x <- .replaceMissingWithFirst(x, field, colnames(se))
     }
 
     row_covariates <- .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
     if (length(row_covariates)==0L) {
-        if (slot(x, .sampAssayXAxis)==.sampAssayXAxisRowDataTitle) {
-            slot(x, .sampAssayXAxis) <- .sampAssayXAxisNothingTitle
+        if (slot(x, iSEEslots$sampAssayXAxis)==.sampAssayXAxisRowDataTitle) {
+            slot(x, iSEEslots$sampAssayXAxis) <- .sampAssayXAxisNothingTitle
         }
     } else {
-        x <- .replaceMissingWithFirst(x, .sampAssayXAxisRowData, row_covariates)
+        x <- .replaceMissingWithFirst(x, iSEEslots$sampAssayXAxisRowData, row_covariates)
     }
 
     x
@@ -210,12 +210,21 @@ setMethod(".refineParameters", "SampleAssayPlot", function(x, se) {
 setValidity2("SampleAssayPlot", function(object) {
     msg <- character(0)
 
-    msg <- .allowableChoiceError(msg, object, .sampAssayXAxis,
-        c(.sampAssayXAxisNothingTitle, .sampAssayXAxisRowDataTitle, .sampAssayXAxisSampNameTitle, .sampAssayXAxisSelectionsTitle))
+    msg <- .allowableChoiceError(msg, object, iSEEslots$sampAssayXAxis,
+        c(
+            .sampAssayXAxisNothingTitle,
+            .sampAssayXAxisRowDataTitle,
+            .sampAssayXAxisSampNameTitle,
+            .sampAssayXAxisSelectionsTitle))
 
     msg <- .singleStringError(msg, object,
-        c(.sampAssayAssay, .sampAssayXAxisRowData, .sampAssayXAxisColTable,
-        .sampAssayXAxisSampName, .sampAssayYAxisColTable, .sampAssayYAxisSampName))
+        c(
+            iSEEslots$sampAssayAssay,
+            iSEEslots$sampAssayXAxisRowData,
+            iSEEslots$sampAssayXAxisColTable,
+            iSEEslots$sampAssayXAxisSampName,
+            iSEEslots$sampAssayYAxisColTable,
+            iSEEslots$sampAssayYAxisSampName))
 
     if (length(msg)) {
         return(msg)
@@ -240,26 +249,26 @@ setMethod(".defineDataInterface", "SampleAssayPlot", function(x, se, select_info
     }
     xaxis_choices <- c(xaxis_choices, .sampAssayXAxisSampNameTitle, .sampAssayXAxisSelectionsTitle)
 
-    .addSpecificTour(class(x)[1], .sampAssayYAxisSampName, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$sampAssayYAxisSampName, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element=paste0("#", plot_name, "_", .sampAssayYAxisSampName, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$sampAssayYAxisSampName, " + .selectize-control"),
                     intro="Here, we choose the sample to show on the y-axis.
 This is based on the column names of the input <code>SummarizedExperiment</code>."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .sampAssayAssay, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$sampAssayAssay, " + .selectize-control"),
                     intro="This specifies the assay values to be shown."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .sampAssayYAxisColTable, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$sampAssayYAxisColTable, " + .selectize-control"),
                     intro="We can configure the plot so that the sample on the y-axis automatically changes based on a sample selection in another panel.
 A common use case is to configure this panel so that we receive a selection from a <em>Column Data Table</em>,
 such that users browsing the table can immediately examine the assay values for a sample of interest."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .sampAssayYAxisSampDynamic),
+                    element=paste0("#", plot_name, "_", iSEEslots$sampAssayYAxisSampDynamic),
                     intro="And in fact, we don't have to even specify the \"other panel\" ourselves.
 If this box is checked, any column-based selection in any other panel of the <strong>iSEE</strong> application will be used to specify the sample on the y-axis in this panel.
 This is achieved by dynamically changing the identity of the designated panel from which we receive the selection."
@@ -268,46 +277,46 @@ This is achieved by dynamically changing the identity of the designated panel fr
         )
     })
 
-    .addSpecificTour(class(x)[1], .sampAssayXAxis, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$sampAssayXAxis, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element=paste0("#", plot_name, "_", .sampAssayXAxis),
+                    element=paste0("#", plot_name, "_", iSEEslots$sampAssayXAxis),
                     intro="Here, we can choose what to show on the x-axis."
                 ),
                 if (length(row_covariates)) {
                     rbind(
                         c(
-                            element=paste0("#", plot_name, "_", .sampAssayXAxis),
+                            element=paste0("#", plot_name, "_", iSEEslots$sampAssayXAxis),
                             intro="If we <strong>select <em>Row data</em></strong>..."
                         ),
                         c(
-                            element=paste0("#", plot_name, "_", .sampAssayXAxisRowData, " + .selectize-control"),
+                            element=paste0("#", plot_name, "_", iSEEslots$sampAssayXAxisRowData, " + .selectize-control"),
                             intro="... we can stratify points on the x-axis based on a field of interest in the <code>rowData</code>." 
                         )
                     )
                 },
                 c(
-                    element=paste0("#", plot_name, "_", .sampAssayXAxis),
+                    element=paste0("#", plot_name, "_", iSEEslots$sampAssayXAxis),
                     intro="If we <strong>select <em>Sample name</em></strong>..."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .sampAssayXAxisSampName, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$sampAssayXAxisSampName, " + .selectize-control"),
                     intro="... we can show the assay values of another sample of interest on the x-axis.
 In other words, plotting one sample against another for the same set of assay values."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .sampAssayXAxisColTable, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$sampAssayXAxisColTable, " + .selectize-control"),
                     intro="Just like the sample on the y-axis, the x-axis sample can automatically change in response to a sample selection made in another panel.
 We can either choose the \"other panel\" manually with this dropdown..."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .sampAssayXAxisSampDynamic),
+                    element=paste0("#", plot_name, "_", iSEEslots$sampAssayXAxisSampDynamic),
                     intro="... or we can dynamically change the identity of the other panel. 
 If this box is checked, a column-based selection in any other panel of the <strong>iSEE</strong> application will be used to specify the sample on the x-axis in this panel."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .sampAssayXAxis),
+                    element=paste0("#", plot_name, "_", iSEEslots$sampAssayXAxis),
                     intro="Finally, we can stratify points based on whether they are included in a multiple row selection made in another panel.
 For example, if our \"other panel\" is a row-based plot containing a brush, we would see two violin plots in this panel;
 one corresponding to the selected points inside the brush, and another corresponding to the unselected points."
@@ -319,43 +328,43 @@ one corresponding to the selected points inside the brush, and another correspon
 
     list(
         .selectizeInput.iSEE(
-            x, .sampAssayYAxisSampName,
+            x, iSEEslots$sampAssayYAxisSampName,
             label="Sample of interest (Y-axis):",
             choices=NULL, selected=NULL, multiple=FALSE),
         selectInput(
-            .input_FUN(.sampAssayYAxisColTable), label=NULL, choices=tab_by_col,
-            selected=.choose_link(slot(x, .sampAssayYAxisColTable), tab_by_col)),
-        checkboxInput(.input_FUN(.sampAssayYAxisSampDynamic),
+            .input_FUN(iSEEslots$sampAssayYAxisColTable), label=NULL, choices=tab_by_col,
+            selected=.choose_link(slot(x, iSEEslots$sampAssayYAxisColTable), tab_by_col)),
+        checkboxInput(.input_FUN(iSEEslots$sampAssayYAxisSampDynamic),
             label="Use dynamic sample selection for the y-axis",
-            value=slot(x, .sampAssayYAxisSampDynamic)),
+            value=slot(x, iSEEslots$sampAssayYAxisSampDynamic)),
 
-        selectInput(paste0(.getEncodedName(x), "_", .sampAssayAssay), label=NULL,
-            choices=all_assays, selected=slot(x, .sampAssayAssay)),
+        selectInput(paste0(.getEncodedName(x), "_", iSEEslots$sampAssayAssay), label=NULL,
+            choices=all_assays, selected=slot(x, iSEEslots$sampAssayAssay)),
 
         .radioButtons.iSEE(
-            x, .sampAssayXAxis, label="X-axis:", inline=TRUE,
-            choices=xaxis_choices, selected=slot(x, .sampAssayXAxis)),
+            x, iSEEslots$sampAssayXAxis, label="X-axis:", inline=TRUE,
+            choices=xaxis_choices, selected=slot(x, iSEEslots$sampAssayXAxis)),
 
         .conditionalOnRadio(
-            .input_FUN(.sampAssayXAxis),
+            .input_FUN(iSEEslots$sampAssayXAxis),
             .sampAssayXAxisRowDataTitle,
             selectInput(
-                .input_FUN(.sampAssayXAxisRowData),
+                .input_FUN(iSEEslots$sampAssayXAxisRowData),
                 label="Row data of interest (X-axis):",
-                choices=row_covariates, selected=slot(x, .sampAssayXAxisRowData))),
+                choices=row_covariates, selected=slot(x, iSEEslots$sampAssayXAxisRowData))),
 
         .conditionalOnRadio(
-            .input_FUN(.sampAssayXAxis),
+            .input_FUN(iSEEslots$sampAssayXAxis),
             .sampAssayXAxisSampNameTitle,
             selectizeInput(
-                .input_FUN(.sampAssayXAxisSampName),
+                .input_FUN(iSEEslots$sampAssayXAxisSampName),
                 label="Sample of interest (X-axis):",
                 choices=NULL, selected=NULL, multiple=FALSE),
-            selectInput(.input_FUN(.sampAssayXAxisColTable), label=NULL,
-                choices=tab_by_col, selected=slot(x, .sampAssayXAxisColTable)),
-            checkboxInput(.input_FUN(.sampAssayXAxisSampDynamic),
+            selectInput(.input_FUN(iSEEslots$sampAssayXAxisColTable), label=NULL,
+                choices=tab_by_col, selected=slot(x, iSEEslots$sampAssayXAxisColTable)),
+            checkboxInput(.input_FUN(iSEEslots$sampAssayXAxisSampDynamic),
                 label="Use dynamic sample selection for the x-axis",
-                value=slot(x, .sampAssayXAxisSampDynamic))
+                value=slot(x, iSEEslots$sampAssayXAxisSampDynamic))
         )
     )
 })
@@ -369,7 +378,7 @@ setMethod(".createObservers", "SampleAssayPlot", function(x, se, input, session,
     plot_name <- .getEncodedName(x)
 
     .createProtectedParameterObservers(plot_name,
-        fields=c(.sampAssayAssay, .sampAssayXAxisRowData),
+        fields=c(iSEEslots$sampAssayAssay, iSEEslots$sampAssayXAxisRowData),
         input=input, pObjects=pObjects, rObjects=rObjects)
 })
 
@@ -378,19 +387,19 @@ setMethod(".singleSelectionSlots", "SampleAssayPlot", function(x) {
     c(callNextMethod(),
         list(
             list(
-                parameter=.sampAssayXAxisSampName,
-                source=.sampAssayXAxisColTable,
+                parameter=iSEEslots$sampAssayXAxisSampName,
+                source=iSEEslots$sampAssayXAxisColTable,
                 dimension="sample",
-                dynamic=.sampAssayXAxisSampDynamic,
-                use_mode=.sampAssayXAxis,
+                dynamic=iSEEslots$sampAssayXAxisSampDynamic,
+                use_mode=iSEEslots$sampAssayXAxis,
                 use_value=.sampAssayXAxisSampNameTitle,
                 protected=TRUE
             ),
             list(
-                parameter=.sampAssayYAxisSampName,
-                source=.sampAssayYAxisColTable,
+                parameter=iSEEslots$sampAssayYAxisSampName,
+                source=iSEEslots$sampAssayYAxisColTable,
                 dimension="sample",
-                dynamic=.sampAssayYAxisSampDynamic,
+                dynamic=iSEEslots$sampAssayYAxisSampDynamic,
                 use_mode=NA,
                 use_value=NA,
                 protected=TRUE
@@ -401,7 +410,7 @@ setMethod(".singleSelectionSlots", "SampleAssayPlot", function(x) {
 
 #' @export
 setMethod(".multiSelectionInvalidated", "SampleAssayPlot", function(x) {
-    slot(x, .sampAssayXAxis) == .sampAssayXAxisSelectionsTitle || callNextMethod()
+    slot(x, iSEEslots$sampAssayXAxis) == .sampAssayXAxisSelectionsTitle || callNextMethod()
 })
 
 #' @export
@@ -414,8 +423,8 @@ setMethod(".panelColor", "SampleAssayPlot", function(x) "#07A274")
 setMethod(".generateDotPlotData", "SampleAssayPlot", function(x, envir) {
     data_cmds <- list()
 
-    samp_selected_y <- slot(x, .sampAssayYAxisSampName)
-    assay_choice <- slot(x, .sampAssayAssay)
+    samp_selected_y <- slot(x, iSEEslots$sampAssayYAxisSampName)
+    assay_choice <- slot(x, iSEEslots$sampAssayAssay)
 
     plot_title <- samp_selected_y
     y_lab <- sprintf("%s (%s)", samp_selected_y, assay_choice)
@@ -425,14 +434,14 @@ setMethod(".generateDotPlotData", "SampleAssayPlot", function(x, envir) {
     )
 
     # Prepare X-axis data.
-    x_choice <- slot(x, .sampAssayXAxis)
+    x_choice <- slot(x, iSEEslots$sampAssayXAxis)
 
     if (x_choice == .sampAssayXAxisNothingTitle) {
         x_lab <- ''
         data_cmds[["x"]] <- "plot.data$X <- factor(character(nrow(se)));"
 
     } else if (x_choice == .sampAssayXAxisRowDataTitle) {
-        x_lab <- slot(x, .sampAssayXAxisRowData)
+        x_lab <- slot(x, iSEEslots$sampAssayXAxisRowData)
         plot_title <- paste(plot_title, "vs", x_lab)
         data_cmds[["x"]] <- sprintf("plot.data$X <- rowData(se)[, %s];", deparse(x_lab))
 
@@ -451,7 +460,7 @@ setMethod(".generateDotPlotData", "SampleAssayPlot", function(x, envir) {
         )
 
     } else {
-        samp_selected_x <- slot(x, .sampAssayXAxisSampName)
+        samp_selected_x <- slot(x, iSEEslots$sampAssayXAxisSampName)
         plot_title <- paste(plot_title, "vs", samp_selected_x)
         x_lab <- sprintf("%s (%s)", samp_selected_x, assay_choice)
         data_cmds[["x"]] <- sprintf(
@@ -470,7 +479,7 @@ setMethod(".generateDotPlotData", "SampleAssayPlot", function(x, envir) {
 setMethod(".definePanelTour", "SampleAssayPlot", function(x) {
     collated <- rbind(
         c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Sample assay plot</font> panel shows assay values for a particular sample (i.e., column) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a row (usually a feature) of the <code>SummarizedExperiment</code> object, and the y-axis represents the assay values.", .getPanelColor(x))),
-        .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options.")
+        .addTourStep(x, iSEEslots$dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options.")
     )
 
     rbind(

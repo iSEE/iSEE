@@ -228,42 +228,42 @@ ComplexHeatmapPlot <- function(...) {
 setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- list(...)
 
-    args <- .emptyDefault(args, .heatMapAssay, getPanelDefault(.heatMapAssay))
-    args <- .emptyDefault(args, .heatMapCustomFeatNames, TRUE)
-    args <- .emptyDefault(args, .heatMapFeatNameText, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$heatMapAssay, getPanelDefault(iSEEslots$heatMapAssay))
+    args <- .emptyDefault(args, iSEEslots$heatMapCustomFeatNames, TRUE)
+    args <- .emptyDefault(args, iSEEslots$heatMapFeatNameText, NA_character_)
 
-    vals <- args[[.heatMapFeatNameText]]
+    vals <- args[[iSEEslots$heatMapFeatNameText]]
     if (length(vals)!=1L) {
-        args[[.heatMapFeatNameText]] <- paste(vals, collapse="\n")
+        args[[iSEEslots$heatMapFeatNameText]] <- paste(vals, collapse="\n")
     }
 
-    args <- .emptyDefault(args, .heatMapClusterFeatures, FALSE)
-    args <- .emptyDefault(args, .heatMapClusterDistanceFeatures, .clusterDistanceSpearman)
-    args <- .emptyDefault(args, .heatMapClusterMethodFeatures, .clusterMethodWardD2)
-    args <- .emptyDefault(args, .dataParamBoxOpen, FALSE)
+    args <- .emptyDefault(args, iSEEslots$heatMapClusterFeatures, FALSE)
+    args <- .emptyDefault(args, iSEEslots$heatMapClusterDistanceFeatures, iSEEconstants$clusterDistanceSpearman)
+    args <- .emptyDefault(args, iSEEslots$heatMapClusterMethodFeatures, iSEEconstants$clusterMethodWardD2)
+    args <- .emptyDefault(args, iSEEslots$dataParamBoxOpen, FALSE)
 
-    args <- .emptyDefault(args, .visualParamChoice, .visualParamChoiceMetadataTitle)
-    args <- .emptyDefault(args, .heatMapColData, character(0))
-    args <- .emptyDefault(args, .heatMapRowData, character(0))
+    args <- .emptyDefault(args, iSEEslots$visualParamChoice, iSEEconstants$visualParamChoiceMetadataTitle)
+    args <- .emptyDefault(args, iSEEslots$heatMapColData, character(0))
+    args <- .emptyDefault(args, iSEEslots$heatMapRowData, character(0))
 
-    args <- .emptyDefault(args, .heatMapCustomAssayBounds, FALSE)
-    args <- .emptyDefault(args, .assayLowerBound, NA_real_)
-    args <- .emptyDefault(args, .assayUpperBound, NA_real_)
-    args <- .emptyDefault(args, .assayCenterRows, FALSE)
-    args <- .emptyDefault(args, .assayScaleRows, FALSE)
-    args <- .emptyDefault(args, .heatMapCenteredColormap, .colormapPurpleBlackYellow)
+    args <- .emptyDefault(args, iSEEslots$heatMapCustomAssayBounds, FALSE)
+    args <- .emptyDefault(args, iSEEslots$assayLowerBound, NA_real_)
+    args <- .emptyDefault(args, iSEEslots$assayUpperBound, NA_real_)
+    args <- .emptyDefault(args, iSEEslots$assayCenterRows, FALSE)
+    args <- .emptyDefault(args, iSEEslots$assayScaleRows, FALSE)
+    args <- .emptyDefault(args, iSEEslots$heatMapCenteredColormap, iSEEconstants$colormapPurpleBlackYellow)
 
-    args <- .emptyDefault(args, .showDimnames, c(.showNamesRowTitle))
+    args <- .emptyDefault(args, iSEEslots$showDimnames, c(iSEEconstants$showNamesRowTitle))
 
-    args <- .emptyDefault(args, .namesRowFontSize, .plotFontSizeAxisTextDefault)
-    args <- .emptyDefault(args, .namesColumnFontSize, .plotFontSizeAxisTextDefault)
+    args <- .emptyDefault(args, iSEEslots$namesRowFontSize, iSEEconstants$plotFontSizeAxisTextDefault)
+    args <- .emptyDefault(args, iSEEslots$namesColumnFontSize, iSEEconstants$plotFontSizeAxisTextDefault)
 
-    args <- .emptyDefault(args, .plotLegendPosition, getPanelDefault(.plotLegendPosition))
-    args <- .emptyDefault(args, .plotLegendDirection, getPanelDefault(.plotLegendDirection))
-    args <- .emptyDefault(args, .visualParamBoxOpen, FALSE)
+    args <- .emptyDefault(args, iSEEslots$plotLegendPosition, getPanelDefault(iSEEslots$plotLegendPosition))
+    args <- .emptyDefault(args, iSEEslots$plotLegendDirection, getPanelDefault(iSEEslots$plotLegendDirection))
+    args <- .emptyDefault(args, iSEEslots$visualParamBoxOpen, FALSE)
 
-    args <- .emptyDefault(args, .heatMapShowSelection, TRUE)
-    args <- .emptyDefault(args, .heatMapOrderSelection, TRUE)
+    args <- .emptyDefault(args, iSEEslots$heatMapShowSelection, TRUE)
+    args <- .emptyDefault(args, iSEEslots$heatMapOrderSelection, TRUE)
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -272,35 +272,38 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
 setValidity2("ComplexHeatmapPlot", function(object) {
     msg <- character(0)
 
-    msg <- .singleStringError(msg, object, c(.heatMapAssay, .heatMapFeatNameText,
-        .heatMapClusterDistanceFeatures, .heatMapClusterMethodFeatures,
-        .heatMapCenteredColormap))
+    msg <- .singleStringError(msg, object, c(iSEEslots$heatMapAssay, iSEEslots$heatMapFeatNameText,
+        iSEEslots$heatMapClusterDistanceFeatures, iSEEslots$heatMapClusterMethodFeatures,
+        iSEEslots$heatMapCenteredColormap))
 
-    msg <- .multipleChoiceError(msg, object, .visualParamChoice,
-        c(.visualParamChoiceMetadataTitle, .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle,
-          .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle))
+    msg <- .multipleChoiceError(msg, object, iSEEslots$visualParamChoice,
+        c(iSEEconstants$visualParamChoiceMetadataTitle,
+            iSEEconstants$visualParamChoiceTransformTitle,
+            iSEEconstants$visualParamChoiceColorTitle,
+            iSEEconstants$visualParamChoiceLabelsTitle,
+            iSEEconstants$visualParamChoiceLegendTitle))
 
-    msg <- .multipleChoiceError(msg, object, .showDimnames,
-        c(.showNamesRowTitle, .showNamesColumnTitle))
+    msg <- .multipleChoiceError(msg, object, iSEEslots$showDimnames,
+        c(iSEEconstants$showNamesRowTitle, iSEEconstants$showNamesColumnTitle))
 
-    msg <- .validNumberError(msg, object, .namesRowFontSize,
+    msg <- .validNumberError(msg, object, iSEEslots$namesRowFontSize,
                              lower=0, upper=Inf)
-    msg <- .validNumberError(msg, object, .namesColumnFontSize,
+    msg <- .validNumberError(msg, object, iSEEslots$namesColumnFontSize,
                              lower=0, upper=Inf)
 
-    msg <- .allowableChoiceError(msg, object, .plotLegendPosition,
-        c(.plotLegendRightTitle, .plotLegendBottomTitle))
+    msg <- .allowableChoiceError(msg, object, iSEEslots$plotLegendPosition,
+        c(iSEEconstants$plotLegendRightTitle, iSEEconstants$plotLegendBottomTitle))
 
-    msg <- .allowableChoiceError(msg, object, .plotLegendDirection,
-        c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle))
+    msg <- .allowableChoiceError(msg, object, iSEEslots$plotLegendDirection,
+        c(iSEEconstants$plotLegendHorizontalTitle, iSEEconstants$plotLegendVerticalTitle))
 
     msg <- .validLogicalError(msg, object, c(
-        .heatMapCustomFeatNames, .heatMapCustomFeatNames,
-        .heatMapClusterFeatures, .dataParamBoxOpen,
-        .heatMapCustomAssayBounds,
-        .assayCenterRows, .assayScaleRows,
-        .visualParamBoxOpen,
-        .heatMapShowSelection, .heatMapOrderSelection))
+        iSEEslots$heatMapCustomFeatNames, iSEEslots$heatMapCustomFeatNames,
+        iSEEslots$heatMapClusterFeatures, iSEEslots$dataParamBoxOpen,
+        iSEEslots$heatMapCustomAssayBounds,
+        iSEEslots$assayCenterRows, iSEEslots$assayScaleRows,
+        iSEEslots$visualParamBoxOpen,
+        iSEEslots$heatMapShowSelection, iSEEslots$heatMapOrderSelection))
 
     if (length(msg)) {
         return(msg)
@@ -319,11 +322,11 @@ setMethod("[[", "ComplexHeatmapPlot", function(x, i, j, ...) {
 
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.\nUse <%s>[['%s']] and/or <%s>[['%s']] instead.",
-            cname, i, cname, .selectColRestrict, cname, .heatMapShowSelection))
+            cname, i, cname, iSEEslots$selectColRestrict, cname, iSEEslots$heatMapShowSelection))
 
-        if (slot(x, .selectColRestrict)) {
+        if (slot(x, iSEEslots$selectColRestrict)) {
             "Restrict"
-        } else if (slot(x, .heatMapShowSelection)) {
+        } else if (slot(x, iSEEslots$heatMapShowSelection)) {
             "Color"
         } else {
             "Transparent"
@@ -344,10 +347,10 @@ setReplaceMethod("[[", "ComplexHeatmapPlot", function(x, i, j, ..., value) {
 
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.\nSet <%s>[['%s']] and/or <%s>[['%s']] instead.",
-            cname, i, cname, .selectColRestrict, cname, .heatMapShowSelection))
+            cname, i, cname, iSEEslots$selectColRestrict, cname, iSEEslots$heatMapShowSelection))
 
-        slot(x, .selectColRestrict) <- (value=="Restrict")
-        slot(x, .heatMapShowSelection) <- (value!="Restrict")
+        slot(x, iSEEslots$selectColRestrict) <- (value=="Restrict")
+        slot(x, iSEEslots$heatMapShowSelection) <- (value!="Restrict")
 
         x
     } else {
@@ -414,10 +417,10 @@ setMethod(".refineParameters", "ComplexHeatmapPlot", function(x, se) {
         return(NULL)
     }
 
-    x <- .replaceMissingWithFirst(x, .heatMapAssay, all_assays)
+    x <- .replaceMissingWithFirst(x, iSEEslots$heatMapAssay, all_assays)
 
-    if (is.na(slot(x, .heatMapFeatNameText))) {
-        slot(x, .heatMapFeatNameText) <- rownames(se)[1]
+    if (is.na(slot(x, iSEEslots$heatMapFeatNameText))) {
+        slot(x, iSEEslots$heatMapFeatNameText) <- rownames(se)[1]
     }
 
     x
@@ -434,7 +437,7 @@ setMethod(".fullName", "ComplexHeatmapPlot", function(x) "Complex heatmap")
 setMethod(".defineOutput", "ComplexHeatmapPlot", function(x) {
     plot_name <- .getEncodedName(x)
     addSpinner(
-        plotOutput(plot_name, height=paste0(slot(x, .organizationHeight), "px")),
+        plotOutput(plot_name, height=paste0(slot(x, iSEEslots$organizationHeight), "px")),
         color=.panelColor(x)
     )
 })
@@ -449,7 +452,7 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
 
     all_assays <- .getCachedCommonInfo(se, "ComplexHeatmapPlot")$valid.assay.names
 
-    assay_name <- slot(x, .heatMapAssay)
+    assay_name <- slot(x, iSEEslots$heatMapAssay)
     assay_discrete <- assay_name %in% .getCachedCommonInfo(se, "ComplexHeatmapPlot")$discrete.assay.names
     ABLEFUN <- if (assay_discrete) {
         disabled
@@ -457,11 +460,11 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         identity
     }
 
-    .addSpecificTour(class(x)[1], .heatMapAssay, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$heatMapAssay, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element = paste0("#", plot_name, "_", .heatMapAssay, " + .selectize-control"),
+                    element = paste0("#", plot_name, "_", iSEEslots$heatMapAssay, " + .selectize-control"),
                     intro = "Here, we can select the name of the assay matrix to show.
 The choices are extracted from the <code>assayNames</code> of a <code>SummarizedExperiment</code> object.
 These matrices should be loaded into the object prior to calling <strong>iSEE</strong> - they are not computed on the fly."
@@ -470,85 +473,96 @@ These matrices should be loaded into the object prior to calling <strong>iSEE</s
         )
     })
 
-    .addSpecificTour(class(x)[1], .heatMapCustomFeatNames, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$heatMapCustomFeatNames, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element = paste0("#", plot_name, "_", .heatMapCustomFeatNames),
+                    element = paste0("#", plot_name, "_", iSEEslots$heatMapCustomFeatNames),
                     intro = "Features displayed as rows in the heat map can be (i) manually specified by entering row names interactively in a modal, or (ii) use any multiple selection transmitted from another panel. This checkbox switches between these two options. <strong>Click on this checkbox to activate manual mode.</strong>"
                 ),
                 c(
-                    element = paste0("#", plot_name, "_", .dimnamesModalOpen),
+                    element = paste0("#", plot_name, "_", iSEEconstants$dimnamesModalOpen),
                     intro = "This brings up a modal that we can use to enter the names of features of interest. Each feature should be a row name in the original <code>SummarizedExperiment</code>, with one feature per line."
                 )
             )
         )
     })
 
-    .addSpecificTour(class(x)[1], .heatMapClusterFeatures, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$heatMapClusterFeatures, function(plot_name) {
         data.frame(
-            element = paste0("#", plot_name, "_", .heatMapClusterFeatures),
+            element = paste0("#", plot_name, "_", iSEEslots$heatMapClusterFeatures),
             intro = "Features displayed as rows in the heat map can be (i) clustered dynamically using a selection of distance metrics and clustering methods, or (ii) shown in the order they appear in <code>rownames</code>. The former choice is enabled by checking this box.<br/><br/>
 The clustering itself is done using <code>hclust</code>, i.e., hierarchical clustering. This is simple and intuitive but not particularly efficient, so should only be used for small numbers of features.<br/><br/>
 <strong>Click on this checkbox to cluster dynamically.</strong>"
         )
     })
 
-    .addSpecificTour(class(x)[1], .heatMapClusterDistanceFeatures, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$heatMapClusterDistanceFeatures, function(plot_name) {
         data.frame(
-            element = paste0("#", plot_name, "_", .heatMapClusterDistanceFeatures, " + .selectize-control"),
+            element = paste0("#", plot_name, "_", iSEEslots$heatMapClusterDistanceFeatures, " + .selectize-control"),
             intro = "Here we can choose from a variety of different metrics to compute distances between features based on their assay values in the heatmap. The resulting distance is then used in <code>hclust</code> to perform hierarchical clustering. Euclidean distances are probably most common; the Spearman distance is another popular choice that is more robust to outliers."
         )
     })
 
-    .addSpecificTour(class(x)[1], .heatMapClusterMethodFeatures, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$heatMapClusterMethodFeatures, function(plot_name) {
         data.frame(
-            element = paste0("#", plot_name, "_", .heatMapClusterMethodFeatures, " + .selectize-control"),
+            element = paste0("#", plot_name, "_", iSEEslots$heatMapClusterMethodFeatures, " + .selectize-control"),
             intro = "We can also choose from a variety of different clustering methods. Ward's method and complete linkage clustering are popular choices as they tend to yield more compact and interpretable clusters."
         )
     })
 
     list(
-        .selectInput.iSEE(x, .heatMapAssay,
+        .selectInput.iSEE(x, iSEEslots$heatMapAssay,
             label="Assay choice:",
             choices=all_assays,
-            selected=slot(x, .heatMapAssay)),
-        .checkboxInput.iSEE(x, .heatMapCustomFeatNames,
+            selected=slot(x, iSEEslots$heatMapAssay)),
+        .checkboxInput.iSEE(x, iSEEslots$heatMapCustomFeatNames,
             label = "Use custom rows",
-            value=slot(x, .heatMapCustomFeatNames),
+            value=slot(x, iSEEslots$heatMapCustomFeatNames),
             help = TRUE),
         .conditionalOnCheckSolo(
-            .input_FUN(.heatMapCustomFeatNames),
+            .input_FUN(iSEEslots$heatMapCustomFeatNames),
             on_select=TRUE,
-            actionButton(.input_FUN(.dimnamesModalOpen), label="Edit feature names")),
+            actionButton(.input_FUN(iSEEconstants$dimnamesModalOpen), label="Edit feature names")),
         ABLEFUN(
             .checkboxInput.iSEE(
-                x, .heatMapClusterFeatures,
+                x, iSEEslots$heatMapClusterFeatures,
                 label = "Cluster rows",
-                value=slot(x, .heatMapClusterFeatures),
+                value=slot(x, iSEEslots$heatMapClusterFeatures),
                 help = TRUE)
             ),
         .conditionalOnCheckSolo(
-            .input_FUN(.heatMapClusterFeatures),
+            .input_FUN(iSEEslots$heatMapClusterFeatures),
             on_select=TRUE,
             ABLEFUN(
-                .selectInput.iSEE(x, .heatMapClusterDistanceFeatures,
+                .selectInput.iSEE(x, iSEEslots$heatMapClusterDistanceFeatures,
                     label="Clustering distance for rows",
-                    choices=c(.clusterDistanceEuclidean, .clusterDistancePearson, .clusterDistanceSpearman,
-                        .clusterDistanceManhattan, .clusterDistanceMaximum, .clusterDistanceCanberra,
-                        .clusterDistanceBinary, .clusterDistanceMinkowski, .clusterDistanceKendall),
-                    selected=slot(x, .heatMapClusterDistanceFeatures)
+                    choices=c(
+                        iSEEconstants$clusterDistanceEuclidean,
+                        iSEEconstants$clusterDistancePearson,
+                        iSEEconstants$clusterDistanceSpearman,
+                        iSEEconstants$clusterDistanceManhattan,
+                        iSEEconstants$clusterDistanceMaximum,
+                        iSEEconstants$clusterDistanceCanberra,
+                        iSEEconstants$clusterDistanceBinary,
+                        iSEEconstants$clusterDistanceMinkowski,
+                        iSEEconstants$clusterDistanceKendall),
+                    selected=slot(x, iSEEslots$heatMapClusterDistanceFeatures)
                 )
             ),
             ABLEFUN(
-                .selectInput.iSEE(x, .heatMapClusterMethodFeatures,
+                .selectInput.iSEE(x, iSEEslots$heatMapClusterMethodFeatures,
                     label="Clustering method for rows",
-                    choices=c(.clusterMethodWardD, .clusterMethodWardD2, .clusterMethodSingle, .clusterMethodComplete,
-                        "average (= UPGMA)"=.clusterMethodAverage,
-                        "mcquitty (= WPGMA)"=.clusterMethodMcquitty,
-                        "median (= WPGMC)"=.clusterMethodMedian,
-                        "centroid (= UPGMC)"=.clusterMethodCentroid),
-                    selected=slot(x, .heatMapClusterMethodFeatures)
+                    choices=c(
+                        iSEEconstants$clusterMethodWardD,
+                        iSEEconstants$clusterMethodWardD2,
+                        iSEEconstants$clusterMethodSingle,
+                        iSEEconstants$clusterMethodComplete,
+                        "average (= UPGMA)"=iSEEconstants$clusterMethodAverage,
+                        "mcquitty (= WPGMA)"=iSEEconstants$clusterMethodMcquitty,
+                        "median (= WPGMC)"=iSEEconstants$clusterMethodMedian,
+                        "centroid (= UPGMC)"=iSEEconstants$clusterMethodCentroid),
+                    selected=slot(x, iSEEslots$heatMapClusterMethodFeatures)
                 )
             )
         )
@@ -581,8 +595,8 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
 
     all_cmds$select <- .processMultiSelections(x, all_memory, all_contents, plot_env)
     all_cmds$assay <- .extractAssaySubmatrix(x, se, plot_env,
-        use_custom_row_slot=.heatMapCustomFeatNames,
-        custom_row_text_slot=.heatMapFeatNameText)
+        use_custom_row_slot=iSEEslots$heatMapCustomFeatNames,
+        custom_row_text_slot=iSEEslots$heatMapFeatNameText)
 
     # If there is a matrix to work with at all
     if (all(dim(plot_env[["plot.data"]]) > 0)) {
@@ -612,10 +626,10 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
 
         # Row clustering.
         if (.is_heatmap_continuous(x, se)) {
-            heatmap_args[["cluster_rows"]] <- as.character(slot(x, .heatMapClusterFeatures))
-            if (slot(x, .heatMapClusterFeatures)) {
-                heatmap_args[["clustering_distance_rows"]] <- deparse(slot(x, .heatMapClusterDistanceFeatures))
-                heatmap_args[["clustering_method_rows"]] <- deparse(slot(x, .heatMapClusterMethodFeatures))
+            heatmap_args[["cluster_rows"]] <- as.character(slot(x, iSEEslots$heatMapClusterFeatures))
+            if (slot(x, iSEEslots$heatMapClusterFeatures)) {
+                heatmap_args[["clustering_distance_rows"]] <- deparse(slot(x, iSEEslots$heatMapClusterDistanceFeatures))
+                heatmap_args[["clustering_method_rows"]] <- deparse(slot(x, iSEEslots$heatMapClusterMethodFeatures))
             }
         }
     }
@@ -625,15 +639,15 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
 
     # Names
     heatmap_args[["name"]] <- deparse(.build_heatmap_assay_legend_title(x, !.is_heatmap_continuous(x, se)))
-    heatmap_args[["show_row_names"]] <- as.character(.showNamesRowTitle %in% slot(x, .showDimnames))
-    heatmap_args[["show_column_names"]] <- as.character(.showNamesColumnTitle %in% slot(x, .showDimnames))
+    heatmap_args[["show_row_names"]] <- as.character(iSEEconstants$showNamesRowTitle %in% slot(x, iSEEslots$showDimnames))
+    heatmap_args[["show_column_names"]] <- as.character(iSEEconstants$showNamesColumnTitle %in% slot(x, iSEEslots$showDimnames))
 
     # Font sizes for names
-    heatmap_args[["row_names_gp"]] <- sprintf('grid::gpar(fontsize=%s)', deparse(slot(x, .namesRowFontSize)))
-    heatmap_args[["column_names_gp"]] <- sprintf('grid::gpar(fontsize=%s)', deparse(slot(x, .namesColumnFontSize)))
+    heatmap_args[["row_names_gp"]] <- sprintf('grid::gpar(fontsize=%s)', deparse(slot(x, iSEEslots$namesRowFontSize)))
+    heatmap_args[["column_names_gp"]] <- sprintf('grid::gpar(fontsize=%s)', deparse(slot(x, iSEEslots$namesColumnFontSize)))
 
     # Legend parameters
-    heatmap_args[['heatmap_legend_param']] <- sprintf('list(direction=%s)', deparse(tolower(slot(x, .plotLegendDirection))))
+    heatmap_args[['heatmap_legend_param']] <- sprintf('list(direction=%s)', deparse(tolower(slot(x, iSEEslots$plotLegendDirection))))
 
     # Heatmap
     heatmap_args <- sprintf("%s=%s", names(heatmap_args), heatmap_args)
@@ -645,8 +659,8 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     all_cmds[["heatmap"]] <- heat_cmd
 
     # Add draw command after all evaluations (avoid drawing in the plotting device)
-    heatmap_legend_side <- sprintf('heatmap_legend_side=%s', deparse(tolower(slot(x, .plotLegendPosition))))
-    annotation_legend_side <- sprintf('annotation_legend_side=%s', deparse(tolower(slot(x, .plotLegendPosition))))
+    heatmap_legend_side <- sprintf('heatmap_legend_side=%s', deparse(tolower(slot(x, iSEEslots$plotLegendPosition))))
+    annotation_legend_side <- sprintf('annotation_legend_side=%s', deparse(tolower(slot(x, iSEEslots$plotLegendPosition))))
     all_cmds[["draw"]] <- sprintf("ComplexHeatmap::draw(hm, %s, %s)", heatmap_legend_side, annotation_legend_side)
 
     list(commands=all_cmds, plot=plot_out, varname=NULL, contents=NULL)
@@ -679,7 +693,7 @@ setMethod(".exportOutput", "ComplexHeatmapPlot", function(x, se, all_memory, all
 
     # These are reasonably satisfactory heuristics:
     # Width = Pixels -> Inches, Height = Bootstrap -> Inches.
-    pdf(newpath, width=slot(x, .organizationHeight)/75, height=slot(x, .organizationWidth)*2)
+    pdf(newpath, width=slot(x, iSEEslots$organizationHeight)/75, height=slot(x, iSEEslots$organizationWidth)*2)
     # print(contents$plot)
     draw(contents$plot)
     dev.off()
@@ -697,38 +711,38 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
     # as there aren't any selections transmitted from this panel anyway.
     .createProtectedParameterObservers(plot_name,
         fields=c(
-            .heatMapClusterFeatures,
-            .heatMapClusterDistanceFeatures,
-            .heatMapClusterMethodFeatures,
-            .heatMapCustomFeatNames,
-            .heatMapOrderSelection
+            iSEEslots$heatMapClusterFeatures,
+            iSEEslots$heatMapClusterDistanceFeatures,
+            iSEEslots$heatMapClusterMethodFeatures,
+            iSEEslots$heatMapCustomFeatNames,
+            iSEEslots$heatMapOrderSelection
         ),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     .createUnprotectedParameterObservers(plot_name,
         fields=c(
-            .heatMapAssay,
-            .heatMapCenteredColormap,
-            .showDimnames,
-            .namesRowFontSize,
-            .namesColumnFontSize,
-            .plotLegendPosition,
-            .plotLegendDirection,
-            .heatMapShowSelection
+            iSEEslots$heatMapAssay,
+            iSEEslots$heatMapCenteredColormap,
+            iSEEslots$showDimnames,
+            iSEEslots$namesRowFontSize,
+            iSEEslots$namesColumnFontSize,
+            iSEEslots$plotLegendPosition,
+            iSEEslots$plotLegendDirection,
+            iSEEslots$heatMapShowSelection
         ),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     .createUnprotectedParameterObservers(plot_name,
         fields=c(
-            .heatMapColData,
-            .heatMapRowData
+            iSEEslots$heatMapColData,
+            iSEEslots$heatMapRowData
         ),
         input=input, pObjects=pObjects, rObjects=rObjects, ignoreNULL = FALSE)
 
     .create_heatmap_extra_observers(plot_name,
         se, input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .createCustomDimnamesModalObservers(plot_name, .heatMapFeatNameText, .dimnamesModalOpen,
+    .createCustomDimnamesModalObservers(plot_name, iSEEslots$heatMapFeatNameText, iSEEconstants$dimnamesModalOpen,
         se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, source_type="row")
 
     invisible(NULL)
@@ -736,7 +750,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
 
 #' @export
 setMethod(".hideInterface", "ComplexHeatmapPlot", function(x, field) {
-    if (field %in% c(.multiSelectHistory, .selectRowRestrict)) {
+    if (field %in% c(iSEEslots$multiSelectHistory, iSEEslots$selectRowRestrict)) {
         TRUE
     } else {
         callNextMethod()
@@ -746,18 +760,18 @@ setMethod(".hideInterface", "ComplexHeatmapPlot", function(x, field) {
 #' @export
 setMethod(".multiSelectionRestricted", "ComplexHeatmapPlot", function(x) {
     ## .heatMapShowSelection is not technically restricted, but requires rerendering nonetheless
-    !slot(x, .heatMapCustomFeatNames) || slot(x, .selectColRestrict) || slot(x, .heatMapShowSelection)
+    !slot(x, iSEEslots$heatMapCustomFeatNames) || slot(x, iSEEslots$selectColRestrict) || slot(x, iSEEslots$heatMapShowSelection)
 })
 
 #' @export
 setMethod(".multiSelectionResponsive", "ComplexHeatmapPlot", function(x, dims = character(0)) {
     if ("row" %in% dims) {
-        if (slot(x, .selectRowRestrict) || !slot(x, .heatMapCustomFeatNames)) {
+        if (slot(x, iSEEslots$selectRowRestrict) || !slot(x, iSEEslots$heatMapCustomFeatNames)) {
             return(TRUE)
         }
     }
     if ("column" %in% dims) {
-        if (slot(x, .selectColRestrict) || slot(x, .heatMapShowSelection)) {
+        if (slot(x, iSEEslots$selectColRestrict) || slot(x, iSEEslots$heatMapShowSelection)) {
             return(TRUE)
         }
     }
@@ -771,8 +785,8 @@ setMethod(".multiSelectionResponsive", "ComplexHeatmapPlot", function(x, dims = 
 setMethod(".definePanelTour", "ComplexHeatmapPlot", function(x) {
     rbind(
         c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">ComplexHeatmapPlot</font> panel contains a complex heatmap from the <i><a href='https://bioconductor.org/packages/ComplexHeatmap/'>ComplexHeatmap</a></i> package. This is quite conceptually different from the other panels as it shows assay data for multiple rows and columns at the same time. However, it is strictly an end-point panel, i.e., it cannot transmit to other panels.", .getPanelColor(x))),
-        .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked to control the data on the heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
-        .addTourStep(x, .visualParamBoxOpen, "The <i>Visual parameters</i> box shows the available visual parameters that can be tweaked in this heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
+        .addTourStep(x, iSEEslots$dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked to control the data on the heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
+        .addTourStep(x, iSEEslots$visualParamBoxOpen, "The <i>Visual parameters</i> box shows the available visual parameters that can be tweaked in this heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
         callNextMethod()
     )
 })
@@ -783,7 +797,7 @@ setMethod("updateObject", "ComplexHeatmapPlot", function(object, ..., verbose=FA
         # nocov start
 
         # Do this before 'callNextMethod()', which fills in the Restrict.
-        update.2.3 <- is(try(slot(object, .selectColRestrict), silent=TRUE), "try-error")
+        update.2.3 <- is(try(slot(object, iSEEslots$selectColRestrict), silent=TRUE), "try-error")
 
         # NOTE: it is crucial that updateObject does not contain '[[' or '[[<-'
         # calls, lest we get sucked into infinite recursion with the calls to
@@ -792,9 +806,9 @@ setMethod("updateObject", "ComplexHeatmapPlot", function(object, ..., verbose=FA
 
         if (update.2.3) {
             effect <- object@SelectionEffect
-            slot(object, .selectColRestrict) <- (effect=="Restrict")
-            slot(object, .heatMapShowSelection) <- (effect!="Restrict")
-            slot(object, .heatMapOrderSelection) <- FALSE
+            slot(object, iSEEslots$selectColRestrict) <- (effect=="Restrict")
+            slot(object, iSEEslots$heatMapShowSelection) <- (effect!="Restrict")
+            slot(object, iSEEslots$heatMapOrderSelection) <- FALSE
         }
         # nocov end
     }

@@ -335,11 +335,11 @@ This is useful to override the default range of the color scale, which is automa
     })
 
 
-    .addSpecificTour(class(x)[1], .plotLegendPosition, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$plotLegendPosition, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element = paste0("#", plot_name, "_", .plotLegendPosition),
+                    element = paste0("#", plot_name, "_", iSEEslots$plotLegendPosition),
                     intro = "Changes the position of the legend on the plot, if any legend exists.
 On the bottom, on the right; the choice is yours."
                 )
@@ -463,10 +463,10 @@ Horizontal, vertical; the choice is yours."
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceLegendTitle,
             hr(),
-            .radioButtons.iSEE(x, .plotLegendPosition,
+            .radioButtons.iSEE(x, iSEEslots$plotLegendPosition,
                 label = "Legend position:",
                 inline=TRUE,
-                selected=slot(x, .plotLegendPosition),
+                selected=slot(x, iSEEslots$plotLegendPosition),
                 choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
                 help = TRUE),
             .radioButtons.iSEE(x, .plotLegendDirection,

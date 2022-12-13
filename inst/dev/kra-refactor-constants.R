@@ -12,4 +12,4 @@ for (slotname in names(iSEEslots)) {
     }
 }
 
-iSEEslots$visualParamBoxOpen
+iSEEslots$plotPointSize

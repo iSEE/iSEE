@@ -47,16 +47,16 @@
 #' @rdname INTERNAL_visual_parameter_choice_observer
 #' @importFrom shiny observeEvent
 .create_visual_parameter_choice_observer  <- function(panel_name, input, pObjects) {
-    cur_field <- paste0(panel_name, "_", .visualParamChoice)
+    cur_field <- paste0(panel_name, "_", iSEEslots$visualParamChoice)
 
     # nocov start
     observeEvent(input[[cur_field]], {
-        existing <- slot(pObjects$memory[[panel_name]], .visualParamChoice)
+        existing <- slot(pObjects$memory[[panel_name]], iSEEslots$visualParamChoice)
         incoming <- as(input[[cur_field]], typeof(existing))
         if (identical(incoming, existing)) {
             return(NULL)
         }
-        slot(pObjects$memory[[panel_name]], .visualParamChoice) <- incoming
+        slot(pObjects$memory[[panel_name]], iSEEslots$visualParamChoice) <- incoming
     }, ignoreInit=TRUE, ignoreNULL=FALSE)
     # nocov end
 

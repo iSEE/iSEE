@@ -107,7 +107,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @seealso
 #' \code{\link{subsetPointsByGrid}}
 .downsample_points <- function(param_choices, envir, priority=FALSE, rescaled=FALSE) {
-    if (slot(param_choices, .plotPointDownsample)) {
+    if (slot(param_choices, iSEEslots$plotPointDownsample)) {
         xtype <- "X"
         ytype <- "Y"
 
@@ -119,7 +119,7 @@ names(.all_aes_values) <- .all_aes_names
             xtype <- "jitteredX"
         }
 
-        res <- slot(param_choices, .plotPointSampleRes)
+        res <- slot(param_choices, iSEEslots$plotPointSampleRes)
         subset.args <- sprintf("resolution=%i", res)
         if (priority) {
             if (rescaled) {
@@ -233,8 +233,8 @@ names(.all_aes_values) <- .all_aes_names
     ylim=range(%s$Y, na.rm=TRUE), expand=TRUE) +", full_data, full_data)
     }
 
-    if (slot(param_choices, .contourAdd)) {
-        plot_cmds[["contours"]] <- sprintf("geom_density_2d(aes(x=X, y=Y), plot.data, colour='%s') +", slot(param_choices, .contourColor))
+    if (slot(param_choices, iSEEslots$contourAdd)) {
+        plot_cmds[["contours"]] <- sprintf("geom_density_2d(aes(x=X, y=Y), plot.data, colour='%s') +", slot(param_choices, iSEEslots$contourColor))
     }
 
     # Retain axes when no points are present.
@@ -247,11 +247,11 @@ names(.all_aes_values) <- .all_aes_names
     plot_cmds[["guides"]] <- guides_cmd
     plot_cmds[["theme_base"]] <- "theme_bw() +"
 
-    font_size <- slot(param_choices, .plotFontSize)
+    font_size <- slot(param_choices, iSEEslots$plotFontSize)
     plot_cmds[["theme_custom"]] <- sprintf(
         "theme(legend.position='%s', legend.box='vertical', legend.text=element_text(size=%s), legend.title=element_text(size=%s),
         axis.text=element_text(size=%s), axis.title=element_text(size=%s), title=element_text(size=%s))",
-        tolower(slot(param_choices, .plotLegendPosition)),
+        tolower(slot(param_choices, iSEEslots$plotLegendPosition)),
         font_size * .plotFontSizeLegendTextDefault,
         font_size * .plotFontSizeLegendTitleDefault,
         font_size * .plotFontSizeAxisTextDefault,
@@ -408,14 +408,14 @@ names(.all_aes_values) <- .all_aes_names
     plot_cmds[["scale_x"]] <- sprintf(scale_x_cmd, scale_x_extra)
     plot_cmds[["theme_base"]] <- "theme_bw() +"
 
-    font_size <- slot(param_choices, .plotFontSize)
+    font_size <- slot(param_choices, iSEEslots$plotFontSize)
     plot_cmds[["theme_custom"]] <- sprintf(
         "theme(legend.position='%s', legend.text=element_text(size=%s),
         legend.title=element_text(size=%s), legend.box='vertical',
         axis.text.x=element_text(angle=90, size=%s, hjust=1, vjust=0.5),
         axis.text.y=element_text(size=%s),
         axis.title=element_text(size=%s), title=element_text(size=%s))",
-        tolower(slot(param_choices, .plotLegendPosition)),
+        tolower(slot(param_choices, iSEEslots$plotLegendPosition)),
         font_size * .plotFontSizeLegendTextDefault,
         font_size * .plotFontSizeLegendTitleDefault,
         font_size * .plotFontSizeAxisTextDefault,
@@ -589,13 +589,13 @@ plot.data$Y <- tmp;")
     # Do not display the size legend (saves plot space, as well)
     plot_cmds[["theme_base"]] <- "theme_bw() +"
 
-    font_size <- slot(param_choices, .plotFontSize)
+    font_size <- slot(param_choices, iSEEslots$plotFontSize)
     plot_cmds[["theme_custom"]] <- sprintf("theme(legend.position='%s', legend.text=element_text(size=%s),
     legend.title=element_text(size=%s), legend.box='vertical',
     axis.text.x=element_text(angle=90, size=%s, hjust=1, vjust=0.5),
     axis.text.y=element_text(size=%s),
     axis.title=element_text(size=%s), title=element_text(size=%s))",
-        tolower(slot(param_choices, .plotLegendPosition)),
+        tolower(slot(param_choices, iSEEslots$plotLegendPosition)),
         font_size * .plotFontSizeLegendTextDefault,
         font_size * .plotFontSizeLegendTitleDefault,
         font_size * .plotFontSizeAxisTextDefault,
@@ -749,8 +749,8 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @importFrom ggplot2 guides guide_legend
 .create_guides_command <- function(x, colorby) {
     discrete_color <- is.factor(colorby)
-    legend_size <- slot(x, .legendPointSize)
-    point_size <- slot(x, .plotPointSize)
+    legend_size <- slot(x, iSEEslots$legendPointSize)
+    point_size <- slot(x, iSEEslots$plotPointSize)
     custom_point_size <- !identical(legend_size, point_size)
 
     if (custom_point_size && discrete_color) {
@@ -823,7 +823,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     if (size) {
         common_size <- ""
     } else {
-        common_size <- sprintf(", size=%s", slot(param_choices, .plotPointSize))
+        common_size <- sprintf(", size=%s", slot(param_choices, iSEEslots$plotPointSize))
     }
 
     if (selected && (select_alpha <- slot(param_choices, iSEEslots$selectTransAlpha)) < 1) {
@@ -838,7 +838,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     } else {
         plot_cmds[["point"]] <- sprintf(
             "geom_point(%s, alpha=%s, plot.data%s%s) +",
-            aes, slot(param_choices, .plotPointAlpha), default_color,
+            aes, slot(param_choices, iSEEslots$plotPointAlpha), default_color,
             common_size
         )
     }
@@ -1177,7 +1177,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     label=%i, size=%s, colour='%s')",
             paste(text_data, collapse=",\n        "),
             index, 
-            slot(param_choices, .plotFontSize) * .plotFontSizeLegendTextDefault, 
+            slot(param_choices, iSEEslots$plotFontSize) * .plotFontSizeLegendTextDefault, 
             stroke_color)
 
         brush_draw_cmd <- c(brush_draw_cmd, text_cmd)
@@ -1282,7 +1282,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
                 current$mapping$x, current$mapping$y,
                 paste(text_data, collapse=",\n        "),
                 index, 
-                slot(param_choices, .plotFontSize) * .plotFontSizeLegendTextDefault, 
+                slot(param_choices, iSEEslots$plotFontSize) * .plotFontSizeLegendTextDefault, 
                 stroke_color)
 
             polygon_cmd <- c(polygon_cmd, text_cmd)
@@ -1390,7 +1390,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @export
 #' @rdname addLabelCentersCommands
 .addLabelCentersCommands <- function(x, commands) {
-    if (slot(x, .plotLabelCenters)) {
+    if (slot(x, iSEEslots$plotLabelCenters)) {
         aggregants <- c("LabelCenters=.label_values")
 
         # Some intelligence involved in accounting for the faceting;
@@ -1408,9 +1408,9 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     .aggregated <- aggregate(plot.data[,c('X', 'Y')], FUN=median, na.rm=TRUE,
         by=list(%s))
     ggplot2::geom_text(aes(x=X, y=Y, label=LabelCenters), .aggregated, color=%s, size=%s)
-})", .getDotPlotMetadataCommand(x), deparse(slot(x, .plotLabelCentersBy)), .getDotPlotNamesCommand(x),
-            paste(aggregants, collapse=", "), deparse(slot(x, .plotLabelCentersColor)), 
-            deparse(slot(x, .plotFontSize) * 4))
+})", .getDotPlotMetadataCommand(x), deparse(slot(x, iSEEslots$plotLabelCentersBy)), .getDotPlotNamesCommand(x),
+            paste(aggregants, collapse=", "), deparse(slot(x, iSEEslots$plotLabelCentersColor)), 
+            deparse(slot(x, iSEEslots$plotFontSize) * 4))
 
         N <- length(commands)
         commands[[N]] <- paste(commands[[N]], "+")
@@ -1438,11 +1438,11 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @importFrom grid unit
 #' @rdname addCustomLabelsCommands
 .addCustomLabelsCommands <- function(x, commands, plot_type) {
-    if (slot(x, .plotCustomLabels)) {
+    if (slot(x, iSEEslots$plotCustomLabels)) {
         N <- length(commands)
         commands[[N]] <- paste(commands[[N]], "+")
 
-        dn <- .convert_text_to_names(slot(x, .plotCustomLabelsText))
+        dn <- .convert_text_to_names(slot(x, iSEEslots$plotCustomLabelsText))
 
         axes <- switch(plot_type,
             scatter=c("X", "Y"),

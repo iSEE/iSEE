@@ -148,17 +148,17 @@ FeatureAssayPlot <- function(...) {
 #' @importFrom methods callNextMethod
 setMethod("initialize", "FeatureAssayPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .emptyDefault(args, .featAssayAssay, getPanelDefault(.featAssayAssay))
-    args <- .emptyDefault(args, .featAssayXAxis, .featAssayXAxisNothingTitle)
-    args <- .emptyDefault(args, .featAssayXAxisColData, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$featAssayAssay, getPanelDefault(iSEEslots$featAssayAssay))
+    args <- .emptyDefault(args, iSEEslots$featAssayXAxis, .featAssayXAxisNothingTitle)
+    args <- .emptyDefault(args, iSEEslots$featAssayXAxisColData, NA_character_)
 
-    args <- .emptyDefault(args, .featAssayXAxisRowTable, .noSelection)
-    args <- .emptyDefault(args, .featAssayXAxisFeatName, NA_character_)
-    args <- .emptyDefault(args, .featAssayXAxisFeatDynamic, getPanelDefault("SingleSelectionDynamicSource"))
+    args <- .emptyDefault(args, iSEEslots$featAssayXAxisRowTable, iSEEconstants$noSelection)
+    args <- .emptyDefault(args, iSEEslots$featAssayXAxisFeatName, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$featAssayXAxisFeatDynamic, getPanelDefault("SingleSelectionDynamicSource"))
 
-    args <- .emptyDefault(args, .featAssayYAxisRowTable, .noSelection)
-    args <- .emptyDefault(args, .featAssayYAxisFeatName, NA_character_)
-    args <- .emptyDefault(args, .featAssayYAxisFeatDynamic, getPanelDefault("SingleSelectionDynamicSource"))
+    args <- .emptyDefault(args, iSEEslots$featAssayYAxisRowTable, iSEEconstants$noSelection)
+    args <- .emptyDefault(args, iSEEslots$featAssayYAxisFeatName, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$featAssayYAxisFeatDynamic, getPanelDefault("SingleSelectionDynamicSource"))
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -183,19 +183,19 @@ setMethod(".refineParameters", "FeatureAssayPlot", function(x, se) {
         return(NULL)
     }
 
-    x <- .replaceMissingWithFirst(x, .featAssayAssay, all_assays)
+    x <- .replaceMissingWithFirst(x, iSEEslots$featAssayAssay, all_assays)
 
-    for (field in c(.featAssayXAxisFeatName, .featAssayYAxisFeatName)) {
+    for (field in c(iSEEslots$featAssayXAxisFeatName, iSEEslots$featAssayYAxisFeatName)) {
         x <- .replaceMissingWithFirst(x, field, rownames(se))
     }
 
     column_covariates <- .getCachedCommonInfo(se, "ColumnDotPlot")$valid.colData.names
     if (length(column_covariates)==0L) {
-        if (slot(x, .featAssayXAxis) == .featAssayXAxisColDataTitle) {
-            slot(x, .featAssayXAxis) <- .featAssayXAxisNothingTitle
+        if (slot(x, iSEEslots$featAssayXAxis) == .featAssayXAxisColDataTitle) {
+            slot(x, iSEEslots$featAssayXAxis) <- .featAssayXAxisNothingTitle
         }
     } else {
-        x <- .replaceMissingWithFirst(x, .featAssayXAxisColData, column_covariates)
+        x <- .replaceMissingWithFirst(x, iSEEslots$featAssayXAxisColData, column_covariates)
     }
 
     x
@@ -210,12 +210,12 @@ setMethod(".refineParameters", "FeatureAssayPlot", function(x, se) {
 setValidity2("FeatureAssayPlot", function(object) {
     msg <- character(0)
 
-    msg <- .allowableChoiceError(msg, object, .featAssayXAxis,
+    msg <- .allowableChoiceError(msg, object, iSEEslots$featAssayXAxis,
         c(.featAssayXAxisNothingTitle, .featAssayXAxisColDataTitle, .featAssayXAxisFeatNameTitle, .featAssayXAxisSelectionsTitle))
 
     msg <- .singleStringError(msg, object,
-        c(.featAssayAssay, .featAssayXAxisColData, .featAssayXAxisRowTable,
-        .featAssayXAxisFeatName, .featAssayYAxisRowTable, .featAssayYAxisFeatName))
+        c(iSEEslots$featAssayAssay, iSEEslots$featAssayXAxisColData, iSEEslots$featAssayXAxisRowTable,
+        iSEEslots$featAssayXAxisFeatName, iSEEslots$featAssayYAxisRowTable, iSEEslots$featAssayYAxisFeatName))
 
     if (length(msg)) {
         return(msg)
@@ -240,26 +240,26 @@ setMethod(".defineDataInterface", "FeatureAssayPlot", function(x, se, select_inf
     }
     xaxis_choices <- c(xaxis_choices, .featAssayXAxisFeatNameTitle, .featAssayXAxisSelectionsTitle)
 
-    .addSpecificTour(class(x)[1], .featAssayYAxisFeatName, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$featAssayYAxisFeatName, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element=paste0("#", plot_name, "_", .featAssayYAxisFeatName, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$featAssayYAxisFeatName, " + .selectize-control"),
                     intro="Here, we choose the feature to show on the y-axis.
 This is based on the row names of the input <code>SummarizedExperiment</code>."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .featAssayAssay, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$featAssayAssay, " + .selectize-control"),
                     intro="This specifies the assay values to be shown."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .featAssayYAxisRowTable, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$featAssayYAxisRowTable, " + .selectize-control"),
                     intro="We can configure the plot so that the feature on the y-axis automatically changes based on a feature selection in another panel.
 A common use case is to configure this panel so that we receive a selection from a <em>Row Data Table</em>,
 such that users browsing the table can immediately examine the assay values for a gene of interest."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .featAssayYAxisFeatDynamic),
+                    element=paste0("#", plot_name, "_", iSEEslots$featAssayYAxisFeatDynamic),
                     intro="And in fact, we don't have to even specify the \"other panel\" ourselves.
 If this box is checked, any row-based selection in any other panel of the <strong>iSEE</strong> application will be used to specify the feature on the y-axis in this panel.
 This is achieved by dynamically changing the identity of the designated panel from which we receive the selection."
@@ -268,46 +268,46 @@ This is achieved by dynamically changing the identity of the designated panel fr
         )
     })
 
-    .addSpecificTour(class(x)[1], .featAssayXAxis, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$featAssayXAxis, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element=paste0("#", plot_name, "_", .featAssayXAxis),
+                    element=paste0("#", plot_name, "_", iSEEslots$featAssayXAxis),
                     intro="Here, we can choose what to show on the x-axis."
                 ),
                 if (length(column_covariates)) {
                     rbind(
                         c(
-                            element=paste0("#", plot_name, "_", .featAssayXAxis),
+                            element=paste0("#", plot_name, "_", iSEEslots$featAssayXAxis),
                             intro="If we <strong>select <em>Column data</em></strong>..."
                         ),
                         c(
-                            element=paste0("#", plot_name, "_", .featAssayXAxisColData, " + .selectize-control"),
+                            element=paste0("#", plot_name, "_", iSEEslots$featAssayXAxisColData, " + .selectize-control"),
                             intro="... we can stratify points on the x-axis based on a field of interest in the <code>colData</code>." 
                         )
                     )
                 },
                 c(
-                    element=paste0("#", plot_name, "_", .featAssayXAxis),
+                    element=paste0("#", plot_name, "_", iSEEslots$featAssayXAxis),
                     intro="If we <strong>select <em>Feature name</em></strong>..."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .featAssayXAxisFeatName, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$featAssayXAxisFeatName, " + .selectize-control"),
                     intro="... we can show the assay values of another feature of interest on the x-axis.
 In other words, plotting one feature against another for the same set of assay values."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .featAssayXAxisRowTable, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$featAssayXAxisRowTable, " + .selectize-control"),
                     intro="Just like the feature on the y-axis, the x-axis feature can automatically change in response to a feature selection made in another panel.
 We can either choose the \"other panel\" manually with this dropdown..."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .featAssayXAxisFeatDynamic),
+                    element=paste0("#", plot_name, "_", iSEEslots$featAssayXAxisFeatDynamic),
                     intro="... or we can dynamically change the identity of the other panel. 
 If this box is checked, any feature selection in any other panel of the <strong>iSEE</strong> application will be used to specify the feature on the x-axis in this panel."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .featAssayXAxis),
+                    element=paste0("#", plot_name, "_", iSEEslots$featAssayXAxis),
                     intro="Finally, we can stratify points based on whether they are included in a multiple column selection made in another panel.
 For example, if our \"other panel\" is a column-based plot containing a brush, we would see two violin plots in this panel;
 one corresponding to the selected points inside the brush, and another corresponding to the unselected points."
@@ -317,41 +317,41 @@ one corresponding to the selected points inside the brush, and another correspon
     })
 
     list(
-        .selectizeInput.iSEE(x, .featAssayYAxisFeatName,
+        .selectizeInput.iSEE(x, iSEEslots$featAssayYAxisFeatName,
             label="Y-axis feature:", 
             choices=NULL, 
             selected=NULL, 
             multiple=FALSE),
-        selectInput(.input_FUN(.featAssayYAxisRowTable), label=NULL, choices=tab_by_row,
-            selected=.choose_link(slot(x, .featAssayYAxisRowTable), tab_by_row)),
-        checkboxInput(.input_FUN(.featAssayYAxisFeatDynamic),
+        selectInput(.input_FUN(iSEEslots$featAssayYAxisRowTable), label=NULL, choices=tab_by_row,
+            selected=.choose_link(slot(x, iSEEslots$featAssayYAxisRowTable), tab_by_row)),
+        checkboxInput(.input_FUN(iSEEslots$featAssayYAxisFeatDynamic),
             label="Use dynamic feature selection for the y-axis",
-            value=slot(x, .featAssayYAxisFeatDynamic)),
+            value=slot(x, iSEEslots$featAssayYAxisFeatDynamic)),
 
-        selectInput(paste0(.getEncodedName(x), "_", .featAssayAssay), label=NULL,
-            choices=all_assays, selected=slot(x, .featAssayAssay)),
+        selectInput(paste0(.getEncodedName(x), "_", iSEEslots$featAssayAssay), label=NULL,
+            choices=all_assays, selected=slot(x, iSEEslots$featAssayAssay)),
 
-        .radioButtons.iSEE(x, .featAssayXAxis, 
+        .radioButtons.iSEE(x, iSEEslots$featAssayXAxis, 
             label="X-axis:", 
             inline=TRUE,
             choices=xaxis_choices, 
-            selected=slot(x, .featAssayXAxis)),
+            selected=slot(x, iSEEslots$featAssayXAxis)),
 
-        .conditionalOnRadio(.input_FUN(.featAssayXAxis),
+        .conditionalOnRadio(.input_FUN(iSEEslots$featAssayXAxis),
             .featAssayXAxisColDataTitle,
-            selectInput(.input_FUN(.featAssayXAxisColData),
+            selectInput(.input_FUN(iSEEslots$featAssayXAxisColData),
                 label="X-axis column data:",
-                choices=column_covariates, selected=slot(x, .featAssayXAxisColData))),
+                choices=column_covariates, selected=slot(x, iSEEslots$featAssayXAxisColData))),
 
-        .conditionalOnRadio(.input_FUN(.featAssayXAxis),
+        .conditionalOnRadio(.input_FUN(iSEEslots$featAssayXAxis),
             .featAssayXAxisFeatNameTitle,
-            selectizeInput(.input_FUN(.featAssayXAxisFeatName),
+            selectizeInput(.input_FUN(iSEEslots$featAssayXAxisFeatName),
                 label="X-axis feature:", choices=NULL, selected=NULL, multiple=FALSE),
-            selectInput(.input_FUN(.featAssayXAxisRowTable), label=NULL,
-                choices=tab_by_row, selected=slot(x, .featAssayXAxisRowTable)),
-            checkboxInput(.input_FUN(.featAssayXAxisFeatDynamic),
+            selectInput(.input_FUN(iSEEslots$featAssayXAxisRowTable), label=NULL,
+                choices=tab_by_row, selected=slot(x, iSEEslots$featAssayXAxisRowTable)),
+            checkboxInput(.input_FUN(iSEEslots$featAssayXAxisFeatDynamic),
                 label="Use dynamic feature selection for the x-axis",
-                value=slot(x, .featAssayXAxisFeatDynamic))
+                value=slot(x, iSEEslots$featAssayXAxisFeatDynamic))
         )
     )
 })
@@ -365,7 +365,7 @@ setMethod(".createObservers", "FeatureAssayPlot", function(x, se, input, session
     plot_name <- .getEncodedName(x)
 
     .createProtectedParameterObservers(plot_name,
-        fields=c(.featAssayAssay, .featAssayXAxisColData),
+        fields=c(iSEEslots$featAssayAssay, iSEEslots$featAssayXAxisColData),
         input=input, pObjects=pObjects, rObjects=rObjects)
 })
 
@@ -374,19 +374,19 @@ setMethod(".singleSelectionSlots", "FeatureAssayPlot", function(x) {
     c(callNextMethod(),
         list(
             list(
-                parameter=.featAssayXAxisFeatName,
-                source=.featAssayXAxisRowTable,
+                parameter=iSEEslots$featAssayXAxisFeatName,
+                source=iSEEslots$featAssayXAxisRowTable,
                 dimension="feature",
-                dynamic=.featAssayXAxisFeatDynamic,
-                use_mode=.featAssayXAxis,
+                dynamic=iSEEslots$featAssayXAxisFeatDynamic,
+                use_mode=iSEEslots$featAssayXAxis,
                 use_value=.featAssayXAxisFeatNameTitle,
                 protected=TRUE
             ),
             list(
-                parameter=.featAssayYAxisFeatName,
-                source=.featAssayYAxisRowTable,
+                parameter=iSEEslots$featAssayYAxisFeatName,
+                source=iSEEslots$featAssayYAxisRowTable,
                 dimension="feature",
-                dynamic=.featAssayYAxisFeatDynamic,
+                dynamic=iSEEslots$featAssayYAxisFeatDynamic,
                 use_mode=NA,
                 use_value=NA,
                 protected=TRUE
@@ -411,8 +411,8 @@ setMethod(".generateDotPlotData", "FeatureAssayPlot", function(x, envir) {
     data_cmds <- list()
 
     ## Setting up the y-axis:
-    gene_selected_y <- slot(x, .featAssayYAxisFeatName)
-    assay_choice <- slot(x, .featAssayAssay)
+    gene_selected_y <- slot(x, iSEEslots$featAssayYAxisFeatName)
+    assay_choice <- slot(x, iSEEslots$featAssayAssay)
     plot_title <- gene_selected_y
     y_lab <- sprintf("%s (%s)", gene_selected_y, assay_choice)
     data_cmds[["y"]] <- sprintf(
@@ -421,15 +421,15 @@ setMethod(".generateDotPlotData", "FeatureAssayPlot", function(x, envir) {
     )
 
     ## Checking X axis choice:
-    x_choice <- slot(x, .featAssayXAxis)
+    x_choice <- slot(x, iSEEslots$featAssayXAxis)
 
     if (x_choice == .featAssayXAxisColDataTitle) { # colData column selected
-        x_lab <- slot(x, .featAssayXAxisColData)
+        x_lab <- slot(x, iSEEslots$featAssayXAxisColData)
         plot_title <- paste(plot_title, "vs", x_lab)
         data_cmds[["x"]] <- sprintf("plot.data$X <- colData(se)[, %s];", deparse(x_lab))
 
     } else if (x_choice == .featAssayXAxisFeatNameTitle) { # gene selected
-        gene_selected_x <- slot(x, .featAssayXAxisFeatName)
+        gene_selected_x <- slot(x, iSEEslots$featAssayXAxisFeatName)
         plot_title <- paste(plot_title, "vs", gene_selected_x)
         x_lab <- sprintf("%s (%s)", gene_selected_x, assay_choice)
         data_cmds[["x"]] <- sprintf(
@@ -466,7 +466,7 @@ setMethod(".generateDotPlotData", "FeatureAssayPlot", function(x, envir) {
 setMethod(".definePanelTour", "FeatureAssayPlot", function(x) {
     collated <- rbind(
         c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Feature assay plot</font> panel shows assay values for a particular feature (i.e., row) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a column (usually a sample) of the <code>SummarizedExperiment</code> object, and the y-axis represents the assay values.", .getPanelColor(x))),
-        .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options.")
+        .addTourStep(x, iSEEslots$dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options.")
     )
 
     rbind(

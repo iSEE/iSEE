@@ -119,24 +119,24 @@ NULL
 #' @importFrom methods callNextMethod
 setMethod("initialize", "RowDotPlot", function(.Object, ..., SelectionEffect=NULL, SelectionColor=NULL, FacetByRow=NULL, FacetByColumn=NULL) {
     args <- list(...)
-    args <- .emptyDefault(args, .colorByRowData, NA_character_)
-    args <- .emptyDefault(args, .colorBySampNameAssay, getPanelDefault("ColorByNameAssay"))
-    args <- .emptyDefault(args, .colorByFeatNameColor, getPanelDefault("ColorByNameColor"))
+    args <- .emptyDefault(args, iSEEslots$colorByRowData, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$colorBySampNameAssay, getPanelDefault("ColorByNameAssay"))
+    args <- .emptyDefault(args, iSEEslots$colorByFeatNameColor, getPanelDefault("ColorByNameColor"))
 
-    args <- .emptyDefault(args, .shapeByRowData, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$shapeByRowData, NA_character_)
 
-    args <- .emptyDefault(args, .sizeByRowData, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$sizeByRowData, NA_character_)
 
     # Defensive measure to avoid problems with cyclic graphs
     # that the user doesn't have permissions to change!
-    args <- .emptyDefault(args, .selectColDynamic, FALSE)
+    args <- .emptyDefault(args, iSEEslots$selectColDynamic, FALSE)
 
-    args <- .emptyDefault(args, .facetRowByRowData, NA_character_)
-    args <- .emptyDefault(args, .facetColumnByRowData, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$facetRowByRowData, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$facetColumnByRowData, NA_character_)
 
     if (!is.null(FacetByRow)) {
         .Deprecated(msg="'FacetByRow=' is deprecated.\nUse 'FacetRowBy=\"Column data\"' and 'FacetRowByRowData=' instead.")
-        if (FacetByRow!=.noSelection) {
+        if (FacetByRow!=iSEEconstants$noSelection) {
             args[["FacetRowBy"]] <- "Row data"
             args[["FacetRowByRowData"]] <- FacetByRow
         }
@@ -144,22 +144,22 @@ setMethod("initialize", "RowDotPlot", function(.Object, ..., SelectionEffect=NUL
 
     if (!is.null(FacetByColumn)) {
         .Deprecated(msg="'FacetByColumn=' is deprecated.\nUse 'FacetColumnBy=\"Column data\"' and 'FacetColumnByRowData=' instead.")
-        if (FacetByColumn!=.noSelection) {
+        if (FacetByColumn!=iSEEconstants$noSelection) {
             args[["FacetColumnBy"]] <- "Row data"
             args[["FacetColumnByRowData"]] <- FacetByColumn
         }
     }
 
     if (!is.null(SelectionEffect)) {
-        .Deprecated(msg=sprintf("'SelectionEffect=' is deprecated.\nUse '%s=TRUE' instead.", .selectRowRestrict))
-        args[[.selectRowRestrict]] <- TRUE
+        .Deprecated(msg=sprintf("'SelectionEffect=' is deprecated.\nUse '%s=TRUE' instead.", iSEEslots$selectRowRestrict))
+        args[[iSEEslots$selectRowRestrict]] <- TRUE
     }
 
     if (!is.null(SelectionColor)) {
         .Deprecated(msg="'SelectionColor=' is deprecated and will be ignored")
     }
     
-    args <- .emptyDefault(args, .tooltipRowData, getPanelDefault(.tooltipRowData))
+    args <- .emptyDefault(args, iSEEslots$tooltipRowData, getPanelDefault(iSEEslots$tooltipRowData))
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -169,16 +169,24 @@ setValidity2("RowDotPlot", function(object) {
     msg <- character(0)
 
     msg <- .singleStringError(msg, object,
-        c(.colorByRowData, .colorBySampNameAssay, .colorByFeatNameColor, .facetRowByRowData, .facetColumnByRowData))
+        c(
+            iSEEslots$colorByRowData, iSEEslots$colorBySampNameAssay,
+            iSEEslots$colorByFeatNameColor, iSEEslots$facetRowByRowData,
+            iSEEslots$facetColumnByRowData))
 
-    msg <- .allowableChoiceError(msg, object, .colorByField,
-          c(.colorByNothingTitle, .colorByRowDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle, .colorByRowSelectionsTitle))
+    msg <- .allowableChoiceError(msg, object, iSEEslots$colorByField,
+          c(
+              iSEEconstants$colorByNothingTitle,
+              iSEEconstants$colorByRowDataTitle,
+              iSEEconstants$colorByFeatNameTitle,
+              iSEEconstants$colorBySampNameTitle,
+              iSEEconstants$colorByRowSelectionsTitle))
 
-    msg <- .allowableChoiceError(msg, object, .shapeByField,
-          c(.shapeByNothingTitle, .shapeByRowDataTitle))
+    msg <- .allowableChoiceError(msg, object, iSEEslots$shapeByField,
+          c(iSEEconstants$shapeByNothingTitle, iSEEconstants$shapeByRowDataTitle))
 
-    msg <- .allowableChoiceError(msg, object, .sizeByField,
-          c(.sizeByNothingTitle, .sizeByRowDataTitle))
+    msg <- .allowableChoiceError(msg, object, iSEEslots$sizeByField,
+          c(iSEEconstants$sizeByNothingTitle, iSEEconstants$sizeByRowDataTitle))
 
     if (length(msg)) {
         return(msg)

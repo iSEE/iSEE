@@ -22,7 +22,7 @@
 #' @rdname INTERNAL_table_observers
 .create_table_observers <- function(panel_name, input, session, pObjects, rObjects) {
     # Note that '.int' variables already have underscores, so these are not necessary.
-    select_field <- paste0(panel_name, .int_statTableSelected)
+    select_field <- paste0(panel_name, iSEEconstants$int_statTableSelected)
 
     # nocov start
     observeEvent(input[[select_field]], {
@@ -40,41 +40,41 @@
         }
 
         chosen <- rownames(tab)[chosen]
-        previous <- slot(pObjects$memory[[panel_name]], .TableSelected)
+        previous <- slot(pObjects$memory[[panel_name]], iSEEslots$TableSelected)
         if (chosen==previous) {
             return(NULL)
         }
-        slot(pObjects$memory[[panel_name]], .TableSelected) <- chosen
+        slot(pObjects$memory[[panel_name]], iSEEslots$TableSelected) <- chosen
 
         .safe_reactive_bump(rObjects, paste0(panel_name, "_", .propagateDimnames))
     }, ignoreInit=TRUE)
     # nocov end
 
-    search_field <- paste0(panel_name, .int_statTableSearch)
+    search_field <- paste0(panel_name, iSEEconstants$int_statTableSearch)
 
     # nocov start
     observeEvent(input[[search_field]], {
         search <- input[[search_field]]
-        if (identical(search, slot(pObjects$memory[[panel_name]], .TableSearch))) {
+        if (identical(search, slot(pObjects$memory[[panel_name]], iSEEslots$TableSearch))) {
             return(NULL)
         }
 
-        slot(pObjects$memory[[panel_name]], .TableSearch) <- search
+        slot(pObjects$memory[[panel_name]], iSEEslots$TableSearch) <- search
         .requestActiveSelectionUpdate(panel_name, session, pObjects, rObjects, update_output=FALSE)
      }, ignoreInit=TRUE)
      # nocov end
 
-    colsearch_field <- paste0(panel_name, .int_statTableColSearch)
+    colsearch_field <- paste0(panel_name, iSEEconstants$int_statTableColSearch)
 
     # nocov start
     observeEvent(input[[colsearch_field]], {
         search <- input[[colsearch_field]]
-        past <- slot(pObjects$memory[[panel_name]], .TableColSearch)
+        past <- slot(pObjects$memory[[panel_name]], iSEEslots$TableColSearch)
         if (identical(search, past)) {
             return(NULL)
         }
 
-        slot(pObjects$memory[[panel_name]], .TableColSearch) <- search
+        slot(pObjects$memory[[panel_name]], iSEEslots$TableColSearch) <- search
 
         if (all(search=="") && all(past=="")) {
             # No update in cases with variable numbers of columns where no
@@ -86,13 +86,13 @@
     }, ignoreInit=TRUE)
     # nocov end
 
-    tabupdate_field <- paste0(panel_name, "_", .flagTableUpdate)
+    tabupdate_field <- paste0(panel_name, "_", iSEEconstants$flagTableUpdate)
     .safe_reactive_init(rObjects, tabupdate_field)
 
     # nocov start
     observeEvent(rObjects[[tabupdate_field]], {
-        updateSelectInput(session, paste0(panel_name, "_", .TableHidden),
-            selected=slot(pObjects$memory[[panel_name]], .TableHidden),
+        updateSelectInput(session, paste0(panel_name, "_", iSEEslots$TableHidden),
+            selected=slot(pObjects$memory[[panel_name]], iSEEslots$TableHidden),
             choices=colnames(pObjects$contents[[panel_name]]))
     }, ignoreInit=TRUE)
     # nocov end

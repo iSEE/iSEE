@@ -162,19 +162,19 @@ setMethod("initialize", "Panel", function(.Object, ..., RowSelectionSaved=NULL, 
     args <- list(...)
 
     args <- .emptyDefault(args, iSEEslots$organizationId, NA_integer_)
-    args <- .emptyDefault(args, .organizationHeight, getPanelDefault("PanelHeight"))
-    args <- .emptyDefault(args, .organizationWidth, getPanelDefault("PanelWidth"))
+    args <- .emptyDefault(args, iSEEslots$organizationHeight, getPanelDefault("PanelHeight"))
+    args <- .emptyDefault(args, iSEEslots$organizationWidth, getPanelDefault("PanelWidth"))
 
-    args <- .emptyDefault(args, .selectParamBoxOpen, FALSE)
-    args <- .emptyDefault(args, .selectRowSource, .noSelection)
-    args <- .emptyDefault(args, .selectColSource, .noSelection)
-    args <- .emptyDefault(args, .selectRowRestrict, FALSE)
-    args <- .emptyDefault(args, .selectColRestrict, FALSE)
+    args <- .emptyDefault(args, iSEEslots$selectParamBoxOpen, FALSE)
+    args <- .emptyDefault(args, iSEEslots$selectRowSource, iSEEconstants$noSelection)
+    args <- .emptyDefault(args, iSEEslots$selectColSource, iSEEconstants$noSelection)
+    args <- .emptyDefault(args, iSEEslots$selectRowRestrict, FALSE)
+    args <- .emptyDefault(args, iSEEslots$selectColRestrict, FALSE)
 
-    args <- .emptyDefault(args, .selectRowDynamic, getPanelDefault("MultipleSelectionDynamicSource"))
-    args <- .emptyDefault(args, .selectColDynamic, getPanelDefault("MultipleSelectionDynamicSource"))
+    args <- .emptyDefault(args, iSEEslots$selectRowDynamic, getPanelDefault("MultipleSelectionDynamicSource"))
+    args <- .emptyDefault(args, iSEEslots$selectColDynamic, getPanelDefault("MultipleSelectionDynamicSource"))
 
-    args <- .emptyDefault(args, .dataParamBoxOpen, FALSE)
+    args <- .emptyDefault(args, iSEEslots$dataParamBoxOpen, FALSE)
 
     current <- c(.latest_version, args[[iSEEslots$packageVersion]])
     current <- current[!duplicated(names(current))]
@@ -199,13 +199,16 @@ setMethod("initialize", "Panel", function(.Object, ..., RowSelectionSaved=NULL, 
 setValidity2("Panel", function(object) {
     msg <- character(0)
 
-    msg <- .validLogicalError(msg, object, c(.selectParamBoxOpen, .dataParamBoxOpen,
-        .selectRowDynamic, .selectColDynamic, .selectRowRestrict, .selectColRestrict))
+    msg <- .validLogicalError(msg, object, c(
+        iSEEslots$selectParamBoxOpen, iSEEslots$dataParamBoxOpen,
+        iSEEslots$selectRowDynamic, iSEEslots$selectColDynamic,
+        iSEEslots$selectRowRestrict, iSEEslots$selectColRestrict))
 
-    msg <- .singleStringError(msg, object, c(.selectRowSource, .selectColSource))
+    msg <- .singleStringError(msg, object, c(
+        iSEEslots$selectRowSource, iSEEslots$selectColSource))
 
-    msg <- .validNumberError(msg, object, .organizationHeight, lower=height_limits[1], upper=height_limits[2])
-    msg <- .validNumberError(msg, object, .organizationWidth, lower=width_limits[1], upper=width_limits[2])
+    msg <- .validNumberError(msg, object, iSEEslots$organizationHeight, lower=height_limits[1], upper=height_limits[2])
+    msg <- .validNumberError(msg, object, iSEEslots$organizationWidth, lower=width_limits[1], upper=width_limits[2])
 
     val <- slot(object, iSEEslots$organizationId)
     if (length(val) !=1 || (!is.na(val) && val <= 0L)) {
@@ -340,8 +343,8 @@ setMethod(".defineInterface", "Panel", function(x, se, select_info) {
     list(
         do.call(.collapseBoxHidden,
             c(
-                list(x=x, field=.dataParamBoxOpen, title="Data parameters"),
-                open=slot(x, .dataParamBoxOpen),
+                list(x=x, field=iSEEslots$dataParamBoxOpen, title="Data parameters"),
+                open=slot(x, iSEEslots$dataParamBoxOpen),
                 .defineDataInterface(x, se, select_info)
             )
         ),
@@ -390,43 +393,43 @@ setMethod(".defineInterface", "Panel", function(x, se, select_info) {
 .create_selection_param_box <- function(x, row_selectable, col_selectable) {
     # initialize active "Delete" button only if a preconfigured selection history exists
     deleteFUN <- identity
-    deleteLabel <- .buttonDeleteLabel
-    if (length(slot(x, .multiSelectHistory)) == 0L) {
+    deleteLabel <- iSEEconstants$buttonDeleteLabel
+    if (length(slot(x, iSEEslots$multiSelectHistory)) == 0L) {
         deleteFUN <- disabled
-        deleteLabel <- .buttonEmptyHistoryLabel
+        deleteLabel <- iSEEconstants$buttonEmptyHistoryLabel
     }
 
     # initialize active "Save" button only if a preconfigured active selection exists
     saveFUN <- identity
-    saveLabel <- .buttonSaveLabel
+    saveLabel <- iSEEconstants$buttonSaveLabel
     if (!.multiSelectionHasActive(x)) {
         saveFUN <- disabled
-        saveLabel <- .buttonNoSelectionLabel
+        saveLabel <- iSEEconstants$buttonNoSelectionLabel
     }
 
     args <- list(
         x=x,
-        field=.selectParamBoxOpen,
+        field=iSEEslots$selectParamBoxOpen,
         title="Selection parameters",
-        open=slot(x, .selectParamBoxOpen),
+        open=slot(x, iSEEslots$selectParamBoxOpen),
 
-        .define_selection_choices(x, by_field=.selectRowSource,
-            dyn_field=.selectRowDynamic, res_field=.selectRowRestrict,
+        .define_selection_choices(x, by_field=iSEEslots$selectRowSource,
+            dyn_field=iSEEslots$selectRowDynamic, res_field=iSEEslots$selectRowRestrict,
             selectable=row_selectable, "row"),
 
-        .define_selection_choices(x, by_field=.selectColSource,
-            dyn_field=.selectColDynamic, res_field=.selectColRestrict,
+        .define_selection_choices(x, by_field=iSEEslots$selectColSource,
+            dyn_field=iSEEslots$selectColDynamic, res_field=iSEEslots$selectColRestrict,
             selectable=col_selectable, "column")
     )
 
-    if (!.hideInterface(x, .multiSelectHistory)) {
-        .addSpecificTour(class(x), .multiSelectHistory, {
+    if (!.hideInterface(x, iSEEslots$multiSelectHistory)) {
+        .addSpecificTour(class(x), iSEEslots$multiSelectHistory, {
             mdim <- .multiSelectionDimension(x)
             function(panel_name) {
                 data.frame(
                     rbind(
                         c(
-                            element=paste0("#", panel_name, "_", .multiSelectSave),
+                            element=paste0("#", panel_name, "_", iSEEconstants$multiSelectSave),
                             intro=sprintf("Users can save the multiple %s selections made in this panel.
 When this button is clicked, any \"active\" selection is saved for later use.
 (For example, in point-based plotting panels, the current brush or lasso is the active selection.)
@@ -435,7 +438,7 @@ which is useful if there are separate groups of %ss of interest;
 each group can be represented by a separate saved selection.", mdim, mdim, mdim)
                         ),
                         c(
-                            element=paste0("#", panel_name, "_", .multiSelectDelete),
+                            element=paste0("#", panel_name, "_", iSEEconstants$multiSelectDelete),
                             intro="Users can also delete any saved selections.
 For simplicity, this operates on a first-in-last-out basis, i.e., you can only delete the last saved selection."
                         )
@@ -448,10 +451,10 @@ For simplicity, this operates on a first-in-last-out basis, i.e., you can only d
         args <- c(args,
             list(
                 hr(),
-                strong(.label_with_help("Manage multiple selections:", paste0(panel_name, "_", .multiSelectHistory))),
+                strong(.label_with_help("Manage multiple selections:", paste0(panel_name, "_", iSEEslots$multiSelectHistory))),
                 br(),
-                saveFUN(actionButton(paste0(panel_name, "_", .multiSelectSave), label=saveLabel)),
-                deleteFUN(actionButton(paste0(panel_name, "_", .multiSelectDelete), label=deleteLabel))
+                saveFUN(actionButton(paste0(panel_name, "_", iSEEconstants$multiSelectSave), label=saveLabel)),
+                deleteFUN(actionButton(paste0(panel_name, "_", iSEEconstants$multiSelectDelete), label=deleteLabel))
             )
         )
     }
@@ -541,33 +544,33 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
     .input_FUN <- function(field) paste0(panel_name, "_", field)
 
     .safe_reactive_init(rObjects, panel_name)
-    .safe_reactive_init(rObjects, .input_FUN(.flagSingleSelect))
-    .safe_reactive_init(rObjects, .input_FUN(.flagMultiSelect))
-    .safe_reactive_init(rObjects, .input_FUN(.flagRelinkedSelect))
+    .safe_reactive_init(rObjects, .input_FUN(iSEEconstants$flagSingleSelect))
+    .safe_reactive_init(rObjects, .input_FUN(iSEEconstants$flagMultiSelect))
+    .safe_reactive_init(rObjects, .input_FUN(iSEEconstants$flagRelinkedSelect))
 
-    .create_box_observers(panel_name, c(.dataParamBoxOpen, .selectParamBoxOpen), pObjects, rObjects)
+    .create_box_observers(panel_name, c(iSEEslots$dataParamBoxOpen, iSEEslots$selectParamBoxOpen), pObjects, rObjects)
 
-    .create_multi_selection_choice_observer(panel_name, by_field=.selectRowSource,
+    .create_multi_selection_choice_observer(panel_name, by_field=iSEEslots$selectRowSource,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_choice_observer(panel_name, by_field=.selectColSource,
+    .create_multi_selection_choice_observer(panel_name, by_field=iSEEslots$selectColSource,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_restrict_observer(panel_name, by_field=.selectRowSource, res_field=.selectRowRestrict,
+    .create_multi_selection_restrict_observer(panel_name, by_field=iSEEslots$selectRowSource, res_field=iSEEslots$selectRowRestrict,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_restrict_observer(panel_name, by_field=.selectColSource, res_field=.selectColRestrict,
+    .create_multi_selection_restrict_observer(panel_name, by_field=iSEEslots$selectColSource, res_field=iSEEslots$selectColRestrict,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_multi_selection_history_observers(panel_name,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_dynamic_multi_selection_source_observer(panel_name,
-        dyn_field=.selectRowDynamic, by_field=.selectRowSource, source_type="row",
+        dyn_field=iSEEslots$selectRowDynamic, by_field=iSEEslots$selectRowSource, source_type="row",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_dynamic_multi_selection_source_observer(panel_name,
-        dyn_field=.selectColDynamic, by_field=.selectColSource, source_type="column",
+        dyn_field=iSEEslots$selectColDynamic, by_field=iSEEslots$selectColSource, source_type="column",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     for (f in .singleSelectionSlots(x)) {
@@ -594,7 +597,7 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
 
     # nocov start
     if (!is.null(session)) {
-        shinyjs::onclick(.input_FUN(.panelHelpTour), {
+        shinyjs::onclick(.input_FUN(iSEEconstants$panelHelpTour), {
             ptour <- .definePanelTour(pObjects$memory[[panel_name]])
             if (nrow(ptour)) {
                 introjs(session, options=list(steps=ptour))
@@ -668,7 +671,7 @@ setMethod(".singleSelectionSlots", "Panel", function(x) list())
 #' @export
 setMethod(".definePanelTour", "Panel", function(x) {
     collated <- list(
-        .addTourStep(x, .selectParamBoxOpen, "Users can also control how this panel reacts to multiple selections being transmitted from other panels.<br/><br/><strong>Action:</strong> click on the header of this box to see the available options.")
+        .addTourStep(x, iSEEslots$selectParamBoxOpen, "Users can also control how this panel reacts to multiple selections being transmitted from other panels.<br/><br/><strong>Action:</strong> click on the header of this box to see the available options.")
     )
     collated <- do.call(rbind, collated)
     data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
@@ -689,8 +692,8 @@ setMethod("updateObject", "Panel", function(object, ..., verbose=FALSE) {
         slot(object, iSEEslots$packageVersion) <- .latest_version
 
         # Handling the updated restriction settings.
-        slot(object, .selectRowRestrict) <- FALSE
-        slot(object, .selectColRestrict) <- FALSE
+        slot(object, iSEEslots$selectRowRestrict) <- FALSE
+        slot(object, iSEEslots$selectColRestrict) <- FALSE
     }
     object
     # nocov end

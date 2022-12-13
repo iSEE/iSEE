@@ -99,8 +99,8 @@ NULL
 #' @importFrom methods callNextMethod
 setMethod("initialize", "Table", function(.Object, ...) {
     args <- list(...)
-    args <- .emptyDefault(args, .TableSelected, NA_character_)
-    args <- .emptyDefault(args, .TableSearch, "")
+    args <- .emptyDefault(args, iSEEslots$TableSelected, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$TableSearch, "")
     do.call(callNextMethod, c(list(.Object), args))
 })
 
@@ -108,9 +108,9 @@ setMethod("initialize", "Table", function(.Object, ...) {
 setValidity2("Table", function(object) {
     msg <- character(0)
 
-    msg <- .singleStringError(msg, object, .TableSelected)
+    msg <- .singleStringError(msg, object, iSEEslots$TableSelected)
 
-    msg <- .validStringError(msg, object, .TableSearch)
+    msg <- .validStringError(msg, object, iSEEslots$TableSearch)
 
     if (length(msg)) {
         return(msg)
@@ -132,8 +132,8 @@ setMethod(".refineParameters", "Table", function(x, se) {
 
 #' @export
 setMethod(".multiSelectionCommands", "Table", function(x, index) {
-    search <- slot(x, .TableSearch)
-    searchcols <- slot(x, .TableColSearch)
+    search <- slot(x, iSEEslots$TableSearch)
+    searchcols <- slot(x, iSEEslots$TableColSearch)
     sprintf("selected <- rownames(contents)[iSEE::filterDT(contents, global=%s,\n    column=%s)]",
         deparse(search),
         .deparse_for_viewing(searchcols, indent=2))
@@ -141,8 +141,8 @@ setMethod(".multiSelectionCommands", "Table", function(x, index) {
 
 #' @export
 setMethod(".multiSelectionActive", "Table", function(x) {
-    if (slot(x, .TableSearch)!="" || any(slot(x, .TableColSearch)!="")) {
-        list(Search=slot(x, .TableSearch), ColumnSearch=slot(x, .TableColSearch))
+    if (slot(x, iSEEslots$TableSearch)!="" || any(slot(x, iSEEslots$TableColSearch)!="")) {
+        list(Search=slot(x, iSEEslots$TableSearch), ColumnSearch=slot(x, iSEEslots$TableColSearch))
     } else {
         NULL
     }
@@ -153,7 +153,7 @@ setMethod(".multiSelectionRestricted", "Table", function(x) TRUE)
 
 #' @export
 setMethod(".singleSelectionValue", "Table", function(x, contents) {
-    slot(x, .TableSelected)
+    slot(x, iSEEslots$TableSelected)
 })
 
 #' @export
@@ -161,7 +161,7 @@ setMethod(".singleSelectionValue", "Table", function(x, contents) {
 setMethod(".defineOutput", "Table", function(x) {
     tagList(
         dataTableOutput(.getEncodedName(x)), 
-        uiOutput(paste0(.getEncodedName(x), "_", .tableExtraInfo)),
+        uiOutput(paste0(.getEncodedName(x), "_", iSEEconstants$tableExtraInfo)),
         hr()
     )
 })
@@ -176,7 +176,7 @@ setMethod(".createObservers", "Table", function(x, se, input, session, pObjects,
     .create_table_observers(panel_name, input=input,
         session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .createUnprotectedParameterObservers(.getEncodedName(x), .TableHidden, input,
+    .createUnprotectedParameterObservers(.getEncodedName(x), iSEEslots$TableHidden, input,
         pObjects, rObjects, ignoreNULL=FALSE)
 })
 
@@ -204,11 +204,11 @@ setMethod(".exportOutput", "Table", function(x, se, all_memory, all_contents) {
 
 #' @export
 setMethod(".defineDataInterface", "Table", function(x, se, select_info) {
-    hidden <- slot(x, .TableHidden)
+    hidden <- slot(x, iSEEslots$TableHidden)
 
-    .addSpecificTour(class(x), .TableHidden, function(tab_name) {
+    .addSpecificTour(class(x), iSEEslots$TableHidden, function(tab_name) {
         data.frame(
-            element=paste0("#", tab_name, "_", .TableHidden, " + .selectize-control"),
+            element=paste0("#", tab_name, "_", iSEEslots$TableHidden, " + .selectize-control"),
             intro="Here, we can hide particular columns in the table.
 This is helpful for hiding uninformative annotations so that we don't have to keep on scrolling left/right to see the interesting bits.
 Any number of column names can be specified here."
@@ -221,7 +221,7 @@ Any number of column names can be specified here."
             # At this point, we don't know the full set of column names. So,
             # 'choices' needs to be initialized with the current values, even
             # if it is updated later by observers upon table initialization.
-            .selectInput.iSEE(x, .TableHidden,
+            .selectInput.iSEE(x, iSEEslots$TableHidden,
                 choices=hidden, selected=hidden,
                 label="Hidden columns:", multiple=TRUE)
         )
@@ -230,7 +230,10 @@ Any number of column names can be specified here."
 
 #' @export
 setMethod(".hideInterface", "Table", function(x, field) {
-    if (field %in% c(.multiSelectHistory, .selectColRestrict, .selectRowRestrict)) {
+    if (field %in% c(
+        iSEEslots$multiSelectHistory,
+        iSEEslots$selectColRestrict,
+        iSEEslots$selectRowRestrict)) {
         # Tables always restrict.
         TRUE
     } else {
@@ -254,7 +257,7 @@ setMethod("updateObject", "Table", function(object, ..., verbose=FALSE) {
         # nocov start
 
         # Do this before 'callNextMethod()', which fills in the Restrict.
-        update.2.1 <- is(try(slot(object, .plotHoverInfo), silent=TRUE), "try-error")
+        update.2.1 <- is(try(slot(object, iSEEslots$plotHoverInfo), silent=TRUE), "try-error")
 
         # NOTE: it is crucial that updateObject does not contain '[[' or '[[<-'
         # calls, lest we get sucked into infinite recursion with the calls to
@@ -264,7 +267,7 @@ setMethod("updateObject", "Table", function(object, ..., verbose=FALSE) {
         # Backwards compatibility for new slots (added 3.12).
         if (update.2.1){ 
             .Deprecated(msg=sprintf("detected outdated '%s' instance, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
-            object[[.TableHidden]] <- character(0)
+            object[[iSEEslots$TableHidden]] <- character(0)
         }
         # nocov end
     }

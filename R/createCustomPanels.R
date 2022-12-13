@@ -116,7 +116,7 @@ createCustomTable <- function(FUN, restrict=NULL, className="CustomTable",
         if (is.null(x)) {
             return(NULL)
         }
-        .replaceMissingWithFirst(x, .TableSelected, "")
+        .replaceMissingWithFirst(x, iSEEslots$TableSelected, "")
     }, where=where)
 
     generator

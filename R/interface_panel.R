@@ -34,10 +34,10 @@ height_limits <- c(400L, 1000L)
         prefix <- paste0(panel_name, "_")
 
         ctrl_panel <- box(
-            selectInput(paste0(prefix, .organizationWidth), label="Width",
-                choices=seq(width_limits[1], width_limits[2]), selected=slot(instance, .organizationWidth)),
-            sliderInput(paste0(prefix, .organizationHeight), label="Height",
-                min=height_limits[1], max=height_limits[2], value=slot(instance, .organizationHeight), step=10),
+            selectInput(paste0(prefix, iSEEslots$organizationWidth), label="Width",
+                choices=seq(width_limits[1], width_limits[2]), selected=slot(instance, iSEEslots$organizationWidth)),
+            sliderInput(paste0(prefix, iSEEslots$organizationHeight), label="Height",
+                min=height_limits[1], max=height_limits[2], value=slot(instance, iSEEslots$organizationHeight), step=10),
             title=.getFullName(instance), status="danger", width=NULL, solidHeader=TRUE
         )
 
@@ -106,7 +106,7 @@ height_limits <- c(400L, 1000L)
         param <- do.call(tags$div, c(list(class="panel-group", role="tablist"), all.params))
 
         # Deciding whether to continue on the current row, or start a new row.
-        panel_width <- slot(instance, .organizationWidth)
+        panel_width <- slot(instance, iSEEslots$organizationWidth)
         extra <- cumulative.width + panel_width
         if (extra > 12L) {
             collected[[counter]] <- do.call(fluidRow, cur.row)
@@ -122,14 +122,14 @@ height_limits <- c(400L, 1000L)
         cur_box <- box(
             .defineOutput(instance), 
             param,
-            uiOutput(.input_FUN(.panelMultiSelectInfo)), 
-            uiOutput(.input_FUN(.panelSelectLinkInfo)),
+            uiOutput(.input_FUN(iSEEconstants$panelMultiSelectInfo)), 
+            uiOutput(.input_FUN(iSEEconstants$panelSelectLinkInfo)),
             title=.getFullName(instance),
             solidHeader=TRUE, width=NULL, status="danger"
         )
 
         cur_box <- .coerce_box_status(cur_box, .encodedName(instance))
-        cur_box <- .insert_help_icon(cur_box, .input_FUN(.panelHelpTour))
+        cur_box <- .insert_help_icon(cur_box, .input_FUN(iSEEconstants$panelHelpTour))
 
         cur.row[[row.counter]] <- column(width=panel_width, cur_box, style='padding:3px;')
         row.counter <- row.counter + 1L

@@ -117,9 +117,9 @@ ReducedDimensionPlot <- function(...) {
 #' @importFrom methods callNextMethod
 setMethod("initialize", "ReducedDimensionPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .emptyDefault(args, .redDimType, NA_character_)
-    args <- .emptyDefault(args, .redDimXAxis, 1L)
-    args <- .emptyDefault(args, .redDimYAxis, 2L)
+    args <- .emptyDefault(args, iSEEslots$redDimType, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$redDimXAxis, 1L)
+    args <- .emptyDefault(args, iSEEslots$redDimYAxis, 2L)
     do.call(callNextMethod, c(list(.Object), args))
 })
 
@@ -160,10 +160,10 @@ setMethod(".refineParameters", "ReducedDimensionPlot", function(x, se) {
     }
 
     available <- .getCachedCommonInfo(se, "ReducedDimensionPlot")$valid.reducedDim.names
-    if (!is.na(chosen <- slot(x, .redDimType)) &&
+    if (!is.na(chosen <- slot(x, iSEEslots$redDimType)) &&
         chosen %in% available &&
-        slot(x, .redDimXAxis) <= ncol(reducedDim(se, chosen)) &&
-        slot(x, .redDimYAxis) <= ncol(reducedDim(se, chosen)))
+        slot(x, iSEEslots$redDimXAxis) <= ncol(reducedDim(se, chosen)) &&
+        slot(x, iSEEslots$redDimYAxis) <= ncol(reducedDim(se, chosen)))
     {
         # All is well, nothing needs to be done here.
     } else {
@@ -173,9 +173,9 @@ setMethod(".refineParameters", "ReducedDimensionPlot", function(x, se) {
         }
 
         y <- available[1]
-        slot(x, .redDimType) <- y
-        slot(x, .redDimXAxis) <- 1L
-        slot(x, .redDimYAxis) <- min(ncol(reducedDim(se, y)), 2L)
+        slot(x, iSEEslots$redDimType) <- y
+        slot(x, iSEEslots$redDimXAxis) <- 1L
+        slot(x, iSEEslots$redDimYAxis) <- min(ncol(reducedDim(se, y)), 2L)
     }
 
     x
@@ -185,9 +185,9 @@ setMethod(".refineParameters", "ReducedDimensionPlot", function(x, se) {
 setValidity2("ReducedDimensionPlot", function(object) {
     msg <- character(0)
 
-    msg <- .singleStringError(msg, object, .redDimType)
+    msg <- .singleStringError(msg, object, iSEEslots$redDimType)
 
-    for (field in c(.redDimXAxis, .redDimYAxis)) {
+    for (field in c(iSEEslots$redDimXAxis, iSEEslots$redDimYAxis)) {
         if (length(val <- object[[field]])!=1 || is.na(val) || val <= 0L) {
             msg <- c(msg, sprintf("'%s' must be a single positive integer", field))
         }
@@ -204,15 +204,15 @@ setValidity2("ReducedDimensionPlot", function(object) {
 #' @importFrom shiny selectInput
 #' @importFrom methods callNextMethod
 setMethod(".defineDataInterface", "ReducedDimensionPlot", function(x, se, select_info) {
-    cur_reddim <- slot(x, .redDimType)
+    cur_reddim <- slot(x, iSEEslots$redDimType)
     max_dim <- ncol(reducedDim(se, cur_reddim))
     choices <- seq_len(max_dim)
 
-    .addSpecificTour(class(x)[1], .redDimType, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$redDimType, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element=paste0("#", plot_name, "_", .redDimType, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$redDimType, " + .selectize-control"),
                     intro="Here, we can select the type of dimensionality reduction result to show.
 The choices are extracted from the <code>reducedDims</code> of a <code>SingleCellExperiment</code> object.
 These results should be loaded into the object prior to calling <strong>iSEE</strong> - they are not computed on the fly."
@@ -221,22 +221,22 @@ These results should be loaded into the object prior to calling <strong>iSEE</st
         )
     })
 
-    .addSpecificTour(class(x)[1], .redDimXAxis, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$redDimXAxis, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element=paste0("#", plot_name, "_", .redDimXAxis, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$redDimXAxis, " + .selectize-control"),
                     intro="Given a particular <code>reducedDim</code> entry to visualize, this field specifies the dimension to show on the x-axis."
                 )
             )
         )
     })
 
-    .addSpecificTour(class(x)[1], .redDimYAxis, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$redDimYAxis, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element=paste0("#", plot_name, "_", .redDimYAxis, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$redDimYAxis, " + .selectize-control"),
                     intro="Given a particular <code>reducedDim</code> entry to visualize, this field specifies the dimension to show on the y-axis."
                 )
             )
@@ -244,18 +244,18 @@ These results should be loaded into the object prior to calling <strong>iSEE</st
     })
 
     list(
-        .selectInput.iSEE(x, .redDimType, 
+        .selectInput.iSEE(x, iSEEslots$redDimType, 
             label="Type:",
             choices=.getCachedCommonInfo(se, "ReducedDimensionPlot")$valid.reducedDim.names,
             selected=cur_reddim),
-        .selectInput.iSEE(x, .redDimXAxis, 
+        .selectInput.iSEE(x, iSEEslots$redDimXAxis, 
             label="Dimension 1:",
             choices=choices, 
-            selected=slot(x, .redDimXAxis)),
-        .selectInput.iSEE(x, .redDimYAxis, 
+            selected=slot(x, iSEEslots$redDimXAxis)),
+        .selectInput.iSEE(x, iSEEslots$redDimYAxis, 
             label="Dimension 2:",
             choices=choices, 
-            selected=slot(x, .redDimYAxis))
+            selected=slot(x, iSEEslots$redDimYAxis))
     )
 })
 
@@ -269,28 +269,28 @@ setMethod(".createObservers", "ReducedDimensionPlot", function(x, se, input, ses
     plot_name <- .getEncodedName(x)
 
     .createProtectedParameterObservers(plot_name,
-        fields=c(.redDimXAxis, .redDimYAxis),
+        fields=c(iSEEslots$redDimXAxis, iSEEslots$redDimYAxis),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
-    cur_field <- paste0(plot_name, "_", .redDimType)
-    dim_fieldX <- paste0(plot_name, "_", .redDimXAxis)
-    dim_fieldY <- paste0(plot_name, "_", .redDimYAxis)
+    cur_field <- paste0(plot_name, "_", iSEEslots$redDimType)
+    dim_fieldX <- paste0(plot_name, "_", iSEEslots$redDimXAxis)
+    dim_fieldY <- paste0(plot_name, "_", iSEEslots$redDimYAxis)
 
     # nocov start
     observeEvent(input[[cur_field]], {
-        matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[plot_name]][[.redDimType]]))
-        if (identical(matched_input, pObjects$memory[[plot_name]][[.redDimType]])) {
+        matched_input <- as(input[[cur_field]], typeof(pObjects$memory[[plot_name]][[iSEEslots$redDimType]]))
+        if (identical(matched_input, pObjects$memory[[plot_name]][[iSEEslots$redDimType]])) {
             return(NULL)
         }
-        pObjects$memory[[plot_name]][[.redDimType]] <- matched_input
+        pObjects$memory[[plot_name]][[iSEEslots$redDimType]] <- matched_input
 
         # Updating the selectInputs as well. This should not trigger re-plotting as the identical() check in the
         # corresponding observers should stop the replotting flag from being set.
         new_max <- ncol(reducedDim(se, matched_input))
-        capped_X <- pmin(new_max, pObjects$memory[[plot_name]][[.redDimXAxis]])
-        capped_Y <- pmin(new_max, pObjects$memory[[plot_name]][[.redDimYAxis]])
-        pObjects$memory[[plot_name]][[.redDimXAxis]] <- capped_X
-        pObjects$memory[[plot_name]][[.redDimYAxis]] <- capped_Y
+        capped_X <- pmin(new_max, pObjects$memory[[plot_name]][[iSEEslots$redDimXAxis]])
+        capped_Y <- pmin(new_max, pObjects$memory[[plot_name]][[iSEEslots$redDimYAxis]])
+        pObjects$memory[[plot_name]][[iSEEslots$redDimXAxis]] <- capped_X
+        pObjects$memory[[plot_name]][[iSEEslots$redDimYAxis]] <- capped_Y
 
         new_choices <- seq_len(new_max)
         updateSelectInput(session, dim_fieldX, choices=new_choices, selected=capped_X)
@@ -314,14 +314,14 @@ setMethod(".generateDotPlotData", "ReducedDimensionPlot", function(x, envir) {
     data_cmds <- list()
 
     data_cmds[["reducedDim"]] <- sprintf(
-        "red.dim <- reducedDim(se, %s);", deparse(slot(x, .redDimType)))
+        "red.dim <- reducedDim(se, %s);", deparse(slot(x, iSEEslots$redDimType)))
     data_cmds[["xy"]] <- sprintf(
         "plot.data <- data.frame(X=red.dim[, %i], Y=red.dim[, %i], row.names=colnames(se));",
-        slot(x, .redDimXAxis), slot(x, .redDimYAxis))
+        slot(x, iSEEslots$redDimXAxis), slot(x, iSEEslots$redDimYAxis))
 
-    plot_title <- slot(x, .redDimType)
-    x_lab <- sprintf("Dimension %s", slot(x, .redDimXAxis))
-    y_lab <- sprintf("Dimension %s", slot(x, .redDimYAxis))
+    plot_title <- slot(x, iSEEslots$redDimType)
+    x_lab <- sprintf("Dimension %s", slot(x, iSEEslots$redDimXAxis))
+    y_lab <- sprintf("Dimension %s", slot(x, iSEEslots$redDimYAxis))
 
     data_cmds <- unlist(data_cmds)
     .textEval(data_cmds, envir)
@@ -335,7 +335,7 @@ setMethod(".definePanelTour", "ReducedDimensionPlot", function(x) {
 
     collated <- rbind(
         c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Reduced dimension plot</font> panel shows reduced dimensions from a <code>SingleCellExperiment</code> object or one of its subclasses. Here, each point corresponds to a column (usually a cell) of the <code>SingleCellExperiment</code> object.", .getPanelColor(x))),
-        .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options.")
+        .addTourStep(x, iSEEslots$dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options.")
     )
 
     rbind(

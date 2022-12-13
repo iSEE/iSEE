@@ -48,9 +48,9 @@
     .input_FUN <- function(field) paste0(plot_name, "_", field)
 
     if (source_type == "row") {
-        source_field <- .selectRowSource
+        source_field <- iSEEslots$selectRowSource
     } else {
-        source_field <- .selectColSource
+        source_field <- iSEEslots$selectColSource
     }
 
     # nocov start
@@ -58,7 +58,7 @@
         instance <- pObjects$memory[[plot_name]]
 
         transmitter <- slot(instance, source_field)
-        if (transmitter==.noSelection) {
+        if (transmitter==iSEEconstants$noSelection) {
             txt <- sprintf("No panel chosen for %s selection", source_type)
             FUN <- disabled
         } else {

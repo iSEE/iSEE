@@ -82,7 +82,7 @@ setMethod("initialize", "ColumnTable", function(.Object, ...) {
 
     # Defensive measure to avoid problems with cyclic graphs 
     # that the user doesn't have permissions to change!
-    args <- .emptyDefault(args, .selectRowDynamic, FALSE)
+    args <- .emptyDefault(args, iSEEslots$selectRowDynamic, FALSE)
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -94,7 +94,7 @@ setMethod(".refineParameters", "ColumnTable", function(x, se) {
         return(NULL)
     }
 
-    x <- .replaceMissingWithFirst(x, .TableSelected, colnames(se))
+    x <- .replaceMissingWithFirst(x, iSEEslots$TableSelected, colnames(se))
 
     x
 })
@@ -123,7 +123,10 @@ setMethod(".multiSelectionResponsive", "ColumnTable", function(x, dims = charact
 
 #' @export
 setMethod(".hideInterface", "ColumnTable", function(x, field) {
-    if (field %in% c(.selectRowSource, .selectRowRestrict, .selectRowDynamic)) {
+    if (field %in% c(
+        iSEEslots$selectRowSource,
+        iSEEslots$selectRowRestrict,
+        iSEEslots$selectRowDynamic)) {
         TRUE
     } else {
         callNextMethod()
@@ -134,6 +137,6 @@ setMethod(".hideInterface", "ColumnTable", function(x, field) {
 setMethod(".showSelectionDetails", "ColumnTable", function(x) {
     FUN <- getAppOption("ColumnTable.select.details")
     if (!is.null(FUN)) {
-        FUN(slot(x, .TableSelected))
+        FUN(slot(x, iSEEslots$TableSelected))
     }
 })

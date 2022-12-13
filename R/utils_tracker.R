@@ -63,7 +63,7 @@
             brush_code[[panel_name]] <- sprintf("all_active[['%s']] <- %s", panel_name, brush_struct)
         }
 
-        saved_struct <- slot(all_memory[[panel_name]], .multiSelectHistory)
+        saved_struct <- slot(all_memory[[panel_name]], iSEEslots$multiSelectHistory)
         if (length(saved_struct)) {
             saved_struct <- .deparse_for_viewing(saved_struct)
             history_code[[panel_name]] <- sprintf("all_saved[['%s']] <- %s", panel_name, saved_struct)

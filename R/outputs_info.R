@@ -59,7 +59,7 @@
             )
         }
 
-        saved <- slot(instance, .multiSelectHistory)
+        saved <- slot(instance, iSEEslots$multiSelectHistory)
         for (i in seq_along(saved)) {
             cmds <- .multiSelectionCommands(instance, i)
             if (is.null(cmds)) {

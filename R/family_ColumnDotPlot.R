@@ -586,7 +586,7 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
 
     } else if (color_choice == iSEEconstants$colorBySampNameTitle) {
         col_choice <- slot(x, iSEEslots$colorBySampNameColor)
-        if (slot(x, .sizeByField) == iSEEconstants$sizeByNothingTitle) {
+        if (slot(x, iSEEslots$sizeByField) == iSEEconstants$sizeByNothingTitle) {
             size_cmd <- paste0(", size=5*", slot(x, iSEEslots$plotPointSize))
         } else {
             size_cmd <- ""

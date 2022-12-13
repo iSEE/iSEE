@@ -14,7 +14,7 @@
 #' \item the Javascript (JS) brush, which is what the user draws and the observer responds to.
 #' This is eliminated upon replotting for various consistency reasons.
 #' \item the active brush, which is what is stored in the \code{.brushData} field of the memory.
-#' \item the saved brush(es), stored in the \code{.multiSelectHistory} field of the memory.
+#' \item the saved brush(es), stored in the \code{iSEEslots$multiSelectHistory} field of the memory.
 #' }
 #' This particular observer only deals with the first and second elements, updating the latter with the former as necessary.
 #'

@@ -142,13 +142,13 @@
     # nocov start
     observeEvent(input[[save_field]], {
         instance <- pObjects$memory[[panel_name]]
-        current <- slot(instance, .multiSelectHistory)
+        current <- slot(instance, iSEEslots$multiSelectHistory)
         to_store <- .multiSelectionActive(instance)
         if (is.null(to_store)) {
             return(NULL)
         }
 
-        slot(pObjects$memory[[panel_name]], .multiSelectHistory) <- c(current, list(to_store))
+        slot(pObjects$memory[[panel_name]], iSEEslots$multiSelectHistory) <- c(current, list(to_store))
 
         .safe_reactive_bump(rObjects, multi_name)
 
@@ -167,9 +167,9 @@
 
     # nocov start
     observeEvent(input[[del_field]], {
-        current <- slot(pObjects$memory[[panel_name]], .multiSelectHistory)
+        current <- slot(pObjects$memory[[panel_name]], iSEEslots$multiSelectHistory)
         current <- head(current, -1)
-        slot(pObjects$memory[[panel_name]], .multiSelectHistory) <- current
+        slot(pObjects$memory[[panel_name]], iSEEslots$multiSelectHistory) <- current
 
         .safe_reactive_bump(rObjects, multi_name)
 

@@ -131,7 +131,7 @@ names(.all_aes_values) <- .all_aes_names
         ## If we color by sample name in a column-based plot, or by feature name
         ## in a row-based plot, we make sure to keep the selected column/row in
         ## the downsampling
-        color_choice <- slot(param_choices, .colorByField) 
+        color_choice <- slot(param_choices, iSEEslots$colorByField) 
         always_keep <- ""
         if ((color_choice == .colorBySampNameTitle && is(param_choices, "ColumnDotPlot")) ||
                 (color_choice == .colorByFeatNameTitle && is(param_choices, "RowDotPlot"))) {
@@ -203,7 +203,7 @@ names(.all_aes_values) <- .all_aes_names
 
     # Adding points to the plot.
     color_set <- !is.null(plot_data$ColorBy)
-    shape_set <- slot(param_choices, .shapeByField) != .shapeByNothingTitle
+    shape_set <- slot(param_choices, iSEEslots$shapeByField) != .shapeByNothingTitle
     size_set <- slot(param_choices, .sizeByField) != .sizeByNothingTitle
 
     new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
@@ -335,7 +335,7 @@ names(.all_aes_values) <- .all_aes_names
 
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
-    shape_set <- slot(param_choices, .shapeByField) != .shapeByNothingTitle
+    shape_set <- slot(param_choices, iSEEslots$shapeByField) != .shapeByNothingTitle
     size_set <- slot(param_choices, .sizeByField) != .sizeByNothingTitle
 
     new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
@@ -526,7 +526,7 @@ plot.data$Y <- tmp;")
 
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
-    shape_set <- slot(param_choices, .shapeByField) != .shapeByNothingTitle
+    shape_set <- slot(param_choices, iSEEslots$shapeByField) != .shapeByNothingTitle
     size_set <- slot(param_choices, .sizeByField) != .sizeByNothingTitle
 
     new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
@@ -654,7 +654,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #'
 #' @rdname INTERNAL_set_colorby_when_none
 .set_colorby_when_none <- function(x) {
-    if (slot(x, .colorByField)==.colorByNothingTitle) {
+    if (slot(x, iSEEslots$colorByField)==.colorByNothingTitle) {
         .colorByNoneDotPlotField(x)
     } else {
         NULL
@@ -815,7 +815,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     if (color || !is.null(.set_colorby_when_none(param_choices))) {
         default_color <- ""
     } else {
-        default_color <- sprintf(", color='%s'", slot(param_choices, .colorByDefaultColor))
+        default_color <- sprintf(", color='%s'", slot(param_choices, iSEEslots$colorByDefaultColor))
     }
 
     ## If there is already size information available in the aes, don't add an
@@ -1026,8 +1026,8 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #'     FacetColumnBy = "Column data", FacetColumnByColData="Covariate_2") 
 #' .addFacets(x)
 .addFacets <- function(x){
-    row_facet <- slot(x, .facetRow)!=.facetByNothingTitle
-    col_facet <- slot(x, .facetColumn)!=.facetByNothingTitle
+    row_facet <- slot(x, iSEEslots$facetRow)!=iSEEconstants$facetByNothingTitle
+    col_facet <- slot(x, iSEEslots$facetColumn)!=iSEEconstants$facetByNothingTitle
     if (!row_facet && !col_facet) {
         return(NULL)
     }
@@ -1058,7 +1058,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' \item a list object called \code{all_active} where each entry is named by the plot name.
 #' The entry corresponding to the current plot should contain the contents of \code{.brushData} in \code{param_choices}.
 #' \item a list object called \code{all_saved} where each entry is named by the plot name.
-#' The entry corresponding to the current plot should contain the contents of \code{.multiSelectHistory} in \code{param_choices}.
+#' The entry corresponding to the current plot should contain the contents of \code{iSEEslots$multiSelectHistory} in \code{param_choices}.
 #' }
 #' Both of these objects should exist in the environment in which the commands are evaluated.
 #'
@@ -1069,8 +1069,8 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #'
 #' @importFrom ggplot2 geom_rect geom_text
 .self_select_boxes <- function(param_choices, flip=FALSE) {
-    active <- slot(param_choices, .brushData)
-    saved <- slot(param_choices, .multiSelectHistory)
+    active <- slot(param_choices, iSEEslots$brushData)
+    saved <- slot(param_choices, iSEEslots$multiSelectHistory)
 
     has_active <- as.integer(length(active) > 0)
     total <- has_active + length(saved)
@@ -1079,8 +1079,8 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     }
 
     # Note: Faceting simultaneously on row and column produces a 'flip' effect on the brush data
-    if (slot(param_choices, .facetRow)!=.facetByNothingTitle && 
-            slot(param_choices, .facetColumn)!=.facetByNothingTitle) {
+    if (slot(param_choices, iSEEslots$facetRow)!=iSEEconstants$facetByNothingTitle && 
+            slot(param_choices, iSEEslots$facetColumn)!=iSEEconstants$facetByNothingTitle) {
         facet_row <- 'panelvar2'
         facet_column <- 'panelvar1'
     } else {
@@ -1144,10 +1144,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
     # Collect additional panel information for the brush
     addPanels <- character(0)
-    if (slot(param_choices, .facetRow)!=.facetByNothingTitle) {
+    if (slot(param_choices, iSEEslots$facetRow)!=iSEEconstants$facetByNothingTitle) {
         addPanels["FacetRow"] <- sprintf("FacetRow=%s[['%s']]", brush_src, facet_row)
     }
-    if (slot(param_choices, .facetColumn)!=.facetByNothingTitle) {
+    if (slot(param_choices, iSEEslots$facetColumn)!=iSEEconstants$facetByNothingTitle) {
         addPanels["FacetColumn"] <- sprintf("FacetColumn=%s[['%s']]", brush_src, facet_column)
     }
 
@@ -1213,7 +1213,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' \item a list object called \code{all_active} where each entry is named by the plot name.
 #' The entry corresponding to the current plot should contain the contents of \code{.lassoData} in \code{param_choices}.
 #' \item a list object called \code{all_saved} where each entry is named by the plot name.
-#' The entry corresponding to the current plot should contain the contents of \code{.multiSelectHistory} in \code{param_choices}.
+#' The entry corresponding to the current plot should contain the contents of \code{iSEEslots$multiSelectHistory} in \code{param_choices}.
 #' }
 #' Both of these objects should exist in the environment in which the commands are evaluated.
 #'
@@ -1229,10 +1229,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 {
     if (index == 0L) {
         lasso_src <- sprintf("all_active[['%s']]", plot_name)
-        current <- slot(param_choices, .brushData)
+        current <- slot(param_choices, iSEEslots$brushData)
     } else {
         lasso_src <- sprintf("all_saved[['%s']][[%i]]", plot_name, index)
-        current <- slot(param_choices, .multiSelectHistory)[[index]]
+        current <- slot(param_choices, iSEEslots$multiSelectHistory)[[index]]
     }
 
     # Initialize the minimal lasso information
@@ -1240,10 +1240,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
     # Collect additional panel information for the lasso.
     addPanels <- character(0)
-    if (slot(param_choices, .facetRow)!=.facetByNothingTitle) {
+    if (slot(param_choices, iSEEslots$facetRow)!=iSEEconstants$facetByNothingTitle) {
         addPanels["FacetRow"] <- sprintf("FacetRow=%s[['%s']]", lasso_src, facet_row)
     }
-    if (slot(param_choices, .facetColumn)!=.facetByNothingTitle) {
+    if (slot(param_choices, iSEEslots$facetColumn)!=iSEEconstants$facetByNothingTitle) {
         addPanels["FacetColumn"] <- sprintf("FacetColumn=%s[['%s']]", lasso_src, facet_column)
     }
     if (length(addPanels)) {
@@ -1298,7 +1298,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
             current$mapping$x, current$mapping$y, lasso_data, stroke_color)
 
         # Do not control the shape of waypoints if shape is already being mapped to a covariate
-        if (slot(param_choices, .shapeByField) == .shapeByNothingTitle) {
+        if (slot(param_choices, iSEEslots$shapeByField) == .shapeByNothingTitle) {
             point_cmd <- sprintf(
 "geom_point(aes(x=%s, y=%s, shape=First),
     data=data.frame(%s,
@@ -1396,10 +1396,10 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
         # Some intelligence involved in accounting for the faceting;
         # in this case, a label is shown on each facet if possible.
         # Note that the same label may differ in locations across facets.
-        if (slot(x, .facetRow)!=.facetByNothingTitle) {
+        if (slot(x, iSEEslots$facetRow)!=iSEEconstants$facetByNothingTitle) {
             aggregants <- c(aggregants, "FacetRow=plot.data$FacetRow")
         }
-        if (slot(x, .facetColumn)!=.facetByNothingTitle) {
+        if (slot(x, iSEEslots$facetColumn)!=iSEEconstants$facetByNothingTitle) {
             aggregants <- c(aggregants, "FacetColumn=plot.data$FacetColumn")
         }
 

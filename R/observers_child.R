@@ -159,7 +159,7 @@
                             previous <- union(previous, .panelReactivated)
                         }
                         if (.any_saved_selection(child_instance)) {
-                            slot(pObjects$memory[[child]], .multiSelectHistory) <- list()
+                            slot(pObjects$memory[[child]], iSEEslots$multiSelectHistory) <- list()
                             previous <- union(previous, .panelResaved)
                         }
                     }

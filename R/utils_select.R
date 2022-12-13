@@ -155,7 +155,7 @@
 #' \item a list object called \code{all_active} where each entry is named by the panel name.
 #' The entry corresponding to the transmitting plot should contain the active selection structure defined by \code{\link{.multiSelectionActive}}.
 #' \item a list object called \code{all_saved} where each entry is named by the panel name.
-#' The entry corresponding to the transmitting plot should contain the contents of \code{.multiSelectHistory} in its parameter set in \code{all_memory}.
+#' The entry corresponding to the transmitting plot should contain the contents of \code{iSEEslots$multiSelectHistory} in its parameter set in \code{all_memory}.
 #' }
 #' All of these objects should exist in the environment in which the commands are evaluated.
 #'

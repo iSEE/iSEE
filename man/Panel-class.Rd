@@ -34,6 +34,11 @@ It provides slots and methods to control the height and width of each panel, as 
 }
 \section{Slot overview}{
 
+The following slots are relevant to panel versioning:
+\itemize{
+\item \code{VersionInfo}, a named list of package versions in use during the creation of the panel or latest call to \code{\link{updateObject}}.
+}
+
 The following slots are relevant to panel organization:
 \itemize{
 \item \code{PanelId}, an integer scalar specifying the identifier for the panel.

@@ -3,22 +3,9 @@
 \name{iSEEconstants}
 \alias{iSEEconstants}
 \title{iSEE Constants}
-\format{
-A named list.
-}
 \description{
 Constant values used throughout iSEE panels and extensions.
 }
-\section{Panel slot names}{
-
-\describe{
-\item{\code{.dataParamBoxOpen}}{Name of slot that indicates whether the 'Data parameter' box is open.}
-\item{\code{.multiSelectHistory}}{Name of slot that stores the list of saved selections.}
-\item{\code{.organizationHeight}}{Name of slot that stores the panel height.}
-\item{\code{.organizationWidth}}{Name of slot that stores the panel width.}
-}
-}
-
 \section{Multiple selection parameters}{
 
 \describe{

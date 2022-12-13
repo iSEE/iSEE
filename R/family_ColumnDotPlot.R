@@ -119,49 +119,49 @@ NULL
 #' @importFrom methods callNextMethod
 setMethod("initialize", "ColumnDotPlot", function(.Object, ..., SelectionEffect=NULL, SelectionColor=NULL, FacetByRow=NULL, FacetByColumn=NULL) {
     args <- list(...)
-    args <- .emptyDefault(args, .colorByColData, NA_character_)
-    args <- .emptyDefault(args, .colorByFeatNameAssay, getPanelDefault("ColorByNameAssay"))
-    args <- .emptyDefault(args, .colorBySampNameColor, getPanelDefault("ColorByNameColor"))
+    args <- .emptyDefault(args, iSEEslots$colorByColData, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$colorByFeatNameAssay, getPanelDefault("ColorByNameAssay"))
+    args <- .emptyDefault(args, iSEEslots$colorBySampNameColor, getPanelDefault("ColorByNameColor"))
 
-    args <- .emptyDefault(args, .shapeByColData, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$shapeByColData, NA_character_)
 
-    args <- .emptyDefault(args, .sizeByColData, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$sizeByColData, NA_character_)
 
     # Defensive measure to avoid problems with cyclic graphs 
     # that the user doesn't have permissions to change!
-    args <- .emptyDefault(args, .selectRowDynamic, FALSE)
+    args <- .emptyDefault(args, iSEEslots$selectRowDynamic, FALSE)
 
-    args <- .emptyDefault(args, .facetRowByColData, NA_character_)
-    args <- .emptyDefault(args, .facetColumnByColData, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$facetRowByColData, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$facetColumnByColData, NA_character_)
 
     if (!is.null(FacetByRow)) {
         .Deprecated(msg=sprintf("'FacetByRow=' is deprecated.\nUse '%s=\"%s\"' and '%s=' instead.",
-            .facetRow, .facetByColDataTitle, .facetRowByColData))
-        if (FacetByRow!=.noSelection) {
-            args[[.facetRow]] <- .facetByColDataTitle
-            args[[.facetRowByColData]] <- FacetByRow
+            iSEEslots$facetRow, iSEEconstants$facetByColDataTitle, iSEEslots$facetRowByColData))
+        if (FacetByRow!=iSEEconstants$noSelection) {
+            args[[iSEEslots$facetRow]] <- iSEEconstants$facetByColDataTitle
+            args[[iSEEslots$facetRowByColData]] <- FacetByRow
         }
     }
 
     if (!is.null(FacetByColumn)) {
         .Deprecated(msg=sprintf("'FacetByColumn=' is deprecated.\nUse '%s=\"%s\"' and '%s=' instead.",
-            .facetColumn, .facetByColDataTitle, .facetColumnByColData))
-        if (FacetByColumn!=.noSelection) {
-            args[[.facetColumn]] <- .facetByColDataTitle
-            args[[.facetColumnByColData]] <- FacetByColumn
+            iSEEslots$facetColumn, iSEEconstants$facetByColDataTitle, iSEEslots$facetColumnByColData))
+        if (FacetByColumn!=iSEEconstants$noSelection) {
+            args[[iSEEslots$facetColumn]] <- iSEEconstants$facetByColDataTitle
+            args[[iSEEslots$facetColumnByColData]] <- FacetByColumn
         }
     }
 
     if (!is.null(SelectionEffect)) {
-        .Deprecated(msg=sprintf("'SelectionEffect=' is deprecated.\nUse '%s=TRUE' instead.", .selectColRestrict))
-        args[[.selectColRestrict]] <- TRUE
+        .Deprecated(msg=sprintf("'SelectionEffect=' is deprecated.\nUse '%s=TRUE' instead.", iSEEslots$selectColRestrict))
+        args[[iSEEslots$selectColRestrict]] <- TRUE
     }
 
     if (!is.null(SelectionColor)) {
         .Deprecated(msg="'SelectionColor=' is deprecated and will be ignored")
     }
     
-    args <- .emptyDefault(args, .tooltipColData, getPanelDefault(.tooltipColData))
+    args <- .emptyDefault(args, iSEEslots$tooltipColData, getPanelDefault(iSEEslots$tooltipColData))
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -171,16 +171,26 @@ setValidity2("ColumnDotPlot", function(object) {
     msg <- character(0)
 
     msg <- .singleStringError(msg, object,
-        c(.colorByColData, .colorByFeatNameAssay, .colorBySampNameColor, .facetRowByColData, .facetColumnByColData))
+        c(
+            iSEEslots$colorByColData,
+            iSEEslots$colorByFeatNameAssay,
+            iSEEslots$colorBySampNameColor,
+            iSEEslots$facetRowByColData,
+            iSEEslots$facetColumnByColData))
 
-    msg <- .allowableChoiceError(msg, object, .colorByField,
-        c(.colorByNothingTitle, .colorByColDataTitle, .colorByFeatNameTitle, .colorBySampNameTitle, .colorByColSelectionsTitle))
+    msg <- .allowableChoiceError(msg, object, iSEEslots$colorByField,
+        c(
+            iSEEconstants$colorByNothingTitle,
+            iSEEconstants$colorByColDataTitle,
+            iSEEconstants$colorByFeatNameTitle,
+            iSEEconstants$colorBySampNameTitle,
+            iSEEconstants$colorByColSelectionsTitle))
 
-    msg <- .allowableChoiceError(msg, object, .shapeByField,
-          c(.shapeByNothingTitle, .shapeByColDataTitle))
+    msg <- .allowableChoiceError(msg, object, iSEEslots$shapeByField,
+          c(iSEEconstants$shapeByNothingTitle, iSEEconstants$shapeByColDataTitle))
 
-    msg <- .allowableChoiceError(msg, object, .sizeByField,
-          c(.sizeByNothingTitle, .sizeByColDataTitle))
+    msg <- .allowableChoiceError(msg, object, iSEEslots$sizeByField,
+          c(iSEEconstants$sizeByNothingTitle, iSEEconstants$sizeByColDataTitle))
 
     if (length(msg)) {
         return(msg)
@@ -199,11 +209,11 @@ setMethod("[[", "ColumnDotPlot", function(x, i, j, ...) {
 
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.\nUse <%s>[['%s']] and/or <%s>[['%s']] instead.",
-            cname, i, cname, .selectColRestrict, cname, .colorByField))
+            cname, i, cname, iSEEslots$selectColRestrict, cname, iSEEslots$colorByField))
 
-        if (slot(x, .selectColRestrict)) {
+        if (slot(x, iSEEslots$selectColRestrict)) {
             "Restrict" 
-        } else if (slot(x, .colorByField) == .colorByColSelectionsTitle) {
+        } else if (slot(x, iSEEslots$colorByField) == iSEEconstants$colorByColSelectionsTitle) {
             "Color"
         } else {
             "Transparent"
@@ -225,9 +235,9 @@ setReplaceMethod("[[", "ColumnDotPlot", function(x, i, j, ..., value) {
 
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.\nSet <%s>[['%s']] and/or <%s>[['%s']] instead.",
-            cname, i, cname, .selectColRestrict, cname, .colorByField))
+            cname, i, cname, iSEEslots$selectColRestrict, cname, iSEEslots$colorByField))
 
-        slot(x, .selectColRestrict) <- (value=="Restrict")
+        slot(x, iSEEslots$selectColRestrict) <- (value=="Restrict")
         x
     } else {
         callNextMethod()
@@ -271,28 +281,31 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
     dp_cached <- .getCachedCommonInfo(se, "DotPlot")
 
     available <- cdp_cached$valid.colData.names
-    x <- .replaceMissingWithFirst(x, .colorByColData, available)
-    x <- .removeInvalidChoices(x, .tooltipColData, available)
+    x <- .replaceMissingWithFirst(x, iSEEslots$colorByColData, available)
+    x <- .removeInvalidChoices(x, iSEEslots$tooltipColData, available)
 
     assays <- dp_cached$valid.assay.names
-    x <- .replaceMissingWithFirst(x, .colorByFeatNameAssay, assays)
+    x <- .replaceMissingWithFirst(x, iSEEslots$colorByFeatNameAssay, assays)
 
     discrete <- cdp_cached$discrete.colData.names
-    x <- .replaceMissingWithFirst(x, .shapeByColData, discrete)
-    x <- .replaceMissingWithFirst(x, .facetRowByColData, discrete)
-    x <- .replaceMissingWithFirst(x, .facetColumnByColData, discrete)
+    x <- .replaceMissingWithFirst(x, iSEEslots$shapeByColData, discrete)
+    x <- .replaceMissingWithFirst(x, iSEEslots$facetRowByColData, discrete)
+    x <- .replaceMissingWithFirst(x, iSEEslots$facetColumnByColData, discrete)
 
     continuous <- cdp_cached$continuous.colData.names
-    x <- .replaceMissingWithFirst(x, .sizeByColData, continuous)
+    x <- .replaceMissingWithFirst(x, iSEEslots$sizeByColData, continuous)
     
-    x <- .replaceMissingWithFirst(x, .plotCustomLabelsText, colnames(se)[1])
+    x <- .replaceMissingWithFirst(x, iSEEslots$plotCustomLabelsText, colnames(se)[1])
 
     x
 })
 
 #' @export
 setMethod(".hideInterface", "ColumnDotPlot", function(x, field) {
-    if (field %in% c(.selectRowSource, .selectRowRestrict, .selectRowDynamic)) {
+    if (field %in% c(
+        iSEEslots$selectRowSource,
+        iSEEslots$selectRowRestrict,
+        iSEEslots$selectRowDynamic)) {
         TRUE
     } else {
         callNextMethod()
@@ -306,12 +319,12 @@ setMethod(".createObservers", "ColumnDotPlot", function(x, se, input, session, p
     plot_name <- .getEncodedName(x)
 
     .createUnprotectedParameterObservers(plot_name,
-        fields=c(.colorByColData, .colorByFeatNameAssay,
-            .shapeByColData, .sizeByColData, .colorBySampNameColor),
+        fields=c(iSEEslots$colorByColData, iSEEslots$colorByFeatNameAssay,
+            iSEEslots$shapeByColData, iSEEslots$sizeByColData, iSEEslots$colorBySampNameColor),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     .createProtectedParameterObservers(plot_name,
-        fields=c(.facetRowByColData, .facetColumnByColData),
+        fields=c(iSEEslots$facetRowByColData, iSEEslots$facetColumnByColData),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
     .create_dimname_propagation_observer(plot_name, choices=colnames(se),
@@ -323,13 +336,13 @@ setMethod(".multiSelectionDimension", "ColumnDotPlot", function(x) "column")
 
 #' @export
 setMethod(".multiSelectionRestricted", "ColumnDotPlot", function(x) {
-    slot(x, .selectColRestrict)
+    slot(x, iSEEslots$selectColRestrict)
 })
 
 #' @export
 setMethod(".multiSelectionInvalidated", "ColumnDotPlot", function(x) {
-    slot(x, .facetRow) == .facetByColSelectionsTitle || 
-        slot(x, .facetColumn) == .facetByColSelectionsTitle || 
+    slot(x, iSEEslots$facetRow) == iSEEconstants$facetByColSelectionsTitle || 
+        slot(x, iSEEslots$facetColumn) == iSEEconstants$facetByColSelectionsTitle || 
         callNextMethod()
 })
 
@@ -367,23 +380,23 @@ setMethod(".defineDotPlotColorChoices", "ColumnDotPlot", function(x, se) {
 setMethod(".getDotPlotColorConstants", "ColumnDotPlot", function(x) {
     list(
         metadata=list(
-            title=.colorByColDataTitle,
-            field=.colorByColData
+            title=iSEEconstants$colorByColDataTitle,
+            field=iSEEslots$colorByColData
         ),
         name=list(
-            title=.colorBySampNameTitle,
-            field=.colorBySampName,
-            table=.colorByColTable,
-            color=.colorBySampNameColor,
-            dynamic=.colorBySampDynamic
+            title=iSEEconstants$colorBySampNameTitle,
+            field=iSEEslots$colorBySampName,
+            table=iSEEslots$colorByColTable,
+            color=iSEEslots$colorBySampNameColor,
+            dynamic=iSEEslots$colorBySampDynamic
         ),
         assay=list(
-            title=.colorByFeatNameTitle,
-            field=.colorByFeatName,
-            assay=.colorByFeatNameAssay,
-            table=.colorByRowTable,
-            color=.colorByFeatNameColor,
-            dynamic=.colorByFeatDynamic
+            title=iSEEconstants$colorByFeatNameTitle,
+            field=iSEEslots$colorByFeatName,
+            assay=iSEEslots$colorByFeatNameAssay,
+            table=iSEEslots$colorByRowTable,
+            color=iSEEslots$colorByFeatNameColor,
+            dynamic=iSEEslots$colorByFeatDynamic
         )
     )
 })
@@ -391,8 +404,8 @@ setMethod(".getDotPlotColorConstants", "ColumnDotPlot", function(x) {
 setMethod(".getDotPlotSizeConstants", "ColumnDotPlot", function(x) {
     list(
         metadata=list(
-            title=.sizeByColDataTitle,
-            field=.sizeByColData
+            title=iSEEconstants$sizeByColDataTitle,
+            field=iSEEslots$sizeByColData
         )
     )
 })
@@ -400,8 +413,8 @@ setMethod(".getDotPlotSizeConstants", "ColumnDotPlot", function(x) {
 setMethod(".getDotPlotShapeConstants", "ColumnDotPlot", function(x) {
     list(
         metadata=list(
-            title=.shapeByColDataTitle,
-            field=.shapeByColData
+            title=iSEEconstants$shapeByColDataTitle,
+            field=iSEEslots$shapeByColData
         )
     )
 })
@@ -413,12 +426,12 @@ setMethod(".getDotPlotNamesCommand", "ColumnDotPlot", function(x) "colnames")
 setMethod(".getDotPlotFacetConstants", "ColumnDotPlot", function(x) {
     list(
         metadata=list(
-            title=.facetByColDataTitle,
-            row_field=.facetRowByColData,
-            column_field=.facetColumnByColData
+            title=iSEEconstants$facetByColDataTitle,
+            row_field=iSEEslots$facetRowByColData,
+            column_field=iSEEslots$facetColumnByColData
         ),
         selections=list(
-            title=.facetByColSelectionsTitle
+            title=iSEEconstants$facetByColSelectionsTitle
         )
     )
 })
@@ -427,28 +440,28 @@ setMethod(".getDotPlotFacetConstants", "ColumnDotPlot", function(x) {
 # See ?.addDotPlotDataColor for documentation on these methods.
 
 setMethod(".addDotPlotDataColor", "ColumnDotPlot", function(x, envir) {
-    color_choice <- slot(x, .colorByField)
+    color_choice <- slot(x, iSEEslots$colorByField)
 
-    if (color_choice == .colorByColDataTitle) {
-        covariate_name <- slot(x, .colorByColData)
+    if (color_choice == iSEEconstants$colorByColDataTitle) {
+        covariate_name <- slot(x, iSEEslots$colorByColData)
         label <- covariate_name
         cmds <- sprintf("plot.data$ColorBy <- colData(se)[, %s];", deparse(covariate_name))
 
-    } else if (color_choice == .colorByFeatNameTitle) {
+    } else if (color_choice == iSEEconstants$colorByFeatNameTitle) {
         # Set the color to the selected gene
-        chosen_gene <- slot(x, .colorByFeatName)
-        assay_choice <- slot(x, .colorByFeatNameAssay)
+        chosen_gene <- slot(x, iSEEslots$colorByFeatName)
+        assay_choice <- slot(x, iSEEslots$colorByFeatNameAssay)
         label <- sprintf("%s\n(%s)", chosen_gene, assay_choice)
         cmds <- sprintf("plot.data$ColorBy <- assay(se, %s)[%s, ];",
             deparse(assay_choice), deparse(chosen_gene))
 
     } else if (color_choice == .colorBySampNameTitle) {
-        chosen_sample <- slot(x, .colorBySampName)
+        chosen_sample <- slot(x, iSEEslots$colorBySampName)
         label <- chosen_sample
         cmds <- sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;",
             deparse(chosen_sample))
 
-    } else if (color_choice == .colorByColSelectionsTitle) {
+    } else if (color_choice == iSEEconstants$colorByColSelectionsTitle) {
         label <- "Column selection"
         if (exists("col_selected", envir=envir, inherits=FALSE)) {
             target <- "col_selected"
@@ -470,10 +483,10 @@ setMethod(".addDotPlotDataColor", "ColumnDotPlot", function(x, envir) {
 })
 
 setMethod(".addDotPlotDataShape", "ColumnDotPlot", function(x, envir) {
-    shape_choice <- slot(x, .shapeByField)
+    shape_choice <- slot(x, iSEEslots$shapeByField)
 
-    if (shape_choice == .shapeByColDataTitle) {
-        covariate_name <- slot(x, .shapeByColData)
+    if (shape_choice == iSEEconstants$shapeByColDataTitle) {
+        covariate_name <- slot(x, iSEEslots$shapeByColData)
         label <- covariate_name
         cmds <- sprintf("plot.data$ShapeBy <- colData(se)[, %s];", deparse(covariate_name))
 
@@ -487,10 +500,10 @@ setMethod(".addDotPlotDataShape", "ColumnDotPlot", function(x, envir) {
 })
 
 setMethod(".addDotPlotDataSize", "ColumnDotPlot", function(x, envir) {
-    size_choice <- slot(x, .sizeByField)
+    size_choice <- slot(x, iSEEslots$sizeByField)
 
-    if (size_choice == .sizeByColDataTitle) {
-        covariate_name <- slot(x, .sizeByColData)
+    if (size_choice == iSEEconstants$sizeByColDataTitle) {
+        covariate_name <- slot(x, iSEEslots$sizeByColData)
         label <- covariate_name
         cmds <- sprintf("plot.data$SizeBy <- colData(se)[, %s];", deparse(covariate_name))
 
@@ -508,8 +521,8 @@ setMethod(".addDotPlotDataFacets", "ColumnDotPlot", function(x, envir) {
     labels <- list()
 
     params <- list(
-        list(.facetRow, "FacetRow", .facetRowByColData),
-        list(.facetColumn, "FacetColumn", .facetColumnByColData)
+        list(iSEEslots$facetRow, "FacetRow", iSEEslots$facetRowByColData),
+        list(iSEEslots$facetColumn, "FacetColumn", iSEEslots$facetColumnByColData)
     )
 
     for (f in seq_len(2)) {
@@ -518,12 +531,12 @@ setMethod(".addDotPlotDataFacets", "ColumnDotPlot", function(x, envir) {
         pd_field <- current[[2]]
         facet_mode <- slot(x, param_field)
 
-        if (facet_mode == .facetByColDataTitle) {
+        if (facet_mode == iSEEconstants$facetByColDataTitle) {
             facet_data <- x[[current[[3]]]]
             facet_cmds[pd_field] <- sprintf("plot.data$%s <- colData(se)[, %s];", pd_field, deparse(facet_data))
             labels[[pd_field]] <- facet_data
 
-        } else if (facet_mode == .facetByColSelectionsTitle) {
+        } else if (facet_mode == iSEEconstants$facetByColSelectionsTitle) {
             if (exists("col_selected", envir=envir, inherits=FALSE)) {
                 target <- "col_selected"
             } else {
@@ -549,7 +562,7 @@ setMethod(".addDotPlotDataSelected", "ColumnDotPlot", function(x, envir) {
         SelectBy="plot.data$SelectBy <- rownames(plot.data) %in% unlist(col_selected);"
     )
 
-    if (slot(x, .selectColRestrict)) {
+    if (slot(x, iSEEslots$selectColRestrict)) {
         cmds["saved"] <- "plot.data.all <- plot.data;"
         cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"
     }
@@ -561,20 +574,20 @@ setMethod(".addDotPlotDataSelected", "ColumnDotPlot", function(x, envir) {
 
 #' @importFrom ggplot2 scale_color_manual geom_point
 setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_aes="Y") {
-    color_choice <- slot(x, .colorByField)
+    color_choice <- slot(x, iSEEslots$colorByField)
 
-    if (color_choice == .colorByColDataTitle) {
-        covariate_name <- slot(x, .colorByColData)
+    if (color_choice == iSEEconstants$colorByColDataTitle) {
+        covariate_name <- slot(x, iSEEslots$colorByColData)
         .create_color_scale("colDataColorMap", deparse(covariate_name), colorby)
 
-    } else if (color_choice == .colorByFeatNameTitle) {
-        assay_choice <- slot(x, .colorByFeatNameAssay)
+    } else if (color_choice == iSEEconstants$colorByFeatNameTitle) {
+        assay_choice <- slot(x, iSEEslots$colorByFeatNameAssay)
         .create_color_scale("assayColorMap", deparse(assay_choice), colorby)
 
-    } else if (color_choice == .colorBySampNameTitle) {
-        col_choice <- slot(x, .colorBySampNameColor)
-        if (slot(x, .sizeByField) == .sizeByNothingTitle) {
-            size_cmd <- paste0(", size=5*", slot(x, .plotPointSize))
+    } else if (color_choice == iSEEconstants$colorBySampNameTitle) {
+        col_choice <- slot(x, iSEEslots$colorBySampNameColor)
+        if (slot(x, .sizeByField) == iSEEconstants$sizeByNothingTitle) {
+            size_cmd <- paste0(", size=5*", slot(x, iSEEslots$plotPointSize))
         } else {
             size_cmd <- ""
         }
@@ -589,7 +602,7 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
             )
         )
 
-    } else if (color_choice == .colorByColSelectionsTitle) {
+    } else if (color_choice == iSEEconstants$colorByColSelectionsTitle) {
         sprintf("scale_color_manual(values=iSEE::columnSelectionColorMap(colormap, %s), drop=FALSE) +", 
             paste(deparse(levels(colorby)), collapse="")) 
 
@@ -604,7 +617,7 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
 setMethod(".getTooltipUI", "ColumnDotPlot", function(x, se, name) {
     if (length(x[[.tooltipColData]]) > 0) {
         # as.data.frame sometimes needed before as.list to fix names of items in vector
-        info <- as.list(as.data.frame(colData(se)[name, x[[.tooltipColData]], drop=FALSE]))
+        info <- as.list(as.data.frame(colData(se)[name, slot(x, iSEEslots$tooltipColData), drop=FALSE]))
         ui <- .generate_tooltip_html(name, info)
         ui
     } else {
@@ -618,7 +631,7 @@ setMethod(".getTooltipUI", "ColumnDotPlot", function(x, se, name) {
 setMethod(".getDotPlotColorHelp", "ColumnDotPlot", function(x, color_choices) {
     force(color_choices)
     function(plot_name) {
-        start <- paste0("#", plot_name, "_", .colorByField)
+        start <- paste0("#", plot_name, "_", iSEEslots$colorByField)
         base <- "We can choose to color points by a constant (<em>None</em>) or various per-column attributes. Try out some of the different choices here, and note how further options become available when each choice is selected."
         steps <- list(c(element=start, intro=base))
 
@@ -629,7 +642,7 @@ setMethod(".getDotPlotColorHelp", "ColumnDotPlot", function(x, color_choices) {
                     intro="For example, if we <strong>select <em>Column data</em></strong>..."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colorByColData, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$colorByColData, " + .selectize-control"),
                     intro="... we can choose between different <code>colData</code> fields that we might want to color by."
                 )
             ))
@@ -642,19 +655,19 @@ setMethod(".getDotPlotColorHelp", "ColumnDotPlot", function(x, color_choices) {
                     intro="If we <strong>select <em>Feature name</em></strong>..."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colorByFeatName, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$colorByFeatName, " + .selectize-control"),
                     intro="... each point is colored according to the assay value of a feature of interest for the corresponding column."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colorByFeatNameAssay, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$colorByFeatNameAssay, " + .selectize-control"),
                     intro="We can change the choice of assay."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colorByRowTable, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$colorByRowTable, " + .selectize-control"),
                     intro="And we can even synchronize the choice of feature to a selection in another panel. This assumes that our current application actually has another panel that allows us to select a single feature from our <code>SummarizedExperiment</code>."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colorByFeatDynamic),
+                    element=paste0("#", plot_name, "_", iSEEslots$colorByFeatDynamic),
                     intro="In fact, we don't even need to manually choose another panel - if dynamic feature selection is enabled, the plot will automatically respond to any single feature selection from any applicable panel in our application."
                 )
             ))
@@ -667,19 +680,19 @@ setMethod(".getDotPlotColorHelp", "ColumnDotPlot", function(x, color_choices) {
                     intro="If we <strong>select <em>Sample name</em></strong>..."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colorBySampName, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$colorBySampName, " + .selectize-control"),
                     intro="... we can highlight a particular point based on the column name."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colorBySampNameColor),
+                    element=paste0("#", plot_name, "_", iSEEslots$colorBySampNameColor),
                     intro="We can fiddle with the choice of color for the highlighted point."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colorByColTable, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$colorByColTable, " + .selectize-control"),
                     intro="We can even synchronize the choice of sample to a selection in another panel. This assumes that our current application actually has another panel that we can use to select a single sample."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colorBySampDynamic),
+                    element=paste0("#", plot_name, "_", iSEEslots$colorBySampDynamic),
                     intro="In fact, we don't even need to manually choose another panel - if dynamic sample selection is enabled, the plot will automatically respond to any single sample selection from any applicable panel in our application."
                 )
             ))
@@ -707,7 +720,7 @@ setMethod("updateObject", "ColumnDotPlot", function(object, ..., verbose=FALSE) 
         # nocov start
 
         # Do this before 'callNextMethod()', which fills in the Restrict.
-        update.2.3 <- is(try(slot(object, .selectColRestrict), silent=TRUE), "try-error")
+        update.2.3 <- is(try(slot(object, iSEEslots$selectColRestrict), silent=TRUE), "try-error")
 
         # NOTE: it is crucial that updateObject does not contain '[[' or '[[<-'
         # calls, lest we get sucked into infinite recursion with the calls to
@@ -716,7 +729,7 @@ setMethod("updateObject", "ColumnDotPlot", function(object, ..., verbose=FALSE) 
 
         if (update.2.3) {
             effect <- object@SelectionEffect
-            slot(object, .selectColRestrict) <- (effect=="Restrict")
+            slot(object, iSEEslots$selectColRestrict) <- (effect=="Restrict")
         }
 
         # nocov end

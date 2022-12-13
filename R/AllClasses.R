@@ -105,7 +105,7 @@ setClass("ExperimentColorMap",
 
 #' iSEE Panel Slot Names 
 #'
-#' Access the name of slots in \pkg{iSEE} panel classes.
+#' Named list of slots in \pkg{iSEE} panel classes.
 #' 
 #' The \code{iSEEslots} object exports the name of slots for \pkg{iSEE} panel classes, and should only be used by developers of packages that extend \pkg{iSEE} functionality.
 #' Developers should access the name of slots using the \code{$} operator and the identifier of the slot name, e.g. \code{iSEEslots$organizationWidth}.
@@ -114,6 +114,9 @@ setClass("ExperimentColorMap",
 #' Developers of new panels that extend \pkg{iSEE} functionality should add any new slot name to the \code{iSEEslots} object using a new slot identifier, e.g. \code{iSEEslots$myNewSlotIdentifier <- "MyNewSlotName"}.
 #' 
 #' @section Slot identifiers for the virtual class `Panel`:
+#' 
+#' Refer to \linkS4class{Panel} for more details and default values.
+#' 
 #' \describe{
 #' \item{\code{packageVersion}}{Named list of package versions active when the panel object was generated or last updated.}
 #' \item{\code{organizationId}}{Integer scalar specifying the width of the panel;
@@ -129,6 +132,45 @@ setClass("ExperimentColorMap",
 #' \item{\code{selectRowRestrict}}{Logical scalar indicating whether the display of the panel should be restricted to the rows in the multiple selection received from a transmitting panel.}
 #' \item{\code{selectColRestrict}}{Logical scalar indicating whether the display of the panel should be restricted to the columns in the multiple selection received from a transmitting panel.}
 #' \item{\code{multiSelectHistory}}{List of arbitrary elements that contain parameters for saved multiple selections. Each element of this list corresponds to one saved selection in the current panel.}
+#' }
+#' 
+#' @section Slot identifiers for the virtual class `DotPlot`:
+#' 
+#' Refer to \linkS4class{DotPlot} for more details and default values.
+#' 
+#' \describe{
+#' \item{\code{facetRow}}{String indicating what to use for creating row facets.}
+#' \item{\code{facetColumn}}{String indicating what to use for creating row facets.}
+#' \item{\code{colorByField}}{String specifying how points should be colored.}
+#' \item{\code{colorByDefaultColor}}{String specifying the default color to use for all points if \code{colorByField} is \code{\link{iSEEconstants}$colorByNothingTitle}.}
+#' \item{\code{colorByFeatName}}{String specifying the feature to be used for coloring points when \code{colorByField} is \code{\link{iSEEconstants}$colorByFeatNameTitle}.}
+#' \item{\code{colorByRowTable}}{String specifying the name of the panel to use for transmitting the feature selection to \code{colorByFeatName}.}
+#' \item{\code{colorByFeatDynamic}}{Logical scalar indicating whether the panel should dynamically change its selection source when coloring by feature.}
+#' \item{\code{colorBySampName}}{String specifying the sample to be used for coloring points when \code{colorByField} is \code{\link{iSEEconstants}$colorBySampNameTitle}.}
+#' \item{\code{colorByColTable}}{String specifying the name of the panel to use for transmitting the sample selection to \code{ColorBySampleNameColor}.}
+#' \item{\code{colorBySampDynamic}}{Logical scalar indicating whether the panel should dynamically change its selection source when coloring by feature.}
+#' \item{\code{shapeByField}}{String specifying how the point shape should be determined.}
+#' \item{\code{sizeByField}}{String specifying the metadata field for controlling point size.}
+#' \item{\code{selectTransAlpha}}{Numeric scalar specifying the transparency to use for non-selected points.}
+#' \item{\code{zoomData}}{Named numeric vector of plot coordinates parametrizing the zoom boundaries.}
+#' \item{\code{brushData}}{List containing either a Shiny brush (see \code{?brushedPoints}) or an iSEE lasso (see \code{?lassoPoints}).}
+#' \item{\code{visualParamBoxOpen}}{Logical scalar indicating whether the visual parameter box should be open.}
+#' \item{\code{visualParamChoice}}{Character vector specifying the visible interface elements upon initialization.}
+#' \item{\code{contourColor}}{String specifying the color to use for the contour lines.}
+#' \item{\code{contourAdd}}{Logical scalar indicating whether a contour should be added to a (scatter) plot.}
+#' \item{\code{plotPointSize}}{Positive numeric scalar specifying the relative size of the points.}
+#' \item{\code{plotPointAlpha}}{Non-negative numeric scalar specifying the transparency of the points.}
+#' \item{\code{plotPointDownsample}}{Logical scalar indicating whether to downsample points for faster plotting.}
+#' \item{\code{plotPointSampleRes}}{Numeric scalar specifying the resolution of the downsampling grid (see \code{?subsetPointsByGrid}) if \code{plotPointDownsample} is \code{TRUE}.}
+#' \item{\code{plotCustomLabels}}{Logical scalar indicating whether custom labels should be inserted on specific points.}
+#' \item{\code{plotCustomLabelsText}}{A (possibly multi-line) string with the names of the points to label when \code{plotCustomLabels} is \code{TRUE}.}
+#' \item{\code{plotFontSize}}{Positive numeric scalar specifying the relative font size.}
+#' \item{\code{legendPointSize}}{Positive numeric scalar specifying the relative size of the points in the legend.}
+#' \item{\code{plotLegendPosition}}{String specifying the position of the legend on the plot.}
+#' \item{\code{plotHoverInfo}}{Logical scalar indicating whether the feature/sample name should be shown upon mouse-over of the point.}
+#' \item{\code{plotLabelCenters}}{Logical scalar indicating whether the label the centers (technically medoids) of all data points in each group, where groups are defined by a discrete covariate in the relevant metadata field.}
+#' \item{\code{plotLabelCentersBy}}{String specifying the metadata field to define the groups when \code{plotLabelCenters} is \code{TRUE}.}
+#' \item{\code{plotLabelCentersColor}}{String specifying the color used for the labels at the center of each group.}
 #' }
 #'
 #' @author Kevin Rue-Albrecht

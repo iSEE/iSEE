@@ -19,8 +19,8 @@
 #' @rdname INTERNAL_create_voice_observers
 .create_voice_observers <- function(input, output, session, se, pObjects, rObjects) {
     # nocov start
-    observeEvent(input[[.voiceCreatePanelInput]], {
-        voice <- input[[.voiceCreatePanelInput]]
+    observeEvent(input[[iSEEconstants$voiceCreatePanelInput]], {
+        voice <- input[[iSEEconstants$voiceCreatePanelInput]]
         if (voice != "") {
             showNotification(sprintf("<Create panel> %s", voice), type="message")
         }
@@ -55,14 +55,14 @@
         added_full_name <- .getFullName(new_panel)
         added_encoded_name <- .getEncodedName(new_panel)
         showNotification(sprintf("<Create panel> %s", added_full_name), type="message")
-        pObjects[[.voiceActivePanel]] <- added_encoded_name
-        showNotification(sprintf("Active panel: %s", added_full_name), id=.voiceActivePanel, duration=NULL)
+        pObjects[[iSEEconstants$voiceActivePanel]] <- added_encoded_name
+        showNotification(sprintf("Active panel: %s", added_full_name), id=iSEEconstants$voiceActivePanel, duration=NULL)
     }, ignoreInit=TRUE)
     # nocov end
 
     # nocov start
-    observeEvent(input[[.voiceRemovePanelInput]], {
-        voice <- input[[.voiceRemovePanelInput]]
+    observeEvent(input[[iSEEconstants$voiceRemovePanelInput]], {
+        voice <- input[[iSEEconstants$voiceRemovePanelInput]]
         if (voice != "") {
             showNotification(sprintf("<Remove panel> %s", voice), type="message")
         }
@@ -82,17 +82,17 @@
 
         showNotification(sprintf("<Remove panel> %s", full_name), type="message")
         # If panel was under voice control, clear memory.
-        if (identical(encoded_name, pObjects[[.voiceActivePanel]])) {
-            pObjects[[.voiceActivePanel]] <- NA_character_
-            removeNotification(.voiceActivePanel, session)
+        if (identical(encoded_name, pObjects[[iSEEconstants$voiceActivePanel]])) {
+            pObjects[[iSEEconstants$voiceActivePanel]] <- NA_character_
+            removeNotification(iSEEconstants$voiceActivePanel, session)
             showNotification("Active panel cleared", type="message")
         }
     }, ignoreInit=TRUE)
     # nocov end
 
     # nocov start
-    observeEvent(input[[.voiceControlPanelInput]], {
-        voice <- input[[.voiceControlPanelInput]]
+    observeEvent(input[[iSEEconstants$voiceControlPanelInput]], {
+        voice <- input[[iSEEconstants$voiceControlPanelInput]]
         if (voice != "") {
             showNotification(sprintf("<Control panel> %s", voice), type="message")
         }
@@ -106,15 +106,15 @@
 
         # Memorize the panel
         showNotification(sprintf("<Control panel> %s", full_name), type="message")
-        pObjects[[.voiceActivePanel]] <- encoded_name
-        showNotification(sprintf("Active panel: %s", full_name), id=.voiceActivePanel, duration=NULL)
+        pObjects[[iSEEconstants$voiceActivePanel]] <- encoded_name
+        showNotification(sprintf("Active panel: %s", full_name), id=iSEEconstants$voiceActivePanel, duration=NULL)
     }, ignoreInit=TRUE)
     # nocov end
 
     # nocov start
-    observeEvent(input[[.voiceShowActivePanelInput]], {
+    observeEvent(input[[iSEEconstants$voiceShowActivePanelInput]], {
         # TODO: refactor next 4 lines into function
-        active_panel <- pObjects[[.voiceActivePanel]]
+        active_panel <- pObjects[[iSEEconstants$voiceActivePanel]]
         if (is.na(active_panel)) {
             showNotification("No active panel", type="error")
             return(NULL)
@@ -123,20 +123,20 @@
         active_panel <- pObjects$memory[[active_panel]]
 
         full_name <- .getFullName(active_panel)
-        showNotification(sprintf("Active panel: %s", full_name), id=.voiceActivePanel, duration=NULL)
+        showNotification(sprintf("Active panel: %s", full_name), id=iSEEconstants$voiceActivePanel, duration=NULL)
     })
     # nocov end
 
     # nocov start
-    observeEvent(input[[.voiceColorUsingInput]], {
+    observeEvent(input[[iSEEconstants$voiceColorUsingInput]], {
         # TODO: refactor next 4 lines into function
-        active_panel <- pObjects[[.voiceActivePanel]]
+        active_panel <- pObjects[[iSEEconstants$voiceActivePanel]]
         if (is.na(active_panel)) {
             showNotification("No active panel", type="error")
             return(NULL)
         }
 
-        voice <- input[[.voiceColorUsingInput]]
+        voice <- input[[iSEEconstants$voiceColorUsingInput]]
         if (voice != "") {
             showNotification(sprintf("<Color using> %s", voice), type="message")
         }
@@ -169,15 +169,15 @@
     # nocov end
 
     # nocov start
-    observeEvent(input[[.voiceColorByInput]], {
+    observeEvent(input[[iSEEconstants$voiceColorByInput]], {
         # TODO: refactor next 4 lines into function
-        active_panel <- pObjects[[.voiceActivePanel]]
+        active_panel <- pObjects[[iSEEconstants$voiceActivePanel]]
         if (is.na(active_panel)) {
             showNotification("No active panel", type="error")
             return(NULL)
         }
 
-        voice <- input[[.voiceColorByInput]]
+        voice <- input[[iSEEconstants$voiceColorByInput]]
         if (voice != "") {
             showNotification(sprintf("<Color by> %s", voice), type="message")
         }
@@ -185,7 +185,7 @@
         active_panel <- pObjects$memory[[active_panel]]
         encoded_name <- .getEncodedName(active_panel)
 
-        colorby_field <- paste0(encoded_name, "_", .colorByField)
+        colorby_field <- paste0(encoded_name, "_", iSEEslots$colorByField)
         colorby_title <- isolate(input[[colorby_field]])
 
         # Fetch the available choices
@@ -193,19 +193,19 @@
 
         # Check if the choice matches one of the available values
         matchedChoice <- character(0)
-        if (colorby_title == .colorByNothingTitle) {
+        if (colorby_title == iSEEconstants$colorByNothingTitle) {
             return(NULL)
-        } else if (colorby_title == .colorByColDataTitle) {
-            colorby_param <- .colorByColData
+        } else if (colorby_title == iSEEconstants$colorByColDataTitle) {
+            colorby_param <- iSEEslots$colorByColData
             matchedChoice <- .nearestValidChoice(voice, choices, max.edits=Inf)
-        } else if (colorby_title == .colorByRowDataTitle) {
-            colorby_param <- .colorByRowData
+        } else if (colorby_title == iSEEconstants$colorByRowDataTitle) {
+            colorby_param <- iSEEslots$colorByRowData
             matchedChoice <- .nearestValidChoice(voice, choices, max.edits=Inf)
-        } else if (colorby_title == .colorByFeatNameTitle) {
-            colorby_param <- .colorByFeatName
+        } else if (colorby_title == iSEEconstants$colorByFeatNameTitle) {
+            colorby_param <- iSEEslots$colorByFeatName
             matchedChoice <- .nearestValidNamedChoice(voice, choices, max.edits=Inf)
-        } else if (colorby_title == .colorBySampNameTitle) {
-            colorby_param <- .colorBySampName
+        } else if (colorby_title == iSEEconstants$colorBySampNameTitle) {
+            colorby_param <- iSEEslots$colorBySampName
             matchedChoice <- .nearestValidNamedChoice(voice, choices, max.edits=Inf)
         }
 
@@ -220,15 +220,15 @@
     # nocov end
 
     # nocov start
-    observeEvent(input[[.voiceReceiveFromInput]], {
+    observeEvent(input[[iSEEconstants$voiceReceiveFromInput]], {
         # TODO: refactor next 4 lines into function
-        active_panel <- pObjects[[.voiceActivePanel]]
+        active_panel <- pObjects[[iSEEconstants$voiceActivePanel]]
         if (is.na(active_panel)) {
             showNotification("No active panel", type="error")
             return(NULL)
         }
 
-        voice <- input[[.voiceReceiveFromInput]]
+        voice <- input[[iSEEconstants$voiceReceiveFromInput]]
         if (voice != "") {
             showNotification(sprintf("<Receive from> %s", voice), type="message")
         }
@@ -245,9 +245,9 @@
         names(target_encoded_name) <- target_full_name
 
         if (is(target_panel, "ColumnDotPlot")) {
-            select_field <- .selectColSource
+            select_field <- iSEEslots$selectColSource
         } else if (is(target_panel, "RowDotPlot")) {
-            select_field <- .selectRowSource
+            select_field <- iSEEslots$selectRowSource
         } else {
             return(NULL)
         }
@@ -259,15 +259,15 @@
     # nocov end
 
     # nocov start
-    observeEvent(input[[.voiceSendToInput]], {
+    observeEvent(input[[iSEEconstants$voiceSendToInput]], {
         # TODO: refactor next 4 lines into function
-        active_panel <- pObjects[[.voiceActivePanel]]
+        active_panel <- pObjects[[iSEEconstants$voiceActivePanel]]
         if (is.na(active_panel)) {
             showNotification("No active panel", type="error")
             return(NULL)
         }
 
-        voice <- input[[.voiceSendToInput]]
+        voice <- input[[iSEEconstants$voiceSendToInput]]
         if (voice != "") {
             showNotification(sprintf("<Send to> %s", voice), type="message")
         }
@@ -285,9 +285,9 @@
         target_full_name <- .getFullName(target_panel)
 
         if (is(active_panel, "ColumnDotPlot")) {
-            select_field <- .selectColSource
+            select_field <- iSEEslots$selectColSource
         } else if (is(active_panel, "RowDotPlot")) {
-            select_field <- .selectRowSource
+            select_field <- iSEEslots$selectRowSource
         } else {
             return(NULL)
         }

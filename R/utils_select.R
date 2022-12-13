@@ -11,7 +11,7 @@
 #' @author Aaron Lun
 #' @rdname INTERNAL_transmitted_selection
 .transmitted_selection <- function(parent_name, all_memory) {
-    if (parent_name==.noSelection) {
+    if (parent_name==iSEEconstants$noSelection) {
         FALSE
     } else {
         transmitter <- all_memory[[parent_name]]
@@ -32,7 +32,7 @@
 #' @author Aaron Lun
 #' @rdname INTERNAL_any_saved_selection
 .any_saved_selection <- function(x, count=TRUE) {
-    n <- length(x[[.multiSelectHistory]])
+    n <- length(x[[iSEEslots$multiSelectHistory]])
     if (count) {
         n
     } else {
@@ -101,22 +101,22 @@
     # Defining the row and column selections, and hoping that the
     # plot-generating functions know what to do with them.
     select_cmds <- list()
-    row_select_cmds <- .process_selectby_choice(x, by_field=.selectRowSource, 
+    row_select_cmds <- .process_selectby_choice(x, by_field=iSEEslots$selectRowSource, 
         all_memory=all_memory, varname="row_selected")
 
     if (!is.null(row_select_cmds)) {
-        transmitter <- x[[.selectRowSource]]
+        transmitter <- x[[iSEEslots$selectRowSource]]
         .populate_selection_environment(all_memory[[transmitter]], envir)
         envir$all_contents <- all_contents
         .textEval(row_select_cmds, envir)
         select_cmds[["row"]] <- row_select_cmds
     }
 
-    col_select_cmds <- .process_selectby_choice(x, by_field=.selectColSource, 
+    col_select_cmds <- .process_selectby_choice(x, by_field=iSEEslots$selectColSource, 
         all_memory=all_memory, varname="col_selected")
 
     if (!is.null(col_select_cmds)) {
-        transmitter <- x[[.selectColSource]]
+        transmitter <- x[[iSEEslots$selectColSource]]
         .populate_selection_environment(all_memory[[transmitter]], envir)
         envir$all_contents <- all_contents
         .textEval(col_select_cmds, envir)
@@ -170,7 +170,7 @@
     transmitter <- x[[by_field]]
     cmds <- list()
 
-    if (!identical(transmitter, .noSelection)) {
+    if (!identical(transmitter, iSEEconstants$noSelection)) {
         init_cmd <- sprintf("contents <- all_contents[['%s']];", transmitter)
         transmit_param <- all_memory[[transmitter]]
 
@@ -182,7 +182,7 @@
             )
         }
 
-        for (i in seq_along(transmit_param[[.multiSelectHistory]])) {
+        for (i in seq_along(transmit_param[[iSEEslots$multiSelectHistory]])) {
             outname <- paste0("saved", i)
             cmds[[outname]] <- c(
                 sprintf("select <- all_saved[['%s']][[%i]];", transmitter, i),
@@ -220,7 +220,7 @@
 #' \code{\link{.process_selectby_choice}}
 .populate_selection_environment <- function(x, envir) {
     envir$all_active <- list(.multiSelectionActive(x))
-    envir$all_saved <- list(x[[.multiSelectHistory]])
+    envir$all_saved <- list(x[[iSEEslots$multiSelectHistory]])
     names(envir$all_active) <- names(envir$all_saved) <- .getEncodedName(x)
     invisible(NULL)
 }
@@ -257,7 +257,7 @@
     output <- vector("list", length(choices))
     names(output) <- choices
     for (i in choices) {
-        output[[i]] <- c(.noSelection, all_names[dims==i])
+        output[[i]] <- c(iSEEconstants$noSelection, all_names[dims==i])
     }
 
     output

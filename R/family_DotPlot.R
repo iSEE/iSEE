@@ -1056,7 +1056,7 @@ setMethod(".defineOutput", "DotPlot", function(x) {
     col <- .getPanelColor(x)
 
     .define_plot_ui(plot_name, brush_direction="xy",
-        height=slot(x, .organizationHeight),
+        height=slot(x, iSEEslots$organizationHeight),
         brush_fill=.lighten_color_for_fill(col),
         brush_stroke=col
     )

@@ -109,7 +109,7 @@ setMethod(".refineParameters", "ColumnDataTable", function(x, se) {
     df <- colData(se)
 
     # First, expanding out so that we cover all columns.
-    search_vals <- slot(x, .TableColSearch)
+    search_vals <- slot(x, iSEEslots$TableColSearch)
     search_vals <- .expand_named_colsearch(df, search_vals)
 
     N <- ncol(df)
@@ -120,7 +120,7 @@ setMethod(".refineParameters", "ColumnDataTable", function(x, se) {
     # Then, contracting only to those columns that survived.
     keep <- match(valid.names, colnames(df))
     search_vals <- search_vals[keep]
-    slot(x, .TableColSearch) <- search_vals
+    slot(x, iSEEslots$TableColSearch) <- search_vals
 
     x
 })
@@ -155,7 +155,7 @@ setMethod(".generateTable", "ColumnDataTable", function(x, envir) {
 setMethod(".definePanelTour", "ColumnDataTable", function(x) {
     rbind(
         c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Column data table</font> panel contains a representation of the <code>colData</code> of our <code>SummarizedExperiment</code> object. Each row here corresponds to a column (i.e., sample) of the <code>SummarizedExperiment</code> while each column of the table is a column metadata variable.", .getPanelColor(x))),
-        .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this table.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
+        .addTourStep(x, iSEEslots$dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this table.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
         callNextMethod()
     )
 })

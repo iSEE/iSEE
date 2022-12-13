@@ -133,9 +133,9 @@ ColumnDataPlot <- function(...) {
 #' @importFrom methods callNextMethod
 setMethod("initialize", "ColumnDataPlot", function(.Object, ...) {
     args <- list(...)
-    args <- .emptyDefault(args, .colDataXAxis, .colDataXAxisNothingTitle)
-    args <- .emptyDefault(args, .colDataXAxisColData, NA_character_)
-    args <- .emptyDefault(args, .colDataYAxis, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$colDataXAxis, .colDataXAxisNothingTitle)
+    args <- .emptyDefault(args, iSEEslots$colDataXAxisColData, NA_character_)
+    args <- .emptyDefault(args, iSEEslots$colDataYAxis, NA_character_)
     do.call(callNextMethod, c(list(.Object), args))
 })
 
@@ -163,8 +163,8 @@ setMethod(".refineParameters", "ColumnDataPlot", function(x, se) {
         return(NULL)
     }
 
-    x <- .replaceMissingWithFirst(x, .colDataYAxis, yaxis)
-    x <- .replaceMissingWithFirst(x, .colDataXAxisColData, xaxis)
+    x <- .replaceMissingWithFirst(x, iSEEslots$colDataYAxis, yaxis)
+    x <- .replaceMissingWithFirst(x, iSEEslots$colDataXAxisColData, xaxis)
 
     x
 })
@@ -173,11 +173,11 @@ setMethod(".refineParameters", "ColumnDataPlot", function(x, se) {
 setValidity2("ColumnDataPlot", function(object) {
     msg <- character(0)
 
-    msg <- .allowableChoiceError(msg, object, .colDataXAxis,
+    msg <- .allowableChoiceError(msg, object, iSEEslots$colDataXAxis,
         c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle, .colDataXAxisSelectionsTitle))
 
     msg <- .singleStringError(msg, object,
-        c(.colDataXAxisColData, .colDataYAxis))
+        c(iSEEslots$colDataXAxisColData, iSEEslots$colDataYAxis))
 
     if (length(msg)) {
         return(msg)
@@ -192,30 +192,30 @@ setMethod(".defineDataInterface", "ColumnDataPlot", function(x, se, select_info)
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
-    .addSpecificTour(class(x)[1], .colDataYAxis, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$colDataYAxis, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element=paste0("#", plot_name, "_", .colDataYAxis, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$colDataYAxis, " + .selectize-control"),
                     intro="Here, we can specify the field of the <code>colData</code> to show on the y-axis."
                 )
             )
         )
     })
 
-    .addSpecificTour(class(x)[1], .colDataXAxis, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$colDataXAxis, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element=paste0("#", plot_name, "_", .colDataXAxis),
+                    element=paste0("#", plot_name, "_", iSEEslots$colDataXAxis),
                     intro="Here, we choose what to show on the x-axis. If we were to <strong>click on <em>Column data</em></strong>..." 
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colDataXAxisColData, " + .selectize-control"),
+                    element=paste0("#", plot_name, "_", iSEEslots$colDataXAxisColData, " + .selectize-control"),
                     intro="We can choose the field of the <code>colData</code> to show on the x-axis."
                 ),
                 c(
-                    element=paste0("#", plot_name, "_", .colDataXAxis),
+                    element=paste0("#", plot_name, "_", iSEEslots$colDataXAxis),
                     intro="The <em>Column selections</em> choice is a bit more exotic.
 If this panel is receiving a multiple column selection from another panel,
 we can stratify points on the x-axis according to whether they are part of that selection or not.
@@ -228,20 +228,20 @@ If any saved selections are present, these would show up as additional violins."
     })
 
     list(
-        .selectInput.iSEE(x, .colDataYAxis,
+        .selectInput.iSEE(x, iSEEslots$colDataYAxis,
             label="Column of interest (Y-axis):",
             choices=.allowableYAxisChoices(x, se),
-            selected=slot(x, .colDataYAxis)),
-        .radioButtons.iSEE(x, .colDataXAxis, 
+            selected=slot(x, iSEEslots$colDataYAxis)),
+        .radioButtons.iSEE(x, iSEEslots$colDataXAxis, 
             label="X-axis:", inline=TRUE,
             choices=c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle, .colDataXAxisSelectionsTitle),
-            selected=slot(x, .colDataXAxis)),
-        .conditionalOnRadio(.input_FUN(.colDataXAxis),
+            selected=slot(x, iSEEslots$colDataXAxis)),
+        .conditionalOnRadio(.input_FUN(iSEEslots$colDataXAxis),
             .colDataXAxisColDataTitle,
-            .selectInput.iSEE(x, .colDataXAxisColData,
+            .selectInput.iSEE(x, iSEEslots$colDataXAxisColData,
                 label="Column of interest (X-axis):",
                 choices=.allowableXAxisChoices(x, se),
-                selected=slot(x, .colDataXAxisColData),
+                selected=slot(x, iSEEslots$colDataXAxisColData),
                 help=FALSE
             )
         )
@@ -267,13 +267,13 @@ setMethod(".createObservers", "ColumnDataPlot", function(x, se, input, session, 
     plot_name <- .getEncodedName(x)
 
     .createProtectedParameterObservers(plot_name,
-        fields=c(.colDataYAxis, .colDataXAxis, .colDataXAxisColData),
+        fields=c(iSEEslots$colDataYAxis, iSEEslots$colDataXAxis, iSEEslots$colDataXAxisColData),
         input=input, pObjects=pObjects, rObjects=rObjects)
 })
 
 #' @export
 setMethod(".multiSelectionInvalidated", "ColumnDataPlot", function(x) {
-    slot(x, .colDataXAxis) == .colDataXAxisSelectionsTitle || callNextMethod()
+    slot(x, iSEEslots$colDataXAxis) == .colDataXAxisSelectionsTitle || callNextMethod()
 })
 
 #' @export
@@ -286,7 +286,7 @@ setMethod(".panelColor", "ColumnDataPlot", function(x) "#DB0230")
 setMethod(".generateDotPlotData", "ColumnDataPlot", function(x, envir) {
     data_cmds <- list()
 
-    y_lab <- slot(x, .colDataYAxis)
+    y_lab <- slot(x, iSEEslots$colDataYAxis)
     # NOTE: deparse() automatically adds quotes, AND protects against existing quotes/escapes.
     data_cmds[["y"]] <- sprintf(
         "plot.data <- data.frame(Y=colData(se)[, %s], row.names=colnames(se));",
@@ -294,7 +294,7 @@ setMethod(".generateDotPlotData", "ColumnDataPlot", function(x, envir) {
     )
 
     # Prepare X-axis data.
-    x_choice <- slot(x, .colDataXAxis)
+    x_choice <- slot(x, iSEEslots$colDataXAxis)
     if (x_choice == .colDataXAxisNothingTitle) {
         x_title <- x_lab <- ''
         data_cmds[["x"]] <- "plot.data$X <- factor(character(ncol(se)))"
@@ -314,7 +314,7 @@ setMethod(".generateDotPlotData", "ColumnDataPlot", function(x, envir) {
         )
 
     } else {
-        x_lab <- slot(x, .colDataXAxisColData)
+        x_lab <- slot(x, iSEEslots$colDataXAxisColData)
         x_title <- sprintf("vs %s", x_lab)
         data_cmds[["x"]] <- sprintf(
             "plot.data$X <- colData(se)[, %s];",
@@ -334,7 +334,7 @@ setMethod(".generateDotPlotData", "ColumnDataPlot", function(x, envir) {
 setMethod(".definePanelTour", "ColumnDataPlot", function(x) {
     collated <- rbind(
         c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Column data plot</font> panel shows variables from the column metadata (i.e., <code>colData</code>) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a column (usually a sample) of the <code>SummarizedExperiment</code>, and the y-axis represents a chosen variable.", .getPanelColor(x))),
-        .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options.")
+        .addTourStep(x, iSEEslots$dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options.")
     )
 
     rbind(

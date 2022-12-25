@@ -759,7 +759,7 @@ setMethod(".hideInterface", "ComplexHeatmapPlot", function(x, field) {
 
 #' @export
 setMethod(".multiSelectionRestricted", "ComplexHeatmapPlot", function(x) {
-    ## .heatMapShowSelection is not technically restricted, but requires rerendering nonetheless
+    ## iSEEslots$heatMapShowSelection is not technically restricted, but requires rerendering nonetheless
     !slot(x, iSEEslots$heatMapCustomFeatNames) || slot(x, iSEEslots$selectColRestrict) || slot(x, iSEEslots$heatMapShowSelection)
 })
 

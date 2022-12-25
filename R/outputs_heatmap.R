@@ -50,7 +50,7 @@
     all_cmds[["data"]] <- paste(
         sprintf(
             'plot.data <- assay(se, %s)[.chosen.rows, .chosen.columns, drop=FALSE]',
-            deparse(slot(x, .heatMapAssay))
+            deparse(slot(x, iSEEslots$heatMapAssay))
         ),
         'plot.data <- as.matrix(plot.data);',
         sep='\n'
@@ -61,7 +61,7 @@
 }
 
 .is_heatmap_continuous <- function(x, se) {
-    slot(x, .heatMapAssay) %in% .getCachedCommonInfo(se, "ComplexHeatmapPlot")$continuous.assay.names
+    slot(x, iSEEslots$heatMapAssay) %in% .getCachedCommonInfo(se, "ComplexHeatmapPlot")$continuous.assay.names
 }
 
 #' Process heatmap colorscales
@@ -90,24 +90,24 @@
 #'
 #' @rdname INTERNAL_process_heatmap_colormap
 .process_heatmap_assay_colormap <- function(x, se, envir) {
-    assay_name <- slot(x, .heatMapAssay)
+    assay_name <- slot(x, iSEEslots$heatMapAssay)
     cmds <- character(0)
 
     if (.is_heatmap_continuous(x, se)) {
-        if (slot(x, .assayCenterRows)) {
-            choice_colors <- slot(x, .heatMapCenteredColormap)
+        if (slot(x, iSEEslots$assayCenterRows)) {
+            choice_colors <- slot(x, iSEEslots$heatMapCenteredColormap)
             choice_colors <- strsplit(choice_colors, split = " < ", fixed = TRUE)[[1]]
             cmds <- c(cmds, sprintf(".assay_colors <- %s", deparse(choice_colors)))
         } else {
             cmds <- c(cmds, sprintf(".assay_colors <- assayColorMap(colormap, %s, discrete=FALSE)(21L)", deparse(assay_name)))
         }
 
-        if (slot(x, .heatMapCustomAssayBounds)) {
-            lower_bound <- slot(x, .assayLowerBound)
+        if (slot(x, iSEEslots$heatMapCustomAssayBounds)) {
+            lower_bound <- slot(x, iSEEslots$assayLowerBound)
             if (is.na(lower_bound)) {
                 lower_bound <- min(envir$plot.data, na.rm=TRUE)
             }
-            upper_bound <- slot(x, .assayUpperBound)
+            upper_bound <- slot(x, iSEEslots$assayUpperBound)
             if (is.na(upper_bound)) {
                 upper_bound <- max(envir$plot.data, na.rm=TRUE)
             }
@@ -116,8 +116,8 @@
             col_range <- range(envir$plot.data, na.rm = TRUE)
         }
 
-        col_range <- .safe_nonzero_range(col_range, slot(x, .assayCenterRows))
-        if (slot(x, .assayCenterRows)) {
+        col_range <- .safe_nonzero_range(col_range, slot(x, iSEEslots$assayCenterRows))
+        if (slot(x, iSEEslots$assayCenterRows)) {
             fmt <- '.assay_colors <- circlize::colorRamp2(breaks = c(%s, 0, %s), colors = .assay_colors)'
         } else {
             fmt <- ".assay_colors <- circlize::colorRamp2(breaks = seq(%s, %s, length.out = 21L), colors = .assay_colors)"
@@ -142,16 +142,16 @@
 #' @importFrom SummarizedExperiment colData
 #' @rdname INTERNAL_process_heatmap_colormap
 .process_heatmap_column_annotations_colorscale <- function(x, se, envir) {
-    if (length(slot(x, .heatMapColData))==0 && !slot(x, .heatMapShowSelection)) {
+    if (length(slot(x, iSEEslots$heatMapColData))==0 && !slot(x, iSEEslots$heatMapShowSelection)) {
         return(NULL)
     }
 
     cmds <- "# Keep all samples to compute the full range of continuous annotations"
-    cmds <- c(cmds, sprintf(".column_data <- colData(se)[, %s, drop=FALSE]", .deparse_for_viewing(slot(x, .heatMapColData))))
+    cmds <- c(cmds, sprintf(".column_data <- colData(se)[, %s, drop=FALSE]", .deparse_for_viewing(slot(x, iSEEslots$heatMapColData))))
     .textEval(cmds, envir)
 
     # Process selected points
-    if (slot(x, .heatMapShowSelection)) {
+    if (slot(x, iSEEslots$heatMapShowSelection)) {
         if (exists("col_selected", envir=envir, inherits=FALSE)) {
             target <- "col_selected"
         } else {
@@ -175,7 +175,7 @@
     .textEval(init_cmd, envir)
     cmds <- c(cmds, "", init_cmd, "")
 
-    for (annot in slot(x, .heatMapColData)) {
+    for (annot in slot(x, iSEEslots$heatMapColData)) {
         cmds <- c(cmds,
             .coerce_dataframe_columns(envir,
                 fields=annot, df=".column_data",
@@ -213,7 +213,7 @@
     # Add color map for selected points
     additional <- character(0)
 
-    if (slot(x, .heatMapShowSelection)) {
+    if (slot(x, iSEEslots$heatMapShowSelection)) {
         additional <- c(
             additional,
             sprintf('.column_col[["%s"]] <- iSEE::columnSelectionColorMap(colormap, levels(.column_data[["%s"]]))',
@@ -228,8 +228,8 @@
      )
 
     # Reordering by the column annotations.
-    order_by <- sprintf(".column_data[[%s]]", vapply(slot(x, .heatMapColData), deparse, ""))
-    if (slot(x, .heatMapOrderSelection) && slot(x, .heatMapShowSelection)) {
+    order_by <- sprintf(".column_data[[%s]]", vapply(slot(x, iSEEslots$heatMapColData), deparse, ""))
+    if (slot(x, iSEEslots$heatMapOrderSelection) && slot(x, iSEEslots$heatMapShowSelection)) {
         order_by <- c(sprintf('.column_data[["%s"]]', chosen.name), order_by)
     }
 
@@ -244,7 +244,7 @@
     additional <- c(additional,
         sprintf(
             ".column_annot <- ComplexHeatmap::columnAnnotation(df=.column_data, col=.column_col, annotation_legend_param=list(direction=%s))",
-            deparse(tolower(slot(x, .plotLegendDirection)))
+            deparse(tolower(slot(x, iSEEslots$plotLegendDirection)))
         )
     )
 
@@ -257,12 +257,12 @@
 #' @importFrom SummarizedExperiment rowData
 #' @rdname INTERNAL_process_heatmap_colormap
 .process_heatmap_row_annotations_colorscale <- function(x, se, envir) {
-    if (length(slot(x, .heatMapRowData))==0) {
+    if (length(slot(x, iSEEslots$heatMapRowData))==0) {
         return(NULL)
     }
 
     cmds <- "# Keep all features to compute the full range of continuous annotations"
-    cmds <- c(cmds, sprintf(".row_data <- rowData(se)[, %s, drop=FALSE]", .deparse_for_viewing(slot(x, .heatMapRowData))))
+    cmds <- c(cmds, sprintf(".row_data <- rowData(se)[, %s, drop=FALSE]", .deparse_for_viewing(slot(x, iSEEslots$heatMapRowData))))
     .textEval(cmds, envir)
 
     # column color maps
@@ -270,7 +270,7 @@
     .textEval(init_cmd, envir)
     cmds <- c(cmds, "", init_cmd, "")
 
-    for (annot in slot(x, .heatMapRowData)) {
+    for (annot in slot(x, iSEEslots$heatMapRowData)) {
         cmds <- c(cmds,
             .coerce_dataframe_columns(envir,
                 fields=annot, df=".row_data",
@@ -310,7 +310,7 @@
     additional <- c(additional,
         sprintf(
             ".row_annot <- ComplexHeatmap::rowAnnotation(df=.row_data, col=.row_col, annotation_legend_param=list(direction=%s))",
-            deparse(tolower(slot(x, .plotLegendDirection)))
+            deparse(tolower(slot(x, iSEEslots$plotLegendDirection)))
         )
     )
 
@@ -358,9 +358,9 @@
     cmds <- NULL
 
     if (.is_heatmap_continuous(x, se)) {
-        if (slot(x, .assayCenterRows)) {
+        if (slot(x, iSEEslots$assayCenterRows)) {
             cmds <- "plot.data <- plot.data - rowMeans(plot.data)"
-            if (slot(x, .assayScaleRows)) {
+            if (slot(x, iSEEslots$assayScaleRows)) {
                 cmds <- c(cmds, "plot.data <- plot.data / apply(plot.data, 1, sd)")
             }
             .textEval(cmds, envir)
@@ -380,19 +380,19 @@
 #'
 #' @rdname INTERNAL_build_heatmap_assay_name
 .build_heatmap_assay_legend_title <- function(x, discrete) {
-    assay_name <- slot(x, .heatMapAssay)
+    assay_name <- slot(x, iSEEslots$heatMapAssay)
 
     if (discrete) {
         return(assay_name)
     }
 
-    if (slot(x, .assayCenterRows)) {
-        transform_labels <- c("centered"=TRUE, "scaled"=slot(x, .assayScaleRows))
+    if (slot(x, iSEEslots$assayCenterRows)) {
+        transform_labels <- c("centered"=TRUE, "scaled"=slot(x, iSEEslots$assayScaleRows))
         transform_str <- sprintf("(%s)", paste0(names(which(transform_labels)), collapse = ", "))
     } else {
         transform_str <- NULL
     }
 
-    legend_sep <- ifelse(slot(x, .plotLegendDirection) == "Vertical", "\n", " ")
+    legend_sep <- ifelse(slot(x, iSEEslots$plotLegendDirection) == "Vertical", "\n", " ")
     paste0(c(assay_name, transform_str), collapse = legend_sep)
 }

@@ -167,7 +167,7 @@ iSEEconstants <- list(
     clusterMethodMedian = "median",
     clusterMethodCentroid = "centroid",
     
-    # .heatMapCenteredColormap colormaps ----
+    # iSEEslots$heatMapCenteredColormap colormaps ----
     
     colormapPurpleBlackYellow = "purple < black < yellow",
     colormapBlueWhiteOrange = "blue < white < orange",

@@ -29,19 +29,19 @@
     .input_FUN <- function(field) paste0(plot_name, "_", field)
 
     # nocov start
-    observeEvent(input[[.input_FUN(.heatMapAssay)]], {
+    observeEvent(input[[.input_FUN(iSEEslots$heatMapAssay)]], {
         # .createUnprotectedParameterObservers with a twist
-        current <- slot(pObjects$memory[[plot_name]], .heatMapAssay)
-        matched_input <- as(input[[.input_FUN(.heatMapAssay)]], typeof(current))
+        current <- slot(pObjects$memory[[plot_name]], iSEEslots$heatMapAssay)
+        matched_input <- as(input[[.input_FUN(iSEEslots$heatMapAssay)]], typeof(current))
         if (identical(matched_input, current)) {
             return(NULL)
         }
-        slot(pObjects$memory[[plot_name]], .heatMapAssay) <- matched_input
+        slot(pObjects$memory[[plot_name]], iSEEslots$heatMapAssay) <- matched_input
 
         # Twist: clear and update the limits of lower/upper bounds based on the new data
-        plot_range <- range(assay(se, input[[.input_FUN(.heatMapAssay)]]), na.rm = TRUE)
-        updateNumericInput(session, .input_FUN(.assayLowerBound), value = numeric(0), min = -Inf, max = 0)
-        updateNumericInput(session, .input_FUN(.assayUpperBound), value = numeric(0), min = 0, max = Inf)
+        plot_range <- range(assay(se, input[[.input_FUN(iSEEslots$heatMapAssay)]]), na.rm = TRUE)
+        updateNumericInput(session, .input_FUN(iSEEslots$assayLowerBound), value = numeric(0), min = -Inf, max = 0)
+        updateNumericInput(session, .input_FUN(iSEEslots$assayUpperBound), value = numeric(0), min = 0, max = Inf)
 
         # Twist2: toggle UI related to discrete/continuous assays
         ABLEFUN <- if (matched_input %in% .getCachedCommonInfo(se, "ComplexHeatmapPlot")$discrete.assay.names) {
@@ -50,32 +50,32 @@
             enable
         }
 
-        ABLEFUN(.input_FUN(.assayCenterRows))
-        ABLEFUN(.input_FUN(.assayScaleRows))
-        ABLEFUN(.input_FUN(.heatMapCenteredColormap))
-        ABLEFUN(.input_FUN(.heatMapCustomAssayBounds))
-        ABLEFUN(.input_FUN(.assayLowerBound))
-        ABLEFUN(.input_FUN(.assayUpperBound))
-        ABLEFUN(.input_FUN(.heatMapClusterFeatures))
-        ABLEFUN(.input_FUN(.heatMapClusterDistanceFeatures))
-        ABLEFUN(.input_FUN(.heatMapClusterMethodFeatures))
+        ABLEFUN(.input_FUN(iSEEslots$assayCenterRows))
+        ABLEFUN(.input_FUN(iSEEslots$assayScaleRows))
+        ABLEFUN(.input_FUN(iSEEslots$heatMapCenteredColormap))
+        ABLEFUN(.input_FUN(iSEEslots$heatMapCustomAssayBounds))
+        ABLEFUN(.input_FUN(iSEEslots$assayLowerBound))
+        ABLEFUN(.input_FUN(iSEEslots$assayUpperBound))
+        ABLEFUN(.input_FUN(iSEEslots$heatMapClusterFeatures))
+        ABLEFUN(.input_FUN(iSEEslots$heatMapClusterDistanceFeatures))
+        ABLEFUN(.input_FUN(iSEEslots$heatMapClusterMethodFeatures))
 
         .requestUpdate(plot_name, rObjects)
     }, ignoreInit=TRUE, ignoreNULL=TRUE)
     # nocov end
     
     # nocov start
-    observeEvent(input[[.input_FUN(.heatMapCustomAssayBounds)]], {
+    observeEvent(input[[.input_FUN(iSEEslots$heatMapCustomAssayBounds)]], {
         # .createUnprotectedParameterObservers with a twist
-        current <- slot(pObjects$memory[[plot_name]], .heatMapCustomAssayBounds)
-        matched_input <- as(input[[.input_FUN(.heatMapCustomAssayBounds)]], typeof(current))
+        current <- slot(pObjects$memory[[plot_name]], iSEEslots$heatMapCustomAssayBounds)
+        matched_input <- as(input[[.input_FUN(iSEEslots$heatMapCustomAssayBounds)]], typeof(current))
         if (identical(matched_input, current)) {
             return(NULL)
         }
-        slot(pObjects$memory[[plot_name]], .heatMapCustomAssayBounds) <- matched_input
+        slot(pObjects$memory[[plot_name]], iSEEslots$heatMapCustomAssayBounds) <- matched_input
         
         # Twist: do not rerender if both custom assay bounds UI are empty
-        if (is.na(input[[.input_FUN(.assayLowerBound)]]) && is.na(input[[.input_FUN(.assayUpperBound)]])) {
+        if (is.na(input[[.input_FUN(iSEEslots$assayLowerBound)]]) && is.na(input[[.input_FUN(iSEEslots$assayUpperBound)]])) {
             return(NULL)
         }
         
@@ -84,7 +84,7 @@
     # nocov end
     
     # nocov start
-    for (field in c(.assayCenterRows, .assayScaleRows)) {
+    for (field in c(iSEEslots$assayCenterRows, iSEEslots$assayScaleRows)) {
         local({
             field0 <- field
             observeEvent(input[[.input_FUN(field0)]], {
@@ -97,8 +97,8 @@
                 slot(pObjects$memory[[plot_name]], field0) <- matched_input
 
                 # Twist: clear and update the limits of lower/upper bounds based on the new data
-                updateNumericInput(session, .input_FUN(.assayLowerBound), value = numeric(0), min = -Inf, max = 0)
-                updateNumericInput(session, .input_FUN(.assayUpperBound), value = numeric(0), min = 0, max = Inf)
+                updateNumericInput(session, .input_FUN(iSEEslots$assayLowerBound), value = numeric(0), min = -Inf, max = 0)
+                updateNumericInput(session, .input_FUN(iSEEslots$assayUpperBound), value = numeric(0), min = 0, max = Inf)
 
                 .requestUpdate(plot_name, rObjects)
             }, ignoreInit=TRUE, ignoreNULL=TRUE)
@@ -107,7 +107,7 @@
     # nocov end
 
     # nocov start
-    all.bounds <- c(.assayLowerBound, .assayUpperBound)
+    all.bounds <- c(iSEEslots$assayLowerBound, iSEEslots$assayUpperBound)
     for (bound in all.bounds) {
         local({
             bound0 <- bound
@@ -128,8 +128,8 @@
                 # The upper bound cannot be lower than the lower bound.
                 other_bound <- slot(pObjects$memory[[plot_name]], other)
                 if (!is.null(other_bound) && !is.na(other_bound) &&
-                    ((bound0==.assayLowerBound && cur_value > other_bound) ||
-                        (bound0==.assayUpperBound && cur_value < other_bound)))
+                    ((bound0==iSEEslots$assayLowerBound && cur_value > other_bound) ||
+                        (bound0==iSEEslots$assayUpperBound && cur_value < other_bound)))
                 {
                     # set identical values; 0-length range is handled later
                     slot(pObjects$memory[[plot_name]], other) <- cur_value

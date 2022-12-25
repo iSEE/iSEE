@@ -15,5 +15,3 @@ for (slotname in names(iSEEslots)) {
 }
 
 cat(sprintf("== hitCount: %i\n", hitCount), sep = "")
-
-iSEEslots$tooltipColData

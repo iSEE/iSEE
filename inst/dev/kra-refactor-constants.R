@@ -1,3 +1,4 @@
+hitCount <- 0
 for (slotname in names(iSEEslots)) {
     fixed_search_string <- paste0("\\.", slotname, "[^A-Za-z]")
     for (filename in list.files("R", full.names = TRUE)) {
@@ -7,9 +8,12 @@ for (slotname in names(iSEEslots)) {
             cat("Search: ", fixed_search_string, "\n", sep = "")
             cat("Filename: ", filename, "\n", sep = "")
             cat(sprintf("%i: %s\n", hits, filelines[hits]), sep = "")
-            stop("Fix this!")
+            hitCount <- hitCount + 1
+            # stop("Fix this!")
         }
     }
 }
 
-iSEEslots$plotPointSize
+cat(sprintf("== hitCount: %i\n", hitCount), sep = "")
+
+iSEEslots$tooltipColData

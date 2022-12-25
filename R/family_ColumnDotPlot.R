@@ -615,7 +615,7 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
 # Tooltip
 
 setMethod(".getTooltipUI", "ColumnDotPlot", function(x, se, name) {
-    if (length(x[[.tooltipColData]]) > 0) {
+    if (length(slot(x, iSEEslots$tooltipColData)) > 0) {
         # as.data.frame sometimes needed before as.list to fix names of items in vector
         info <- as.list(as.data.frame(colData(se)[name, slot(x, iSEEslots$tooltipColData), drop=FALSE]))
         ui <- .generate_tooltip_html(name, info)

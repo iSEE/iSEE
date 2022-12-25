@@ -397,7 +397,7 @@ setMethod(".singleSelectionSlots", "FeatureAssayPlot", function(x) {
 
 #' @export
 setMethod(".multiSelectionInvalidated", "FeatureAssayPlot", function(x) {
-    slot(x, .featAssayXAxis) == .featAssayXAxisSelectionsTitle || callNextMethod()
+    slot(x, iSEEslots$featAssayXAxis) == .featAssayXAxisSelectionsTitle || callNextMethod()
 })
 
 #' @export

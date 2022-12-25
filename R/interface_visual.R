@@ -160,7 +160,7 @@
     all_coldata <- .getCachedCommonInfo(se, "ComplexHeatmapPlot")$valid.colData.names
     all_rowdata <- .getCachedCommonInfo(se, "ComplexHeatmapPlot")$valid.rowData.names
 
-    assay_name <- slot(x, .heatMapAssay)
+    assay_name <- slot(x, iSEEslots$heatMapAssay)
     assay_discrete <- assay_name %in% .getCachedCommonInfo(se, "ComplexHeatmapPlot")$discrete.assay.names
 
     .input_FUN <- function(field) paste0(plot_name, "_", field)
@@ -173,11 +173,11 @@
         identity
     }
 
-    .addSpecificTour(class(x)[1], .heatMapColData, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$heatMapColData, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element = paste0("#", plot_name, "_", .heatMapColData, " + .selectize-control"),
+                    element = paste0("#", plot_name, "_", iSEEslots$heatMapColData, " + .selectize-control"),
                     intro = "Here, we can select column annotations to show as color bars above the heat map.
 This will also order the columns of the heat map by the values of the selected annotations (in the specified order, if multiple annotations are specified). This is useful for providing some structure to the heatmap."
                 )
@@ -185,11 +185,11 @@ This will also order the columns of the heat map by the values of the selected a
         )
     })
 
-    .addSpecificTour(class(x)[1], .heatMapRowData, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$heatMapRowData, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element = paste0("#", plot_name, "_", .heatMapRowData, " + .selectize-control"),
+                    element = paste0("#", plot_name, "_", iSEEslots$heatMapRowData, " + .selectize-control"),
                     intro = "Here, we can select row annotations to show as color bars on the left of the heat map.
 <br/><br/>
 This will <em>not</em> affect the order of rows in the heat map, as this is controlled in the <i>Data parameters</i> box."
@@ -198,11 +198,11 @@ This will <em>not</em> affect the order of rows in the heat map, as this is cont
         )
     })
 
-    .addSpecificTour(class(x)[1], .heatMapShowSelection, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$heatMapShowSelection, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element = paste0("#", plot_name, "_", .heatMapShowSelection),
+                    element = paste0("#", plot_name, "_", iSEEslots$heatMapShowSelection),
                     intro = "Ticked, this checkbox displays a color bar above the heat map, indicating data points received from an incoming multiple column selection.
 <br/><br/>
 It also reveals another checkbox that can be used to order columns of the heat maps using the selection, with selected points on the left and unselected point on the right."
@@ -211,11 +211,11 @@ It also reveals another checkbox that can be used to order columns of the heat m
         )
     })
 
-    .addSpecificTour(class(x)[1], .heatMapOrderSelection, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$heatMapOrderSelection, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element = paste0("#", plot_name, "_", .heatMapOrderSelection),
+                    element = paste0("#", plot_name, "_", iSEEslots$heatMapOrderSelection),
                     intro = "Ticked, this checkbox orders columns of the heat map using the incoming selection, if any, with selected points on the left and unselected point on the right.
 <br/><br/>
 This ordering takes precedence over the ordering by column annotations.
@@ -225,11 +225,11 @@ This is useful to compare features of selected data points to the rest of the da
         )
     })
 
-    .addSpecificTour(class(x)[1], .assayCenterRows, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$assayCenterRows, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element = paste0("#", plot_name, "_", .assayCenterRows),
+                    element = paste0("#", plot_name, "_", iSEEslots$assayCenterRows),
                     intro = "Here, we can dynamically center the values for each row shown in the heat map, i.e. to a mean value of 0.
 It also reveals another checkbox that can be used to scale values for each row.
 <br/><br/>
@@ -239,11 +239,11 @@ This does not alter any value in the data set; centered values are only computed
         )
     })
 
-    .addSpecificTour(class(x)[1], .assayScaleRows, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$assayScaleRows, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element = paste0("#", plot_name, "_", .assayScaleRows),
+                    element = paste0("#", plot_name, "_", iSEEslots$assayScaleRows),
                     intro = "Here, we can dynamically scale the values for each row shown in the heat map, i.e. to a standard deviation of 1.
 This row transformation is only available when row values are centered using the checkbox above.
 <br/><br/>
@@ -253,11 +253,11 @@ This does not alter any value in the data set; scaled values are only computed o
         )
     })
 
-    .addSpecificTour(class(x)[1], .heatMapCenteredColormap, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$heatMapCenteredColormap, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element = paste0("#", plot_name, "_", .heatMapCenteredColormap, " + .selectize-control"),
+                    element = paste0("#", plot_name, "_", iSEEslots$heatMapCenteredColormap, " + .selectize-control"),
                     intro = "Here, we can select from a choice of diverging color maps, when row values are centered using the checkbox above.
 <br/><br/>
 This is useful to visualize deviations from the mean, in particular when row values are also scaled using the second checkbox above."
@@ -266,11 +266,11 @@ This is useful to visualize deviations from the mean, in particular when row val
         )
     })
 
-    .addSpecificTour(class(x)[1], .heatMapCustomAssayBounds, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$heatMapCustomAssayBounds, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element = paste0("#", plot_name, "_", .heatMapCustomAssayBounds),
+                    element = paste0("#", plot_name, "_", iSEEslots$heatMapCustomAssayBounds),
                     intro = "Ticked, this checkbox reveals numeric fields that let us manually set custom lower and upper bounds for the color scale of the heat map.
 <br/><br/>
 This is useful to override the default range of the color scale, which is automatically fit to the range of values observed in the heat map."
@@ -279,55 +279,55 @@ This is useful to override the default range of the color scale, which is automa
         )
     })
 
-    .addSpecificTour(class(x)[1], .assayLowerBound, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$assayLowerBound, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element = paste0("#", plot_name, "_", .assayLowerBound),
+                    element = paste0("#", plot_name, "_", iSEEslots$assayLowerBound),
                     intro = "Here, we can manually override the lower bound of the heat map color scale."
                 )
             )
         )
     })
 
-    .addSpecificTour(class(x)[1], .assayUpperBound, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$assayUpperBound, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element = paste0("#", plot_name, "_", .assayUpperBound),
+                    element = paste0("#", plot_name, "_", iSEEslots$assayUpperBound),
                     intro = "Here, we can manually override the upper bound of the heat map color scale."
                 )
             )
         )
     })
 
-    .addSpecificTour(class(x)[1], .showDimnames, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$showDimnames, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element = paste0("#", plot_name, "_", .showDimnames),
+                    element = paste0("#", plot_name, "_", iSEEslots$showDimnames),
                     intro = "Here, we can control whether to show row names or column names."
                 )
             )
         )
     })
 
-    .addSpecificTour(class(x)[1], .namesRowFontSize, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$namesRowFontSize, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element = paste0("#", plot_name, "_", .namesRowFontSize),
+                    element = paste0("#", plot_name, "_", iSEEslots$namesRowFontSize),
                     intro = "Here, we can control the font size of the row names."
                 )
             )
         )
     })
 
-    .addSpecificTour(class(x)[1], .namesColumnFontSize, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$namesColumnFontSize, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element = paste0("#", plot_name, "_", .namesColumnFontSize),
+                    element = paste0("#", plot_name, "_", iSEEslots$namesColumnFontSize),
                     intro = "Here, we can control the font size of the column names."
                 )
             )
@@ -347,11 +347,11 @@ On the bottom, on the right; the choice is yours."
         )
     })
 
-    .addSpecificTour(class(x)[1], .plotLegendDirection, function(plot_name) {
+    .addSpecificTour(class(x)[1], iSEEslots$plotLegendDirection, function(plot_name) {
         data.frame(
             rbind(
                 c(
-                    element = paste0("#", plot_name, "_", .plotLegendDirection),
+                    element = paste0("#", plot_name, "_", iSEEslots$plotLegendDirection),
                     intro = "Changes the orientation of the legend on the plot, if any legend exists.
 Horizontal, vertical; the choice is yours."
                 )
@@ -371,28 +371,28 @@ Horizontal, vertical; the choice is yours."
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceMetadataTitle,
             hr(),
-            .selectizeInput.iSEE(x, .heatMapColData,
+            .selectizeInput.iSEE(x, iSEEslots$heatMapColData,
                 label = "Column annotations:",
-                selected = slot(x, .heatMapColData),
+                selected = slot(x, iSEEslots$heatMapColData),
                 choices = all_coldata,
                 multiple=TRUE,
                 options=list(plugins=list('remove_button', 'drag_drop')),
                 help = TRUE),
-            .selectizeInput.iSEE(x, .heatMapRowData,
+            .selectizeInput.iSEE(x, iSEEslots$heatMapRowData,
                 label = "Row annotations:",
-                selected = slot(x, .heatMapRowData),
+                selected = slot(x, iSEEslots$heatMapRowData),
                 choices = all_rowdata,
                 multiple=TRUE,
                 options=list(plugins=list('remove_button', 'drag_drop')),
                 help = TRUE),
-            .checkboxInput.iSEE(x, .heatMapShowSelection,
+            .checkboxInput.iSEE(x, iSEEslots$heatMapShowSelection,
                 label = "Show column selection",
-                value=slot(x, .heatMapShowSelection),
+                value=slot(x, iSEEslots$heatMapShowSelection),
                 help = TRUE),
-            .conditionalOnCheckSolo(.input_FUN(.heatMapShowSelection), on_select = TRUE,
-                .checkboxInput.iSEE(x, .heatMapOrderSelection,
+            .conditionalOnCheckSolo(.input_FUN(iSEEslots$heatMapShowSelection), on_select = TRUE,
+                .checkboxInput.iSEE(x, iSEEslots$heatMapOrderSelection,
                     label = "Order by column selection",
-                    value=slot(x, .heatMapOrderSelection),
+                    value=slot(x, iSEEslots$heatMapOrderSelection),
                     help = TRUE),
             )
         ),
@@ -401,21 +401,21 @@ Horizontal, vertical; the choice is yours."
             hr(),
             strong("Row transformations:"),
 
-            ABLEFUN(.checkboxInput.iSEE(x, .assayCenterRows,
+            ABLEFUN(.checkboxInput.iSEE(x, iSEEslots$assayCenterRows,
                 label = "Center",
-                value=slot(x, .assayCenterRows),
+                value=slot(x, iSEEslots$assayCenterRows),
                 help = TRUE)),
-            .conditionalOnCheckSolo(.input_FUN(.assayCenterRows), on_select = TRUE,
+            .conditionalOnCheckSolo(.input_FUN(iSEEslots$assayCenterRows), on_select = TRUE,
                 ABLEFUN(
-                    .checkboxInput.iSEE(x, .assayScaleRows,
+                    .checkboxInput.iSEE(x, iSEEslots$assayScaleRows,
                         label = "Scale",
-                        value=slot(x, .assayScaleRows),
+                        value=slot(x, iSEEslots$assayScaleRows),
                         help = TRUE)
                     ),
                 ABLEFUN(
-                    .selectizeInput.iSEE(x, .heatMapCenteredColormap,
+                    .selectizeInput.iSEE(x, iSEEslots$heatMapCenteredColormap,
                         label = "Centered assay colormap:",
-                        selected=slot(x, .heatMapCenteredColormap),
+                        selected=slot(x, iSEEslots$heatMapCenteredColormap),
                         choices=c(.colormapPurpleBlackYellow, .colormapBlueWhiteOrange, .colormapBlueWhiteRed, .colormapGreenWhiteRed),
                         help = TRUE)
                     ))
@@ -424,40 +424,40 @@ Horizontal, vertical; the choice is yours."
             pchoice_field, .visualParamChoiceColorTitle,
             hr(),
             ABLEFUN(
-                .checkboxInput.iSEE(x, .heatMapCustomAssayBounds,
+                .checkboxInput.iSEE(x, iSEEslots$heatMapCustomAssayBounds,
                     label = "Use custom colorscale bounds",
-                    value = slot(x, .heatMapCustomAssayBounds),
+                    value = slot(x, iSEEslots$heatMapCustomAssayBounds),
                     help = TRUE)),
-            .conditionalOnCheckSolo(.input_FUN(.heatMapCustomAssayBounds), on_select = TRUE,
-                .numericInput.iSEE(x, .assayLowerBound,
+            .conditionalOnCheckSolo(.input_FUN(iSEEslots$heatMapCustomAssayBounds), on_select = TRUE,
+                .numericInput.iSEE(x, iSEEslots$assayLowerBound,
                     label = "Lower bound",
-                    value=slot(x, .assayLowerBound), min = -Inf, max = Inf,
+                    value=slot(x, iSEEslots$assayLowerBound), min = -Inf, max = Inf,
                     help = TRUE),
-                .numericInput.iSEE(x, .assayUpperBound,
+                .numericInput.iSEE(x, iSEEslots$assayUpperBound,
                     label = "Upper bound",
-                    value=slot(x, .assayUpperBound), min = -Inf, max = Inf,
+                    value=slot(x, iSEEslots$assayUpperBound), min = -Inf, max = Inf,
                     help = TRUE))
         ),
         .conditionalOnCheckGroup(
             pchoice_field, .visualParamChoiceLabelsTitle,
             hr(),
-            .checkboxGroupInput.iSEE(x, .showDimnames,
+            .checkboxGroupInput.iSEE(x, iSEEslots$showDimnames,
                 label = "Show names:",
                 inline=TRUE,
-                selected=slot(x, .showDimnames),
+                selected=slot(x, iSEEslots$showDimnames),
                 choices=c(.showNamesRowTitle, .showNamesColumnTitle),
                 help = TRUE),
             .conditionalOnCheckGroup(
-                .input_FUN(.showDimnames), .showNamesRowTitle,
-                .numericInput.iSEE(x, .namesRowFontSize,
+                .input_FUN(iSEEslots$showDimnames), .showNamesRowTitle,
+                .numericInput.iSEE(x, iSEEslots$namesRowFontSize,
                                    label="Row names fontsize",
-                                   value=slot(x, .namesRowFontSize),
+                                   value=slot(x, iSEEslots$namesRowFontSize),
                                    help=TRUE)),
             .conditionalOnCheckGroup(
-                .input_FUN(.showDimnames), .showNamesColumnTitle,
-                .numericInput.iSEE(x, .namesColumnFontSize,
+                .input_FUN(iSEEslots$showDimnames), .showNamesColumnTitle,
+                .numericInput.iSEE(x, iSEEslots$namesColumnFontSize,
                                    label="Column names fontsize",
-                                   value=slot(x, .namesColumnFontSize),
+                                   value=slot(x, iSEEslots$namesColumnFontSize),
                                    help=TRUE)),
         ),
         .conditionalOnCheckGroup(
@@ -469,10 +469,10 @@ Horizontal, vertical; the choice is yours."
                 selected=slot(x, iSEEslots$plotLegendPosition),
                 choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
                 help = TRUE),
-            .radioButtons.iSEE(x, .plotLegendDirection,
+            .radioButtons.iSEE(x, iSEEslots$plotLegendDirection,
                 label = "Legend direction:",
                 inline=TRUE,
-                selected=slot(x, .plotLegendDirection),
+                selected=slot(x, iSEEslots$plotLegendDirection),
                 choices=c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle),
                 help = TRUE)
         )

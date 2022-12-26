@@ -43,7 +43,7 @@ test_that(".make_redDimPlot/.scatter_plot produce a valid list",{
 
 test_that(".make_redDimPlot/.scatter_plot produce a valid xy with color", {
     rdp <- pObjects$memory$ReducedDimensionPlot1
-    rdp[[iSEEslots$colorByField]] <- iSEE:::.colorByColDataTitle
+    rdp[[iSEEslots$colorByField]] <- iSEEconstants$colorByColDataTitle
 
     p.out <- .generateOutput(rdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
@@ -83,7 +83,7 @@ test_that(".make_colDataPlot/.scatter_plot produce a valid xy with color", {
     cdp <- pObjects$memory$ColumnDataPlot1
     cdp[[iSEEslots$colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEEslots$colDataXAxisColData]] <- "NREADS"
-    cdp[[iSEEslots$colorByField]] <- iSEE:::.colorByColDataTitle
+    cdp[[iSEEslots$colorByField]] <- iSEEconstants$colorByColDataTitle
 
     p.out <- .generateOutput(cdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
@@ -116,7 +116,7 @@ test_that(".make_colDataPlot/.violin_plot produce a valid list",{
 
 test_that(".make_colDataPlot/.violin_plot produce a valid xy with color", {
     cdp <- pObjects$memory$ColumnDataPlot1
-    cdp[[iSEEslots$colorByField]] <- iSEE:::.colorByColDataTitle
+    cdp[[iSEEslots$colorByField]] <- iSEEconstants$colorByColDataTitle
 
     p.out <- .generateOutput(cdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
@@ -157,7 +157,7 @@ test_that(".make_colDataPlot/.square_plot produce a valid xy with color", {
     cdp[[iSEEslots$colDataXAxis]] <- iSEE:::.colDataXAxisColDataTitle
     cdp[[iSEEslots$colDataXAxisColData]] <- "driver_1_s"
     cdp[[iSEEslots$colDataYAxis]] <- "passes_qc_checks_s"
-    cdp[[iSEEslots$colorByField]] <- iSEE:::.colorByColDataTitle
+    cdp[[iSEEslots$colorByField]] <- iSEEconstants$colorByColDataTitle
 
     p.out <- .generateOutput(cdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
@@ -199,14 +199,14 @@ test_that(".make_rowDataPlot/.violin_plot produce a valid xy with color", {
     rdp[[iSEEslots$rowDataXAxisRowData]] <- "num_cells"
     rdp[[iSEEslots$rowDataYAxis]] <- "mean_count"
 
-    rdp[[iSEEslots$colorByField]] <- iSEE:::.colorByRowDataTitle
+    rdp[[iSEEslots$colorByField]] <- iSEEconstants$colorByRowDataTitle
     p.out <- .generateOutput(rdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
 
     expect_named(p.out$contents, c('Y', 'X', 'ColorBy'))
 
     # Color by feature name
-    rdp[[iSEEslots$colorByField]] <- iSEE:::.colorByFeatNameTitle
+    rdp[[iSEEslots$colorByField]] <- iSEEconstants$colorByFeatNameTitle
     p.out <- .generateOutput(rdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
 
@@ -239,7 +239,7 @@ test_that(".make_rowDataPlot/.violin_plot produce a valid list",{
 
 test_that(".make_rowDataPlot/.violin_plot produce a valid xy with color", {
     rdp <- pObjects$memory$RowDataPlot
-    rdp[[iSEEslots$colorByField]] <- iSEE:::.colorByRowDataTitle
+    rdp[[iSEEslots$colorByField]] <- iSEEconstants$colorByRowDataTitle
 
     p.out <- .generateOutput(rdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
@@ -247,7 +247,7 @@ test_that(".make_rowDataPlot/.violin_plot produce a valid xy with color", {
     expect_named(p.out$contents, c("Y","X","ColorBy","GroupBy","jitteredX"))
 
     # Color by feature name
-    rdp[[iSEEslots$colorByField]] <- iSEE:::.colorByFeatNameTitle
+    rdp[[iSEEslots$colorByField]] <- iSEEconstants$colorByFeatNameTitle
 
     p.out <- .generateOutput(rdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
@@ -293,7 +293,7 @@ test_that(".make_rowDataPlot/.square_plot produce a valid xy with color",{
     rdp[[iSEEslots$rowDataXAxisRowData]] <- "letters"
     rdp[[iSEEslots$rowDataYAxis]] <- "LETTERS"
 
-    rdp[[iSEEslots$colorByField]] <- iSEE:::.colorByRowDataTitle
+    rdp[[iSEEslots$colorByField]] <- iSEEconstants$colorByRowDataTitle
 
     p.out <- .generateOutput(rdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
@@ -314,7 +314,7 @@ test_that(".make_rowDataPlot/.square_plot produce a valid xy with color",{
     expect_s3_class(p.out$plot, c("gg", "ggplot"))
 
     # Color by feature name
-    rdp[[iSEEslots$colorByField]] <- iSEE:::.colorByFeatNameTitle
+    rdp[[iSEEslots$colorByField]] <- iSEEconstants$colorByFeatNameTitle
 
     p.out <- .generateOutput(rdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
@@ -348,7 +348,7 @@ test_that(".make_featAssayPlot/.violin_plot produce a valid list",{
 
 test_that(".make_featAssayPlot/.violin_plot produce a valid xy with color", {
     fdp <- pObjects$memory$FeatureAssayPlot1
-    fdp[[iSEEslots$colorByField]] <- iSEE:::.colorByColDataTitle
+    fdp[[iSEEslots$colorByField]] <- iSEEconstants$colorByColDataTitle
 
     p.out <- .generateOutput(fdp, sce,
         all_memory=pObjects$memory, all_contents=pObjects$contents)
@@ -384,7 +384,7 @@ test_that(".make_featAssayPlot works for groupable colour covariate", {
     selected_coldata <- "dissection_s"
 
     fdp <- pObjects$memory$FeatureAssayPlot1
-    fdp[[iSEEslots$colorByField]] <- iSEE:::.colorByColDataTitle
+    fdp[[iSEEslots$colorByField]] <- iSEEconstants$colorByColDataTitle
     fdp[[iSEEslots$colorByColData]] <- selected_coldata
 
     p.out <- .generateOutput(fdp, sce,
@@ -453,7 +453,7 @@ test_that(".make_colDataPlot/.create_plot can produce horizontal violins", {
     selected_coldataY <- "driver_1_s"
 
     cdp <- pObjects$memory$ColumnDataPlot
-    cdp[[iSEEslots$colDataXAxis]] <- iSEE:::.colorByColDataTitle
+    cdp[[iSEEslots$colDataXAxis]] <- iSEEconstants$colorByColDataTitle
 
     cdp1 <- cdp
     cdp1[[iSEEslots$colDataXAxisColData]] <- selected_coldataX
@@ -606,7 +606,7 @@ test_that(".make_colDataPlot/.square_plot works with zoom",{
 
 test_that("define_shapeby_for_column_plot produces the expected commands", {
     params <- pObjects$memory$ReducedDimensionPlot1
-    params[[iSEEslots$shapeByField]] <- iSEE:::.shapeByColDataTitle
+    params[[iSEEslots$shapeByField]] <- iSEEconstants$shapeByColDataTitle
     params[[iSEEslots$shapeByColData]] <- "driver_1_s"
 
     env <- new.env()
@@ -621,7 +621,7 @@ test_that("define_shapeby_for_column_plot produces the expected commands", {
 
 test_that(".define_shapeby_for_row_plot produces the expected commands", {
     params <- pObjects$memory$RowDataPlot1
-    params[[iSEEslots$shapeByField]] <- iSEE:::.shapeByRowDataTitle
+    params[[iSEEslots$shapeByField]] <- iSEEconstants$shapeByRowDataTitle
     params[[iSEEslots$shapeByRowData]] <- "letters"
 
     env <- new.env()
@@ -639,7 +639,7 @@ test_that(".define_shapeby_for_row_plot produces the expected commands", {
 
 test_that("define_sizeby_for_column_plot produces the expected commands", {
     params <- pObjects$memory$ReducedDimensionPlot1
-    params[[iSEEslots$sizeByField]] <- iSEE:::.sizeByColDataTitle
+    params[[iSEEslots$sizeByField]] <- iSEEconstants$sizeByColDataTitle
     params[[iSEEslots$sizeByColData]] <- "NREADS"
 
     env <- new.env()
@@ -654,7 +654,7 @@ test_that("define_sizeby_for_column_plot produces the expected commands", {
 
 test_that(".define_sizeby_for_row_plot produces the expected commands", {
     params <- pObjects$memory$RowDataPlot1
-    params[[iSEEslots$sizeByField]] <- iSEE:::.sizeByRowDataTitle
+    params[[iSEEslots$sizeByField]] <- iSEEconstants$sizeByRowDataTitle
     params[[iSEEslots$sizeByRowData]] <- "mean_count"
 
     env <- new.env()
@@ -720,7 +720,7 @@ test_that(".create_points handles selection effects", {
     expect_true(any(grepl("geom_point.*SelectBy.*alpha", unlist(out$commands))))
 
     # Trying for color:
-    fap[[iSEEslots$colorByField]] <- iSEE:::.colorByColSelectionsTitle
+    fap[[iSEEslots$colorByField]] <- iSEEconstants$colorByColSelectionsTitle
     fap[[iSEEslots$selectTransAlpha]] <- 1
     out <- .generateOutput(fap, sce, all_memory=all_memory, all_contents=pObjects$contents)
 
@@ -744,7 +744,7 @@ test_that(".create_points handles sizing effects", {
 
     all_memory <- pObjects$memory
     rdp <- all_memory$ReducedDimensionPlot1
-    rdp[[iSEEslots$sizeByField]] <- iSEE:::.sizeByColDataTitle
+    rdp[[iSEEslots$sizeByField]] <- iSEEconstants$sizeByColDataTitle
 
     out <- .generateOutput(rdp, sce, all_memory=all_memory, all_contents=pObjects$contents)
 
@@ -870,7 +870,7 @@ test_that(".self_lasso_path work with an open path", {
 test_that(".self_lasso_path work with an open path and a ShapeBy covariate", {
     rdp <- pObjects$memory$ReducedDimensionPlot1
 
-    rdp[[iSEEslots$shapeByField]] <- iSEE:::.shapeByColDataTitle
+    rdp[[iSEEslots$shapeByField]] <- iSEEconstants$shapeByColDataTitle
 
     rd <- reducedDim(sce, rdp[[iSEEslots$redDimType]])
     x_10 <- head(rd[, rdp[[iSEEslots$redDimXAxis]]], 10)
@@ -1120,7 +1120,7 @@ test_that(".downsample_points produces the appropriate code for horizontal violi
 
 test_that(".downsample_points interacts correctly with selection of a specific sample/feature", {
     rdp <- pObjects$memory$ReducedDimensionPlot1
-    rdp[[iSEEslots$colorByField]] <- iSEE:::.colorBySampNameTitle
+    rdp[[iSEEslots$colorByField]] <- iSEEconstants$colorBySampNameTitle
     rdp[[iSEEslots$plotPointDownsample]] <- TRUE
 
     sce <- .cacheCommonInfo(rdp, sce)

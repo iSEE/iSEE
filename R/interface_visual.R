@@ -55,7 +55,7 @@
         iSEEconstants$visualParamChoicePointTitle,
         iSEEconstants$visualParamChoiceFacetTitle,
         iSEEconstants$visualParamChoiceTextTitle,
-        .visualParamChoiceOtherTitle
+        iSEEconstants$visualParamChoiceOtherTitle
     )
     stopifnot(all(names(ui)!=""))
     keep <- !vapply(ui, is.null, logical(1))
@@ -99,7 +99,7 @@
 #' @author Aaron Lun
 #' @rdname INTERNAL_define_color_options
 .define_color_options_for_column_plots <- function(se, covariates, assay_names) {
-    color_choices <- .colorByNothingTitle
+    color_choices <- iSEEconstants$colorByNothingTitle
     if (length(covariates)) {
         color_choices <- c(color_choices, iSEEconstants$colorByColDataTitle)
     }
@@ -114,7 +114,7 @@
 
 #' @rdname INTERNAL_define_color_options
 .define_color_options_for_row_plots <- function(se, covariates, assay_names) {
-    color_choices <- .colorByNothingTitle
+    color_choices <- iSEEconstants$colorByNothingTitle
     if (length(covariates)) {
         color_choices <- c(color_choices, iSEEconstants$colorByRowDataTitle)
     }

@@ -203,8 +203,8 @@ names(.all_aes_values) <- .all_aes_names
 
     # Adding points to the plot.
     color_set <- !is.null(plot_data$ColorBy)
-    shape_set <- slot(param_choices, iSEEslots$shapeByField) != .shapeByNothingTitle
-    size_set <- slot(param_choices, iSEEslots$sizeByField) != .sizeByNothingTitle
+    shape_set <- slot(param_choices, iSEEslots$shapeByField) != iSEEconstants$shapeByNothingTitle
+    size_set <- slot(param_choices, iSEEslots$sizeByField) != iSEEconstants$sizeByNothingTitle
 
     new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
         alt=c(color=.set_colorby_when_none(param_choices)))
@@ -335,8 +335,8 @@ names(.all_aes_values) <- .all_aes_names
 
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
-    shape_set <- slot(param_choices, iSEEslots$shapeByField) != .shapeByNothingTitle
-    size_set <- slot(param_choices, iSEEslots$sizeByField) != .sizeByNothingTitle
+    shape_set <- slot(param_choices, iSEEslots$shapeByField) != iSEEconstants$shapeByNothingTitle
+    size_set <- slot(param_choices, iSEEslots$sizeByField) != iSEEconstants$sizeByNothingTitle
 
     new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
         alt=c(x="jitteredX", color=.set_colorby_when_none(param_choices)))
@@ -526,8 +526,8 @@ plot.data$Y <- tmp;")
 
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
-    shape_set <- slot(param_choices, iSEEslots$shapeByField) != .shapeByNothingTitle
-    size_set <- slot(param_choices, iSEEslots$sizeByField) != .sizeByNothingTitle
+    shape_set <- slot(param_choices, iSEEslots$shapeByField) != iSEEconstants$shapeByNothingTitle
+    size_set <- slot(param_choices, iSEEslots$sizeByField) != iSEEconstants$sizeByNothingTitle
 
     new_aes <- .buildAes(color=color_set, shape=shape_set, size=size_set,
         alt=c(x="jitteredX", y="jitteredY", color=.set_colorby_when_none(param_choices)))

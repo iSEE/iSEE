@@ -455,7 +455,7 @@ setMethod(".addDotPlotDataColor", "ColumnDotPlot", function(x, envir) {
         cmds <- sprintf("plot.data$ColorBy <- assay(se, %s)[%s, ];",
             deparse(assay_choice), deparse(chosen_gene))
 
-    } else if (color_choice == .colorBySampNameTitle) {
+    } else if (color_choice == iSEEconstants$colorBySampNameTitle) {
         chosen_sample <- slot(x, iSEEslots$colorBySampName)
         label <- chosen_sample
         cmds <- sprintf("plot.data$ColorBy <- logical(nrow(plot.data));\nplot.data[%s, 'ColorBy'] <- TRUE;",

@@ -27,10 +27,10 @@
 #' @author Aaron Lun
 #' @importFrom shiny observeEvent
 .create_brush_observer <- function(plot_name, input, session, pObjects, rObjects) {
-    save_field <- paste0(plot_name, "_", .multiSelectSave)
+    save_field <- paste0(plot_name, "_", iSEEconstants$multiSelectSave)
     dimprop_name <- paste0(plot_name, "_", .propagateDimnames)
 
-    brush_field <- paste0(plot_name, "_", .brushField)
+    brush_field <- paste0(plot_name, "_", iSEEconstants$brushField)
 
     # nocov start
     observeEvent(input[[brush_field]], {
@@ -46,7 +46,7 @@
         .disableButtonIf(
             save_field,
             is.null(cur_brush),
-            .buttonNoSelectionLabel, .buttonSaveLabel, session
+            iSEEconstants$buttonNoSelectionLabel, iSEEconstants$buttonSaveLabel, session
         )
 
         .safe_reactive_bump(rObjects, dimprop_name)
@@ -86,10 +86,10 @@
 #' @importFrom shiny observeEvent isolate
 #' @rdname INTERNAL_lasso_observers
 .create_lasso_observer <- function(plot_name, input, session, pObjects, rObjects) {
-    click_field <- paste0(plot_name, "_", .lassoClick)
-    brush_field <- paste0(plot_name, "_", .brushField)
+    click_field <- paste0(plot_name, "_", iSEEconstants$lassoClick)
+    brush_field <- paste0(plot_name, "_", iSEEconstants$brushField)
     dimprop_name <- paste0(plot_name, "_", .propagateDimnames)
-    save_field <- paste0(plot_name, "_", .multiSelectSave)
+    save_field <- paste0(plot_name, "_", iSEEconstants$multiSelectSave)
 
     # nocov start
     observeEvent(input[[click_field]], {
@@ -126,7 +126,7 @@
         .disableButtonIf(
             save_field,
             !isTRUE(new_lasso$closed),
-            .buttonNoSelectionLabel, .buttonSaveLabel, session
+            iSEEconstants$buttonNoSelectionLabel, iSEEconstants$buttonSaveLabel, session
         )
 
         if (reactivated) {

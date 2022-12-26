@@ -4,7 +4,7 @@
 #' 
 #' @section Multiple selection parameters:
 #' \describe{
-#' \item{\code{.noSelection}}{Value displayed in the absence of selection.}
+#' \item{\code{noSelection}}{Value displayed in the absence of selection.}
 #' }
 #'
 #' @author Kevin Rue-Albrecht

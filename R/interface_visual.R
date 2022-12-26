@@ -49,12 +49,12 @@
         .defineVisualOtherInterface(x)
     )
     names(ui) <- c(
-        .visualParamChoiceColorTitle,
-        .visualParamChoiceShapeTitle,
-        .visualParamChoiceSizeTitle,
-        .visualParamChoicePointTitle,
-        .visualParamChoiceFacetTitle,
-        .visualParamChoiceTextTitle,
+        iSEEconstants$visualParamChoiceColorTitle,
+        iSEEconstants$visualParamChoiceShapeTitle,
+        iSEEconstants$visualParamChoiceSizeTitle,
+        iSEEconstants$visualParamChoicePointTitle,
+        iSEEconstants$visualParamChoiceFacetTitle,
+        iSEEconstants$visualParamChoiceTextTitle,
         .visualParamChoiceOtherTitle
     )
     stopifnot(all(names(ui)!=""))
@@ -101,30 +101,30 @@
 .define_color_options_for_column_plots <- function(se, covariates, assay_names) {
     color_choices <- .colorByNothingTitle
     if (length(covariates)) {
-        color_choices <- c(color_choices, .colorByColDataTitle)
+        color_choices <- c(color_choices, iSEEconstants$colorByColDataTitle)
     }
     if (nrow(se) && length(assay_names)) {
-        color_choices <- c(color_choices, .colorByFeatNameTitle)
+        color_choices <- c(color_choices, iSEEconstants$colorByFeatNameTitle)
     }
     if (ncol(se)) {
-        color_choices <- c(color_choices, .colorBySampNameTitle)
+        color_choices <- c(color_choices, iSEEconstants$colorBySampNameTitle)
     }
-    c(color_choices, .colorByColSelectionsTitle)
+    c(color_choices, iSEEconstants$colorByColSelectionsTitle)
 }
 
 #' @rdname INTERNAL_define_color_options
 .define_color_options_for_row_plots <- function(se, covariates, assay_names) {
     color_choices <- .colorByNothingTitle
     if (length(covariates)) {
-        color_choices <- c(color_choices, .colorByRowDataTitle)
+        color_choices <- c(color_choices, iSEEconstants$colorByRowDataTitle)
     }
     if (nrow(se)) {
-        color_choices <- c(color_choices, .colorByFeatNameTitle)
+        color_choices <- c(color_choices, iSEEconstants$colorByFeatNameTitle)
     }
     if (ncol(se) && length(assay_names)) {
-        color_choices <- c(color_choices, .colorBySampNameTitle)
+        color_choices <- c(color_choices, iSEEconstants$colorBySampNameTitle)
     }
-    c(color_choices, .colorByRowSelectionsTitle)
+    c(color_choices, iSEEconstants$colorByRowSelectionsTitle)
 }
 
 #' Add a visual parameter box for heatmap plots
@@ -366,10 +366,16 @@ Horizontal, vertical; the choice is yours."
         checkboxGroupInput(
             inputId=pchoice_field, label=NULL, inline=TRUE,
             selected=slot(x, iSEEslots$visualParamChoice),
-            choices=c(.visualParamChoiceMetadataTitle, .visualParamChoiceTransformTitle, .visualParamChoiceColorTitle,
-                .visualParamChoiceLabelsTitle, .visualParamChoiceLegendTitle)),
+            choices=c(
+                iSEEconstants$visualParamChoiceMetadataTitle,
+                iSEEconstants$visualParamChoiceTransformTitle,
+                iSEEconstants$visualParamChoiceColorTitle,
+                iSEEconstants$visualParamChoiceLabelsTitle,
+                iSEEconstants$visualParamChoiceLegendTitle
+            )
+        ),
         .conditionalOnCheckGroup(
-            pchoice_field, .visualParamChoiceMetadataTitle,
+            pchoice_field, iSEEconstants$visualParamChoiceMetadataTitle,
             hr(),
             .selectizeInput.iSEE(x, iSEEslots$heatMapColData,
                 label = "Column annotations:",
@@ -397,7 +403,7 @@ Horizontal, vertical; the choice is yours."
             )
         ),
         .conditionalOnCheckGroup(
-            pchoice_field, .visualParamChoiceTransformTitle,
+            pchoice_field, iSEEconstants$visualParamChoiceTransformTitle,
             hr(),
             strong("Row transformations:"),
 
@@ -416,12 +422,18 @@ Horizontal, vertical; the choice is yours."
                     .selectizeInput.iSEE(x, iSEEslots$heatMapCenteredColormap,
                         label = "Centered assay colormap:",
                         selected=slot(x, iSEEslots$heatMapCenteredColormap),
-                        choices=c(.colormapPurpleBlackYellow, .colormapBlueWhiteOrange, .colormapBlueWhiteRed, .colormapGreenWhiteRed),
-                        help = TRUE)
-                    ))
+                        choices=c(
+                            iSEEconstants$colormapPurpleBlackYellow,
+                            iSEEconstants$colormapBlueWhiteOrange,
+                            iSEEconstants$colormapBlueWhiteRed,
+                            iSEEconstants$colormapGreenWhiteRed
+                        ),
+                    help = TRUE)
+                )
+            )
         ),
         .conditionalOnCheckGroup(
-            pchoice_field, .visualParamChoiceColorTitle,
+            pchoice_field, iSEEconstants$visualParamChoiceColorTitle,
             hr(),
             ABLEFUN(
                 .checkboxInput.iSEE(x, iSEEslots$heatMapCustomAssayBounds,
@@ -439,41 +451,41 @@ Horizontal, vertical; the choice is yours."
                     help = TRUE))
         ),
         .conditionalOnCheckGroup(
-            pchoice_field, .visualParamChoiceLabelsTitle,
+            pchoice_field, iSEEconstants$visualParamChoiceLabelsTitle,
             hr(),
             .checkboxGroupInput.iSEE(x, iSEEslots$showDimnames,
                 label = "Show names:",
                 inline=TRUE,
                 selected=slot(x, iSEEslots$showDimnames),
-                choices=c(.showNamesRowTitle, .showNamesColumnTitle),
+                choices=c(iSEEconstants$showNamesRowTitle, iSEEconstants$showNamesColumnTitle),
                 help = TRUE),
             .conditionalOnCheckGroup(
-                .input_FUN(iSEEslots$showDimnames), .showNamesRowTitle,
+                .input_FUN(iSEEslots$showDimnames), iSEEconstants$showNamesRowTitle,
                 .numericInput.iSEE(x, iSEEslots$namesRowFontSize,
                                    label="Row names fontsize",
                                    value=slot(x, iSEEslots$namesRowFontSize),
                                    help=TRUE)),
             .conditionalOnCheckGroup(
-                .input_FUN(iSEEslots$showDimnames), .showNamesColumnTitle,
+                .input_FUN(iSEEslots$showDimnames), iSEEconstants$showNamesColumnTitle,
                 .numericInput.iSEE(x, iSEEslots$namesColumnFontSize,
                                    label="Column names fontsize",
                                    value=slot(x, iSEEslots$namesColumnFontSize),
                                    help=TRUE)),
         ),
         .conditionalOnCheckGroup(
-            pchoice_field, .visualParamChoiceLegendTitle,
+            pchoice_field, iSEEconstants$visualParamChoiceLegendTitle,
             hr(),
             .radioButtons.iSEE(x, iSEEslots$plotLegendPosition,
                 label = "Legend position:",
                 inline=TRUE,
                 selected=slot(x, iSEEslots$plotLegendPosition),
-                choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
+                choices=c(iSEEconstants$plotLegendBottomTitle, iSEEconstants$plotLegendRightTitle),
                 help = TRUE),
             .radioButtons.iSEE(x, iSEEslots$plotLegendDirection,
                 label = "Legend direction:",
                 inline=TRUE,
                 selected=slot(x, iSEEslots$plotLegendDirection),
-                choices=c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle),
+                choices=c(iSEEconstants$plotLegendHorizontalTitle, iSEEconstants$plotLegendVerticalTitle),
                 help = TRUE)
         )
     )

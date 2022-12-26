@@ -18,8 +18,8 @@
 #' @importFrom shiny observeEvent
 #' @rdname INTERNAL_zoom_observers
 .create_zoom_observer <- function(plot_name, input, session, pObjects, rObjects) {
-    dblclick_field <- paste0(plot_name, "_", .zoomClick)
-    save_field <- paste0(plot_name, "_", .multiSelectSave)
+    dblclick_field <- paste0(plot_name, "_", iSEEconstants$zoomClick)
+    save_field <- paste0(plot_name, "_", iSEEconstants$multiSelectSave)
 
     # nocov start
     observeEvent(input[[dblclick_field]], {
@@ -46,7 +46,7 @@
             .disableButtonIf(
                 save_field,
                 TRUE,
-                .buttonNoSelectionLabel, .buttonSaveLabel, session
+                iSEEconstants$buttonNoSelectionLabel, iSEEconstants$buttonSaveLabel, session
             )
         }
 

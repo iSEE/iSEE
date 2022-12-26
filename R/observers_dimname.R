@@ -28,7 +28,7 @@
 .create_dimname_propagation_observer <-  function(panel_name, choices, session, pObjects, rObjects) {
     dimname_name <- paste0(panel_name, "_", .propagateDimnames)
     .safe_reactive_init(rObjects, dimname_name)
-    single_name <- paste0(panel_name, "_", .flagSingleSelect)
+    single_name <- paste0(panel_name, "_", iSEEconstants$flagSingleSelect)
 
     # nocov start
     observeEvent(rObjects[[dimname_name]], {
@@ -149,7 +149,7 @@
             pObjects$aesthetics_links <- .choose_new_parent(pObjects$aesthetics_links,
                 panel_name, tab, old_tab, field=name_field)
             update_info <- TRUE
-        } else if (tab!=.noSelection) {
+        } else if (tab!=iSEEconstants$noSelection) {
             # Add link in case `choice` was recently changed to `use_value`.
             pObjects$aesthetics_links <- .add_interpanel_link(pObjects$aesthetics_links,
                 panel_name, tab, field=name_field)
@@ -157,7 +157,7 @@
         }
 
         # Updating the selection, based on the currently selected row.
-        if (tab!=.noSelection) {
+        if (tab!=iSEEconstants$noSelection) {
             old_selected <- slot(pObjects$memory[[panel_name]], name_field)
             new_selected <- .singleSelectionValue(pObjects$memory[[tab]], pObjects$contents[[tab]])
 
@@ -174,9 +174,9 @@
     }
 
     if (update_info) {
-        tab_names <- setdiff(union(old_tab, tab), .noSelection)
+        tab_names <- setdiff(union(old_tab, tab), iSEEconstants$noSelection)
         for (relinked in c(panel_name, tab_names)) {
-            .safe_reactive_bump(rObjects, paste0(relinked, "_", .flagRelinkedSelect))
+            .safe_reactive_bump(rObjects, paste0(relinked, "_", iSEEconstants$flagRelinkedSelect))
         }
     }
 

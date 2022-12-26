@@ -114,16 +114,16 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #' @author Kevin Rue-Albecht
 .colorByChoices <- function(colorby_title, se) {
 
-    if (colorby_title == .colorByNothingTitle) {
+    if (colorby_title == iSEEconstants$colorByNothingTitle) {
         choices <- character(0)
-    } else if (colorby_title == .colorByColDataTitle) {
+    } else if (colorby_title == iSEEconstants$colorByColDataTitle) {
         choices <- .getCachedCommonInfo(se, "ColumnDotPlot")$valid.colData.names
-    } else if (colorby_title == .colorByRowDataTitle) {
+    } else if (colorby_title == iSEEconstants$colorByRowDataTitle) {
         choices <- .getCachedCommonInfo(se, "RowDotPlot")$valid.rowData.names
-    } else if (colorby_title == .colorByFeatNameTitle) {
+    } else if (colorby_title == iSEEconstants$colorByFeatNameTitle) {
         choices <- seq_len(nrow(se))
         names(choices) <- rownames(se)
-    } else if (colorby_title == .colorBySampNameTitle) {
+    } else if (colorby_title == iSEEconstants$colorBySampNameTitle) {
         choices <- seq_len(ncol(se))
         names(choices) <- colnames(se)
     }

@@ -18,14 +18,14 @@
 .define_plot_ui <- function(plot_name, height, brush_direction, brush_fill, brush_stroke) {
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
-    brush.opts <- brushOpts(.input_FUN(.brushField), resetOnNew=TRUE, delay=2000,
+    brush.opts <- brushOpts(.input_FUN(iSEEconstants$brushField), resetOnNew=TRUE, delay=2000,
         direction=brush_direction, fill=brush_fill, stroke=brush_stroke,
         opacity=.brushFillOpacity)
 
-    hoveropt <-  hoverOpts(.input_FUN(.hoverTooltip), delay=100)
+    hoveropt <-  hoverOpts(.input_FUN(iSEEconstants$hoverTooltip), delay=100)
 
-    dblclick <- .input_FUN(.zoomClick)
-    clickopt <- .input_FUN(.lassoClick)
+    dblclick <- .input_FUN(iSEEconstants$zoomClick)
+    clickopt <- .input_FUN(iSEEconstants$lassoClick)
     panel_height <- paste0(height, "px")
 
     addSpinner(

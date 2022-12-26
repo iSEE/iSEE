@@ -55,15 +55,15 @@
         slot(pObjects$memory[[panel_name]], by_field) <- new_transmitter
 
         # Update the elements reporting the links between panels.
-        for (relinked in setdiff(c(old_transmitter, new_transmitter, panel_name), .noSelection)) {
-            relink_name <- paste0(relinked, "_", .flagRelinkedSelect)
+        for (relinked in setdiff(c(old_transmitter, new_transmitter, panel_name), iSEEconstants$noSelection)) {
+            relink_name <- paste0(relinked, "_", iSEEconstants$flagRelinkedSelect)
             .safe_reactive_bump(rObjects, relink_name)
         }
 
         # Checking if there were active/saved selections in either the new or
         # old transmitters. This requires some protection when this observer
         # is triggered because the old transmitter was deleted.
-        if (old_transmitter %in% c(.noSelection, names(pObjects$memory))) {
+        if (old_transmitter %in% c(iSEEconstants$noSelection, names(pObjects$memory))) {
             no_old_selection <- !.transmitted_selection(old_transmitter, pObjects$memory)
             no_new_selection <- !.transmitted_selection(new_transmitter, pObjects$memory)
             if (no_old_selection && no_new_selection) {
@@ -133,9 +133,9 @@
 #' @importFrom shiny observeEvent
 #' @rdname INTERNAL_multiple_select_observers
 .create_multi_selection_history_observers <- function(panel_name, input, session, pObjects, rObjects) {
-    save_field <- paste0(panel_name, "_", .multiSelectSave)
-    del_field <- paste0(panel_name, "_", .multiSelectDelete)
-    multi_name <- paste0(panel_name, "_", .flagMultiSelect)
+    save_field <- paste0(panel_name, "_", iSEEconstants$multiSelectSave)
+    del_field <- paste0(panel_name, "_", iSEEconstants$multiSelectDelete)
+    multi_name <- paste0(panel_name, "_", iSEEconstants$flagMultiSelect)
 
     ## Save selection observer. ---
 
@@ -158,7 +158,7 @@
         .disableButtonIf(
             del_field,
             FALSE,
-            .buttonEmptyHistoryLabel, .buttonDeleteLabel, session
+            iSEEconstants$buttonEmptyHistoryLabel, iSEEconstants$buttonDeleteLabel, session
         )
     }, ignoreInit=TRUE)
     # nocov end
@@ -179,7 +179,7 @@
         .disableButtonIf(
             del_field,
             length(current)==0,
-            .buttonEmptyHistoryLabel, .buttonDeleteLabel, session
+            iSEEconstants$buttonEmptyHistoryLabel, iSEEconstants$buttonDeleteLabel, session
         )
     }, ignoreInit=TRUE)
     # nocov end

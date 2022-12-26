@@ -133,8 +133,8 @@ names(.all_aes_values) <- .all_aes_names
         ## the downsampling
         color_choice <- slot(param_choices, iSEEslots$colorByField) 
         always_keep <- ""
-        if ((color_choice == .colorBySampNameTitle && is(param_choices, "ColumnDotPlot")) ||
-                (color_choice == .colorByFeatNameTitle && is(param_choices, "RowDotPlot"))) {
+        if ((color_choice == iSEEconstants$colorBySampNameTitle && is(param_choices, "ColumnDotPlot")) ||
+                (color_choice == iSEEconstants$colorByFeatNameTitle && is(param_choices, "RowDotPlot"))) {
             always_keep <- " | as.logical(plot.data$ColorBy)"
         }
 
@@ -252,11 +252,11 @@ names(.all_aes_values) <- .all_aes_names
         "theme(legend.position='%s', legend.box='vertical', legend.text=element_text(size=%s), legend.title=element_text(size=%s),
         axis.text=element_text(size=%s), axis.title=element_text(size=%s), title=element_text(size=%s))",
         tolower(slot(param_choices, iSEEslots$plotLegendPosition)),
-        font_size * .plotFontSizeLegendTextDefault,
-        font_size * .plotFontSizeLegendTitleDefault,
-        font_size * .plotFontSizeAxisTextDefault,
-        font_size * .plotFontSizeAxisTitleDefault,
-        font_size * .plotFontSizeTitleDefault)
+        font_size * iSEEconstants$plotFontSizeLegendTextDefault,
+        font_size * iSEEconstants$plotFontSizeLegendTitleDefault,
+        font_size * iSEEconstants$plotFontSizeAxisTextDefault,
+        font_size * iSEEconstants$plotFontSizeAxisTitleDefault,
+        font_size * iSEEconstants$plotFontSizeTitleDefault)
 
     unlist(plot_cmds)
 }
@@ -416,12 +416,12 @@ names(.all_aes_values) <- .all_aes_names
         axis.text.y=element_text(size=%s),
         axis.title=element_text(size=%s), title=element_text(size=%s))",
         tolower(slot(param_choices, iSEEslots$plotLegendPosition)),
-        font_size * .plotFontSizeLegendTextDefault,
-        font_size * .plotFontSizeLegendTitleDefault,
-        font_size * .plotFontSizeAxisTextDefault,
-        font_size * .plotFontSizeAxisTextDefault,
-        font_size * .plotFontSizeAxisTitleDefault,
-        font_size * .plotFontSizeTitleDefault)
+        font_size * iSEEconstants$plotFontSizeLegendTextDefault,
+        font_size * iSEEconstants$plotFontSizeLegendTitleDefault,
+        font_size * iSEEconstants$plotFontSizeAxisTextDefault,
+        font_size * iSEEconstants$plotFontSizeAxisTextDefault,
+        font_size * iSEEconstants$plotFontSizeAxisTitleDefault,
+        font_size * iSEEconstants$plotFontSizeTitleDefault)
 
     unlist(plot_cmds)
 }
@@ -596,12 +596,12 @@ plot.data$Y <- tmp;")
     axis.text.y=element_text(size=%s),
     axis.title=element_text(size=%s), title=element_text(size=%s))",
         tolower(slot(param_choices, iSEEslots$plotLegendPosition)),
-        font_size * .plotFontSizeLegendTextDefault,
-        font_size * .plotFontSizeLegendTitleDefault,
-        font_size * .plotFontSizeAxisTextDefault,
-        font_size * .plotFontSizeAxisTextDefault,
-        font_size * .plotFontSizeAxisTitleDefault,
-        font_size * .plotFontSizeTitleDefault)
+        font_size * iSEEconstants$plotFontSizeLegendTextDefault,
+        font_size * iSEEconstants$plotFontSizeLegendTitleDefault,
+        font_size * iSEEconstants$plotFontSizeAxisTextDefault,
+        font_size * iSEEconstants$plotFontSizeAxisTextDefault,
+        font_size * iSEEconstants$plotFontSizeAxisTitleDefault,
+        font_size * iSEEconstants$plotFontSizeTitleDefault)
 
     unlist(plot_cmds)
 }
@@ -654,7 +654,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #'
 #' @rdname INTERNAL_set_colorby_when_none
 .set_colorby_when_none <- function(x) {
-    if (slot(x, iSEEslots$colorByField)==.colorByNothingTitle) {
+    if (slot(x, iSEEslots$colorByField)==iSEEconstants$colorByNothingTitle) {
         .colorByNoneDotPlotField(x)
     } else {
         NULL
@@ -1177,7 +1177,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
     label=%i, size=%s, colour='%s')",
             paste(text_data, collapse=",\n        "),
             index, 
-            slot(param_choices, iSEEslots$plotFontSize) * .plotFontSizeLegendTextDefault, 
+            slot(param_choices, iSEEslots$plotFontSize) * iSEEconstants$plotFontSizeLegendTextDefault, 
             stroke_color)
 
         brush_draw_cmd <- c(brush_draw_cmd, text_cmd)
@@ -1282,7 +1282,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
                 current$mapping$x, current$mapping$y,
                 paste(text_data, collapse=",\n        "),
                 index, 
-                slot(param_choices, iSEEslots$plotFontSize) * .plotFontSizeLegendTextDefault, 
+                slot(param_choices, iSEEslots$plotFontSize) * iSEEconstants$plotFontSizeLegendTextDefault, 
                 stroke_color)
 
             polygon_cmd <- c(polygon_cmd, text_cmd)
@@ -1298,7 +1298,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
             current$mapping$x, current$mapping$y, lasso_data, stroke_color)
 
         # Do not control the shape of waypoints if shape is already being mapped to a covariate
-        if (slot(param_choices, iSEEslots$shapeByField) == .shapeByNothingTitle) {
+        if (slot(param_choices, iSEEslots$shapeByField) == iSEEconstants$shapeByNothingTitle) {
             point_cmd <- sprintf(
 "geom_point(aes(x=%s, y=%s, shape=First),
     data=data.frame(%s,

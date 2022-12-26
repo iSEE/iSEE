@@ -28,8 +28,8 @@
 #' @rdname INTERNAL_create_dotplot_hover_observer
 #' @importFrom shiny observeEvent insertUI removeUI div
 .create_hover_observer <- function(plot_name, se, input, pObjects, session) {
-    hover_field <- paste0(plot_name, "_", .hoverTooltip)
-    hover_info <- paste0(plot_name, "_", .hoverInfo)
+    hover_field <- paste0(plot_name, "_", iSEEconstants$hoverTooltip)
+    hover_info <- paste0(plot_name, "_", iSEEconstants$hoverInfo)
 
     # nocov start
     observeEvent(input[[hover_field]], { 

@@ -191,7 +191,7 @@ test_that(".trackSingleSelection forces evaluation of .flagSingleSelect", {
     rObjects <- new.env()
 
     panel_name <- "ReducedDimensionPlot1"
-    rObjects[[paste0(panel_name, "_", iSEE:::.flagSingleSelect)]] <- "forced output"
+    rObjects[[paste0(panel_name, "_", iSEEconstants$flagSingleSelect)]] <- "forced output"
 
     out <- .trackSingleSelection("ReducedDimensionPlot1", rObjects)
     expect_identical(out, "forced output")
@@ -202,7 +202,7 @@ test_that(".trackMultiSelection forces evaluation of .flagMultiSelect", {
     rObjects <- new.env()
 
     panel_name <- "ReducedDimensionPlot1"
-    rObjects[[paste0(panel_name, "_", iSEE:::.flagMultiSelect)]] <- "forced output"
+    rObjects[[paste0(panel_name, "_", iSEEconstants$flagMultiSelect)]] <- "forced output"
 
     out <- .trackMultiSelection("ReducedDimensionPlot1", rObjects)
     expect_identical(out, "forced output")
@@ -213,7 +213,7 @@ test_that(".trackRelinkedSelection forces evaluation of .flagRelinkedSelect", {
     rObjects <- new.env()
 
     panel_name <- "ReducedDimensionPlot1"
-    rObjects[[paste0(panel_name, "_", iSEE:::.flagRelinkedSelect)]] <- "forced output"
+    rObjects[[paste0(panel_name, "_", iSEEconstants$flagRelinkedSelect)]] <- "forced output"
 
     out <- .trackRelinkedSelection("ReducedDimensionPlot1", rObjects)
     expect_identical(out, "forced output")

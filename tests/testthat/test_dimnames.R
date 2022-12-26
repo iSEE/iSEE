@@ -76,7 +76,7 @@ test_that("dimname observers work to change the usage mode", {
 
     out <- iSEE:::.setup_dimname_source_observer(
         "ReducedDimensionPlot1",
-        use_mode_field=iSEE:::.colorByField, use_value=iSEE:::.colorByFeatNameTitle,
+        use_mode_field=iSEE:::.colorByField, use_value=iSEEconstants$colorByFeatNameTitle,
         pObjects=pObjects, rObjects=rObjects, input=input, session=NULL,
         name_field=iSEE:::.colorByFeatName,
         tab_field=iSEE:::.colorByRowTable,
@@ -96,7 +96,7 @@ test_that("dimname observers work to change the usage mode", {
 
     out <- iSEE:::.setup_dimname_source_observer(
         "ReducedDimensionPlot1",
-        use_mode_field=iSEE:::.colorByField, use_value=iSEE:::.colorByFeatNameTitle,
+        use_mode_field=iSEE:::.colorByField, use_value=iSEEconstants$colorByFeatNameTitle,
         pObjects=pObjects, rObjects=rObjects, input=input, session=NULL,
         name_field=iSEE:::.colorByFeatName,
         tab_field=iSEE:::.colorByRowTable,
@@ -164,7 +164,7 @@ test_that(".setup_dimname_source_observer works with a mimicked app", {
 
     out <- iSEE:::.setup_dimname_source_observer(
         "ReducedDimensionPlot1",
-        use_mode_field=iSEE:::.colorByField, use_value=iSEE:::.colorByFeatNameTitle,
+        use_mode_field=iSEE:::.colorByField, use_value=iSEEconstants$colorByFeatNameTitle,
         name_field=iSEE:::.colorByFeatName,
         tab_field=iSEE:::.colorByRowTable,
         choices=letters,

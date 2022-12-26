@@ -17,9 +17,9 @@ pObjects <- mimic_live_app(sce, memory)
 
 # Set up the selected data (in redDim1)
 rdp <- pObjects$memory$ReducedDimensionPlot1
-rd <- reducedDim(sce, rdp[[iSEE:::.redDimType]])
-x_10 <- head(rd[, rdp[[iSEE:::.redDimXAxis]]], 10)
-y_10 <- head(rd[, rdp[[iSEE:::.redDimYAxis]]], 10)
+rd <- reducedDim(sce, rdp[[iSEEslots$redDimType]])
+x_10 <- head(rd[, rdp[[iSEEslots$redDimXAxis]]], 10)
+y_10 <- head(rd[, rdp[[iSEEslots$redDimYAxis]]], 10)
 
 ###############################################
 
@@ -35,7 +35,7 @@ test_that(".process_selectby_choice works with a column-based brush", {
     expect_false(exists('col_selected', envir=plot_env))
     expect_identical(length(cmds), 0L)
 
-    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- DUMMY_BRUSH
+    pObjects$memory$ReducedDimensionPlot1[[iSEEslots$brushData]] <- DUMMY_BRUSH
     plot_env <- new.env()
     cmds <- .processMultiSelections(pObjects$memory$ColumnDataPlot1, pObjects$memory, pObjects$contents, plot_env)
 
@@ -43,7 +43,7 @@ test_that(".process_selectby_choice works with a column-based brush", {
     expect_true(any(grepl("ReducedDimensionPlot1", unlist(cmds))))
     expect_true(any(grepl("shiny::brushedPoints", unlist(cmds))))
 
-    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- list()
+    pObjects$memory$ReducedDimensionPlot1[[iSEEslots$brushData]] <- list()
 })
 
 test_that(".process_selectby_choice works with a row-based brush", {
@@ -52,7 +52,7 @@ test_that(".process_selectby_choice works with a row-based brush", {
     expect_false(exists('row_selected', envir=plot_env))
     expect_identical(length(cmds), 0L)
 
-    pObjects$memory$SampleAssayPlot1[[iSEE:::.brushData]] <- DUMMY_BRUSH
+    pObjects$memory$SampleAssayPlot1[[iSEEslots$brushData]] <- DUMMY_BRUSH
     plot_env <- new.env()
     cmds <- .processMultiSelections(pObjects$memory$RowDataPlot1, pObjects$memory, pObjects$contents, plot_env)
 
@@ -60,7 +60,7 @@ test_that(".process_selectby_choice works with a row-based brush", {
     expect_true(any(grepl("SampleAssayPlot1", unlist(cmds))))
     expect_true(any(grepl("shiny::brushedPoints", unlist(cmds))))
 
-    pObjects$memory$SampleAssayPlot1[[iSEE:::.brushData]] <- list()
+    pObjects$memory$SampleAssayPlot1[[iSEEslots$brushData]] <- list()
 })
 
 ###############################################
@@ -85,12 +85,12 @@ OPEN_LASSO$closed <- FALSE
 
 test_that(".process_selectby_choice works with a column-based lasso", {
     plot_env <- new.env()
-    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- OPEN_LASSO
+    pObjects$memory$ReducedDimensionPlot1[[iSEEslots$brushData]] <- OPEN_LASSO
     cmds <- .processMultiSelections(pObjects$memory$ColumnDataPlot1, pObjects$memory, pObjects$contents, plot_env)
     expect_false(exists('col_selected', envir=plot_env))
     expect_identical(length(cmds), 0L)
 
-    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- DUMMY_LASSO
+    pObjects$memory$ReducedDimensionPlot1[[iSEEslots$brushData]] <- DUMMY_LASSO
     plot_env <- new.env()
     cmds <- .processMultiSelections(pObjects$memory$ColumnDataPlot1, pObjects$memory, pObjects$contents, plot_env)
 
@@ -98,17 +98,17 @@ test_that(".process_selectby_choice works with a column-based lasso", {
     expect_true(any(grepl("ReducedDimensionPlot1", unlist(cmds))))
     expect_true(any(grepl("iSEE::lassoPoints", unlist(cmds))))
 
-    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- list()
+    pObjects$memory$ReducedDimensionPlot1[[iSEEslots$brushData]] <- list()
 })
 
 test_that(".process_selectby_choice works with a row-based lasso", {
     plot_env <- new.env()
-    pObjects$memory$SampleAssayPlot1[[iSEE:::.brushData]] <- OPEN_LASSO
+    pObjects$memory$SampleAssayPlot1[[iSEEslots$brushData]] <- OPEN_LASSO
     cmds <- .processMultiSelections(pObjects$memory$RowDataPlot1, pObjects$memory, pObjects$contents, plot_env)
     expect_false(exists('row_selected', envir=plot_env))
     expect_identical(length(cmds), 0L)
 
-    pObjects$memory$SampleAssayPlot1[[iSEE:::.brushData]] <- DUMMY_LASSO
+    pObjects$memory$SampleAssayPlot1[[iSEEslots$brushData]] <- DUMMY_LASSO
     plot_env <- new.env()
     cmds <- .processMultiSelections(pObjects$memory$RowDataPlot1, pObjects$memory, pObjects$contents, plot_env)
 
@@ -116,13 +116,13 @@ test_that(".process_selectby_choice works with a row-based lasso", {
     expect_true(any(grepl("SampleAssayPlot1", unlist(cmds))))
     expect_true(any(grepl("iSEE::lassoPoints", unlist(cmds))))
 
-    pObjects$memory$SampleAssayPlot1[[iSEE:::.brushData]] <- list()
+    pObjects$memory$SampleAssayPlot1[[iSEEslots$brushData]] <- list()
 })
 
 ###############################################
 
 test_that(".process_selectby_choice works with saved column selections", {
-    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.multiSelectHistory]] <- list(DUMMY_BRUSH)
+    pObjects$memory$ReducedDimensionPlot1[[iSEEslots$multiSelectHistory]] <- list(DUMMY_BRUSH)
     cdp <- pObjects$memory$ColumnDataPlot1
 
     plot_env <- new.env()
@@ -132,11 +132,11 @@ test_that(".process_selectby_choice works with saved column selections", {
     expect_true(any(grepl("ReducedDimensionPlot1", unlist(cmds))))
     expect_true(any(grepl("shiny::brushedPoints", unlist(cmds))))
 
-    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.multiSelectHistory]] <- list()
+    pObjects$memory$ReducedDimensionPlot1[[iSEEslots$multiSelectHistory]] <- list()
 })
 
 test_that(".process_selectby_choice works with saved row selections", {
-    pObjects$memory$SampleAssayPlot1[[iSEE:::.multiSelectHistory]] <- list(DUMMY_BRUSH)
+    pObjects$memory$SampleAssayPlot1[[iSEEslots$multiSelectHistory]] <- list(DUMMY_BRUSH)
     cdp <- pObjects$memory$RowDataPlot1
 
     plot_env <- new.env()
@@ -146,7 +146,7 @@ test_that(".process_selectby_choice works with saved row selections", {
     expect_true(any(grepl("SampleAssayPlot1", unlist(cmds))))
     expect_true(any(grepl("shiny::brushedPoints", unlist(cmds))))
 
-    pObjects$memory$SampleAssayPlot1[[iSEE:::.multiSelectHistory]] <- list()
+    pObjects$memory$SampleAssayPlot1[[iSEEslots$multiSelectHistory]] <- list()
 })
 
 test_that(".any_saved_selection returns the appropriate value ", {

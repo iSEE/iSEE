@@ -26,12 +26,12 @@ test_that("code trackers run correctly for plots", {
     expect_true(any(grepl("ggplot", out)))
 
     # Adding a brush to featAssayPlot1, such that we get it back.
-    pObjects$memory$FeatureAssayPlot1[[iSEE:::.brushData]] <- list("this is a mock brush")
+    pObjects$memory$FeatureAssayPlot1[[iSEEslots$brushData]] <- list("this is a mock brush")
     out <- iSEE:::.track_it_all(pObjects, se_name="sce", ecm_name="ecm")
     expect_true(any(grepl("FeatureAssayPlot1.*this is a mock", out)))
 
     # Adding a brush to redDimPlot, which also gives us the feature assay plot above.
-    pObjects$memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- list("this is a mock brush")
+    pObjects$memory$ReducedDimensionPlot1[[iSEEslots$brushData]] <- list("this is a mock brush")
     out <- iSEE:::.track_it_all(pObjects, se_name="sce", ecm_name="ecm")
     expect_true(any(grepl("ReducedDimensionPlot1.*this is a mock", out)))
     expect_true(any(grepl("FeatureAssayPlot1.*this is a mock", out)))

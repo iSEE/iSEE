@@ -21,9 +21,9 @@ sce <- iSEE:::.set_colormap(sce, ExperimentColorMap())
 
 test_that(".addDotPlotDataColor handles metadata selection in column plots", {
     params <- pObjects$memory$ReducedDimensionPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorByColDataTitle
+    params[[iSEEslots$colorByField]] <- iSEE:::.colorByColDataTitle
     field <- colnames(colData(sce))[1]
-    params[[iSEE:::.colorByFeatName]] <- field
+    params[[iSEEslots$colorByFeatName]] <- field
 
     env <- new.env()
     env$se <- sce
@@ -37,9 +37,9 @@ test_that(".addDotPlotDataColor handles metadata selection in column plots", {
 
 test_that(".addDotPlotDataColor handles feature selection in column plots", {
     params <- pObjects$memory$ReducedDimensionPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
+    params[[iSEEslots$colorByField]] <- iSEE:::.colorByFeatNameTitle
     rn <- rownames(sce)[1]
-    params[[iSEE:::.colorByFeatName]] <- rn
+    params[[iSEEslots$colorByFeatName]] <- rn
 
     env <- new.env()
     env$se <- sce
@@ -56,9 +56,9 @@ test_that(".addDotPlotDataColor handles feature selection in column plots", {
 
 test_that(".addDotPlotDataColor handles sample selection in column plots", {
     params <- pObjects$memory$ReducedDimensionPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorBySampNameTitle
+    params[[iSEEslots$colorByField]] <- iSEE:::.colorBySampNameTitle
     cn <- colnames(sce)[3]
-    params[[ iSEE:::.colorBySampName]] <- cn
+    params[[ iSEEslots$colorBySampName]] <- cn
 
     env <- new.env()
     env$se <- sce
@@ -72,7 +72,7 @@ test_that(".addDotPlotDataColor handles sample selection in column plots", {
 
 test_that(".addDotPlotDataColor handles multiple selections in column plots", {
     params <- pObjects$memory$ReducedDimensionPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorByColSelectionsTitle
+    params[[iSEEslots$colorByField]] <- iSEE:::.colorByColSelectionsTitle
 
     # Trying with nothing first:
     env <- new.env()
@@ -92,9 +92,9 @@ test_that(".addDotPlotDataColor handles multiple selections in column plots", {
 
 test_that(".addDotPlotDataColor handles metadata selection in row plots", {
     params <- pObjects$memory$RowDataPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorByRowDataTitle
+    params[[iSEEslots$colorByField]] <- iSEE:::.colorByRowDataTitle
     field <- colnames(rowData(sce))[1]
-    params[[iSEE:::.colorByFeatName]] <- field
+    params[[iSEEslots$colorByFeatName]] <- field
 
     env <- new.env()
     env$se <- sce
@@ -108,9 +108,9 @@ test_that(".addDotPlotDataColor handles metadata selection in row plots", {
 
 test_that(".addDotPlotDataColor handles feature selection in row plots", {
     params <- pObjects$memory$RowDataPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
+    params[[iSEEslots$colorByField]] <- iSEE:::.colorByFeatNameTitle
     rn <- rownames(sce)[3]
-    params[[iSEE:::.colorByFeatName]] <- rn
+    params[[iSEEslots$colorByFeatName]] <- rn
 
     env <- new.env()
     env$se <- sce
@@ -124,9 +124,9 @@ test_that(".addDotPlotDataColor handles feature selection in row plots", {
 
 test_that(".addDotPlotDataColor handles sample selection in row plots", {
     params <- pObjects$memory$RowDataPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorBySampNameTitle
+    params[[iSEEslots$colorByField]] <- iSEE:::.colorBySampNameTitle
     cn <- colnames(sce)[3]
-    params[[iSEE:::.colorBySampName]] <- cn
+    params[[iSEEslots$colorBySampName]] <- cn
 
     env <- new.env()
     env$se <- sce
@@ -143,7 +143,7 @@ test_that(".addDotPlotDataColor handles sample selection in row plots", {
 
 test_that(".addDotPlotDataColor handles multiple selections in row plots", {
     params <- pObjects$memory$RowDataPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorByRowSelectionsTitle
+    params[[iSEEslots$colorByField]] <- iSEE:::.colorByRowSelectionsTitle
 
     # Trying with nothing first:
     env <- new.env()
@@ -166,81 +166,81 @@ test_that(".addDotPlotDataColor handles multiple selections in row plots", {
 
 test_that(".colorDotPlot returns NULL when coloring DotPlot by nothing", {
     x <- ColumnDataPlot()
-    x[[iSEE:::.colorByField]] <- iSEE:::.colorByNothingTitle
+    x[[iSEEslots$colorByField]] <- iSEE:::.colorByNothingTitle
     out <- iSEE:::.colorDotPlot(x, LETTERS)
     expect_null(out)
 
     x <- RowDataPlot()
-    x[[iSEE:::.colorByField]] <- iSEE:::.colorByNothingTitle
+    x[[iSEEslots$colorByField]] <- iSEE:::.colorByNothingTitle
     out <- iSEE:::.colorDotPlot(x, LETTERS)
     expect_null(out)
 })
 
 test_that(".colorDotPlot returns a command for coloring by metadata", {
     params <- pObjects$memory$ReducedDimensionPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorByColDataTitle
-    params[[iSEE:::.colorByFeatName]] <- colnames(colData(sce))[1]
+    params[[iSEEslots$colorByField]] <- iSEE:::.colorByColDataTitle
+    params[[iSEEslots$colorByFeatName]] <- colnames(colData(sce))[1]
     color_add <- iSEE:::.colorDotPlot(params, colData(sce)[,1])
     expect_match(color_add[1], "colDataColorMap")
 
     # And again, for rows.
     params <- pObjects$memory$RowDataPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorByRowDataTitle
-    params[[iSEE:::.colorByFeatName]] <- "BLAH"
+    params[[iSEEslots$colorByField]] <- iSEE:::.colorByRowDataTitle
+    params[[iSEEslots$colorByFeatName]] <- "BLAH"
     color_add <- iSEE:::.colorDotPlot(params, letters)
     expect_match(color_add[1], "rowDataColorMap")
 })
 
 test_that(".colorDotPlot returns a command for coloring by features", {
     params <- pObjects$memory$ReducedDimensionPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
-    params[[iSEE:::.colorByFeatName]] <- rownames(sce)[1]
+    params[[iSEEslots$colorByField]] <- iSEE:::.colorByFeatNameTitle
+    params[[iSEEslots$colorByFeatName]] <- rownames(sce)[1]
     color_add <- iSEE:::.colorDotPlot(params, assay(sce)[,1])
     expect_match(color_add[1], "scale_color_gradientn.*assayColorMap")
 
     # And again, for rows.
     params <- pObjects$memory$RowDataPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
-    params[[iSEE:::.colorByFeatName]] <- rownames(sce)[3]
+    params[[iSEEslots$colorByField]] <- iSEE:::.colorByFeatNameTitle
+    params[[iSEEslots$colorByFeatName]] <- rownames(sce)[3]
     color_add <- iSEE:::.colorDotPlot(params, c(TRUE, FALSE))
     expect_identical(color_add, c(
         "scale_color_manual(values=c(`FALSE`='black', `TRUE`=\"red\"), drop=FALSE) +",
         "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy == 'TRUE'), col=\"red\", alpha=1, size=5*1) +"))
 
-    params[[iSEE:::.sizeByField]] <- iSEE:::.sizeByRowDataTitle
+    params[[iSEEslots$sizeByField]] <- iSEE:::.sizeByRowDataTitle
     color_add <- iSEE:::.colorDotPlot(params, assay(sce)[,1])
     expect_match(color_add[2], "alpha=1) +", fixed=TRUE) # no size information added if we're already sizing by something else.
 })
 
 test_that(".colorDotPlot returns a command for coloring by samples", {
     params <- pObjects$memory$ReducedDimensionPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorBySampNameTitle
-    params[[ iSEE:::.colorBySampName]] <- colnames(sce)[3]
+    params[[iSEEslots$colorByField]] <- iSEE:::.colorBySampNameTitle
+    params[[ iSEEslots$colorBySampName]] <- colnames(sce)[3]
     color_add <- iSEE:::.colorDotPlot(params, env$plot.data$ColorBy)
     expect_identical(color_add, c(
         "scale_color_manual(values=c(`FALSE`='black', `TRUE`=\"red\"), drop=FALSE) +",
         "geom_point(aes(x=X, y=Y), data=subset(plot.data, ColorBy == 'TRUE'), col=\"red\", alpha=1, size=5*1) +"))
 
-    params[[iSEE:::.sizeByField]] <- iSEE:::.sizeByColDataTitle
+    params[[iSEEslots$sizeByField]] <- iSEE:::.sizeByColDataTitle
     color_add <- iSEE:::.colorDotPlot(params, assay(sce)[,1])
     expect_match(color_add[2], "alpha=1) +", fixed=TRUE) # no size information added if we're already sizing by something else.
 
     # And again, for rows.
     params <- pObjects$memory$RowDataPlot1
-    params[[iSEE:::.colorByField]] <- iSEE:::.colorBySampNameTitle
-    params[[iSEE:::.colorByFeatName]] <- rownames(sce)[3]
+    params[[iSEEslots$colorByField]] <- iSEE:::.colorBySampNameTitle
+    params[[iSEEslots$colorByFeatName]] <- rownames(sce)[3]
     color_add <- iSEE:::.colorDotPlot(params, 1:50)
     expect_match(color_add[1], "scale_color_gradientn.*assayColorMap")
 })
 
 test_that(".colorDotPlot behaves when coloring a DotPlot by selections", {
     x <- ColumnDataPlot()
-    x[[iSEE:::.colorByField]] <- iSEE:::.colorByColSelectionsTitle
+    x[[iSEEslots$colorByField]] <- iSEE:::.colorByColSelectionsTitle
     out <- iSEE:::.colorDotPlot(x, LETTERS)
     expect_match(out, "columnSelectionColorMap")
 
     x <- RowDataPlot()
-    x[[iSEE:::.colorByField]] <- iSEE:::.colorByRowSelectionsTitle
+    x[[iSEEslots$colorByField]] <- iSEE:::.colorByRowSelectionsTitle
     out <- iSEE:::.colorDotPlot(x, LETTERS)
     expect_match(out, "rowSelectionColorMap")
 })
@@ -379,7 +379,7 @@ test_that(".addDotPlotDataSelected handles RowDotPlot", {
     expect_identical(out[["SelectBy"]], "plot.data$SelectBy <- rownames(plot.data) %in% unlist(row_selected);")
 
     # row_selected exists in plot_env with effect Restrict
-    x[[iSEE:::.selectRowRestrict]] <- TRUE
+    x[[iSEEslots$selectRowRestrict]] <- TRUE
     out <- iSEE:::.addDotPlotDataSelected(x, plot_env)
     expect_identical(out[["SelectBy"]], "plot.data$SelectBy <- rownames(plot.data) %in% unlist(row_selected);")
     expect_identical(out[["saved"]], "plot.data.all <- plot.data;")
@@ -401,7 +401,7 @@ test_that(".addDotPlotDataSelected handles ColumnDotPlot", {
     expect_identical(out[["SelectBy"]], "plot.data$SelectBy <- rownames(plot.data) %in% unlist(col_selected);")
 
     # col_selected exists in plot_env with effect Restrict
-    x[[iSEE:::.selectColRestrict]] <- TRUE
+    x[[iSEEslots$selectColRestrict]] <- TRUE
     out <- iSEE:::.addDotPlotDataSelected(x, plot_env)
     expect_identical(out[["SelectBy"]], "plot.data$SelectBy <- rownames(plot.data) %in% unlist(col_selected);")
     expect_identical(out[["saved"]], "plot.data.all <- plot.data;")

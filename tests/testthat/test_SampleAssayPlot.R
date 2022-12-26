@@ -19,15 +19,15 @@ test_that(".refineParameters identifies impossible SampleAssayPlot", {
 
     sce0 <- sce
     rowData(sce0) <- rowData(sce0)[,0]
-    x[[iSEE:::.sampAssayXAxis]] <- iSEE:::.sampAssayXAxisRowDataTitle
+    x[[iSEEslots$sampAssayXAxis]] <- iSEE:::.sampAssayXAxisRowDataTitle
     sce0 <- .cacheCommonInfo(x, sce0)
     out <- .refineParameters(x, sce0)
-    expect_identical(out[[iSEE:::.sampAssayXAxis]], iSEE:::.sampAssayXAxisNothingTitle)
+    expect_identical(out[[iSEEslots$sampAssayXAxis]], iSEE:::.sampAssayXAxisNothingTitle)
 })
 
 test_that(".generateDotPlotData works with row selections on the x-axis", {
     x <- SampleAssayPlot()
-    x[[iSEE:::.sampAssayXAxis]] <- iSEE:::.sampAssayXAxisSelectionsTitle
+    x[[iSEEslots$sampAssayXAxis]] <- iSEE:::.sampAssayXAxisSelectionsTitle
 
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)

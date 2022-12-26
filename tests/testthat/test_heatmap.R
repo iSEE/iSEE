@@ -22,7 +22,7 @@ test_that(".process_heatmap_assay_colormap handles discrete assays", {
     x <- memory[["ComplexHeatmapPlot1"]]
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.heatMapAssay]] <- "letters"
+    x[[iSEEslots$heatMapAssay]] <- "letters"
 
     out <- iSEE:::.process_heatmap_assay_colormap(x, sce, plot_env)
     expect_identical(out, c(
@@ -41,7 +41,7 @@ test_that(".process_heatmap_assay_colormap handles centered values", {
     x <- memory[["ComplexHeatmapPlot1"]]
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.assayCenterRows]] <- TRUE
+    x[[iSEEslots$assayCenterRows]] <- TRUE
 
     out <- iSEE:::.process_heatmap_assay_colormap(x, sce, plot_env)
     expect_identical(out, c(
@@ -59,9 +59,9 @@ test_that(".process_heatmap_assay_colormap handles custom bounds", {
     x <- memory[["ComplexHeatmapPlot1"]]
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.heatMapCustomAssayBounds]] <- TRUE
-    x[[iSEE:::.assayLowerBound]] <- NA_real_
-    x[[iSEE:::.assayUpperBound]] <- NA_real_
+    x[[iSEEslots$heatMapCustomAssayBounds]] <- TRUE
+    x[[iSEEslots$assayLowerBound]] <- NA_real_
+    x[[iSEEslots$assayUpperBound]] <- NA_real_
 
     out <- iSEE:::.process_heatmap_assay_colormap(x, sce, plot_env)
     expect_identical(out, c(
@@ -85,7 +85,7 @@ test_that(".process_heatmap_column_annotations_colorscale handles column selecti
     expect_true(any(grepl('.column_col[["Selected points"]] <- iSEE::columnSelectionColorMap', out, fixed=TRUE)))
 
     # What happens when we turn off column selections?
-    x[[iSEE:::.heatMapShowSelection]] <- FALSE
+    x[[iSEEslots$heatMapShowSelection]] <- FALSE
     out <- iSEE:::.process_heatmap_column_annotations_colorscale(x, sce, plot_env)
     expect_false(any(grepl('.column_col[["Selected points"]] <- iSEE::columnSelectionColorMap', out, fixed=TRUE)))
 })
@@ -108,7 +108,7 @@ test_that(".process_heatmap_column_annotations_colorscale handles existing 'Sele
     out <- iSEE:::.process_heatmap_column_annotations_colorscale(x, sce, plot_env)
     expect_false(any(grepl('.column_col[["Selected points (1)"]] <- iSEE::columnSelectionColorMap', out, fixed=TRUE)))
 
-    x[[iSEE:::.heatMapColData]] <- c("Selected points")
+    x[[iSEEslots$heatMapColData]] <- c("Selected points")
     out <- iSEE:::.process_heatmap_column_annotations_colorscale(x, sce, plot_env)
     expect_true(any(grepl('.column_col[["Selected points (1)"]] <- iSEE::columnSelectionColorMap', out, fixed=TRUE)))
 })
@@ -119,7 +119,7 @@ test_that(".process_heatmap_column_annotations_colorscale handles other column a
     x <- memory[["ComplexHeatmapPlot1"]]
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.heatMapColData]] <- c("driver_1_s", "NREADS")
+    x[[iSEEslots$heatMapColData]] <- c("driver_1_s", "NREADS")
 
     plot_env$se <- sce
     plot_env$colormap <- ExperimentColorMap()
@@ -132,7 +132,7 @@ test_that(".process_heatmap_column_annotations_colorscale handles other column a
     expect_true(any(out == '.column_data <- .column_data[.column_annot_order, , drop=FALSE]'))
 
     # What happens when we turn off column selections?
-    x[[iSEE:::.heatMapOrderSelection]] <- FALSE
+    x[[iSEEslots$heatMapOrderSelection]] <- FALSE
     out <- iSEE:::.process_heatmap_column_annotations_colorscale(x, sce, plot_env)
     expect_true(any(out == '.column_annot_order <- order(.column_data[["driver_1_s"]], .column_data[["NREADS"]])'))
 })
@@ -146,7 +146,7 @@ test_that(".process_heatmap_row_annotations_colorscale handles row annotations",
     x <- memory[["ComplexHeatmapPlot1"]]
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.heatMapRowData]] <- c("letters", "num_cells")
+    x[[iSEEslots$heatMapRowData]] <- c("letters", "num_cells")
 
     plot_env$se <- sce
     plot_env$colormap <- ExperimentColorMap()
@@ -165,7 +165,7 @@ test_that(".generateOutput detects col_selected and row_selected", {
     x <- memory$FeatureAssayPlot1
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.brushData]] <- list(
+    x[[iSEEslots$brushData]] <- list(
         xmin = 0.7, xmax = 1.3, ymin = 1000, ymax = 2000,
         mapping = list(x = "X", y = "Y"),
         log = list(x = NULL, y = NULL), direction = "xy",
@@ -178,10 +178,10 @@ test_that(".generateOutput detects col_selected and row_selected", {
     x <- ComplexHeatmapPlot()
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.selectColSource]] <- "FeatureAssayPlot1"
-    x[[iSEE:::.selectColRestrict]] <- TRUE
-    x[[iSEE:::.heatMapCustomFeatNames]] <- TRUE
-    x[[iSEE:::.heatMapFeatNameText]] <- paste0(head(rownames(sce), 2), collapse = "\n")
+    x[[iSEEslots$selectColSource]] <- "FeatureAssayPlot1"
+    x[[iSEEslots$selectColRestrict]] <- TRUE
+    x[[iSEEslots$heatMapCustomFeatNames]] <- TRUE
+    x[[iSEEslots$heatMapFeatNameText]] <- paste0(head(rownames(sce), 2), collapse = "\n")
     memory$ComplexHeatmapPlot1 <- x
 
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
@@ -197,7 +197,7 @@ test_that(".generateOutput handles row_selected when not using custom feature na
     x <- memory$SampleAssayPlot1
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.brushData]] <- list(
+    x[[iSEEslots$brushData]] <- list(
         xmin = 0.7, xmax = 1.3, ymin = 25000, ymax = 50000,
         mapping = list(x = "X", y = "Y"),
         log = list(x = NULL, y = NULL), direction = "xy",
@@ -210,8 +210,8 @@ test_that(".generateOutput handles row_selected when not using custom feature na
     x <- ComplexHeatmapPlot()
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.selectRowSource]] <- "SampleAssayPlot1"
-    x[[iSEE:::.heatMapCustomFeatNames]] <- FALSE
+    x[[iSEEslots$selectRowSource]] <- "SampleAssayPlot1"
+    x[[iSEEslots$heatMapCustomFeatNames]] <- FALSE
     memory$ComplexHeatmapPlot1 <- x
 
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
@@ -225,7 +225,7 @@ test_that(".generateOutput handles row annotations", {
     x <- ComplexHeatmapPlot()
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.heatMapRowData]] <- c("mean_count", "letters")
+    x[[iSEEslots$heatMapRowData]] <- c("mean_count", "letters")
     memory$ComplexHeatmapPlot1 <- x
 
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
@@ -241,7 +241,7 @@ test_that(".generateOutput handles column annotations", {
     x <- ComplexHeatmapPlot()
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.heatMapColData]] <- c("driver_1_s", "NREADS")
+    x[[iSEEslots$heatMapColData]] <- c("driver_1_s", "NREADS")
     memory$ComplexHeatmapPlot1 <- x
 
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
@@ -258,7 +258,7 @@ test_that(".generateOutput handles clustering", {
     x <- ComplexHeatmapPlot()
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.heatMapClusterFeatures]] <- TRUE
+    x[[iSEEslots$heatMapClusterFeatures]] <- TRUE
     memory$ComplexHeatmapPlot1 <- x
 
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
@@ -275,8 +275,8 @@ test_that(".generateOutput handles centering and scaling", {
     x <- ComplexHeatmapPlot()
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.assayCenterRows]] <- TRUE
-    x[[iSEE:::.assayScaleRows]] <- TRUE
+    x[[iSEEslots$assayCenterRows]] <- TRUE
+    x[[iSEEslots$assayScaleRows]] <- TRUE
     memory$ComplexHeatmapPlot1 <- x
 
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
@@ -294,9 +294,9 @@ test_that("process_heatmap_assay_row_transformations handles row centering and s
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
 
-    x[[iSEE:::.heatMapAssay]] <- "tophat_counts"
-    x[[iSEE:::.assayCenterRows]] <- TRUE
-    x[[iSEE:::.assayScaleRows]] <- TRUE
+    x[[iSEEslots$heatMapAssay]] <- "tophat_counts"
+    x[[iSEEslots$assayCenterRows]] <- TRUE
+    x[[iSEEslots$assayScaleRows]] <- TRUE
 
     out <- iSEE:::.process_heatmap_assay_row_transformations(x, sce, envir)
     expect_identical(out, c(
@@ -313,7 +313,7 @@ test_that(".create_visual_box_for_complexheatmap handles continuous and discrete
     out <- iSEE:::.create_visual_box_for_complexheatmap(x, sce)
     expect_false(any(grepl("shinyjs-disabled", unlist(out)))) # none of the UI are disabled
 
-    x[[iSEE:::.heatMapAssay]] <- "letters"
+    x[[iSEEslots$heatMapAssay]] <- "letters"
 
     out <- iSEE:::.create_visual_box_for_complexheatmap(x, sce)
     expect_true(any(grepl("shinyjs-disabled", unlist(out)))) # some of the UI are disabled
@@ -329,7 +329,7 @@ test_that(".defineDataInterface handles continuous and discrete assays", {
     out <- .defineDataInterface(x, sce)
     expect_false(any(grepl("shinyjs-disabled", unlist(out)))) # none of the UI are disabled
 
-    x[[iSEE:::.heatMapAssay]] <- "letters"
+    x[[iSEEslots$heatMapAssay]] <- "letters"
 
     out <- .defineDataInterface(x, sce)
     expect_true(any(grepl("shinyjs-disabled", unlist(out)))) # some of the UI are disabled
@@ -342,35 +342,35 @@ test_that(".build_heatmap_assay_legend_title handles centering and scaling", {
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
 
-    x[[iSEE:::.heatMapAssay]] <- "letters"
+    x[[iSEEslots$heatMapAssay]] <- "letters"
 
     out <- iSEE:::.build_heatmap_assay_legend_title(x, discrete = TRUE)
     expect_identical(out, "letters")
 
-    x[[iSEE:::.heatMapAssay]] <- "tophat_counts"
+    x[[iSEEslots$heatMapAssay]] <- "tophat_counts"
 
     out <- iSEE:::.build_heatmap_assay_legend_title(x, discrete = FALSE)
     expect_identical(out, "tophat_counts")
 
-    x[[iSEE:::.assayCenterRows]] <- TRUE
-    x[[iSEE:::.assayScaleRows]] <- FALSE
+    x[[iSEEslots$assayCenterRows]] <- TRUE
+    x[[iSEEslots$assayScaleRows]] <- FALSE
     out <- iSEE:::.build_heatmap_assay_legend_title(x, discrete = FALSE)
     expect_identical(out, "tophat_counts (centered)")
 
-    x[[iSEE:::.assayCenterRows]] <- TRUE
-    x[[iSEE:::.assayScaleRows]] <- TRUE
+    x[[iSEEslots$assayCenterRows]] <- TRUE
+    x[[iSEEslots$assayScaleRows]] <- TRUE
     out <- iSEE:::.build_heatmap_assay_legend_title(x, discrete = FALSE)
     expect_identical(out, "tophat_counts (centered, scaled)")
 
-    x[[iSEE:::.assayCenterRows]] <- TRUE
-    x[[iSEE:::.assayScaleRows]] <- FALSE
-    x[[iSEE:::.plotLegendDirection]] <- "Vertical"
+    x[[iSEEslots$assayCenterRows]] <- TRUE
+    x[[iSEEslots$assayScaleRows]] <- FALSE
+    x[[iSEEslots$plotLegendDirection]] <- "Vertical"
     out <- iSEE:::.build_heatmap_assay_legend_title(x, discrete = FALSE)
     expect_identical(out, "tophat_counts\n(centered)")
 
-    x[[iSEE:::.assayCenterRows]] <- TRUE
-    x[[iSEE:::.assayScaleRows]] <- TRUE
-    x[[iSEE:::.plotLegendDirection]] <- "Vertical"
+    x[[iSEEslots$assayCenterRows]] <- TRUE
+    x[[iSEEslots$assayScaleRows]] <- TRUE
+    x[[iSEEslots$plotLegendDirection]] <- "Vertical"
     out <- iSEE:::.build_heatmap_assay_legend_title(x, discrete = FALSE)
     expect_identical(out, "tophat_counts\n(centered, scaled)")
 

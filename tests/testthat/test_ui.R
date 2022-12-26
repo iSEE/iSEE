@@ -41,6 +41,6 @@ test_that(".choose_links behaves as expected", {
 
 test_that("assorted hidden modes work correctly", {
     X <- ReducedDimensionPlot()
-    expect_match(as.character(iSEE:::.selectizeInputHidden(X, iSEE:::.selectRowRestrict, choices=letters, label="YAY")), "hide")
-    expect_false(grepl("hide", as.character(iSEE:::.selectizeInputHidden(X, iSEE:::.selectColRestrict, choices=letters, label="YAY"))))
+    expect_match(as.character(iSEE:::.selectizeInputHidden(X, iSEEslots$selectRowRestrict, choices=letters, label="YAY")), "hide")
+    expect_false(grepl("hide", as.character(iSEE:::.selectizeInputHidden(X, iSEEslots$selectColRestrict, choices=letters, label="YAY"))))
 })

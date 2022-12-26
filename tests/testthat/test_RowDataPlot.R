@@ -26,7 +26,7 @@ test_that(".refineParameters identifies impossible RowDataPlot", {
 
 test_that(".generateDotPlotData works with row selections on the x-axis", {
     x <- RowDataPlot()
-    x[[iSEE:::.rowDataXAxis]] <- iSEE:::.rowDataXAxisSelectionsTitle
+    x[[iSEEslots$rowDataXAxis]] <- iSEE:::.rowDataXAxisSelectionsTitle
 
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)

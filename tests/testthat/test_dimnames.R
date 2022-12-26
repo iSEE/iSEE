@@ -18,8 +18,8 @@ test_that("dimname observers work to change the source", {
     out <- iSEE:::.setup_dimname_source_observer(
         "FeatureAssayPlot1", use_mode_field=NA, use_value=NA,
         pObjects=pObjects, rObjects=rObjects, input=input, session=NULL,
-        name_field=iSEE:::.featAssayYAxisFeatName,
-        tab_field=iSEE:::.featAssayYAxisRowTable,
+        name_field=iSEEslots$featAssayYAxisFeatName,
+        tab_field=iSEEslots$featAssayYAxisRowTable,
         choices=NULL)
 
     expect_false(out)
@@ -32,8 +32,8 @@ test_that("dimname observers work to change the source", {
     out <- iSEE:::.setup_dimname_source_observer(
         "FeatureAssayPlot1", use_mode_field=NA, use_value=NA,
         pObjects=pObjects, rObjects=rObjects, input=input, session=NULL,
-        name_field=iSEE:::.featAssayYAxisFeatName,
-        tab_field=iSEE:::.featAssayYAxisRowTable,
+        name_field=iSEEslots$featAssayYAxisFeatName,
+        tab_field=iSEEslots$featAssayYAxisRowTable,
         choices=NULL)
 
     expect_false(out)
@@ -47,8 +47,8 @@ test_that("dimname observers work to change the source", {
     out <- iSEE:::.setup_dimname_source_observer(
         "FeatureAssayPlot1", use_mode_field=NA, use_value=NA,
         pObjects=pObjects, rObjects=rObjects, input=input, session=NULL,
-        name_field=iSEE:::.featAssayYAxisFeatName,
-        tab_field=iSEE:::.featAssayYAxisRowTable,
+        name_field=iSEEslots$featAssayYAxisFeatName,
+        tab_field=iSEEslots$featAssayYAxisRowTable,
         choices=NULL)
 
     expect_false(out)
@@ -76,10 +76,10 @@ test_that("dimname observers work to change the usage mode", {
 
     out <- iSEE:::.setup_dimname_source_observer(
         "ReducedDimensionPlot1",
-        use_mode_field=iSEE:::.colorByField, use_value=iSEEconstants$colorByFeatNameTitle,
+        use_mode_field=iSEEslots$colorByField, use_value=iSEEconstants$colorByFeatNameTitle,
         pObjects=pObjects, rObjects=rObjects, input=input, session=NULL,
-        name_field=iSEE:::.colorByFeatName,
-        tab_field=iSEE:::.colorByRowTable,
+        name_field=iSEEslots$colorByFeatName,
+        tab_field=iSEEslots$colorByRowTable,
         choices=NULL)
 
     expect_true(out)
@@ -91,15 +91,15 @@ test_that("dimname observers work to change the usage mode", {
     # situations where multiple observers respond to the same change).
     old_memory <- pObjects$memory
     pObjects$aesthetics_links <- iSEE:::.delete_interpanel_link(pObjects$aesthetics_links,
-        "ReducedDimensionPlot1", "RowDataTable1", field=iSEE:::.colorByFeatName)
+        "ReducedDimensionPlot1", "RowDataTable1", field=iSEEslots$colorByFeatName)
     expect_false(igraph::are_adjacent(pObjects$aesthetics_links, "RowDataTable1", "ReducedDimensionPlot1"))
 
     out <- iSEE:::.setup_dimname_source_observer(
         "ReducedDimensionPlot1",
-        use_mode_field=iSEE:::.colorByField, use_value=iSEEconstants$colorByFeatNameTitle,
+        use_mode_field=iSEEslots$colorByField, use_value=iSEEconstants$colorByFeatNameTitle,
         pObjects=pObjects, rObjects=rObjects, input=input, session=NULL,
-        name_field=iSEE:::.colorByFeatName,
-        tab_field=iSEE:::.colorByRowTable,
+        name_field=iSEEslots$colorByFeatName,
+        tab_field=iSEEslots$colorByRowTable,
         choices=NULL)
 
     expect_identical(old_memory, pObjects$memory)
@@ -111,35 +111,35 @@ test_that("dimname observers work to change the usage mode", {
     expect_identical(pObjects$memory$FeatureAssayPlot1[["XAxis"]], "None")
 
     id <- igraph::get.edge.ids(pObjects$aesthetics_links, c("RowDataTable1", "FeatureAssayPlot1"))
-    expect_identical(igraph::E(pObjects$aesthetics_links)$fields[[id]], iSEE:::.featAssayYAxisFeatName)
+    expect_identical(igraph::E(pObjects$aesthetics_links)$fields[[id]], iSEEslots$featAssayYAxisFeatName)
 
     out <- iSEE:::.setup_dimname_source_observer(
         "FeatureAssayPlot1",
-        use_mode_field=iSEE:::.featAssayXAxis, use_value=iSEE:::.featAssayXAxisFeatNameTitle,
+        use_mode_field=iSEEslots$featAssayXAxis, use_value=iSEE:::.featAssayXAxisFeatNameTitle,
         pObjects=pObjects, rObjects=rObjects, input=input, session=NULL,
-        name_field=iSEE:::.featAssayXAxisFeatName,
-        tab_field=iSEE:::.featAssayXAxisRowTable,
+        name_field=iSEEslots$featAssayXAxisFeatName,
+        tab_field=iSEEslots$featAssayXAxisRowTable,
         choices=NULL)
 
     expect_true(out)
     expect_identical(pObjects$memory$FeatureAssayPlot1[["XAxis"]], "Feature name")
     expect_identical(igraph::E(pObjects$aesthetics_links)$fields[[id]],
-        c(iSEE:::.featAssayYAxisFeatName, iSEE:::.featAssayXAxisFeatName))
+        c(iSEEslots$featAssayYAxisFeatName, iSEEslots$featAssayXAxisFeatName))
 
     # Changing it back deletes the link.
     input$FeatureAssayPlot1_XAxis <- "None"
 
     out <- iSEE:::.setup_dimname_source_observer(
         "FeatureAssayPlot1",
-        use_mode_field=iSEE:::.featAssayXAxis, use_value=iSEE:::.featAssayXAxisFeatNameTitle,
+        use_mode_field=iSEEslots$featAssayXAxis, use_value=iSEE:::.featAssayXAxisFeatNameTitle,
         pObjects=pObjects, rObjects=rObjects, input=input, session=NULL,
-        name_field=iSEE:::.featAssayXAxisFeatName,
-        tab_field=iSEE:::.featAssayXAxisRowTable,
+        name_field=iSEEslots$featAssayXAxisFeatName,
+        tab_field=iSEEslots$featAssayXAxisRowTable,
         choices=NULL)
 
     expect_true(out)
     expect_identical(pObjects$memory$FeatureAssayPlot1[["XAxis"]], "None")
-    expect_identical(igraph::E(pObjects$aesthetics_links)$fields[[id]], iSEE:::.featAssayYAxisFeatName)
+    expect_identical(igraph::E(pObjects$aesthetics_links)$fields[[id]], iSEEslots$featAssayYAxisFeatName)
 })
 
 test_that(".setup_dimname_source_observer works with a mimicked app", {
@@ -164,9 +164,9 @@ test_that(".setup_dimname_source_observer works with a mimicked app", {
 
     out <- iSEE:::.setup_dimname_source_observer(
         "ReducedDimensionPlot1",
-        use_mode_field=iSEE:::.colorByField, use_value=iSEEconstants$colorByFeatNameTitle,
-        name_field=iSEE:::.colorByFeatName,
-        tab_field=iSEE:::.colorByRowTable,
+        use_mode_field=iSEEslots$colorByField, use_value=iSEEconstants$colorByFeatNameTitle,
+        name_field=iSEEslots$colorByFeatName,
+        tab_field=iSEEslots$colorByRowTable,
         choices=letters,
         input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)

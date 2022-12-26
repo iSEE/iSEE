@@ -52,12 +52,12 @@ test_that(".transmitted_selection detects whether a brush is active", {
     all_memory <- pObjects$memory
 
     # No point selection
-    all_memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- list()
+    all_memory$ReducedDimensionPlot1[[iSEEslots$brushData]] <- list()
     out <- iSEE:::.transmitted_selection("ReducedDimensionPlot1", all_memory)
     expect_false(out)
 
     # Active point selection (non-empty brush or lasso)
-    all_memory$ReducedDimensionPlot1[[iSEE:::.brushData]] <- list(a=1, b=2)
+    all_memory$ReducedDimensionPlot1[[iSEEslots$brushData]] <- list(a=1, b=2)
     out <- iSEE:::.transmitted_selection("ReducedDimensionPlot1", all_memory)
     expect_true(out)
 
@@ -66,7 +66,7 @@ test_that(".transmitted_selection detects whether a brush is active", {
     expect_false(out)
 
     # missing "select_type" argument requires to "SelectMultiSaved"
-    all_memory$ReducedDimensionPlot1[[iSEE:::.multiSelectHistory]] <- list(list(a=1, b=2))
+    all_memory$ReducedDimensionPlot1[[iSEEslots$multiSelectHistory]] <- list(list(a=1, b=2))
     out <- iSEE:::.transmitted_selection("ReducedDimensionPlot1", all_memory)
     expect_true(out)
 })

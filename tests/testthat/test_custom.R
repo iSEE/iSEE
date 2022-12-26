@@ -61,7 +61,7 @@ test_that("createCustomTable works as expected", {
     expect_true(is.data.frame(env$tab))
 
     out <- .refineParameters(x, sce)
-    expect_identical(out[[iSEE:::.TableSelected]], "")
+    expect_identical(out[[iSEEslots$TableSelected]], "")
 
     # .refineParameters handles NULL x
     FUN <- selectMethod(".refineParameters", signature="CustomTable")

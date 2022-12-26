@@ -6,8 +6,8 @@ context("Tables")
 test_that(".multiSelectionCommands handles tables", {
     
     x <- ColumnDataTable()
-    x[[iSEE:::.TableSearch]] <- "main search"
-    x[[iSEE:::.TableColSearch]] <- c("column 1", "column 2")
+    x[[iSEEslots$TableSearch]] <- "main search"
+    x[[iSEEslots$TableColSearch]] <- c("column 1", "column 2")
     
     out <- .multiSelectionCommands(x, NA)
     expect_identical(out, 'selected <- rownames(contents)[iSEE::filterDT(contents, global="main search",\n    column=c("column 1", "column 2"))]')
@@ -17,8 +17,8 @@ test_that(".multiSelectionCommands handles tables", {
 test_that(".multiSelectionActive handles tables", {
     
     x <- ColumnDataTable()
-    x[[iSEE:::.TableSearch]] <- "main search"
-    x[[iSEE:::.TableColSearch]] <- c("column 1", "column 2")
+    x[[iSEEslots$TableSearch]] <- "main search"
+    x[[iSEEslots$TableColSearch]] <- c("column 1", "column 2")
     
     out <- .multiSelectionActive(x)
     expect_identical(out, list(Search = "main search", ColumnSearch = c("column 1", "column 2" )))

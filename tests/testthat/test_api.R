@@ -116,7 +116,7 @@ test_that(".multiSelectionRestricted handles ColumnDotPlot", {
     x <- ReducedDimensionPlot()
     expect_false(.multiSelectionRestricted(x))
 
-    x[[iSEE:::.selectColRestrict]] <- TRUE
+    x[[iSEEslots$selectColRestrict]] <- TRUE
     expect_true(.multiSelectionRestricted(x))
 })
 
@@ -124,7 +124,7 @@ test_that(".multiSelectionRestricted handles RowDotPlot", {
     x <- SampleAssayPlot()
     expect_false(.multiSelectionRestricted(x))
 
-    x[[iSEE:::.selectRowRestrict]] <- TRUE
+    x[[iSEEslots$selectRowRestrict]] <- TRUE
     expect_true(.multiSelectionRestricted(x))
 })
 
@@ -153,10 +153,10 @@ test_that(".multiSelectionClear handles DotPlot", {
 
     x <- ReducedDimensionPlot()
 
-    x[[iSEE:::.brushData]] <- list(anything=1L)
+    x[[iSEEslots$brushData]] <- list(anything=1L)
 
     out <- .multiSelectionClear(x)
-    expect_identical(out[[iSEE:::.brushData]], list())
+    expect_identical(out[[iSEEslots$brushData]], list())
 })
 
 test_that(".multiSelectionClear handles Panel", {
@@ -175,7 +175,7 @@ test_that(".singleSelectionValue handles DotPlot", {
     x <- ReducedDimensionPlot(PanelId=1L)
     contents <- data.frame(X=1, Y=seq_len(100), row.names = paste0("X", seq_len(100)))
 
-    x[[iSEE:::.brushData]] <- list(
+    x[[iSEEslots$brushData]] <- list(
         xmin = 0.7, xmax = 1.3, ymin = 1, ymax = 50,
         mapping = list(x = "X", y = "Y"),
         log = list(x = NULL, y = NULL), direction = "xy",
@@ -186,7 +186,7 @@ test_that(".singleSelectionValue handles DotPlot", {
     expect_identical(out, "X1")
 
     # Brush does not include any data point
-    x[[iSEE:::.brushData]] <- list(
+    x[[iSEEslots$brushData]] <- list(
         xmin = 0.7, xmax = 1.3, ymin = 1000, ymax = 2000,
         mapping = list(x = "X", y = "Y"),
         log = list(x = NULL, y = NULL), direction = "xy",

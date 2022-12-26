@@ -70,7 +70,7 @@ test_that(".singleStringError detects issues", {
     msg <- character(0)
 
     x <- ReducedDimensionPlot()
-    expect_error(x[[iSEE:::.colorByField]] <- character(0), 
+    expect_error(x[[iSEEslots$colorByField]] <- character(0), 
         "'ColorBy' should be a single string for 'ReducedDimensionPlot'")
 })
 
@@ -79,7 +79,7 @@ test_that(".validLogicalError detects issues", {
     msg <- character(0)
 
     x <- ReducedDimensionPlot()
-    expect_error(x[[iSEE:::.visualParamBoxOpen]] <- NA,
+    expect_error(x[[iSEEslots$visualParamBoxOpen]] <- NA,
         "'VisualBoxOpen' should be a non-NA logical scalar")
 })
 
@@ -88,7 +88,7 @@ test_that(".validStringError detects issues", {
     msg <- character(0)
 
     x <- ReducedDimensionPlot()
-    expect_error(x[[iSEE:::.colorByDefaultColor]] <- c("a", "b"),
+    expect_error(x[[iSEEslots$colorByDefaultColor]] <- c("a", "b"),
         "'ColorByDefaultColor' should be a non-NA string") 
 })
 
@@ -97,7 +97,7 @@ test_that(".allowableChoiceError detects issues", {
     msg <- character(0)
 
     x <- ReducedDimensionPlot()
-    expect_error(x[[iSEE:::.colorByField]] <- "other",
+    expect_error(x[[iSEEslots$colorByField]] <- "other",
         "'ColorBy' for 'ReducedDimensionPlot' should be one") 
 })
 
@@ -106,7 +106,7 @@ test_that(".multipleChoiceError detects issues", {
     msg <- character(0)
 
     x <- ReducedDimensionPlot()
-    expect_error(x[[iSEE:::.visualParamChoice]] <- "other",
+    expect_error(x[[iSEEslots$visualParamChoice]] <- "other",
         "values of 'VisualChoices' for 'ReducedDimensionPlot' should be")
 })
 
@@ -115,7 +115,7 @@ test_that(".validNumberError detects issues", {
     msg <- character(0)
 
     x <- ReducedDimensionPlot()
-    expect_error(x[[iSEE:::.selectTransAlpha]] <- 2,
+    expect_error(x[[iSEEslots$selectTransAlpha]] <- 2,
         "'SelectionAlpha' for 'ReducedDimensionPlot' should be a numeric scalar")
 })
 
@@ -158,14 +158,14 @@ test_that(".requestCleanUpdate updates rObjects", {
     rObjects <- new.env()
 
     x <- ReducedDimensionPlot()
-    x[[iSEE:::.brushData]] <- list(xmin=1, xmax=2, ymin=1, ymax=2)
-    x[[iSEE:::.multiSelectHistory]] <- list(list(xmin=1, xmax=2, ymin=1, ymax=2))
+    x[[iSEEslots$brushData]] <- list(xmin=1, xmax=2, ymin=1, ymax=2)
+    x[[iSEEslots$multiSelectHistory]] <- list(list(xmin=1, xmax=2, ymin=1, ymax=2))
     pObjects$memory <- list(ReducedDimensionPlot1=x)
 
     .requestCleanUpdate("ReducedDimensionPlot1", pObjects, rObjects)
 
-    expect_identical(pObjects$memory$ReducedDimensionPlot1[[iSEE:::.brushData]], list())
-    expect_identical(pObjects$memory$ReducedDimensionPlot1[[iSEE:::.multiSelectHistory]], list())
+    expect_identical(pObjects$memory$ReducedDimensionPlot1[[iSEEslots$brushData]], list())
+    expect_identical(pObjects$memory$ReducedDimensionPlot1[[iSEEslots$multiSelectHistory]], list())
 })
 
 test_that(".requestActiveSelectionUpdate updates rObjects", {
@@ -282,8 +282,8 @@ test_that(".removeInvalidChoices removes invalid choices", {
     )
     
     expect_warning(
-        out <- iSEE:::.removeInvalidChoices(x, iSEE:::.tooltipColData, colnames(colData(sce))),
+        out <- iSEE:::.removeInvalidChoices(x, iSEEslots$tooltipColData, colnames(colData(sce))),
         "Removing invalid values"
     )
-    expect_identical(out[[iSEE:::.tooltipColData]], character(0))
+    expect_identical(out[[iSEEslots$tooltipColData]], character(0))
 })

@@ -19,15 +19,15 @@ test_that(".refineParameters identifies impossible FeatureAssayPlot", {
 
     sce0 <- sce
     colData(sce0) <- colData(sce0)[,0]
-    x[[iSEE:::.featAssayXAxis]] <- iSEE:::.featAssayXAxisColDataTitle
+    x[[iSEEslots$featAssayXAxis]] <- iSEE:::.featAssayXAxisColDataTitle
     sce0 <- .cacheCommonInfo(x, sce0)
     out <- .refineParameters(x, sce0)
-    expect_identical(out[[iSEE:::.featAssayXAxis]], iSEE:::.featAssayXAxisNothingTitle)
+    expect_identical(out[[iSEEslots$featAssayXAxis]], iSEE:::.featAssayXAxisNothingTitle)
 })
 
 test_that(".generateDotPlotData works with column selections on the x-axis", {
     x <- FeatureAssayPlot()
-    x[[iSEE:::.featAssayXAxis]] <- iSEE:::.featAssayXAxisSelectionsTitle
+    x[[iSEEslots$featAssayXAxis]] <- iSEE:::.featAssayXAxisSelectionsTitle
 
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)

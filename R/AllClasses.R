@@ -400,6 +400,7 @@ collated[iSEEslots$sizeByField] <- "character"
 
 collated[iSEEslots$selectTransAlpha] <- "numeric"
 
+collated[iSEEslots$zoomData] <- "numeric"
 collated[iSEEslots$brushData] <- "list"
 
 collated[iSEEslots$visualParamBoxOpen] <- "logical"

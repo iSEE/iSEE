@@ -1,3 +1,7 @@
+# iSEE 2.11.2
+
+* Make it possible to hide the "Visual Parameters" box.
+
 # iSEE 2.11.1
 
 * Add `tooltip.signif` to `registerAppOptions()` to regulate the number of

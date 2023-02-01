@@ -4,7 +4,7 @@
 
 # iSEE 2.11.3
 
-* Use standard syntax to include empty icon in relevant places (issue ).
+* Use standard syntax to include empty icon in relevant places (issue #606).
 
 # iSEE 2.11.2
 

@@ -1,10 +1,14 @@
+# iSEE 2.11.4
+
+* Define missing methods for generics for custom tables (issues #608 and #612)
+
 # iSEE 2.11.3
 
-* Use standard syntax to include empty icon in relevant places.
+* Use standard syntax to include empty icon in relevant places (issue ).
 
 # iSEE 2.11.2
 
-* Make it possible to hide the "Visual Parameters" box.
+* Make it possible to hide the "Visual Parameters" box (issue #611).
 
 # iSEE 2.11.1
 

@@ -11,6 +11,7 @@
 #' If specified, only the listed arguments receive UI elements in the interface.
 #' @param className String containing the name of the new \linkS4class{Panel} class.
 #' @param fullName String containing the full name of the new class.
+#' @param FUN.selection.details Function generating a UI element that displays details about the current selection, if any.
 #' @param where An environment indicating where the class and method definitions should be stored.
 #'
 #' @return
@@ -96,7 +97,8 @@
 #' @export
 #' @name createCustomPanels
 createCustomTable <- function(FUN, restrict=NULL, className="CustomTable",
-    fullName="Custom table", where=topenv(parent.frame()))
+    fullName="Custom table", FUN.selection.details = NULL,
+    where=topenv(parent.frame()))
 {
     fn_args <- .grab_all_args(FUN, restrict)
     collated <- vapply(fn_args, class, "")
@@ -118,6 +120,16 @@ createCustomTable <- function(FUN, restrict=NULL, className="CustomTable",
         }
         .replaceMissingWithFirst(x, .TableSelected, "")
     }, where=where)
+    
+    setMethod(".showSelectionDetails", className, function(x) {
+        if (!is.null(FUN.selection.details)) {
+            FUN.selection.details(slot(x, .TableSelected))
+        }
+    }, where = where)
+    
+    setMethod(".multiSelectionResponsive", className, function(x) {
+        TRUE
+    }, where = where)
 
     generator
 }

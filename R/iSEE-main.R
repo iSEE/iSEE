@@ -173,7 +173,7 @@ iSEE <- function(se,
                         icon = icon("object-ungroup"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon = icon("", verify_fa = FALSE), status = "primary"
+                    icon = icon(NULL), status = "primary"
                 ),
                 notificationItem(
                     text=actionButton(
@@ -182,7 +182,7 @@ iSEE <- function(se,
                         icon=icon("link"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon("", verify_fa = FALSE), status="primary"
+                    icon=icon(NULL), status="primary"
                 )
             ),
 
@@ -198,7 +198,7 @@ iSEE <- function(se,
                         icon=icon("download"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon("", verify_fa = FALSE), status="primary"
+                    icon=icon(NULL), status="primary"
                 ),
                 notificationItem(
                     text=actionButton(
@@ -207,7 +207,7 @@ iSEE <- function(se,
                         icon=icon("wand-magic-sparkles"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon("", verify_fa = FALSE), status="primary"
+                    icon=icon(NULL), status="primary"
                 ),
                 notificationItem(
                     text=actionButton(
@@ -216,7 +216,7 @@ iSEE <- function(se,
                         icon=icon("clipboard"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon("", verify_fa = FALSE), status="primary"
+                    icon=icon(NULL), status="primary"
                 )
             ), # end of dropdownMenu
 
@@ -231,7 +231,7 @@ iSEE <- function(se,
                         icon("hand-point-right"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon("", verify_fa = FALSE), # tricking it to not have additional icon
+                    icon=icon(NULL), # tricking it to not have additional icon
                     status="primary"
                 ),
                 notificationItem(
@@ -247,7 +247,7 @@ iSEE <- function(se,
                             )
                         )
                     ),
-                    icon=icon("", verify_fa = FALSE), status="primary"
+                    icon=icon(NULL), status="primary"
                 )
             ),
 
@@ -262,7 +262,7 @@ iSEE <- function(se,
                         icon=icon("window-maximize"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon("", verify_fa = FALSE), status="primary"
+                    icon=icon(NULL), status="primary"
                 ),
                 notificationItem(
                     text=actionButton(
@@ -271,7 +271,7 @@ iSEE <- function(se,
                         icon=icon("heart"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon("", verify_fa = FALSE), status="primary"
+                    icon=icon(NULL), status="primary"
                 )
             ) # end of dropdownMenu
         ), # end of dashboardHeader

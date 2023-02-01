@@ -1,3 +1,7 @@
+# iSEE 2.11.3
+
+* Use standard syntax to include empty icon in relevant places.
+
 # iSEE 2.11.2
 
 * Make it possible to hide the "Visual Parameters" box.

@@ -73,7 +73,7 @@
             open=slot(x, .dataParamBoxOpen),
             tagList(
                 checkboxGroupInput(
-                        inputId=pchoice_field, label=NULL, inline=TRUE,
+                    inputId=pchoice_field, label=NULL, inline=TRUE,
                     selected=slot(x, .visualParamChoice),
                     choices=names(ui)
                 ),

@@ -1,3 +1,7 @@
+# iSEE 2.11.4
+
+* Fix bug introduced in `2.11.2`.
+
 # iSEE 2.11.3
 
 * Use standard syntax to include empty icon in relevant places.

@@ -145,6 +145,8 @@ setMethod(".generateTable", "ColumnDataTable", function(x, envir) {
         cmds <- c(cmds, sprintf("tab <- tab[,%s,drop=FALSE]",
             paste(deparse(valid.names), collapse="\n     ")))
     }
+    
+    cmds <- c(cmds, .define_table_rounding_commands(x))
 
     .textEval(cmds, envir)
 

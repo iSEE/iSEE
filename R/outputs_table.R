@@ -149,3 +149,11 @@
 
     list(commands=list(select_cmds, tab_cmds), contents=eval_env$tab, varname="tab")
 }
+
+
+.define_table_rounding_commands <- function(x) {
+  c(
+    ".columns <- vapply(tab, is.numeric, FUN.VALUE = logical(1))",
+    "tab[, .columns] <- round(tab[, .columns], digits = 3)"
+  )
+}

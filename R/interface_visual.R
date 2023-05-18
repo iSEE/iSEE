@@ -68,16 +68,18 @@
     )
 
     do.call(.collapseBoxHidden,
-            c(
-                list(x=x, field=.visualParamBoxOpen, title="Visual parameters"),
-                open=slot(x, .dataParamBoxOpen),
+        c(
+            list(x=x, field=.visualParamBoxOpen, title="Visual parameters"),
+            open=slot(x, .dataParamBoxOpen),
+            tagList(
                 checkboxGroupInput(
                     inputId=pchoice_field, label=NULL, inline=TRUE,
                     selected=slot(x, .visualParamChoice),
                     choices=names(ui)
                 ),
-                do.call(tagList, collected)
+                collected
             )
+        )
     )
 }
 

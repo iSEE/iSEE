@@ -1,6 +1,7 @@
 # iSEE 2.11.4
 
 * Define missing methods for generics for custom tables (issues #608 and #612)
+* Fix bug introduced in `2.11.2`.
 
 # iSEE 2.11.3
 

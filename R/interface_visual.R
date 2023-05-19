@@ -70,7 +70,7 @@
     do.call(.collapseBoxHidden,
         c(
             list(x=x, field=.visualParamBoxOpen, title="Visual parameters"),
-            open=slot(x, .dataParamBoxOpen),
+            open=slot(x, .visualParamBoxOpen),
             tagList(
                 checkboxGroupInput(
                     inputId=pchoice_field, label=NULL, inline=TRUE,

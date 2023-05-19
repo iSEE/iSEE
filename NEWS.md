@@ -1,3 +1,7 @@
+# iSEE 2.13.2
+
+* Fix bug introduced in `2.11.2` (DataBoxOpen would apply also to Visual parameters box)
+
 # iSEE 2.13.1
 
 * Define missing methods for generics for custom tables (issues #608 and #612)

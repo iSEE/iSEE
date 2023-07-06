@@ -315,18 +315,18 @@ iSEE <- function(se,
         rObjects <- reactiveValues(rerender=1L, rerendered=1L, modified=list())
 
         if (!has_se) {
-            FUN <- function(SE, INITIAL, TOUR=NULL) {
+            FUN <- function(SE, INITIAL, TOUR=NULL, COLORMAP=colormap) {
                 if (is.null(INITIAL)) {
                     INITIAL <- initial
                 } 
-                .initialize_server(SE, initial=INITIAL, extra=extra, colormap=colormap,
+                .initialize_server(SE, initial=INITIAL, extra=extra, colormap=COLORMAP,
                     tour=TOUR, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name, saveState=saveState,
                     input=input, output=output, session=session, rObjects=rObjects)
                 rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
             }
             landingPage(FUN, input=input, output=output, session=session)
         } else {
-            .initialize_server(se, initial=initial, extra=extra, colormap=colormap,
+            .initialize_server(se, initial=initial, extra=extra, colormap=COLORMAP,
                 tour=tour, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name, saveState=saveState,
                 input=input, output=output, session=session, rObjects=rObjects)
         }

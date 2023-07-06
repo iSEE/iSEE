@@ -1,3 +1,7 @@
+# iSEE 2.13.3
+
+* Let app maintainer define colormap in the landing page.
+
 # iSEE 2.13.2
 
 * Fix bug introduced in `2.11.2` (DataBoxOpen would apply also to Visual parameters box)

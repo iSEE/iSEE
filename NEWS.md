@@ -1,3 +1,7 @@
+# iSEE 2.13.4
+
+* Fix `COLORMAP` bug introduced in `2.13.3`.
+
 # iSEE 2.13.3
 
 * Let app maintainer define colormap in the landing page.

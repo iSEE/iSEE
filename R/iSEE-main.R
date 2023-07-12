@@ -326,7 +326,7 @@ iSEE <- function(se,
             }
             landingPage(FUN, input=input, output=output, session=session)
         } else {
-            .initialize_server(se, initial=initial, extra=extra, colormap=COLORMAP,
+            .initialize_server(se, initial=initial, extra=extra, colormap=colormap,
                 tour=tour, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name, saveState=saveState,
                 input=input, output=output, session=session, rObjects=rObjects)
         }

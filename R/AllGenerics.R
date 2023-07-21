@@ -779,6 +779,9 @@ setGeneric(".multiSelectionAvailable", function(x, contents) standardGeneric(".m
 #' @export
 setGeneric(".multiSelectionResponsive", function(x, dims) standardGeneric(".multiSelectionResponsive"))
 
+#' @export
+setGeneric(".isBrushable", function(x) standardGeneric(".isBrushable"))
+
 #' Generics for controlling single selections
 #'
 #' A panel can create a single selection on either the rows or columns and transmit this selection to another panel for use as an aesthetic parameter.

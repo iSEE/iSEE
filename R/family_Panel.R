@@ -653,6 +653,9 @@ setMethod(".multiSelectionInvalidated", "Panel", function(x) FALSE)
 setMethod(".multiSelectionAvailable", "Panel", function(x, contents) nrow(contents))
 
 #' @export
+setMethod(".isBrushable", "Panel", function(x) FALSE)
+
+#' @export
 setMethod(".singleSelectionDimension", "Panel", function(x) "none")
 
 #' @export

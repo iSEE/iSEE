@@ -227,6 +227,7 @@
 #' .multiSelectionCommands,DotPlot-method
 #' .multiSelectionClear,DotPlot-method
 #' .multiSelectionDimension,DotPlot-method
+#' .isBrushable,DotPlot-method
 #' .singleSelectionValue,DotPlot-method
 #' .singleSelectionSlots,DotPlot-method
 #' .prioritizeDotPlotData,DotPlot-method

@@ -145,6 +145,7 @@
 #' .multiSelectionActive,Panel-method
 #' .multiSelectionInvalidated,Panel-method
 #' .multiSelectionAvailable,Panel-method
+#' .isBrushable,Panel-method
 #' .singleSelectionDimension,Panel-method
 #' .singleSelectionValue,Panel-method
 #' .singleSelectionSlots,Panel-method

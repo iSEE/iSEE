@@ -1,3 +1,7 @@
+# iSEE 2.13.5
+
+* Add generic `.isBrushable` to support panels that are not `DotPlot` extensions.
+
 # iSEE 2.13.4
 
 * Fix `COLORMAP` bug introduced in `2.13.3`.

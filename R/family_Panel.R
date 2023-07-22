@@ -145,6 +145,7 @@
 #' .multiSelectionActive,Panel-method
 #' .multiSelectionInvalidated,Panel-method
 #' .multiSelectionAvailable,Panel-method
+#' .isBrushable,Panel-method
 #' .singleSelectionDimension,Panel-method
 #' .singleSelectionValue,Panel-method
 #' .singleSelectionSlots,Panel-method
@@ -651,6 +652,9 @@ setMethod(".multiSelectionInvalidated", "Panel", function(x) FALSE)
 
 #' @export
 setMethod(".multiSelectionAvailable", "Panel", function(x, contents) nrow(contents))
+
+#' @export
+setMethod(".isBrushable", "Panel", function(x) FALSE)
 
 #' @export
 setMethod(".singleSelectionDimension", "Panel", function(x) "none")

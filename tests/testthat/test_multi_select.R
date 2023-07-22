@@ -161,3 +161,17 @@ test_that(".any_saved_selection returns the appropriate value ", {
     expect_identical(out, 0L)
 })
 
+test_that(".isBrushable returns FALSE for Table panels", {
+    out <- .isBrushable(RowDataTable())
+    expect_false(out)
+})
+
+test_that(".isBrushable returns TRUE for DotPlot panels", {
+    out <- .isBrushable(RowDataPlot())
+    expect_true(out)
+})
+
+test_that(".isBrushable returns FALSE for ComplexHeatmapPlot", {
+    out <- .isBrushable(ComplexHeatmapPlot())
+    expect_false(out)
+})

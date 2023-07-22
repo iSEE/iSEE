@@ -684,6 +684,10 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #'
 #' This suite of generics controls the behavior of these multiple selections.
 #' In all of the code chunks shown below, \code{x} is assumed to be an instance of the \linkS4class{Panel} class.
+#' 
+#' @section Possibility of selection:
+#' \code{.isBrushable(x)} should return a logical specifying whether the panel supports selection using a Shiny brush or lasso waypoints.
+#' The output should be constant for all instances of \code{x} and is used to govern the reporting of multiple selections in the code tracker.
 #'
 #' @section Specifying the dimension:
 #' \code{.multiSelectionDimension(x)} should return a string specifying whether the selection contains rows (\code{"row"}), columns (\code{"column"}) or if the Panel in \code{x} does not perform multiple selections at all (\code{"none"}).
@@ -746,6 +750,7 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' @author Aaron Lun
 #' @name multi-select-generics
 #' @aliases .multiSelectionDimension
+#' .isBrushable
 #' .multiSelectionRestricted
 #' .multiSelectionActive
 #' .multiSelectionCommands

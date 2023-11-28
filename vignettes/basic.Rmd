@@ -1,6 +1,6 @@
 ---
 title: >
-  An introduction to the `r Biocpkg("iSEE")` interface 
+  An introduction to the iSEE interface 
 author:
 - name: Kevin Rue-Albrecht
   affiliation: 

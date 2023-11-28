@@ -1,6 +1,6 @@
 ---
 title: >
-  Configuring `r Biocpkg("iSEE")` apps
+  Configuring iSEE apps
 author:
 - name: Kevin Rue-Albrecht
   affiliation: 

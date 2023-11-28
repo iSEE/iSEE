@@ -1,5 +1,5 @@
 ---
-title: Controlling the `iSEE` interface using speech recognition
+title: Controlling the iSEE interface using speech recognition
 author:
 - name: Kevin Rue-Albrecht
   affiliation: 

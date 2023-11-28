@@ -1,5 +1,5 @@
 ---
-title: Deploying custom panels in the `iSEE` interface
+title: Deploying custom panels in the iSEE interface
 author:
 - name: Kevin Rue-Albrecht
   affiliation: 

@@ -1,6 +1,5 @@
 ---
-title: >
-  Sharing information across `r Biocpkg("iSEE")` panels
+title: Sharing information across iSEE panels
 author:
 - name: Kevin Rue-Albrecht
   affiliation: 

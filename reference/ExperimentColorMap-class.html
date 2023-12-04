@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.11.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.0</span>
       </span>
     </div>
 
@@ -32,29 +32,28 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/basic.html">An introduction to the `r Biocpkg("iSEE")` interface 
+      <a href="../articles/basic.html">An introduction to the iSEE interface 
 </a>
     </li>
     <li>
-      <a href="../articles/bigdata.html">How to use `r Biocpkg("iSEE")` with big data
+      <a href="../articles/bigdata.html">How to use iSEE with big data
 </a>
     </li>
     <li>
-      <a href="../articles/configure.html">Configuring `r Biocpkg("iSEE")` apps
+      <a href="../articles/configure.html">Configuring iSEE apps
 </a>
     </li>
     <li>
-      <a href="../articles/custom.html">Deploying custom panels in the `iSEE` interface</a>
+      <a href="../articles/custom.html">Deploying custom panels in the iSEE interface</a>
     </li>
     <li>
-      <a href="../articles/ecm.html">Describing the `ExperimentColorMap` class</a>
+      <a href="../articles/ecm.html">Describing the ExperimentColorMap class</a>
     </li>
     <li>
-      <a href="../articles/links.html">Sharing information across `r Biocpkg("iSEE")` panels
-</a>
+      <a href="../articles/links.html">Sharing information across iSEE panels</a>
     </li>
     <li>
-      <a href="../articles/voice.html">Controlling the `iSEE` interface using speech recognition</a>
+      <a href="../articles/voice.html">Controlling the iSEE interface using speech recognition</a>
     </li>
   </ul></li>
 <li>
@@ -291,26 +290,26 @@ and <code>i</code> is a character or numeric index.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     cols &lt;- fn_cols(seq(begin, end, length.out = n))/255</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     grDevices::rgb(cols[, 1], cols[, 2], cols[, 3], alpha = alpha)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5579b88fa438&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55ef4e63c728&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:viridisLite&gt;</span>
 <span class="r-in"><span><span class="fu">assayColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"counts"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function(n){</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   c("black", "brown", "red", "orange", "yellow")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5579b8c0c5a0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55ef4e867e30&gt;</span>
 <span class="r-in"><span><span class="fu">assayColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"cufflinks_fpkm"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (n, alpha = 1, begin = 0, end = 1, direction = 1) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     viridis(n, alpha, begin, end, direction, option = "inferno")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5579b8b61a00&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55ef4e7e3828&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:viridisLite&gt;</span>
 <span class="r-in"><span><span class="fu">assay</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"cufflinks_fpkm"</span><span class="op">)</span> <span class="co"># alias</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (n, alpha = 1, begin = 0, end = 1, direction = 1) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     viridis(n, alpha, begin, end, direction, option = "inferno")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5579b8b61a00&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55ef4e7e3828&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:viridisLite&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># colData colormaps</span></span></span>
@@ -320,7 +319,7 @@ and <code>i</code> is a character or numeric index.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   names(qc_colors) &lt;- c("Y", "N")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   return(qc_colors)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5579b8c0c5a0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55ef4e867e30&gt;</span>
 <span class="r-in"><span><span class="fu">colDataColorMap</span><span class="op">(</span><span class="va">ecm</span>, <span class="st">"undefined"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (n, alpha = 1, begin = 0, end = 1, direction = 1, option = "D") </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
@@ -353,7 +352,7 @@ and <code>i</code> is a character or numeric index.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     cols &lt;- fn_cols(seq(begin, end, length.out = n))/255</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     grDevices::rgb(cols[, 1], cols[, 2], cols[, 3], alpha = alpha)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5579b88fa438&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55ef4e63c728&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:viridisLite&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># rowData colormaps</span></span></span>
@@ -389,7 +388,7 @@ and <code>i</code> is a character or numeric index.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     cols &lt;- fn_cols(seq(begin, end, length.out = n))/255</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     grDevices::rgb(cols[, 1], cols[, 2], cols[, 3], alpha = alpha)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5579b88fa438&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55ef4e63c728&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:viridisLite&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># generic accessors</span></span></span>
@@ -398,20 +397,20 @@ and <code>i</code> is a character or numeric index.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function(n){</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   c("black", "brown", "red", "orange", "yellow")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5579b8c0c5a0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55ef4e867e30&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tophat_counts</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function(n){</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   c("black", "brown", "red", "orange", "yellow")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5579b8c0c5a0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55ef4e867e30&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $cufflinks_fpkm</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> function (n, alpha = 1, begin = 0, end = 1, direction = 1) </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     viridis(n, alpha, begin, end, direction, option = "inferno")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5579b8b61a00&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55ef4e7e3828&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:viridisLite&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $rsem_tpm</span>
@@ -419,7 +418,7 @@ and <code>i</code> is a character or numeric index.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> {</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     viridis(n, alpha, begin, end, direction, option = "plasma")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5579b8af7cc8&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55ef4e791930&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:viridisLite&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span><span class="fu">assayNames</span><span class="op">(</span><span class="va">ecm</span><span class="op">)</span></span></span>

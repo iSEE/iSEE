@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.11.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.0</span>
       </span>
     </div>
 
@@ -57,29 +57,28 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/basic.html">An introduction to the `r Biocpkg("iSEE")` interface 
+      <a href="articles/basic.html">An introduction to the iSEE interface 
 </a>
     </li>
     <li>
-      <a href="articles/bigdata.html">How to use `r Biocpkg("iSEE")` with big data
+      <a href="articles/bigdata.html">How to use iSEE with big data
 </a>
     </li>
     <li>
-      <a href="articles/configure.html">Configuring `r Biocpkg("iSEE")` apps
+      <a href="articles/configure.html">Configuring iSEE apps
 </a>
     </li>
     <li>
-      <a href="articles/custom.html">Deploying custom panels in the `iSEE` interface</a>
+      <a href="articles/custom.html">Deploying custom panels in the iSEE interface</a>
     </li>
     <li>
-      <a href="articles/ecm.html">Describing the `ExperimentColorMap` class</a>
+      <a href="articles/ecm.html">Describing the ExperimentColorMap class</a>
     </li>
     <li>
-      <a href="articles/links.html">Sharing information across `r Biocpkg("iSEE")` panels
-</a>
+      <a href="articles/links.html">Sharing information across iSEE panels</a>
     </li>
     <li>
-      <a href="articles/voice.html">Controlling the `iSEE` interface using speech recognition</a>
+      <a href="articles/voice.html">Controlling the iSEE interface using speech recognition</a>
     </li>
   </ul>
 </li>
@@ -158,13 +157,13 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p><em>iSEE</em> can be easily installed from Bioconductor using <code><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">BiocManager::install()</a></code>:</p>
+<p><em>iSEE</em> can be easily installed from Bioconductor using <code><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">BiocManager::install()</a></code>:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/ns-load.html" class="external-link">requireNamespace</a></span><span class="op">(</span><span class="st">"BiocManager"</span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BiocManager"</span><span class="op">)</span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"iSEE"</span><span class="op">)</span></span>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"iSEE"</span><span class="op">)</span></span>
 <span><span class="co"># or also...</span></span>
-<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/BiocManager/man/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"iSEE"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">BiocManager</span><span class="fu">::</span><span class="fu"><a href="https://bioconductor.github.io/BiocManager/reference/install.html" class="external-link">install</a></span><span class="op">(</span><span class="st">"iSEE"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>Setting <code>dependencies = TRUE</code> should ensure that all packages, including the ones in the <code>Suggests:</code> field of the <code>DESCRIPTION</code>, are installed - this can be essential if you want to reproduce the code in the vignette, for example.</p>
 </div>
 <div class="section level2">

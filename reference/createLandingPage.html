@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.11.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.0</span>
       </span>
     </div>
 
@@ -32,29 +32,28 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/basic.html">An introduction to the `r Biocpkg("iSEE")` interface 
+      <a href="../articles/basic.html">An introduction to the iSEE interface 
 </a>
     </li>
     <li>
-      <a href="../articles/bigdata.html">How to use `r Biocpkg("iSEE")` with big data
+      <a href="../articles/bigdata.html">How to use iSEE with big data
 </a>
     </li>
     <li>
-      <a href="../articles/configure.html">Configuring `r Biocpkg("iSEE")` apps
+      <a href="../articles/configure.html">Configuring iSEE apps
 </a>
     </li>
     <li>
-      <a href="../articles/custom.html">Deploying custom panels in the `iSEE` interface</a>
+      <a href="../articles/custom.html">Deploying custom panels in the iSEE interface</a>
     </li>
     <li>
-      <a href="../articles/ecm.html">Describing the `ExperimentColorMap` class</a>
+      <a href="../articles/ecm.html">Describing the ExperimentColorMap class</a>
     </li>
     <li>
-      <a href="../articles/links.html">Sharing information across `r Biocpkg("iSEE")` panels
-</a>
+      <a href="../articles/links.html">Sharing information across iSEE panels</a>
     </li>
     <li>
-      <a href="../articles/voice.html">Controlling the `iSEE` interface using speech recognition</a>
+      <a href="../articles/voice.html">Controlling the iSEE interface using speech recognition</a>
     </li>
   </ul></li>
 <li>
@@ -154,11 +153,12 @@ This function expects to be passed:</p><ul><li><p><code>SE</code>, a SummarizedE
   If <code>NULL</code>, the initial state from <code>initial</code> in the top-level <code><a href="iSEE.html">iSEE</a></code> call is used instead.</p></li>
 <li><p><code>TOUR</code>, a data.frame containing a tour to be attached to the app - see <code><a href="defaultTour.html">defaultTour</a></code> for an example.
   If <code>NULL</code> (the default), no tour is added.</p></li>
+<li><p><code>COLORMAP</code>, an <a href="ExperimentColorMap-class.html">ExperimentColorMap</a> object that defines the colormaps to use in the application.</p></li>
 </ul></li>
 <li><p><code>input</code>, the Shiny input list.</p></li>
 <li><p><code>output</code>, the Shiny output list.</p></li>
 <li><p><code>session</code>, the Shiny session object.</p></li>
-</ul><p>The <code>landingPage</code> function should define a <code><a href="https://shiny.rstudio.com/reference/shiny/latest/renderUI.html" class="external-link">renderUI</a></code> expression that is assigned to <code>output$allPanels</code>.
+</ul><p>The <code>landingPage</code> function should define a <code><a href="https://rdrr.io/pkg/shiny/man/renderUI.html" class="external-link">renderUI</a></code> expression that is assigned to <code>output$allPanels</code>.
 This should define a UI that contains all widgets necessary for a user to set up an <code><a href="iSEE.html">iSEE</a></code> session interactively.
 We suggest that all UI elements have IDs prefixed with <code>"initialize_INTERNAL"</code> to avoid conflicts.</p>
 <p>The function should also define observers to respond to user interactions with the UI elements.
@@ -206,8 +206,8 @@ though a browser refresh is usually sufficient.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     }, ignoreNULL = TRUE, ignoreInit = TRUE)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     invisible(NULL)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5579e0f645b0&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5579e0f66188&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55ef6c8ca8f0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x55ef6c8ce8b8&gt;</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Alternative approach, to create a landing page</span></span></span>
 <span class="r-in"><span><span class="co"># that opens one of the datasets from the scRNAseq package.</span></span></span>
@@ -216,13 +216,13 @@ though a browser refresh is usually sufficient.</p>
 <span class="r-in"><span><span class="va">all.data</span> <span class="op">&lt;-</span> <span class="va">all.data</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"Data$"</span>, <span class="va">all.data</span><span class="op">)</span><span class="op">]</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">lpfun</span> <span class="op">&lt;-</span> <span class="fu">createLandingPage</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    seUI<span class="op">=</span><span class="kw">function</span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/selectInput.html" class="external-link">selectInput</a></span><span class="op">(</span><span class="va">id</span>, <span class="st">"Dataset:"</span>, choices<span class="op">=</span><span class="va">all.data</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    seUI<span class="op">=</span><span class="kw">function</span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">selectInput</a></span><span class="op">(</span><span class="va">id</span>, <span class="st">"Dataset:"</span>, choices<span class="op">=</span><span class="va">all.data</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    seLoad<span class="op">=</span><span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html" class="external-link">get</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/as.environment.html" class="external-link">as.environment</a></span><span class="op">(</span><span class="st">"package:scRNAseq"</span><span class="op">)</span><span class="op">)</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="iSEE.html">iSEE</a></span><span class="op">(</span>landingPage<span class="op">=</span><span class="va">lpfun</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="va">app</span>, port<span class="op">=</span><span class="fl">1234</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="va">app</span>, port<span class="op">=</span><span class="fl">1234</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

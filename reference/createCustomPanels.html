@@ -19,7 +19,7 @@ This creates a new class with specialized methods for showing content based on a
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.11.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.0</span>
       </span>
     </div>
 
@@ -34,29 +34,28 @@ This creates a new class with specialized methods for showing content based on a
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/basic.html">An introduction to the `r Biocpkg("iSEE")` interface 
+      <a href="../articles/basic.html">An introduction to the iSEE interface 
 </a>
     </li>
     <li>
-      <a href="../articles/bigdata.html">How to use `r Biocpkg("iSEE")` with big data
+      <a href="../articles/bigdata.html">How to use iSEE with big data
 </a>
     </li>
     <li>
-      <a href="../articles/configure.html">Configuring `r Biocpkg("iSEE")` apps
+      <a href="../articles/configure.html">Configuring iSEE apps
 </a>
     </li>
     <li>
-      <a href="../articles/custom.html">Deploying custom panels in the `iSEE` interface</a>
+      <a href="../articles/custom.html">Deploying custom panels in the iSEE interface</a>
     </li>
     <li>
-      <a href="../articles/ecm.html">Describing the `ExperimentColorMap` class</a>
+      <a href="../articles/ecm.html">Describing the ExperimentColorMap class</a>
     </li>
     <li>
-      <a href="../articles/links.html">Sharing information across `r Biocpkg("iSEE")` panels
-</a>
+      <a href="../articles/links.html">Sharing information across iSEE panels</a>
     </li>
     <li>
-      <a href="../articles/voice.html">Controlling the `iSEE` interface using speech recognition</a>
+      <a href="../articles/voice.html">Controlling the iSEE interface using speech recognition</a>
     </li>
   </ul></li>
 <li>
@@ -94,6 +93,7 @@ This creates a new class with specialized methods for showing content based on a
 <span>  restrict <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  className <span class="op">=</span> <span class="st">"CustomTable"</span>,</span>
 <span>  fullName <span class="op">=</span> <span class="st">"Custom table"</span>,</span>
+<span>  FUN.selection.details <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  where <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ns-topenv.html" class="external-link">topenv</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -127,6 +127,10 @@ If specified, only the listed arguments receive UI elements in the interface.</p
 <dd><p>String containing the full name of the new class.</p></dd>
 
 
+<dt>FUN.selection.details</dt>
+<dd><p>Function generating a UI element that displays details about the current selection, if any.</p></dd>
+
+
 <dt>where</dt>
 <dd><p>An environment indicating where the class and method definitions should be stored.</p></dd>
 
@@ -149,10 +153,10 @@ This contains one or more character vectors of column names in active and saved 
 Alternatively, this may be <code>NULL</code> if no selection has been made in the transmitter.</p></li>
 </ul><p>Any number of additional named arguments may also be present in <code>FUN</code>.
 All such arguments should have default values,
-as these are used to automatically generate UI elements in the panel:</p><ul><li><p>Character vectors will get a <code><a href="https://shiny.rstudio.com/reference/shiny/latest/selectInput.html" class="external-link">selectInput</a></code>.</p></li>
-<li><p>Strings will get a <code><a href="https://shiny.rstudio.com/reference/shiny/latest/textInput.html" class="external-link">textInput</a></code>.</p></li>
-<li><p>Numeric scalars will get a <code><a href="https://shiny.rstudio.com/reference/shiny/latest/numericInput.html" class="external-link">numericInput</a></code>.</p></li>
-<li><p>Logical scalars will get a <code><a href="https://shiny.rstudio.com/reference/shiny/latest/checkboxInput.html" class="external-link">checkboxInput</a></code>.</p></li>
+as these are used to automatically generate UI elements in the panel:</p><ul><li><p>Character vectors will get a <code><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">selectInput</a></code>.</p></li>
+<li><p>Strings will get a <code><a href="https://rdrr.io/pkg/shiny/man/textInput.html" class="external-link">textInput</a></code>.</p></li>
+<li><p>Numeric scalars will get a <code><a href="https://rdrr.io/pkg/shiny/man/numericInput.html" class="external-link">numericInput</a></code>.</p></li>
+<li><p>Logical scalars will get a <code><a href="https://rdrr.io/pkg/shiny/man/checkboxInput.html" class="external-link">checkboxInput</a></code>.</p></li>
 </ul><p>Arguments with other types of default values are ignored.
 If <code>restrict</code> is specified, arguments will only have corresponding UI elements if they are listed in <code>restrict</code>.
 All user interactions with these elements will automatically trigger regeneration of the panel contents.</p>

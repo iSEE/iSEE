@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.11.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.0</span>
       </span>
     </div>
 
@@ -32,29 +32,28 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/basic.html">An introduction to the `r Biocpkg("iSEE")` interface 
+      <a href="../articles/basic.html">An introduction to the iSEE interface 
 </a>
     </li>
     <li>
-      <a href="../articles/bigdata.html">How to use `r Biocpkg("iSEE")` with big data
+      <a href="../articles/bigdata.html">How to use iSEE with big data
 </a>
     </li>
     <li>
-      <a href="../articles/configure.html">Configuring `r Biocpkg("iSEE")` apps
+      <a href="../articles/configure.html">Configuring iSEE apps
 </a>
     </li>
     <li>
-      <a href="../articles/custom.html">Deploying custom panels in the `iSEE` interface</a>
+      <a href="../articles/custom.html">Deploying custom panels in the iSEE interface</a>
     </li>
     <li>
-      <a href="../articles/ecm.html">Describing the `ExperimentColorMap` class</a>
+      <a href="../articles/ecm.html">Describing the ExperimentColorMap class</a>
     </li>
     <li>
-      <a href="../articles/links.html">Sharing information across `r Biocpkg("iSEE")` panels
-</a>
+      <a href="../articles/links.html">Sharing information across iSEE panels</a>
     </li>
     <li>
-      <a href="../articles/voice.html">Controlling the `iSEE` interface using speech recognition</a>
+      <a href="../articles/voice.html">Controlling the iSEE interface using speech recognition</a>
     </li>
   </ul></li>
 <li>
@@ -80,16 +79,36 @@
     </div>
 
     <div class="section level2">
+<h2 class="page-header" data-toc-text="2.13.5" id="isee-2135">iSEE 2.13.5<a class="anchor" aria-label="anchor" href="#isee-2135"></a></h2>
+<ul><li>Add generic <code>.isBrushable</code> to support panels that are not <code>DotPlot</code> extensions.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2.13.4" id="isee-2134">iSEE 2.13.4<a class="anchor" aria-label="anchor" href="#isee-2134"></a></h2>
+<ul><li>Fix <code>COLORMAP</code> bug introduced in <code>2.13.3</code>.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2.13.3" id="isee-2133">iSEE 2.13.3<a class="anchor" aria-label="anchor" href="#isee-2133"></a></h2>
+<ul><li>Let app maintainer define colormap in the landing page.</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2.13.2" id="isee-2132">iSEE 2.13.2<a class="anchor" aria-label="anchor" href="#isee-2132"></a></h2>
+<ul><li>Fix bug introduced in <code>2.11.2</code> (DataBoxOpen would apply also to Visual parameters box)</li>
+</ul></div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="2.13.1" id="isee-2131">iSEE 2.13.1<a class="anchor" aria-label="anchor" href="#isee-2131"></a></h2>
+<ul><li>Define missing methods for generics for custom tables (issues <a href="https://github.com/iSEE/iSEE/issues/608" class="external-link">#608</a> and <a href="https://github.com/iSEE/iSEE/issues/612" class="external-link">#612</a>)</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="page-header" data-toc-text="2.11.4" id="isee-2114">iSEE 2.11.4<a class="anchor" aria-label="anchor" href="#isee-2114"></a></h2>
 <ul><li>Fix bug introduced in <code>2.11.2</code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2.11.3" id="isee-2113">iSEE 2.11.3<a class="anchor" aria-label="anchor" href="#isee-2113"></a></h2>
-<ul><li>Use standard syntax to include empty icon in relevant places.</li>
+<ul><li>Use standard syntax to include empty icon in relevant places (issue <a href="https://github.com/iSEE/iSEE/issues/606" class="external-link">#606</a>).</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2.11.2" id="isee-2112">iSEE 2.11.2<a class="anchor" aria-label="anchor" href="#isee-2112"></a></h2>
-<ul><li>Make it possible to hide the “Visual Parameters” box.</li>
+<ul><li>Make it possible to hide the “Visual Parameters” box (issue <a href="https://github.com/iSEE/iSEE/issues/611" class="external-link">#611</a>).</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2.11.1" id="isee-2111">iSEE 2.11.1<a class="anchor" aria-label="anchor" href="#isee-2111"></a></h2>
@@ -121,7 +140,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2.9.6" id="isee-296">iSEE 2.9.6<a class="anchor" aria-label="anchor" href="#isee-296"></a></h2>
-<ul><li>Bugfix related to <a href="https://github.com/rstudio/shiny/issues/3125" class="external-link uri">https://github.com/rstudio/shiny/issues/3125</a>, mainly applicable to custom landing pages that render a <code><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">DT::datatable()</a></code> prior to <code><a href="https://shiny.rstudio.com/reference/shiny/latest/selectInput.html" class="external-link">selectInput()</a></code>.</li>
+<ul><li>Bugfix related to <a href="https://github.com/rstudio/shiny/issues/3125" class="external-link uri">https://github.com/rstudio/shiny/issues/3125</a>, mainly applicable to custom landing pages that render a <code><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">DT::datatable()</a></code> prior to <code><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">selectInput()</a></code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="2.9.5" id="isee-295">iSEE 2.9.5<a class="anchor" aria-label="anchor" href="#isee-295"></a></h2>
@@ -440,7 +459,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.5.12" id="isee-1512">iSEE 1.5.12<a class="anchor" aria-label="anchor" href="#isee-1512"></a></h2>
-<ul><li>Support gene list input from <code>aceEditor()</code> and <code><a href="https://shiny.rstudio.com/reference/shiny/latest/fileInput.html" class="external-link">fileInput()</a></code>.</li>
+<ul><li>Support gene list input from <code>aceEditor()</code> and <code><a href="https://rdrr.io/pkg/shiny/man/fileInput.html" class="external-link">fileInput()</a></code>.</li>
 </ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.5.11" id="isee-1511">iSEE 1.5.11<a class="anchor" aria-label="anchor" href="#isee-1511"></a></h2>

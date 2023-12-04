@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.11.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.0</span>
       </span>
     </div>
 
@@ -32,29 +32,28 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/basic.html">An introduction to the `r Biocpkg("iSEE")` interface 
+      <a href="../articles/basic.html">An introduction to the iSEE interface 
 </a>
     </li>
     <li>
-      <a href="../articles/bigdata.html">How to use `r Biocpkg("iSEE")` with big data
+      <a href="../articles/bigdata.html">How to use iSEE with big data
 </a>
     </li>
     <li>
-      <a href="../articles/configure.html">Configuring `r Biocpkg("iSEE")` apps
+      <a href="../articles/configure.html">Configuring iSEE apps
 </a>
     </li>
     <li>
-      <a href="../articles/custom.html">Deploying custom panels in the `iSEE` interface</a>
+      <a href="../articles/custom.html">Deploying custom panels in the iSEE interface</a>
     </li>
     <li>
-      <a href="../articles/ecm.html">Describing the `ExperimentColorMap` class</a>
+      <a href="../articles/ecm.html">Describing the ExperimentColorMap class</a>
     </li>
     <li>
-      <a href="../articles/links.html">Sharing information across `r Biocpkg("iSEE")` panels
-</a>
+      <a href="../articles/links.html">Sharing information across iSEE panels</a>
     </li>
     <li>
-      <a href="../articles/voice.html">Controlling the `iSEE` interface using speech recognition</a>
+      <a href="../articles/voice.html">Controlling the iSEE interface using speech recognition</a>
     </li>
   </ul></li>
 <li>
@@ -81,7 +80,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Identify the rows of a data.frame lying within a closed lasso polygon, analogous to <code><a href="https://shiny.rstudio.com/reference/shiny/latest/brushedPoints.html" class="external-link">brushedPoints</a></code>.</p>
+    <p>Identify the rows of a data.frame lying within a closed lasso polygon, analogous to <code><a href="https://rdrr.io/pkg/shiny/man/brushedPoints.html" class="external-link">brushedPoints</a></code>.</p>
     </div>
 
     <div id="ref-usage">
@@ -111,7 +110,7 @@ This involves a boundary crossing algorithm that may not be robust in the presen
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="https://shiny.rstudio.com/reference/shiny/latest/brushedPoints.html" class="external-link">brushedPoints</a></code></p></div>
+    <div class="dont-index"><p><code><a href="https://rdrr.io/pkg/shiny/man/brushedPoints.html" class="external-link">brushedPoints</a></code></p></div>
     </div>
     <div id="author">
     <h2>Author</h2>
@@ -125,16 +124,13 @@ This involves a boundary crossing algorithm that may not be robust in the presen
 <span class="r-in"><span><span class="va">values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, Y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    row.names<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"VALUE_%i"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">lassoPoints</span><span class="op">(</span><span class="va">values</span>, <span class="va">lasso</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   X         Y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_9  0.20834076 0.2484856</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_20 0.06840414 0.2836115</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_25 0.08342324 0.4050753</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_31 0.06092303 0.2352755</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_32 0.34681763 0.0628098</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_52 0.01675349 0.2748131</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_61 0.09332149 0.3169957</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_74 0.13490826 0.1684032</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_81 0.01651901 0.4515118</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  X          Y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_15 0.1923138 0.30143923</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_23 0.1971815 0.25727346</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_66 0.4402766 0.02684808</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_69 0.2981056 0.05344848</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_77 0.2036128 0.08386481</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_86 0.2061913 0.20937068</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># With faceting information:</span></span></span>
 <span class="r-in"><span><span class="va">lasso</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>coord<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span></span>
@@ -146,8 +142,8 @@ This involves a boundary crossing algorithm that may not be robust in the presen
 <span class="r-in"><span>    FacetColumn<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, <span class="fl">100</span>, replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    row.names<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"VALUE_%i"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">lassoPoints</span><span class="op">(</span><span class="va">values</span>, <span class="va">lasso</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  X         Y FacetRow FacetColumn</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_55 0.2988411 0.1552417        A           B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   X         Y FacetRow FacetColumn</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_20 0.01242254 0.1003589        A           B</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

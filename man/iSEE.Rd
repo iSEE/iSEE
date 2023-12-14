@@ -16,6 +16,8 @@ iSEE(
   voice = FALSE,
   bugs = FALSE,
   saveState = NULL,
+  customizeSession = NULL,
+  customTags = NULL,
   ...
 )
 }
@@ -49,6 +51,8 @@ If not provided, the app displays the version info of \code{\link{iSEE}}.}
 Alternatively, a named numeric vector control the respective number of each bug type (e.g., \code{c(bugs=3L, spiders=1L)}).}
 
 \item{saveState}{A function that accepts a single argument containing the current application state and saves it to some appropriate location.}
+
+\item{customTags}{Additional HTML tags to insert onto the page, see \code{\link{tag}}.}
 
 \item{...}{Further arguments to pass to \code{\link{shinyApp}}.}
 }

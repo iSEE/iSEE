@@ -143,6 +143,8 @@ NULL
 
 .flagTableUpdate <- "INTERNAL_table_update"
 
+.flagDotPlotLassoUpdate <- "INTERNAL_dotplot_lasso_update"
+
 # Voice parameters ----
 
 .voiceActivePanel <- "voiceActivePanel"

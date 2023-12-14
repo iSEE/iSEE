@@ -289,15 +289,23 @@ iSEE <- function(se,
             # https://github.com/rstudio/shiny/issues/3125#issuecomment-876787895
             htmltools::findDependencies(selectInput("test", "test", NULL)),
 
-            # for error message handling
             tags$head(
+                # For error message handling
                 tags$style(id="iSEE-styles",
                     HTML(".shiny-output-error-validation {
     font-size: 15px;
     color: forestgreen;
     text-align: center;
-}
-")
+}")
+                ),
+
+                # For clearing out open lassos upon resizing, see ?.create_lasso_observer().
+                tags$script(HTML('$(window).resize(function(event){
+    var w = $(this).width();
+    var h = $(this).height();
+    var obj = {width: w, height: h};
+    Shiny.onInputChange("iSEE_window_resize", obj);
+});')
                 )
             ),
 

@@ -13,7 +13,7 @@
 #'
 #' @details
 #' This function should be used in the rendering expression in \code{\link{.renderOutput}}.
-#' It takes care of a number of house-keeping tasks required to satisfy \code{\link{.renderOutput}}'s requirements, e.g., responding to \code{\link{.requestUpdate}} modifictions to \code{rObjects}, setting the \code{commands} and \code{contents} and \code{varname} in \code{pObjects}.
+#' It takes care of a number of house-keeping tasks required to satisfy \code{\link{.renderOutput}}'s requirements, e.g., responding to \code{\link{.requestUpdate}} modifications to \code{rObjects}, setting the \code{commands} and \code{contents} and \code{varname} in \code{pObjects}.
 #'
 #' This function will attempt to retrieve the cached output of \code{\link{.generateOutput}} if it was used elsewhere in the app.
 #' After retrieval, the cached value is wiped to ensure that it does not go stale.

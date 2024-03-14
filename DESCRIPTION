@@ -39,6 +39,7 @@ Imports:
     grDevices,
     viridisLite,
     shinyWidgets,
+    listviewer,
     ComplexHeatmap,
     circlize,
     grid
@@ -64,4 +65,4 @@ biocViews: CellBasedAssays, Clustering, DimensionReduction, FeatureExtraction,
 License: MIT + file LICENSE
 VignetteBuilder: knitr
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1

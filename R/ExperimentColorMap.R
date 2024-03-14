@@ -607,7 +607,7 @@ setMethod(
 #' @param ecm An \linkS4class{ExperimentColorMap}.
 #' @param se A \linkS4class{SingleCellExperiment}.
 #'
-#' @return A character vector of incompability error messages, if any.
+#' @return A character vector of incompatibility error messages, if any.
 #'
 #' @export
 #'

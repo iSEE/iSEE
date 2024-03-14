@@ -46,5 +46,5 @@ However, users can force a replacement with \code{force=TRUE}.
 \code{\link{.selectInput.iSEE}} and friends, which provide modified UI elements that can be clicked to launch a helpful tour.
 }
 \author{
-Aaron LUn
+Aaron Lun
 }

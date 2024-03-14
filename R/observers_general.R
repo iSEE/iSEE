@@ -5,9 +5,12 @@
 .generalPanelSettings <- "iSEE_INTERNAL_panel_settings"
 .generalTourSteps <- "iSEE_INTERNAL_tour_steps"
 .generalVignetteOpen <- "iSEE_INTERNAL_open_vignette"
+.generalDraftTour <- "iSEE_INTERNAL_draft_tour"
+.generalDraftEditor <- "iSEE_INTERNAL_editor_tour"
 
 .generalSessionInfo <- "iSEE_INTERNAL_session_info"
 .generalCitationInfo <- "iSEE_INTERNAL_citation_info"
+.generalMetadataInfo <- "iSEE_INTERNAL_metadata_info"
 
 .generalCodeTracker <- "iSEE_INTERNAL_tracked_code"
 .generalMemoryTracker <- "iSEE_INTERNAL_tracked_memory"
@@ -42,6 +45,7 @@
 #' @importFrom shiny observeEvent showModal modalDialog HTML br tagList showNotification p pre downloadButton
 #' checkboxInput actionButton
 #' @importFrom shinyAce aceEditor
+#' @importFrom listviewer jsoneditOutput
 #'
 #' @rdname INTERNAL_general_observers
 .create_general_observers <- function(se, runLocal, se_name, ecm_name, mod_commands, saveState, input, session, pObjects, rObjects) {
@@ -104,7 +108,29 @@
             )
         ))
     }, ignoreInit=TRUE)
-
+    
+    observeEvent(input[[.generalMetadataInfo]], {
+        
+        showModal(modalDialog(
+            title="About this dataset", size="m", fade=TRUE,
+            footer=NULL, easyClose=TRUE,
+            
+            HTML("You can see here a schematic representation of the metadata included",
+                 "in the provided <code>SummarizedExperiment</code> object. <br><br>"),
+            # paste(names(mdd), collapse = "\n"),
+            tagList(
+                listviewer::jsoneditOutput("mdd"),
+                actionButton("export_to_json", 
+                             label = "Export metadata to json")
+            )
+            
+        ))
+    }, ignoreInit=TRUE)
+    
+    # observeEvent(input[[export_to_json]], {
+    #   
+    # }, ignoreInit=TRUE)
+    
     observeEvent(input[[.generalLinkGraph]], {
         showModal(modalDialog(
             title="Graph of inter-panel links", size="l",
@@ -155,6 +181,46 @@
         # Only triggers _after_ panels are fully setup, so observers are properly ID'd.
         session$onFlushed(function() { introjs(session, options=list(steps=tour)) })
     }
+}
+
+
+#' Draft a tour backbone
+#' 
+#' Create a draft of a tour based on the current panel set
+#'
+#' @inheritParams .initialize_server
+#' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
+#' 
+#' @return An observer is created in the server function in which this is called.
+#' A \code{NULL} value is invisibly returned.
+#' 
+#' @author Federico Marini
+#' @rdname INTERNAL_create_tour_drafter
+.create_tour_drafter <- function(se, input, pObjects) {
+    observeEvent(input[[.generalDraftTour]], {
+        tour_draft <- c("element;intro")
+
+        enc_names <- .define_memory_panel_choices(pObjects$memory)
+        tour_draft <- c(tour_draft, paste0("#", enc_names, ";TOUR_TEXT"))
+    
+        showModal(modalDialog(
+            title="This is a draft of the tour based on the current panel selection", size="m",
+            fade=TRUE, footer=NULL, easyClose=TRUE,
+            p("You can click anywhere in the code editor and select all the code using",
+              "a keyboard shortcut that depends on your operating system (e.g. Ctrl/Cmd + A",
+              "followed by Ctrl/Cmd + C).",
+              "This will copy the selected parts to the clipboard.",
+              "While this is not guaranteed to be a fully fledged tour, it will give you",
+              "some pointers to work on the panels that you are likely to be mentioning",
+              "in the tour for your instance of iSEE.",
+              "The content of this editor should ideally reside in a text file that is read",
+              "in and stored into a data.frame."),
+            aceEditor(.generalDraftEditor, mode="r", theme="solarized_light", autoComplete="live",
+                      value=tour_draft, height="300px")
+        ))
+    }, ignoreInit=TRUE)
+    
+    invisible(NULL)
 }
 
 #' Create the export observers

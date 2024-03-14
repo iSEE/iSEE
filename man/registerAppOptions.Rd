@@ -67,7 +67,7 @@ For example, one could supply a single empty list to clear \code{se} of all exis
 }
 \section{For developers}{
 
-Developers of Panel subclasses can add arbitary options to \code{...} to help control the behavior of their Panel instances.
+Developers of Panel subclasses can add arbitrary options to \code{...} to help control the behavior of their Panel instances.
 We recommend prefixing any options with the name of the package in the form of \code{<PACKAGE>_<OPTION>},
 so as to avoid conflicts with other options (in the base classes, or in other downstream packages) that have the same name.
 

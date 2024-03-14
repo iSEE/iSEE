@@ -208,10 +208,10 @@
 #' @rdname INTERNAL_establish_eval_order
 #' @seealso
 #' \code{\link{.spawn_multi_selection_graph}}
-#' @importFrom igraph delete.vertices V topo_sort degree
+#' @importFrom igraph delete_vertices V topo_sort degree
 .establish_eval_order <- function(graph) {
     iso <- V(graph)[degree(graph, mode="out") == 0]
-    graph <- delete.vertices(graph, iso)
+    graph <- delete_vertices(graph, iso)
     names(topo_sort(graph, mode="out"))
 }
 

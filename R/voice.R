@@ -111,7 +111,7 @@ prepareSpeechRecognition <- function(use=FALSE) {
 #' @param se A SingleCellExperiment object.
 #'
 #' @return A character vector of valid coloring choices.
-#' @author Kevin Rue-Albecht
+#' @author Kevin Rue-Albrecht
 .colorByChoices <- function(colorby_title, se) {
 
     if (colorby_title == .colorByNothingTitle) {

@@ -26,7 +26,7 @@
 #'
 #' @details
 #' Configuring the initial state of the app is as easy as passing a list of \linkS4class{Panel} objects to \code{initial}.
-#' Each element represents one panel and is typicall constructed with a command like \code{\link{ReducedDimensionPlot}()}.
+#' Each element represents one panel and is typically constructed with a command like \code{\link{ReducedDimensionPlot}()}.
 #' Panels are filled from left to right in a row-wise manner depending on the available width.
 #' Each panel can be easily customized by modifying the parameters in each object.
 #'
@@ -247,7 +247,18 @@ iSEE <- function(se,
                             )
                         )
                     ),
-                    icon=icon(NULL), status="primary"
+                    icon=icon(NULL), 
+                    status="primary"
+                ),
+                notificationItem(
+                  text=actionButton(
+                    .generalDraftTour,
+                    "Draft out a tour",
+                    icon("lightbulb"),
+                    style=.actionbutton_biocstyle
+                  ),
+                  icon=icon(NULL), # tricking it to not have additional icon
+                  status="primary"
                 )
             ),
 
@@ -271,7 +282,18 @@ iSEE <- function(se,
                         icon=icon("heart"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon(NULL), status="primary"
+                    icon=icon(NULL), 
+                    status="primary"
+                ),
+                notificationItem(
+                    text=actionButton(
+                        .generalMetadataInfo,
+                        label="About this dataset",
+                        icon=icon("info"),
+                        style=.actionbutton_biocstyle
+                    ),
+                    icon=icon(NULL), 
+                    status="primary"
                 )
             ) # end of dropdownMenu
         ), # end of dashboardHeader
@@ -473,6 +495,8 @@ iSEE <- function(se,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_tour_observer(se, memory=pObjects$memory, tour=tour, input=input, session=session)
+    
+    .create_tour_drafter(se, input=input, pObjects=pObjects)
 
     .create_organization_observers(se=se, input=input, output=output, session=session,
         pObjects=pObjects, rObjects=rObjects)

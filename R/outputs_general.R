@@ -4,7 +4,7 @@
 #'
 #' @param se A \linkS4class{SummarizedExperiment} object containing the data of interest.
 #' @param input The Shiny input object from the server function.
-#' @param output The Shiny outpu object from the server function.
+#' @param output The Shiny output object from the server function.
 #' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
@@ -17,6 +17,8 @@
 #' @rdname INTERNAL_create_general_output
 #' @importFrom utils zip
 #' @importFrom shiny downloadHandler renderPlot checkboxGroupInput actionButton downloadButton withProgress incProgress
+#' @importFrom listviewer jsonedit renderJsonedit
+#' @importFrom S4Vectors metadata
 .create_general_output <- function(se, input, output, session, pObjects, rObjects) {
     # nocov start
     output[[.generalLinkGraphPlot]] <- renderPlot({
@@ -82,6 +84,14 @@
         }
     )
     # nocov end
+    
+    # nocov start
+    output[["mdd"]] <- listviewer::renderJsonedit({
+      mdd <- metadata(se)
+      jsonedit(mdd)
+    })
+    # nocov end
+    
     invisible(NULL)
 }
 

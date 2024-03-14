@@ -62,7 +62,7 @@ SCREENSHOT <- function(x, ...) knitr::include_graphics(x, dpi = NA)
 
 Some tweaks can be performed to enable `r Biocpkg("iSEE")` to run efficiently on large datasets.
 This includes datasets with many features (methylation, SNPs) or many columns (cytometry, single-cell RNA-seq).
-To demonstate some of this functionality, we will use a dataset from the `r Biocpkg("TENxPBMCData")` dataset:
+To demonstrate some of this functionality, we will use a dataset from the `r Biocpkg("TENxPBMCData")` dataset:
 
 ```{r}
 library(TENxPBMCData)

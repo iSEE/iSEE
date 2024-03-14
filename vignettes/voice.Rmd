@@ -65,7 +65,7 @@ See section [Vocal commands available](#availableVocalCommands).
 
 # Implementation
 
-We use the [_annyang_](https://github.com/TalAter/annyang) lightweight JavaScript library to handle speech recongnition and update _Shiny_ reactive values in the same way as mouse and keyboard UI elements trigger panel updates.
+We use the [_annyang_](https://github.com/TalAter/annyang) lightweight JavaScript library to handle speech recognition and update _Shiny_ reactive values in the same way as mouse and keyboard UI elements trigger panel updates.
 
 Note that _annyang_ requires an active internet connection, as it relies on the browser's own speech recognition engine (see the _annyang_ [FAQ](https://github.com/TalAter/annyang/blob/master/docs/FAQ.md#can-annyang-work-offline)).
 For instance, in _Google Chrome_, this engine performs the recognition in the cloud.

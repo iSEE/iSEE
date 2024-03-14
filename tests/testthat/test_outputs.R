@@ -53,7 +53,7 @@ test_that(".create_general_output works as expected", {
     out <- iSEE:::.create_general_output(sce, input, output, session, pObjects, rObjects)
 
     expect_null(out)
-    expect_named(output, c("iSEE_INTERNAL_export_content_download", "iSEE_INTERNAL_link_graph_plot",  "iSEE_INTERNAL_memory_export", "iSEE_INTERNAL_export_content_ui" ))
+    expect_named(output, c("iSEE_INTERNAL_export_content_download", "iSEE_INTERNAL_link_graph_plot",  "iSEE_INTERNAL_memory_export", "iSEE_INTERNAL_export_content_ui", "mdd"))
 
 })
 

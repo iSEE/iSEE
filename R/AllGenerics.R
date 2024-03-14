@@ -684,6 +684,10 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #'
 #' This suite of generics controls the behavior of these multiple selections.
 #' In all of the code chunks shown below, \code{x} is assumed to be an instance of the \linkS4class{Panel} class.
+#' 
+#' @section Possibility of selection:
+#' \code{.isBrushable(x)} should return a logical specifying whether the panel supports selection using a Shiny brush or lasso waypoints.
+#' The output should be constant for all instances of \code{x} and is used to govern the reporting of multiple selections in the code tracker.
 #'
 #' @section Specifying the dimension:
 #' \code{.multiSelectionDimension(x)} should return a string specifying whether the selection contains rows (\code{"row"}), columns (\code{"column"}) or if the Panel in \code{x} does not perform multiple selections at all (\code{"none"}).
@@ -738,16 +742,22 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #'
 #' \code{.multiSelectionInvalidated(x)} should return a logical scalar indicating whether a transmission of a multiple selection to \code{x} invalidates \code{x}'s own existing selections.
 #' This should only be \code{TRUE} in special circumstances, e.g., if receipt of a new multiple selection causes recalculation of coordinates in a \linkS4class{DotPlot}.
+#' 
+#' \code{.multiSelectionResponsive(x, dims)} should return a logical scalar indicating whether \code{x} is responsive to an incoming multiple selection on dimensions \code{dims}.
+#' For example, the method for \linkS4class{ComplexHeatmapPlot} would return \code{TRUE} when an incoming selection originates from a row-oriented panel and \code{CustomRows=FALSE}.
+#' Otherwise, it would be \code{FALSE} as the dimension of the transmitted selection is dismissed by the options of the child panel.
 #'
 #' @author Aaron Lun
 #' @name multi-select-generics
 #' @aliases .multiSelectionDimension
+#' .isBrushable
 #' .multiSelectionRestricted
 #' .multiSelectionActive
 #' .multiSelectionCommands
 #' .multiSelectionClear
 #' .multiSelectionInvalidated
 #' .multiSelectionAvailable
+#' .multiSelectionResponsive
 NULL
 
 #' @export
@@ -770,6 +780,12 @@ setGeneric(".multiSelectionInvalidated", function(x) standardGeneric(".multiSele
 
 #' @export
 setGeneric(".multiSelectionAvailable", function(x, contents) standardGeneric(".multiSelectionAvailable"))
+
+#' @export
+setGeneric(".multiSelectionResponsive", function(x, dims) standardGeneric(".multiSelectionResponsive"))
+
+#' @export
+setGeneric(".isBrushable", function(x) standardGeneric(".isBrushable"))
 
 #' Generics for controlling single selections
 #'
@@ -915,6 +931,10 @@ setGeneric(".allowableXAxisChoices", function(x, se) standardGeneric(".allowable
 #' \code{.allowableColorByDataChoices(x, se)} should return a character vector of the allowable row/column data variables to use 
 #' when \code{ColorBy} is set to \code{"Row data"} or \code{"Column data"} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
 #' The default method will use all available (atomic) variables, but subclasses can specialize this to only allow, e.g., continuous or discrete variables.
+#' 
+#' @section Controlling hover choices:
+#' \code{.getTooltipUI(x, se, name)} should return an \code{HTML} tag definition representing information to display in the tooltip that is displayed in \code{DotPlot} panels when hovering over a data point.
+#' The data point is identified by \code{name}, its \code{rownames} or \code{colnames} value in \code{se}.
 #'
 #' @author Kevin Rue-Albrecht
 #'
@@ -927,6 +947,7 @@ setGeneric(".allowableXAxisChoices", function(x, se) standardGeneric(".allowable
 #' .defineVisualTextInterface
 #' .defineVisualOtherInterface
 #' .allowableColorByDataChoices
+#' .getTooltipUI
 NULL
 
 #' @export
@@ -952,6 +973,9 @@ setGeneric(".defineVisualOtherInterface", function(x) standardGeneric(".defineVi
 
 #' @export
 setGeneric(".allowableColorByDataChoices", function(x, se) standardGeneric(".allowableColorByDataChoices"))
+
+#' @export
+setGeneric(".getTooltipUI", function(x, se, name) standardGeneric(".getTooltipUI"))
 
 #' Internal interface generics 
 #'

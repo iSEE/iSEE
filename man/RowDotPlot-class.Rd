@@ -8,8 +8,10 @@
 \alias{.refineParameters,RowDotPlot-method}
 \alias{.defineInterface,RowDotPlot-method}
 \alias{.createObservers,RowDotPlot-method}
+\alias{.getTooltipUI,RowDotPlot-method}
 \alias{.hideInterface,RowDotPlot-method}
 \alias{.multiSelectionDimension,RowDotPlot-method}
+\alias{.multiSelectionResponsive,RowDotPlot-method}
 \alias{.multiSelectionRestricted,RowDotPlot-method}
 \alias{.multiSelectionInvalidated,RowDotPlot-method}
 \alias{.singleSelectionDimension,RowDotPlot-method}
@@ -50,6 +52,8 @@ The specified field should contain categorical values; defaults to the first suc
 \item \code{SizeByRowData}, a string specifying the \code{\link{rowData}} field for controlling point size,
 if \code{SizeBy="Row data"} (see the \linkS4class{Panel} class).
 The specified field should contain continuous values; defaults to the first such field.
+\item \code{TooltipRowData}, a character vector specifying \code{\link{rowData}} fields to show in the tooltip.
+Defaults to `character(0)`, which displays only the `rownames` value of the data point.
 }
 
 In addition, this class inherits all slots from its parent \linkS4class{DotPlot} and \linkS4class{Panel} classes.

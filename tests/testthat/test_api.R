@@ -140,6 +140,12 @@ test_that(".multiSelectionRestricted handles Tables", {
     expect_true(out)
 })
 
+test_that(".multiSelectionRestricted handles ComplexHeatmapPlot", {
+    x <- ComplexHeatmapPlot()
+    out <- .multiSelectionRestricted(x)
+    expect_true(out)
+})
+
 # .multiSelectionClear ----
 context(".multiSelectionClear")
 
@@ -214,6 +220,95 @@ test_that(".multiSelectionAvailable handles Panel", {
     out <- .multiSelectionAvailable(x, contents)
     expect_identical(out, length(letters))
 
+})
+
+# .multiSelectionRestricted ----
+context(".multiSelectionRestricted")
+
+test_that(".multiSelectionRestricted handles ColumnDotPlot", {
+    
+    x <- ColumnDataPlot()
+    out <- .multiSelectionResponsive(x, "column")
+    expect_true(out)
+    
+    x <- ColumnDataPlot()
+    out <- .multiSelectionResponsive(x, "row")
+    expect_false(out)
+    
+})
+
+test_that(".multiSelectionRestricted handles RowDotPlot", {
+    
+    x <- RowDataPlot()
+    out <- .multiSelectionResponsive(x, "row")
+    expect_true(out)
+    
+    x <- RowDataPlot()
+    out <- .multiSelectionResponsive(x, "column")
+    expect_false(out)
+    
+})
+
+test_that(".multiSelectionRestricted handles ColumnTable", {
+    
+    x <- ColumnDataTable()
+    out <- .multiSelectionResponsive(x, "column")
+    expect_true(out)
+    
+    x <- ColumnDataTable()
+    out <- .multiSelectionResponsive(x, "row")
+    expect_false(out)
+    
+})
+
+test_that(".multiSelectionRestricted handles RowTable", {
+    
+    x <- RowDataTable()
+    out <- .multiSelectionResponsive(x, "row")
+    expect_true(out)
+    
+    x <- RowDataTable()
+    out <- .multiSelectionResponsive(x, "column")
+    expect_false(out)
+    
+})
+
+test_that(".multiSelectionRestricted handles ComplexHeatmapPlot", {
+    
+    # ignore all incoming selections
+    x <- ComplexHeatmapPlot(
+        CustomRows = TRUE,
+        ShowColumnSelection = FALSE,
+        ColumnSelectionRestrict = FALSE,
+        RowSelectionRestrict = FALSE
+    )
+    out <- .multiSelectionResponsive(x, c("row", "column"))
+    expect_false(out)
+    
+    # enable incoming row selection
+    x <- ComplexHeatmapPlot(
+        CustomRows = FALSE,
+        ShowColumnSelection = FALSE,
+        ColumnSelectionRestrict = FALSE,
+        RowSelectionRestrict = FALSE
+    )
+    out <- .multiSelectionResponsive(x, "row")
+    expect_true(out)
+    out <- .multiSelectionResponsive(x, "column")
+    expect_false(out)
+    
+    # enable incoming column selection
+    x <- ComplexHeatmapPlot(
+        CustomRows = TRUE,
+        ShowColumnSelection = TRUE,
+        ColumnSelectionRestrict = FALSE,
+        RowSelectionRestrict = FALSE
+    )
+    out <- .multiSelectionResponsive(x, "column")
+    expect_true(out)
+    out <- .multiSelectionResponsive(x, "row")
+    expect_false(out)
+    
 })
 
 # .exportOutput ----

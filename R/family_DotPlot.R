@@ -227,6 +227,7 @@
 #' .multiSelectionCommands,DotPlot-method
 #' .multiSelectionClear,DotPlot-method
 #' .multiSelectionDimension,DotPlot-method
+#' .isBrushable,DotPlot-method
 #' .singleSelectionValue,DotPlot-method
 #' .singleSelectionSlots,DotPlot-method
 #' .prioritizeDotPlotData,DotPlot-method
@@ -482,7 +483,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
     .create_zoom_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
-    .create_hover_observer(plot_name, input=input, session=session, pObjects=pObjects)
+    .create_hover_observer(plot_name, se, input=input, session=session, pObjects=pObjects)
 
     .createCustomDimnamesModalObservers(plot_name, .plotCustomLabelsText, .dimnamesModalOpen,
         se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, 
@@ -495,9 +496,9 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 setMethod(".defineInterface", "DotPlot", function(x, se, select_info) {
     out <- callNextMethod()
     c(
-        out[1],
+        out[1], # data parameters box
         list(.create_visual_box(x, se, select_info$single)),
-        out[-1]
+        out[-1] # selection parameters box
     )
 })
 
@@ -1125,6 +1126,9 @@ setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
         "selected <- rownames(iSEE::lassoPoints(contents, select));"
     }
 })
+
+#' @export
+setMethod(".isBrushable", "DotPlot", function(x) TRUE)
 
 #' @export
 setMethod(".singleSelectionValue", "DotPlot", function(x, contents) {

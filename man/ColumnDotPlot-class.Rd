@@ -8,8 +8,10 @@
 \alias{.refineParameters,ColumnDotPlot-method}
 \alias{.defineInterface,ColumnDotPlot-method}
 \alias{.createObservers,ColumnDotPlot-method}
+\alias{.getTooltipUI,ColumnDotPlot-method}
 \alias{.hideInterface,ColumnDotPlot-method}
 \alias{.multiSelectionDimension,ColumnDotPlot-method}
+\alias{.multiSelectionResponsive,ColumnDotPlot-method}
 \alias{.multiSelectionRestricted,ColumnDotPlot-method}
 \alias{.multiSelectionInvalidated,ColumnDotPlot-method}
 \alias{.singleSelectionDimension,ColumnDotPlot-method}
@@ -50,6 +52,8 @@ The specified field should contain categorical values; defaults to the first suc
 \item \code{SizeByColumnData}, a string specifying the \code{\link{colData}} field for controlling point size,
 if \code{SizeBy="Column data"} (see the \linkS4class{Panel} class).
 The specified field should contain continuous values; defaults to the first such valid field.
+\item \code{TooltipColumnData}, a character vector specifying \code{\link{colData}} fields to show in the tooltip.
+Defaults to `character(0)`, which displays only the `colnames` value of the data point.
 }
 
 In addition, this class inherits all slots from its parent \linkS4class{DotPlot} and \linkS4class{Panel} classes.

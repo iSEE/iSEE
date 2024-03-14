@@ -144,7 +144,6 @@ iSEE <- function(se,
             ColumnDataTable(), 
             ComplexHeatmapPlot()
         )
-
         if (is.null(initial)) {
             initial <- all_defaults
         }
@@ -174,7 +173,7 @@ iSEE <- function(se,
                         icon = icon("object-ungroup"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon = icon("", verify_fa = FALSE), status = "primary"
+                    icon = icon(NULL), status = "primary"
                 ),
                 notificationItem(
                     text=actionButton(
@@ -183,7 +182,7 @@ iSEE <- function(se,
                         icon=icon("link"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon("", verify_fa = FALSE), status="primary"
+                    icon=icon(NULL), status="primary"
                 )
             ),
 
@@ -199,16 +198,16 @@ iSEE <- function(se,
                         icon=icon("download"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon("", verify_fa = FALSE), status="primary"
+                    icon=icon(NULL), status="primary"
                 ),
                 notificationItem(
                     text=actionButton(
                         .generalTrackedCode,
                         label="Extract the R code",
-                        icon=icon("magic"),
+                        icon=icon("wand-magic-sparkles"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon("", verify_fa = FALSE), status="primary"
+                    icon=icon(NULL), status="primary"
                 ),
                 notificationItem(
                     text=actionButton(
@@ -217,12 +216,12 @@ iSEE <- function(se,
                         icon=icon("clipboard"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon("", verify_fa = FALSE), status="primary"
+                    icon=icon(NULL), status="primary"
                 )
             ), # end of dropdownMenu
 
             dropdownMenu(type="tasks",
-                icon=icon("question-circle"),
+                icon=icon("circle-question"),
                 badgeStatus=NULL,
                 headerText="Documentation",
                 notificationItem(
@@ -232,7 +231,7 @@ iSEE <- function(se,
                         icon("hand-point-right"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon("", verify_fa = FALSE), # tricking it to not have additional icon
+                    icon=icon(NULL), # tricking it to not have additional icon
                     status="primary"
                 ),
                 notificationItem(
@@ -248,7 +247,8 @@ iSEE <- function(se,
                             )
                         )
                     ),
-                    icon=icon("", verify_fa = FALSE), status="primary"
+                    icon=icon(NULL), 
+                    status="primary"
                 ),
                 notificationItem(
                   text=actionButton(
@@ -257,7 +257,7 @@ iSEE <- function(se,
                     icon("lightbulb"),
                     style=.actionbutton_biocstyle
                   ),
-                  icon=icon("", verify_fa = FALSE), # tricking it to not have additional icon
+                  icon=icon(NULL), # tricking it to not have additional icon
                   status="primary"
                 )
             ),
@@ -273,7 +273,7 @@ iSEE <- function(se,
                         icon=icon("window-maximize"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon("", verify_fa = FALSE), status="primary"
+                    icon=icon(NULL), status="primary"
                 ),
                 notificationItem(
                     text=actionButton(
@@ -282,7 +282,8 @@ iSEE <- function(se,
                         icon=icon("heart"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon("", verify_fa = FALSE), status="primary"
+                    icon=icon(NULL), 
+                    status="primary"
                 ),
                 notificationItem(
                     text=actionButton(
@@ -291,7 +292,8 @@ iSEE <- function(se,
                         icon=icon("info"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon("", verify_fa = FALSE), status="primary"
+                    icon=icon(NULL), 
+                    status="primary"
                 )
             ) # end of dropdownMenu
         ), # end of dashboardHeader
@@ -304,6 +306,10 @@ iSEE <- function(se,
             prepareSpeechRecognition(voice),
             .prepareBugsEasterEgg(bugs),
             introjsUI(), # must be included in UI
+            # bugfix
+            # https://github.com/iSEE/iSEE/issues/594
+            # https://github.com/rstudio/shiny/issues/3125#issuecomment-876787895
+            htmltools::findDependencies(selectInput("test", "test", NULL)),
 
             # for error message handling
             tags$head(
@@ -331,11 +337,11 @@ iSEE <- function(se,
         rObjects <- reactiveValues(rerender=1L, rerendered=1L, modified=list())
 
         if (!has_se) {
-            FUN <- function(SE, INITIAL, TOUR=NULL) {
+            FUN <- function(SE, INITIAL, TOUR=NULL, COLORMAP=colormap) {
                 if (is.null(INITIAL)) {
                     INITIAL <- initial
                 } 
-                .initialize_server(SE, initial=INITIAL, extra=extra, colormap=colormap,
+                .initialize_server(SE, initial=INITIAL, extra=extra, colormap=COLORMAP,
                     tour=TOUR, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name, saveState=saveState,
                     input=input, output=output, session=session, rObjects=rObjects)
                 rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))

@@ -62,7 +62,7 @@
 .create_child_propagation_observer <- function(se, session, pObjects, rObjects) {
     # nocov start
     if (!is.null(session)) {
-        # Run this just in case we haven't triggered the observer below on start-up 
+        # Run this just in case we haven't triggered the observer below on start-up
         # (in which case the app will refuse to respond to the # first user input).
         # This occasionally occurs for very well-behaved Panels that do not trigger
         # further changes to their 'input' fields upon initialization.
@@ -85,7 +85,7 @@
         # Looping over panels in topological order, accumulating changes so that
         # we only ever call .generateOutput once. Note that we must loop over
         # `ordering` rather than `modified` to ensure that any children of earlier
-        # panels are computing off up-to-date version of the parent panels. 
+        # panels are computing off up-to-date version of the parent panels.
         graph <- pObjects$selection_links
         ordering <- names(topo_sort(graph, mode="out"))
 
@@ -127,9 +127,13 @@
             n_saved <- .any_saved_selection(instance, count=TRUE)
             has_saved <- n_saved > 0L
 
-            # Looping over children and deciding whether they need to be regenerated. 
+            # Looping over children and deciding whether they need to be regenerated.
             for (child in children) {
                 child_instance <- pObjects$memory[[child]]
+            
+                if (!.multiSelectionResponsive(child_instance, transmit_dim)) {
+                    next
+                }
 
                 regenerate <- FALSE
                 if (re_populated && (has_active || has_saved)) {
@@ -176,7 +180,18 @@
 #' @param panel_name String containing the name of a panel.
 #' @param mode Character vector of any length containing modification modes.
 #' If empty, no change is propagated to the children.
+#' See below for a description of valid modes.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
+#'
+#' @section Modes of modification:
+#' Valid modes of panel modifications are defined at the top of the file \code{R/observers_child.R}.
+#'
+#' \describe{
+#'  \item{\code{"Repopulated"}}{Used to indicate that the panel needs re-rendering following a change of restriction on the data shown in the panel or a change in incoming multiple selection.}
+#'  \item{\code{"Reactivated"}}{Used to indicate the panel needs re-rendering following a change that does not alter data shown in the panel (e.g., clear invalidated selections, zoom)}
+#'  \item{\code{"Resaved"}}{Used to indicate that the panel needs re-rendering following a change in saved selection (e.g., add active selection to saved selections, clear saved selections).}
+#'  \item{\code{"Norender"}}{Disable re-rendering of panel itself. Used to trigger re-rendering of panels receiving selections from the panel.}
+#' }
 #'
 #' @return
 #' \code{rObjects$modified} to include the new \code{mode} for \code{panel_name}.

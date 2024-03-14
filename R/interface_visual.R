@@ -67,16 +67,19 @@
         .conditionalOnCheckGroup(pchoice_field, title, ui[[title]])
     )
 
-    collapseBox(
-        id=paste0(plot_name, "_", .visualParamBoxOpen),
-        title="Visual parameters",
-        open=slot(x, .visualParamBoxOpen),
-        checkboxGroupInput(
-            inputId=pchoice_field, label=NULL, inline=TRUE,
-            selected=slot(x, .visualParamChoice),
-            choices=names(ui)
-        ),
-        do.call(tagList, collected)
+    do.call(.collapseBoxHidden,
+        c(
+            list(x=x, field=.visualParamBoxOpen, title="Visual parameters"),
+            open=slot(x, .visualParamBoxOpen),
+            tagList(
+                checkboxGroupInput(
+                    inputId=pchoice_field, label=NULL, inline=TRUE,
+                    selected=slot(x, .visualParamChoice),
+                    choices=names(ui)
+                ),
+                collected
+            )
+        )
     )
 }
 

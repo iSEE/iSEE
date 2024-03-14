@@ -1,5 +1,5 @@
 ---
-title: Deploying custom panels in the `iSEE` interface
+title: Deploying custom panels in the iSEE interface
 author:
 - name: Kevin Rue-Albrecht
   affiliation: 
@@ -56,7 +56,7 @@ sce <- readRDS('sce.rds')
 ```
 
 ```{r, eval=!exists("SCREENSHOT"), include=FALSE}
-SCREENSHOT <- function(x, ...) knitr::include_graphics(x)
+SCREENSHOT <- function(x, ...) knitr::include_graphics(x, dpi = NA)
 ```
 
 # Background

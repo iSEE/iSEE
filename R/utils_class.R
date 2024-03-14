@@ -278,6 +278,32 @@
     x
 }
 
+#' Remove invalid values in multiple choices
+#'
+#' Removes invalid values in a slot of a \linkS4class{Panel} object.
+#' This is usually called in \code{\link{.refineParameters}}.
+#'
+#' @param x An instance of a \linkS4class{Panel} class.
+#' @param field String containing the name of the relevant slot.
+#' @param choices Character vector of permissible values for this slot.
+#'
+#' @return
+#' \code{x} where the slot named \code{field} is replaced only with the values that exist in \code{choices}.
+#'
+#' @author Kevin Rue-Albrecht
+#' @export
+#' @rdname removeInvalidChoices
+.removeInvalidChoices <- function(x, field, choices) {
+    chosen <- slot(x, field)
+    if (any(!chosen %in% choices)) {
+        removed <- setdiff(chosen, choices)
+        warning(sprintf("Removing invalid values of '%s' for '%s': %s", field, class(x)[1],
+            paste(sprintf("'%s'", removed), collapse=", ")))
+        slot(x, field) <- intersect(chosen, choices)
+    }
+    x
+}
+
 #' Number of levels for any data type
 #'
 #' @param x An atomic vector.

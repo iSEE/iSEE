@@ -54,6 +54,7 @@ Variables with more levels are coerced to numeric to avoid rendering delays.
 Defaults to 100.}
 \item{\code{RowTable.select.details}}{A function that takes a string containing the name of a feature (i.e., the current selection in the \linkS4class{RowTable}) and returns a HTML element with more details.} 
 \item{\code{ColumnTable.select.details}}{A function that takes a string containing the name of a sample (i.e., the current selection in the \linkS4class{ColumnTable}) and returns a HTML element with more details.}
+\item{\code{tooltip.signif}}{Number of \emph{significant} digits to display in the tooltip. Defaults to 6.}
 }
 
 The registered options are stored in the SummarizedExperiment to ensure that we can recover the application state with the combination of the SummarizedExperiment and list of Panel settings.

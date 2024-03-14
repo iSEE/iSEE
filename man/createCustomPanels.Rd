@@ -11,6 +11,7 @@ createCustomTable(
   restrict = NULL,
   className = "CustomTable",
   fullName = "Custom table",
+  FUN.selection.details = NULL,
   where = topenv(parent.frame())
 )
 
@@ -33,6 +34,8 @@ If specified, only the listed arguments receive UI elements in the interface.}
 \item{className}{String containing the name of the new \linkS4class{Panel} class.}
 
 \item{fullName}{String containing the full name of the new class.}
+
+\item{FUN.selection.details}{Function generating a UI element that displays details about the current selection, if any.}
 
 \item{where}{An environment indicating where the class and method definitions should be stored.}
 }

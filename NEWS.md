@@ -1,3 +1,96 @@
+# iSEE 2.13.5
+
+* Add generic `.isBrushable` to support panels that are not `DotPlot` extensions.
+
+# iSEE 2.13.4
+
+* Fix `COLORMAP` bug introduced in `2.13.3`.
+
+# iSEE 2.13.3
+
+* Let app maintainer define colormap in the landing page.
+
+# iSEE 2.13.2
+
+* Fix bug introduced in `2.11.2` (DataBoxOpen would apply also to Visual parameters box)
+
+# iSEE 2.13.1
+
+* Define missing methods for generics for custom tables (issues #608 and #612)
+
+# iSEE 2.11.4
+
+* Fix bug introduced in `2.11.2`.
+
+# iSEE 2.11.3
+
+* Use standard syntax to include empty icon in relevant places (issue #606).
+
+# iSEE 2.11.2
+
+* Make it possible to hide the "Visual Parameters" box (issue #611).
+
+# iSEE 2.11.1
+
+* Add `tooltip.signif` to `registerAppOptions()` to regulate the number of
+  significant digits shown in the tooltip.
+
+# iSEE 2.9.12
+
+* Export constants used in `iSEEu`.
+
+# iSEE 2.9.11
+
+* Fix R CMD check warnings about missing documentation.
+
+# iSEE 2.9.10
+
+* Enable customisation of hovering tooltip in `DotPlot` panels
+  including `colData` or `rowData` information.
+
+# iSEE 2.9.9
+
+* Allow screenshots in vignettes to use full width of pkgdown site.
+
+# iSEE 2.9.8
+
+* Enable autocompletion for feature names in the heatmap feature selection modal.
+
+# iSEE 2.9.7
+
+* Update FontAwesome icon `question-circle` to `circle-question` (v6).
+
+# iSEE 2.9.6
+
+* Bugfix related to <https://github.com/rstudio/shiny/issues/3125>,
+  mainly applicable to custom landing pages that render a `DT::datatable()`
+  prior to `selectInput()`.
+
+# iSEE 2.9.5
+
+* Bugfix reverting a change in `2.9.3` breaking re-rendering of reactivated panels.
+* Complete bugfix to prevent unnecessary re-rendering of `ComplexHeatmapPlot` panel
+  when dimension of an incoming multiple selection is dismissed by the options
+  of the child panel.
+
+# iSEE 2.9.4
+
+* Bugfix setting the active multi-selection info of `Table` panels to a fixed
+  message, as the panel is not re-rendered when search boxes are used.
+* Bugfix re-rendering `ComplexHeatmapPlot` panels when displaying incoming
+  column selection.
+
+# iSEE 2.9.3
+
+* Partial bugfix avoiding re-rendering of `ComplexHeatmapPlot` panel
+  when an incoming row selection changes if custom rows are in use.
+  The partial bugfix only applies if the `ComplexHeatmapPlot` also disables
+  the restriction on any incoming column selection.
+
+# iSEE 2.9.2
+
+* Document the existing panel modification modes.
+
 # iSEE 2.9.1
 
 * Add spinner to `ComplexHeatmapPlot`.

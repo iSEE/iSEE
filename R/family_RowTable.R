@@ -69,6 +69,7 @@
 #' .createObservers,RowTable-method
 #' .hideInterface,RowTable-method
 #' .multiSelectionDimension,RowTable-method
+#' .multiSelectionResponsive,RowTable-method
 #' .singleSelectionDimension,RowTable-method
 #' .showSelectionDetails,RowTable-method
 #' @name RowTable-class
@@ -120,6 +121,14 @@ setMethod(".multiSelectionDimension", "RowTable", function(x) "row")
 
 #' @export
 setMethod(".singleSelectionDimension", "RowTable", function(x) "feature")
+
+#' @export
+setMethod(".multiSelectionResponsive", "RowTable", function(x, dims = character(0)) {
+    if ("row" %in% dims) {
+        return(TRUE)
+    }
+    return(FALSE)
+})
 
 #' @export
 setMethod(".showSelectionDetails", "RowTable", function(x) {

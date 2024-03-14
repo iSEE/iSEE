@@ -17,6 +17,7 @@
 \alias{.multiSelectionCommands,DotPlot-method}
 \alias{.multiSelectionClear,DotPlot-method}
 \alias{.multiSelectionDimension,DotPlot-method}
+\alias{.isBrushable,DotPlot-method}
 \alias{.singleSelectionValue,DotPlot-method}
 \alias{.singleSelectionSlots,DotPlot-method}
 \alias{.prioritizeDotPlotData,DotPlot-method}

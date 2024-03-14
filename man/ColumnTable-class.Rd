@@ -9,6 +9,7 @@
 \alias{.createObservers,ColumnTable-method}
 \alias{.hideInterface,ColumnTable-method}
 \alias{.multiSelectionDimension,ColumnTable-method}
+\alias{.multiSelectionResponsive,ColumnTable-method}
 \alias{.singleSelectionDimension,ColumnTable-method}
 \alias{.showSelectionDetails,ColumnTable-method}
 \title{The ColumnTable class}

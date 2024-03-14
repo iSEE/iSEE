@@ -27,6 +27,8 @@
 #' \item \code{SizeByRowData}, a string specifying the \code{\link{rowData}} field for controlling point size,
 #' if \code{SizeBy="Row data"} (see the \linkS4class{Panel} class).
 #' The specified field should contain continuous values; defaults to the first such field.
+#' \item \code{TooltipRowData}, a character vector specifying \code{\link{rowData}} fields to show in the tooltip.
+#' Defaults to `character(0)`, which displays only the `rownames` value of the data point.
 #' }
 #'
 #' In addition, this class inherits all slots from its parent \linkS4class{DotPlot} and \linkS4class{Panel} classes.
@@ -96,8 +98,10 @@
 #' .refineParameters,RowDotPlot-method
 #' .defineInterface,RowDotPlot-method
 #' .createObservers,RowDotPlot-method
+#' .getTooltipUI,RowDotPlot-method
 #' .hideInterface,RowDotPlot-method
 #' .multiSelectionDimension,RowDotPlot-method
+#' .multiSelectionResponsive,RowDotPlot-method
 #' .multiSelectionRestricted,RowDotPlot-method
 #' .multiSelectionInvalidated,RowDotPlot-method
 #' .singleSelectionDimension,RowDotPlot-method
@@ -154,6 +158,8 @@ setMethod("initialize", "RowDotPlot", function(.Object, ..., SelectionEffect=NUL
     if (!is.null(SelectionColor)) {
         .Deprecated(msg="'SelectionColor=' is deprecated and will be ignored")
     }
+    
+    args <- .emptyDefault(args, .tooltipRowData, getPanelDefault(.tooltipRowData))
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -264,6 +270,7 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 
     available <- rdp_cached$valid.rowData.names
     x <- .replaceMissingWithFirst(x, .colorByRowData, available)
+    x <- .removeInvalidChoices(x, .tooltipRowData, available)
 
     assays <- dp_cached$valid.assay.names
     x <- .replaceMissingWithFirst(x, .colorBySampNameAssay, assays)
@@ -322,6 +329,14 @@ setMethod(".multiSelectionInvalidated", "RowDotPlot", function(x) {
     slot(x, .facetRow) == .facetByRowSelectionsTitle || 
         slot(x, .facetColumn) == .facetByRowSelectionsTitle || 
         callNextMethod()
+})
+
+#' @export
+setMethod(".multiSelectionResponsive", "RowDotPlot", function(x, dims = character(0)) {
+    if ("row" %in% dims) {
+        return(TRUE)
+    }
+    return(FALSE)
 })
 
 #' @export
@@ -577,6 +592,20 @@ setMethod(".colorDotPlot", "RowDotPlot", function(x, colorby, x_aes="X", y_aes="
         
     } else {
         .colorByNoneDotPlotScale(x)
+    }
+})
+
+###############################################################
+# Tooltip
+
+setMethod(".getTooltipUI", "RowDotPlot", function(x, se, name) {
+    if (length(x[[.tooltipRowData]]) > 0) {
+        # as.data.frame sometimes needed before as.list to fix names of items in vector
+        info <- as.list(as.data.frame(rowData(se)[name, x[[.tooltipRowData]], drop=FALSE]))
+        ui <- .generate_tooltip_html(name, info)
+        ui
+    } else {
+        name
     }
 })
 

@@ -1,3 +1,30 @@
+#' Constants
+#'
+#' Constant values used throughout iSEE panels and extensions.
+#' 
+#' @section Panel slot names:
+#' \describe{
+#' \item{\code{.dataParamBoxOpen}}{Name of slot that indicates whether the 'Data parameter' box is open.}
+#' \item{\code{.multiSelectHistory}}{Name of slot that stores the list of saved selections.}
+#' \item{\code{.organizationHeight}}{Name of slot that stores the panel height.}
+#' \item{\code{.organizationWidth}}{Name of slot that stores the panel width.}
+#' }
+#' 
+#' @section Multiple selection parameters:
+#' \describe{
+#' \item{\code{.noSelection}}{Value displayed in the absence of selection.}
+#' }
+#'
+#' @author Kevin Rue-Albrecht
+#' 
+#' @name constants
+#' @aliases .dataParamBoxOpen
+#' .multiSelectHistory
+#' .noSelection
+#' .organizationHeight
+#' .organizationWidth
+NULL
+
 # Point colouring parameters. ----
 
 .colorByNothingTitle <- "None"
@@ -33,7 +60,9 @@
 .multiSelectSave <- "INTERNAL_MultiSelectSave"
 .multiSelectDelete <- "INTERNAL_MultiSelectDelete"
 
-.noSelection <- "---"
+
+#' @export
+.noSelection <- "---" # imported by e.g. iSEEu::AggregatedDotPlot
 .customSelection <- "Custom ..."
 
 # Zooming parameters. ----

@@ -27,8 +27,10 @@
 #' \item \code{SizeByColumnData}, a string specifying the \code{\link{colData}} field for controlling point size,
 #' if \code{SizeBy="Column data"} (see the \linkS4class{Panel} class).
 #' The specified field should contain continuous values; defaults to the first such valid field.
+#' \item \code{TooltipColumnData}, a character vector specifying \code{\link{colData}} fields to show in the tooltip.
+#' Defaults to `character(0)`, which displays only the `colnames` value of the data point.
 #' }
-#'
+#' 
 #' In addition, this class inherits all slots from its parent \linkS4class{DotPlot} and \linkS4class{Panel} classes.
 #'
 #' @section Supported methods:
@@ -96,8 +98,10 @@
 #' .refineParameters,ColumnDotPlot-method
 #' .defineInterface,ColumnDotPlot-method
 #' .createObservers,ColumnDotPlot-method
+#' .getTooltipUI,ColumnDotPlot-method
 #' .hideInterface,ColumnDotPlot-method
 #' .multiSelectionDimension,ColumnDotPlot-method
+#' .multiSelectionResponsive,ColumnDotPlot-method
 #' .multiSelectionRestricted,ColumnDotPlot-method
 #' .multiSelectionInvalidated,ColumnDotPlot-method
 #' .singleSelectionDimension,ColumnDotPlot-method
@@ -156,6 +160,8 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ..., SelectionEffect=
     if (!is.null(SelectionColor)) {
         .Deprecated(msg="'SelectionColor=' is deprecated and will be ignored")
     }
+    
+    args <- .emptyDefault(args, .tooltipColData, getPanelDefault(.tooltipColData))
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -266,6 +272,7 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 
     available <- cdp_cached$valid.colData.names
     x <- .replaceMissingWithFirst(x, .colorByColData, available)
+    x <- .removeInvalidChoices(x, .tooltipColData, available)
 
     assays <- dp_cached$valid.assay.names
     x <- .replaceMissingWithFirst(x, .colorByFeatNameAssay, assays)
@@ -324,6 +331,14 @@ setMethod(".multiSelectionInvalidated", "ColumnDotPlot", function(x) {
     slot(x, .facetRow) == .facetByColSelectionsTitle || 
         slot(x, .facetColumn) == .facetByColSelectionsTitle || 
         callNextMethod()
+})
+
+#' @export
+setMethod(".multiSelectionResponsive", "ColumnDotPlot", function(x, dims = character(0)) {
+    if ("column" %in% dims) {
+        return(TRUE)
+    }
+    return(FALSE)
 })
 
 #' @export
@@ -580,6 +595,20 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
 
     } else {
         .colorByNoneDotPlotScale(x)
+    }
+})
+
+###############################################################
+# Tooltip
+
+setMethod(".getTooltipUI", "ColumnDotPlot", function(x, se, name) {
+    if (length(x[[.tooltipColData]]) > 0) {
+        # as.data.frame sometimes needed before as.list to fix names of items in vector
+        info <- as.list(as.data.frame(colData(se)[name, x[[.tooltipColData]], drop=FALSE]))
+        ui <- .generate_tooltip_html(name, info)
+        ui
+    } else {
+        name
     }
 })
 

@@ -201,6 +201,8 @@
 #' .fullName,ComplexHeatmapPlot-method
 #' .generateOutput,ComplexHeatmapPlot-method
 #' .hideInterface,ComplexHeatmapPlot-method
+#' .multiSelectionResponsive,ComplexHeatmapPlot-method
+#' .multiSelectionRestricted,ComplexHeatmapPlot-method
 #' .panelColor,ComplexHeatmapPlot-method
 #' .refineParameters,ComplexHeatmapPlot-method
 #' .renderOutput,ComplexHeatmapPlot-method
@@ -740,6 +742,28 @@ setMethod(".hideInterface", "ComplexHeatmapPlot", function(x, field) {
         callNextMethod()
     }
 })
+
+#' @export
+setMethod(".multiSelectionRestricted", "ComplexHeatmapPlot", function(x) {
+    ## .heatMapShowSelection is not technically restricted, but requires rerendering nonetheless
+    !slot(x, .heatMapCustomFeatNames) || slot(x, .selectColRestrict) || slot(x, .heatMapShowSelection)
+})
+
+#' @export
+setMethod(".multiSelectionResponsive", "ComplexHeatmapPlot", function(x, dims = character(0)) {
+    if ("row" %in% dims) {
+        if (slot(x, .selectRowRestrict) || !slot(x, .heatMapCustomFeatNames)) {
+            return(TRUE)
+        }
+    }
+    if ("column" %in% dims) {
+        if (slot(x, .selectColRestrict) || slot(x, .heatMapShowSelection)) {
+            return(TRUE)
+        }
+    }
+    return(FALSE)
+})
+
 
 ###############################################################
 

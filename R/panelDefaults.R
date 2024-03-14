@@ -24,7 +24,10 @@ panel.default.env$options <- list(
     PanelWidth = 4L,
     PanelHeight = 500L,
 
-    Assay = "logcounts"
+    Assay = "logcounts",
+    
+    TooltipColumnData = character(0),
+    TooltipRowData = character(0)
 )
 
 #' Panel defaults
@@ -67,6 +70,16 @@ panel.default.env$options <- list(
 #' \item \code{ContourColor}, defaults to \code{"blue"}.
 #' \item \code{FontSize}, defaults to 1.
 #' \item \code{LegendPointSize}, defaults to 1.
+#' }
+#' 
+#' For \linkS4class{RowDotPlot}s:
+#' \itemize{
+#' \item \code{TooltipRowData}, defaults to \code{character(0)}.
+#' }
+#' 
+#' For \linkS4class{ColumnDotPlot}s:
+#' \itemize{
+#' \item \code{TooltipColumnData}, defaults to \code{character(0)}.
 #' }
 #'
 #' For \linkS4class{ComplexHeatmapPlot}s:

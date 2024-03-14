@@ -340,7 +340,7 @@
     )
 }
 
-#' Process transfomations applied to rows of a heatmap matrix
+#' Process transformations applied to rows of a heatmap matrix
 #'
 #' @param x An instance of a \linkS4class{ComplexHeatmapPlot} class.
 #' @param se The current \linkS4class{SummarizedExperiment} object.

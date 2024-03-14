@@ -156,7 +156,7 @@
     covariates[!is.na(covariates)]
 }
 
-#' Validation error utilites
+#' Validation error utilities
 #'
 #' Helper functions to implement \code{\link{setValidity}} methods for \linkS4class{Panel} subclasses.
 #'

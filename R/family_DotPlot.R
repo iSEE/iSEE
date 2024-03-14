@@ -73,7 +73,7 @@
 #'
 #' The following slots control interactions with the plot image:
 #' \itemize{
-#' \item \code{ZoomData}, a named numeric vector of plot coordinates with \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"} elements parametrizing the zoom boundaries.
+#' \item \code{ZoomData}, a named numeric vector of plot coordinates with \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"} elements parameterizing the zoom boundaries.
 #' Defaults to an empty vector, i.e., no zoom.
 #' \item \code{BrushData}, a list containing either a Shiny brush (see \code{?\link{brushedPoints}}) or an \pkg{iSEE} lasso (see \code{?\link{lassoPoints}}).
 #' Defaults to an empty list, i.e., no brush or lasso.

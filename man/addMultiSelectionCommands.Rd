@@ -20,7 +20,7 @@ only relevant to horizontal violin plots.}
 A character vector containing \code{commands} plus any additional commands required to draw the self selections.
 }
 \description{
-Add \link{ggplot} instructions to create brushes and lassos for both saved and active mutliple selections in a \linkS4class{DotPlot} panel.
+Add \link{ggplot} instructions to create brushes and lassos for both saved and active multiple selections in a \linkS4class{DotPlot} panel.
 }
 \details{
 This is a utility function that is intended for use in \code{\link{.generateDotPlot}}.

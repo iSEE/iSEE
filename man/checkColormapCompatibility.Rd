@@ -13,7 +13,7 @@ checkColormapCompatibility(ecm, se)
 \item{se}{A \linkS4class{SingleCellExperiment}.}
 }
 \value{
-A character vector of incompability error messages, if any.
+A character vector of incompatibility error messages, if any.
 }
 \description{
 This function compares a pair of \linkS4class{ExperimentColorMap} and

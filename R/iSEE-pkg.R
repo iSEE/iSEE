@@ -17,4 +17,4 @@
 #' @author Kevin Rue-Albrecht \email{kevinrue67@@gmail.com}
 #' @name iSEE-pkg
 #' @docType package
-NULL
+"_PACKAGE"

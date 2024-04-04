@@ -1,3 +1,8 @@
+# iSEE 2.15.1
+
+* Add button 'Draft out a tour' to navigation bar.
+* Add button 'About this data set' to navigation bar.
+
 # iSEE 2.13.5
 
 * Add generic `.isBrushable` to support panels that are not `DotPlot` extensions.

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.1</span>
       </span>
     </div>
 
@@ -115,7 +115,7 @@ Several fields in <code>pObjects</code> are also modified as a side-effect.</p>
     <div id="details">
     <h2>Details</h2>
     <p>This function should be used in the rendering expression in <code><a href="output-generics.html">.renderOutput</a></code>.
-It takes care of a number of house-keeping tasks required to satisfy <code><a href="output-generics.html">.renderOutput</a></code>'s requirements, e.g., responding to <code><a href="requestUpdate.html">.requestUpdate</a></code> modifictions to <code>rObjects</code>, setting the <code>commands</code> and <code>contents</code> and <code>varname</code> in <code>pObjects</code>.</p>
+It takes care of a number of house-keeping tasks required to satisfy <code><a href="output-generics.html">.renderOutput</a></code>'s requirements, e.g., responding to <code><a href="requestUpdate.html">.requestUpdate</a></code> modifications to <code>rObjects</code>, setting the <code>commands</code> and <code>contents</code> and <code>varname</code> in <code>pObjects</code>.</p>
 <p>This function will attempt to retrieve the cached output of <code><a href="output-generics.html">.generateOutput</a></code> if it was used elsewhere in the app.
 After retrieval, the cached value is wiped to ensure that it does not go stale.
 If no cached value is found, <code><a href="output-generics.html">.generateOutput</a></code> is called directly.</p>

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.1</span>
       </span>
     </div>
 
@@ -124,13 +124,22 @@ This involves a boundary crossing algorithm that may not be robust in the presen
 <span class="r-in"><span><span class="va">values</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>X<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>, Y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    row.names<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"VALUE_%i"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">lassoPoints</span><span class="op">(</span><span class="va">values</span>, <span class="va">lasso</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                  X          Y</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_15 0.1923138 0.30143923</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_23 0.1971815 0.25727346</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_66 0.4402766 0.02684808</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_69 0.2981056 0.05344848</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_77 0.2036128 0.08386481</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_86 0.2061913 0.20937068</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                    X           Y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_6  0.349967340 0.043971138</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_8  0.084754502 0.003632551</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_19 0.014659769 0.341874812</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_22 0.119741780 0.009373354</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_23 0.049255810 0.233537052</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_27 0.119054324 0.014021893</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_36 0.005012375 0.324234673</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_41 0.317547232 0.033578795</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_55 0.420651288 0.011788648</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_78 0.048321765 0.451294619</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_80 0.188467675 0.244812947</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_81 0.025653972 0.422450280</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_82 0.086210669 0.122983353</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_87 0.174070850 0.020299537</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_95 0.063634377 0.223738024</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># With faceting information:</span></span></span>
 <span class="r-in"><span><span class="va">lasso</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>coord<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span>,</span></span>
@@ -142,8 +151,8 @@ This involves a boundary crossing algorithm that may not be robust in the presen
 <span class="r-in"><span>    FacetColumn<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">LETTERS</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span>, <span class="fl">100</span>, replace<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    row.names<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"VALUE_%i"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fl">100</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">lassoPoints</span><span class="op">(</span><span class="va">values</span>, <span class="va">lasso</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   X         Y FacetRow FacetColumn</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_20 0.01242254 0.1003589        A           B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  X         Y FacetRow FacetColumn</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> VALUE_51 0.1303181 0.2821039        A           B</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

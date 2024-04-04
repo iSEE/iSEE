@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.1</span>
       </span>
     </div>
 
@@ -131,7 +131,7 @@ Lun</h4>
 Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       </address>
                   
-            <h4 data-toc-skip class="date">4 December 2023</h4>
+            <h4 data-toc-skip class="date">4 April 2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/HEAD/vignettes/custom.Rmd" class="external-link"><code>vignettes/custom.Rmd</code></a></small>
       <div class="hidden name"><code>custom.Rmd</code></div>
@@ -140,7 +140,7 @@ Cambridge<br><a class="author_email" href="mailto:#"></a><a href="mailto:infinit
 
     
     
-<p><strong>Compiled date</strong>: 2023-12-04</p>
+<p><strong>Compiled date</strong>: 2024-04-04</p>
 <p><strong>Last edited</strong>: 2020-04-20</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div class="section level2">
@@ -471,9 +471,9 @@ too many cool things that will not fit into this vignette.</p>
 </h2>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; R Under development (unstable) (2023-11-22 r85609)</span></span>
+<span><span class="co">#&gt; R Under development (unstable) (2024-03-28 r86224)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">#&gt; Running under: Ubuntu 22.04.3 LTS</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 22.04.4 LTS</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Matrix products: default</span></span>
 <span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -495,74 +495,72 @@ too many cool things that will not fit into this vignette.</p>
 <span><span class="co">#&gt; [8] base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt;  [1] iSEE_2.15.0                 scater_1.31.1              </span></span>
-<span><span class="co">#&gt;  [3] ggplot2_3.4.4               scuttle_1.13.0             </span></span>
-<span><span class="co">#&gt;  [5] SingleCellExperiment_1.25.0 SummarizedExperiment_1.33.1</span></span>
-<span><span class="co">#&gt;  [7] Biobase_2.63.0              GenomicRanges_1.55.1       </span></span>
-<span><span class="co">#&gt;  [9] GenomeInfoDb_1.39.1         IRanges_2.37.0             </span></span>
-<span><span class="co">#&gt; [11] S4Vectors_0.41.2            BiocGenerics_0.49.1        </span></span>
-<span><span class="co">#&gt; [13] MatrixGenerics_1.15.0       matrixStats_1.1.0          </span></span>
+<span><span class="co">#&gt;  [1] iSEE_2.15.1                 scater_1.31.2              </span></span>
+<span><span class="co">#&gt;  [3] ggplot2_3.5.0               scuttle_1.13.1             </span></span>
+<span><span class="co">#&gt;  [5] SingleCellExperiment_1.25.1 SummarizedExperiment_1.33.3</span></span>
+<span><span class="co">#&gt;  [7] Biobase_2.63.1              GenomicRanges_1.55.4       </span></span>
+<span><span class="co">#&gt;  [9] GenomeInfoDb_1.39.10        IRanges_2.37.1             </span></span>
+<span><span class="co">#&gt; [11] S4Vectors_0.41.5            BiocGenerics_0.49.1        </span></span>
+<span><span class="co">#&gt; [13] MatrixGenerics_1.15.0       matrixStats_1.2.0          </span></span>
 <span><span class="co">#&gt; [15] BiocStyle_2.31.0           </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;   [1] RColorBrewer_1.1-3        jsonlite_1.8.7           </span></span>
-<span><span class="co">#&gt;   [3] shape_1.4.6               magrittr_2.0.3           </span></span>
-<span><span class="co">#&gt;   [5] ggbeeswarm_0.7.2          rmarkdown_2.25           </span></span>
-<span><span class="co">#&gt;   [7] GlobalOptions_0.1.2       fs_1.6.3                 </span></span>
-<span><span class="co">#&gt;   [9] zlibbioc_1.49.0           ragg_1.2.6               </span></span>
-<span><span class="co">#&gt;  [11] vctrs_0.6.5               memoise_2.0.1            </span></span>
-<span><span class="co">#&gt;  [13] DelayedMatrixStats_1.25.1 RCurl_1.98-1.13          </span></span>
-<span><span class="co">#&gt;  [15] htmltools_0.5.7           S4Arrays_1.3.1           </span></span>
-<span><span class="co">#&gt;  [17] BiocNeighbors_1.21.1      SparseArray_1.3.1        </span></span>
-<span><span class="co">#&gt;  [19] sass_0.4.7                bslib_0.6.1              </span></span>
-<span><span class="co">#&gt;  [21] htmlwidgets_1.6.3         desc_1.4.2               </span></span>
-<span><span class="co">#&gt;  [23] fontawesome_0.5.2         cachem_1.0.8             </span></span>
-<span><span class="co">#&gt;  [25] igraph_1.5.1              mime_0.12                </span></span>
-<span><span class="co">#&gt;  [27] lifecycle_1.0.4           iterators_1.0.14         </span></span>
-<span><span class="co">#&gt;  [29] pkgconfig_2.0.3           rsvd_1.0.5               </span></span>
-<span><span class="co">#&gt;  [31] colourpicker_1.3.0        Matrix_1.6-4             </span></span>
-<span><span class="co">#&gt;  [33] R6_2.5.1                  fastmap_1.1.1            </span></span>
-<span><span class="co">#&gt;  [35] GenomeInfoDbData_1.2.11   shiny_1.8.0              </span></span>
-<span><span class="co">#&gt;  [37] clue_0.3-65               digest_0.6.33            </span></span>
-<span><span class="co">#&gt;  [39] colorspace_2.1-0          rprojroot_2.0.4          </span></span>
-<span><span class="co">#&gt;  [41] irlba_2.3.5.1             textshaping_0.3.7        </span></span>
-<span><span class="co">#&gt;  [43] beachmat_2.19.0           fansi_1.0.5              </span></span>
-<span><span class="co">#&gt;  [45] abind_1.4-5               mgcv_1.9-0               </span></span>
-<span><span class="co">#&gt;  [47] compiler_4.4.0            withr_2.5.2              </span></span>
-<span><span class="co">#&gt;  [49] doParallel_1.0.17         BiocParallel_1.37.0      </span></span>
-<span><span class="co">#&gt;  [51] viridis_0.6.4             shinyAce_0.4.2           </span></span>
-<span><span class="co">#&gt;  [53] highr_0.10                DelayedArray_0.29.0      </span></span>
-<span><span class="co">#&gt;  [55] rjson_0.2.21              tools_4.4.0              </span></span>
-<span><span class="co">#&gt;  [57] vipor_0.4.5               beeswarm_0.4.0           </span></span>
-<span><span class="co">#&gt;  [59] httpuv_1.6.12             glue_1.6.2               </span></span>
-<span><span class="co">#&gt;  [61] nlme_3.1-164              promises_1.2.1           </span></span>
-<span><span class="co">#&gt;  [63] grid_4.4.0                cluster_2.1.6            </span></span>
-<span><span class="co">#&gt;  [65] generics_0.1.3            gtable_0.3.4             </span></span>
-<span><span class="co">#&gt;  [67] BiocSingular_1.19.0       ScaledMatrix_1.11.0      </span></span>
-<span><span class="co">#&gt;  [69] utf8_1.2.4                XVector_0.43.0           </span></span>
-<span><span class="co">#&gt;  [71] ggrepel_0.9.4             foreach_1.5.2            </span></span>
-<span><span class="co">#&gt;  [73] pillar_1.9.0              stringr_1.5.1            </span></span>
-<span><span class="co">#&gt;  [75] later_1.3.1               rintrojs_0.3.3           </span></span>
-<span><span class="co">#&gt;  [77] circlize_0.4.15           splines_4.4.0            </span></span>
-<span><span class="co">#&gt;  [79] dplyr_1.1.4               lattice_0.22-5           </span></span>
-<span><span class="co">#&gt;  [81] tidyselect_1.2.0          ComplexHeatmap_2.19.0    </span></span>
-<span><span class="co">#&gt;  [83] miniUI_0.1.1.1            knitr_1.45               </span></span>
-<span><span class="co">#&gt;  [85] gridExtra_2.3             bookdown_0.37            </span></span>
-<span><span class="co">#&gt;  [87] xfun_0.41                 shinydashboard_0.7.2     </span></span>
-<span><span class="co">#&gt;  [89] DT_0.30                   stringi_1.8.2            </span></span>
-<span><span class="co">#&gt;  [91] yaml_2.3.7                shinyWidgets_0.8.0       </span></span>
-<span><span class="co">#&gt;  [93] evaluate_0.23             codetools_0.2-19         </span></span>
-<span><span class="co">#&gt;  [95] tibble_3.2.1              BiocManager_1.30.22      </span></span>
-<span><span class="co">#&gt;  [97] cli_3.6.1                 xtable_1.8-4             </span></span>
-<span><span class="co">#&gt;  [99] systemfonts_1.0.5         munsell_0.5.0            </span></span>
-<span><span class="co">#&gt; [101] jquerylib_0.1.4           Rcpp_1.0.11              </span></span>
-<span><span class="co">#&gt; [103] png_0.1-8                 parallel_4.4.0           </span></span>
-<span><span class="co">#&gt; [105] ellipsis_0.3.2            pkgdown_2.0.7            </span></span>
-<span><span class="co">#&gt; [107] sparseMatrixStats_1.15.0  bitops_1.0-7             </span></span>
-<span><span class="co">#&gt; [109] viridisLite_0.4.2         scales_1.3.0             </span></span>
-<span><span class="co">#&gt; [111] purrr_1.0.2               crayon_1.5.2             </span></span>
-<span><span class="co">#&gt; [113] GetoptLong_1.0.5          rlang_1.1.2              </span></span>
-<span><span class="co">#&gt; [115] shinyjs_2.1.0</span></span>
+<span><span class="co">#&gt;   [1] bitops_1.0-7              gridExtra_2.3            </span></span>
+<span><span class="co">#&gt;   [3] rlang_1.1.3               magrittr_2.0.3           </span></span>
+<span><span class="co">#&gt;   [5] shinydashboard_0.7.2      clue_0.3-65              </span></span>
+<span><span class="co">#&gt;   [7] GetoptLong_1.0.5          compiler_4.5.0           </span></span>
+<span><span class="co">#&gt;   [9] mgcv_1.9-1                DelayedMatrixStats_1.25.1</span></span>
+<span><span class="co">#&gt;  [11] png_0.1-8                 systemfonts_1.0.6        </span></span>
+<span><span class="co">#&gt;  [13] vctrs_0.6.5               pkgconfig_2.0.3          </span></span>
+<span><span class="co">#&gt;  [15] shape_1.4.6.1             crayon_1.5.2             </span></span>
+<span><span class="co">#&gt;  [17] fastmap_1.1.1             XVector_0.43.1           </span></span>
+<span><span class="co">#&gt;  [19] fontawesome_0.5.2         utf8_1.2.4               </span></span>
+<span><span class="co">#&gt;  [21] promises_1.2.1            rmarkdown_2.26           </span></span>
+<span><span class="co">#&gt;  [23] shinyAce_0.4.2            ggbeeswarm_0.7.2         </span></span>
+<span><span class="co">#&gt;  [25] ragg_1.3.0                purrr_1.0.2              </span></span>
+<span><span class="co">#&gt;  [27] xfun_0.43                 zlibbioc_1.49.3          </span></span>
+<span><span class="co">#&gt;  [29] cachem_1.0.8              beachmat_2.19.4          </span></span>
+<span><span class="co">#&gt;  [31] jsonlite_1.8.8            listviewer_4.0.0         </span></span>
+<span><span class="co">#&gt;  [33] highr_0.10                later_1.3.2              </span></span>
+<span><span class="co">#&gt;  [35] DelayedArray_0.29.9       BiocParallel_1.37.1      </span></span>
+<span><span class="co">#&gt;  [37] irlba_2.3.5.1             parallel_4.5.0           </span></span>
+<span><span class="co">#&gt;  [39] cluster_2.1.6             R6_2.5.1                 </span></span>
+<span><span class="co">#&gt;  [41] bslib_0.7.0               RColorBrewer_1.1-3       </span></span>
+<span><span class="co">#&gt;  [43] jquerylib_0.1.4           Rcpp_1.0.12              </span></span>
+<span><span class="co">#&gt;  [45] bookdown_0.38             iterators_1.0.14         </span></span>
+<span><span class="co">#&gt;  [47] knitr_1.45                splines_4.5.0            </span></span>
+<span><span class="co">#&gt;  [49] igraph_2.0.3              httpuv_1.6.15            </span></span>
+<span><span class="co">#&gt;  [51] Matrix_1.7-0              tidyselect_1.2.1         </span></span>
+<span><span class="co">#&gt;  [53] abind_1.4-5               yaml_2.3.8               </span></span>
+<span><span class="co">#&gt;  [55] viridis_0.6.5             miniUI_0.1.1.1           </span></span>
+<span><span class="co">#&gt;  [57] doParallel_1.0.17         codetools_0.2-20         </span></span>
+<span><span class="co">#&gt;  [59] lattice_0.22-6            tibble_3.2.1             </span></span>
+<span><span class="co">#&gt;  [61] shiny_1.8.1.1             withr_3.0.0              </span></span>
+<span><span class="co">#&gt;  [63] evaluate_0.23             desc_1.4.3               </span></span>
+<span><span class="co">#&gt;  [65] circlize_0.4.16           pillar_1.9.0             </span></span>
+<span><span class="co">#&gt;  [67] BiocManager_1.30.22       DT_0.33                  </span></span>
+<span><span class="co">#&gt;  [69] foreach_1.5.2             shinyjs_2.1.0            </span></span>
+<span><span class="co">#&gt;  [71] generics_0.1.3            RCurl_1.98-1.14          </span></span>
+<span><span class="co">#&gt;  [73] sparseMatrixStats_1.15.0  munsell_0.5.1            </span></span>
+<span><span class="co">#&gt;  [75] scales_1.3.0              xtable_1.8-4             </span></span>
+<span><span class="co">#&gt;  [77] glue_1.7.0                tools_4.5.0              </span></span>
+<span><span class="co">#&gt;  [79] BiocNeighbors_1.21.2      ScaledMatrix_1.11.1      </span></span>
+<span><span class="co">#&gt;  [81] colourpicker_1.3.0        fs_1.6.3                 </span></span>
+<span><span class="co">#&gt;  [83] grid_4.5.0                colorspace_2.1-0         </span></span>
+<span><span class="co">#&gt;  [85] nlme_3.1-164              GenomeInfoDbData_1.2.12  </span></span>
+<span><span class="co">#&gt;  [87] beeswarm_0.4.0            BiocSingular_1.19.0      </span></span>
+<span><span class="co">#&gt;  [89] vipor_0.4.7               cli_3.6.2                </span></span>
+<span><span class="co">#&gt;  [91] rsvd_1.0.5                textshaping_0.3.7        </span></span>
+<span><span class="co">#&gt;  [93] fansi_1.0.6               S4Arrays_1.3.6           </span></span>
+<span><span class="co">#&gt;  [95] viridisLite_0.4.2         ComplexHeatmap_2.19.0    </span></span>
+<span><span class="co">#&gt;  [97] dplyr_1.1.4               gtable_0.3.4             </span></span>
+<span><span class="co">#&gt;  [99] rintrojs_0.3.4            sass_0.4.9               </span></span>
+<span><span class="co">#&gt; [101] digest_0.6.35             SparseArray_1.3.4        </span></span>
+<span><span class="co">#&gt; [103] ggrepel_0.9.5             htmlwidgets_1.6.4        </span></span>
+<span><span class="co">#&gt; [105] rjson_0.2.21              memoise_2.0.1            </span></span>
+<span><span class="co">#&gt; [107] htmltools_0.5.8.1         pkgdown_2.0.7            </span></span>
+<span><span class="co">#&gt; [109] lifecycle_1.0.4           shinyWidgets_0.8.3       </span></span>
+<span><span class="co">#&gt; [111] mime_0.12                 GlobalOptions_0.1.2</span></span>
 <span><span class="co"># devtools::session_info()</span></span></code></pre></div>
 </div>
 <div class="section level2">

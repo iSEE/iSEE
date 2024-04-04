@@ -18,7 +18,7 @@ It provides slots and methods to create the plot, to control various aesthetics 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.1</span>
       </span>
     </div>
 
@@ -141,7 +141,7 @@ Defaults to <code>FALSE</code>.</p></li>
 Each line should contain the name of a row or column for <a href="RowDotPlot-class.html">RowDotPlot</a>s and <a href="ColumnDotPlot-class.html">ColumnDotPlot</a>s, respectively.
 Leading and trailing whitespace are stripped, and all text on a line after <code>#</code> is ignored.
 Defaults to the name of the first row/column.</p></li>
-</ul><p>The following slots control interactions with the plot image:</p><ul><li><p><code>ZoomData</code>, a named numeric vector of plot coordinates with <code>"xmin"</code>, <code>"xmax"</code>, <code>"ymin"</code> and <code>"ymax"</code> elements parametrizing the zoom boundaries.
+</ul><p>The following slots control interactions with the plot image:</p><ul><li><p><code>ZoomData</code>, a named numeric vector of plot coordinates with <code>"xmin"</code>, <code>"xmax"</code>, <code>"ymin"</code> and <code>"ymax"</code> elements parameterizing the zoom boundaries.
 Defaults to an empty vector, i.e., no zoom.</p></li>
 <li><p><code>BrushData</code>, a list containing either a Shiny brush (see <code>?brushedPoints</code>) or an <span class="pkg">iSEE</span> lasso (see <code>?<a href="lassoPoints.html">lassoPoints</a></code>).
 Defaults to an empty list, i.e., no brush or lasso.</p></li>

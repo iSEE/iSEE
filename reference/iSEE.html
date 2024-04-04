@@ -18,7 +18,7 @@ SummarizedExperiment object, using a Shiny interface."><!-- mathjax --><script s
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.1</span>
       </span>
     </div>
 
@@ -170,7 +170,7 @@ either by simply printing the object or by explicitly running it with <code><a h
     <div id="details">
     <h2>Details</h2>
     <p>Configuring the initial state of the app is as easy as passing a list of <a href="Panel-class.html">Panel</a> objects to <code>initial</code>.
-Each element represents one panel and is typicall constructed with a command like <code><a href="ReducedDimensionPlot-class.html">ReducedDimensionPlot</a>()</code>.
+Each element represents one panel and is typically constructed with a command like <code><a href="ReducedDimensionPlot-class.html">ReducedDimensionPlot</a>()</code>.
 Panels are filled from left to right in a row-wise manner depending on the available width.
 Each panel can be easily customized by modifying the parameters in each object.</p>
 <p>The <code>extra</code> argument should specify <a href="Panel-class.html">Panel</a> classes that might not be shown during initialization
@@ -230,12 +230,6 @@ iSEE: Interactive SummarizedExperiment Explorer
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example data ----</span></span></span>
 <span class="r-in"><span><span class="va">sce</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html" class="external-link">ReprocessedAllenData</a></span><span class="op">(</span>assays<span class="op">=</span><span class="st">"tophat_counts"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> see ?scRNAseq and browseVignettes('scRNAseq') for documentation</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> loading from cache</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="va">sce</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "SingleCellExperiment"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"package")</span>

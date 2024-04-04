@@ -19,7 +19,7 @@ This panel will transmit row identities in both its single and multiple selectio
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">iSEE</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.15.1</span>
       </span>
     </div>
 
@@ -129,7 +129,7 @@ otherwise it dispatches to the <a href="Panel-class.html">Panel</a> method.</p><
 This will also call the equivalent <a href="DotPlot-class.html">DotPlot</a> method.</p></li>
 </ul><p>For controlling selections:</p><ul><li><p><code><a href="multi-select-generics.html">.multiSelectionRestricted</a>(x)</code> returns a logical scalar indicating whether <code>x</code> is restricting the plotted points to those that were selected in a transmitting panel.</p></li>
 <li><p><code><a href="multi-select-generics.html">.multiSelectionDimension</a>(x)</code> returns <code>"row"</code> to indicate that a multiple row selection is being transmitted.</p></li>
-<li><p><code><a href="multi-select-generics.html">.multiSelectionInvalidated</a>(x)</code> returns <code>TRUE</code> if the faceting options usethe multiple row selections,
+<li><p><code><a href="multi-select-generics.html">.multiSelectionInvalidated</a>(x)</code> returns <code>TRUE</code> if the faceting options use the multiple row selections,
 such that the point coordinates/domain may change upon updates to upstream selections in transmitting panels.</p></li>
 <li><p><code><a href="single-select-generics.html">.singleSelectionDimension</a>(x)</code> returns <code>"feature"</code> to indicate that a feature identity is being transmitted.</p></li>
 </ul><p>For documentation:</p><ul><li><p><code><a href="documentation-generics.html">.definePanelTour</a>(x)</code> returns an data.frame containing the steps of a tour relevant to subclasses,

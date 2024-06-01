@@ -1,3 +1,7 @@
+# iSEE 2.17.1
+
+* Fix typo in `setMethod(".getContinuousMetadataChoices", "RowDotPlot", ...)`.
+
 # iSEE 2.15.1
 
 * Add button 'Draft out a tour' to navigation bar.

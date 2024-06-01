@@ -349,7 +349,7 @@ setMethod(".getDiscreteMetadataChoices", "RowDotPlot", function(x, se) {
 })
 
 setMethod(".getContinuousMetadataChoices", "RowDotPlot", function(x, se) {
-    .getCachedCommonInfo(se, "RowDotPlot")$continuous.colData.names
+    .getCachedCommonInfo(se, "RowDotPlot")$continuous.rowData.names
 })
 
 setMethod(".getMetadataChoices", "RowDotPlot", function(x, se) {

@@ -11,8 +11,33 @@
 \title{Constants}
 \description{
 Constant values used throughout iSEE panels and extensions.
+The value of each constant can be accessed using the \code{$} operator and the corresponding key (listed below).
 }
+\section{Point colouring parameters}{
+
+\describe{
+\item{\code{colorByNothingTitle}}{Radio button choice for coloring data points by a fixed color.}
+\item{\code{colorByColDataTitle}}{Radio button choice for coloring data points by column data.}
+\item{\code{colorByRowDataTitle}}{Radio button choice for coloring data points by row data.}
+\item{\code{colorByFeatNameTitle}}{Radio button choice for highlighting a selected feature or coloring data points by assay data for that feature.}
+\item{\code{colorBySampNameTitle}}{Radio button choice for highlighting a selected sample or coloring data points by assay data for that sample.}
+\item{\code{colorByColSelectionsTitle}}{Radio button choice for coloring data points by an incoming column selection.}
+\item{\code{colorByRowSelectionsTitle}}{Radio button choice for coloring data points by an incoming row selection.}
+}
+}
+
+\section{Point shaping parameters}{
+ 
+\describe{
+\item{\code{shapeByNothingTitle}}{Radio button choice for shaping all data points as points.}
+\item{\code{shapeByColDataTitle}}{Radio button choice for shaping data points by column data.}
+\item{\code{shapeByRowDataTitle}}{Radio button choice for shaping data points by row data.}
+}
+}
+
 \section{Panel slot names (Deprecated)}{
+
+TODO: Move this section to another man page when another class is implemented to store slot names and types (and default value?).
 
 \describe{
 \item{\code{.dataParamBoxOpen}}{Name of slot that indicates whether the 'Data parameter' box is open.}
@@ -25,10 +50,40 @@ Constant values used throughout iSEE panels and extensions.
 \section{Multiple selection parameters (Deprecated)}{
 
 \describe{
-\item{\code{.noSelection}}{Value displayed in the absence of selection.}
+\item{\code{noSelection}}{Value displayed in the absence of selection.}
 }
 }
 
+\section{TODO}{
+ 
+Move the following constants to the appropriate section
+
+\item{\code{sizeByNothingTitle}}{}
+\item{\code{sizeByColDataTitle}}{}
+\item{\code{sizeByRowDataTitle}}{}
+\item{\code{facetByNothingTitle}}{}
+\item{\code{facetByRowDataTitle}}{}
+\item{\code{facetByColDataTitle}}{}
+\item{\code{facetByRowSelectionsTitle}}{}
+\item{\code{facetByColSelectionsTitle}}{}
+\item{\code{multiSelectSave}}{}
+\item{\code{multiSelectDelete}}{}
+\item{\code{noSelection}}{}
+\item{\code{customSelection}}{}
+\item{\code{zoomClick}}{}
+\item{\code{lassoClick}}{}
+\item{\code{brushField}}{}
+\item{\code{buttonUpToDateLabel}}{}
+\item{\code{buttonEmptyHistoryLabel}}{}
+\item{\code{buttonDeleteLabel}}{}
+\item{\code{buttonNoSelectionLabel}}{}
+\item{\code{buttonSaveLabel}}{}
+}
+
+\examples{
+constants
+constants$colorByColDataTitle
+}
 \author{
 Kevin Rue-Albrecht
 }

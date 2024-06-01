@@ -59,7 +59,7 @@ TODO: Move this section to another man page when another class is implemented to
 Move the following constants to the appropriate section
 
 \describe{
-\item{\code{sizeByNothingTitle}}{}
+\item{\code{sizeByNothingTitle}}{Radio button choice for sizing all data points as points.}
 \item{\code{sizeByColDataTitle}}{}
 \item{\code{sizeByRowDataTitle}}{}
 \item{\code{facetByNothingTitle}}{}
@@ -83,8 +83,8 @@ Move the following constants to the appropriate section
 }
 
 \examples{
-constants
-constants$colorByColDataTitle
+iSEE::constants
+iSEE::constants$colorByColDataTitle
 }
 \author{
 Kevin Rue-Albrecht

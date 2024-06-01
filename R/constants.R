@@ -74,8 +74,8 @@
 #' .organizationWidth
 #' 
 #' @examples
-#' constants
-#' constants$colorByColDataTitle
+#' iSEE::constants
+#' iSEE::constants$colorByColDataTitle
 NULL
 
 #' iSEE constants
@@ -111,7 +111,7 @@ setMethod("show", "iSEEconstants", function(object) {
   cat("count:", nrow(object@info), "\n")
   print(head(object@info, 5))
   if (nrow(object@info) > 5) {
-    cat("... and", nrow(object@info) - 5, "more rows.\n")
+    cat("... and", nrow(object@info) - 5, "more constants.\n")
   }
 })
 

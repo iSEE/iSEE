@@ -58,6 +58,7 @@ TODO: Move this section to another man page when another class is implemented to
  
 Move the following constants to the appropriate section
 
+\describe{
 \item{\code{sizeByNothingTitle}}{}
 \item{\code{sizeByColDataTitle}}{}
 \item{\code{sizeByRowDataTitle}}{}
@@ -78,6 +79,7 @@ Move the following constants to the appropriate section
 \item{\code{buttonDeleteLabel}}{}
 \item{\code{buttonNoSelectionLabel}}{}
 \item{\code{buttonSaveLabel}}{}
+}
 }
 
 \examples{

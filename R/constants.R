@@ -39,7 +39,8 @@
 #' @section TODO: 
 #' Move the following constants to the appropriate section
 #' 
-#' \item{\code{sizeByNothingTitle}}{}
+#' \describe{
+#' \item{\code{sizeByNothingTitle}}{Radio button choice for sizing all data points as points.}
 #' \item{\code{sizeByColDataTitle}}{}
 #' \item{\code{sizeByRowDataTitle}}{}
 #' \item{\code{facetByNothingTitle}}{}
@@ -59,6 +60,7 @@
 #' \item{\code{buttonDeleteLabel}}{}
 #' \item{\code{buttonNoSelectionLabel}}{}
 #' \item{\code{buttonSaveLabel}}{}
+#' }
 #'
 #' @author Kevin Rue-Albrecht
 #' 

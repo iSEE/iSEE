@@ -237,101 +237,167 @@ constants$buttonSaveLabel <- "Save"
 # Other plot parameters. ----
 
 .visualParamChoiceColorTitle <- "Color"
+constants$visualParamChoiceColorTitle <- "Color"
 .visualParamChoiceShapeTitle <- "Shape"
+constants$visualParamChoiceShapeTitle <- "Shape"
 .visualParamChoiceSizeTitle <- "Size"
+constants$visualParamChoiceSizeTitle <- "Size"
 .visualParamChoicePointTitle <- "Point"
+constants$visualParamChoicePointTitle <- "Point"
 .visualParamChoiceFacetTitle <- "Facet"
+constants$visualParamChoiceFacetTitle <- "Facet"
 .visualParamChoiceTextTitle <- "Text"
+constants$visualParamChoiceTextTitle <- "Text"
 .visualParamChoiceOtherTitle <- "Other"
+constants$visualParamChoiceOtherTitle <- "Other"
 .visualParamChoiceMetadataTitle <- "Annotations"
+constants$visualParamChoiceMetadataTitle <- "Annotations"
 .visualParamChoiceLabelsTitle <- "Labels"
+constants$visualParamChoiceLabelsTitle <- "Labels"
 .visualParamChoiceTransformTitle <- "Transform"
+constants$visualParamChoiceTransformTitle <- "Transform"
 .visualParamChoiceLegendTitle <- "Legends"
+constants$visualParamChoiceLegendTitle <- "Legends"
 
 .showNamesRowTitle <- "Rows"
+constants$showNamesRowTitle <- "Rows"
 .showNamesColumnTitle <- "Columns"
+constants$showNamesColumnTitle <- "Columns"
 
 .plotLegendRightTitle <- "Right"
+constants$plotLegendRightTitle <- "Right"
 .plotLegendBottomTitle <- "Bottom"
+constants$plotLegendBottomTitle <- "Bottom"
 
 .plotLegendHorizontalTitle <- "Horizontal"
+constants$plotLegendHorizontalTitle <- "Horizontal"
 .plotLegendVerticalTitle <- "Vertical"
+constants$plotLegendVerticalTitle <- "Vertical"
 
 .plotFontSizeAxisTextDefault <- 10
+constants$plotFontSizeAxisTextDefault <- 10
 .plotFontSizeAxisTitleDefault <- 12
+constants$plotFontSizeAxisTitleDefault <- 12
 .plotFontSizeLegendTextDefault <- 9
+constants$plotFontSizeLegendTextDefault <- 9
 .plotFontSizeLegendTitleDefault <- 11
+constants$plotFontSizeLegendTitleDefault <- 11
 .plotFontSizeTitleDefault <- 12
+constants$plotFontSizeTitleDefault <- 12
 
 .hoverTooltip <- "INTERNAL_hover_event"
+constants$hoverTooltip <- "INTERNAL_hover_event"
 .hoverInfo <- "INTERNAL_hover_info"
+constants$hoverInfo <- "INTERNAL_hover_info"
 
 # Table parameters. ----
 
 .int_statTableSelected <- "_rows_selected"
+constants$int_statTableSelected <- "_rows_selected"
 .int_statTableSearch <- "_search"
+constants$int_statTableSearch <- "_search"
 .int_statTableColSearch <- "_search_columns"
+constants$int_statTableColSearch <- "_search_columns"
 
 .tableExtraInfo <- "INTERNAL_extra_info"
+constants$tableExtraInfo <- "INTERNAL_extra_info"
 
 # Tour parameters. ---
 
 .panelHelpTour <- "INTERNAL_help"
+constants$panelHelpTour <- "INTERNAL_help"
 
 # Reactive flags. ---
 
 .flagOutputUpdate <- "INTERNAL_output_update"
+constants$flagOutputUpdate <- "INTERNAL_output_update"
 .flagSingleSelect <- "INTERNAL_single_select"
+constants$flagSingleSelect <- "INTERNAL_single_select"
 .flagMultiSelect <- "INTERNAL_multi_select"
+constants$flagMultiSelect <- "INTERNAL_multi_select"
 .flagRelinkedSelect <- "INTERNAL_relinked_select"
+constants$flagRelinkedSelect <- "INTERNAL_relinked_select"
 
 .panelMultiSelectInfo <- "INTERNAL_PanelMultiSelectInfo"
+constants$panelMultiSelectInfo <- "INTERNAL_PanelMultiSelectInfo"
 .panelSelectLinkInfo <- "INTERNAL_PanelSelectLinkInfo"
+constants$panelSelectLinkInfo <- "INTERNAL_PanelSelectLinkInfo"
 
 .flagTableUpdate <- "INTERNAL_table_update"
+constants$flagTableUpdate <- "INTERNAL_table_update"
 
 # Voice parameters ----
 
 .voiceActivePanel <- "voiceActivePanel"
+constants$voiceActivePanel <- "voiceActivePanel"
 
 .voiceShowActivePanelInput = "voiceShowActivePanel"
+constants$voiceShowActivePanelInput = "voiceShowActivePanel"
 
 .voiceCreatePanelInput <- "voiceCreatePanel"
+constants$voiceCreatePanelInput <- "voiceCreatePanel"
 .voiceRemovePanelInput <- "voiceRemovePanel"
+constants$voiceRemovePanelInput <- "voiceRemovePanel"
 
 .voiceControlPanelInput <- "voiceControlPanel"
+constants$voiceControlPanelInput <- "voiceControlPanel"
 .voiceColorUsingInput <- "voiceColorUsing"
+constants$voiceColorUsingInput <- "voiceColorUsing"
 .voiceColorByInput <- "voiceColorBy"
+constants$voiceColorByInput <- "voiceColorBy"
 .voiceReceiveFromInput <- "voiceReceiveFrom"
+constants$voiceReceiveFromInput <- "voiceReceiveFrom"
 .voiceSendToInput <- "voiceSendTo"
+constants$voiceSendToInput <- "voiceSendTo"
 
 # Clustering parameters ----
 
 .clusterDistanceEuclidean <- "euclidean"
+constants$clusterDistanceEuclidean <- "euclidean"
 .clusterDistanceMaximum <- "maximum"
+constants$clusterDistanceMaximum <- "maximum"
 .clusterDistanceManhattan <- "manhattan"
+constants$clusterDistanceManhattan <- "manhattan"
 .clusterDistanceCanberra <- "canberra"
+constants$clusterDistanceCanberra <- "canberra"
 .clusterDistanceBinary <- "binary"
+constants$clusterDistanceBinary <- "binary"
 .clusterDistanceMinkowski <- "minkowski"
+constants$clusterDistanceMinkowski <- "minkowski"
 .clusterDistancePearson <- "pearson"
+constants$clusterDistancePearson <- "pearson"
 .clusterDistanceSpearman <- "spearman"
+constants$clusterDistanceSpearman <- "spearman"
 .clusterDistanceKendall <- "kendall"
+constants$clusterDistanceKendall <- "kendall"
 
 .clusterMethodWardD <- "ward.D"
+constants$clusterMethodWardD <- "ward.D"
 .clusterMethodWardD2 <- "ward.D2"
+constants$clusterMethodWardD2 <- "ward.D2"
 .clusterMethodSingle <- "single"
+constants$clusterMethodSingle <- "single"
 .clusterMethodComplete <- "complete"
+constants$clusterMethodComplete <- "complete"
 .clusterMethodAverage <- "average"
+constants$clusterMethodAverage <- "average"
 .clusterMethodMcquitty <- "mcquitty"
+constants$clusterMethodMcquitty <- "mcquitty"
 .clusterMethodMedian <- "median"
+constants$clusterMethodMedian <- "median"
 .clusterMethodCentroid <- "centroid"
+constants$clusterMethodCentroid <- "centroid"
 
 # .heatMapCenteredColormap colormaps ----
 
 .colormapPurpleBlackYellow <- "purple < black < yellow"
+constants$colormapPurpleBlackYellow <- "purple < black < yellow"
 .colormapBlueWhiteOrange <- "blue < white < orange"
+constants$colormapBlueWhiteOrange <- "blue < white < orange"
 .colormapBlueWhiteRed <- "blue < white < red"
+constants$colormapBlueWhiteRed <- "blue < white < red"
 .colormapGreenWhiteRed <- "green < black < red"
+constants$colormapGreenWhiteRed <- "green < black < red"
 
 # Versioning information ---
 

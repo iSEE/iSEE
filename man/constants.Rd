@@ -17,7 +17,7 @@ The value of each constant can be accessed using the \code{$} operator and the c
 
 \describe{
 \item{\code{colorByNothingTitle}}{Radio button choice for coloring data points by a fixed color.}
-\item{\code{colorByColDataTitle}}{Radio button choice for coloring data points by column data.}
+\item{\code{colorByColDataTitle}}{Radio button choice for coloring data points by column zwdata.}
 \item{\code{colorByRowDataTitle}}{Radio button choice for coloring data points by row data.}
 \item{\code{colorByFeatNameTitle}}{Radio button choice for highlighting a selected feature or coloring data points by assay data for that feature.}
 \item{\code{colorBySampNameTitle}}{Radio button choice for highlighting a selected sample or coloring data points by assay data for that sample.}
@@ -35,10 +35,29 @@ The value of each constant can be accessed using the \code{$} operator and the c
 }
 }
 
+\section{Point sizing parameters}{
+ 
+\describe{
+\item{\code{sizeByNothingTitle}}{Radio button choice for sizing all data points as points.}
+\item{\code{sizeByColDataTitle}}{Radio button choice for sizing data points by column data.}
+\item{\code{sizeByRowDataTitle}}{Radio button choice for sizing data points by row data.}
+}
+}
+
+\section{Faceting parameters}{
+
+\describe{
+\item{\code{facetByNothingTitle}}{Radio button choice for disabling faceting.}
+\item{\code{facetByRowDataTitle}}{Radio button choice for faceting by row data.}
+\item{\code{facetByColDataTitle}}{Radio button choice for faceting by column data.}
+\item{\code{facetByRowSelectionsTitle}}{Radio button choice for faceting by an incoming row selection.}
+\item{\code{facetByColSelectionsTitle}}{Radio button choice for faceting by an incoming column selection.}
+}
+}
+
 \section{Panel slot names (Deprecated)}{
 
 TODO: Move this section to another man page when another class is implemented to store slot names and types (and default value?).
-
 \describe{
 \item{\code{.dataParamBoxOpen}}{Name of slot that indicates whether the 'Data parameter' box is open.}
 \item{\code{.multiSelectHistory}}{Name of slot that stores the list of saved selections.}
@@ -59,14 +78,6 @@ TODO: Move this section to another man page when another class is implemented to
 Move the following constants to the appropriate section
 
 \describe{
-\item{\code{sizeByNothingTitle}}{Radio button choice for sizing all data points as points.}
-\item{\code{sizeByColDataTitle}}{}
-\item{\code{sizeByRowDataTitle}}{}
-\item{\code{facetByNothingTitle}}{}
-\item{\code{facetByRowDataTitle}}{}
-\item{\code{facetByColDataTitle}}{}
-\item{\code{facetByRowSelectionsTitle}}{}
-\item{\code{facetByColSelectionsTitle}}{}
 \item{\code{multiSelectSave}}{}
 \item{\code{multiSelectDelete}}{}
 \item{\code{noSelection}}{}

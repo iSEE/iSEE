@@ -152,13 +152,19 @@ The value of each constant can be accessed using the \code{$} operator and the c
 }
 }
 
+\section{Table parameters}{
+ 
+\describe{
+\item{int_statTableSelected}{Character suffix appended to the table panel identifier for the input representing the current selection of rows.}
+\item{int_statTableSearch}{Character suffix appended to the table panel identifier for the input representing the current value of the global search field.}
+\item{int_statTableColSearch}{Character suffix appended to the table panel identifier for the input representing the current values of the individual column-wise search fields.}
+\item{tableExtraInfo}{Character suffix appended to the table panel identifier for the output UI displaying additional information below the table.}
+}
+}
+
 \section{TODO}{
  
 \describe{
-\item{int_statTableSelected}{}
-\item{int_statTableSearch}{}
-\item{int_statTableColSearch}{}
-\item{tableExtraInfo}{}
 \item{panelHelpTour}{}
 \item{flagOutputUpdate}{}
 \item{flagSingleSelect}{}

@@ -17,7 +17,7 @@ In particular, the \code{$} operator provides a mechanism to emit deprecation wa
 \section{Slots}{
 
 \describe{
-\item{\code{info}}{Read-only data.frame of information about the constants.}
+\item{\code{data}}{Read-only list of information about the constants.}
 }}
 
 \examples{

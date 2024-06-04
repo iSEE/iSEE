@@ -121,15 +121,27 @@ The value of each constant can be accessed using the \code{$} operator and the c
 }
 }
 
+\section{Labels parameters}{
+ 
+\describe{
+\item{showNamesRowTitle}{Checkbox label to display row names.}
+\item{showNamesColumnTitle}{Checkbox label to display column names.}
+}
+}
+
+\section{Legend parameters}{
+ 
+\describe{
+\item{plotLegendRightTitle}{Radio button choice for positioning the legend on the right side of the plot.}
+\item{plotLegendBottomTitle}{Radio button choice for positioning the legend below the plot.}
+\item{plotLegendHorizontalTitle}{Radio button choice for arranging legend keys horizontally.}
+\item{plotLegendVerticalTitle}{Radio button choice for arranging legend keys vertically.}
+}
+}
+
 \section{Other plot parameters}{
  
 \describe{
-\item{showNamesRowTitle}{}
-\item{showNamesColumnTitle}{}
-\item{plotLegendRightTitle}{}
-\item{plotLegendBottomTitle}{}
-\item{plotLegendHorizontalTitle}{}
-\item{plotLegendVerticalTitle}{}
 \item{plotFontSizeAxisTextDefault}{}
 \item{plotFontSizeAxisTitleDefault}{}
 \item{plotFontSizeLegendTextDefault}{}

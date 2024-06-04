@@ -89,14 +89,22 @@
 #' \item{dimnamesModalOpen}{Character suffix appended to the panel identifier for the event triggered by the \code{\link{actionButton}} for opening a modal window to manually edit a custom selection of dimension names.}
 #' }
 #' 
+#' @section Labels parameters: 
+#' \describe{
+#' \item{showNamesRowTitle}{Checkbox label to display row names.}
+#' \item{showNamesColumnTitle}{Checkbox label to display column names.}
+#' }
+#' 
+#' @section Legend parameters: 
+#' \describe{
+#' \item{plotLegendRightTitle}{Radio button choice for positioning the legend on the right side of the plot.}
+#' \item{plotLegendBottomTitle}{Radio button choice for positioning the legend below the plot.}
+#' \item{plotLegendHorizontalTitle}{Radio button choice for arranging legend keys horizontally.}
+#' \item{plotLegendVerticalTitle}{Radio button choice for arranging legend keys vertically.}
+#' }
+#' 
 #' @section Other plot parameters: 
 #' \describe{
-#' \item{showNamesRowTitle}{}
-#' \item{showNamesColumnTitle}{}
-#' \item{plotLegendRightTitle}{}
-#' \item{plotLegendBottomTitle}{}
-#' \item{plotLegendHorizontalTitle}{}
-#' \item{plotLegendVerticalTitle}{}
 #' \item{plotFontSizeAxisTextDefault}{}
 #' \item{plotFontSizeAxisTitleDefault}{}
 #' \item{plotFontSizeLegendTextDefault}{}
@@ -190,7 +198,7 @@ NULL
 #' This class allows each package to store all its constants in a single object that can be exported and queried for values.
 #' In particular, the \code{$} operator provides a mechanism to emit deprecation warnings and redirect renamed constants.
 #'
-#' @slot info Read-only data.frame of information about the constants. 
+#' @slot data Read-only list of information about the constants. 
 #'
 #' @return An object of class \code{iSEEconstants}.
 #' @export
@@ -198,50 +206,40 @@ NULL
 #' @examples
 #' constants <- new("iSEEconstants")
 #' constants$key <- "value"
-setClass("iSEEconstants", slots=c(info = "data.frame"))
+setClass("iSEEconstants", slots=c(data = "list"))
 
 setMethod(
   "initialize", "iSEEconstants", function(.Object, ...) {
     .Object <- callNextMethod()
-    .Object@info <- data.frame(
-      row.names = character(0),
-      value = character(0),
-      package = character(0)
-    )
+    .Object@data <- list()
     .Object
-})
+  })
 
 setMethod("show", "iSEEconstants", function(object) {
+  show_n <- 5
   cat("class:", class(object), "\n")
-  cat("count:", nrow(object@info), "\n")
-  print(head(object@info, 5))
-  if (nrow(object@info) > 5) {
-    cat("... and", nrow(object@info) - 5, "more constants.\n")
+  cat("count:", length(object@data), "\n\n")
+  print(head(object@data, show_n))
+  if (length(object@data) > show_n) {
+    cat("... and", length(object@data) - show_n, "more constants.\n")
   }
 })
 
 setMethod("$<-", "iSEEconstants", function(x, name, value) {
-  sourcePackage <- packageName()
-  if (is.null(sourcePackage)) {
-    stop("Only extension packages can edit this object.")
-  }
-  if (name %in% rownames(x@info)) {
+  if (name %in% names(x@data)) {
     stop("Name already in use: ", sQuote(name))
   }
-  x@info <- rbind(x@info, data.frame(
-    row.names = name,
-    "value" = value,
-    "package" = sourcePackage)
-  )
+  x@data[[name]] <- value
   invisible(x)
 })
 
 setMethod("$", "iSEEconstants", function(x, name) {
-  x@info[name, "value"]
+  x@data[[name]]
 })
 
+#' @export
 .DollarNames.iSEEconstants <- function(x, pattern = "") {
-  grep(pattern, rownames(x@info), value=TRUE)
+  grep(pattern, names(x@data), value=TRUE)
 }
 
 #' @export

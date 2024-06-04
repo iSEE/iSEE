@@ -65,21 +65,54 @@ The value of each constant can be accessed using the \code{$} operator and the c
 }
 }
 
+\section{Zooming parameters}{
+ 
+\describe{
+\item{\code{zoomClick}}{Character suffix appended to the panel identifier for the event triggered by the double-click event in a \pkg{Shiny} brush for zooming.}
+}
+}
+
+\section{Lasso parameters}{
+ 
+\describe{
+\item{\code{lassoClick}}{Character suffix appended to the panel identifier for the event triggered by the click event for adding a waypoint to a lasso selection.}
+}
+}
+
+\section{Brush parameters}{
+ 
+\describe{
+\item{\code{brushField}}{Character suffix appended to the panel identifier for the input representing the current \pkg{Shiny} brush.}
+}
+}
+
+\section{Button parameters}{
+ 
+\describe{
+\item{\code{buttonUpToDateLabel}}{Unused?}
+\item{\code{buttonEmptyHistoryLabel}}{Button label in the absence of any saved selection.}
+\item{\code{buttonDeleteLabel}}{Label of the button to delete the latest saved selection.}
+\item{\code{buttonNoSelectionLabel}}{Label of the button for adding a saved selection to memory in the absence of an active selection.}
+\item{\code{buttonSaveLabel}}{Label of the button for adding a saved selection to memory in the presence of an active selection.}
+}
+}
+
 \section{Panel slot names (Deprecated)}{
 
 TODO: Move this section to another man page when another class is implemented to store slot names and types (and default value?).
 \describe{
-\item{\code{.dataParamBoxOpen}}{Name of slot that indicates whether the 'Data parameter' box is open.}
-\item{\code{.multiSelectHistory}}{Name of slot that stores the list of saved selections.}
-\item{\code{.organizationHeight}}{Name of slot that stores the panel height.}
-\item{\code{.organizationWidth}}{Name of slot that stores the panel width.}
+\item{\code{iSEE::.dataParamBoxOpen}}{Name of slot that indicates whether the 'Data parameter' box is open.}
+\item{\code{iSEE::.multiSelectHistory}}{Name of slot that stores the list of saved selections.}
+\item{\code{iSEE::.organizationHeight}}{Name of slot that stores the panel height.}
+\item{\code{iSEE::.organizationWidth}}{Name of slot that stores the panel width.}
 }
 }
 
 \section{Multiple selection parameters (Deprecated)}{
 
+TODO: Move this section to another page that documents the deprecation of "dot constants", and redirects to this page instead.
 \describe{
-\item{\code{noSelection}}{Value displayed in the absence of selection.}
+\item{\code{iSEE::.noSelection}}{Value displayed in the absence of selection.}
 }
 }
 
@@ -88,14 +121,7 @@ TODO: Move this section to another man page when another class is implemented to
 Move the following constants to the appropriate section
 
 \describe{
-\item{\code{zoomClick}}{}
-\item{\code{lassoClick}}{}
-\item{\code{brushField}}{}
-\item{\code{buttonUpToDateLabel}}{}
-\item{\code{buttonEmptyHistoryLabel}}{}
-\item{\code{buttonDeleteLabel}}{}
-\item{\code{buttonNoSelectionLabel}}{}
-\item{\code{buttonSaveLabel}}{}
+\item{}{}
 }
 }
 

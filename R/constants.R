@@ -37,6 +37,14 @@
 #' \item{\code{facetByColSelectionsTitle}}{Radio button choice for faceting by an incoming column selection.}
 #' }
 #' 
+#' @section Multiple selection parameters: 
+#' \describe{
+#' \item{\code{multiSelectSave}}{Character suffix appended to the panel identifier for the event triggered by the \code{\link{actionButton}} for adding a saved selection to memory.}
+#' \item{\code{multiSelectDelete}}{Character suffix appended to the panel identifier for the event triggered by the \code{\link{actionButton}} for removing a saved selection from memory.}
+#' \item{\code{noSelection}}{Dropdown choice for disabling an incoming selection.}
+#' \item{\code{customSelection}}{Unused?}
+#' }
+#' 
 #' @section Panel slot names (Deprecated):
 #' TODO: Move this section to another man page when another class is implemented to store slot names and types (and default value?).
 #' \describe{
@@ -55,10 +63,6 @@
 #' Move the following constants to the appropriate section
 #' 
 #' \describe{
-#' \item{\code{multiSelectSave}}{}
-#' \item{\code{multiSelectDelete}}{}
-#' \item{\code{noSelection}}{}
-#' \item{\code{customSelection}}{}
 #' \item{\code{zoomClick}}{}
 #' \item{\code{lassoClick}}{}
 #' \item{\code{brushField}}{}

@@ -3,6 +3,20 @@
 #' Constant values used throughout iSEE panels and extensions.
 #' The value of each constant can be accessed using the \code{$} operator and the corresponding key (listed below).
 #' 
+#' @section Visual parameters: 
+#' \describe{
+#' \item{visualParamChoiceColorTitle}{Checkbox label to display visual parameters that control data-driven coloring functionality.}
+#' \item{visualParamChoiceShapeTitle}{Checkbox label to display visual parameters that control data-driven shaping functionality.}
+#' \item{visualParamChoiceSizeTitle}{Checkbox label to display visual parameters that control data-driven sizing functionality.}
+#' \item{visualParamChoiceFacetTitle}{Checkbox label to display visual parameters that control data-driven faceting functionality.}
+#' \item{visualParamChoicePointTitle}{Checkbox label to display visual parameters that control other point functionality.}
+#' \item{visualParamChoiceTextTitle}{Checkbox label to display visual parameters that control point labelling functionality.}
+#' \item{visualParamChoiceMetadataTitle}{Checkbox label to display visual parameters that control annotation functionality.} metadata
+#' \item{visualParamChoiceLabelsTitle}{Checkbox label to display visual parameters that control axis labeling functionality.}
+#' \item{visualParamChoiceTransformTitle}{Checkbox label to display visual parameters that control data transformation functionality.}
+#' \item{visualParamChoiceOtherTitle}{Checkbox label to display visual parameters that control other functionality.}
+#' \item{visualParamChoiceLegendTitle}{Checkbox label to display visual parameters that control other functionality.}
+#' 
 #' @section Point colouring parameters:
 #' \describe{
 #' \item{\code{colorByNothingTitle}}{Radio button choice for coloring data points by a fixed color.}
@@ -69,6 +83,74 @@
 #' \item{\code{buttonSaveLabel}}{Label of the button for adding a saved selection to memory in the presence of an active selection.}
 #' }
 #' 
+#' @section Modal parameters: 
+#' \describe{
+#' \item{dimnamesModalOpen}{Character suffix appended to the panel identifier for the event triggered by the \code{\link{actionButton}} for opening a modal window to manually edit a custom selection of dimension names.}
+#' }
+#' 
+#' @section Other plot parameters: 
+#' \describe{
+#' \item{showNamesRowTitle}{}
+#' \item{showNamesColumnTitle}{}
+#' \item{plotLegendRightTitle}{}
+#' \item{plotLegendBottomTitle}{}
+#' \item{plotLegendHorizontalTitle}{}
+#' \item{plotLegendVerticalTitle}{}
+#' \item{plotFontSizeAxisTextDefault}{}
+#' \item{plotFontSizeAxisTitleDefault}{}
+#' \item{plotFontSizeLegendTextDefault}{}
+#' \item{plotFontSizeLegendTitleDefault}{}
+#' \item{plotFontSizeTitleDefault}{}
+#' \item{hoverTooltip}{}
+#' \item{hoverInfo}{}
+#' }
+#' 
+#' @section TODO: 
+#' \describe{
+#' \item{int_statTableSelected}{}
+#' \item{int_statTableSearch}{}
+#' \item{int_statTableColSearch}{}
+#' \item{tableExtraInfo}{}
+#' \item{panelHelpTour}{}
+#' \item{flagOutputUpdate}{}
+#' \item{flagSingleSelect}{}
+#' \item{flagMultiSelect}{}
+#' \item{flagRelinkedSelect}{}
+#' \item{panelMultiSelectInfo}{}
+#' \item{panelSelectLinkInfo}{}
+#' \item{flagTableUpdate}{}
+#' \item{voiceActivePanel}{}
+#' \item{voiceShowActivePanelInput}{}
+#' \item{voiceCreatePanelInput}{}
+#' \item{voiceRemovePanelInput}{}
+#' \item{voiceControlPanelInput}{}
+#' \item{voiceColorUsingInput}{}
+#' \item{voiceColorByInput}{}
+#' \item{voiceReceiveFromInput}{}
+#' \item{voiceSendToInput}{}
+#' \item{clusterDistanceEuclidean}{}
+#' \item{clusterDistanceMaximum}{}
+#' \item{clusterDistanceManhattan}{}
+#' \item{clusterDistanceCanberra}{}
+#' \item{clusterDistanceBinary}{}
+#' \item{clusterDistanceMinkowski}{}
+#' \item{clusterDistancePearson}{}
+#' \item{clusterDistanceSpearman}{}
+#' \item{clusterDistanceKendall}{}
+#' \item{clusterMethodWardD}{}
+#' \item{clusterMethodWardD2}{}
+#' \item{clusterMethodSingle}{}
+#' \item{clusterMethodComplete}{}
+#' \item{clusterMethodAverage}{}
+#' \item{clusterMethodMcquitty}{}
+#' \item{clusterMethodMedian}{}
+#' \item{clusterMethodCentroid}{}
+#' \item{colormapPurpleBlackYellow}{}
+#' \item{colormapBlueWhiteOrange}{}
+#' \item{colormapBlueWhiteRed}{}
+#' \item{colormapGreenWhiteRed}{}
+#' }
+#' 
 #' @section Panel slot names (Deprecated):
 #' TODO: Move this section to another man page when another class is implemented to store slot names and types (and default value?).
 #' \describe{
@@ -82,13 +164,6 @@
 #' TODO: Move this section to another page that documents the deprecation of "dot constants", and redirects to this page instead.
 #' \describe{
 #' \item{\code{iSEE::.noSelection}}{Value displayed in the absence of selection.}
-#' }
-#' 
-#' @section TODO: 
-#' Move the following constants to the appropriate section
-#' 
-#' \describe{
-#' \item{}{}
 #' }
 #'
 #' @author Kevin Rue-Albrecht

@@ -142,13 +142,13 @@ The value of each constant can be accessed using the \code{$} operator and the c
 \section{Other plot parameters}{
  
 \describe{
-\item{plotFontSizeAxisTextDefault}{}
-\item{plotFontSizeAxisTitleDefault}{}
-\item{plotFontSizeLegendTextDefault}{}
-\item{plotFontSizeLegendTitleDefault}{}
-\item{plotFontSizeTitleDefault}{}
-\item{hoverTooltip}{}
-\item{hoverInfo}{}
+\item{plotFontSizeAxisTextDefault}{Default value of font size for the axis text.}
+\item{plotFontSizeAxisTitleDefault}{Default value of font size for the axis titles.}
+\item{plotFontSizeLegendTextDefault}{Default value of font size for the legend text.}
+\item{plotFontSizeLegendTitleDefault}{Default value of font size for the legend title.}
+\item{plotFontSizeTitleDefault}{Default value of font size for the plot title.}
+\item{hoverTooltip}{Character suffix appended to the panel identifier for the event triggered while hovering a data point.}
+\item{hoverInfo}{Name of HTML <div> element created to display information while hovering a data point.}
 }
 }
 

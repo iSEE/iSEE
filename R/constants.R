@@ -122,9 +122,13 @@
 #' \item{tableExtraInfo}{Character suffix appended to the table panel identifier for the output UI displaying additional information below the table.}
 #' }
 #' 
+#' @section Other panel events: 
+#' \describe{
+#' \item{panelHelpTour}{Character suffix appended to the panel identifier for the event triggered by the icon launching the panel-specific tour.}
+#' }
+#' 
 #' @section TODO: 
 #' \describe{
-#' \item{panelHelpTour}{}
 #' \item{flagOutputUpdate}{}
 #' \item{flagSingleSelect}{}
 #' \item{flagMultiSelect}{}

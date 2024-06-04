@@ -162,10 +162,16 @@ The value of each constant can be accessed using the \code{$} operator and the c
 }
 }
 
+\section{Other panel events}{
+ 
+\describe{
+\item{panelHelpTour}{Character suffix appended to the panel identifier for the event triggered by the icon launching the panel-specific tour.}
+}
+}
+
 \section{TODO}{
  
 \describe{
-\item{panelHelpTour}{}
 \item{flagOutputUpdate}{}
 \item{flagSingleSelect}{}
 \item{flagMultiSelect}{}

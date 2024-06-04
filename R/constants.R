@@ -16,6 +16,7 @@
 #' \item{visualParamChoiceTransformTitle}{Checkbox label to display visual parameters that control data transformation functionality.}
 #' \item{visualParamChoiceOtherTitle}{Checkbox label to display visual parameters that control other functionality.}
 #' \item{visualParamChoiceLegendTitle}{Checkbox label to display visual parameters that control other functionality.}
+#' }
 #' 
 #' @section Point colouring parameters:
 #' \describe{
@@ -61,7 +62,7 @@
 #' 
 #' @section Zooming parameters: 
 #' \describe{
-#' \item{\code{zoomClick}}{Character suffix appended to the panel identifier for the event triggered by the double-click event in a \pkg{Shiny} brush for zooming.}
+#' \item{\code{zoomClick}}{Character suffix appended to the panel identifier for the event triggered by the double-click event in a \pkg{shiny} brush for zooming.}
 #' }
 #' 
 #' @section Lasso parameters: 
@@ -71,7 +72,7 @@
 #' 
 #' @section Brush parameters: 
 #' \describe{
-#' \item{\code{brushField}}{Character suffix appended to the panel identifier for the input representing the current \pkg{Shiny} brush.}
+#' \item{\code{brushField}}{Character suffix appended to the panel identifier for the input representing the current \pkg{shiny} brush.}
 #' }
 #' 
 #' @section Button parameters: 

@@ -13,6 +13,23 @@
 Constant values used throughout iSEE panels and extensions.
 The value of each constant can be accessed using the \code{$} operator and the corresponding key (listed below).
 }
+\section{Visual parameters}{
+ 
+\describe{
+\item{visualParamChoiceColorTitle}{Checkbox label to display visual parameters that control data-driven coloring functionality.}
+\item{visualParamChoiceShapeTitle}{Checkbox label to display visual parameters that control data-driven shaping functionality.}
+\item{visualParamChoiceSizeTitle}{Checkbox label to display visual parameters that control data-driven sizing functionality.}
+\item{visualParamChoiceFacetTitle}{Checkbox label to display visual parameters that control data-driven faceting functionality.}
+\item{visualParamChoicePointTitle}{Checkbox label to display visual parameters that control other point functionality.}
+\item{visualParamChoiceTextTitle}{Checkbox label to display visual parameters that control point labelling functionality.}
+\item{visualParamChoiceMetadataTitle}{Checkbox label to display visual parameters that control annotation functionality.} metadata
+\item{visualParamChoiceLabelsTitle}{Checkbox label to display visual parameters that control axis labeling functionality.}
+\item{visualParamChoiceTransformTitle}{Checkbox label to display visual parameters that control data transformation functionality.}
+\item{visualParamChoiceOtherTitle}{Checkbox label to display visual parameters that control other functionality.}
+\item{visualParamChoiceLegendTitle}{Checkbox label to display visual parameters that control other functionality.}
+}
+}
+
 \section{Point colouring parameters}{
 
 \describe{
@@ -68,7 +85,7 @@ The value of each constant can be accessed using the \code{$} operator and the c
 \section{Zooming parameters}{
  
 \describe{
-\item{\code{zoomClick}}{Character suffix appended to the panel identifier for the event triggered by the double-click event in a \pkg{Shiny} brush for zooming.}
+\item{\code{zoomClick}}{Character suffix appended to the panel identifier for the event triggered by the double-click event in a \pkg{shiny} brush for zooming.}
 }
 }
 
@@ -82,7 +99,7 @@ The value of each constant can be accessed using the \code{$} operator and the c
 \section{Brush parameters}{
  
 \describe{
-\item{\code{brushField}}{Character suffix appended to the panel identifier for the input representing the current \pkg{Shiny} brush.}
+\item{\code{brushField}}{Character suffix appended to the panel identifier for the input representing the current \pkg{shiny} brush.}
 }
 }
 
@@ -104,20 +121,9 @@ The value of each constant can be accessed using the \code{$} operator and the c
 }
 }
 
-\section{Other plot parameters.}{
+\section{Other plot parameters}{
  
 \describe{
-\item{visualParamChoiceColorTitle}{Checkbox label to display visual parameters that control coloring functionality.}
-\item{visualParamChoiceShapeTitle}{Checkbox label to display visual parameters that control shaping functionality.}
-\item{visualParamChoiceSizeTitle}{Checkbox label to display visual parameters that control sizing functionality.}
-\item{visualParamChoicePointTitle}{Checkbox label to display visual parameters that control point functionality.}
-\item{visualParamChoiceFacetTitle}{Checkbox label to display visual parameters that control faceting functionality.}
-\item{visualParamChoiceTextTitle}{Checkbox label to display visual parameters that control text functionality.}
-\item{visualParamChoiceOtherTitle}{Checkbox label to display visual parameters that control other functionality.}
-\item{visualParamChoiceMetadataTitle}{}
-\item{visualParamChoiceLabelsTitle}{}
-\item{visualParamChoiceTransformTitle}{}
-\item{visualParamChoiceLegendTitle}{}
 \item{showNamesRowTitle}{}
 \item{showNamesColumnTitle}{}
 \item{plotLegendRightTitle}{}

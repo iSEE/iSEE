@@ -137,7 +137,7 @@ setMethod(".generateTable", "RowDataTable", function(x, envir) {
     cmds <-"tab <- as.data.frame(rowData(se));"
 
     if (exists("row_selected", envir=envir, inherits=FALSE)) {
-        cmds <- c(cmds, "tab <- tab[unique(unlist(row_selected)),,drop=FALSE]")
+        cmds <- c(cmds, "tab <- tab[rownames(tab) %in% unlist(row_selected),,drop=FALSE]")
     }
 
     valid.names <- .getCachedCommonInfo(envir$se, "RowDataTable")$valid.rowData.names

@@ -74,14 +74,14 @@ test_that(".generateTable handles RowDataTable", {
     out <- .generateTable(x, table_env)
     expect_identical(out, c(
         "tab <- as.data.frame(rowData(se));",
-        "tab <- tab[unique(unlist(row_selected)),,drop=FALSE]"))
+        "tab <- tab[rownames(tab) %in% unlist(row_selected),,drop=FALSE]"))
     
     # Some of the columns of rowData(se) are not valid atomic fields
     rowData(table_env$se)[["DataFrame"]] <- rowData(table_env$se)
     out <- .generateTable(x, table_env)
     expect_identical(out, c(
         "tab <- as.data.frame(rowData(se));",
-        "tab <- tab[unique(unlist(row_selected)),,drop=FALSE]",
+        "tab <- tab[rownames(tab) %in% unlist(row_selected),,drop=FALSE]",
         "tab <- tab[,c(\"num_cells\", \"mean_count\", \"letters\"),drop=FALSE]"))
 })
 
@@ -109,7 +109,7 @@ test_that(".generateTable handles ColumnDataTable", {
     out <- .generateTable(x, table_env)
     expect_identical(out, c(
         "tab <- as.data.frame(colData(se));",
-        "tab <- tab[unique(unlist(col_selected)),,drop=FALSE]"
+        "tab <- tab[rownames(tab) %in% unlist(col_selected),,drop=FALSE]"
     ))
 })
 

@@ -11,7 +11,7 @@
 #' \item{visualParamChoiceFacetTitle}{Checkbox label to display visual parameters that control data-driven faceting functionality.}
 #' \item{visualParamChoicePointTitle}{Checkbox label to display visual parameters that control other point functionality.}
 #' \item{visualParamChoiceTextTitle}{Checkbox label to display visual parameters that control point labelling functionality.}
-#' \item{visualParamChoiceMetadataTitle}{Checkbox label to display visual parameters that control annotation functionality.} metadata
+#' \item{visualParamChoiceMetadataTitle}{Checkbox label to display visual parameters that control metadata annotation functionality.}
 #' \item{visualParamChoiceLabelsTitle}{Checkbox label to display visual parameters that control axis labeling functionality.}
 #' \item{visualParamChoiceTransformTitle}{Checkbox label to display visual parameters that control data transformation functionality.}
 #' \item{visualParamChoiceOtherTitle}{Checkbox label to display visual parameters that control other functionality.}
@@ -21,7 +21,7 @@
 #' @section Point colouring parameters:
 #' \describe{
 #' \item{\code{colorByNothingTitle}}{Radio button choice for coloring data points by a fixed color.}
-#' \item{\code{colorByColDataTitle}}{Radio button choice for coloring data points by column zwdata.}
+#' \item{\code{colorByColDataTitle}}{Radio button choice for coloring data points by column data.}
 #' \item{\code{colorByRowDataTitle}}{Radio button choice for coloring data points by row data.}
 #' \item{\code{colorByFeatNameTitle}}{Radio button choice for highlighting a selected feature or coloring data points by assay data for that feature.}
 #' \item{\code{colorBySampNameTitle}}{Radio button choice for highlighting a selected sample or coloring data points by assay data for that sample.}
@@ -119,17 +119,25 @@
 #' \item{int_statTableSelected}{Character suffix appended to the table panel identifier for the input representing the current selection of rows.}
 #' \item{int_statTableSearch}{Character suffix appended to the table panel identifier for the input representing the current value of the global search field.}
 #' \item{int_statTableColSearch}{Character suffix appended to the table panel identifier for the input representing the current values of the individual column-wise search fields.}
-#' \item{tableExtraInfo}{Character suffix appended to the table panel identifier for the output UI displaying additional information below the table.}
 #' }
 #' 
-#' @section Other panel events: 
+#' @section Table outputs: 
 #' \describe{
-#' \item{panelHelpTour}{Character suffix appended to the panel identifier for the event triggered by the icon launching the panel-specific tour.}
+#' \item{tableExtraInfo}{Character suffix appended to the table panel identifier for the output UI displaying additional information below the table.}
+#' }
+#' @section Panel tour events: 
+#' \describe{
+#' \item{panelHelpTour}{Character suffix appended to the panel identifier for the event triggered by clicking the icon launching the panel-specific tour.}
+#' }
+#' 
+#' @section Panel rendering events: 
+#' \describe{
+#' \item{flagOutputUpdate}{Character suffix appended to the panel identifier for the event triggered programmatically to request re-rendering of the panel output.}
+#' \item{flagSingleSelect}{Character suffix appended to the panel identifier for the event triggered programmatically to signal a change in incoming single point selection.}
 #' }
 #' 
 #' @section TODO: 
 #' \describe{
-#' \item{flagOutputUpdate}{}
 #' \item{flagSingleSelect}{}
 #' \item{flagMultiSelect}{}
 #' \item{flagRelinkedSelect}{}

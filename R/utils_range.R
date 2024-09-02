@@ -23,5 +23,9 @@
             range[1] <- range[1] - 1
         }
     }
+    ## If no finite values are found, set an arbitrary range
+    if (!is.finite(range[1]) && !is.finite(range[2])) {
+        range <- c(-1, 1)
+    }
     range
 }

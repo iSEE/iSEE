@@ -395,7 +395,7 @@ head(introtour)
 Each entry of the `element` column contains the name of a UI element in the application, prefixed by a hash sign (`#`).
 The `intro` column contains the corresponding text (or basic HTML) that is to be shown at each step.
 
-The simplest way to get started is to copy the `intro_firststeps.txt` file from the `inst/extdata` folder and edit it for your specific data set.
+The simplest way to get started is to save the output of `defaultTour()` to a text file and edit it for your specific data set.
 More customized tours require some knowledge of the names of the UI elements to put in the `element` column.
 We recommend one of the following options:
 

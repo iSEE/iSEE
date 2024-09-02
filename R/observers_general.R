@@ -11,6 +11,7 @@
 .generalSessionInfo <- "iSEE_INTERNAL_session_info"
 .generalCitationInfo <- "iSEE_INTERNAL_citation_info"
 .generalMetadataInfo <- "iSEE_INTERNAL_metadata_info"
+.generalAppControl <- "iSEE_INTERNAL_app_control"
 
 .generalCodeTracker <- "iSEE_INTERNAL_tracked_code"
 .generalMemoryTracker <- "iSEE_INTERNAL_tracked_memory"
@@ -126,6 +127,12 @@
             
         ))
     }, ignoreInit=TRUE)
+    
+    
+    observeEvent(input[[.generalAppControl]], {
+      message("Shutting down the iSEE app...")
+      shiny::stopApp(returnValue = invisible())
+    })
     
     # observeEvent(input[[export_to_json]], {
     #   

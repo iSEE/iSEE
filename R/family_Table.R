@@ -230,7 +230,7 @@ Any number of column names can be specified here."
 
 #' @export
 setMethod(".hideInterface", "Table", function(x, field) {
-    if (field %in% c(.multiSelectHistory, .selectColRestrict, .selectRowRestrict)) {
+    if (field %in% c(.multiSelectHistory, .selectColumnRestrict, .selectRowRestrict)) {
         # Tables always restrict.
         TRUE
     } else {

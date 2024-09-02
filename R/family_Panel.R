@@ -163,12 +163,12 @@ setMethod("initialize", "Panel", function(.Object, ..., RowSelectionSaved=NULL, 
 
     args <- .emptyDefault(args, .selectParamBoxOpen, FALSE)
     args <- .emptyDefault(args, .selectRowSource, .noSelection)
-    args <- .emptyDefault(args, .selectColSource, .noSelection)
+    args <- .emptyDefault(args, .selectColumnSource, .noSelection)
     args <- .emptyDefault(args, .selectRowRestrict, FALSE)
-    args <- .emptyDefault(args, .selectColRestrict, FALSE)
+    args <- .emptyDefault(args, .selectColumnRestrict, FALSE)
 
     args <- .emptyDefault(args, .selectRowDynamic, getPanelDefault("MultipleSelectionDynamicSource"))
-    args <- .emptyDefault(args, .selectColDynamic, getPanelDefault("MultipleSelectionDynamicSource"))
+    args <- .emptyDefault(args, .selectColumnDynamic, getPanelDefault("MultipleSelectionDynamicSource"))
 
     args <- .emptyDefault(args, .dataParamBoxOpen, FALSE)
 
@@ -196,9 +196,9 @@ setValidity2("Panel", function(object) {
     msg <- character(0)
 
     msg <- .validLogicalError(msg, object, c(.selectParamBoxOpen, .dataParamBoxOpen,
-        .selectRowDynamic, .selectColDynamic, .selectRowRestrict, .selectColRestrict))
+        .selectRowDynamic, .selectColumnDynamic, .selectRowRestrict, .selectColumnRestrict))
 
-    msg <- .singleStringError(msg, object, c(.selectRowSource, .selectColSource))
+    msg <- .singleStringError(msg, object, c(.selectRowSource, .selectColumnSource))
 
     msg <- .validNumberError(msg, object, .organizationHeight, lower=height_limits[1], upper=height_limits[2])
     msg <- .validNumberError(msg, object, .organizationWidth, lower=width_limits[1], upper=width_limits[2])
@@ -410,8 +410,8 @@ setMethod(".defineInterface", "Panel", function(x, se, select_info) {
             dyn_field=.selectRowDynamic, res_field=.selectRowRestrict,
             selectable=row_selectable, "row"),
 
-        .define_selection_choices(x, by_field=.selectColSource,
-            dyn_field=.selectColDynamic, res_field=.selectColRestrict,
+        .define_selection_choices(x, by_field=.selectColumnSource,
+            dyn_field=.selectColumnDynamic, res_field=.selectColumnRestrict,
             selectable=col_selectable, "column")
     )
 
@@ -546,13 +546,13 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
     .create_multi_selection_choice_observer(panel_name, by_field=.selectRowSource,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_choice_observer(panel_name, by_field=.selectColSource,
+    .create_multi_selection_choice_observer(panel_name, by_field=.selectColumnSource,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_multi_selection_restrict_observer(panel_name, by_field=.selectRowSource, res_field=.selectRowRestrict,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_restrict_observer(panel_name, by_field=.selectColSource, res_field=.selectColRestrict,
+    .create_multi_selection_restrict_observer(panel_name, by_field=.selectColumnSource, res_field=.selectColumnRestrict,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_multi_selection_history_observers(panel_name,
@@ -563,7 +563,7 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_dynamic_multi_selection_source_observer(panel_name,
-        dyn_field=.selectColDynamic, by_field=.selectColSource, source_type="column",
+        dyn_field=.selectColumnDynamic, by_field=.selectColumnSource, source_type="column",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     for (f in .singleSelectionSlots(x)) {
@@ -689,7 +689,7 @@ setMethod("updateObject", "Panel", function(object, ..., verbose=FALSE) {
 
         # Handling the updated restriction settings.
         slot(object, .selectRowRestrict) <- FALSE
-        slot(object, .selectColRestrict) <- FALSE
+        slot(object, .selectColumnRestrict) <- FALSE
     }
     object
     # nocov end

@@ -50,7 +50,7 @@
     if (source_type == "row") {
         source_field <- .selectRowSource
     } else {
-        source_field <- .selectColSource
+        source_field <- .selectColumnSource
     }
 
     # nocov start

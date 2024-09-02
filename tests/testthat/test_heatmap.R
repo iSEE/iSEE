@@ -178,8 +178,8 @@ test_that(".generateOutput detects col_selected and row_selected", {
     x <- ComplexHeatmapPlot()
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
-    x[[iSEE:::.selectColSource]] <- "FeatureAssayPlot1"
-    x[[iSEE:::.selectColRestrict]] <- TRUE
+    x[[iSEE:::.selectColumnSource]] <- "FeatureAssayPlot1"
+    x[[iSEE:::.selectColumnRestrict]] <- TRUE
     x[[iSEE:::.heatMapCustomFeatNames]] <- TRUE
     x[[iSEE:::.heatMapFeatNameText]] <- paste0(head(rownames(sce), 2), collapse = "\n")
     memory$ComplexHeatmapPlot1 <- x

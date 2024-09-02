@@ -129,7 +129,7 @@ setMethod("initialize", "RowDotPlot", function(.Object, ..., SelectionEffect=NUL
 
     # Defensive measure to avoid problems with cyclic graphs
     # that the user doesn't have permissions to change!
-    args <- .emptyDefault(args, .selectColDynamic, FALSE)
+    args <- .emptyDefault(args, .selectColumnDynamic, FALSE)
 
     args <- .emptyDefault(args, .facetRowByRowData, NA_character_)
     args <- .emptyDefault(args, .facetColumnByRowData, NA_character_)
@@ -290,7 +290,7 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 
 #' @export
 setMethod(".hideInterface", "RowDotPlot", function(x, field) {
-    if (field %in% c(.selectColSource, .selectColRestrict, .selectColDynamic)) {
+    if (field %in% c(.selectColumnSource, .selectColumnRestrict, .selectColumnDynamic)) {
         TRUE
     } else {
         callNextMethod()

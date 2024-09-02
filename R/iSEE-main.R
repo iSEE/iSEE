@@ -458,14 +458,14 @@ iSEE <- function(se,
         if (!slot(memory[[x]], .selectRowSource) %in% multi_sources$row) {
             slot(memory[[x]], .selectRowSource) <- .noSelection
         }
-        if (!slot(memory[[x]], .selectColSource) %in% multi_sources$column) {
-            slot(memory[[x]], .selectColSource) <- .noSelection
+        if (!slot(memory[[x]], .selectColumnSource) %in% multi_sources$column) {
+            slot(memory[[x]], .selectColumnSource) <- .noSelection
         }
     }
 
     for (r in seq_along(reservoir)) {
         slot(reservoir[[r]], .selectRowSource) <- .noSelection
-        slot(reservoir[[r]], .selectColSource) <- .noSelection
+        slot(reservoir[[r]], .selectColumnSource) <- .noSelection
     }
 
     pObjects <- .create_persistent_objects(memory, reservoir, counter)

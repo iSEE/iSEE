@@ -319,9 +319,9 @@ setMethod("[[", "ComplexHeatmapPlot", function(x, i, j, ...) {
 
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.\nUse <%s>[['%s']] and/or <%s>[['%s']] instead.",
-            cname, i, cname, .selectColRestrict, cname, .heatMapShowSelection))
+            cname, i, cname, .selectColumnRestrict, cname, .heatMapShowSelection))
 
-        if (slot(x, .selectColRestrict)) {
+        if (slot(x, .selectColumnRestrict)) {
             "Restrict"
         } else if (slot(x, .heatMapShowSelection)) {
             "Color"
@@ -344,9 +344,9 @@ setReplaceMethod("[[", "ComplexHeatmapPlot", function(x, i, j, ..., value) {
 
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.\nSet <%s>[['%s']] and/or <%s>[['%s']] instead.",
-            cname, i, cname, .selectColRestrict, cname, .heatMapShowSelection))
+            cname, i, cname, .selectColumnRestrict, cname, .heatMapShowSelection))
 
-        slot(x, .selectColRestrict) <- (value=="Restrict")
+        slot(x, .selectColumnRestrict) <- (value=="Restrict")
         slot(x, .heatMapShowSelection) <- (value!="Restrict")
 
         x
@@ -746,7 +746,7 @@ setMethod(".hideInterface", "ComplexHeatmapPlot", function(x, field) {
 #' @export
 setMethod(".multiSelectionRestricted", "ComplexHeatmapPlot", function(x) {
     ## .heatMapShowSelection is not technically restricted, but requires rerendering nonetheless
-    !slot(x, .heatMapCustomFeatNames) || slot(x, .selectColRestrict) || slot(x, .heatMapShowSelection)
+    !slot(x, .heatMapCustomFeatNames) || slot(x, .selectColumnRestrict) || slot(x, .heatMapShowSelection)
 })
 
 #' @export
@@ -757,7 +757,7 @@ setMethod(".multiSelectionResponsive", "ComplexHeatmapPlot", function(x, dims = 
         }
     }
     if ("column" %in% dims) {
-        if (slot(x, .selectColRestrict) || slot(x, .heatMapShowSelection)) {
+        if (slot(x, .selectColumnRestrict) || slot(x, .heatMapShowSelection)) {
             return(TRUE)
         }
     }
@@ -783,7 +783,7 @@ setMethod("updateObject", "ComplexHeatmapPlot", function(object, ..., verbose=FA
         # nocov start
 
         # Do this before 'callNextMethod()', which fills in the Restrict.
-        update.2.3 <- is(try(slot(object, .selectColRestrict), silent=TRUE), "try-error")
+        update.2.3 <- is(try(slot(object, .selectColumnRestrict), silent=TRUE), "try-error")
 
         # NOTE: it is crucial that updateObject does not contain '[[' or '[[<-'
         # calls, lest we get sucked into infinite recursion with the calls to
@@ -792,7 +792,7 @@ setMethod("updateObject", "ComplexHeatmapPlot", function(object, ..., verbose=FA
 
         if (update.2.3) {
             effect <- object@SelectionEffect
-            slot(object, .selectColRestrict) <- (effect=="Restrict")
+            slot(object, .selectColumnRestrict) <- (effect=="Restrict")
             slot(object, .heatMapShowSelection) <- (effect!="Restrict")
             slot(object, .heatMapOrderSelection) <- FALSE
         }

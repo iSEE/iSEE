@@ -25,7 +25,7 @@
     for (x in names(all_memory)) {
         instance <- all_memory[[x]]
 
-        for (f in c(.selectRowSource, .selectColSource)) {
+        for (f in c(.selectRowSource, .selectColumnSource)) {
             parent <- slot(instance, f)
             if (parent %in% names(all_memory)) {
                 graph <- .add_interpanel_link(graph, x, parent, field=f)
@@ -257,8 +257,8 @@
         if (slot(x, .selectRowDynamic)) {
             multi_rows[[panel_name]] <- .selectRowSource
         } 
-        if (slot(x, .selectColDynamic)) {
-            multi_cols[[panel_name]] <- .selectColSource
+        if (slot(x, .selectColumnDynamic)) {
+            multi_cols[[panel_name]] <- .selectColumnSource
         }
     }
 

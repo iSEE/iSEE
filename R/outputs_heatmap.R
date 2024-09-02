@@ -39,7 +39,7 @@
         all_cmds[["rows"]] <- ".chosen.rows <- intersect(rownames(se), unlist(row_selected));"
     }
 
-    if (!is.null(envir$col_selected) && slot(x, .selectColRestrict)) {
+    if (!is.null(envir$col_selected) && slot(x, .selectColumnRestrict)) {
         # TODO: implement visual effects for other forms of selection.
         all_cmds[["columns"]] <- ".chosen.columns <- intersect(colnames(se), unlist(col_selected));"
     } else {

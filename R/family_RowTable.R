@@ -82,7 +82,7 @@ setMethod("initialize", "RowTable", function(.Object, ...) {
 
     # Defensive measure to avoid problems with cyclic graphs 
     # that the user doesn't have permissions to change!
-    args <- .emptyDefault(args, .selectColDynamic, FALSE)
+    args <- .emptyDefault(args, .selectColumnDynamic, FALSE)
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -109,7 +109,7 @@ setMethod(".createObservers", "RowTable", function(x, se, input, session, pObjec
 
 #' @export
 setMethod(".hideInterface", "RowTable", function(x, field) {
-    if (field %in% c(.selectColSource, .selectColRestrict, .selectColDynamic)) {
+    if (field %in% c(.selectColumnSource, .selectColumnRestrict, .selectColumnDynamic)) {
         TRUE
     } else {
         callNextMethod()

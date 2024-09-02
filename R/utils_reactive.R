@@ -162,7 +162,7 @@
     target <- pObjects$memory[[panel_name]]
     dim <- .multiSelectionDimension(target)
     all_affected <- names(pObjects$dynamic_multi_selections[[dim]])
-    field <- if (dim=="row") .selectRowSource else .selectColSource
+    field <- if (dim=="row") .selectRowSource else .selectColumnSource
         
     # nocov start
     if (!is.null(session)) {

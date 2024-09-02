@@ -401,7 +401,7 @@ test_that(".addDotPlotDataSelected handles ColumnDotPlot", {
     expect_identical(out[["SelectBy"]], "plot.data$SelectBy <- rownames(plot.data) %in% unlist(col_selected);")
 
     # col_selected exists in plot_env with effect Restrict
-    x[[iSEE:::.selectColRestrict]] <- TRUE
+    x[[iSEE:::.selectColumnRestrict]] <- TRUE
     out <- iSEE:::.addDotPlotDataSelected(x, plot_env)
     expect_identical(out[["SelectBy"]], "plot.data$SelectBy <- rownames(plot.data) %in% unlist(col_selected);")
     expect_identical(out[["saved"]], "plot.data.all <- plot.data;")

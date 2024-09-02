@@ -56,7 +56,8 @@ Suggests:
     HDF5Array,
     RColorBrewer,
     viridis,
-    htmltools
+    htmltools,
+    GenomicRanges
 URL: https://github.com/iSEE/iSEE
 BugReports: https://github.com/iSEE/iSEE/issues
 biocViews: CellBasedAssays, Clustering, DimensionReduction, FeatureExtraction,

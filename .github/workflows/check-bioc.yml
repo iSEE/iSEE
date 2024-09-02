@@ -146,6 +146,11 @@ jobs:
           ## Required for terra
           brew install gdal
 
+          ## Temporary fix for freetype (https://github.com/r-lib/ragg/issues/170; Sep 2024)
+          #brew install --cask https://raw.githubusercontent.com/Homebrew/homebrew-core/d28afc3bfdb5d24eab02157bfffcc9e17ed6666c/Formula/f/freetype.rb
+          brew unlink freetype
+          curl -L https://raw.githubusercontent.com/Homebrew/homebrew-core/3db6dc6c4baf5a75e345f380cc4e8224c1ae5ae0/Formula/f/freetype.rb > freetype.rb && brew install freetype.rb
+
       - name: Install binary units for macOS
         if: matrix.config.os == 'macOS-latest'
         run: |

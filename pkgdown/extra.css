@@ -1,0 +1,97 @@
+/*
+Developed and maintained by Kevin Rue-Albrecht (@kevinrue)
+*/
+
+/*
+#0092ac   blue
+#00758a   darker blue (active menu)
+#c4d931   green (on blue)
+#87b13f   green (on white)
+*/
+
+.headroom {
+  background-color: #0092ac;
+}
+
+.navbar-default .navbar-link {
+    color: #ffffff;
+}
+
+.navbar-default .navbar-link:hover {
+    color: #c4d931;
+}
+
+.navbar-default .navbar-nav>.active>a,
+.navbar-default .navbar-nav>.active>a:hover,
+.navbar-default .navbar-nav>.active>a:focus {
+    color: #c4d931;
+    background-color: #00758a;
+}
+
+.navbar-default .navbar-nav>.open>a,
+.navbar-default .navbar-nav>.open>a:hover,
+.navbar-default .navbar-nav>.open>a:focus {
+    color: #c4d931;
+    background-color: #00758a;
+}
+
+.dropdown-menu>.active>a,
+.dropdown-menu>.active>a:hover,
+.dropdown-menu>.active>a:focus {
+    color: #c4d931;
+    background-color: #00758a;
+}
+
+.navbar-default .navbar-nav>li>a:hover,
+.navbar-default .navbar-nav>li>a:focus {
+    color: #c4d931;
+}
+
+.dropdown-menu>li>a:hover {
+    color: #87b13f;
+    background-color: #ffffff;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: #ffffff;
+}
+
+h1 {
+  color: #87b13f;
+}
+
+h2 {
+  color: #1a81c2;
+}
+
+h3 {
+  color: #1a81c2;
+  font-weight: bold;
+}
+
+.btn-copy-ex {
+  color: #ffffff;
+  background-color: #0092ac;
+  border-color: #0092ac;
+}
+
+.btn-copy-ex:hover {
+  color: #ffffff;
+  background-color: #00758a;
+  border-color: #00758a;
+}
+
+.btn-copy-ex:active:focus {
+  color: #c4d931;
+  background-color: #00758a;
+  border-color: #0092ac;
+}
+
+p>.fa,
+p>.fas {
+  color: #0092ac;
+}
+
+img {
+  width: auto;
+}

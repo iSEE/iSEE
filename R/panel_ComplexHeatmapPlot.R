@@ -375,13 +375,13 @@ setMethod(".cacheCommonInfo", "ComplexHeatmapPlot", function(x, se) {
     coldata_displayable <- .findAtomicFields(df)
     subdf <- df[,coldata_displayable,drop=FALSE]
     coldata_discrete <- .whichGroupable(subdf, max_levels = .get_color_maxlevels())
-    coldata_continuous <- .whichNumeric(subdf)
+    coldata_continuous <- union(.whichNumeric(subdf), setdiff(.whichGroupable(subdf, max_levels = Inf), coldata_discrete))
 
     df <- rowData(se)
     rowdata_displayable <- .findAtomicFields(df)
     subdf <- df[,rowdata_displayable,drop=FALSE]
     rowdata_discrete <- .whichGroupable(subdf, max_levels = .get_color_maxlevels())
-    rowdata_continuous <- .whichNumeric(subdf)
+    rowdata_continuous <- union(.whichNumeric(subdf), setdiff(.whichGroupable(subdf, max_levels = Inf), rowdata_discrete))
 
     .setCachedCommonInfo(se, "ComplexHeatmapPlot",
         valid.assay.names=named_assays,

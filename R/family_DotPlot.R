@@ -99,6 +99,12 @@
 #' \item \code{ContourColor}, string specifying the color to use for the contour lines.
 #' Defaults to \code{"blue"}.
 #' }
+#' 
+#' The following slot controls whether the aspect ratio is fixed to 1 or not:
+#' \itemize{
+#' \item \code{FixAspectRatio}, logical scalar indicating whether the aspect ratio of a scatter plot should be fixed to 1. 
+#' Defaults to \code{FALSE}.
+#' }
 #'
 #' The following slots control the general appearance of the points.
 #' \itemize{
@@ -279,6 +285,8 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
 
     args <- .emptyDefault(args, .contourAdd, FALSE)
     args <- .emptyDefault(args, .contourColor, getPanelDefault(.contourColor))
+    
+    args <- .emptyDefault(args, .fixAspectRatio, FALSE)
 
     args <- .emptyDefault(args, .plotPointSize, getPanelDefault(.plotPointSize))
     args <- .emptyDefault(args, .plotPointAlpha, getPanelDefault(.plotPointAlpha))
@@ -307,7 +315,7 @@ setValidity2("DotPlot", function(object) {
     msg <- .validLogicalError(msg, object,
         c(.plotCustomLabels, .visualParamBoxOpen, .contourAdd, .plotPointDownsample,
             .plotHoverInfo,
-            .plotLabelCenters
+            .plotLabelCenters, .fixAspectRatio
         ))
 
     msg <- .singleStringError(msg, object,
@@ -469,7 +477,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
             .shapeByField, .sizeByField,
             .plotPointSize, .plotPointAlpha, .plotFontSize, .legendPointSize, .plotLegendPosition,
             .plotPointDownsample, .plotPointSampleRes, .contourAdd,
-            .contourColor, .plotCustomLabels, .plotHoverInfo,
+            .contourColor, .fixAspectRatio, .plotCustomLabels, .plotHoverInfo,
             .plotLabelCenters, .plotLabelCentersBy, .plotLabelCentersColor),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
@@ -771,6 +779,18 @@ setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
             )
         )
     })
+    
+    .addSpecificTour(class(x)[1], .fixAspectRatio, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .fixAspectRatio),
+                    intro="For scatter plots, we can fix the aspect ratio to 1 by checking this box.
+                    For all other plots, this has no effect."
+                )
+            )
+        )
+    })
 
     tagList(
         hr(),
@@ -794,7 +814,10 @@ setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
             on_select=TRUE,
             colourInput(
                 paste0(plot_name, "_", .contourColor), label=NULL,
-                value=slot(x, .contourColor)))
+                value=slot(x, .contourColor))),
+        .checkboxInput.iSEE(x, .fixAspectRatio,
+                            label="Fix aspect ratio to 1 (scatter only)",
+                            value=slot(x, .fixAspectRatio))
     )
 })
 

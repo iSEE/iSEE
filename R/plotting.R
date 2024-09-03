@@ -219,18 +219,25 @@ names(.all_aes_values) <- .all_aes_names
     # Adding axes labels.
     plot_cmds[["labs"]] <- .buildLabs(x=x_lab, y=y_lab, color=color_lab, shape=shape_lab, size=size_lab, title=title)
 
+    if (slot(param_choices, .fixAspectRatio)) {
+        coordfun <- "coord_fixed"
+    } else {
+        coordfun <- "coord_cartesian"
+    }
+    
     # Defining boundaries if zoomed.
     bounds <- slot(param_choices, .zoomData)
     if (length(bounds)) {
         plot_cmds[["coord"]] <- sprintf(
-            "coord_cartesian(xlim=c(%s, %s), ylim=c(%s, %s), expand=FALSE) +", # FALSE, to get a literal zoom.
+            "%s(xlim=c(%s, %s), ylim=c(%s, %s), expand=FALSE) +", # FALSE, to get a literal zoom.
+            coordfun,
             deparse(bounds["xmin"]), deparse(bounds["xmax"]),
             deparse(bounds["ymin"]),  deparse(bounds["ymax"])
         )
     } else {
         full_data <- ifelse(is_subsetted, "plot.data.all", ifelse(is_downsampled, "plot.data.pre", "plot.data"))
-        plot_cmds[["coord"]] <- sprintf("coord_cartesian(xlim=range(%s$X, na.rm=TRUE),
-    ylim=range(%s$Y, na.rm=TRUE), expand=TRUE) +", full_data, full_data)
+        plot_cmds[["coord"]] <- sprintf("%s(xlim=range(%s$X, na.rm=TRUE),
+    ylim=range(%s$Y, na.rm=TRUE), expand=TRUE) +", coordfun, full_data, full_data)
     }
 
     if (slot(param_choices, .contourAdd)) {

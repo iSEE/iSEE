@@ -216,6 +216,9 @@ collated[.visualParamChoice] <- "character"
 collated[.contourAdd] <- "logical"
 collated[.contourColor] <- "character"
 
+.fixAspectRatio <- "FixAspectRatio"
+collated[.fixAspectRatio] <- "logical"
+
 .plotPointSize <- "PointSize"
 .plotPointAlpha <- "PointAlpha"
 .plotPointDownsample <- "Downsample"

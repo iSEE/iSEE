@@ -1,3 +1,7 @@
+# iSEE 2.17.4
+
+* Added explicitly a "Stop app" button to close the application (should be a means to nicely behave in container-spawned instances). Addresses #630
+
 # iSEE 2.17.3
 
 * Preserve the existing order of rows when receiving a selection in `RowDataTable`, `ColumnDataTable` panels.

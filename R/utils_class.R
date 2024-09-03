@@ -149,7 +149,8 @@
     covariates <- colnames(x)
     for (i in seq_along(covariates)) {
         current <- x[,i]
-        if (!is.atomic(current) || !is.null(dim(current))) {
+        if (!is.atomic(current) || !is.null(dim(current)) || all(is.na(current)) || 
+            (is.numeric(current) && !any(is.finite(current)))) {
             covariates[i] <- NA_character_
         }
     }
@@ -342,7 +343,7 @@
 #' \code{\link{.nlevels}}.
 .is_groupable <- function(x, max_levels = Inf) {
     out <- .nlevels(x)
-    is.finite(out) && out <= max_levels
+    is.finite(out) && out <= max_levels && any(!is.na(x))
 }
 
 #' @rdname cache-utils
@@ -351,10 +352,24 @@
     which(vapply(x, FUN=.is_groupable, max_levels=max_levels, FUN.VALUE=FALSE))
 }
 
+#' Determine whether a vector is numeric
+#'
+#' This function is used to find variables that are numeric and contain at least one finite value.
+#'
+#' @param x An atomic vector.
+#'
+#' @return A logical scalar that indicates whether \code{x} is numeric and contains at least one finite value.
+#'
+#' @author Charlotte Soneson
+#' @rdname INTERNAL_is_numeric
+.is_numeric <- function(x) {
+    is.numeric(x) && any(is.finite(x))
+}
+
 #' @rdname cache-utils
 #' @export
 .whichNumeric <- function(x) {
-    which(vapply(x, FUN=is.numeric, FUN.VALUE=FALSE))
+    which(vapply(x, FUN=.is_numeric, FUN.VALUE=FALSE))
 }
 
 #' @export

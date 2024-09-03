@@ -20,6 +20,7 @@ A cleaned version of \code{se}.
 }
 \description{
 Clean the SummarizedExperiment by making sure that names of various fields are available and unique.
+Also transfer any information stored in \code{rowRanges} into \code{rowData}.
 }
 \details{
 Various \linkS4class{Panel}s assume that the row and column names of the input SummarizedExperiment are available and unique.
@@ -28,6 +29,9 @@ This function enforces that, adding consecutive integer names if not available a
 Various \linkS4class{Panel}s further assume that the \code{\link{assay}}, \code{\link{rowData}}, \code{\link{colData}} names are unique;
 if this is not the case, \code{\link{selectInput}} behaves in unexpected (and incorrect) ways.
 This function enforces that as well by running them through \code{\link{make.unique}}.
+
+Finally, positional information in \code{rowRanges} is not accessible to \code{iSEE}.
+This function moves this information into \code{rowData}, prefixing the column names with \code{rowRanges_}.
 
 For \linkS4class{SingleCellExperiment} object, we enforce uniqueness in the \code{\link{reducedDims}}.
 
@@ -43,5 +47,5 @@ se
 cleanDataset(se)
 }
 \author{
-Aaron Lun
+Aaron Lun, Charlotte Soneson
 }

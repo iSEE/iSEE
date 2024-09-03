@@ -42,6 +42,7 @@
 #'   If \code{NULL}, the initial state from \code{initial} in the top-level \code{\link{iSEE}} call is used instead.
 #'   \item \code{TOUR}, a data.frame containing a tour to be attached to the app - see \code{\link{defaultTour}} for an example.
 #'   If \code{NULL} (the default), no tour is added.
+#'   \item \code{COLORMAP}, an \linkS4class{ExperimentColorMap} object that defines the colormaps to use in the application.
 #'   }
 #' \item \code{input}, the Shiny input list.
 #' \item \code{output}, the Shiny output list.

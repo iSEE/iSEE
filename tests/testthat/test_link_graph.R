@@ -31,46 +31,46 @@ test_that("selection link creation works correctly", {
 
     # Checking that it is robust to garbage.
     all_memory  <- pObjects$memory
-    all_memory$ReducedDimensionPlot1[[iSEE:::.selectColSource]] <- "whee"
+    all_memory$ReducedDimensionPlot1[[iSEE:::.selectColumnSource]] <- "whee"
     g2 <- iSEE:::.spawn_multi_selection_graph(all_memory)
     expect_identical(g[], g2[])
 
     # Checking that we correctly fail upon cycles.
-    all_memory$ReducedDimensionPlot1[[iSEE:::.selectColSource]] <- "FeatureAssayPlot2"
+    all_memory$ReducedDimensionPlot1[[iSEE:::.selectColumnSource]] <- "FeatureAssayPlot2"
     expect_error(iSEE:::.spawn_multi_selection_graph(all_memory), "cannot be cyclic")
 })
 
 test_that("selection link updates work correctly", {
     # Deleting edges that are there.
     expect_true(igraph::are_adjacent(g, "ReducedDimensionPlot1", "ColumnDataPlot1"))
-    g2 <- iSEE:::.choose_new_parent(g, "ColumnDataPlot1", "---", "ReducedDimensionPlot1", iSEE:::.selectColSource)
+    g2 <- iSEE:::.choose_new_parent(g, "ColumnDataPlot1", "---", "ReducedDimensionPlot1", iSEE:::.selectColumnSource)
     expect_false(igraph::are_adjacent(g2, "ReducedDimensionPlot1", "ColumnDataPlot1"))
 
     # Deleting edges that are not there makes no difference.
     expect_false(igraph::are_adjacent(g, "ColumnDataPlot1", "ReducedDimensionPlot1"))
-    g2 <- iSEE:::.choose_new_parent(g, "ReducedDimensionPlot1", "---", "ColumnDataPlot1", iSEE:::.selectColSource)
+    g2 <- iSEE:::.choose_new_parent(g, "ReducedDimensionPlot1", "---", "ColumnDataPlot1", iSEE:::.selectColumnSource)
     expect_equal(g[], g2[])
 
     # Adding edges without anything being there previously.
     expect_identical(character(0L), names(igraph::adjacent_vertices(g, "ReducedDimensionPlot1", mode="in")[[1]])) # no parents.
-    g2 <- iSEE:::.choose_new_parent(g, "ReducedDimensionPlot1", "ReducedDimensionPlot2", "---", iSEE:::.selectColSource)
+    g2 <- iSEE:::.choose_new_parent(g, "ReducedDimensionPlot1", "ReducedDimensionPlot2", "---", iSEE:::.selectColumnSource)
     expect_true(igraph::are_adjacent(g2, "ReducedDimensionPlot2", "ReducedDimensionPlot1"))
 
     # Adding links that are already there do nothing.
-    g2 <- iSEE:::.choose_new_parent(g, "FeatureAssayPlot1", "ColumnDataPlot1", "---", iSEE:::.selectColSource)
+    g2 <- iSEE:::.choose_new_parent(g, "FeatureAssayPlot1", "ColumnDataPlot1", "---", iSEE:::.selectColumnSource)
     expect_equal(g[], g2[])
 
     # Updating edges from what previously existed.
     expect_true(igraph::are_adjacent(g, "FeatureAssayPlot1", "FeatureAssayPlot2"))
     expect_false(igraph::are_adjacent(g, "ReducedDimensionPlot1", "FeatureAssayPlot2"))
 
-    g2 <- iSEE:::.choose_new_parent(g, "FeatureAssayPlot2", "ReducedDimensionPlot1", "FeatureAssayPlot1", iSEE:::.selectColSource)
+    g2 <- iSEE:::.choose_new_parent(g, "FeatureAssayPlot2", "ReducedDimensionPlot1", "FeatureAssayPlot1", iSEE:::.selectColumnSource)
 
     expect_false(igraph::are_adjacent(g2, "FeatureAssayPlot1", "FeatureAssayPlot2"))
     expect_true(igraph::are_adjacent(g2, "ReducedDimensionPlot1", "FeatureAssayPlot2"))
 
     # Updates to existing edges do nothing.
-    g2 <- iSEE:::.choose_new_parent(g, "FeatureAssayPlot2", "FeatureAssayPlot1", "FeatureAssayPlot1", iSEE:::.selectColSource)
+    g2 <- iSEE:::.choose_new_parent(g, "FeatureAssayPlot2", "FeatureAssayPlot1", "FeatureAssayPlot1", iSEE:::.selectColumnSource)
     expect_equal(g[], g2[])
 })
 
@@ -126,17 +126,17 @@ test_that("evaluation order works properly", {
 test_that("graph adding and deleting responds to fields", {
     # Adding to an existing link augments the available fields.
     id <- igraph::get.edge.ids(g, c("ReducedDimensionPlot1", "ColumnDataPlot1"))
-    expect_identical(igraph::E(g)$fields[[id]], iSEE:::.selectColSource)
+    expect_identical(igraph::E(g)$fields[[id]], iSEE:::.selectColumnSource)
 
     g2 <- iSEE:::.add_interpanel_link(g, "ColumnDataPlot1", "ReducedDimensionPlot1", "BLAH")
-    expect_identical(igraph::E(g2)$fields[[id]], c(iSEE:::.selectColSource, "BLAH"))
+    expect_identical(igraph::E(g2)$fields[[id]], c(iSEE:::.selectColumnSource, "BLAH"))
 
     # Removing a field from a link removes the fields.
     g3 <- iSEE:::.delete_interpanel_link(g2, "ColumnDataPlot1", "ReducedDimensionPlot1", "BLAH")
-    expect_identical(igraph::E(g3)$fields[[id]], iSEE:::.selectColSource)
+    expect_identical(igraph::E(g3)$fields[[id]], iSEE:::.selectColumnSource)
 
     # Removing all fields from a link removes the link.
-    g4 <- iSEE:::.delete_interpanel_link(g3, "ColumnDataPlot1", "ReducedDimensionPlot1", iSEE:::.selectColSource)
+    g4 <- iSEE:::.delete_interpanel_link(g3, "ColumnDataPlot1", "ReducedDimensionPlot1", iSEE:::.selectColumnSource)
     expect_identical(igraph::get.edge.ids(g4, c("ReducedDimensionPlot1", "ColumnDataPlot1")), 0)
 
     # Adding a completely new link works as well.

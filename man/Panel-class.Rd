@@ -22,6 +22,7 @@
 \alias{.multiSelectionActive,Panel-method}
 \alias{.multiSelectionInvalidated,Panel-method}
 \alias{.multiSelectionAvailable,Panel-method}
+\alias{.isBrushable,Panel-method}
 \alias{.singleSelectionDimension,Panel-method}
 \alias{.singleSelectionValue,Panel-method}
 \alias{.singleSelectionSlots,Panel-method}

@@ -73,7 +73,7 @@
 #'
 #' The following slots control interactions with the plot image:
 #' \itemize{
-#' \item \code{ZoomData}, a named numeric vector of plot coordinates with \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"} elements parametrizing the zoom boundaries.
+#' \item \code{ZoomData}, a named numeric vector of plot coordinates with \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"} elements parameterizing the zoom boundaries.
 #' Defaults to an empty vector, i.e., no zoom.
 #' \item \code{BrushData}, a list containing either a Shiny brush (see \code{?\link{brushedPoints}}) or an \pkg{iSEE} lasso (see \code{?\link{lassoPoints}}).
 #' Defaults to an empty list, i.e., no brush or lasso.
@@ -227,6 +227,7 @@
 #' .multiSelectionCommands,DotPlot-method
 #' .multiSelectionClear,DotPlot-method
 #' .multiSelectionDimension,DotPlot-method
+#' .isBrushable,DotPlot-method
 #' .singleSelectionValue,DotPlot-method
 #' .singleSelectionSlots,DotPlot-method
 #' .prioritizeDotPlotData,DotPlot-method
@@ -495,9 +496,9 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 setMethod(".defineInterface", "DotPlot", function(x, se, select_info) {
     out <- callNextMethod()
     c(
-        out[1],
+        out[1], # data parameters box
         list(.create_visual_box(x, se, select_info$single)),
-        out[-1]
+        out[-1] # selection parameters box
     )
 })
 
@@ -1125,6 +1126,9 @@ setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
         "selected <- rownames(iSEE::lassoPoints(contents, select));"
     }
 })
+
+#' @export
+setMethod(".isBrushable", "DotPlot", function(x) TRUE)
 
 #' @export
 setMethod(".singleSelectionValue", "DotPlot", function(x, contents) {

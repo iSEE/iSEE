@@ -1338,7 +1338,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
 #' Add multiple selection plotting commands
 #'
-#' Add \link{ggplot} instructions to create brushes and lassos for both saved and active mutliple selections in a \linkS4class{DotPlot} panel.
+#' Add \link{ggplot} instructions to create brushes and lassos for both saved and active multiple selections in a \linkS4class{DotPlot} panel.
 #'
 #' @param x An instance of a \linkS4class{DotPlot} class.
 #' @param envir The environment in which the \link{ggplot} commands are to be evaluated.

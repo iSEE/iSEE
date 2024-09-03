@@ -27,7 +27,7 @@
 #' @seealso
 #' \code{\link{.selectInput.iSEE}} and friends, which provide modified UI elements that can be clicked to launch a helpful tour.
 #'
-#' @author Aaron LUn
+#' @author Aaron Lun
 #'  
 #' @name specific-tours
 NULL

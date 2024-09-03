@@ -39,7 +39,7 @@
         all_cmds[["rows"]] <- ".chosen.rows <- intersect(rownames(se), unlist(row_selected));"
     }
 
-    if (!is.null(envir$col_selected) && slot(x, .selectColRestrict)) {
+    if (!is.null(envir$col_selected) && slot(x, .selectColumnRestrict)) {
         # TODO: implement visual effects for other forms of selection.
         all_cmds[["columns"]] <- ".chosen.columns <- intersect(colnames(se), unlist(col_selected));"
     } else {
@@ -243,7 +243,7 @@
 
     additional <- c(additional,
         sprintf(
-            ".column_annot <- ComplexHeatmap::columnAnnotation(df=.column_data, col=.column_col, annotation_legend_param=list(direction=%s))",
+            ".column_annot <- ComplexHeatmap::columnAnnotation(df=.column_data, col=.column_col, annotation_legend_param=list(direction=%s, nrow=10))",
             deparse(tolower(slot(x, .plotLegendDirection)))
         )
     )
@@ -309,7 +309,7 @@
     additional <- c(additional, '.row_data <- as.data.frame(.row_data, optional=TRUE)') # preserve colnames
     additional <- c(additional,
         sprintf(
-            ".row_annot <- ComplexHeatmap::rowAnnotation(df=.row_data, col=.row_col, annotation_legend_param=list(direction=%s))",
+            ".row_annot <- ComplexHeatmap::rowAnnotation(df=.row_data, col=.row_col, annotation_legend_param=list(direction=%s, nrow=10))",
             deparse(tolower(slot(x, .plotLegendDirection)))
         )
     )
@@ -340,7 +340,7 @@
     )
 }
 
-#' Process transfomations applied to rows of a heatmap matrix
+#' Process transformations applied to rows of a heatmap matrix
 #'
 #' @param x An instance of a \linkS4class{ComplexHeatmapPlot} class.
 #' @param se The current \linkS4class{SummarizedExperiment} object.

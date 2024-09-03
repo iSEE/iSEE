@@ -53,7 +53,7 @@
     brush_code <- history_code <- list()
     for (panel_name in names(all_memory)) {
         instance <- all_memory[[panel_name]]
-        if (!is(instance, "DotPlot")) {
+        if (!.isBrushable(instance)) {
             next
         }
 

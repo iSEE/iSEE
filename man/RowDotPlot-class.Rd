@@ -52,7 +52,7 @@ The specified field should contain categorical values; defaults to the first suc
 \item \code{SizeByRowData}, a string specifying the \code{\link{rowData}} field for controlling point size,
 if \code{SizeBy="Row data"} (see the \linkS4class{Panel} class).
 The specified field should contain continuous values; defaults to the first such field.
-\item \code{TooltipColumnData}, a character vector specifying \code{\link{rowData}} fields to show in the tooltip.
+\item \code{TooltipRowData}, a character vector specifying \code{\link{rowData}} fields to show in the tooltip.
 Defaults to `character(0)`, which displays only the `rownames` value of the data point.
 }
 
@@ -89,7 +89,7 @@ For controlling selections:
 \itemize{
 \item \code{\link{.multiSelectionRestricted}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel.
 \item \code{\link{.multiSelectionDimension}(x)} returns \code{"row"} to indicate that a multiple row selection is being transmitted.
-\item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the faceting options usethe multiple row selections,
+\item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the faceting options use the multiple row selections,
 such that the point coordinates/domain may change upon updates to upstream selections in transmitting panels.
 \item \code{\link{.singleSelectionDimension}(x)} returns \code{"feature"} to indicate that a feature identity is being transmitted.
 }

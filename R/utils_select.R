@@ -112,11 +112,11 @@
         select_cmds[["row"]] <- row_select_cmds
     }
 
-    col_select_cmds <- .process_selectby_choice(x, by_field=.selectColSource, 
+    col_select_cmds <- .process_selectby_choice(x, by_field=.selectColumnSource, 
         all_memory=all_memory, varname="col_selected")
 
     if (!is.null(col_select_cmds)) {
-        transmitter <- x[[.selectColSource]]
+        transmitter <- x[[.selectColumnSource]]
         .populate_selection_environment(all_memory[[transmitter]], envir)
         envir$all_contents <- all_contents
         .textEval(col_select_cmds, envir)

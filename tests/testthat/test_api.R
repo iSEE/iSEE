@@ -116,7 +116,7 @@ test_that(".multiSelectionRestricted handles ColumnDotPlot", {
     x <- ReducedDimensionPlot()
     expect_false(.multiSelectionRestricted(x))
 
-    x[[iSEE:::.selectColRestrict]] <- TRUE
+    x[[iSEE:::.selectColumnRestrict]] <- TRUE
     expect_true(.multiSelectionRestricted(x))
 })
 

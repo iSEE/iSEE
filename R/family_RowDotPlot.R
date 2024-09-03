@@ -27,7 +27,7 @@
 #' \item \code{SizeByRowData}, a string specifying the \code{\link{rowData}} field for controlling point size,
 #' if \code{SizeBy="Row data"} (see the \linkS4class{Panel} class).
 #' The specified field should contain continuous values; defaults to the first such field.
-#' \item \code{TooltipColumnData}, a character vector specifying \code{\link{rowData}} fields to show in the tooltip.
+#' \item \code{TooltipRowData}, a character vector specifying \code{\link{rowData}} fields to show in the tooltip.
 #' Defaults to `character(0)`, which displays only the `rownames` value of the data point.
 #' }
 #'
@@ -62,7 +62,7 @@
 #' \itemize{
 #' \item \code{\link{.multiSelectionRestricted}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel.
 #' \item \code{\link{.multiSelectionDimension}(x)} returns \code{"row"} to indicate that a multiple row selection is being transmitted.
-#' \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the faceting options usethe multiple row selections,
+#' \item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the faceting options use the multiple row selections,
 #' such that the point coordinates/domain may change upon updates to upstream selections in transmitting panels.
 #' \item \code{\link{.singleSelectionDimension}(x)} returns \code{"feature"} to indicate that a feature identity is being transmitted.
 #' }
@@ -129,7 +129,7 @@ setMethod("initialize", "RowDotPlot", function(.Object, ..., SelectionEffect=NUL
 
     # Defensive measure to avoid problems with cyclic graphs
     # that the user doesn't have permissions to change!
-    args <- .emptyDefault(args, .selectColDynamic, FALSE)
+    args <- .emptyDefault(args, .selectColumnDynamic, FALSE)
 
     args <- .emptyDefault(args, .facetRowByRowData, NA_character_)
     args <- .emptyDefault(args, .facetColumnByRowData, NA_character_)
@@ -290,7 +290,7 @@ setMethod(".refineParameters", "RowDotPlot", function(x, se) {
 
 #' @export
 setMethod(".hideInterface", "RowDotPlot", function(x, field) {
-    if (field %in% c(.selectColSource, .selectColRestrict, .selectColDynamic)) {
+    if (field %in% c(.selectColumnSource, .selectColumnRestrict, .selectColumnDynamic)) {
         TRUE
     } else {
         callNextMethod()
@@ -349,7 +349,7 @@ setMethod(".getDiscreteMetadataChoices", "RowDotPlot", function(x, se) {
 })
 
 setMethod(".getContinuousMetadataChoices", "RowDotPlot", function(x, se) {
-    .getCachedCommonInfo(se, "RowDotPlot")$continuous.colData.names
+    .getCachedCommonInfo(se, "RowDotPlot")$continuous.rowData.names
 })
 
 setMethod(".getMetadataChoices", "RowDotPlot", function(x, se) {

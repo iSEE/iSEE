@@ -38,8 +38,31 @@
     }
 }
 
+#' Hidden interface elements
+#'
+#' Returns an interface element with or without the CSS class \code{shinyjs-hide}, depending on whether the element is hidden based on \code{\link{.hideInterface}}.
+#' This allows panels to hide interface elements that are provided by parent classes but are not needed in the subclass.
+#' 
+#' \code{.selectInputHidden(x, field, ...)} produces a Shiny \code{\link{selectInput}} element that will be hidden if \code{.hideInterface(x)} is \code{TRUE}.
+#'
+#' @param x An instance of a \linkS4class{Panel} class.
+#' @param field String specifying the name of the suffix of the ID of the interface element.
+#' @param ... Further arguments to pass to the Shiny function responsible for producing the interface element.
+#'
+#' @return
+#' The output of \code{FUN(id, ..)} is returned where \code{id} is defined by concatenating \code{\link{.getEncodedName}(x)} and \code{field} (separated by an underscore).
+#' 
+#' @export
 #' @importFrom shiny selectInput
-#' @rdname INTERNAL_hidden_elements
+#' @name hidden-inputs
+#' @author Kevin Rue-Albrecht
+#'
+#' @examples
+#' .selectInputHidden(ComplexHeatmapPlot(), "SelectionHistory",
+#'   choices = c(1, 2, 3), label = "Saved selection (hidden)")
+#'   
+#' .selectInputHidden(ReducedDimensionPlot(), "Type",
+#'   choices = c("UMAP", "PCA"), label = "Reduced dimension type (hidden)")
 .selectInputHidden <- function(x, field, ...) {
     .hide_this_thing(x, field, selectInput, ...)
 }

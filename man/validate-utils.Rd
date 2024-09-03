@@ -8,7 +8,7 @@
 \alias{.allowableChoiceError}
 \alias{.multipleChoiceError}
 \alias{.validNumberError}
-\title{Validation error utilites}
+\title{Validation error utilities}
 \usage{
 .singleStringError(msg, x, fields)
 

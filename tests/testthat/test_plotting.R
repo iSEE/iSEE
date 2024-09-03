@@ -702,7 +702,7 @@ test_that(".create_points handles selection effects", {
     all_memory <- pObjects$memory
     rdp <- all_memory$ReducedDimensionPlot1
     fap <- all_memory$FeatureAssayPlot1
-    fap[[iSEE:::.selectColSource]] <- .getEncodedName(rdp)
+    fap[[iSEE:::.selectColumnSource]] <- .getEncodedName(rdp)
 
     rd <- reducedDim(sce, rdp[[iSEE:::.redDimType]])
     x_10 <- head(rd[, rdp[[iSEE:::.redDimXAxis]]], 10)
@@ -729,7 +729,7 @@ test_that(".create_points handles selection effects", {
     expect_true(any(grepl("columnSelectionColorMap", unlist(out$commands))))
 
     # Trying for restriction:
-    fap[[iSEE:::.selectColRestrict]] <- TRUE
+    fap[[iSEE:::.selectColumnRestrict]] <- TRUE
     out <- .generateOutput(fap, sce, all_memory=all_memory, all_contents=pObjects$contents)
 
     expect_true(!is.null(out$contents$SelectBy))

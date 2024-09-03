@@ -1,4 +1,57 @@
-# iSEE 2.9.13
+# iSEE 2.17.4
+
+* Added explicitly a "Stop app" button to close the application (should be a means to nicely behave in container-spawned instances). Addresses #630
+
+# iSEE 2.17.3
+
+* Preserve the existing order of rows when receiving a selection in `RowDataTable`, `ColumnDataTable` panels.
+
+# iSEE 2.17.2
+
+* Export function `.selectInputHidden()`.
+
+# iSEE 2.17.1
+
+* Fix typo in `setMethod(".getContinuousMetadataChoices", "RowDotPlot", ...)`.
+
+# iSEE 2.15.1
+
+* Add button 'Draft out a tour' to navigation bar.
+* Add button 'About this data set' to navigation bar.
+
+# iSEE 2.13.5
+
+* Add generic `.isBrushable` to support panels that are not `DotPlot` extensions.
+
+# iSEE 2.13.4
+
+* Fix `COLORMAP` bug introduced in `2.13.3`.
+
+# iSEE 2.13.3
+
+* Let app maintainer define colormap in the landing page.
+
+# iSEE 2.13.2
+
+* Fix bug introduced in `2.11.2` (DataBoxOpen would apply also to Visual parameters box)
+
+# iSEE 2.13.1
+
+* Define missing methods for generics for custom tables (issues #608 and #612)
+
+# iSEE 2.11.4
+
+* Fix bug introduced in `2.11.2`.
+
+# iSEE 2.11.3
+
+* Use standard syntax to include empty icon in relevant places (issue #606).
+
+# iSEE 2.11.2
+
+* Make it possible to hide the "Visual Parameters" box (issue #611).
+
+# iSEE 2.11.1
 
 * Add `tooltip.signif` to `registerAppOptions()` to regulate the number of
   significant digits shown in the tooltip.
@@ -242,7 +295,7 @@
 
 # iSEE 2.1.7
 
-* Added control of legend point size under the "Text" category of teh "Visual parameters" box.
+* Added control of legend point size under the "Text" category of the "Visual parameters" box.
 
 # iSEE 2.1.6
 
@@ -305,7 +358,7 @@
 
 # iSEE 1.99.3
 
-* Fixed occurences of `rowData` in `RowDotPlot` panels.
+* Fixed occurrences of `rowData` in `RowDotPlot` panels.
 * Refactored `.create_visual_box()`.
 * Refactored visual parameter sections into generics.
 * Apply global option `selected.color` to single selections.
@@ -569,7 +622,7 @@
 * Added grid-based visual point downsampling for faster plotting, including control of resolution.
 * Added button "Clear features" for heat maps.
 * Reorganized buttons in heat map panels.
-* Transfered maintainer badge to Federico.
+* Transferred maintainer badge to Federico.
 
 # iSEE 0.99.0
 

@@ -153,8 +153,8 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ..., SelectionEffect=
     }
 
     if (!is.null(SelectionEffect)) {
-        .Deprecated(msg=sprintf("'SelectionEffect=' is deprecated.\nUse '%s=TRUE' instead.", .selectColRestrict))
-        args[[.selectColRestrict]] <- TRUE
+        .Deprecated(msg=sprintf("'SelectionEffect=' is deprecated.\nUse '%s=TRUE' instead.", .selectColumnRestrict))
+        args[[.selectColumnRestrict]] <- TRUE
     }
 
     if (!is.null(SelectionColor)) {
@@ -199,9 +199,9 @@ setMethod("[[", "ColumnDotPlot", function(x, i, j, ...) {
 
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.\nUse <%s>[['%s']] and/or <%s>[['%s']] instead.",
-            cname, i, cname, .selectColRestrict, cname, .colorByField))
+            cname, i, cname, .selectColumnRestrict, cname, .colorByField))
 
-        if (slot(x, .selectColRestrict)) {
+        if (slot(x, .selectColumnRestrict)) {
             "Restrict" 
         } else if (slot(x, .colorByField) == .colorByColSelectionsTitle) {
             "Color"
@@ -225,9 +225,9 @@ setReplaceMethod("[[", "ColumnDotPlot", function(x, i, j, ..., value) {
 
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.\nSet <%s>[['%s']] and/or <%s>[['%s']] instead.",
-            cname, i, cname, .selectColRestrict, cname, .colorByField))
+            cname, i, cname, .selectColumnRestrict, cname, .colorByField))
 
-        slot(x, .selectColRestrict) <- (value=="Restrict")
+        slot(x, .selectColumnRestrict) <- (value=="Restrict")
         x
     } else {
         callNextMethod()
@@ -323,7 +323,7 @@ setMethod(".multiSelectionDimension", "ColumnDotPlot", function(x) "column")
 
 #' @export
 setMethod(".multiSelectionRestricted", "ColumnDotPlot", function(x) {
-    slot(x, .selectColRestrict)
+    slot(x, .selectColumnRestrict)
 })
 
 #' @export
@@ -549,7 +549,7 @@ setMethod(".addDotPlotDataSelected", "ColumnDotPlot", function(x, envir) {
         SelectBy="plot.data$SelectBy <- rownames(plot.data) %in% unlist(col_selected);"
     )
 
-    if (slot(x, .selectColRestrict)) {
+    if (slot(x, .selectColumnRestrict)) {
         cmds["saved"] <- "plot.data.all <- plot.data;"
         cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"
     }
@@ -707,7 +707,7 @@ setMethod("updateObject", "ColumnDotPlot", function(object, ..., verbose=FALSE) 
         # nocov start
 
         # Do this before 'callNextMethod()', which fills in the Restrict.
-        update.2.3 <- is(try(slot(object, .selectColRestrict), silent=TRUE), "try-error")
+        update.2.3 <- is(try(slot(object, .selectColumnRestrict), silent=TRUE), "try-error")
 
         # NOTE: it is crucial that updateObject does not contain '[[' or '[[<-'
         # calls, lest we get sucked into infinite recursion with the calls to
@@ -716,7 +716,7 @@ setMethod("updateObject", "ColumnDotPlot", function(object, ..., verbose=FALSE) 
 
         if (update.2.3) {
             effect <- object@SelectionEffect
-            slot(object, .selectColRestrict) <- (effect=="Restrict")
+            slot(object, .selectColumnRestrict) <- (effect=="Restrict")
         }
 
         # nocov end

@@ -123,11 +123,11 @@ collated[.organizationWidth] <- "integer"
 
 .selectParamBoxOpen <- "SelectionBoxOpen"
 .selectRowSource <- "RowSelectionSource"
-.selectColSource <- "ColumnSelectionSource"
+.selectColumnSource <- "ColumnSelectionSource"
 
 collated[.selectParamBoxOpen] <- "logical"
 collated[.selectRowSource] <- "character"
-collated[.selectColSource] <- "character"
+collated[.selectColumnSource] <- "character"
 
 #' @export
 .dataParamBoxOpen <- "DataBoxOpen"
@@ -138,15 +138,15 @@ collated[.dataParamBoxOpen] <- "logical"
 
 collated[.selectRowDynamic] <- "logical"
 
-.selectColDynamic <- "ColumnSelectionDynamicSource"
+.selectColumnDynamic <- "ColumnSelectionDynamicSource"
 
-collated[.selectColDynamic] <- "logical"
+collated[.selectColumnDynamic] <- "logical"
 
 .selectRowRestrict <- "RowSelectionRestrict"
-.selectColRestrict <- "ColumnSelectionRestrict"
+.selectColumnRestrict <- "ColumnSelectionRestrict"
 
 collated[.selectRowRestrict] <- "logical"
-collated[.selectColRestrict] <- "logical"
+collated[.selectColumnRestrict] <- "logical"
 
 # Practically, this is only a DotPlot feature, but we put it here otherwise the
 # Saved concept is not generic.

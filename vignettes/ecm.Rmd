@@ -1,5 +1,5 @@
 ---
-title: Describing the `ExperimentColorMap` class
+title: Describing the ExperimentColorMap class
 author:
 - name: Kevin Rue-Albrecht
   affiliation: 

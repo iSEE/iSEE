@@ -23,7 +23,7 @@
 #' as well as for fine-tuning parameters that are too rarely used to have their own interface elements.
 #'
 #' Known options include:
-#' \itemize{
+#' \describe{
 #' \item{\code{panel.color}}{Named character vector of colors.
 #' The names of the vector should be set to the name of class to be overridden; if a class is not named here, its default color is used.
 #' It is highly recommended to define colors as hex color codes (e.g., \code{"#1e90ff"}), for full compatibility with both HTML elements and R plots.}
@@ -47,7 +47,7 @@
 #' For example, one could supply a single empty list to clear \code{se} of all existing options.
 #'
 #' @section For developers:
-#' Developers of Panel subclasses can add arbitary options to \code{...} to help control the behavior of their Panel instances.
+#' Developers of Panel subclasses can add arbitrary options to \code{...} to help control the behavior of their Panel instances.
 #' We recommend prefixing any options with the name of the package in the form of \code{<PACKAGE>_<OPTION>},
 #' so as to avoid conflicts with other options (in the base classes, or in other downstream packages) that have the same name.
 #'

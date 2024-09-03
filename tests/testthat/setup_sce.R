@@ -4,7 +4,7 @@ stopifnot(
 )
 
 # Example data ----
-sce <- ReprocessedAllenData(assays = "tophat_counts")
+sce <- ReprocessedAllenData(assays = "tophat_counts", legacy = TRUE)
 
 sce <- logNormCounts(sce, exprs_values="tophat_counts")
 

@@ -179,7 +179,7 @@
         cmds <- c(cmds,
             .coerce_dataframe_columns(envir,
                 fields=annot, df=".column_data",
-                max_levels=.get_factor_maxlevels()
+                max_levels=.get_color_maxlevels()
             )
         )
 
@@ -274,7 +274,7 @@
         cmds <- c(cmds,
             .coerce_dataframe_columns(envir,
                 fields=annot, df=".row_data",
-                max_levels=.get_factor_maxlevels()
+                max_levels=.get_color_maxlevels()
             )
         )
 

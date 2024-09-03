@@ -12,6 +12,8 @@
 \alias{.fullName,ComplexHeatmapPlot-method}
 \alias{.generateOutput,ComplexHeatmapPlot-method}
 \alias{.hideInterface,ComplexHeatmapPlot-method}
+\alias{.multiSelectionResponsive,ComplexHeatmapPlot-method}
+\alias{.multiSelectionRestricted,ComplexHeatmapPlot-method}
 \alias{.panelColor,ComplexHeatmapPlot-method}
 \alias{.refineParameters,ComplexHeatmapPlot-method}
 \alias{.renderOutput,ComplexHeatmapPlot-method}
@@ -47,12 +49,15 @@ Defaults to \code{character(0)}.
 Defaults to \code{character(0)}.
 \item \code{ShowColumnSelection}, a logical vector indicating whether the column selection should be shown as an extra annotation bar.
 Defaults to \code{TRUE}.
+\item \code{OrderColumnSelection}, a logical vector indicating whether the column selection should be used to order columns in the heatmap.
+Defaults to \code{TRUE}.
 }
 
 The following slots control the choice of assay values:
 \itemize{
 \item \code{Assay}, string specifying the name of the assay to use for obtaining expression values.
-Defaults to the first valid assay name (see \code{?"\link{.refineParameters,ComplexHeatmapPlot-method}"} for details).
+Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}},
+falling back to the first valid assay name (see \code{.cacheCommonInfo} below).
 }
 
 The following slots control the clustering of rows:
@@ -89,10 +94,12 @@ The following slots refer to general plotting parameters:
 \item \code{ShowDimNames}, a character vector specifying the dimensions for which to display names.
 This can contain zero or more of \code{"Rows"} and \code{"Columns"}.
 Defaults to \code{"Rows"}.
+\item \code{NamesRowFontSize}, a numerical value setting the font size of the row names.
+\item \code{NamesColumnFontSize}, a numerical value setting the font size of the column names.
 \item \code{LegendPosition}, string specifying the position of the legend on the plot.
-Defaults to \code{"Bottom"} but can also be \code{"Right"}.
+Defaults to \code{"Bottom"} in \code{\link{getPanelDefault}} but can also be \code{"Right"}.
 \item \code{LegendDirection}, string specifying the orientation of the legend on the plot for continuous covariates.
-Defaults to \code{"Horizontal"} but can also be \code{"Vertical"}.
+Defaults to \code{"Horizontal"} in \code{\link{getPanelDefault}} but can also be \code{"Vertical"}.
 }
 
 The following slots control some aspects of the user interface:
@@ -119,7 +126,7 @@ Refer to the documentation for each method for more details on the remaining arg
 For setting up data values:
 \itemize{
 \item \code{\link{.cacheCommonInfo}(x)} adds a \code{"ComplexHeatmapPlot"} entry containing
-\code{valid.assay.names}, a character vector of valid assay names;
+\code{valid.assay.names}, a character vector of valid (i.e., non-empty) assay names;
 \code{discrete.assay.names}, a character vector of valid assay names with discrete atomic values;
 \code{continuous.assay.names}, a character vector of valid assay names with continuous atomic values;
 \code{valid.colData.names}, a character vector of names of columns in \code{colData} that are valid;

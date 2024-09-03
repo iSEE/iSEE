@@ -192,21 +192,59 @@ setMethod(".defineDataInterface", "ColumnDataPlot", function(x, se, select_info)
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
+    .addSpecificTour(class(x)[1], .colDataYAxis, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .colDataYAxis, " + .selectize-control"),
+                    intro="Here, we can specify the field of the <code>colData</code> to show on the y-axis."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .colDataXAxis, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .colDataXAxis),
+                    intro="Here, we choose what to show on the x-axis. If we were to <strong>click on <em>Column data</em></strong>..." 
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colDataXAxisColData, " + .selectize-control"),
+                    intro="We can choose the field of the <code>colData</code> to show on the x-axis."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colDataXAxis),
+                    intro="The <em>Column selections</em> choice is a bit more exotic.
+If this panel is receiving a multiple column selection from another panel,
+we can stratify points on the x-axis according to whether they are part of that selection or not.
+For example, if we made a brush on another panel containing a scatter plot, we could show two violin plots in this panel;
+one containing data for columns corresponding to points inside the brush, and another containing the points outside the brush.
+If any saved selections are present, these would show up as additional violins."
+                )
+            )
+        )
+    })
+
     list(
-        .selectInputHidden(x, .colDataYAxis,
+        .selectInput.iSEE(x, .colDataYAxis,
             label="Column of interest (Y-axis):",
             choices=.allowableYAxisChoices(x, se),
             selected=slot(x, .colDataYAxis)),
-        .radioButtonsHidden(x, .colDataXAxis, 
+        .radioButtons.iSEE(x, .colDataXAxis, 
             label="X-axis:", inline=TRUE,
             choices=c(.colDataXAxisNothingTitle, .colDataXAxisColDataTitle, .colDataXAxisSelectionsTitle),
             selected=slot(x, .colDataXAxis)),
         .conditionalOnRadio(.input_FUN(.colDataXAxis),
             .colDataXAxisColDataTitle,
-            .selectInputHidden(x, .colDataXAxisColData,
+            .selectInput.iSEE(x, .colDataXAxisColData,
                 label="Column of interest (X-axis):",
                 choices=.allowableXAxisChoices(x, se),
-                selected=slot(x, .colDataXAxisColData)))
+                selected=slot(x, .colDataXAxisColData),
+                help=FALSE
+            )
+        )
     )
 })
 
@@ -294,14 +332,9 @@ setMethod(".generateDotPlotData", "ColumnDataPlot", function(x, envir) {
 
 #' @export
 setMethod(".definePanelTour", "ColumnDataPlot", function(x) {
-    collated <- character(0)
-
     collated <- rbind(
         c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Column data plot</font> panel shows variables from the column metadata (i.e., <code>colData</code>) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a column (usually a sample) of the <code>SummarizedExperiment</code>, and the y-axis represents a chosen variable.", .getPanelColor(x))),
-        .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
-        .addTourStep(x, .colDataYAxis, "We can manually choose the variable to show on the y-axis.", is_selectize=TRUE),
-        .addTourStep(x, .colDataXAxis, sprintf("We can also specify what should be shown on the x-axis.<br/><br/><strong>Action:</strong> click on <i>Column data</i> to stratify values by a column metadata field.", .getPanelColor(x))),
-        .addTourStep(x, .colDataXAxisColData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis.", is_selectize=TRUE)
+        .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options.")
     )
 
     rbind(

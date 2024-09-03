@@ -9,13 +9,14 @@
 #' \itemize{
 #' \item \code{ColorByColumnData}, a string specifying the \code{\link{colData}} field for controlling point color,
 #' if \code{ColorBy="Column data"} (see the \linkS4class{Panel} class).
-#' Defaults to the first valid field (see \code{.refineParameters} below).
+#' Defaults to the first valid field (see \code{.cacheCommonInfo} below).
 #' \item \code{ColorByFeatureNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
 #' if \code{ColorBy="Feature name"}.
-#' Defaults to the name of the first valid assay (see \code{?"\link{.refineParameters,DotPlot-method}"} for details).
+#' Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}}, falling back to the name of the first valid assay 
+#' (see \code{?"\link{.cacheCommonInfo,DotPlot-method}"} for the definition of validity).
 #' \item \code{ColorBySampleNameColor}, a string specifying the color to use for coloring an individual sample on the plot,
 #' if \code{ColorBy="Sample name"}.
-#' Defaults to \code{"red"}.
+#' Defaults to \code{"red"} in \code{\link{getPanelDefault}}.
 #' }
 #'
 #' The following slots control other metadata-related aesthetic aspects of the points:
@@ -26,9 +27,11 @@
 #' \item \code{SizeByColumnData}, a string specifying the \code{\link{colData}} field for controlling point size,
 #' if \code{SizeBy="Column data"} (see the \linkS4class{Panel} class).
 #' The specified field should contain continuous values; defaults to the first such valid field.
+#' \item \code{TooltipColumnData}, a character vector specifying \code{\link{colData}} fields to show in the tooltip.
+#' Defaults to `character(0)`, which displays only the `colnames` value of the data point.
 #' }
-#'
-#' In addition, this class inherits all slots from its \linkS4class{DotPlot} and \linkS4class{Panel} classes.
+#' 
+#' In addition, this class inherits all slots from its parent \linkS4class{DotPlot} and \linkS4class{Panel} classes.
 #'
 #' @section Supported methods:
 #' In the following code snippets, \code{x} is an instance of a \linkS4class{ColumnDotPlot} class.
@@ -68,6 +71,8 @@
 #' \itemize{
 #' \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
 #' mostly tuning the more generic descriptions from the same method of the parent \linkS4class{DotPlot}.
+#' \item \code{\link{.getDotPlotColorHelp}(x, color_choices)} returns a data.frame containing the documentation for the \code{"ColorBy"} UI element,
+#' specialized for column-based dot plots.
 #' }
 #'
 #' Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.
@@ -93,12 +98,15 @@
 #' .refineParameters,ColumnDotPlot-method
 #' .defineInterface,ColumnDotPlot-method
 #' .createObservers,ColumnDotPlot-method
+#' .getTooltipUI,ColumnDotPlot-method
 #' .hideInterface,ColumnDotPlot-method
 #' .multiSelectionDimension,ColumnDotPlot-method
+#' .multiSelectionResponsive,ColumnDotPlot-method
 #' .multiSelectionRestricted,ColumnDotPlot-method
 #' .multiSelectionInvalidated,ColumnDotPlot-method
 #' .singleSelectionDimension,ColumnDotPlot-method
 #' .definePanelTour,ColumnDotPlot-method
+#' .getDotPlotColorHelp,ColumnDotPlot-method
 #' [[,ColumnDotPlot-method
 #' [[,ColumnDotPlot,ANY,ANY-method
 #' [[<-,ColumnDotPlot-method
@@ -109,11 +117,11 @@ NULL
 
 #' @export
 #' @importFrom methods callNextMethod
-setMethod("initialize", "ColumnDotPlot", function(.Object, ..., FacetByRow=NULL, FacetByColumn=NULL) {
+setMethod("initialize", "ColumnDotPlot", function(.Object, ..., SelectionEffect=NULL, SelectionColor=NULL, FacetByRow=NULL, FacetByColumn=NULL) {
     args <- list(...)
     args <- .emptyDefault(args, .colorByColData, NA_character_)
-    args <- .emptyDefault(args, .colorByFeatNameAssay, NA_character_)
-    args <- .emptyDefault(args, .colorBySampNameColor, iSEEOptions$get("selected.color"))
+    args <- .emptyDefault(args, .colorByFeatNameAssay, getPanelDefault("ColorByNameAssay"))
+    args <- .emptyDefault(args, .colorBySampNameColor, getPanelDefault("ColorByNameColor"))
 
     args <- .emptyDefault(args, .shapeByColData, NA_character_)
 
@@ -143,6 +151,17 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ..., FacetByRow=NULL,
             args[[.facetColumnByColData]] <- FacetByColumn
         }
     }
+
+    if (!is.null(SelectionEffect)) {
+        .Deprecated(msg=sprintf("'SelectionEffect=' is deprecated.\nUse '%s=TRUE' instead.", .selectColumnRestrict))
+        args[[.selectColumnRestrict]] <- TRUE
+    }
+
+    if (!is.null(SelectionColor)) {
+        .Deprecated(msg="'SelectionColor=' is deprecated and will be ignored")
+    }
+    
+    args <- .emptyDefault(args, .tooltipColData, getPanelDefault(.tooltipColData))
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -180,9 +199,9 @@ setMethod("[[", "ColumnDotPlot", function(x, i, j, ...) {
 
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.\nUse <%s>[['%s']] and/or <%s>[['%s']] instead.",
-            cname, i, cname, .selectColRestrict, cname, .colorByField))
+            cname, i, cname, .selectColumnRestrict, cname, .colorByField))
 
-        if (slot(x, .selectColRestrict)) {
+        if (slot(x, .selectColumnRestrict)) {
             "Restrict" 
         } else if (slot(x, .colorByField) == .colorByColSelectionsTitle) {
             "Color"
@@ -206,9 +225,9 @@ setReplaceMethod("[[", "ColumnDotPlot", function(x, i, j, ..., value) {
 
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.\nSet <%s>[['%s']] and/or <%s>[['%s']] instead.",
-            cname, i, cname, .selectColRestrict, cname, .colorByField))
+            cname, i, cname, .selectColumnRestrict, cname, .colorByField))
 
-        slot(x, .selectColRestrict) <- (value=="Restrict")
+        slot(x, .selectColumnRestrict) <- (value=="Restrict")
         x
     } else {
         callNextMethod()
@@ -231,7 +250,7 @@ setMethod(".cacheCommonInfo", "ColumnDotPlot", function(x, se) {
     displayable <- .findAtomicFields(df)
 
     subdf <- df[,displayable,drop=FALSE]
-    discrete <- .whichGroupable(subdf)
+    discrete <- .whichGroupable(subdf, max_levels = .get_factor_maxlevels())
     continuous <- .whichNumeric(subdf)
 
     .setCachedCommonInfo(se, "ColumnDotPlot",
@@ -253,9 +272,9 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 
     available <- cdp_cached$valid.colData.names
     x <- .replaceMissingWithFirst(x, .colorByColData, available)
+    x <- .removeInvalidChoices(x, .tooltipColData, available)
 
     assays <- dp_cached$valid.assay.names
-    assays <- c(intersect(iSEEOptions$get("assay"), assays), assays)
     x <- .replaceMissingWithFirst(x, .colorByFeatNameAssay, assays)
 
     discrete <- cdp_cached$discrete.colData.names
@@ -304,7 +323,7 @@ setMethod(".multiSelectionDimension", "ColumnDotPlot", function(x) "column")
 
 #' @export
 setMethod(".multiSelectionRestricted", "ColumnDotPlot", function(x) {
-    slot(x, .selectColRestrict)
+    slot(x, .selectColumnRestrict)
 })
 
 #' @export
@@ -312,6 +331,14 @@ setMethod(".multiSelectionInvalidated", "ColumnDotPlot", function(x) {
     slot(x, .facetRow) == .facetByColSelectionsTitle || 
         slot(x, .facetColumn) == .facetByColSelectionsTitle || 
         callNextMethod()
+})
+
+#' @export
+setMethod(".multiSelectionResponsive", "ColumnDotPlot", function(x, dims = character(0)) {
+    if ("column" %in% dims) {
+        return(TRUE)
+    }
+    return(FALSE)
 })
 
 #' @export
@@ -332,7 +359,7 @@ setMethod(".getMetadataChoices", "ColumnDotPlot", function(x, se) {
 })
 
 setMethod(".defineDotPlotColorChoices", "ColumnDotPlot", function(x, se) {
-    covariates <- .getMetadataChoices(x, se)
+    covariates <- .allowableColorByDataChoices(x, se)
     all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
     .define_color_options_for_column_plots(se, covariates, all_assays)
 })
@@ -522,7 +549,7 @@ setMethod(".addDotPlotDataSelected", "ColumnDotPlot", function(x, envir) {
         SelectBy="plot.data$SelectBy <- rownames(plot.data) %in% unlist(col_selected);"
     )
 
-    if (slot(x, .selectColRestrict)) {
+    if (slot(x, .selectColumnRestrict)) {
         cmds["saved"] <- "plot.data.all <- plot.data;"
         cmds["subset"] <- "plot.data <- subset(plot.data, SelectBy);"
     }
@@ -572,15 +599,107 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
 })
 
 ###############################################################
+# Tooltip
 
-#' @export
-setMethod(".definePanelTour", "ColumnDotPlot", function(x) {
-    collated <- callNextMethod()
-        
-    collated$intro[collated$intro=="PLACEHOLDER_COLOR"] <- "We can choose to color by different per-column attributes - from the column metadata, across a specific feature of an assay, to identify a chosen sample, or based on a multiple column selection transmitted from another panel.<br/><br/><strong>Action:</strong> try out some of the different choices. Note how further options become available when each choice is selected."
-
-    data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
+setMethod(".getTooltipUI", "ColumnDotPlot", function(x, se, name) {
+    if (length(x[[.tooltipColData]]) > 0) {
+        # as.data.frame sometimes needed before as.list to fix names of items in vector
+        info <- as.list(as.data.frame(colData(se)[name, x[[.tooltipColData]], drop=FALSE]))
+        ui <- .generate_tooltip_html(name, info)
+        ui
+    } else {
+        name
+    }
 })
+
+###############################################################################
+# Documentation
+
+setMethod(".getDotPlotColorHelp", "ColumnDotPlot", function(x, color_choices) {
+    force(color_choices)
+    function(plot_name) {
+        start <- paste0("#", plot_name, "_", .colorByField)
+        base <- "We can choose to color points by a constant (<em>None</em>) or various per-column attributes. Try out some of the different choices here, and note how further options become available when each choice is selected."
+        steps <- list(c(element=start, intro=base))
+
+        if ("Column data" %in% color_choices) {
+            steps <- c(steps, list(
+                c(
+                    element=start,
+                    intro="For example, if we <strong>select <em>Column data</em></strong>..."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorByColData, " + .selectize-control"),
+                    intro="... we can choose between different <code>colData</code> fields that we might want to color by."
+                )
+            ))
+        }
+
+        if ("Feature name" %in% color_choices) {
+            steps <- c(steps, list(
+                c(
+                    element=start,
+                    intro="If we <strong>select <em>Feature name</em></strong>..."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorByFeatName, " + .selectize-control"),
+                    intro="... each point is colored according to the assay value of a feature of interest for the corresponding column."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorByFeatNameAssay, " + .selectize-control"),
+                    intro="We can change the choice of assay."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorByRowTable, " + .selectize-control"),
+                    intro="And we can even synchronize the choice of feature to a selection in another panel. This assumes that our current application actually has another panel that allows us to select a single feature from our <code>SummarizedExperiment</code>."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorByFeatDynamic),
+                    intro="In fact, we don't even need to manually choose another panel - if dynamic feature selection is enabled, the plot will automatically respond to any single feature selection from any applicable panel in our application."
+                )
+            ))
+        }
+
+        if ("Sample name" %in% color_choices) {
+            steps <- c(steps, list(
+                c(
+                    element=start,
+                    intro="If we <strong>select <em>Sample name</em></strong>..."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorBySampName, " + .selectize-control"),
+                    intro="... we can highlight a particular point based on the column name."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorBySampNameColor),
+                    intro="We can fiddle with the choice of color for the highlighted point."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorByColTable, " + .selectize-control"),
+                    intro="We can even synchronize the choice of sample to a selection in another panel. This assumes that our current application actually has another panel that we can use to select a single sample."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .colorBySampDynamic),
+                    intro="In fact, we don't even need to manually choose another panel - if dynamic sample selection is enabled, the plot will automatically respond to any single sample selection from any applicable panel in our application."
+                )
+            ))
+        }
+
+        if ("Column selection" %in% color_choices) {
+            steps <- c(steps, list(
+                c(
+                    element=start,
+                    intro="If we <strong>select <em>Column selection</em></strong>, we will color the points according to the multiple column selection transmitted from another panel (see the Selection Parameters box). If a column is included in the active selection of the other panel, the corresponding point in this panel is assigned a certain color; if the column is in one of the saved selections, it gets another color; and if the column is not in any selection, it gets the default color (usually grey). Points that are present in multiple selections also get a different color."  
+                )
+            ))
+        }
+
+        data.frame(do.call(rbind, steps))
+    }
+})
+
+###############################################################################
+# Back compatibility
 
 #' @export
 setMethod("updateObject", "ColumnDotPlot", function(object, ..., verbose=FALSE) {
@@ -588,7 +707,7 @@ setMethod("updateObject", "ColumnDotPlot", function(object, ..., verbose=FALSE) 
         # nocov start
 
         # Do this before 'callNextMethod()', which fills in the Restrict.
-        update.2.3 <- is(try(slot(object, .selectColRestrict), silent=TRUE), "try-error")
+        update.2.3 <- is(try(slot(object, .selectColumnRestrict), silent=TRUE), "try-error")
 
         # NOTE: it is crucial that updateObject does not contain '[[' or '[[<-'
         # calls, lest we get sucked into infinite recursion with the calls to
@@ -597,7 +716,7 @@ setMethod("updateObject", "ColumnDotPlot", function(object, ..., verbose=FALSE) 
 
         if (update.2.3) {
             effect <- object@SelectionEffect
-            slot(object, .selectColRestrict) <- (effect=="Restrict")
+            slot(object, .selectColumnRestrict) <- (effect=="Restrict")
         }
 
         # nocov end

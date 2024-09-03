@@ -112,7 +112,9 @@ collated <- character(0)
 collated[.packageVersion] <- "list"
 
 .organizationId <- "PanelId"
+#' @export
 .organizationWidth <- "PanelWidth"
+#' @export
 .organizationHeight <- "PanelHeight"
 
 collated[.organizationId] <- "integer"
@@ -121,12 +123,13 @@ collated[.organizationWidth] <- "integer"
 
 .selectParamBoxOpen <- "SelectionBoxOpen"
 .selectRowSource <- "RowSelectionSource"
-.selectColSource <- "ColumnSelectionSource"
+.selectColumnSource <- "ColumnSelectionSource"
 
 collated[.selectParamBoxOpen] <- "logical"
 collated[.selectRowSource] <- "character"
-collated[.selectColSource] <- "character"
+collated[.selectColumnSource] <- "character"
 
+#' @export
 .dataParamBoxOpen <- "DataBoxOpen"
 
 collated[.dataParamBoxOpen] <- "logical"
@@ -135,18 +138,19 @@ collated[.dataParamBoxOpen] <- "logical"
 
 collated[.selectRowDynamic] <- "logical"
 
-.selectColDynamic <- "ColumnSelectionDynamicSource"
+.selectColumnDynamic <- "ColumnSelectionDynamicSource"
 
-collated[.selectColDynamic] <- "logical"
+collated[.selectColumnDynamic] <- "logical"
 
 .selectRowRestrict <- "RowSelectionRestrict"
-.selectColRestrict <- "ColumnSelectionRestrict"
+.selectColumnRestrict <- "ColumnSelectionRestrict"
 
 collated[.selectRowRestrict] <- "logical"
-collated[.selectColRestrict] <- "logical"
+collated[.selectColumnRestrict] <- "logical"
 
 # Practically, this is only a DotPlot feature, but we put it here otherwise the
 # Saved concept is not generic.
+#' @export
 .multiSelectHistory <- "SelectionHistory"
 
 collated[.multiSelectHistory] <- "list"
@@ -275,6 +279,9 @@ collated[.shapeByColData] <- "character"
 
 collated[.sizeByColData] <- "character"
 
+.tooltipColData <- "TooltipColumnData"
+collated[.tooltipColData] <- "character"
+
 #' @export
 setClass("ColumnDotPlot", contains=c("DotPlot", "VIRTUAL"), slots=collated)
 
@@ -303,6 +310,9 @@ collated[.shapeByRowData] <- "character"
 .sizeByRowData <- "SizeByRowData"
 
 collated[.sizeByRowData] <- "character"
+
+.tooltipRowData <- "TooltipRowData"
+collated[.tooltipRowData] <- "character"
 
 #' @export
 setClass("RowDotPlot", contains=c("DotPlot", "VIRTUAL"), slots=collated)
@@ -460,6 +470,9 @@ setClass("ColumnDataTable", contains="ColumnTable")
 .showDimnames <- "ShowDimNames"
 .plotLegendDirection <- "LegendDirection"
 
+.namesRowFontSize <- "NamesRowFontSize"
+.namesColumnFontSize <- "NamesColumnFontSize"
+
 collated <- character(0)
 
 collated[.heatMapAssay] <- "character"
@@ -485,6 +498,8 @@ collated[.showDimnames] <- "character"
 collated[.plotLegendPosition] <- "character"
 collated[.plotLegendDirection] <- "character"
 collated[.visualParamBoxOpen] <- "logical"
+collated[.namesRowFontSize] <- "numeric"
+collated[.namesColumnFontSize] <- "numeric"
 
 .heatMapShowSelection <- "ShowColumnSelection"
 .heatMapOrderSelection <- "OrderColumnSelection"

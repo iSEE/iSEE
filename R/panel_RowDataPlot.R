@@ -188,12 +188,47 @@ setMethod(".defineDataInterface", "RowDataPlot", function(x, se, select_info) {
     panel_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(panel_name, "_", field) }
 
+    .addSpecificTour(class(x)[1], .rowDataYAxis, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .rowDataYAxis, " + .selectize-control"),
+                    intro="Here, we can specify the field of the <code>rowData</code> to show on the y-axis."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .rowDataXAxis, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .rowDataXAxis),
+                    intro="Here, we choose what to show on the x-axis. If we were to <strong>click on <em>Row data</em></strong>..." 
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .rowDataXAxisRowData, " + .selectize-control"),
+                    intro="We can choose the field of the <code>rowData</code> to show on the x-axis."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .rowDataXAxis),
+                    intro="The <em>Row selections</em> choice is a bit more exotic.
+If this panel is receiving a multiple row selection from another panel,
+we can stratify points on the x-axis according to whether they are part of that selection or not.
+For example, if we made a brush on another panel containing a scatter plot, we could show two violin plots in this panel;
+one containing data for rows corresponding to points inside the brush, and another for the points outside the brush.
+If any saved selections are present, these would show up as additional violins."
+                )
+            )
+        )
+    })
+
     list(
-        .selectInputHidden(x, .rowDataYAxis,
+        .selectInput.iSEE(x, .rowDataYAxis,
             label="Column of interest (Y-axis):",
             choices=.allowableYAxisChoices(x, se), 
             selected=slot(x, .rowDataYAxis)),
-        .radioButtonsHidden(x, .rowDataXAxis, 
+        .radioButtons.iSEE(x, .rowDataXAxis, 
             label="X-axis:", inline=TRUE,
             choices=c(.rowDataXAxisNothingTitle, .rowDataXAxisRowDataTitle, .rowDataXAxisSelectionsTitle),
             selected=slot(x, .rowDataXAxis)),
@@ -288,14 +323,9 @@ setMethod(".generateDotPlotData", "RowDataPlot", function(x, envir) {
 
 #' @export
 setMethod(".definePanelTour", "RowDataPlot", function(x) {
-    collated <- character(0)
-
     collated <- rbind(
         c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">Row data plot</font> panel shows variables from the row metadata (i.e., <code>rowData</code>) of a <code>SummarizedExperiment</code> object or one of its subclasses. Here, each point corresponds to a row (usually a feature) of the <code>SummarizedExperiment</code> object, and the y-axis represents a chosen variable.", .getPanelColor(x))),
-        .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
-        .addTourStep(x, .rowDataYAxis, "We can manually choose the variable to show on the y-axis.", is_selectize=TRUE),
-        .addTourStep(x, .rowDataXAxis, "We can also specify what should be shown on the x-axis.<br/><br/><strong>Action:</strong> click on <i>Row data</i> to stratify values by a row metadata field."),
-        .addTourStep(x, .rowDataXAxisRowData, "This exposes a new interface element that can be used that can be used to choose a covariate to show on the x-axis.", is_selectize=TRUE)
+        .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked in this plot.<br/><br/><strong>Action:</strong> click on this box to open up available options.")
     )
 
     rbind(

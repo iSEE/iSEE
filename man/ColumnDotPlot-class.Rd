@@ -8,12 +8,15 @@
 \alias{.refineParameters,ColumnDotPlot-method}
 \alias{.defineInterface,ColumnDotPlot-method}
 \alias{.createObservers,ColumnDotPlot-method}
+\alias{.getTooltipUI,ColumnDotPlot-method}
 \alias{.hideInterface,ColumnDotPlot-method}
 \alias{.multiSelectionDimension,ColumnDotPlot-method}
+\alias{.multiSelectionResponsive,ColumnDotPlot-method}
 \alias{.multiSelectionRestricted,ColumnDotPlot-method}
 \alias{.multiSelectionInvalidated,ColumnDotPlot-method}
 \alias{.singleSelectionDimension,ColumnDotPlot-method}
 \alias{.definePanelTour,ColumnDotPlot-method}
+\alias{.getDotPlotColorHelp,ColumnDotPlot-method}
 \alias{[[,ColumnDotPlot-method}
 \alias{[[,ColumnDotPlot,ANY,ANY-method}
 \alias{[[<-,ColumnDotPlot-method}
@@ -31,13 +34,14 @@ The following slots control coloring of the points:
 \itemize{
 \item \code{ColorByColumnData}, a string specifying the \code{\link{colData}} field for controlling point color,
 if \code{ColorBy="Column data"} (see the \linkS4class{Panel} class).
-Defaults to the first valid field (see \code{.refineParameters} below).
+Defaults to the first valid field (see \code{.cacheCommonInfo} below).
 \item \code{ColorByFeatureNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
 if \code{ColorBy="Feature name"}.
-Defaults to the name of the first valid assay (see \code{?"\link{.refineParameters,DotPlot-method}"} for details).
+Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}}, falling back to the name of the first valid assay 
+(see \code{?"\link{.cacheCommonInfo,DotPlot-method}"} for the definition of validity).
 \item \code{ColorBySampleNameColor}, a string specifying the color to use for coloring an individual sample on the plot,
 if \code{ColorBy="Sample name"}.
-Defaults to \code{"red"}.
+Defaults to \code{"red"} in \code{\link{getPanelDefault}}.
 }
 
 The following slots control other metadata-related aesthetic aspects of the points:
@@ -48,9 +52,11 @@ The specified field should contain categorical values; defaults to the first suc
 \item \code{SizeByColumnData}, a string specifying the \code{\link{colData}} field for controlling point size,
 if \code{SizeBy="Column data"} (see the \linkS4class{Panel} class).
 The specified field should contain continuous values; defaults to the first such valid field.
+\item \code{TooltipColumnData}, a character vector specifying \code{\link{colData}} fields to show in the tooltip.
+Defaults to `character(0)`, which displays only the `colnames` value of the data point.
 }
 
-In addition, this class inherits all slots from its \linkS4class{DotPlot} and \linkS4class{Panel} classes.
+In addition, this class inherits all slots from its parent \linkS4class{DotPlot} and \linkS4class{Panel} classes.
 }
 
 \section{Supported methods}{
@@ -92,6 +98,8 @@ For documentation:
 \itemize{
 \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
 mostly tuning the more generic descriptions from the same method of the parent \linkS4class{DotPlot}.
+\item \code{\link{.getDotPlotColorHelp}(x, color_choices)} returns a data.frame containing the documentation for the \code{"ColorBy"} UI element,
+specialized for column-based dot plots.
 }
 
 Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.

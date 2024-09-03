@@ -1,6 +1,6 @@
 ---
 title: >
-  How to use `r Biocpkg("iSEE")` with big data
+  How to use iSEE with big data
 author:
 - name: Kevin Rue-Albrecht
   affiliation: 
@@ -55,14 +55,14 @@ unlink("assay.h5")
 ```
 
 ```{r, eval=!exists("SCREENSHOT"), include=FALSE}
-SCREENSHOT <- function(x, ...) knitr::include_graphics(x)
+SCREENSHOT <- function(x, ...) knitr::include_graphics(x, dpi = NA)
 ```
 
 # Overview
 
 Some tweaks can be performed to enable `r Biocpkg("iSEE")` to run efficiently on large datasets.
 This includes datasets with many features (methylation, SNPs) or many columns (cytometry, single-cell RNA-seq).
-To demonstate some of this functionality, we will use a dataset from the `r Biocpkg("TENxPBMCData")` dataset:
+To demonstrate some of this functionality, we will use a dataset from the `r Biocpkg("TENxPBMCData")` dataset:
 
 ```{r}
 library(TENxPBMCData)
@@ -172,11 +172,11 @@ SCREENSHOT("screenshots/bigdata-downsample.png")
 ```
 
 Downsampling is possible in all `iSEE()` plotting panels that represent features or samples as points.
-We can turn on downsampling for all such panels using the relevant field in `iSEEOptions()`,
+We can turn on downsampling for all such panels using the relevant field in `panelDefaults()`,
 which spares us the hassle of setting `Downsample=` individually in each panel constructor.
 
 ```{r, eval=FALSE}
-iSEEOptions(downsample=TRUE)
+panelDefaults(Downsample=TRUE)
 ```
 
 The downsampling only affects the visualization and the speed of the plot rendering.

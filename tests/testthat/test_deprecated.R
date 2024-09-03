@@ -87,6 +87,21 @@ test_that("old facet setter requests are honored", {
     expect_identical(x[["FacetColumnBy"]], "None")
 })
 
+test_that("old selection constructor requests are honored", {
+    expect_warning(ColumnDataPlot(RowSelectionType="Union"), "deprecated")
+    expect_warning(ColumnDataPlot(RowSelectionSaved=1L), "deprecated")
+    expect_warning(ColumnDataPlot(ColumnSelectionType="Union"), "deprecated")
+    expect_warning(ColumnDataPlot(ColumnSelectionSaved=1L), "deprecated")
+
+    expect_warning(X <- ColumnDataPlot(SelectionEffect="Restrict"), "deprecated")
+    expect_true(X[["ColumnSelectionRestrict"]])
+    expect_warning(ColumnDataPlot(SelectionColor="red"), "deprecated")
+
+    expect_warning(X <- RowDataPlot(SelectionEffect="Restrict"), "deprecated")
+    expect_true(X[["RowSelectionRestrict"]])
+    expect_warning(RowDataPlot(SelectionColor="red"), "deprecated")
+})
+
 test_that("old basic selection getter requests are honored", {
     x <- ColumnDataPlot()
     expect_warning(out <- x[["RowSelectionType"]], "deprecated")

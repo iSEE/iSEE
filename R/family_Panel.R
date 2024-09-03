@@ -9,9 +9,9 @@
 #' \item \code{PanelId}, an integer scalar specifying the identifier for the panel.
 #' This should be unique across panels of the same concrete class.
 #' \item \code{PanelWidth}, an integer scalar specifying the width of the panel.
-#' Bootstrap coordinates are used so this value should lie between 2 and 12; defaults to 4.
+#' Bootstrap coordinates are used so this value should lie between 2 and 12; defaults to 4 in \code{\link{getPanelDefault}}.
 #' \item \code{PanelHeight}, an integer scalar specifying the height of the panel in pixels.
-#' This is expected to lie between 400 and 1000; defaults to 500.
+#' This is expected to lie between 400 and 1000; defaults to 500 in \code{\link{getPanelDefault}}.
 #' }
 #'
 #' The following slots are relevant to \emph{receiving} a multiple selection on the rows:
@@ -19,7 +19,7 @@
 #' \item \code{RowSelectionSource}, a string specifying the name of the transmitting panel from which to receive a multiple row selection (e.g., \code{"RowDataPlot1"}).
 #' Defaults to \code{"---"}.
 #' \item \code{RowSelectionDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for multiple row selections.
-#' Defaults to \code{FALSE}.
+#' Defaults to \code{FALSE} in \code{\link{getPanelDefault}}.
 #' \item \code{RowSelectionRestrict}, a logical scalar indicating whether the display of \code{x} should be restricted to the rows in the multiple selection received from a transmitting panel.
 #' Defaults to \code{FALSE}.
 #' }
@@ -29,7 +29,7 @@
 #' \item \code{ColumnSelectionSource}, a string specifying the name of the transmitting panel from which to receive a multiple column selection (e.g., \code{"ColumnDataPlot1"}).
 #' Defaults to \code{"---"}.
 #' \item \code{ColumnSelectionDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source for multiple column selections.
-#' Defaults to \code{FALSE}.
+#' Defaults to \code{FALSE} in \code{\link{getPanelDefault}}.
 #' \item \code{ColumnSelectionRestrict}, a logical scalar indicating whether the display of \code{x} should be restricted to the columns in the multiple selection received from a transmitting panel.
 #' Defaults to \code{FALSE}.
 #' }
@@ -145,6 +145,7 @@
 #' .multiSelectionActive,Panel-method
 #' .multiSelectionInvalidated,Panel-method
 #' .multiSelectionAvailable,Panel-method
+#' .isBrushable,Panel-method
 #' .singleSelectionDimension,Panel-method
 #' .singleSelectionValue,Panel-method
 #' .singleSelectionSlots,Panel-method
@@ -153,27 +154,40 @@
 NULL
 
 #' @export
-setMethod("initialize", "Panel", function(.Object, ...) {
+setMethod("initialize", "Panel", function(.Object, ..., RowSelectionSaved=NULL, ColumnSelectionSaved=NULL, RowSelectionType=NULL, ColumnSelectionType=NULL) {
     args <- list(...)
 
     args <- .emptyDefault(args, .organizationId, NA_integer_)
-    args <- .emptyDefault(args, .organizationHeight, iSEEOptions$get("panel.height"))
-    args <- .emptyDefault(args, .organizationWidth, iSEEOptions$get("panel.width"))
+    args <- .emptyDefault(args, .organizationHeight, getPanelDefault("PanelHeight"))
+    args <- .emptyDefault(args, .organizationWidth, getPanelDefault("PanelWidth"))
 
     args <- .emptyDefault(args, .selectParamBoxOpen, FALSE)
     args <- .emptyDefault(args, .selectRowSource, .noSelection)
-    args <- .emptyDefault(args, .selectColSource, .noSelection)
+    args <- .emptyDefault(args, .selectColumnSource, .noSelection)
     args <- .emptyDefault(args, .selectRowRestrict, FALSE)
-    args <- .emptyDefault(args, .selectColRestrict, FALSE)
+    args <- .emptyDefault(args, .selectColumnRestrict, FALSE)
 
-    args <- .emptyDefault(args, .selectRowDynamic, iSEEOptions$get("selection.dynamic.multiple"))
-    args <- .emptyDefault(args, .selectColDynamic, iSEEOptions$get("selection.dynamic.multiple"))
+    args <- .emptyDefault(args, .selectRowDynamic, getPanelDefault("MultipleSelectionDynamicSource"))
+    args <- .emptyDefault(args, .selectColumnDynamic, getPanelDefault("MultipleSelectionDynamicSource"))
 
     args <- .emptyDefault(args, .dataParamBoxOpen, FALSE)
 
     current <- c(.latest_version, args[[.packageVersion]])
     current <- current[!duplicated(names(current))]
     args[[.packageVersion]] <- current
+
+    if (!is.null(RowSelectionSaved)) {
+        .Deprecated(msg="'RowSelectionSaved=' is deprecated and will be ignored.")
+    }
+    if (!is.null(ColumnSelectionSaved)) {
+        .Deprecated(msg="'ColumnSelectionSaved=' is deprecated and will be ignored.")
+    }
+    if (!is.null(RowSelectionType)) {
+        .Deprecated(msg="'RowSelectionType=' is deprecated and will be ignored.")
+    }
+    if (!is.null(ColumnSelectionType)) {
+        .Deprecated(msg="'ColumnSelectionType=' is deprecated and will be ignored.")
+    }
 
     do.call(callNextMethod, c(list(.Object), args))
 })
@@ -182,9 +196,9 @@ setValidity2("Panel", function(object) {
     msg <- character(0)
 
     msg <- .validLogicalError(msg, object, c(.selectParamBoxOpen, .dataParamBoxOpen,
-        .selectRowDynamic, .selectColDynamic, .selectRowRestrict, .selectColRestrict))
+        .selectRowDynamic, .selectColumnDynamic, .selectRowRestrict, .selectColumnRestrict))
 
-    msg <- .singleStringError(msg, object, c(.selectRowSource, .selectColSource))
+    msg <- .singleStringError(msg, object, c(.selectRowSource, .selectColumnSource))
 
     msg <- .validNumberError(msg, object, .organizationHeight, lower=height_limits[1], upper=height_limits[2])
     msg <- .validNumberError(msg, object, .organizationWidth, lower=width_limits[1], upper=width_limits[2])
@@ -224,6 +238,9 @@ setMethod("[[", "Panel", function(x, i, j, ...) {
     out
 })
 
+check.validity.env <- new.env()
+check.validity.env$check <- TRUE
+
 #' @export
 setReplaceMethod("[[", "Panel", function(x, i, j, ..., value) {
     if (i %in% c("ColumnSelectionType", "RowSelectionType", "ColumnSelectionSaved", "RowSelectionSaved")) {
@@ -231,8 +248,10 @@ setReplaceMethod("[[", "Panel", function(x, i, j, ..., value) {
         return(x)
     }
 
-    # Avoid having to call updateObject unnecessarily.
-    check <- iSEEOptions$get('.check.validity')
+    # Avoid having to call updateObject unnecessarily when we're operating inside 
+    # the app (and thus everything is known to be most up to date, given that
+    # .refineParameters would have run the necessary updateObject already).
+    check <- check.validity.env$check
     out <- try(.assign_and_check(x, i, value, check=check), silent=TRUE)
 
     if (is(out, "try-error")) {
@@ -269,7 +288,7 @@ setMethod("show", "Panel", function(object) {
         val <- slot(object, x)
         if (is.atomic(val)) {
             if (length(val) > 5) {
-                extra <- sprintf("... + %i more", length(val) - 3) 
+                extra <- sprintf("... + %i more", length(val) - 3)
                 val <- head(val, 3)
             } else {
                 extra <- NULL
@@ -310,16 +329,207 @@ setMethod(".cacheCommonInfo", "Panel", function(x, se) {
     se
 })
 
+###############################################################################
+
 #' @export
 setMethod(".defineInterface", "Panel", function(x, se, select_info) {
     list(
-        .create_data_param_box(x, se, select_info),
+        do.call(.collapseBoxHidden,
+            c(
+                list(x=x, field=.dataParamBoxOpen, title="Data parameters"),
+                open=slot(x, .dataParamBoxOpen),
+                .defineDataInterface(x, se, select_info)
+            )
+        ),
         .create_selection_param_box(x, select_info$multi$row, select_info$multi$column)
     )
 })
 
+#' Multiple selection parameter box
+#'
+#' Create a multiple selection parameter box for a given instance of a \linkS4class{Panel}.
+#'
+#' @param x A \linkS4class{Panel} object.
+#' @param row_selectable A character vector of names for available panels that can transmit a row selection.
+#' @param col_selectable A character vector of names for available panels that can transmit a column selection.
+#' @param selectable A character vector of decoded names for available transmitting panels.
+#' @param source_type String specifying the type of the panel that is source of the selection,
+#' either \code{"row"} or \code{"column"}.
+#' @param by_field String specifying the name of the slot containing the identity of the panel transmitting to \code{x}.
+#' @param res_field String specifying the name of the slot indicating whether to restrict \code{x}'s display to the selected points.
+#' @param dyn_field String specifying the name of the slot indicating whether to use a dynamic selection source.
+#'
+#' @return
+#' For \code{.create_selection_param_box} and \code{.create_dotplot_selection_param_box},
+#' a HTML tag object is returned containing a parameter box of UI elements for changing multiple selection parameters.
+#' The latter will also contain elements to control the visual effects of the transmitted selection for \linkS4class{DotPlot}s.
+#'
+#' For \code{.define_selection_choices}, a tag list of interface elements is returned to choose the identity of transmitting panel,
+#' the type of multiple selection and the index of the saved selection to use.
+#'
+#' All return values may potentially also be \code{NULL}, depending on \code{\link{.hideInterface}}.
+#'
+#' @details
+#' These functions are used to create a collapsible box that contains point selection options,
+#' initialized with the choices in \code{memory}.
+#' Options include the choice of transmitting plot and the type of selection effect.
+#' Each effect option, once selected, may yield a further subset of nested options.
+#' For example, choosing to colour on the selected points will open up a choice of colour to use.
+#'
+#' @author Aaron Lun
+#' @rdname INTERNAL_create_selection_param_box
+#' @seealso
+#' \code{\link{.defineInterface}}, where this function is typically called.
+#'
+#' @importFrom shiny selectInput actionButton hr strong br
+#' @importFrom shinyjs disabled
+.create_selection_param_box <- function(x, row_selectable, col_selectable) {
+    # initialize active "Delete" button only if a preconfigured selection history exists
+    deleteFUN <- identity
+    deleteLabel <- .buttonDeleteLabel
+    if (length(slot(x, .multiSelectHistory)) == 0L) {
+        deleteFUN <- disabled
+        deleteLabel <- .buttonEmptyHistoryLabel
+    }
+
+    # initialize active "Save" button only if a preconfigured active selection exists
+    saveFUN <- identity
+    saveLabel <- .buttonSaveLabel
+    if (!.multiSelectionHasActive(x)) {
+        saveFUN <- disabled
+        saveLabel <- .buttonNoSelectionLabel
+    }
+
+    args <- list(
+        x=x,
+        field=.selectParamBoxOpen,
+        title="Selection parameters",
+        open=slot(x, .selectParamBoxOpen),
+
+        .define_selection_choices(x, by_field=.selectRowSource,
+            dyn_field=.selectRowDynamic, res_field=.selectRowRestrict,
+            selectable=row_selectable, "row"),
+
+        .define_selection_choices(x, by_field=.selectColumnSource,
+            dyn_field=.selectColumnDynamic, res_field=.selectColumnRestrict,
+            selectable=col_selectable, "column")
+    )
+
+    if (!.hideInterface(x, .multiSelectHistory)) {
+        .addSpecificTour(class(x), .multiSelectHistory, {
+            mdim <- .multiSelectionDimension(x)
+            function(panel_name) {
+                data.frame(
+                    rbind(
+                        c(
+                            element=paste0("#", panel_name, "_", .multiSelectSave),
+                            intro=sprintf("Users can save the multiple %s selections made in this panel.
+When this button is clicked, any \"active\" selection is saved for later use.
+(For example, in point-based plotting panels, the current brush or lasso is the active selection.)
+The identities of the %ss in the saved and active selections can then be transmitted to other panels,
+which is useful if there are separate groups of %ss of interest;
+each group can be represented by a separate saved selection.", mdim, mdim, mdim)
+                        ),
+                        c(
+                            element=paste0("#", panel_name, "_", .multiSelectDelete),
+                            intro="Users can also delete any saved selections.
+For simplicity, this operates on a first-in-last-out basis, i.e., you can only delete the last saved selection."
+                        )
+                    )
+                )
+            }
+        })
+
+        panel_name <- .getEncodedName(x)
+        args <- c(args,
+            list(
+                hr(),
+                strong(.label_with_help("Manage multiple selections:", paste0(panel_name, "_", .multiSelectHistory))),
+                br(),
+                saveFUN(actionButton(paste0(panel_name, "_", .multiSelectSave), label=saveLabel)),
+                deleteFUN(actionButton(paste0(panel_name, "_", .multiSelectDelete), label=deleteLabel))
+            )
+        )
+    }
+
+    do.call(.collapseBoxHidden, args)
+}
+
+#' @rdname INTERNAL_create_selection_param_box
+#' @importFrom shiny tagList radioButtons selectizeInput
+.define_selection_choices <- function(x, by_field,
+    dyn_field, res_field, selectable, source_type="row")
+{
+    force(source_type)
+
+    .addSpecificTour(class(x), by_field, function(panel_name) {
+        tour_df <- data.frame(
+            element=paste0("#", panel_name, "_", by_field, " + .selectize-control"),
+            intro=sprintf("One of <strong>iSEE</strong>'s most powerful features is the ability to transmit multiple %s selections from one panel to another.
+For example, if we have another panel that visualizes each %s as a point, and we created a brush or lasso on that panel, we can transmit the identity of the selected %ss to this panel.
+This enables intuitive interactive exploration of multi-dimensional data involving different variables in our <code>SummarizedExperiment</code> object.
+<br/><br/>
+Here, we can choose the \"source\" panel to receive a multiple %s selection from, i.e., the selection made in the chosen panel will be transmitted to the current panel.
+The exact effect of receiving a selection will depend on how the current panel takes advantage of the identity of the transmitted points.
+For example, point-based panels might allow users to color, facet, or group points by whether or not they are selected in the source panel.",
+                source_type, source_type, source_type, source_type)
+            )
+        # Some panel classes (e.g. ComplexHeatmapPlot) do not have the checkbox to restrict to selected rows
+        if (!.hideInterface(x, res_field)) {
+            tour_df <- rbind(tour_df,
+                c(
+                    element=paste0("#", panel_name, "_", res_field),
+                    intro=sprintf("One obvious effect would be to restrict the dataset to only those %ss in the transmitted selection.
+This is achieved by clicking this box, in which case the current panel will only use the subset of selected %ss for visualization and computation.
+Note that no restriction is performed if no multiple selection was made in the source panel;
+for example, a point-based panel that does not contain a lasso or brush will not be considered to have made any selection,
+and if that panel was chosen as the source, it would have no effect on the current panel.",
+                        source_type, source_type)
+                    )
+                )
+        }
+
+        tour_df <- rbind(tour_df,
+            c(
+                    element=paste0("#", panel_name, "_", dyn_field),
+                    intro=sprintf("Sometimes it's a bother to have to change the choice of source panel.
+If this option is checked, the source panel will change dynamically in response to <em>any</em> multiple %s selection made in any panel.
+For example, creating a brush or lasso in another plot will automatically transmit the selected points to the current panel,
+regardless of whether the brushed plot was chosen as the source panel.
+This is useful for allowing the current panel to immediately respond to any interactions elsewhere in the <strong>iSEE</strong> application.",
+                        source_type)
+                )
+            )
+
+        tour_df
+    })
+
+    tagList(
+        .selectInput.iSEE(
+            x=x, field=by_field,
+            label=sprintf("Receive %s selection from:", source_type),
+            choices=selectable,
+            selected=.choose_link(slot(x, by_field), selectable)
+        ),
+
+        .checkboxInput.iSEE(x, field=dyn_field,
+            label=paste("Use dynamic", source_type, "selection"),
+            value=slot(x, dyn_field),
+            help=FALSE
+        ),
+
+        .checkboxInput.iSEE(x, field=res_field,
+            label=paste0("Restrict to selected ", source_type, "s"),
+            value=slot(x, res_field),
+            help=FALSE
+        )
+    )
+}
+
 #' @export
 setMethod(".defineDataInterface", "Panel", function(x, se, select_info) list())
+
+###############################################################################
 
 #' @export
 setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects, rObjects) {
@@ -333,16 +543,16 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
 
     .create_box_observers(panel_name, c(.dataParamBoxOpen, .selectParamBoxOpen), pObjects, rObjects)
 
-    .create_multi_selection_choice_observer(panel_name, by_field=.selectRowSource, 
+    .create_multi_selection_choice_observer(panel_name, by_field=.selectRowSource,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_choice_observer(panel_name, by_field=.selectColSource,
+    .create_multi_selection_choice_observer(panel_name, by_field=.selectColumnSource,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_multi_selection_restrict_observer(panel_name, by_field=.selectRowSource, res_field=.selectRowRestrict,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
-    .create_multi_selection_restrict_observer(panel_name, by_field=.selectColSource, res_field=.selectColRestrict,
+    .create_multi_selection_restrict_observer(panel_name, by_field=.selectColumnSource, res_field=.selectColumnRestrict,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_multi_selection_history_observers(panel_name,
@@ -353,7 +563,7 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_dynamic_multi_selection_source_observer(panel_name,
-        dyn_field=.selectColDynamic, by_field=.selectColSource, source_type="column",
+        dyn_field=.selectColumnDynamic, by_field=.selectColumnSource, source_type="column",
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     for (f in .singleSelectionSlots(x)) {
@@ -386,6 +596,22 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
                 introjs(session, options=list(steps=ptour))
             }
         })
+
+        # We only run this _AFTER_ rendering is done, as the identities of the
+        # tour-enabled elements are only defined in the interface methods.
+        cls <- class(x)
+        observeEvent(rObjects$rerendered, {
+            tours <- .getSpecificTours(cls)
+            for (i in names(tours)) {
+                local({
+                    i0 <- i
+                    shinyjs::onclick(paste0(panel_name, "_", i0, "_specific_help"), {
+                        spec.df <- tours[[i0]](panel_name)
+                        introjs(session, options=list(steps=spec.df))
+                    })
+                })
+            }
+        }, once=TRUE)
     }
     # nocov end
 })
@@ -428,39 +654,26 @@ setMethod(".multiSelectionInvalidated", "Panel", function(x) FALSE)
 setMethod(".multiSelectionAvailable", "Panel", function(x, contents) nrow(contents))
 
 #' @export
+setMethod(".isBrushable", "Panel", function(x) FALSE)
+
+#' @export
 setMethod(".singleSelectionDimension", "Panel", function(x) "none")
 
 #' @export
 setMethod(".singleSelectionSlots", "Panel", function(x) list())
+
+###############################################################################
 
 #' @export
 setMethod(".definePanelTour", "Panel", function(x) {
     collated <- list(
         .addTourStep(x, .selectParamBoxOpen, "Users can also control how this panel reacts to multiple selections being transmitted from other panels.<br/><br/><strong>Action:</strong> click on the header of this box to see the available options.")
     )
-
-    for (mdim in c("row", "column")) {
-        if (mdim=="row") {
-            src_field <- .selectRowSource
-            dyn_field <- .selectRowDynamic
-            res_field <- .selectRowRestrict
-        } else {
-            src_field <- .selectColSource
-            dyn_field <- .selectColDynamic
-            res_field <- .selectColRestrict
-        }
-
-        collated <- c(collated, list(
-            .addTourStep(x, src_field, paste0("PLACEHOLDER_", toupper(mdim), "_SELECT"), is_selectize=TRUE),
-            .addTourStep(x, dyn_field, sprintf("Alternatively, we could turn on dynamic selection. This means that any selection in <emph>any</emph> %s-based panel would have an effect on this panel.", mdim)),
-            .addTourStep(x, res_field, sprintf("Activating the <i>Restrict</i> mode will limit the display in the current panel to the %ss transmitted from the source panel.", mdim))
-            )
-        )
-    }
-
     collated <- do.call(rbind, collated)
     data.frame(element=collated[,1], intro=collated[,2], stringsAsFactors=FALSE)
 })
+
+###############################################################################
 
 #' @export
 #' @importFrom BiocGenerics updateObject
@@ -472,11 +685,11 @@ setMethod("updateObject", "Panel", function(object, ..., verbose=FALSE) {
     # nocov start
     if (is(try(slot(object, .packageVersion), silent=TRUE), "try-error")) {
         .Deprecated(msg=sprintf("detected outdated '%s' instance, run 'updateObject(<%s>)'", class(object)[1], class(object)[1]))
-        slot(object, .packageVersion) <- .latest_version 
+        slot(object, .packageVersion) <- .latest_version
 
         # Handling the updated restriction settings.
         slot(object, .selectRowRestrict) <- FALSE
-        slot(object, .selectColRestrict) <- FALSE
+        slot(object, .selectColumnRestrict) <- FALSE
     }
     object
     # nocov end

@@ -10,7 +10,7 @@
 #' This should be one of \code{"None"}, \code{"Feature name"}, \code{"Sample name"} and either \code{"Column data"} (for \linkS4class{ColumnDotPlot}s) or \code{"Row data"} (for \linkS4class{RowDotPlot}s).
 #' Defaults to \code{"None"}.
 #' \item \code{ColorByDefaultColor}, a string specifying the default color to use for all points if \code{ColorBy="None"}.
-#' Defaults to \code{"black"}.
+#' Defaults to \code{"black"} in \code{\link{getPanelDefault}}.
 #' \item \code{ColorByFeatureName}, a string specifying the feature to be used for coloring points when \code{ColorBy="Feature name"}.
 #' For \linkS4class{RowDotPlot}s, this is used to highlight the point corresponding to the selected feature;
 #' for \linkS4class{ColumnDotPlot}s, this is used to color each point according to the expression of that feature.
@@ -24,11 +24,11 @@
 #' \item \code{ColorBySampleSource}, a string specifying the name of the panel to use for transmitting the sample selection to \code{ColorBySampleNameColor}.
 #' Defaults to \code{"---"}.
 #' \item \code{ColorByFeatureDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source when coloring by feature.
-#' Defaults to \code{FALSE}.
+#' Defaults to \code{FALSE} in \code{\link{getPanelDefault}}.
 #' \item \code{ColorBySampleDynamicSource}, a logical scalar indicating whether \code{x} should dynamically change its selection source when coloring by feature.
-#' Defaults to \code{FALSE}.
+#' Defaults to \code{FALSE} in \code{\link{getPanelDefault}}.
 #' \item \code{SelectionAlpha}, a numeric scalar in [0, 1] specifying the transparency to use for non-selected points.
-#' Defaults to 0.1.
+#' Defaults to 0.1 in \code{\link{getPanelDefault}}.
 #' }
 #'
 #' The following slots control other metadata-related aesthetic aspects of the points:
@@ -73,7 +73,7 @@
 #'
 #' The following slots control interactions with the plot image:
 #' \itemize{
-#' \item \code{ZoomData}, a named numeric vector of plot coordinates with \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"} elements parametrizing the zoom boundaries.
+#' \item \code{ZoomData}, a named numeric vector of plot coordinates with \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"} elements parameterizing the zoom boundaries.
 #' Defaults to an empty vector, i.e., no zoom.
 #' \item \code{BrushData}, a list containing either a Shiny brush (see \code{?\link{brushedPoints}}) or an \pkg{iSEE} lasso (see \code{?\link{lassoPoints}}).
 #' Defaults to an empty list, i.e., no brush or lasso.
@@ -107,20 +107,21 @@
 #' \item \code{PointAlpha}, non-negative numeric scalar specifying the transparency of the points.
 #' Defaults to 1, i.e., not transparent.
 #' \item \code{Downsample}, logical scalar indicating whether to downsample points for faster plotting.
-#' Defaults to \code{FALSE}.
+#' Defaults to \code{FALSE} in \code{\link{getPanelDefault}}.
 #' \item \code{DownsampleResolution}, numeric scalar specifying the resolution of the downsampling grid (see \code{?\link{subsetPointsByGrid}}) if \code{Downsample=TRUE}.
 #' Larger values correspond to reduced downsampling at the cost of plotting speed.
-#' Defaults to 200.
+#' Defaults to 200 in \code{\link{getPanelDefault}}.
 #' }
 #'
 #' The following slots refer to general plotting parameters:
 #' \itemize{
 #' \item \code{FontSize}, positive numeric scalar specifying the relative font size.
-#' Defaults to 1.
+#' Defaults to 1 in \code{\link{getPanelDefault}}.
 #' \item \code{PointSize}, positive numeric scalar specifying the relative point size.
-#' Defaults to 1.
+#' Defaults to 1 in \code{\link{getPanelDefault}}.
 #' \item \code{LegendPosition}, string specifying the position of the legend on the plot.
-#' Defaults to \code{"Right"} but can also be \code{"Bottom"}.
+#' Defaults to \code{"Bottom"} in \code{\link{getPanelDefault}}.
+#' The other valid choice is \code{"Right"}.
 #' }
 #'
 #' In addition, this class inherits all slots from its parent \linkS4class{Panel} class.
@@ -152,6 +153,7 @@
 #' \item \code{\link{.defineVisualOtherInterface}(x, se)} defines the user interface subpanel for manipulating other parameters.
 #' Currently this returns \code{NULL}.
 #' \item \code{\link{.defineOutput}(x)} returns a UI element for a brushable plot.
+#' \item \code{\link{.allowableColorByDataChoices}(x, se)} returns a character vector containing all atomic variables in the relevant \code{*Data} dimension.
 #' }
 #'
 #' For generating the output:
@@ -225,6 +227,7 @@
 #' .multiSelectionCommands,DotPlot-method
 #' .multiSelectionClear,DotPlot-method
 #' .multiSelectionDimension,DotPlot-method
+#' .isBrushable,DotPlot-method
 #' .singleSelectionValue,DotPlot-method
 #' .singleSelectionSlots,DotPlot-method
 #' .prioritizeDotPlotData,DotPlot-method
@@ -238,6 +241,7 @@
 #' .defineVisualPointInterface,DotPlot-method
 #' .defineVisualOtherInterface,DotPlot-method
 #' .defineVisualFacetInterface,DotPlot-method
+#' .allowableColorByDataChoices,DotPlot-method
 #' .definePanelTour,DotPlot-method
 #' updateObject,DotPlot-method
 #' [[,DotPlot-method
@@ -254,38 +258,38 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     args <- .emptyDefault(args, .facetColumn, .facetByNothingTitle)
 
     args <- .emptyDefault(args, .colorByField, .colorByNothingTitle)
-    args <- .emptyDefault(args, .colorByDefaultColor, iSEEOptions$get("point.color"))
+    args <- .emptyDefault(args, .colorByDefaultColor, getPanelDefault(.colorByDefaultColor))
 
     args <- .emptyDefault(args, .colorByFeatName, NA_character_)
-    args <- .emptyDefault(args, .colorByFeatDynamic, iSEEOptions$get("selection.dynamic.single"))
+    args <- .emptyDefault(args, .colorByFeatDynamic, getPanelDefault("SingleSelectionDynamicSource"))
     args <- .emptyDefault(args, .colorByRowTable, .noSelection)
 
     args <- .emptyDefault(args, .colorBySampName, NA_character_)
-    args <- .emptyDefault(args, .colorBySampDynamic, iSEEOptions$get("selection.dynamic.single"))
+    args <- .emptyDefault(args, .colorBySampDynamic, getPanelDefault("SingleSelectionDynamicSource"))
     args <- .emptyDefault(args, .colorByColTable, .noSelection)
 
     args <- .emptyDefault(args, .shapeByField, .shapeByNothingTitle)
 
     args <- .emptyDefault(args, .sizeByField, .sizeByNothingTitle)
 
-    args <- .emptyDefault(args, .selectTransAlpha, iSEEOptions$get("selected.alpha"))
+    args <- .emptyDefault(args, .selectTransAlpha, getPanelDefault(.selectTransAlpha))
 
     args <- .emptyDefault(args, .visualParamBoxOpen, FALSE)
     args <- .emptyDefault(args, .visualParamChoice, .visualParamChoiceColorTitle)
 
     args <- .emptyDefault(args, .contourAdd, FALSE)
-    args <- .emptyDefault(args, .contourColor, iSEEOptions$get("contour.color"))
+    args <- .emptyDefault(args, .contourColor, getPanelDefault(.contourColor))
 
-    args <- .emptyDefault(args, .plotPointSize, iSEEOptions$get("point.size"))
-    args <- .emptyDefault(args, .plotPointAlpha, iSEEOptions$get("point.alpha"))
-    args <- .emptyDefault(args, .plotPointDownsample, iSEEOptions$get("downsample"))
-    args <- .emptyDefault(args, .plotPointSampleRes, iSEEOptions$get("downsample.resolution"))
+    args <- .emptyDefault(args, .plotPointSize, getPanelDefault(.plotPointSize))
+    args <- .emptyDefault(args, .plotPointAlpha, getPanelDefault(.plotPointAlpha))
+    args <- .emptyDefault(args, .plotPointDownsample, getPanelDefault(.plotPointDownsample))
+    args <- .emptyDefault(args, .plotPointSampleRes, getPanelDefault(.plotPointSampleRes))
 
     args <- .emptyDefault(args, .plotCustomLabels, FALSE)
     args <- .emptyDefault(args, .plotCustomLabelsText, NA_character_)
-    args <- .emptyDefault(args, .plotFontSize, iSEEOptions$get("font.size"))
-    args <- .emptyDefault(args, .legendPointSize, iSEEOptions$get("legend.point.size"))
-    args <- .emptyDefault(args, .plotLegendPosition, iSEEOptions$get("legend.position"))
+    args <- .emptyDefault(args, .plotFontSize, getPanelDefault(.plotFontSize))
+    args <- .emptyDefault(args, .legendPointSize, getPanelDefault(.legendPointSize))
+    args <- .emptyDefault(args, .plotLegendPosition, getPanelDefault(.plotLegendPosition))
 
     args <- .emptyDefault(args, .plotHoverInfo, TRUE)
 
@@ -479,7 +483,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
     .create_zoom_observer(plot_name, input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
 
-    .create_hover_observer(plot_name, input=input, session=session, pObjects=pObjects)
+    .create_hover_observer(plot_name, se, input=input, session=session, pObjects=pObjects)
 
     .createCustomDimnamesModalObservers(plot_name, .plotCustomLabelsText, .dimnamesModalOpen,
         se, input=input, session=session, pObjects=pObjects, rObjects=rObjects, 
@@ -492,15 +496,19 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
 setMethod(".defineInterface", "DotPlot", function(x, se, select_info) {
     out <- callNextMethod()
     c(
-        out[1],
+        out[1], # data parameters box
         list(.create_visual_box(x, se, select_info$single)),
-        out[-1]
+        out[-1] # selection parameters box
     )
 })
 
 #' @export
+setMethod(".allowableColorByDataChoices", "DotPlot", function(x, se) {
+    .getMetadataChoices(x, se)
+})
+
+#' @export
 setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info) {
-    covariates <- .getMetadataChoices(x, se)
     all_assays <- .getCachedCommonInfo(se, "DotPlot")$valid.assay.names
 
     plot_name <- .getEncodedName(x)
@@ -512,24 +520,49 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
     mydim_choices <- select_info[[mydim_single]]
     otherdim_choices <- select_info[[otherdim_single]]
 
+    color_choices <- .defineDotPlotColorChoices(x, se)
+
+    .addSpecificTour(class(x), .colorByField, .getDotPlotColorHelp(x, color_choices))
+
+    .addSpecificTour(class(x), .selectTransAlpha, {
+        mdim <- .multiSelectionDimension(x)
+        function(plot_name) {
+            data.frame(
+                rbind(
+                    c(
+                        element=paste0("#", plot_name, "_", .selectTransAlpha, .slider_extra),
+                        intro=sprintf("When we make a multiple %s selection on another panel, 
+                                       we can transmit that selection to the current panel. 
+                                       When we do so, we can choose to highlight the selected points on this panel 
+                                       by making all the <em>unselected</em> points a little transparent. 
+                                       This slider controls the transparency level for those unselected points.", mdim)
+                    )
+                )
+            )
+        }
+    })
+
+    # Actually creating the UI.
     tagList(
         hr(),
-        radioButtons(
-            colorby_field, label="Color by:", inline=TRUE,
+        .radioButtons.iSEE(x, .colorByField, 
+            label="Color by:",
+            inline=TRUE,
             choices=.defineDotPlotColorChoices(x, se),
             selected=slot(x, .colorByField)
         ),
         .conditionalOnRadio(
             colorby_field, .colorByNothingTitle,
-            colourInput(
-                paste0(plot_name, "_", .colorByDefaultColor), label=NULL,
-                value=slot(x, .colorByDefaultColor))
+                colourInput(
+                    paste0(plot_name, "_", .colorByDefaultColor), label=NULL,
+                    value=slot(x, .colorByDefaultColor))
         ),
         .conditionalOnRadio(
             colorby_field, colorby$metadata$title,
             selectInput(
                 paste0(plot_name, "_", colorby$metadata$field), label=NULL,
-                choices=covariates, selected=x[[colorby$metadata$field]])
+                choices=.allowableColorByDataChoices(x, se), 
+                selected=x[[colorby$metadata$field]])
         ),
         .conditionalOnRadio(colorby_field, colorby$name$title,
             selectizeInput(paste0(plot_name, "_", colorby$name$field),
@@ -542,7 +575,7 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
             checkboxInput(
                 paste0(plot_name, "_", colorby$name$dynamic),
                 label=sprintf("Use dynamic %s selection", mydim_single),
-                value=x[[colorby$name$dynamic]])
+                value=x[[colorby$name$dynamic]]),
         ),
         .conditionalOnRadio(colorby_field, colorby$assay$title,
             selectizeInput(paste0(plot_name, "_", colorby$assay$field),
@@ -558,9 +591,8 @@ setMethod(".defineVisualColorInterface", "DotPlot", function(x, se, select_info)
                 label=sprintf("Use dynamic %s selection", otherdim_single),
                 value=x[[colorby$assay$dynamic]])
         ),
-        sliderInput(
-            paste0(plot_name, "_", .selectTransAlpha), 
-            label="Unselected point opacity:",
+        .sliderInput.iSEE(x, .selectTransAlpha,
+            label="Unselected point opacity:", 
             min=0, max=1, value=slot(x, .selectTransAlpha)
         )
     )
@@ -575,11 +607,34 @@ setMethod(".defineVisualShapeInterface", "DotPlot", function(x, se) {
         shapeby_field <- paste0(plot_name, "_", .shapeByField)
         shapeby <- .getDotPlotShapeConstants(x)
 
+        .addSpecificTour(class(x)[1], .shapeByField, {
+            mdim <- .multiSelectionDimension(x)
+            shape_meta_field <- shapeby$metadata$field
+            function(plot_name) {
+                data.frame(
+                    rbind(
+                        c(
+                            element=paste0("#", plot_name, "_", .shapeByField),
+                            intro=sprintf("We can make the shape of each point depend on the value of a categorical %s data field. 
+                                           For example, if you were to <strong>select <em>%s data</em></strong>...", mdim, mdim)
+                        ),
+                        c(
+                            element=paste0("#", plot_name, "_", shape_meta_field, " + .selectize-control"),
+                            intro="... we can then choose a variable for shaping each point in the plot. 
+                                   Note that there are only a limited number of unique shapes, 
+                                   so past a certain number of levels, the plot will just give up."
+                        )
+                    )
+                )
+            }
+        })
+
         tagList(
             hr(),
-            radioButtons(
-                shapeby_field, label="Shape by:", inline=TRUE,
-                choices=c(.shapeByNothingTitle, if (length(discrete_covariates)) shapeby$metadata$title),
+            .radioButtons.iSEE(x, .shapeByField,
+                label="Shape by:",
+                inline=TRUE,
+                choices=c(.shapeByNothingTitle, shapeby$metadata$title),
                 selected=slot(x, .shapeByField)
             ),
             .conditionalOnRadio(
@@ -601,37 +656,139 @@ setMethod(".defineVisualSizeInterface", "DotPlot", function(x, se) {
     sizeby_field <- paste0(plot_name, "_", .sizeByField)
     sizeby <- .getDotPlotSizeConstants(x)
 
-    tagList(
-        hr(),
-        radioButtons(
-            sizeby_field, label="Size by:", inline=TRUE,
-            choices=c(.sizeByNothingTitle, if (length(numeric_covariates)) sizeby$metadata$title),
-            selected=slot(x, .sizeByField)
-        ),
-        .conditionalOnRadio(
-            sizeby_field, .sizeByNothingTitle,
-            numericInput(
-                paste0(plot_name, "_", .plotPointSize), label="Point size:",
-                min=0, value=slot(x, .plotPointSize))
-        ),
-        .conditionalOnRadio(
-            sizeby_field, sizeby$metadata$title,
-            selectInput(paste0(plot_name, "_", sizeby$metadata$field), label=NULL,
-                choices=numeric_covariates, selected=x[[sizeby$metadata$field]])
+    pointsize_field <- paste0(plot_name, "_", .plotPointSize)
+    common_ui <- .numericInput.iSEE(x, .plotPointSize,
+        label="Point size:", min=0, value=slot(x, .plotPointSize))
+
+    .addSpecificTour(class(x)[1], .plotPointSize, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", pointsize_field),
+                    intro="This controls the size of all points... nothing much more to be said."
+                )
+            )
         )
-    )
+    })
+
+    if (length(numeric_covariates)) {
+        .addSpecificTour(class(x)[1], .sizeByField, {
+            mdim <- .multiSelectionDimension(x)
+            size_meta_field <- sizeby$metadata$field
+            function(plot_name) {
+                data.frame(
+                    rbind(
+                        c(
+                            element=paste0("#", sizeby_field),
+                            intro=sprintf("We can make the size of each point depend on the value of a numeric %s data field. 
+                                           For example, if you were to <strong>select <em>%s data</em></strong>...", mdim, mdim)
+                        ),
+                        c(
+                            element=paste0("#", plot_name, "_", size_meta_field, " + .selectize-control"),
+                            intro="... we can then choose a variable for determining the size of each point in the plot."
+                        )
+                    )
+                )
+            }
+        })
+
+        tagList(
+            hr(),
+            .radioButtons.iSEE(x, .sizeByField,
+                label="Size by:",
+                inline=TRUE,
+                choices=c(.sizeByNothingTitle, sizeby$metadata$title),
+                selected=slot(x, .sizeByField)
+            ),
+            .conditionalOnRadio(
+                sizeby_field, .sizeByNothingTitle,
+                common_ui
+            ),
+            .conditionalOnRadio(
+                sizeby_field, sizeby$metadata$title,
+                selectInput(paste0(plot_name, "_", sizeby$metadata$field), label=NULL,
+                    choices=numeric_covariates, selected=x[[sizeby$metadata$field]])
+            )
+        )
+    } else {
+        common_ui
+    }
 })
 
 #' @export
 setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
     plot_name <- .getEncodedName(x)
+    ds_id <- paste0(plot_name, "_", .plotPointDownsample)
+
+    .addSpecificTour(class(x)[1], .plotPointAlpha, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .plotPointAlpha, .slider_extra),
+                    intro="This controls the opacity of all points, with 0 being fully transparent and 1 being fully opaque.
+                    
+                    Note that, unlike the <em>Unselected point opacity</em> option,
+                    this option applies regardless of whether a point is selected or not."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .plotPointDownsample, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .plotPointDownsample),
+                    intro="For larger datasets, we downsample points in a density-dependent manner.
+                    This basically involves removing points that are covered by other points,
+                    thus reducing the number of points and speeding up the plot rendering.
+                    To demonstrate, <strong>check this box</strong>."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .plotPointSampleRes),
+                    intro="The sampling resolution determines how many points we remove.
+                    For example, if we have a sampling resolution of 100, this means that we
+                    cut up the plot into a 100-by-100 grid and keep only one point per grid cell.
+                    Higher resolutions retain more points at the cost of rendering time."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .contourAdd, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .contourAdd),
+                    intro="For scatter plots, we can add a contour representing the density of points.
+                    For all other plots, this has no effect.
+                    If we're on a scatter plot, you can <strong>check this box</strong>."
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .contourColor),
+                    intro="And you can change the color of the contour lines."
+                )
+            )
+        )
+    })
+
     tagList(
         hr(),
-        .add_point_UI_elements(x),
-        checkboxInput(
-            inputId=paste0(plot_name, "_", .contourAdd),
+        .sliderInput.iSEE(x, .plotPointAlpha, label="Point opacity:", 
+            min=0.1, max=1, value=slot(x, .plotPointAlpha)),
+        hr(),
+        .checkboxInput.iSEE(x, .plotPointDownsample, 
+            label="Downsample points for speed",
+            value=slot(x, .plotPointDownsample)),
+        .conditionalOnCheckSolo(
+            ds_id, on_select=TRUE,
+            numericInput(
+                paste0(plot_name, "_", .plotPointSampleRes), label="Sampling resolution:",
+                min=1, value=slot(x, .plotPointSampleRes))
+        ),
+        .checkboxInput.iSEE(x, .contourAdd,
             label="Add contour (scatter only)",
-            value=FALSE),
+            value=slot(x, .contourAdd)),
         .conditionalOnCheckSolo(
             paste0(plot_name, "_", .contourAdd),
             on_select=TRUE,
@@ -656,75 +813,237 @@ setMethod(".defineVisualFacetInterface", "DotPlot", function(x, se) {
     }
     title_choices <- c(title_choices, facet_info$selections$title)
 
-    row_field <- facet_info$metadata$row_field
-    col_field <- facet_info$metadata$column_field
-
-    tagList(
-        hr(),
-        radioButtons(rowId, label="Facet by row:", choices=title_choices, selected=slot(x, .facetRow), inline=TRUE),
-        if (length(covariates)) {
-            .conditionalOnRadio(rowId, facet_info$metadata$title, 
-                selectInput(paste0(plot_name, "_", row_field), label=NULL, choices=covariates, selected=slot(x, row_field))
-            )
-        },
-        radioButtons(columnId, label="Facet by column:", choices=title_choices, selected=slot(x, .facetColumn), inline=TRUE),
-        if (length(covariates)) {
-            .conditionalOnRadio(columnId, facet_info$metadata$title,
-                selectInput(paste0(plot_name, "_", col_field), label=NULL, choices=covariates, selected=slot(x, col_field))
-            )
-        }
+    things <- list(
+        row=c(.facetRow, facet_info$metadata$row_field),
+        column=c(.facetColumn, facet_info$metadata$column_field)
     )
+    ui <- list()
+
+    for (dim in names(things)) {
+        fields <- things[[dim]]
+        use_field <- fields[1]
+        choice_field <- fields[2]
+
+        local({
+            dim0 <- dim
+            use_field0 <- use_field
+            choice_field0 <- choice_field
+            .addSpecificTour(class(x)[1], use_field0, {
+                mdim <- .multiSelectionDimension(x)
+                function(plot_name) {
+                    if (length(covariates)) {
+
+                    }
+                    data.frame(
+                        rbind(
+                            c(
+                                element=paste0("#", plot_name, "_", use_field0),
+                                intro=sprintf("We can choose split the points into multiple %s facets.
+                                Points are allocated to the subplots according to the value of the factor used for faceting.", dim0)
+                            ),
+
+                            if (length(covariates)) {
+                                rbind(
+                                    c(
+                                        element=paste0("#", plot_name, "_", use_field0),
+                                        intro=sprintf("If we were to <strong>select <em>%s</em></strong>...", facet_info$metadata$title)
+                                    ),
+                                    c(
+                                        element=paste0("#", plot_name, "_", choice_field0, " + .selectize-control"),
+                                        intro=sprintf("... we can choose the <code>%sData</code> variable to use for faceting.", substr(mdim, 1, 3))
+                                    )
+                                )
+                            },
+
+                            c(
+                                element=paste0("#", plot_name, "_", use_field0),
+                                intro=sprintf("If we were to <strong>select <em>%s</em></strong>, 
+                                the factor is defined based on the multiple %s selections transmitted from another panel.
+                                All points corresponding to %ss in the active selection of another panel are assigned to one facet;
+                                all points in each saved selection of another panel are assigned to another facet;
+                                and all points not in any selection are assigned to yet another facet.
+                                Points that are present in multiple selections also get assigned to a separate facet.",
+                                    facet_info$selections$title, mdim, mdim)
+                            )
+                        )
+                    )
+                }
+            })
+        })
+
+        ui <- c(ui, list(
+            .radioButtons.iSEE(x, use_field, 
+                label=sprintf("Facet as %s:", dim),
+                choices=title_choices, 
+                selected=slot(x, use_field), 
+                inline=TRUE),
+
+            if (length(covariates)) {
+                .conditionalOnRadio(paste0(plot_name, "_", use_field), 
+                    facet_info$metadata$title, 
+                    selectInput(paste0(plot_name, "_", choice_field), 
+                        label=NULL, 
+                        choices=covariates, 
+                        selected=slot(x, choice_field))
+                )
+            }
+        ))
+    }
+
+    do.call(tagList, c(list(hr()), ui))
 })
 
 #' @export
+#' @importFrom shiny tagList
 setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
     plot_name <- .getEncodedName(x)
     .input_FUN <- function(field) { paste0(plot_name, "_", field) }
 
-    tagList(
+    .addSpecificTour(class(x)[1], .plotCustomLabels, {
+        mdim <- .multiSelectionDimension(x)
+        function(plot_name) {
+            data.frame(
+                rbind(
+                    c(
+                        element=paste0("#", plot_name, "_", .plotCustomLabels), 
+                        intro=sprintf("Users can show the names of certain %ss alongside their locations on the plot. This is done by <strong>checking the highlighted box</strong>...", mdim)
+                    ),
+                    c(
+                        element=paste0("#", plot_name, "_", .dimnamesModalOpen),
+                        intro=sprintf("... and then clicking on this button to open a modal in which users can enter the names of the %ss of interest. All points named in this manner will have their names appear next to their coordinates on the plot.<br/><br/>(By default, we don't name all points as this may result in too many names for large numbers of points.)", mdim)
+                    )
+                )
+            )
+        }
+    })
+
+    sdim <- .singleSelectionDimension(x)
+    .addSpecificTour(class(x)[1], .plotHoverInfo, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .plotHoverInfo),
+                    intro=sprintf("If this is checked, we show the name of the %s when we hover over the corresponding point in the plot.", sdim)
+                )
+            )
+        )
+    })
+
+    ui <- list(
         hr(),
-        checkboxInput(.input_FUN(.plotHoverInfo),
-            label=sprintf("Show %s details on hover", .singleSelectionDimension(x)),
+        .checkboxInput.iSEE(x, .plotHoverInfo,
+            label=sprintf("Show %s details on hover", sdim),
             value=slot(x, .plotHoverInfo)),
         hr(),
-        checkboxInput(.input_FUN(.plotCustomLabels),
-            label=sprintf("Label custom %ss", .singleSelectionDimension(x)),
+        .checkboxInput.iSEE(x, .plotCustomLabels,
+            label=sprintf("Label custom %ss", sdim),
             value=slot(x, .plotCustomLabels)),
         .conditionalOnCheckSolo(
             .input_FUN(.plotCustomLabels),
             on_select=TRUE,
             actionButton(.input_FUN(.dimnamesModalOpen),
-                label=sprintf("Edit %s names", .singleSelectionDimension(x)))
-        ),
-        hr(),
-        checkboxInput(.input_FUN(.plotLabelCenters),
-            label="Label centers",
-            value=slot(x, .plotLabelCenters)),
-        .conditionalOnCheckSolo(
-            .input_FUN(.plotLabelCenters),
-            on_select=TRUE,
-            selectInput(.input_FUN(.plotLabelCentersBy),
-                label="Label centers:",
-                choices=.getDiscreteMetadataChoices(x, se),
-                selected=slot(x, .plotLabelCentersBy)),
-            colourInput(.input_FUN(.plotLabelCentersColor),
-                label=NULL,
-                value=slot(x, .plotLabelCentersColor))
-        ),
-        hr(),
-        numericInput(
-            paste0(plot_name, "_", .plotFontSize), label="Font size:",
-            min=0, value=slot(x, .plotFontSize)),
-        numericInput(
-            paste0(plot_name, "_", .legendPointSize), label="Legend point size:",
-            min=0, value=slot(x, .legendPointSize)),
-        radioButtons(
-            paste0(plot_name, "_", .plotLegendPosition), label="Legend position:", inline=TRUE,
-            choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
-            selected=slot(x, .plotLegendPosition))
-
+                label=sprintf("Edit %s names", sdim))
+        )
     )
 
+    discrete.choices <- .getDiscreteMetadataChoices(x, se)
+    if (length(discrete.choices)) {
+        .addSpecificTour(class(x)[1], .plotLabelCenters, {
+            mdim <- .multiSelectionDimension(x)
+            function(plot_name) {
+                data.frame(
+                    rbind(
+                        c(
+                            element=paste0("#", plot_name, "_", .plotLabelCenters),
+                            intro="In certain applications, we may have a factor that defines groups of points in the plot. 
+                            A typical example would be that a factor that holds cluster identity on a Reduced Dimension Plot.
+                            We can then use that factor to annotate the plot by putting the group label at the center of the group's points.
+                            This can be done by <strong>checking this box</strong>..."
+                        ),
+                        c(
+                            element=paste0("#", plot_name, "_", .plotLabelCentersBy, " + .selectize-control"),
+                            intro=sprintf("... and choosing a categorical factor from the <code>%sData</code> to label points with.
+                            Of course, this really only makes sense for factors that are somehow associated with the plot coordinates.", substr(mdim, 1, 3))
+                        )
+                    )
+                )
+            }
+        })
+
+        ui <- c(ui, 
+            list(
+                hr(),
+                .checkboxInput.iSEE(x, .plotLabelCenters,
+                    label="Label centers",
+                    value=slot(x, .plotLabelCenters)),
+                .conditionalOnCheckSolo(
+                    .input_FUN(.plotLabelCenters),
+                    on_select=TRUE,
+                    selectInput(.input_FUN(.plotLabelCentersBy),
+                        label="Label centers:",
+                        choices=discrete.choices,
+                        selected=slot(x, .plotLabelCentersBy)),
+                    colourInput(.input_FUN(.plotLabelCentersColor),
+                        label=NULL,
+                        value=slot(x, .plotLabelCentersColor))
+                )
+            )
+        )
+    }
+
+    .addSpecificTour(class(x)[1], .plotFontSize, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .plotFontSize),
+                    intro="Changes the font size, nothing much more to say here."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .legendPointSize, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .legendPointSize),
+                    intro="Changes the size of the points in the legend.
+                    To be honest, I can't remember why we put this in here,
+                    but someone must have asked for it... so here it is."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .plotLegendPosition, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .plotLegendPosition),
+                    intro="Changes the position of the legend on the plot, if any legend exists.
+                    On the bottom, on the right; the choice is yours."
+                )
+            )
+        )
+    })
+
+    ui <- c(ui,
+        list(
+            hr(),
+            .numericInput.iSEE(x, .plotFontSize,
+                label="Font size:",
+                min=0, value=slot(x, .plotFontSize)),
+            .numericInput.iSEE(x, .legendPointSize,
+                label="Legend point size:",
+                min=0, value=slot(x, .legendPointSize)),
+            .radioButtons.iSEE(x, .plotLegendPosition,
+                label="Legend position:", inline=TRUE,
+                choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
+                selected=slot(x, .plotLegendPosition))
+        )
+    )
+
+    do.call(tagList, ui)
 })
 
 #' @export
@@ -807,6 +1126,9 @@ setMethod(".multiSelectionCommands", "DotPlot", function(x, index) {
         "selected <- rownames(iSEE::lassoPoints(contents, select));"
     }
 })
+
+#' @export
+setMethod(".isBrushable", "DotPlot", function(x) TRUE)
 
 #' @export
 setMethod(".singleSelectionValue", "DotPlot", function(x, contents) {
@@ -959,29 +1281,22 @@ setMethod(".colorByNoneDotPlotField", "DotPlot", function(x) NULL)
 #' @export
 setMethod(".colorByNoneDotPlotScale", "DotPlot", function(x) NULL)
 
+###############################################################################
+# Documentation
+
 #' @export
 setMethod(".definePanelTour", "DotPlot", function(x) {
     mdim <- .multiSelectionDimension(x)
-
-    collated <- rbind(
+    rbind(
         .addTourStep(x, .visualParamBoxOpen,  "The <i>Visual parameters</i> box contains parameters related to visual aspects like the color, shape, size and so on.<br/><br/><strong>Action:</strong> click on the header of this box to see the available options."),
-        .addTourStep(x, .colorByField, "PLACEHOLDER_COLOR"), # To be filled in by subclasses.
-        .addTourStep(x, .visualParamChoice, "There are a lot of options so not all of them are shown by default. More settings are available by checking some of the boxes here; conversely, options can be hidden by unchecking some of these boxes.<br/><br/>Most of these parameters here are fairly self-explanatory and can be explored at leisure. However, we will highlight one particularly useful piece of functionality.<br/><br/><strong>Action:</strong> tick the checkbox labelled \"Text\"."),
-        .addTourStep(x, .plotCustomLabels, sprintf("Users can show the names of certain %ss alongside the locations of their data points on the plot.<br/><br/><strong>Action:</strong> tick the checkbox to enable custom labels.", mdim)),
-        .addTourStep(x, .dimnamesModalOpen, sprintf("When custom labels are enabled, this button can launch a modal containing a text editor where users can specify the data points to label - in this case, using their %s names.", mdim)),
+        .addTourStep(x, .visualParamChoice, "There are a lot of options so not all of them are shown by default. More settings are available by checking some of the boxes here; conversely, options can be hidden by unchecking some of these boxes.<br/><br/>Most of these parameters here are fairly self-explanatory and can be explored at leisure."),
         callNextMethod(),
-        c(paste0("#", .getEncodedName(x)), sprintf("At the other end of the spectrum, brushing or creating a lasso on this plot will create a selection of multiple %ss, to be transmitted to other panels that choose this one as their selection source.<br/><br/>Drag-and-dropping will create a rectangular brush while a single click will lay down a lasso waypoint for non-rectangular selections.<br/><br/>Brushes and lassos can also be used to transmit single %s selections in which case one %s is arbitrarily chosen from the selection.", mdim, mdim, mdim)),
-        .addTourStep(x, .multiSelectSave, "Advanced users can also save their selections for later use. Brushes and lassos are saved using a first-in-last-out scheme where you can only delete the last saved selection.")
+        c(paste0("#", .getEncodedName(x)), sprintf("At the other end of the spectrum, brushing or creating a lasso on this plot will create a selection of multiple %ss, to be transmitted to other panels that choose this one as their selection source.<br/><br/>Drag-and-dropping will create a rectangular brush while a single click will lay down a lasso waypoint for non-rectangular selections.<br/><br/>Brushes and lassos can also be used to transmit single %s selections in which case one %s is arbitrarily chosen from the selection.", mdim, mdim, mdim))
     )
-
-    for (mdim in c("row", "column")) {
-        edit <- paste0("PLACEHOLDER_", toupper(mdim), "_SELECT")
-        i <- which(collated$intro==edit)
-        collated[i,"intro"] <- sprintf("Here we can choose the \"source\" panel from which to receive a multiple %s selection; that is to say, if we selected some %ss of the <code>SummarizedExperiment</code> object in the chosen source panel, the corresponding points in the plot above would be highlighted in some manner.", mdim, mdim)
-    }
-
-    collated
 })
+
+###############################################################################
+# Back compatibility
 
 #' @export
 #' @importFrom BiocGenerics updateObject

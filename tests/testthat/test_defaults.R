@@ -1,3 +1,6 @@
+# This tests the default settings
+# library(iSEE); library(testthat); source('test_defaults.R')
+
 test_that("new_defaults works", {
 
     out <- iSEE:::new_defaults(list(init=TRUE))

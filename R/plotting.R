@@ -193,7 +193,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @seealso
 #' \code{\link{.generateDotPlot}}
 #'
-#' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme element_text
+#' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme element_text geom_density_2d
 .scatter_plot <- function(plot_data, param_choices,
     x_lab, y_lab, color_lab, shape_lab, size_lab, title,
     by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE)
@@ -1278,7 +1278,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
 #' Add multiple selection plotting commands
 #'
-#' Add \link{ggplot} instructions to create brushes and lassos for both saved and active mutliple selections in a \linkS4class{DotPlot} panel.
+#' Add \link{ggplot} instructions to create brushes and lassos for both saved and active multiple selections in a \linkS4class{DotPlot} panel.
 #'
 #' @param x An instance of a \linkS4class{DotPlot} class.
 #' @param envir The environment in which the \link{ggplot} commands are to be evaluated.

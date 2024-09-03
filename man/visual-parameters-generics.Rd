@@ -9,13 +9,13 @@
 \alias{.defineVisualFacetInterface}
 \alias{.defineVisualTextInterface}
 \alias{.defineVisualOtherInterface}
+\alias{.allowableColorByDataChoices}
+\alias{.getTooltipUI}
 \title{Generics for visual DotPlot parameters}
 \description{
 These generics allow subclasses to override the user interface elements controlling visual parameters of \linkS4class{DotPlot} panels.
 }
-\details{
-When implementing methods for these generics, it is a good idea to make use of information precomputed by \code{\link{.cacheCommonInfo}}.
-For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link{colData}} is valid and discrete or continuous.
+\section{Interface definition}{
 
 In all of the code snippets below, \code{x} is a \linkS4class{Panel} instance and \code{se} is the \linkS4class{SummarizedExperiment} object.
 \itemize{
@@ -40,7 +40,24 @@ A method for any of these generics may also return \code{NULL}, in which case th
 
 All of these generics are called by \code{\link{.defineInterface}} for DotPlot subclasses.
 Developers of subclasses can simply specialize these generics to change the UI instead of reimplementing \code{.defineInterface} itself.
+
+When implementing methods for these generics, it is a good idea to make use of information precomputed by \code{\link{.cacheCommonInfo}}.
+For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link{colData}} is valid and discrete or continuous.
 }
+
+\section{Controlling \code{ColorBy*Data} choices}{
+
+\code{.allowableColorByDataChoices(x, se)} should return a character vector of the allowable row/column data variables to use 
+when \code{ColorBy} is set to \code{"Row data"} or \code{"Column data"} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
+The default method will use all available (atomic) variables, but subclasses can specialize this to only allow, e.g., continuous or discrete variables.
+}
+
+\section{Controlling hover choices}{
+
+\code{.getTooltipUI(x, se, name)} should return an \code{HTML} tag definition representing information to display in the tooltip that is displayed in \code{DotPlot} panels when hovering over a data point.
+The data point is identified by \code{name}, its \code{rownames} or \code{colnames} value in \code{se}.
+}
+
 \author{
 Kevin Rue-Albrecht
 }

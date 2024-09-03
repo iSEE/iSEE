@@ -275,3 +275,15 @@ test_that(".gather_current_memory works as expected", {
     expect_identical(out$colormap, "WHEE")
 
 })
+
+test_that(".removeInvalidChoices removes invalid choices", {
+    x <- ColumnDataPlot(
+        TooltipColumnData = "bad_name"
+    )
+    
+    expect_warning(
+        out <- iSEE:::.removeInvalidChoices(x, iSEE:::.tooltipColData, colnames(colData(sce))),
+        "Removing invalid values"
+    )
+    expect_identical(out[[iSEE:::.tooltipColData]], character(0))
+})

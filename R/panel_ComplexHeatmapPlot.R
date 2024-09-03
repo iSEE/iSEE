@@ -21,12 +21,15 @@
 #' Defaults to \code{character(0)}.
 #' \item \code{ShowColumnSelection}, a logical vector indicating whether the column selection should be shown as an extra annotation bar.
 #' Defaults to \code{TRUE}.
+#' \item \code{OrderColumnSelection}, a logical vector indicating whether the column selection should be used to order columns in the heatmap.
+#' Defaults to \code{TRUE}.
 #' }
 #'
 #' The following slots control the choice of assay values:
 #' \itemize{
 #' \item \code{Assay}, string specifying the name of the assay to use for obtaining expression values.
-#' Defaults to the first valid assay name (see \code{?"\link{.refineParameters,ComplexHeatmapPlot-method}"} for details).
+#' Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}},
+#' falling back to the first valid assay name (see \code{.cacheCommonInfo} below).
 #' }
 #'
 #' The following slots control the clustering of rows:
@@ -63,10 +66,12 @@
 #' \item \code{ShowDimNames}, a character vector specifying the dimensions for which to display names.
 #' This can contain zero or more of \code{"Rows"} and \code{"Columns"}.
 #' Defaults to \code{"Rows"}.
+#' \item \code{NamesRowFontSize}, a numerical value setting the font size of the row names.
+#' \item \code{NamesColumnFontSize}, a numerical value setting the font size of the column names.
 #' \item \code{LegendPosition}, string specifying the position of the legend on the plot.
-#' Defaults to \code{"Bottom"} but can also be \code{"Right"}.
+#' Defaults to \code{"Bottom"} in \code{\link{getPanelDefault}} but can also be \code{"Right"}.
 #' \item \code{LegendDirection}, string specifying the orientation of the legend on the plot for continuous covariates.
-#' Defaults to \code{"Horizontal"} but can also be \code{"Vertical"}.
+#' Defaults to \code{"Horizontal"} in \code{\link{getPanelDefault}} but can also be \code{"Vertical"}.
 #' }
 #'
 #' The following slots control some aspects of the user interface:
@@ -89,7 +94,7 @@
 #' For setting up data values:
 #' \itemize{
 #' \item \code{\link{.cacheCommonInfo}(x)} adds a \code{"ComplexHeatmapPlot"} entry containing
-#' \code{valid.assay.names}, a character vector of valid assay names;
+#' \code{valid.assay.names}, a character vector of valid (i.e., non-empty) assay names;
 #' \code{discrete.assay.names}, a character vector of valid assay names with discrete atomic values;
 #' \code{continuous.assay.names}, a character vector of valid assay names with continuous atomic values;
 #' \code{valid.colData.names}, a character vector of names of columns in \code{colData} that are valid;
@@ -196,6 +201,8 @@
 #' .fullName,ComplexHeatmapPlot-method
 #' .generateOutput,ComplexHeatmapPlot-method
 #' .hideInterface,ComplexHeatmapPlot-method
+#' .multiSelectionResponsive,ComplexHeatmapPlot-method
+#' .multiSelectionRestricted,ComplexHeatmapPlot-method
 #' .panelColor,ComplexHeatmapPlot-method
 #' .refineParameters,ComplexHeatmapPlot-method
 #' .renderOutput,ComplexHeatmapPlot-method
@@ -221,7 +228,7 @@ ComplexHeatmapPlot <- function(...) {
 setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
     args <- list(...)
 
-    args <- .emptyDefault(args, .heatMapAssay, NA_character_)
+    args <- .emptyDefault(args, .heatMapAssay, getPanelDefault(.heatMapAssay))
     args <- .emptyDefault(args, .heatMapCustomFeatNames, TRUE)
     args <- .emptyDefault(args, .heatMapFeatNameText, NA_character_)
 
@@ -248,8 +255,11 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
 
     args <- .emptyDefault(args, .showDimnames, c(.showNamesRowTitle))
 
-    args <- .emptyDefault(args, .plotLegendPosition, iSEEOptions$get("legend.position"))
-    args <- .emptyDefault(args, .plotLegendDirection, iSEEOptions$get("legend.direction"))
+    args <- .emptyDefault(args, .namesRowFontSize, .plotFontSizeAxisTextDefault)
+    args <- .emptyDefault(args, .namesColumnFontSize, .plotFontSizeAxisTextDefault)
+
+    args <- .emptyDefault(args, .plotLegendPosition, getPanelDefault(.plotLegendPosition))
+    args <- .emptyDefault(args, .plotLegendDirection, getPanelDefault(.plotLegendDirection))
     args <- .emptyDefault(args, .visualParamBoxOpen, FALSE)
 
     args <- .emptyDefault(args, .heatMapShowSelection, TRUE)
@@ -272,6 +282,11 @@ setValidity2("ComplexHeatmapPlot", function(object) {
 
     msg <- .multipleChoiceError(msg, object, .showDimnames,
         c(.showNamesRowTitle, .showNamesColumnTitle))
+
+    msg <- .validNumberError(msg, object, .namesRowFontSize,
+                             lower=0, upper=Inf)
+    msg <- .validNumberError(msg, object, .namesColumnFontSize,
+                             lower=0, upper=Inf)
 
     msg <- .allowableChoiceError(msg, object, .plotLegendPosition,
         c(.plotLegendRightTitle, .plotLegendBottomTitle))
@@ -304,10 +319,10 @@ setMethod("[[", "ComplexHeatmapPlot", function(x, i, j, ...) {
 
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("<%s>[['%s']] is deprecated.\nUse <%s>[['%s']] and/or <%s>[['%s']] instead.",
-            cname, i, cname, .selectColRestrict, cname, .heatMapShowSelection))
+            cname, i, cname, .selectColumnRestrict, cname, .heatMapShowSelection))
 
-        if (slot(x, .selectColRestrict)) {
-            "Restrict" 
+        if (slot(x, .selectColumnRestrict)) {
+            "Restrict"
         } else if (slot(x, .heatMapShowSelection)) {
             "Color"
         } else {
@@ -323,15 +338,15 @@ setReplaceMethod("[[", "ComplexHeatmapPlot", function(x, i, j, ..., value) {
     if (i %in% "SelectionColor") {
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.", cname, i))
-        x 
+        x
     } else if (i %in% "SelectionEffect") {
         x <- updateObject(x, check=FALSE)
 
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.\nSet <%s>[['%s']] and/or <%s>[['%s']] instead.",
-            cname, i, cname, .selectColRestrict, cname, .heatMapShowSelection))
+            cname, i, cname, .selectColumnRestrict, cname, .heatMapShowSelection))
 
-        slot(x, .selectColRestrict) <- (value=="Restrict")
+        slot(x, .selectColumnRestrict) <- (value=="Restrict")
         slot(x, .heatMapShowSelection) <- (value!="Restrict")
 
         x
@@ -359,13 +374,13 @@ setMethod(".cacheCommonInfo", "ComplexHeatmapPlot", function(x, se) {
     df <- colData(se)
     coldata_displayable <- .findAtomicFields(df)
     subdf <- df[,coldata_displayable,drop=FALSE]
-    coldata_discrete <- .whichGroupable(subdf)
+    coldata_discrete <- .whichGroupable(subdf, max_levels = .get_color_maxlevels())
     coldata_continuous <- .whichNumeric(subdf)
 
     df <- rowData(se)
     rowdata_displayable <- .findAtomicFields(df)
     subdf <- df[,rowdata_displayable,drop=FALSE]
-    rowdata_discrete <- .whichGroupable(subdf)
+    rowdata_discrete <- .whichGroupable(subdf, max_levels = .get_color_maxlevels())
     rowdata_continuous <- .whichNumeric(subdf)
 
     .setCachedCommonInfo(se, "ComplexHeatmapPlot",
@@ -399,7 +414,6 @@ setMethod(".refineParameters", "ComplexHeatmapPlot", function(x, se) {
         return(NULL)
     }
 
-    all_assays <- c(intersect(iSEEOptions$get("assay"), all_assays), all_assays)
     x <- .replaceMissingWithFirst(x, .heatMapAssay, all_assays)
 
     if (is.na(slot(x, .heatMapFeatNameText))) {
@@ -419,7 +433,10 @@ setMethod(".fullName", "ComplexHeatmapPlot", function(x) "Complex heatmap")
 #' @export
 setMethod(".defineOutput", "ComplexHeatmapPlot", function(x) {
     plot_name <- .getEncodedName(x)
-    plotOutput(plot_name, height=paste0(slot(x, .organizationHeight), "px"))
+    addSpinner(
+        plotOutput(plot_name, height=paste0(slot(x, .organizationHeight), "px")),
+        color=.panelColor(x)
+    )
 })
 
 #' @export
@@ -440,32 +457,101 @@ setMethod(".defineDataInterface", "ComplexHeatmapPlot", function(x, se, select_i
         identity
     }
 
+    .addSpecificTour(class(x)[1], .heatMapAssay, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapAssay, " + .selectize-control"),
+                    intro = "Here, we can select the name of the assay matrix to show.
+The choices are extracted from the <code>assayNames</code> of a <code>SummarizedExperiment</code> object.
+These matrices should be loaded into the object prior to calling <strong>iSEE</strong> - they are not computed on the fly."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .heatMapCustomFeatNames, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapCustomFeatNames),
+                    intro = "Features displayed as rows in the heat map can be (i) manually specified by entering row names interactively in a modal, or (ii) use any multiple selection transmitted from another panel. This checkbox switches between these two options. <strong>Click on this checkbox to activate manual mode.</strong>"
+                ),
+                c(
+                    element = paste0("#", plot_name, "_", .dimnamesModalOpen),
+                    intro = "This brings up a modal that we can use to enter the names of features of interest. Each feature should be a row name in the original <code>SummarizedExperiment</code>, with one feature per line."
+                )
+            )
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .heatMapClusterFeatures, function(plot_name) {
+        data.frame(
+            element = paste0("#", plot_name, "_", .heatMapClusterFeatures),
+            intro = "Features displayed as rows in the heat map can be (i) clustered dynamically using a selection of distance metrics and clustering methods, or (ii) shown in the order they appear in <code>rownames</code>. The former choice is enabled by checking this box.<br/><br/>
+The clustering itself is done using <code>hclust</code>, i.e., hierarchical clustering. This is simple and intuitive but not particularly efficient, so should only be used for small numbers of features.<br/><br/>
+<strong>Click on this checkbox to cluster dynamically.</strong>"
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .heatMapClusterDistanceFeatures, function(plot_name) {
+        data.frame(
+            element = paste0("#", plot_name, "_", .heatMapClusterDistanceFeatures, " + .selectize-control"),
+            intro = "Here we can choose from a variety of different metrics to compute distances between features based on their assay values in the heatmap. The resulting distance is then used in <code>hclust</code> to perform hierarchical clustering. Euclidean distances are probably most common; the Spearman distance is another popular choice that is more robust to outliers."
+        )
+    })
+
+    .addSpecificTour(class(x)[1], .heatMapClusterMethodFeatures, function(plot_name) {
+        data.frame(
+            element = paste0("#", plot_name, "_", .heatMapClusterMethodFeatures, " + .selectize-control"),
+            intro = "We can also choose from a variety of different clustering methods. Ward's method and complete linkage clustering are popular choices as they tend to yield more compact and interpretable clusters."
+        )
+    })
+
     list(
-        selectInput(.input_FUN(.heatMapAssay), label="Assay choice",
-            choices=all_assays, selected=slot(x, .heatMapAssay)),
-        checkboxInput(.input_FUN(.heatMapCustomFeatNames), label="Use custom rows",
-            value=slot(x, .heatMapCustomFeatNames)),
+        .selectInput.iSEE(x, .heatMapAssay,
+            label="Assay choice:",
+            choices=all_assays,
+            selected=slot(x, .heatMapAssay)),
+        .checkboxInput.iSEE(x, .heatMapCustomFeatNames,
+            label = "Use custom rows",
+            value=slot(x, .heatMapCustomFeatNames),
+            help = TRUE),
         .conditionalOnCheckSolo(
             .input_FUN(.heatMapCustomFeatNames),
             on_select=TRUE,
             actionButton(.input_FUN(.dimnamesModalOpen), label="Edit feature names")),
-        ABLEFUN(checkboxInput(.input_FUN(.heatMapClusterFeatures), label="Cluster rows",
-            value=slot(x, .heatMapClusterFeatures))),
+        ABLEFUN(
+            .checkboxInput.iSEE(
+                x, .heatMapClusterFeatures,
+                label = "Cluster rows",
+                value=slot(x, .heatMapClusterFeatures),
+                help = TRUE)
+            ),
         .conditionalOnCheckSolo(
             .input_FUN(.heatMapClusterFeatures),
             on_select=TRUE,
-            ABLEFUN(selectInput(.input_FUN(.heatMapClusterDistanceFeatures), label="Clustering distance for rows",
-                choices=c(.clusterDistanceEuclidean, .clusterDistancePearson, .clusterDistanceSpearman,
-                    .clusterDistanceManhattan, .clusterDistanceMaximum, .clusterDistanceCanberra,
-                    .clusterDistanceBinary, .clusterDistanceMinkowski, .clusterDistanceKendall),
-                selected=slot(x, .heatMapClusterDistanceFeatures))),
-            ABLEFUN(selectInput(.input_FUN(.heatMapClusterMethodFeatures), label="Clustering method for rows",
-                choices=c(.clusterMethodWardD, .clusterMethodWardD2, .clusterMethodSingle, .clusterMethodComplete,
-                    "average (= UPGMA)"=.clusterMethodAverage,
-                    "mcquitty (= WPGMA)"=.clusterMethodMcquitty,
-                    "median (= WPGMC)"=.clusterMethodMedian,
-                    "centroid (= UPGMC)"=.clusterMethodCentroid),
-                selected=slot(x, .heatMapClusterMethodFeatures))))
+            ABLEFUN(
+                .selectInput.iSEE(x, .heatMapClusterDistanceFeatures,
+                    label="Clustering distance for rows",
+                    choices=c(.clusterDistanceEuclidean, .clusterDistancePearson, .clusterDistanceSpearman,
+                        .clusterDistanceManhattan, .clusterDistanceMaximum, .clusterDistanceCanberra,
+                        .clusterDistanceBinary, .clusterDistanceMinkowski, .clusterDistanceKendall),
+                    selected=slot(x, .heatMapClusterDistanceFeatures)
+                )
+            ),
+            ABLEFUN(
+                .selectInput.iSEE(x, .heatMapClusterMethodFeatures,
+                    label="Clustering method for rows",
+                    choices=c(.clusterMethodWardD, .clusterMethodWardD2, .clusterMethodSingle, .clusterMethodComplete,
+                        "average (= UPGMA)"=.clusterMethodAverage,
+                        "mcquitty (= WPGMA)"=.clusterMethodMcquitty,
+                        "median (= WPGMC)"=.clusterMethodMedian,
+                        "centroid (= UPGMC)"=.clusterMethodCentroid),
+                    selected=slot(x, .heatMapClusterMethodFeatures)
+                )
+            )
+        )
     )
 })
 
@@ -483,6 +569,7 @@ setMethod(".defineInterface", "ComplexHeatmapPlot", function(x, se, select_info)
 #' @importFrom SummarizedExperiment assay rowData colData
 #' @importFrom ggplot2 ggplot geom_text aes theme_void
 #' @importFrom ComplexHeatmap Heatmap draw columnAnnotation rowAnnotation
+#' @importFrom grid gpar
 setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, all_contents) {
     # print(str(x))
     plot_env <- new.env()
@@ -540,6 +627,10 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     heatmap_args[["name"]] <- deparse(.build_heatmap_assay_legend_title(x, !.is_heatmap_continuous(x, se)))
     heatmap_args[["show_row_names"]] <- as.character(.showNamesRowTitle %in% slot(x, .showDimnames))
     heatmap_args[["show_column_names"]] <- as.character(.showNamesColumnTitle %in% slot(x, .showDimnames))
+
+    # Font sizes for names
+    heatmap_args[["row_names_gp"]] <- sprintf('grid::gpar(fontsize=%s)', deparse(slot(x, .namesRowFontSize)))
+    heatmap_args[["column_names_gp"]] <- sprintf('grid::gpar(fontsize=%s)', deparse(slot(x, .namesColumnFontSize)))
 
     # Legend parameters
     heatmap_args[['heatmap_legend_param']] <- sprintf('list(direction=%s)', deparse(tolower(slot(x, .plotLegendDirection))))
@@ -609,7 +700,8 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
             .heatMapClusterFeatures,
             .heatMapClusterDistanceFeatures,
             .heatMapClusterMethodFeatures,
-            .heatMapCustomFeatNames
+            .heatMapCustomFeatNames,
+            .heatMapOrderSelection
         ),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
@@ -618,6 +710,8 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
             .heatMapAssay,
             .heatMapCenteredColormap,
             .showDimnames,
+            .namesRowFontSize,
+            .namesColumnFontSize,
             .plotLegendPosition,
             .plotLegendDirection,
             .heatMapShowSelection
@@ -649,31 +743,38 @@ setMethod(".hideInterface", "ComplexHeatmapPlot", function(x, field) {
     }
 })
 
+#' @export
+setMethod(".multiSelectionRestricted", "ComplexHeatmapPlot", function(x) {
+    ## .heatMapShowSelection is not technically restricted, but requires rerendering nonetheless
+    !slot(x, .heatMapCustomFeatNames) || slot(x, .selectColumnRestrict) || slot(x, .heatMapShowSelection)
+})
+
+#' @export
+setMethod(".multiSelectionResponsive", "ComplexHeatmapPlot", function(x, dims = character(0)) {
+    if ("row" %in% dims) {
+        if (slot(x, .selectRowRestrict) || !slot(x, .heatMapCustomFeatNames)) {
+            return(TRUE)
+        }
+    }
+    if ("column" %in% dims) {
+        if (slot(x, .selectColumnRestrict) || slot(x, .heatMapShowSelection)) {
+            return(TRUE)
+        }
+    }
+    return(FALSE)
+})
+
+
 ###############################################################
 
 #' @export
 setMethod(".definePanelTour", "ComplexHeatmapPlot", function(x) {
-    collated <- rbind(
+    rbind(
         c(paste0("#", .getEncodedName(x)), sprintf("The <font color=\"%s\">ComplexHeatmapPlot</font> panel contains a complex heatmap from the <i><a href='https://bioconductor.org/packages/ComplexHeatmap/'>ComplexHeatmap</a></i> package. This is quite conceptually different from the other panels as it shows assay data for multiple rows and columns at the same time. However, it is strictly an end-point panel, i.e., it cannot transmit to other panels.", .getPanelColor(x))),
         .addTourStep(x, .dataParamBoxOpen, "The <i>Data parameters</i> box shows the available parameters that can be tweaked to control the data on the heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
-        .addTourStep(x, .dimnamesModalOpen, "The most relevant parameter is the choice of features to show as rows on the heatmap. This can be manually specified by entering row names of the <code>SummarizedExperiment</code> object into this modal..."),
-        .addTourStep(x, .heatMapCustomFeatNames, "Or it can be chained to a multiple row selection from another panel, if the <i>Custom rows</i> choice is unselected - see the <i>Selection parameters</i> later."),
-        .addTourStep(x, .heatMapClusterFeatures, "We can also choose whether to cluster the features for better visibility."),
-
         .addTourStep(x, .visualParamBoxOpen, "The <i>Visual parameters</i> box shows the available visual parameters that can be tweaked in this heatmap.<br/><br/><strong>Action:</strong> click on this box to open up available options."),
-        .addTourStep(x, .visualParamChoice, "A large number of options are available here, so not all of them are shown by default. We can check some of the boxes here to show or hide some classes of parameters.<br/><br/><strong>Action:</strong> check the <i>Transform</i> box to expose some transformation options."),
-        .addTourStep(x, .heatMapColData, "One key parameter is to select the column annotations to show as color bars on the top of the heatmap. This will also order the columns by the values of the selected annotations (in the specified order, if multiple annotations are specified). This is useful for providing some structure to the heatmap.", is_selectize=TRUE),
-        .addTourStep(x, .assayCenterRows, "Another useful setting is to center the heatmap by row so that the colors represent deviations from the average. This better handles differences in assay values "),
-
-        callNextMethod(),
-        .addTourStep(x, .selectColRestrict, "Here, we can specify that heatmap should be explicitly restricted to only the selected columns.")
+        callNextMethod()
     )
-
-    collated[which(collated$intro=="PLACEHOLDER_ROW_SELECT"), "intro"] <- "We can choose the \"source\" panel from which to receive a multiple row selection, which is used to control the features on the heatmap when <i>Custom rows</i> checkbox is unselected. In other words, if we selected some rows of the <code>SummarizedExperiment</code> object in the chosen source panel, those rows would make up the rows of the heatmap."
-
-    collated[which(collated$intro=="PLACEHOLDER_COLUMN_SELECT"), "intro"] <- "We can choose the \"source\" panel from which to receive a multiple column selection. That is to say, if we selected some columns of the <code>SummarizedExperiment</code> object in the chosen source panel, that selection would manifest in the appearance of the heatmap."
-
-    collated
 })
 
 #' @export
@@ -682,7 +783,7 @@ setMethod("updateObject", "ComplexHeatmapPlot", function(object, ..., verbose=FA
         # nocov start
 
         # Do this before 'callNextMethod()', which fills in the Restrict.
-        update.2.3 <- is(try(slot(object, .selectColRestrict), silent=TRUE), "try-error")
+        update.2.3 <- is(try(slot(object, .selectColumnRestrict), silent=TRUE), "try-error")
 
         # NOTE: it is crucial that updateObject does not contain '[[' or '[[<-'
         # calls, lest we get sucked into infinite recursion with the calls to
@@ -691,7 +792,7 @@ setMethod("updateObject", "ComplexHeatmapPlot", function(object, ..., verbose=FA
 
         if (update.2.3) {
             effect <- object@SelectionEffect
-            slot(object, .selectColRestrict) <- (effect=="Restrict")
+            slot(object, .selectColumnRestrict) <- (effect=="Restrict")
             slot(object, .heatMapShowSelection) <- (effect!="Restrict")
             slot(object, .heatMapOrderSelection) <- FALSE
         }

@@ -28,10 +28,7 @@
 #' @rdname setCachedCommonInfo
 #' @importFrom S4Vectors metadata metadata<-
 .setCachedCommonInfo <- function(se, cls, ...) {
-    if (is.null(metadata(se)$iSEE)) {
-        metadata(se)$iSEE <- list()
-    }
-    metadata(se)$iSEE[[cls]] <- list(...)
+    metadata(se) <- .set_nested_list(metadata(se), c("iSEE", "cached", cls), list(...))
     se
 }
 
@@ -39,7 +36,20 @@
 #' @rdname setCachedCommonInfo
 #' @importFrom S4Vectors metadata
 .getCachedCommonInfo <- function(se, cls) {
-    metadata(se)$iSEE[[cls]]
+    metadata(se)[["iSEE"]][["cached"]][[cls]]
+}
+
+.set_nested_list <- function(x, i, value) {
+    if (!is.list(x)) {
+        x <- list()
+    }
+    if (length(i)==1L) {
+        x[[i]] <- value
+    } else {
+        i1 <- i[1]
+        x[[i1]] <- .set_nested_list(x[[i1]], i[-1], value)
+    }
+    x 
 }
 
 #' Dedicated colormap getters/setters
@@ -139,14 +149,15 @@
     covariates <- colnames(x)
     for (i in seq_along(covariates)) {
         current <- x[,i]
-        if (!is.atomic(current) || !is.null(dim(current))) {
+        if (!is.atomic(current) || !is.null(dim(current)) || all(is.na(current)) || 
+            (is.numeric(current) && !any(is.finite(current)))) {
             covariates[i] <- NA_character_
         }
     }
     covariates[!is.na(covariates)]
 }
 
-#' Validation error utilites
+#' Validation error utilities
 #'
 #' Helper functions to implement \code{\link{setValidity}} methods for \linkS4class{Panel} subclasses.
 #'
@@ -268,6 +279,32 @@
     x
 }
 
+#' Remove invalid values in multiple choices
+#'
+#' Removes invalid values in a slot of a \linkS4class{Panel} object.
+#' This is usually called in \code{\link{.refineParameters}}.
+#'
+#' @param x An instance of a \linkS4class{Panel} class.
+#' @param field String containing the name of the relevant slot.
+#' @param choices Character vector of permissible values for this slot.
+#'
+#' @return
+#' \code{x} where the slot named \code{field} is replaced only with the values that exist in \code{choices}.
+#'
+#' @author Kevin Rue-Albrecht
+#' @export
+#' @rdname removeInvalidChoices
+.removeInvalidChoices <- function(x, field, choices) {
+    chosen <- slot(x, field)
+    if (any(!chosen %in% choices)) {
+        removed <- setdiff(chosen, choices)
+        warning(sprintf("Removing invalid values of '%s' for '%s': %s", field, class(x)[1],
+            paste(sprintf("'%s'", removed), collapse=", ")))
+        slot(x, field) <- intersect(chosen, choices)
+    }
+    x
+}
+
 #' Number of levels for any data type
 #'
 #' @param x An atomic vector.
@@ -306,7 +343,7 @@
 #' \code{\link{.nlevels}}.
 .is_groupable <- function(x, max_levels = Inf) {
     out <- .nlevels(x)
-    is.finite(out) && out <= max_levels
+    is.finite(out) && out <= max_levels && any(!is.na(x))
 }
 
 #' @rdname cache-utils
@@ -315,10 +352,24 @@
     which(vapply(x, FUN=.is_groupable, max_levels=max_levels, FUN.VALUE=FALSE))
 }
 
+#' Determine whether a vector is numeric
+#'
+#' This function is used to find variables that are numeric and contain at least one finite value.
+#'
+#' @param x An atomic vector.
+#'
+#' @return A logical scalar that indicates whether \code{x} is numeric and contains at least one finite value.
+#'
+#' @author Charlotte Soneson
+#' @rdname INTERNAL_is_numeric
+.is_numeric <- function(x) {
+    is.numeric(x) && any(is.finite(x))
+}
+
 #' @rdname cache-utils
 #' @export
 .whichNumeric <- function(x) {
-    which(vapply(x, FUN=is.numeric, FUN.VALUE=FALSE))
+    which(vapply(x, FUN=.is_numeric, FUN.VALUE=FALSE))
 }
 
 #' @export

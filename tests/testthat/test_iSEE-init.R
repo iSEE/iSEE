@@ -20,11 +20,11 @@ test_that(".prepare_SE works correctly", {
     sce <- iSEE:::.prepare_SE(sce, ExperimentColorMap(), memory)
 
     # Stores the colormap:
-    expect_identical(ExperimentColorMap(), .get_colormap(sce))
+    expect_identical(ExperimentColorMap(), iSEE:::.get_colormap(sce))
 
     # Caches common information:
     expect_true(all(c("DotPlot", "ColumnDotPlot", "ReducedDimensionPlot", "RowDataTable", "RowDotPlot", "ColumnDataTable")
-        %in% names(metadata(sce)$iSEE)))
+        %in% names(metadata(sce)$iSEE$cached)))
 })
 
 test_that(".setup_initial_state works correctly", {
@@ -113,6 +113,6 @@ test_that("persistent object setup works as expected", {
 test_that(".setup_initial_state throws an error for duplicated panel identifiers", {
     sce <- iSEE:::.prepare_SE(sce, ExperimentColorMap(), memory)
     memory <- list(ReducedDimensionPlot(PanelId=1L), ReducedDimensionPlot(PanelId=1L))
-    expect_error(.setup_initial_state(sce, memory),
+    expect_error(iSEE:::.setup_initial_state(sce, memory),
         "panels of same class with duplicated IDs 'ReducedDimensionPlot1'", fixed=TRUE)
 })

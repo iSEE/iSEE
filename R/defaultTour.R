@@ -155,7 +155,7 @@
     element <- c(element, paste0("#", enc_fap, "_", .selectParamBoxOpen))
     intro <- c(intro, 'The <font color="#402ee8">Selection parameters</font> box contains parameters to handle sharing of multiple point selections across panels. The idea is that points selected in a "transmitting" panel can be visualized in a "receiving" panel.<br/><br/><strong>Action:</strong> click on the header of this collapsible box to see the available options.')
 
-    element <- c(element, paste0("#", enc_fap, "_", .selectColSource, " + .selectize-control"))
+    element <- c(element, paste0("#", enc_fap, "_", .selectColumnSource, " + .selectize-control"))
     intro <- c(intro, "<strong>Action:</strong> select <font color=\"#402ee8\">Reduced dimension plot 1</font>.<br /><br />This means that multiple point selections from <font color=\"#402ee8\">Reduced dimension plot 1</font> will be transmitted to the current <font color=\"#402ee8\">Feature assay plot 1</font>.")
 
     element <- c(element, paste0("#", enc_rdp))
@@ -164,7 +164,7 @@
     element <- c(element, paste0("#", enc_fap))
     intro <- c(intro, "The points selected in the <font color=\"#402ee8\">Reduced dimension plot 1</font> are shown as opaque in this plot, while all other points are semi-transparent.")
 
-    element <- c(element, paste0("#", enc_fap, "_", .selectColRestrict))
+    element <- c(element, paste0("#", enc_fap, "_", .selectColumnRestrict))
     intro <- c(intro, 'If <font color="#402ee8">Restrict</font> is set, only the selected points will be plotted in the receiving plot.')
 
     element <- c(element, paste0("#", enc_rdp, "_", .panelMultiSelectInfo))
@@ -230,7 +230,7 @@
     element <- c(element, paste0("#", enc_chm, "_", .selectRowSource, " + .selectize-control"))
     intro <- c(intro, "The source of incoming row selections (i.e., features) can be selected here.<br/><br/><strong>Action:</strong> Select the panel <font color=\"#402ee8\">Row data plot 1</font>")
 
-    element <- c(element, paste0("#", enc_chm, "_", .selectColSource, " + .selectize-control"))
+    element <- c(element, paste0("#", enc_chm, "_", .selectColumnSource, " + .selectize-control"))
     intro <- c(intro, "Similarly, the source of incoming column selections (i.e., samples) can be selected here.<br/><br/><strong>Action:</strong> Select the panel <font color=\"#402ee8\">Column data plot 1</font>")
 
     element <- c(element, paste0("#", enc_rop))
@@ -242,7 +242,7 @@
     element <- c(element, paste0("#", enc_chm))
     intro <- c(intro, "You can see the result of our interactions so far, including the selections applied to both rows and columns of this plot.")
 
-    element <- c(element, paste0("#", enc_chm, "_", .selectColRestrict))
+    element <- c(element, paste0("#", enc_chm, "_", .selectColumnRestrict))
     intro <- c(intro, "By default, all samples are shown in the heatmap and column selections are marked by a separate colored annotation bar. Alternatively, the heatmap can be restricted to show only the selected samples.<br/><br/><strong>Action:</strong> enable the 'Restrict' option.")
 
     element <- c(element, paste0("#", enc_chm, "_", .heatMapClusterFeatures))

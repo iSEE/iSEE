@@ -50,7 +50,7 @@
     if (source_type == "row") {
         source_field <- .selectRowSource
     } else {
-        source_field <- .selectColSource
+        source_field <- .selectColumnSource
     }
 
     # nocov start
@@ -81,10 +81,12 @@
                        aceEditor(.input_FUN(slot_name),
                                  mode="text",
                                  theme="xcode",
-                                 autoComplete="disabled",
                                  value=slot(instance, slot_name),
                                  debounce=100,
-                                 height="500px")
+                                 height="500px",
+                                 autoComplete = "live",
+                                 autoCompleters = "static",
+                                 autoCompleteList = list(rownames = rownames(se)))
                 ),
                 column(width = 4,
                        actionButton(.input_FUN(clear_field), "Clear editor"), br(), br(),

@@ -26,7 +26,7 @@
 #'
 #' @details
 #' Configuring the initial state of the app is as easy as passing a list of \linkS4class{Panel} objects to \code{initial}.
-#' Each element represents one panel and is typicall constructed with a command like \code{\link{ReducedDimensionPlot}()}.
+#' Each element represents one panel and is typically constructed with a command like \code{\link{ReducedDimensionPlot}()}.
 #' Panels are filled from left to right in a row-wise manner depending on the available width.
 #' Each panel can be easily customized by modifying the parameters in each object.
 #'
@@ -111,7 +111,7 @@
 #' @importFrom shinyjs useShinyjs
 #' @importFrom rintrojs introjsUI
 #' @importFrom shiny reactiveValues uiOutput actionButton shinyApp
-#' HTML icon tags includeCSS isolate showNotification onStop
+#' HTML icon tags includeCSS isolate showNotification onStop stopApp
 iSEE <- function(se,
     initial=NULL,
     extra=NULL,
@@ -144,7 +144,6 @@ iSEE <- function(se,
             ColumnDataTable(), 
             ComplexHeatmapPlot()
         )
-
         if (is.null(initial)) {
             initial <- all_defaults
         }
@@ -164,7 +163,7 @@ iSEE <- function(se,
                    appTitle),
             titleWidth = 750,
             dropdownMenu(type = "tasks",
-                icon = icon("object-group fa-1g"),
+                icon = icon("object-group"),
                 badgeStatus = NULL,
                 headerText = "Organization",
                 notificationItem(
@@ -174,21 +173,21 @@ iSEE <- function(se,
                         icon = icon("object-ungroup"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon = icon(""), status = "primary"
+                    icon = icon(NULL), status = "primary"
                 ),
                 notificationItem(
                     text=actionButton(
                         .generalLinkGraph,
                         label="Examine panel chart",
-                        icon=icon("chain"),
+                        icon=icon("link"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon(""), status="primary"
+                    icon=icon(NULL), status="primary"
                 )
             ),
 
             dropdownMenu(type = "tasks",
-                icon = icon("download fa-1g"),
+                icon = icon("download"),
                 badgeStatus = NULL,
                 headerText = "Export",
 
@@ -199,16 +198,16 @@ iSEE <- function(se,
                         icon=icon("download"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon(""), status="primary"
+                    icon=icon(NULL), status="primary"
                 ),
                 notificationItem(
                     text=actionButton(
                         .generalTrackedCode,
                         label="Extract the R code",
-                        icon=icon("magic"),
+                        icon=icon("wand-magic-sparkles"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon(""), status="primary"
+                    icon=icon(NULL), status="primary"
                 ),
                 notificationItem(
                     text=actionButton(
@@ -217,22 +216,22 @@ iSEE <- function(se,
                         icon=icon("clipboard"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon(""), status="primary"
+                    icon=icon(NULL), status="primary"
                 )
             ), # end of dropdownMenu
 
             dropdownMenu(type="tasks",
-                icon=icon("question-circle fa-1g"),
+                icon=icon("circle-question"),
                 badgeStatus=NULL,
                 headerText="Documentation",
                 notificationItem(
                     text=actionButton(
                         .generalTourSteps,
                         "Click me for a quick tour",
-                        icon("hand-o-right"),
+                        icon("hand-point-right"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon(""), # tricking it to not have additional icon
+                    icon=icon(NULL), # tricking it to not have additional icon
                     status="primary"
                 ),
                 notificationItem(
@@ -248,12 +247,23 @@ iSEE <- function(se,
                             )
                         )
                     ),
-                    icon=icon(""), status="primary"
+                    icon=icon(NULL), 
+                    status="primary"
+                ),
+                notificationItem(
+                  text=actionButton(
+                    .generalDraftTour,
+                    "Draft out a tour",
+                    icon("lightbulb"),
+                    style=.actionbutton_biocstyle
+                  ),
+                  icon=icon(NULL), # tricking it to not have additional icon
+                  status="primary"
                 )
             ),
 
             dropdownMenu(type="tasks",
-                icon=icon("info fa-1g"),
+                icon=icon("info"),
                 badgeStatus=NULL,
                 headerText="Additional information",
                 notificationItem(
@@ -263,7 +273,7 @@ iSEE <- function(se,
                         icon=icon("window-maximize"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon(""), status="primary"
+                    icon=icon(NULL), status="primary"
                 ),
                 notificationItem(
                     text=actionButton(
@@ -272,8 +282,33 @@ iSEE <- function(se,
                         icon=icon("heart"),
                         style=.actionbutton_biocstyle
                     ),
-                    icon=icon(""), status="primary"
+                    icon=icon(NULL), 
+                    status="primary"
+                ),
+                notificationItem(
+                    text=actionButton(
+                        .generalMetadataInfo,
+                        label="About this dataset",
+                        icon=icon("info"),
+                        style=.actionbutton_biocstyle
+                    ),
+                    icon=icon(NULL), 
+                    status="primary"
                 )
+            ), # end of dropdownMenu
+            dropdownMenu(type="tasks",
+                         icon=icon("cogs"),
+                         badgeStatus=NULL,
+                         headerText="App control",
+                         notificationItem(
+                           text=actionButton(
+                             .generalAppControl,
+                             label="Stop the iSEE app",
+                             icon=icon("circle-stop"),
+                             style=.actionbutton_biocstyle
+                           ),
+                           icon=icon(NULL), status="primary"
+                         )
             ) # end of dropdownMenu
         ), # end of dashboardHeader
 
@@ -285,6 +320,10 @@ iSEE <- function(se,
             prepareSpeechRecognition(voice),
             .prepareBugsEasterEgg(bugs),
             introjsUI(), # must be included in UI
+            # bugfix
+            # https://github.com/iSEE/iSEE/issues/594
+            # https://github.com/rstudio/shiny/issues/3125#issuecomment-876787895
+            htmltools::findDependencies(selectInput("test", "test", NULL)),
 
             tags$head(
                 # For error message handling
@@ -320,11 +359,11 @@ iSEE <- function(se,
         rObjects <- reactiveValues(rerender=1L, rerendered=1L, modified=list())
 
         if (!has_se) {
-            FUN <- function(SE, INITIAL, TOUR=NULL) {
+            FUN <- function(SE, INITIAL, TOUR=NULL, COLORMAP=colormap) {
                 if (is.null(INITIAL)) {
                     INITIAL <- initial
                 } 
-                .initialize_server(SE, initial=INITIAL, extra=extra, colormap=colormap,
+                .initialize_server(SE, initial=INITIAL, extra=extra, colormap=COLORMAP,
                     tour=TOUR, runLocal=runLocal, se_name=se_name, ecm_name=ecm_name, saveState=saveState,
                     input=input, output=output, session=session, rObjects=rObjects)
                 rObjects$rerendered <- .increment_counter(isolate(rObjects$rerendered))
@@ -348,9 +387,14 @@ iSEE <- function(se,
         # given that we should internally guarantee correctness anyway.
         onStart=function() {
             # nocov start
-            old <- iSEEOptions$get(".check.validity")
-            iSEEOptions$set(.check.validity=FALSE)
-            onStop(function() iSEEOptions$set(.check.validity=old))
+            old <- check.validity.env$check
+            check.validity.env$check <- FALSE
+
+            onStop(function() {
+                check.validity.env$check <- old
+                .deactivateAppOptionRegistry()
+                .clearSpecificTours()
+            })
             # nocov end
         },
 
@@ -394,6 +438,9 @@ iSEE <- function(se,
     env$se <- se
     se <- eval(parse(text=mod_commands), envir=env)
 
+    # Activating the app option registry.
+    .activateAppOptionRegistry(se)
+
     # Display an error notifications if colormap is not compatible with se
     # Display one warning notification for each incompatibility issue
     errors <- checkColormapCompatibility(colormap, se)
@@ -433,14 +480,14 @@ iSEE <- function(se,
         if (!slot(memory[[x]], .selectRowSource) %in% multi_sources$row) {
             slot(memory[[x]], .selectRowSource) <- .noSelection
         }
-        if (!slot(memory[[x]], .selectColSource) %in% multi_sources$column) {
-            slot(memory[[x]], .selectColSource) <- .noSelection
+        if (!slot(memory[[x]], .selectColumnSource) %in% multi_sources$column) {
+            slot(memory[[x]], .selectColumnSource) <- .noSelection
         }
     }
 
     for (r in seq_along(reservoir)) {
         slot(reservoir[[r]], .selectRowSource) <- .noSelection
-        slot(reservoir[[r]], .selectColSource) <- .noSelection
+        slot(reservoir[[r]], .selectColumnSource) <- .noSelection
     }
 
     pObjects <- .create_persistent_objects(memory, reservoir, counter)
@@ -470,6 +517,8 @@ iSEE <- function(se,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)
 
     .create_tour_observer(se, memory=pObjects$memory, tour=tour, input=input, session=session)
+    
+    .create_tour_drafter(se, input=input, pObjects=pObjects)
 
     .create_organization_observers(se=se, input=input, output=output, session=session,
         pObjects=pObjects, rObjects=rObjects)

@@ -1,6 +1,5 @@
 # This tests the various DotPlot-related generics.
-# library(testthat); library(iSEE); source("setup_sce.R"); source("setup_mimic_live_app.R"); 
-# source("test_DotPlot_generics.R")
+# library(testthat); library(iSEE); source("setup_sce.R"); source("setup_mimic_live_app.R"); source("test_DotPlot_generics.R")
 
 memory <- list(
     ReducedDimensionPlot(
@@ -52,7 +51,7 @@ test_that(".addDotPlotDataColor handles feature selection in column plots", {
     expect_true(!is.null(env$plot.data$ColorBy))
 
     expect_match(color_out$labels$ColorBy, rn, fixed=TRUE)
-    expect_match(color_out$labels$ColorBy, iSEEOptions$get("assay")[1], fixed=TRUE)
+    expect_match(color_out$labels$ColorBy, "logcounts", fixed=TRUE)
 })
 
 test_that(".addDotPlotDataColor handles sample selection in column plots", {
@@ -139,7 +138,7 @@ test_that(".addDotPlotDataColor handles sample selection in row plots", {
     expect_true(!is.null(env$plot.data$ColorBy))
 
     expect_match(color_out$labels$ColorBy, cn, fixed=TRUE)
-    expect_match(color_out$labels$ColorBy, iSEEOptions$get("assay")[1], fixed=TRUE)
+    expect_match(color_out$labels$ColorBy, "logcounts", fixed=TRUE)
 })
 
 test_that(".addDotPlotDataColor handles multiple selections in row plots", {
@@ -182,14 +181,14 @@ test_that(".colorDotPlot returns a command for coloring by metadata", {
     params[[iSEE:::.colorByField]] <- iSEE:::.colorByColDataTitle
     params[[iSEE:::.colorByFeatName]] <- colnames(colData(sce))[1]
     color_add <- iSEE:::.colorDotPlot(params, colData(sce)[,1])
-    expect_match(color_add[1], "colDataColorMap") 
+    expect_match(color_add[1], "colDataColorMap")
 
     # And again, for rows.
     params <- pObjects$memory$RowDataPlot1
     params[[iSEE:::.colorByField]] <- iSEE:::.colorByRowDataTitle
     params[[iSEE:::.colorByFeatName]] <- "BLAH"
     color_add <- iSEE:::.colorDotPlot(params, letters)
-    expect_match(color_add[1], "rowDataColorMap") 
+    expect_match(color_add[1], "rowDataColorMap")
 })
 
 test_that(".colorDotPlot returns a command for coloring by features", {
@@ -197,7 +196,7 @@ test_that(".colorDotPlot returns a command for coloring by features", {
     params[[iSEE:::.colorByField]] <- iSEE:::.colorByFeatNameTitle
     params[[iSEE:::.colorByFeatName]] <- rownames(sce)[1]
     color_add <- iSEE:::.colorDotPlot(params, assay(sce)[,1])
-    expect_match(color_add[1], "scale_color_gradientn.*assayColorMap") 
+    expect_match(color_add[1], "scale_color_gradientn.*assayColorMap")
 
     # And again, for rows.
     params <- pObjects$memory$RowDataPlot1
@@ -342,7 +341,7 @@ test_that(".addDotPlotDataFacets works for row plots with row selections", {
 
     params[["FacetRowBy"]] <- "Row selection"
     params[["FacetColumnBy"]] <- "Row selection"
-    
+
     # First trying with nothing.
     env <- new.env()
     env$se <- sce
@@ -402,11 +401,19 @@ test_that(".addDotPlotDataSelected handles ColumnDotPlot", {
     expect_identical(out[["SelectBy"]], "plot.data$SelectBy <- rownames(plot.data) %in% unlist(col_selected);")
 
     # col_selected exists in plot_env with effect Restrict
-    x[[iSEE:::.selectColRestrict]] <- TRUE
+    x[[iSEE:::.selectColumnRestrict]] <- TRUE
     out <- iSEE:::.addDotPlotDataSelected(x, plot_env)
     expect_identical(out[["SelectBy"]], "plot.data$SelectBy <- rownames(plot.data) %in% unlist(col_selected);")
     expect_identical(out[["saved"]], "plot.data.all <- plot.data;")
     expect_identical(out[["subset"]], "plot.data <- subset(plot.data, SelectBy);")
 })
 
+test_that(".allowableColorByDataChoices defaults to all variables", {
+    sce <- .cacheCommonInfo(ColumnDataPlot(), sce)
+    choices <- .allowableColorByDataChoices(ColumnDataPlot(), sce)
+    expect_identical(choices, setdiff(colnames(colData(sce)), "nested"))
 
+    sce <- .cacheCommonInfo(RowDataPlot(), sce)
+    choices <- .allowableColorByDataChoices(RowDataPlot(), sce)
+    expect_identical(choices, colnames(rowData(sce)))
+})

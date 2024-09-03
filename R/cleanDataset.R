@@ -1,6 +1,7 @@
 #' Clean the dataset
 #'
 #' Clean the SummarizedExperiment by making sure that names of various fields are available and unique.
+#' Also transfer any information stored in \code{rowRanges} into \code{rowData}.
 #'
 #' @param se A \linkS4class{SummarizedExperiment} object or one of its subclasses.
 #'
@@ -14,12 +15,15 @@
 #' Various \linkS4class{Panel}s further assume that the \code{\link{assay}}, \code{\link{rowData}}, \code{\link{colData}} names are unique;
 #' if this is not the case, \code{\link{selectInput}} behaves in unexpected (and incorrect) ways.
 #' This function enforces that as well by running them through \code{\link{make.unique}}.
+#' 
+#' Finally, positional information in \code{rowRanges} is not accessible to \code{iSEE}.
+#' This function moves this information into \code{rowData}, prefixing the column names with \code{rowRanges_}.
 #'
 #' For \linkS4class{SingleCellExperiment} object, we enforce uniqueness in the \code{\link{reducedDims}}.
 #'
 #' All changes result in warnings as a \dQuote{sensible} object is not expected to require any work.
 #'
-#' @author Aaron Lun
+#' @author Aaron Lun, Charlotte Soneson
 #'
 #' @name cleanDataset
 #'
@@ -35,7 +39,7 @@ NULL
 
 #' @export
 #' @rdname cleanDataset
-#' @importFrom SummarizedExperiment rowData colData rowData<- colData<- assayNames assayNames<-
+#' @importFrom SummarizedExperiment rowData colData rowData<- colData<- assayNames assayNames<- rowRanges
 setMethod("cleanDataset", "SummarizedExperiment", function(se) {
     if (is.null(rownames(se))) {
         if (nrow(se) > 0) {
@@ -70,13 +74,24 @@ setMethod("cleanDataset", "SummarizedExperiment", function(se) {
     if (is.null(assayNames(se)) && length(assays(se)) > 0) {
         warning("empty 'assayNames(se)' detected, renaming to 'unnamed'")
         assayNames(se) <- rep("unnamed", length(assays(se)))
-    } else if (any(empty <- assayNames(se)=="")) {
+    } else if (any(empty <- assayNames(se) == "")) {
         warning("empty 'assayNames(se)' detected, renaming to 'unnamed'")
         assayNames(se)[empty] <- 'unnamed'
     }
     if (anyDuplicated(assayNames(se))) {
         warning("duplicated 'assayNames(se)' detected, making them unique")
         assayNames(se) <- make.unique(assayNames(se))
+    }
+    
+    ## Only transfer data if rowRanges is a GRanges object - if it's a GRangesList, we can not ensure that the dimensions after unlisting would be compatible with the data set
+    if (is(rowRanges(se), "GRanges") && length(rowRanges(se)) > 0 && !any(paste0("rowRanges_", c("start", "end", "seqnames", "strand")) %in% colnames(rowData(se)))) {
+        warning("rowRanges (GRanges) detected - copying values to rowData")
+        for (cn in c("start", "end")) {
+            rowData(se)[[paste0("rowRanges_", cn)]] <- get(cn)(rowRanges(se))
+        }
+        for (cn in c("seqnames", "strand")) {
+            rowData(se)[[paste0("rowRanges_", cn)]] <- factor(get(cn)(rowRanges(se)))
+        }
     }
     
     se

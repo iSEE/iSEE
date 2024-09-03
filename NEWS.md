@@ -1,3 +1,183 @@
+# iSEE 2.17.4
+
+* Added explicitly a "Stop app" button to close the application (should be a means to nicely behave in container-spawned instances). Addresses #630
+
+# iSEE 2.17.3
+
+* Preserve the existing order of rows when receiving a selection in `RowDataTable`, `ColumnDataTable` panels.
+
+# iSEE 2.17.2
+
+* Export function `.selectInputHidden()`.
+
+# iSEE 2.17.1
+
+* Fix typo in `setMethod(".getContinuousMetadataChoices", "RowDotPlot", ...)`.
+
+# iSEE 2.15.1
+
+* Add button 'Draft out a tour' to navigation bar.
+* Add button 'About this data set' to navigation bar.
+
+# iSEE 2.13.5
+
+* Add generic `.isBrushable` to support panels that are not `DotPlot` extensions.
+
+# iSEE 2.13.4
+
+* Fix `COLORMAP` bug introduced in `2.13.3`.
+
+# iSEE 2.13.3
+
+* Let app maintainer define colormap in the landing page.
+
+# iSEE 2.13.2
+
+* Fix bug introduced in `2.11.2` (DataBoxOpen would apply also to Visual parameters box)
+
+# iSEE 2.13.1
+
+* Define missing methods for generics for custom tables (issues #608 and #612)
+
+# iSEE 2.11.4
+
+* Fix bug introduced in `2.11.2`.
+
+# iSEE 2.11.3
+
+* Use standard syntax to include empty icon in relevant places (issue #606).
+
+# iSEE 2.11.2
+
+* Make it possible to hide the "Visual Parameters" box (issue #611).
+
+# iSEE 2.11.1
+
+* Add `tooltip.signif` to `registerAppOptions()` to regulate the number of
+  significant digits shown in the tooltip.
+
+# iSEE 2.9.12
+
+* Export constants used in `iSEEu`.
+
+# iSEE 2.9.11
+
+* Fix R CMD check warnings about missing documentation.
+
+# iSEE 2.9.10
+
+* Enable customisation of hovering tooltip in `DotPlot` panels
+  including `colData` or `rowData` information.
+
+# iSEE 2.9.9
+
+* Allow screenshots in vignettes to use full width of pkgdown site.
+
+# iSEE 2.9.8
+
+* Enable autocompletion for feature names in the heatmap feature selection modal.
+
+# iSEE 2.9.7
+
+* Update FontAwesome icon `question-circle` to `circle-question` (v6).
+
+# iSEE 2.9.6
+
+* Bugfix related to <https://github.com/rstudio/shiny/issues/3125>,
+  mainly applicable to custom landing pages that render a `DT::datatable()`
+  prior to `selectInput()`.
+
+# iSEE 2.9.5
+
+* Bugfix reverting a change in `2.9.3` breaking re-rendering of reactivated panels.
+* Complete bugfix to prevent unnecessary re-rendering of `ComplexHeatmapPlot` panel
+  when dimension of an incoming multiple selection is dismissed by the options
+  of the child panel.
+
+# iSEE 2.9.4
+
+* Bugfix setting the active multi-selection info of `Table` panels to a fixed
+  message, as the panel is not re-rendered when search boxes are used.
+* Bugfix re-rendering `ComplexHeatmapPlot` panels when displaying incoming
+  column selection.
+
+# iSEE 2.9.3
+
+* Partial bugfix avoiding re-rendering of `ComplexHeatmapPlot` panel
+  when an incoming row selection changes if custom rows are in use.
+  The partial bugfix only applies if the `ComplexHeatmapPlot` also disables
+  the restriction on any incoming column selection.
+
+# iSEE 2.9.2
+
+* Document the existing panel modification modes.
+
+# iSEE 2.9.1
+
+* Add spinner to `ComplexHeatmapPlot`.
+
+# iSEE 2.5.3
+
+* Replace icons with fontawesome 5 versions
+
+# iSEE 2.5.2
+
+* Bugfix for conversion of categorical columns with too many levels to numeric ones
+* Bugfix for heatmap crashing if columns were ordered by a selection that was not shown
+
+# iSEE 2.5.1
+
+* Bugfix for removed panels showing up among the selectable ones.
+
+# iSEE 2.3.14
+
+* Allow modification of font sizes for row and column names in `ComplexHeatmapPlot`.
+* Bugfix for assignment of annotation colors in `ComplexHeatmapPlot`.
+
+# iSEE 2.3.13
+
+* Avoid partial name matching in `.getCachedCommonInfo`.
+* Deprecated `iSEEOptions` in favor of `panelDefaults` (for construction-time globals) and `registerAppOptions` (for runtime globals).
+
+# iSEE 2.3.12
+
+* Added an `.allowableColorByDataChoices` generic for downstream panels to control `ColorBy*Data` choices.
+
+# iSEE 2.3.11
+
+* Cleaned up tours for `Table`s and the `ComplexHeatmapPlot`.
+
+# iSEE 2.3.10
+
+* Document and export the `.getDotPlotColorHelp` utility.
+* Bugfix for the `RowDotPlot` color tour.
+
+# iSEE 2.3.9
+
+* Add a distributed tour attached to each individual UI element.
+* Bugfix for ordering of selected columns in `ComplexHeatmapPlot`.
+
+# iSEE 2.3.8
+
+* Use `shiny::MockShinySession$new()` to simulate Shiny session objects.
+
+# iSEE 2.3.7
+
+* Bugfix for missing import of geom_density_2d
+
+# iSEE 2.3.6
+
+* Bugfix for graceful deprecation of old parameters in various constructors.
+
+# iSEE 2.3.5
+
+* Added functionality to use multiple row/column selections as a factor on the axes, for faceting or for coloring.
+* Moved selection transparency setter into the "Visual parameters" box.
+* Deprecated `SelectionEffect="Color"` in favor of `ColorBy="Column selection"` and `ColorBy="Row selection"`.
+* Deprecated `SelectionColor` as the coloring for selections is determined using `colDataColorMap()` instead.
+* Deprecated `SelectionEffect="Restrict"` in favor of `ColumnSelectionRestrict` and `RowSelectionRestrict`.
+* Deprecated `ColumnSelectionType` and `ColumnSelectionSaved` (ditto for rows) as all active/saved selections are now transmitted.
+
 # iSEE 2.3.4
 
 * Fix wiring of button observer to open vignette.
@@ -115,7 +295,7 @@
 
 # iSEE 2.1.7
 
-* Added control of legend point size under the "Text" category of teh "Visual parameters" box.
+* Added control of legend point size under the "Text" category of the "Visual parameters" box.
 
 # iSEE 2.1.6
 
@@ -178,7 +358,7 @@
 
 # iSEE 1.99.3
 
-* Fixed occurences of `rowData` in `RowDotPlot` panels.
+* Fixed occurrences of `rowData` in `RowDotPlot` panels.
 * Refactored `.create_visual_box()`.
 * Refactored visual parameter sections into generics.
 * Apply global option `selected.color` to single selections.
@@ -442,7 +622,7 @@
 * Added grid-based visual point downsampling for faster plotting, including control of resolution.
 * Added button "Clear features" for heat maps.
 * Reorganized buttons in heat map panels.
-* Transfered maintainer badge to Federico.
+* Transferred maintainer badge to Federico.
 
 # iSEE 0.99.0
 

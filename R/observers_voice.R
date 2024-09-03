@@ -245,7 +245,7 @@
         names(target_encoded_name) <- target_full_name
 
         if (is(target_panel, "ColumnDotPlot")) {
-            select_field <- .selectColSource
+            select_field <- .selectColumnSource
         } else if (is(target_panel, "RowDotPlot")) {
             select_field <- .selectRowSource
         } else {
@@ -285,7 +285,7 @@
         target_full_name <- .getFullName(target_panel)
 
         if (is(active_panel, "ColumnDotPlot")) {
-            select_field <- .selectColSource
+            select_field <- .selectColumnSource
         } else if (is(active_panel, "RowDotPlot")) {
             select_field <- .selectRowSource
         } else {

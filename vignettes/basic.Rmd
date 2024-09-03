@@ -1,6 +1,6 @@
 ---
 title: >
-  An introduction to the `r Biocpkg("iSEE")` interface 
+  An introduction to the iSEE interface 
 author:
 - name: Kevin Rue-Albrecht
   affiliation: 
@@ -54,7 +54,7 @@ htmltools::tagList(rmarkdown::html_dependency_font_awesome())
 ```
 
 ```{r, eval=!exists("SCREENSHOT"), include=FALSE}
-SCREENSHOT <- function(x, ...) knitr::include_graphics(x)
+SCREENSHOT <- function(x, ...) knitr::include_graphics(x, dpi = NA)
 ```
 
 ```{r, echo=FALSE, out.width='50%', fig.align='center'}

@@ -1,3 +1,6 @@
+# Tests jitterViolinPoints, jitterSquarePoints and related functions.
+# library(testthat); library(iSEE); source("test_landing_page.R")
+
 context("Landing page")
 
 tempfile_sce <- tempfile(fileext = "_sce.rds")
@@ -14,7 +17,7 @@ test_that("createLandingPage returns a function ", {
     session <- new.env()
 
     # All NULL arguments
-    out <- createLandingPage()
+    out <- iSEE::createLandingPage()
     expect_is(out, "function")
     expect_named(formals(out), c("FUN", "input", "output", "session"))
 

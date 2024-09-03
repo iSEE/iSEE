@@ -8,12 +8,15 @@
 \alias{.refineParameters,RowDotPlot-method}
 \alias{.defineInterface,RowDotPlot-method}
 \alias{.createObservers,RowDotPlot-method}
+\alias{.getTooltipUI,RowDotPlot-method}
 \alias{.hideInterface,RowDotPlot-method}
 \alias{.multiSelectionDimension,RowDotPlot-method}
+\alias{.multiSelectionResponsive,RowDotPlot-method}
 \alias{.multiSelectionRestricted,RowDotPlot-method}
 \alias{.multiSelectionInvalidated,RowDotPlot-method}
 \alias{.singleSelectionDimension,RowDotPlot-method}
 \alias{.definePanelTour,RowDotPlot-method}
+\alias{.getDotPlotColorHelp,RowDotPlot-method}
 \alias{[[,RowDotPlot-method}
 \alias{[[,RowDotPlot,ANY,ANY-method}
 \alias{[[<-,RowDotPlot-method}
@@ -31,13 +34,14 @@ The following slots control coloring of the points:
 \itemize{
 \item \code{ColorByRowData}, a string specifying the \code{\link{rowData}} field for controlling point color,
 if \code{ColorBy="Row data"} (see the \linkS4class{Panel} class).
-Defaults to the first field.
+Defaults to the first valid field (see \code{.cacheCommonInfo} below).
 \item \code{ColorBySampleNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
 if \code{ColorBy="Sample name"}.
-Defaults to the name of the first assay.
+Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}}, falling back to the name of the first valid assay
+(see \code{?"\link{.cacheCommonInfo,DotPlot-method}"} for the definition of validity).
 \item \code{ColorByFeatureNameColor}, a string specifying the color to use for coloring an individual sample on the plot,
 if \code{ColorBy="Feature name"}.
-Defaults to \code{"red"}.
+Defaults to \code{"red"} in \code{\link{getPanelDefault}}.
 }
 
 The following slots control other metadata-related aesthetic aspects of the points:
@@ -48,6 +52,8 @@ The specified field should contain categorical values; defaults to the first suc
 \item \code{SizeByRowData}, a string specifying the \code{\link{rowData}} field for controlling point size,
 if \code{SizeBy="Row data"} (see the \linkS4class{Panel} class).
 The specified field should contain continuous values; defaults to the first such field.
+\item \code{TooltipRowData}, a character vector specifying \code{\link{rowData}} fields to show in the tooltip.
+Defaults to `character(0)`, which displays only the `rownames` value of the data point.
 }
 
 In addition, this class inherits all slots from its parent \linkS4class{DotPlot} and \linkS4class{Panel} classes.
@@ -83,7 +89,7 @@ For controlling selections:
 \itemize{
 \item \code{\link{.multiSelectionRestricted}(x)} returns a logical scalar indicating whether \code{x} is restricting the plotted points to those that were selected in a transmitting panel.
 \item \code{\link{.multiSelectionDimension}(x)} returns \code{"row"} to indicate that a multiple row selection is being transmitted.
-\item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the faceting options usethe multiple row selections,
+\item \code{\link{.multiSelectionInvalidated}(x)} returns \code{TRUE} if the faceting options use the multiple row selections,
 such that the point coordinates/domain may change upon updates to upstream selections in transmitting panels.
 \item \code{\link{.singleSelectionDimension}(x)} returns \code{"feature"} to indicate that a feature identity is being transmitted.
 }
@@ -92,6 +98,8 @@ For documentation:
 \itemize{
 \item \code{\link{.definePanelTour}(x)} returns an data.frame containing the steps of a tour relevant to subclasses,
 mostly tuning the more generic descriptions from the same method of the parent \linkS4class{DotPlot}.
+\item \code{\link{.getDotPlotColorHelp}(x, color_choices)} returns a data.frame containing the documentation for the \code{"ColorBy"} UI element,
+specialized for row-based dot plots.
 }
 
 Unless explicitly specialized above, all methods from the parent classes \linkS4class{DotPlot} and \linkS4class{Panel} are also available.

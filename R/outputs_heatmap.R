@@ -20,7 +20,7 @@
 #'
 #' If a multiple row selection is present in \code{envir} and custom rows are \emph{not} to be used, that selection is used to define the rows of the submatrix.
 #' All columns are returned in the submatrix unless a multiple column selection is present in \code{envir} and the \code{SelectEffect} in \code{x} is \dQuote{Restrict}, in which case only the selected columns are returned.
-#' 
+#'
 #' @author
 #' Kevin Rue-Albrecht
 #'
@@ -39,7 +39,7 @@
         all_cmds[["rows"]] <- ".chosen.rows <- intersect(rownames(se), unlist(row_selected));"
     }
 
-    if (!is.null(envir$col_selected) && slot(x, .selectColRestrict)) {
+    if (!is.null(envir$col_selected) && slot(x, .selectColumnRestrict)) {
         # TODO: implement visual effects for other forms of selection.
         all_cmds[["columns"]] <- ".chosen.columns <- intersect(colnames(se), unlist(col_selected));"
     } else {
@@ -176,10 +176,10 @@
     cmds <- c(cmds, "", init_cmd, "")
 
     for (annot in slot(x, .heatMapColData)) {
-        cmds <- c(cmds, 
-            .coerce_dataframe_columns(envir, 
+        cmds <- c(cmds,
+            .coerce_dataframe_columns(envir,
                 fields=annot, df=".column_data",
-                max_levels=iSEEOptions$get("factor.maxlevels")
+                max_levels=.get_factor_maxlevels()
             )
         )
 
@@ -201,7 +201,7 @@
                 ".color_values <- setdiff(unique(.color_values), NA)",
                 sprintf(".col_colors <- colDataColorMap(colormap, %s, discrete=TRUE)(%s)",
                     deparse(annot), 'length(.color_values)'),
-                'names(.col_colors) <- unique(.color_values)',
+                'if (is.null(names(.col_colors))) names(.col_colors) <- levels(factor(.color_values))',
                 sprintf(".column_col[[%s]] <- .col_colors", deparse(annot))
             )
         }
@@ -215,30 +215,35 @@
 
     if (slot(x, .heatMapShowSelection)) {
         additional <- c(
-            additional, 
+            additional,
             sprintf('.column_col[["%s"]] <- iSEE::columnSelectionColorMap(colormap, levels(.column_data[["%s"]]))',
                 chosen.name, chosen.name),
             ""
         )
     }
 
-    additional <- c(additional, 
+    additional <- c(additional,
         '.column_data <- .column_data[colnames(plot.data), , drop=FALSE]',
         '.column_data <- as.data.frame(.column_data, optional=TRUE)' # preserve colnames
      )
 
     # Reordering by the column annotations.
     order_by <- sprintf(".column_data[[%s]]", vapply(slot(x, .heatMapColData), deparse, ""))
-    if (slot(x, .heatMapOrderSelection)) {
+    if (slot(x, .heatMapOrderSelection) && slot(x, .heatMapShowSelection)) {
         order_by <- c(sprintf('.column_data[["%s"]]', chosen.name), order_by)
     }
 
-    additional <- c(additional, 
-        sprintf(".column_annot_order <- order(%s)", paste(order_by, collapse=", ")),
-        ".column_data <- .column_data[.column_annot_order, , drop=FALSE]",
-        "plot.data <- plot.data[, .column_annot_order, drop=FALSE]",
+    if (length(order_by) > 0) {
+        additional <- c(additional,
+            sprintf(".column_annot_order <- order(%s)", paste(order_by, collapse=", ")),
+            ".column_data <- .column_data[.column_annot_order, , drop=FALSE]",
+            "plot.data <- plot.data[, .column_annot_order, drop=FALSE]"
+        )
+    }
+
+    additional <- c(additional,
         sprintf(
-            ".column_annot <- ComplexHeatmap::columnAnnotation(df=.column_data, col=.column_col, annotation_legend_param=list(direction=%s))",
+            ".column_annot <- ComplexHeatmap::columnAnnotation(df=.column_data, col=.column_col, annotation_legend_param=list(direction=%s, nrow=10))",
             deparse(tolower(slot(x, .plotLegendDirection)))
         )
     )
@@ -266,10 +271,10 @@
     cmds <- c(cmds, "", init_cmd, "")
 
     for (annot in slot(x, .heatMapRowData)) {
-        cmds <- c(cmds, 
-            .coerce_dataframe_columns(envir, 
+        cmds <- c(cmds,
+            .coerce_dataframe_columns(envir,
                 fields=annot, df=".row_data",
-                max_levels=iSEEOptions$get("factor.maxlevels")
+                max_levels=.get_factor_maxlevels()
             )
         )
 
@@ -304,7 +309,7 @@
     additional <- c(additional, '.row_data <- as.data.frame(.row_data, optional=TRUE)') # preserve colnames
     additional <- c(additional,
         sprintf(
-            ".row_annot <- ComplexHeatmap::rowAnnotation(df=.row_data, col=.row_col, annotation_legend_param=list(direction=%s))",
+            ".row_annot <- ComplexHeatmap::rowAnnotation(df=.row_data, col=.row_col, annotation_legend_param=list(direction=%s, nrow=10))",
             deparse(tolower(slot(x, .plotLegendDirection)))
         )
     )
@@ -335,7 +340,7 @@
     )
 }
 
-#' Process transfomations applied to rows of a heatmap matrix
+#' Process transformations applied to rows of a heatmap matrix
 #'
 #' @param x An instance of a \linkS4class{ComplexHeatmapPlot} class.
 #' @param se The current \linkS4class{SummarizedExperiment} object.

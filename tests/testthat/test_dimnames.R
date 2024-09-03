@@ -1,5 +1,5 @@
 # Tests the table linking functions for point-based plots.
-# library(iSEE); library(testthat); source("setup_sce.R"); source("setup_other.R"); source("test_dimnames.R")
+# library(iSEE); library(testthat); source("setup_sce.R"); source("setup_mimic_live_app.R"); source("test_dimnames.R")
 
 context("table_links")
 
@@ -87,7 +87,7 @@ test_that("dimname observers work to change the usage mode", {
     expect_true(igraph::are_adjacent(pObjects$aesthetics_links, "RowDataTable1", "ReducedDimensionPlot1"))
 
     # Rerunning the observer will continue to restore the link,
-    # even if the memory has already been updated (to handle 
+    # even if the memory has already been updated (to handle
     # situations where multiple observers respond to the same change).
     old_memory <- pObjects$memory
     pObjects$aesthetics_links <- iSEE:::.delete_interpanel_link(pObjects$aesthetics_links,
@@ -154,16 +154,15 @@ test_that(".setup_dimname_source_observer works with a mimicked app", {
     rObjects <- new.env()
     input <- list()
 
-    # The color choice has changed.
+    # The color choice has changed
+    # This is expected to make iSEE:::.setup_dimname_source_observer return TRUE
     input$ReducedDimensionPlot1_ColorBy <- "Feature name"
     input$ReducedDimensionPlot1_ColorByFeatureSource <- "RowDataTable1"
 
     # Define dummy functions called by updateSelectizeInput
-    session <- new.env()
-    session$registerDataObj <- function(inputId, choices, selectizeJSON) { NULL }
-    session$sendInputMessage <- function(inputId, message) { NULL }
+    session <- shiny::MockShinySession$new()
 
-    .setup_dimname_source_observer(
+    out <- iSEE:::.setup_dimname_source_observer(
         "ReducedDimensionPlot1",
         use_mode_field=iSEE:::.colorByField, use_value=iSEE:::.colorByFeatNameTitle,
         name_field=iSEE:::.colorByFeatName,
@@ -171,5 +170,6 @@ test_that(".setup_dimname_source_observer works with a mimicked app", {
         choices=letters,
         input=input, session=session,
         pObjects=pObjects, rObjects=rObjects)
+    expect_true(out)
 
 })

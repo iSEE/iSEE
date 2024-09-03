@@ -1,4 +1,4 @@
-# library(testthat); library(iSEE); source("setup_sce.R"); source("setup_other.R"); source("test_report_memory.R")
+# library(testthat); library(iSEE); source("setup_sce.R"); source("setup_mimic_live_app.R"); source("test_report_memory.R")
 
 context("report_memory")
 

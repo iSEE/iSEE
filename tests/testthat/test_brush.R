@@ -1,4 +1,4 @@
-# library(iSEE); library(testthat); source("test_brush.R")
+# library(iSEE); library(testthat); source("setup_lasso.R"); source("test_brush.R")
 
 context("brush")
 

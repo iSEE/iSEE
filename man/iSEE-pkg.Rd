@@ -2,6 +2,7 @@
 % Please edit documentation in R/iSEE-pkg.R
 \docType{package}
 \name{iSEE-pkg}
+\alias{iSEE-package}
 \alias{iSEE-pkg}
 \title{iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer}
 \description{
@@ -11,6 +12,14 @@
  Particular attention is given to single-cell data in a \code{SingleCellExperiment}
  object with visualization of dimensionality reduction results, e.g., from principal
  components analysis (PCA) or t-distributed stochastic neighbour embedding (t-SNE)
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/iSEE/iSEE}
+  \item Report bugs at \url{https://github.com/iSEE/iSEE/issues}
+}
+
 }
 \author{
 Aaron Lun \email{infinite.monkeys.with.keyboards@gmail.com}

@@ -1,6 +1,13 @@
 # iSEE 2.17.4
 
-* Added explicitly a "Stop app" button to close the application (should be a means to nicely behave in container-spawned instances). Addresses #630
+* Add explicitly a "Stop app" button to close the application (should be a means to nicely behave in container-spawned instances). Addresses #630
+* Fix text in 'configure' vignette. Closes #626
+* Copy information from rowRanges to rowData Closes #637
+* Require at least one valid value for atomic, groupable and numeric columns. Closes 660
+* If heatmap matrix has no finite values, set the color range arbitrarily. Closes #610
+* Limit the number of rows in heatmap annotation legends to 10. Closes #591
+* Fix license. Closes #661.
+* Rename some internal constants.
 
 # iSEE 2.17.3
 

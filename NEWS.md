@@ -8,6 +8,8 @@
 * Limit the number of rows in heatmap annotation legends to 10. Closes #591
 * Fix license. Closes #661.
 * Rename some internal constants.
+* Add checkbox to fix aspect ratio to 1. Closes #541.
+* Add checkbox to hide violin boundaries. Closes #619.
 
 # iSEE 2.17.3
 

@@ -23,7 +23,7 @@
 #' as well as for fine-tuning parameters that are too rarely used to have their own interface elements.
 #'
 #' Known options include:
-#' \itemize{
+#' \describe{
 #' \item{\code{panel.color}}{Named character vector of colors.
 #' The names of the vector should be set to the name of class to be overridden; if a class is not named here, its default color is used.
 #' It is highly recommended to define colors as hex color codes (e.g., \code{"#1e90ff"}), for full compatibility with both HTML elements and R plots.}

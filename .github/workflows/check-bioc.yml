@@ -128,7 +128,7 @@ jobs:
         run: |
           ## Enable installing XML from source if needed
           brew install libxml2
-          echo "XML_CONFIG=/usr/local/opt/libxml2/bin/xml2-config" >> $GITHUB_ENV
+          echo "XML_CONFIG=/opt/homebrew/opt/libxml2/bin/xml2-config" >> $GITHUB_ENV
 
           ## Required to install magick as noted at
           ## https://github.com/r-lib/usethis/commit/f1f1e0d10c1ebc75fd4c18fa7e2de4551fd9978f#diff-9bfee71065492f63457918efcd912cf2
@@ -145,6 +145,18 @@ jobs:
 
           ## Required for terra
           brew install gdal
+
+          ## Temporary fix for freetype (https://github.com/r-lib/ragg/issues/170; Sep 2024)
+          #brew install --cask https://raw.githubusercontent.com/Homebrew/homebrew-core/d28afc3bfdb5d24eab02157bfffcc9e17ed6666c/Formula/f/freetype.rb
+          brew unlink freetype
+          curl -L https://raw.githubusercontent.com/Homebrew/homebrew-core/3db6dc6c4baf5a75e345f380cc4e8224c1ae5ae0/Formula/f/freetype.rb > freetype.rb && brew install freetype.rb
+
+      - name: Install binary units for macOS
+        if: matrix.config.os == 'macOS-latest'
+        run: |
+          ## temporary fix due to issue in udunits (Sep 2024)
+          install.packages('https://cran.rstudio.com/bin/macosx/big-sur-arm64/contrib/4.4/units_0.8-5.tgz')
+        shell: Rscript {0}
 
       - name: Install Windows system dependencies
         if: runner.os == 'Windows'

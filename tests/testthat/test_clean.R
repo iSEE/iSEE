@@ -81,6 +81,21 @@ test_that("cleanDataset works on assay names", {
     expect_warning(out <- cleanDataset(se), NA)
 })
 
+test_that("cleanDataset works on rowRanges", {
+    if (requireNamespace("GenomicRanges", quietly = TRUE)) {
+        se <- SummarizedExperiment(
+            rowRanges = GenomicRanges::GRanges(ranges = IRanges(start = c(1, 3, 5), 
+                                                                end = c(3, 7, 18)), 
+                                               strand = c("+", "-", "*"),
+                                               seqnames = c("chr1", "chr1", "chr2"),
+                                               annot = c("A", "B", "C")))
+        expect_warning(out <- cleanDataset(se), "rowRanges")
+        expect_identical(colnames(rowData(out)), c("annot", "rowRanges_start", 
+                                                   "rowRanges_end", "rowRanges_seqnames",
+                                                   "rowRanges_strand"))
+    }
+})
+
 test_that("cleanDataset works on reducedDimNames", {
     skip("waiting for a fix to the SCE itself")
     reducedDims(sce) <- list(PCA=matrix(0,0,5), PCA=matrix(0,0,2))

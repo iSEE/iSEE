@@ -126,19 +126,32 @@ Alternatively a single named list containing the options to register.</p></dd>
 The primary difference is that <code>registerAppOptions</code> allows tuning of options that do not have a corresponding slot in any <a href="Panel-class.html">Panel</a> subclass.
 This makes it useful for parameters that the user should not or cannot change within the application,
 as well as for fine-tuning parameters that are too rarely used to have their own interface elements.</p>
-<p>Known options include:</p><ul><li><p><code>panel.color</code>Named character vector of colors.
+<p>Known options include:</p><dl><dt><code>panel.color</code></dt>
+<dd><p>Named character vector of colors.
 The names of the vector should be set to the name of class to be overridden; if a class is not named here, its default color is used.
-It is highly recommended to define colors as hex color codes (e.g., <code>"#1e90ff"</code>), for full compatibility with both HTML elements and R plots.</p></li>
-<li><p><code>color.maxlevels</code>Maximum number of levels for a categorical variable used for coloring.
+It is highly recommended to define colors as hex color codes (e.g., <code>"#1e90ff"</code>), for full compatibility with both HTML elements and R plots.</p></dd>
+
+<dt><code>color.maxlevels</code></dt>
+<dd><p>Maximum number of levels for a categorical variable used for coloring.
 Variables with more levels are coerced to numeric to avoid problems with an overly-large legend.
-Defaults to 24.</p></li>
-<li><p><code>factor.maxlevels</code>Maximum number of levels for a categorical variable to be used anywhere in the app.
+Defaults to 24.</p></dd>
+
+<dt><code>factor.maxlevels</code></dt>
+<dd><p>Maximum number of levels for a categorical variable to be used anywhere in the app.
 Variables with more levels are coerced to numeric to avoid rendering delays.
-Defaults to 100.</p></li>
-<li><p><code>RowTable.select.details</code>A function that takes a string containing the name of a feature (i.e., the current selection in the <a href="RowTable-class.html">RowTable</a>) and returns a HTML element with more details.</p></li>
-<li><p><code>ColumnTable.select.details</code>A function that takes a string containing the name of a sample (i.e., the current selection in the <a href="ColumnTable-class.html">ColumnTable</a>) and returns a HTML element with more details.</p></li>
-<li><p><code>tooltip.signif</code>Number of <em>significant</em> digits to display in the tooltip. Defaults to 6.</p></li>
-</ul><p>The registered options are stored in the SummarizedExperiment to ensure that we can recover the application state with the combination of the SummarizedExperiment and list of Panel settings.
+Defaults to 100.</p></dd>
+
+<dt><code>RowTable.select.details</code></dt>
+<dd><p>A function that takes a string containing the name of a feature (i.e., the current selection in the <a href="RowTable-class.html">RowTable</a>) and returns a HTML element with more details.</p></dd>
+
+<dt><code>ColumnTable.select.details</code></dt>
+<dd><p>A function that takes a string containing the name of a sample (i.e., the current selection in the <a href="ColumnTable-class.html">ColumnTable</a>) and returns a HTML element with more details.</p></dd>
+
+<dt><code>tooltip.signif</code></dt>
+<dd><p>Number of <em>significant</em> digits to display in the tooltip. Defaults to 6.</p></dd>
+
+
+</dl><p>The registered options are stored in the SummarizedExperiment to ensure that we can recover the application state with the combination of the SummarizedExperiment and list of Panel settings.
 By comparison, if we had used a global cache as in <code><a href="panelDefaults.html">panelDefaults</a></code>, we would need to save them separately to ensure that we can recover a particular application state.</p>
 <p>By default, <code>registerAppOptions</code> will add or replace individual arguments specified by <code>...</code>.
 This means that users can call the function multiple times to accumulate registered options in <code>se</code>.

@@ -146,6 +146,12 @@ The following slot controls whether the aspect ratio is fixed to 1 or not:
 Defaults to \code{FALSE}.
 }
 
+The following slot controls whether the violin boundaries are plotted or not:
+\itemize{
+\item \code{ViolinAdd}, logical scalar indicating whether the violin boundaries should be plotted. 
+Defaults to \code{TRUE}.
+}
+
 The following slots control the general appearance of the points.
 \itemize{
 \item \code{PointSize}, positive numeric scalar specifying the relative size of the points.

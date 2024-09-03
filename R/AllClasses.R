@@ -219,6 +219,9 @@ collated[.contourColor] <- "character"
 .fixAspectRatio <- "FixAspectRatio"
 collated[.fixAspectRatio] <- "logical"
 
+.violinAdd <- "ViolinAdd"
+collated[.violinAdd] <- "logical"
+
 .plotPointSize <- "PointSize"
 .plotPointAlpha <- "PointAlpha"
 .plotPointDownsample <- "Downsample"

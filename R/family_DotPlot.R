@@ -106,6 +106,12 @@
 #' Defaults to \code{FALSE}.
 #' }
 #'
+#' The following slot controls whether the violin boundaries are plotted or not:
+#' \itemize{
+#' \item \code{ViolinAdd}, logical scalar indicating whether the violin boundaries should be plotted. 
+#' Defaults to \code{TRUE}.
+#' }
+#'
 #' The following slots control the general appearance of the points.
 #' \itemize{
 #' \item \code{PointSize}, positive numeric scalar specifying the relative size of the points.
@@ -288,6 +294,8 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
     
     args <- .emptyDefault(args, .fixAspectRatio, FALSE)
 
+    args <- .emptyDefault(args, .violinAdd, TRUE)
+    
     args <- .emptyDefault(args, .plotPointSize, getPanelDefault(.plotPointSize))
     args <- .emptyDefault(args, .plotPointAlpha, getPanelDefault(.plotPointAlpha))
     args <- .emptyDefault(args, .plotPointDownsample, getPanelDefault(.plotPointDownsample))
@@ -315,7 +323,7 @@ setValidity2("DotPlot", function(object) {
     msg <- .validLogicalError(msg, object,
         c(.plotCustomLabels, .visualParamBoxOpen, .contourAdd, .plotPointDownsample,
             .plotHoverInfo,
-            .plotLabelCenters, .fixAspectRatio
+            .plotLabelCenters, .fixAspectRatio, .violinAdd
         ))
 
     msg <- .singleStringError(msg, object,
@@ -477,7 +485,7 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
             .shapeByField, .sizeByField,
             .plotPointSize, .plotPointAlpha, .plotFontSize, .legendPointSize, .plotLegendPosition,
             .plotPointDownsample, .plotPointSampleRes, .contourAdd,
-            .contourColor, .fixAspectRatio, .plotCustomLabels, .plotHoverInfo,
+            .contourColor, .fixAspectRatio, .violinAdd, .plotCustomLabels, .plotHoverInfo,
             .plotLabelCenters, .plotLabelCentersBy, .plotLabelCentersColor),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
@@ -791,6 +799,18 @@ setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
             )
         )
     })
+    
+    .addSpecificTour(class(x)[1], .violinAdd, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .violinAdd),
+                    intro="For violin plots, we can decide whether the violin boundaries should be plotted or not.
+                    For all other plots, this has no effect."
+                )
+            )
+        )
+    })
 
     tagList(
         hr(),
@@ -817,7 +837,10 @@ setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
                 value=slot(x, .contourColor))),
         .checkboxInput.iSEE(x, .fixAspectRatio,
                             label="Fix aspect ratio to 1 (scatter only)",
-                            value=slot(x, .fixAspectRatio))
+                            value=slot(x, .fixAspectRatio)),
+        .checkboxInput.iSEE(x, .violinAdd,
+                            label="Display violin boundaries (violin only)",
+                            value=slot(x, .violinAdd))
     )
 })
 

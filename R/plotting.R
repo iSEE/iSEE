@@ -334,11 +334,13 @@ names(.all_aes_values) <- .all_aes_names
 {
     plot_cmds <- list()
     plot_cmds[["ggplot"]] <- "dot.plot <- ggplot() +" # do NOT put aes here, it does not play nice with shiny brushes.
-    plot_cmds[["violin"]] <- sprintf(
-        "geom_violin(%s, alpha=0.2, data=%s, scale='width', width=0.8) +",
-        .buildAes(color=FALSE, group=TRUE),
-        ifelse(is_downsampled, "plot.data.pre", "plot.data")
-    )
+    if (slot(param_choices, .violinAdd)) {
+        plot_cmds[["violin"]] <- sprintf(
+            "geom_violin(%s, alpha=0.2, data=%s, scale='width', width=0.8) +",
+            .buildAes(color=FALSE, group=TRUE),
+            ifelse(is_downsampled, "plot.data.pre", "plot.data")
+        )
+    }
 
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)

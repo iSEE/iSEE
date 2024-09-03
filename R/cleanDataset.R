@@ -83,20 +83,14 @@ setMethod("cleanDataset", "SummarizedExperiment", function(se) {
         assayNames(se) <- make.unique(assayNames(se))
     }
     
-    if (is(rowRanges(se), "GRangesList") && length(rowRanges(se)) > 0) {
-        warning("rowRanges (GRangesList) detected - will not transfer the information to rowData")
-    }
-    if (is(rowRanges(se), "GRanges") && length(rowRanges(se)) > 0) {
-        warning("rowRanges (GRanges) detected - copying data to rowData")
+    ## Only transfer data if rowRanges is a GRanges object - if it's a GRangesList, we can not ensure that the dimensions after unlisting would be compatible with the data set
+    if (is(rowRanges(se), "GRanges") && length(rowRanges(se)) > 0 && !any(paste0("rowRanges_", c("start", "end", "seqnames", "strand")) %in% colnames(rowData(se)))) {
+        warning("rowRanges (GRanges) detected - copying values to rowData")
         for (cn in c("start", "end")) {
-            if (!paste0("rowRanges_", cn) %in% colnames(rowData(se))) {
-                rowData(se)[[paste0("rowRanges_", cn)]] <- get(cn)(rowRanges(se))
-            }
+            rowData(se)[[paste0("rowRanges_", cn)]] <- get(cn)(rowRanges(se))
         }
         for (cn in c("seqnames", "strand")) {
-            if (!paste0("rowRanges_", cn) %in% colnames(rowData(se))) {
-                rowData(se)[[paste0("rowRanges_", cn)]] <- factor(get(cn)(rowRanges(se)))
-            }
+            rowData(se)[[paste0("rowRanges_", cn)]] <- factor(get(cn)(rowRanges(se)))
         }
     }
     

@@ -111,7 +111,7 @@
 #' @importFrom shinyjs useShinyjs
 #' @importFrom rintrojs introjsUI
 #' @importFrom shiny reactiveValues uiOutput actionButton shinyApp
-#' HTML icon tags includeCSS isolate showNotification onStop
+#' HTML icon tags includeCSS isolate showNotification onStop stopApp
 iSEE <- function(se,
     initial=NULL,
     extra=NULL,
@@ -295,6 +295,20 @@ iSEE <- function(se,
                     icon=icon(NULL), 
                     status="primary"
                 )
+            ), # end of dropdownMenu
+            dropdownMenu(type="tasks",
+                         icon=icon("cogs"),
+                         badgeStatus=NULL,
+                         headerText="App control",
+                         notificationItem(
+                           text=actionButton(
+                             .generalAppControl,
+                             label="Stop the iSEE app",
+                             icon=icon("circle-stop"),
+                             style=.actionbutton_biocstyle
+                           ),
+                           icon=icon(NULL), status="primary"
+                         )
             ) # end of dropdownMenu
         ), # end of dashboardHeader
 

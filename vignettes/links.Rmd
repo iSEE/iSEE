@@ -57,10 +57,6 @@ sce <- readRDS("sce.rds")
 SCREENSHOT <- function(x, ...) knitr::include_graphics(x, dpi = NA)
 ```
 
-```{r, echo=FALSE, out.width='50%', fig.align='center'}
-knitr::include_graphics(path = system.file(package="iSEE", "www/iSEE.png", mustWork=TRUE))
-```
-
 # Introduction 
 
 One of `r Biocpkg("iSEE")`'s main features is the ability to share information between panels.

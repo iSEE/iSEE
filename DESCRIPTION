@@ -58,11 +58,20 @@ Suggests:
     viridis,
     htmltools,
     GenomicRanges
-URL: https://github.com/iSEE/iSEE
+URL: https://isee.github.io/iSEE/
 BugReports: https://github.com/iSEE/iSEE/issues
-biocViews: CellBasedAssays, Clustering, DimensionReduction, FeatureExtraction,
-    GeneExpression, GUI, ImmunoOncology, ShinyApps, SingleCell, Transcription,
-    Transcriptomics, Visualization
+biocViews: CellBasedAssays,
+  Clustering,
+  DimensionReduction,
+  FeatureExtraction,
+  GeneExpression,
+  GUI,
+  ImmunoOncology,
+  ShinyApps,
+  SingleCell,
+  Transcription,
+  Transcriptomics,
+  Visualization
 License: MIT + file LICENSE
 VignetteBuilder: knitr
 Encoding: UTF-8

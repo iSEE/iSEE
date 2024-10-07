@@ -189,7 +189,7 @@ app <- iSEE(sce, initial=list(
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("configure-ReDP-basic.png")
+SCREENSHOT("screenshots/configure-ReDP-basic.png")
 ```
 
 ## Configuring the type of assay data {#assay}

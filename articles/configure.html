@@ -134,7 +134,7 @@ package.</p>
 <span>    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span><span class="op">(</span>PanelWidth<span class="op">=</span><span class="fl">6L</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span><span class="op">(</span>PanelWidth<span class="op">=</span><span class="fl">6L</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="configure-FAP-basic.png"><!-- --></p>
+<p><img src="screenshots%2Fconfigure-FAP-basic.png"><!-- --></p>
 <p>The genes to show on the Y-axis in the two plots can be specified via
 the <code>YAxisFeatureName</code> argument to the respective panels in
 <code>iSEE</code>.</p>
@@ -143,7 +143,7 @@ the <code>YAxisFeatureName</code> argument to the respective panels in
 <span>    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span><span class="op">(</span>YAxisFeatureName<span class="op">=</span><span class="st">"0610009L18Rik"</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span><span class="op">(</span>YAxisFeatureName<span class="op">=</span><span class="st">"0610009B22Rik"</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="configure-FAP-preset-genes.png"><!-- --></p>
+<p><img src="screenshots%2Fconfigure-FAP-preset-genes.png"><!-- --></p>
 <p>This will open the app with two feature assay plots, showing the
 selected genes. Of course, from this starting point, all the interactive
 functionality is still available, and new panels can be added, modified
@@ -178,7 +178,7 @@ individual <em>column data plot</em> panels as follows:</p>
 <span>    <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span><span class="op">(</span>YAxis<span class="op">=</span><span class="st">"NREADS"</span>, PanelWidth<span class="op">=</span><span class="fl">6L</span>, DataBoxOpen<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span><span class="op">(</span>YAxis<span class="op">=</span><span class="st">"TOTAL_DUP"</span>, PanelWidth<span class="op">=</span><span class="fl">6L</span>, DataBoxOpen<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="configure-CDP-basic.png"><!-- --></p>
+<p><img src="screenshots%2Fconfigure-CDP-basic.png"><!-- --></p>
 </div>
 <div class="section level3">
 <h3 id="xaxis">Setting the X-axis<a class="anchor" aria-label="anchor" href="#xaxis"></a>
@@ -236,7 +236,7 @@ data table</em> panel with an active selection set in its own
 <span></span>
 <span><span class="co"># Initialisation</span></span>
 <span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, initial<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">fex1</span>, <span class="va">fex2</span>, <span class="va">fex3</span>, <span class="va">fex4</span>, <span class="va">rex</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="configure-FAP-xaxis.png"><!-- --></p>
+<p><img src="screenshots%2Fconfigure-FAP-xaxis.png"><!-- --></p>
 <p>Note how <em>Example 3b</em> requires an active <em>row data
 table</em> as a source of selection. To facilitate visualisation, we
 added the features identifiers as the <code>gene_id</code> column in
@@ -257,7 +257,7 @@ slot:</p>
 <span>    <span class="fu"><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span><span class="op">(</span>DataBoxOpen<span class="op">=</span><span class="cn">TRUE</span>, Type<span class="op">=</span><span class="st">"TSNE"</span>, </span>
 <span>        XAxis<span class="op">=</span><span class="fl">2L</span>, YAxis<span class="op">=</span><span class="fl">1L</span>, PanelWidth<span class="op">=</span><span class="fl">6L</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="configure-ReDP-basic.png"><!-- --></p>
+<p><img src="screenshots%2Fconfigure-ReDP-basic.png"><!-- --></p>
 </div>
 <div class="section level3">
 <h3 id="assay">Configuring the type of assay data<a class="anchor" aria-label="anchor" href="#assay"></a>
@@ -270,7 +270,7 @@ plot</em> panels, the assay to display can be set through the
 <span>    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span><span class="op">(</span>DataBoxOpen<span class="op">=</span><span class="cn">TRUE</span>, Assay<span class="op">=</span><span class="st">"logcounts"</span>, PanelWidth<span class="op">=</span><span class="fl">6L</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span><span class="op">(</span>DataBoxOpen<span class="op">=</span><span class="cn">TRUE</span>, Assay<span class="op">=</span><span class="st">"tophat_counts"</span>, PanelWidth<span class="op">=</span><span class="fl">6L</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="configure-FAP-assay.png"><!-- --></p>
+<p><img src="screenshots%2Fconfigure-FAP-assay.png"><!-- --></p>
 </div>
 </div>
 <div class="section level2">
@@ -317,7 +317,7 @@ parameters in the second panel:</p>
 <span><span class="va">cdp2</span><span class="op">[[</span><span class="st">"FontSize"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
 <span></span>
 <span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, initial<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">cdp</span>, <span class="va">cdp2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="configure-CDP-visual.png"><!-- --></p>
+<p><img src="screenshots%2Fconfigure-CDP-visual.png"><!-- --></p>
 <p>Note that for this demonstration, we facilitate visualization of the
 preconfigured arguments by setting <code>VisualChoices</code> to display
 both the <code>"Color"</code> and <code>"Shape"</code> UI panels.</p>
@@ -341,7 +341,7 @@ the <code>ColorBy</code> value to <code>"Column data"</code>, and the
 <span><span class="va">cdp2</span><span class="op">[[</span><span class="st">"ShapeByColumnData"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"driver_1_s"</span></span>
 <span></span>
 <span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, initial<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">cdp</span>, <span class="va">cdp2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="configure-CDP-linked-visual.png"><!-- --></p>
+<p><img src="screenshots%2Fconfigure-CDP-linked-visual.png"><!-- --></p>
 <p>Note that points may only be shaped by a categorical variable.</p>
 </div>
 <div class="section level3">
@@ -364,7 +364,7 @@ both:</p>
 <span><span class="va">cdp3</span><span class="op">[[</span><span class="st">"FacetColumnBy"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"None"</span> </span>
 <span></span>
 <span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, initial<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">cdp</span>, <span class="va">cdp2</span>, <span class="va">cdp3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="configure-CDP-facets.png"><!-- --></p>
+<p><img src="screenshots%2Fconfigure-CDP-facets.png"><!-- --></p>
 </div>
 </div>
 <div class="section level2">
@@ -420,7 +420,7 @@ relevant point selection data. The result should look as below:</p>
 <span><span class="op">)</span>    </span>
 <span></span>
 <span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, initial<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">cdArgs</span>, <span class="va">rdArgs</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="configure-ReDP-select.png"><!-- --></p>
+<p><img src="screenshots%2Fconfigure-ReDP-select.png"><!-- --></p>
 <p>Note that in the example above, we color selected data points in the
 receiver panel by setting the <code>ColorBy</code> argument to
 <code>"Column selection"</code>. The default is to increase the
@@ -447,7 +447,7 @@ selection:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, initial<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">cdArgs</span>, <span class="va">rdArgs</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="configure-ReDP-lasso.png"><!-- --></p>
+<p><img src="screenshots%2Fconfigure-ReDP-lasso.png"><!-- --></p>
 </div>
 <div class="section level2">
 <h2 id="writing-your-own-tour">Writing your own tour<a class="anchor" aria-label="anchor" href="#writing-your-own-tour"></a>

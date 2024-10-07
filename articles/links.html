@@ -135,23 +135,23 @@ plot.</p>
 <span>    <span class="fu"><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="links-multi-naive.png"><!-- --></p>
+<p><img src="screenshots%2Flinks-multi-naive.png"><!-- --></p>
 <p>We indicate that we want one panel to “receive” a multiple selection
 from another panel. This is done by specifying the selection source (for
 samples/columns in this case, given the nature of the two panels) and
 indicating that the column data plot is to receive a selection from the
 reduced dimension plot.</p>
-<p><img src="links-multi-unselected.png"><!-- --></p>
+<p><img src="screenshots%2Flinks-multi-unselected.png"><!-- --></p>
 <p>We can click-and-drag to select multiple points in the reduced
 dimension plot with a brush, which highlights those same points in the
 column data plot. This enables users to easily explore relationships
 between different visualizations in the <code><a href="../reference/iSEE.html">iSEE()</a></code>
 interface.</p>
-<p><img src="links-multi-brushed.png"><!-- --></p>
+<p><img src="screenshots%2Flinks-multi-brushed.png"><!-- --></p>
 <p>Alternatively, a single click will lay down lasso waypoints for a
 non-rectangular selection. Once closed, the points in the lasso will be
 transmitted to the column data plot.</p>
-<p><img src="links-multi-lasso.png"><!-- --></p>
+<p><img src="screenshots%2Flinks-multi-lasso.png"><!-- --></p>
 </div>
 <div class="section level3">
 <h3 id="selection-effects">Selection effects<a class="anchor" aria-label="anchor" href="#selection-effects"></a>
@@ -159,7 +159,7 @@ transmitted to the column data plot.</p>
 <p>Transparency is the default aesthetic effect used to distinguish
 points in multiple selections in receiving plots. Alternatively, we may
 use color:</p>
-<p><img src="links-multi-color.png"><!-- --></p>
+<p><img src="screenshots%2Flinks-multi-color.png"><!-- --></p>
 <p>Another option is to restrict the receiving plot so that it only
 shows the points in the multiple selection. This effectively “gates” the
 dataset on the selection in the reduced dimension plot, analogous to
@@ -168,15 +168,15 @@ Indeed, this gating process can be repeated as many times as desired; a
 multiple selection could made on the column data plot and transmitted to
 another panel, and so on. (See <a href="https://github.com/iSEE/iSEE2018/blob/master/tours/cytof/app.R" class="external-link">this
 mass cytometry tour</a> for an example.)</p>
-<p><img src="links-multi-restrict.png"><!-- --></p>
+<p><img src="screenshots%2Flinks-multi-restrict.png"><!-- --></p>
 <p>Of course, not all receiving panels need to be plots. If we transmit
 a multiple selection to a column data table, the effect is to subset the
 rows of the table corresponding to the selected points.</p>
-<p><img src="links-multi-table.png"><!-- --></p>
+<p><img src="screenshots%2Flinks-multi-table.png"><!-- --></p>
 <p>As an aside, it is equally possible for a table to transmit a
 multiple selection to other panels. This is achieved using the search
 fields to subset the dataset to the desired selection.</p>
-<p><img src="links-multi-table2.png"><!-- --></p>
+<p><img src="screenshots%2Flinks-multi-table2.png"><!-- --></p>
 </div>
 <div class="section level3">
 <h3 id="saving-selections">Saving selections<a class="anchor" aria-label="anchor" href="#saving-selections"></a>
@@ -184,7 +184,7 @@ fields to subset the dataset to the desired selection.</p>
 <p>In certain panels (usually plots), multiple selections can be saved
 to form disjoint selections. Receiving plots will respond to the union
 of all active and saved selections:</p>
-<p><img src="links-multi-saved.png"><!-- --></p>
+<p><img src="screenshots%2Flinks-multi-saved.png"><!-- --></p>
 <p>The saved selection history operates on a first-in-last-out basis.
 Upon saving, a snapshot is taken of the current “active” selection,
 i.e., the brush or lasso that is just created. Deletion will only
@@ -200,25 +200,25 @@ other panels to focus on a feature or sample of interest. For example,
 we can transmit a single selection from a row data table to a reduced
 dimension plot, instructing the latter to color points by the expression
 of the chosen feature.</p>
-<p><img src="links-single-color.png"><!-- --></p>
+<p><img src="screenshots%2Flinks-single-color.png"><!-- --></p>
 <p>The same approach can be used to control what is plotted on a feature
 assay plot. Clicking on a different row of the table will directly
 change the axes (in this case, the y-axis) of the plot, allowing the
 user to synchronise different aspects of the <code><a href="../reference/iSEE.html">iSEE()</a></code>
 interface to whatever is currently of interest.</p>
-<p><img src="links-single-yaxis.png"><!-- --></p>
+<p><img src="screenshots%2Flinks-single-yaxis.png"><!-- --></p>
 <p>We can also perform single selections on sample identities. In the
 example below, the reduced dimension plot highlights the location of the
 sample chosen in the column data table. This is useful for checking the
 behavior of specific samples of interest, e.g., during quality
 control.</p>
-<p><img src="links-single-sample.png"><!-- --></p>
+<p><img src="screenshots%2Flinks-single-sample.png"><!-- --></p>
 <p>Furthermore, it is possible to transmit single selections from a plot
 using brushes or lassos. If the brush/lasso contains multiple points,
 one of them is arbitrarily chosen for the purposes of obtaining a single
 selection. Below, we select a single highly variable gene to examine its
 distribution of expression values across the reduced dimension plot.</p>
-<p><img src="links-single-plot2plot.png"><!-- --></p>
+<p><img src="screenshots%2Flinks-single-plot2plot.png"><!-- --></p>
 </div>
 <div class="section level2">
 <h2 id="dynamic-selections">Dynamic selections<a class="anchor" aria-label="anchor" href="#dynamic-selections"></a>
@@ -230,13 +230,13 @@ and have all participating receiving panels immediately use that
 selection without requiring manual resetting of the transmitter. To
 illustrate, let’s set up an instance with three different plots that all
 represent points as samples.</p>
-<p><img src="links-dynamic-multi.png"><!-- --></p>
+<p><img src="screenshots%2Flinks-dynamic-multi.png"><!-- --></p>
 <p>Notice how we have checked the dynamic source selection option in the
 selection parameter box for all panels. This means that, upon making a
 selection in any one of the plots, all of the other plots will
 automatically respond as if they had been manually set to receive a
 transmission from that plot.</p>
-<p><img src="links-dynamic-multi2.png"><!-- --></p>
+<p><img src="screenshots%2Flinks-dynamic-multi2.png"><!-- --></p>
 <p>The same logic applies for some parameters that respond to single
 selections. This allows a panel to respond to an appropriate single
 selection from any other panel in the interface, without requiring the
@@ -244,7 +244,7 @@ user to manually set the relationship between panels. In the example
 below, users can easily define the y-axis of the feature assay plot from
 a selected row in the row data table or from a selected single point in
 the row data plot.</p>
-<p><img src="links-dynamic-single.png"><!-- --></p>
+<p><img src="screenshots%2Flinks-dynamic-single.png"><!-- --></p>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>

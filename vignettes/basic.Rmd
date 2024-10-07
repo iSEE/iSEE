@@ -148,7 +148,7 @@ The `runApp` function launches the app in our browser.
 shiny::runApp(app)
 ```
 
-![Basic demo.](basic-demo.png)
+![Basic demo.](screenshots/basic-demo.png)
 
 By default, the app starts with a dashboard that contains one panel or table of each type.
 By opening the collapsible panels named "Data parameters", "Visual parameters", and "Selection parameters" under each plot, we can control the content and appearance of each panel.

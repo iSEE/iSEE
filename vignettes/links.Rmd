@@ -79,7 +79,7 @@ app <- iSEE(sce, initial=list(
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("links-multi-naive.png")
+SCREENSHOT("screenshots/links-multi-naive.png")
 ```
 
 We indicate that we want one panel to "receive" a multiple selection from another panel.
@@ -99,7 +99,7 @@ app <- iSEE(sce, initial=list(rdp, cdp))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("links-multi-unselected.png")
+SCREENSHOT("screenshots/links-multi-unselected.png")
 ```
 
 We can click-and-drag to select multiple points in the reduced dimension plot with a brush,
@@ -122,7 +122,7 @@ app <- iSEE(sce, initial=list(rdp, cdp))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("links-multi-brushed.png")
+SCREENSHOT("screenshots/links-multi-brushed.png")
 ```
 
 Alternatively, a single click will lay down lasso waypoints for a non-rectangular selection.
@@ -140,7 +140,7 @@ app <- iSEE(sce, initial=list(ReducedDimensionPlot(BrushData=lasso), cdp))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("links-multi-lasso.png")
+SCREENSHOT("screenshots/links-multi-lasso.png")
 ```
 
 ## Selection effects
@@ -155,7 +155,7 @@ app <- iSEE(sce, initial=list(rdp, cdp2))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("links-multi-color.png")
+SCREENSHOT("screenshots/links-multi-color.png")
 ```
 
 Another option is to restrict the receiving plot so that it only shows the points in the multiple selection.
@@ -172,7 +172,7 @@ app <- iSEE(sce, initial=list(rdp, cdp2))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("links-multi-restrict.png")
+SCREENSHOT("screenshots/links-multi-restrict.png")
 ```
 
 Of course, not all receiving panels need to be plots.
@@ -186,7 +186,7 @@ app <- iSEE(sce, initial=list(rdp, cdt))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("links-multi-table.png")
+SCREENSHOT("screenshots/links-multi-table.png")
 ```
 
 As an aside, it is equally possible for a table to transmit a multiple selection to other panels.
@@ -200,7 +200,7 @@ app <- iSEE(sce, initial=list(
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("links-multi-table2.png")
+SCREENSHOT("screenshots/links-multi-table2.png")
 ```
 
 ## Saving selections
@@ -215,7 +215,7 @@ app <- iSEE(sce, initial=list(rdp, cdp))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("links-multi-saved.png")
+SCREENSHOT("screenshots/links-multi-saved.png")
 ```
 
 The saved selection history operates on a first-in-last-out basis.
@@ -239,7 +239,7 @@ app <- iSEE(sce, initial=list(rdt, rdp))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("links-single-color.png")
+SCREENSHOT("screenshots/links-single-color.png")
 ```
 
 The same approach can be used to control what is plotted on a feature assay plot.
@@ -254,7 +254,7 @@ app <- iSEE(sce, initial=list(rdt, fap))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("links-single-yaxis.png")
+SCREENSHOT("screenshots/links-single-yaxis.png")
 ```
 
 We can also perform single selections on sample identities.
@@ -270,7 +270,7 @@ app <- iSEE(sce, initial=list(cdt, rdp))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("links-single-sample.png")
+SCREENSHOT("screenshots/links-single-sample.png")
 ```
 
 Furthermore, it is possible to transmit single selections from a plot using brushes or lassos.
@@ -297,7 +297,7 @@ app <- iSEE(sce, initial=list(rdpX, rdp))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("links-single-plot2plot.png")
+SCREENSHOT("screenshots/links-single-plot2plot.png")
 ```
 
 # Dynamic selections
@@ -325,7 +325,7 @@ app <- iSEE(sce, initial=initial)
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("links-dynamic-multi.png")
+SCREENSHOT("screenshots/links-dynamic-multi.png")
 ```
 
 Notice how we have checked the dynamic source selection option in the selection parameter box for all panels.
@@ -353,7 +353,7 @@ app <- iSEE(sce, initial=initial)
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("links-dynamic-multi2.png")
+SCREENSHOT("screenshots/links-dynamic-multi2.png")
 ```
 
 The same logic applies for some parameters that respond to single selections.
@@ -377,7 +377,7 @@ app <- iSEE(sce, initial=initial)
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("links-dynamic-single.png")
+SCREENSHOT("screenshots/links-dynamic-single.png")
 ```
 
 # Session Info {.unnumbered}

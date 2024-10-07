@@ -122,7 +122,7 @@ app <- iSEE(sce.pbmc, initial=
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("bigdata-hdf5.png")
+SCREENSHOT("screenshots/bigdata-hdf5.png")
 ```
 
 Generally speaking, these HDF5 files are written once by a process with sufficient computational resources (i.e., memory and time).
@@ -168,7 +168,7 @@ app <- iSEE(sce.pbmc, initial=
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("bigdata-downsample.png")
+SCREENSHOT("screenshots/bigdata-downsample.png")
 ```
 
 Downsampling is possible in all `iSEE()` plotting panels that represent features or samples as points.
@@ -209,7 +209,7 @@ app <- iSEE(sce.pbmc, initial=
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("bigdata-downsample2.png")
+SCREENSHOT("screenshots/bigdata-downsample2.png")
 ```
 
 The downsampling resolution determines the degree to which points are considered to be overlapping.

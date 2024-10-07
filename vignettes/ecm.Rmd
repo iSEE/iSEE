@@ -204,7 +204,7 @@ shiny::runApp(app)
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("ecm-demo.png")
+SCREENSHOT("screenshots/ecm-demo.png")
 ```
 
 Now, choose to color cells by `Column data` and select `passes_qc_checks_s`.

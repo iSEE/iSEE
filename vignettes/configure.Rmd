@@ -78,7 +78,7 @@ app <- iSEE(sce, initial=list(
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("screenshots/configure-FAP-basic.png")
+SCREENSHOT("configure-FAP-basic.png")
 ```
 
 The genes to show on the Y-axis in the two plots can be specified via the `YAxisFeatureName` argument to the respective panels in `iSEE`. 
@@ -91,7 +91,7 @@ app <- iSEE(sce, initial=list(
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("screenshots/configure-FAP-preset-genes.png")
+SCREENSHOT("configure-FAP-preset-genes.png")
 ```
 
 This will open the app with two feature assay plots, showing the selected genes.
@@ -122,7 +122,7 @@ app <- iSEE(sce, initial=list(
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("screenshots/configure-CDP-basic.png")
+SCREENSHOT("configure-CDP-basic.png")
 ```
 
 ## Setting the X-axis {#xaxis}
@@ -169,7 +169,7 @@ app <- iSEE(sce, initial=list(fex1, fex2, fex3, fex4, rex))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("screenshots/configure-FAP-xaxis.png")
+SCREENSHOT("configure-FAP-xaxis.png")
 ```
 
 Note how _Example 3b_ requires an active _row data table_ as a source of selection.
@@ -189,7 +189,7 @@ app <- iSEE(sce, initial=list(
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("screenshots/configure-ReDP-basic.png")
+SCREENSHOT("configure-ReDP-basic.png")
 ```
 
 ## Configuring the type of assay data {#assay}
@@ -204,7 +204,7 @@ app <- iSEE(sce, initial=list(
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("screenshots/configure-FAP-assay.png")
+SCREENSHOT("configure-FAP-assay.png")
 ```
 
 # Visual parameters
@@ -245,7 +245,7 @@ app <- iSEE(sce, initial=list(cdp, cdp2))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("screenshots/configure-CDP-visual.png")
+SCREENSHOT("configure-CDP-visual.png")
 ```
 
 Note that for this demonstration, we facilitate visualization of the preconfigured arguments by setting `VisualChoices` to display both the `"Color"` and `"Shape"` UI panels.
@@ -269,7 +269,7 @@ app <- iSEE(sce, initial=list(cdp, cdp2))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("screenshots/configure-CDP-linked-visual.png")
+SCREENSHOT("configure-CDP-linked-visual.png")
 ```
 
 Note that points may only be shaped by a categorical variable.
@@ -295,7 +295,7 @@ app <- iSEE(sce, initial=list(cdp, cdp2, cdp3))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("screenshots/configure-CDP-facets.png")
+SCREENSHOT("configure-CDP-facets.png")
 ```
 
 # Selection parameters
@@ -348,7 +348,7 @@ app <- iSEE(sce, initial=list(cdArgs, rdArgs))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("screenshots/configure-ReDP-select.png")
+SCREENSHOT("configure-ReDP-select.png")
 ```
 
 Note that in the example above, we color selected data points in the receiver panel by setting the `ColorBy` argument to `"Column selection"`.
@@ -378,7 +378,7 @@ app <- iSEE(sce, initial=list(cdArgs, rdArgs))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("screenshots/configure-ReDP-lasso.png")
+SCREENSHOT("configure-ReDP-lasso.png")
 ```
 
 # Writing your own tour

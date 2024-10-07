@@ -185,7 +185,7 @@ app <- iSEE(sce, initial=list(cdp, custom.p))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("screenshots/custom-plot.png")
+SCREENSHOT("custom-plot.png")
 ```
 
 The most interesting aspect of `createCustomPlot()` is that the UI elements for modifying the optional arguments in `CUSTOM_DIMRED` are also automatically generated.
@@ -258,7 +258,7 @@ app <- iSEE(sce, initial=list(rdp, custom.t))
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("screenshots/custom-table.png")
+SCREENSHOT("custom-table.png")
 ```
 
 # Handling active and saved selections
@@ -338,7 +338,7 @@ app <- iSEE(sce, initial=list(rdp,
 ```
 
 ```{r, echo=FALSE}
-SCREENSHOT("screenshots/custom-heat.png")
+SCREENSHOT("custom-heat.png")
 ```
 
 # Advanced extensions

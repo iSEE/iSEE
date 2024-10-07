@@ -1,5 +1,5 @@
-pandoc: '3.3'
-pkgdown: 2.1.0
+pandoc: '3.4'
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   basic: basic.html
@@ -9,4 +9,7 @@ articles:
   ecm: ecm.html
   links: links.html
   voice: voice.html
-last_built: 2024-09-03T16:23Z
+last_built: 2024-10-07T10:51Z
+urls:
+  reference: https://isee.github.io/iSEE/reference
+  article: https://isee.github.io/iSEE/articles

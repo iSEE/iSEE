@@ -570,7 +570,7 @@ iSEE <- function(se,
 #' 
 #' @rdname INTERNAL_set_title
 .set_title <- function(title) {
-  if( is.null(title) ) {
+  if (is.null(title)) {
     paste0("iSEE - interactive SummarizedExperiment Explorer v", packageVersion("iSEE"))
   } else {
     title

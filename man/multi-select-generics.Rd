@@ -90,7 +90,8 @@ Otherwise, it would be \code{FALSE} as the transmitted selection is only used fo
 \code{.multiSelectionInvalidated(x)} should return a logical scalar indicating whether a transmission of a multiple selection to \code{x} invalidates \code{x}'s own existing selections.
 This should only be \code{TRUE} in special circumstances, e.g., if receipt of a new multiple selection causes recalculation of coordinates in a \linkS4class{DotPlot}.
 
-\code{.multiSelectionResponsive(x, dims)} should return a logical scalar indicating whether \code{x} is responsive to an incoming multiple selection on dimensions \code{dims}.
+\code{.multiSelectionResponsive(x, dim)} should return a logical scalar indicating whether \code{x} is responsive to an incoming multiple selection on dimension \code{dim}.
+\code{dim} is equal to \code{"row"} if the multiple selection of rows, otherwise it is equal to \code{"column"} for a multiple selection of columns.
 For example, the method for \linkS4class{ComplexHeatmapPlot} would return \code{TRUE} when an incoming selection originates from a row-oriented panel and \code{CustomRows=FALSE}.
 Otherwise, it would be \code{FALSE} as the dimension of the transmitted selection is dismissed by the options of the child panel.
 }

@@ -16,7 +16,7 @@
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/iSEE/iSEE}
+  \item \url{https://isee.github.io/iSEE/}
   \item Report bugs at \url{https://github.com/iSEE/iSEE/issues}
 }
 

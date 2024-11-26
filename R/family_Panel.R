@@ -102,6 +102,7 @@
 #' \item \code{\link{.multiSelectionClear}(x)} will always return \code{x}.
 #' \item \code{\link{.multiSelectionInvalidated}(x)} will always return \code{FALSE}.
 #' \item \code{\link{.multiSelectionAvailable}(x, contents)} will return \code{nrow(contents)}.
+#' \item \code{\link{.multiSelectionResponsive}(x, dim)} will always return \code{TRUE}.
 #' \item \code{\link{.singleSelectionDimension}(x)} will always return \code{"none"}.
 #' \item \code{\link{.singleSelectionValue}(x)} will always return \code{NULL}.
 #' \item \code{\link{.singleSelectionSlots}(x)} will always return an empty list.
@@ -145,6 +146,7 @@
 #' .multiSelectionActive,Panel-method
 #' .multiSelectionInvalidated,Panel-method
 #' .multiSelectionAvailable,Panel-method
+#' .multiSelectionResponsive,Panel-method
 #' .isBrushable,Panel-method
 #' .singleSelectionDimension,Panel-method
 #' .singleSelectionValue,Panel-method
@@ -652,6 +654,9 @@ setMethod(".multiSelectionInvalidated", "Panel", function(x) FALSE)
 
 #' @export
 setMethod(".multiSelectionAvailable", "Panel", function(x, contents) nrow(contents))
+
+#' @export
+setMethod(".multiSelectionResponsive", "Panel", function(x, dim) TRUE)
 
 #' @export
 setMethod(".isBrushable", "Panel", function(x) FALSE)

@@ -123,12 +123,7 @@ setMethod(".multiSelectionDimension", "RowTable", function(x) "row")
 setMethod(".singleSelectionDimension", "RowTable", function(x) "feature")
 
 #' @export
-setMethod(".multiSelectionResponsive", "RowTable", function(x, dims = character(0)) {
-    if ("row" %in% dims) {
-        return(TRUE)
-    }
-    return(FALSE)
-})
+setMethod(".multiSelectionResponsive", "RowTable", function(x, dim) dim == "row")
 
 #' @export
 setMethod(".showSelectionDetails", "RowTable", function(x) {

@@ -750,20 +750,18 @@ setMethod(".multiSelectionRestricted", "ComplexHeatmapPlot", function(x) {
 })
 
 #' @export
-setMethod(".multiSelectionResponsive", "ComplexHeatmapPlot", function(x, dims = character(0)) {
-    if ("row" %in% dims) {
+setMethod(".multiSelectionResponsive", "ComplexHeatmapPlot", function(x, dim) {
+    if (dim == "row") {
         if (slot(x, .selectRowRestrict) || !slot(x, .heatMapCustomFeatNames)) {
             return(TRUE)
         }
-    }
-    if ("column" %in% dims) {
+    } else {
         if (slot(x, .selectColumnRestrict) || slot(x, .heatMapShowSelection)) {
             return(TRUE)
         }
     }
     return(FALSE)
 })
-
 
 ###############################################################
 

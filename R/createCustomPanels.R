@@ -127,7 +127,7 @@ createCustomTable <- function(FUN, restrict=NULL, className="CustomTable",
         }
     }, where = where)
     
-    setMethod(".multiSelectionResponsive", className, function(x) {
+    setMethod(".multiSelectionResponsive", className, function(x, dim) {
         TRUE
     }, where = where)
 

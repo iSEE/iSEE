@@ -282,7 +282,9 @@ test_that(".multiSelectionRestricted handles ComplexHeatmapPlot", {
         ColumnSelectionRestrict = FALSE,
         RowSelectionRestrict = FALSE
     )
-    out <- .multiSelectionResponsive(x, c("row", "column"))
+    out <- .multiSelectionResponsive(x, "row")
+    expect_false(out)
+    out <- .multiSelectionResponsive(x, "column")
     expect_false(out)
     
     # enable incoming row selection

@@ -158,9 +158,7 @@ iSEE <- function(se,
 
     iSEE_ui <- dashboardPage(
         dashboardHeader(
-            title = ifelse(is.null(appTitle),
-                   paste0("iSEE - interactive SummarizedExperiment Explorer v", packageVersion("iSEE")),
-                   appTitle),
+            title = .set_title(appTitle),
             titleWidth = 750,
             dropdownMenu(type = "tasks",
                 icon = icon("object-group"),
@@ -554,6 +552,29 @@ iSEE <- function(se,
         se <- .cacheCommonInfo(entry, se)
     }
     se
+}
+
+#' Sets the title
+#' 
+#' Prepares the title, either passing what has been provided (and respecting 
+#' any html-based formatting), or setting it to the default, with some info
+#' on the iSEE version in use.
+#' 
+#' @details
+#' Credits to `@RiboRings` for identifying the issue with the previous approach 
+#' based on `ifelse`. Thanks Giulio!
+#'
+#' @param title Character, which can be any value accepted by `dashboardHeader`
+#'
+#' @return The processed title element
+#' 
+#' @rdname INTERNAL_set_title
+.set_title <- function(title) {
+  if (is.null(title)) {
+    paste0("iSEE - interactive SummarizedExperiment Explorer v", packageVersion("iSEE"))
+  } else {
+    title
+  }
 }
 
 #' Set up the initial app state

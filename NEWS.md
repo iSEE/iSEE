@@ -1,3 +1,7 @@
+# iSEE 2.19.1
+
+* Changed the processing of the title for the app - if provided explicitly, now it can also correctly handle HTML content tags and more. Thanks to @RiboRings for spotting this, resolving #681
+
 # iSEE 2.17.4
 
 * Add explicitly a "Stop app" button to close the application (should be a means to nicely behave in container-spawned instances). Addresses #630

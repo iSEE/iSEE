@@ -13,7 +13,7 @@ In all of the code chunks shown below, x is assumed to be an instance of the Pan
 
     <a class="navbar-brand me-2" href="../index.html">iSEE</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.19.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.19.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -129,7 +129,8 @@ For example, the method for <a href="RowDotPlot-class.html">RowDotPlot</a>s and 
 Otherwise, it would be <code>FALSE</code> as the transmitted selection is only used for aesthetics, not for changing the identity of the displayed points.</p>
 <p><code>.multiSelectionInvalidated(x)</code> should return a logical scalar indicating whether a transmission of a multiple selection to <code>x</code> invalidates <code>x</code>'s own existing selections.
 This should only be <code>TRUE</code> in special circumstances, e.g., if receipt of a new multiple selection causes recalculation of coordinates in a <a href="DotPlot-class.html">DotPlot</a>.</p>
-<p><code>.multiSelectionResponsive(x, dims)</code> should return a logical scalar indicating whether <code>x</code> is responsive to an incoming multiple selection on dimensions <code>dims</code>.
+<p><code>.multiSelectionResponsive(x, dim)</code> should return a logical scalar indicating whether <code>x</code> is responsive to an incoming multiple selection on dimension <code>dim</code>.
+<code>dim</code> is equal to <code>"row"</code> if the multiple selection of rows, otherwise it is equal to <code>"column"</code> for a multiple selection of columns.
 For example, the method for <a href="ComplexHeatmapPlot-class.html">ComplexHeatmapPlot</a> would return <code>TRUE</code> when an incoming selection originates from a row-oriented panel and <code>CustomRows=FALSE</code>.
 Otherwise, it would be <code>FALSE</code> as the dimension of the transmitted selection is dismissed by the options of the child panel.</p>
     </div>

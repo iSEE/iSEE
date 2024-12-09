@@ -187,7 +187,7 @@ test_that(".generateOutput detects col_selected and row_selected", {
     out <- .generateOutput(memory$ComplexHeatmapPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
     expect_identical(out$commands$assay[["rows"]], '.chosen.rows <- c("Lamp5", "Fam19a1");')
     expect_identical(out$commands$assay[["columns"]], '.chosen.columns <- intersect(colnames(se), unlist(col_selected));')
-    expect_identical(out$commands$assay[["data"]], 'plot.data <- assay(se, "logcounts")[.chosen.rows, .chosen.columns, drop=FALSE]\nplot.data <- as.matrix(plot.data);')
+    expect_identical(out$commands$assay[["data"]], 'plot.data <- assay(se, "logcounts")[.chosen.rows, .chosen.columns, drop=FALSE];\nplot.data <- as.matrix(plot.data);')
 })
 
 test_that(".generateOutput handles row_selected when not using custom feature names", {
@@ -383,3 +383,22 @@ test_that("constructor concatenates newlines in text", {
     expect_identical(stored, paste(LETTERS, collapse="\n"))
 
 })
+
+test_that(".extractAssaySubmatrix works without coercion to matrix", {
+
+    evalenv <- new.env()
+    evalenv$se <- sce
+    evalenv$row_selected <- head(rownames(sce))
+    evalenv$col_selected <- head(colnames(sce))
+
+    x <- ComplexHeatmapPlot(CustomRows=FALSE, ColumnSelectionRestrict=TRUE)
+    extracted <- .extractAssaySubmatrix(x, sce, evalenv, 
+        use_custom_row_slot=iSEE:::.heatMapCustomFeatNames,
+        custom_row_text_slot=iSEE:::.heatMapFeatNameText,
+        as_matrix=FALSE
+    )
+
+    expect_identical(extracted[["data"]], 'plot.data <- assay(se, "logcounts")[.chosen.rows, .chosen.columns, drop=FALSE];')
+    expect_identical(dim(evalenv$plot.data), c(length(evalenv$row_selected), length(evalenv$col_selected)))
+})
+

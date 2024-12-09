@@ -9,6 +9,8 @@
 #' @param use_custom_row_slot String specifying the name of the slot indicating whether to use custom rows.
 #' @param custom_row_text_slot String specifying the name of the slot holding the custom row names.
 #' This is expected to be of the same format as described in \code{?\link{.createCustomDimnamesModalObservers}}.
+#' @param as_matrix Logical scalar indicating whether to coerce the submatrix into an ordinary matrix.
+#' If \code{FALSE}, the existing matrix representation is preserved.
 #'
 #' @return
 #' A character vector of commands to set up the assay submatrix.
@@ -27,7 +29,7 @@
 #' @export
 #' @rdname extractAssaySubmatrix
 #' @importFrom SummarizedExperiment assay
-.extractAssaySubmatrix <- function(x, se, envir, use_custom_row_slot, custom_row_text_slot) {
+.extractAssaySubmatrix <- function(x, se, envir, use_custom_row_slot, custom_row_text_slot, as_matrix=TRUE) {
     all_cmds <- character(0)
 
     # Feature names default to custom selection if no multiple selection is available.
@@ -47,14 +49,14 @@
         all_cmds[["columns"]] <- ".chosen.columns <- colnames(se);"
     }
 
-    all_cmds[["data"]] <- paste(
-        sprintf(
-            'plot.data <- assay(se, %s)[.chosen.rows, .chosen.columns, drop=FALSE]',
-            deparse(slot(x, .heatMapAssay))
-        ),
-        'plot.data <- as.matrix(plot.data);',
-        sep='\n'
+    subset_cmds <- sprintf(
+        'plot.data <- assay(se, %s)[.chosen.rows, .chosen.columns, drop=FALSE];',
+        deparse(slot(x, .heatMapAssay))
     )
+    if (as_matrix) {
+        subset_cmds <- paste(subset_cmds, 'plot.data <- as.matrix(plot.data);', sep='\n')
+    }
+    all_cmds[["data"]] <- subset_cmds
 
     .textEval(all_cmds, envir)
     all_cmds

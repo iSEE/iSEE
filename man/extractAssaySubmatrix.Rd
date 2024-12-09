@@ -4,7 +4,14 @@
 \alias{.extractAssaySubmatrix}
 \title{Extract assay submatrix}
 \usage{
-.extractAssaySubmatrix(x, se, envir, use_custom_row_slot, custom_row_text_slot)
+.extractAssaySubmatrix(
+  x,
+  se,
+  envir,
+  use_custom_row_slot,
+  custom_row_text_slot,
+  as_matrix = TRUE
+)
 }
 \arguments{
 \item{x}{A \linkS4class{Panel} instance that uses the row selection modal.}
@@ -18,6 +25,9 @@ This assumes that \code{\link{.processMultiSelections}} has already been run.}
 
 \item{custom_row_text_slot}{String specifying the name of the slot holding the custom row names.
 This is expected to be of the same format as described in \code{?\link{.createCustomDimnamesModalObservers}}.}
+
+\item{as_matrix}{Logical scalar indicating whether to coerce the submatrix into an ordinary matrix.
+If \code{FALSE}, the existing matrix representation is preserved.}
 }
 \value{
 A character vector of commands to set up the assay submatrix.

@@ -458,6 +458,7 @@ setClass("ColumnDataTable", contains="ColumnTable")
 
 .heatMapAssay <- "Assay"
 .heatMapCustomFeatNames <- "CustomRows"
+.heatMapCapRowSelection <- "CapRowSelection"
 .heatMapFeatNameText <- "CustomRowsText"
 .heatMapClusterFeatures <- "ClusterRows"
 .heatMapClusterDistanceFeatures <- "ClusterRowsDistance"
@@ -484,6 +485,7 @@ collated <- character(0)
 collated[.heatMapAssay] <- "character"
 collated[.heatMapCustomFeatNames] <- "logical"
 collated[.heatMapFeatNameText] <- "character"
+collated[.heatMapCapRowSelection] <- "integer"
 collated[.heatMapClusterFeatures] <- "logical"
 collated[.heatMapClusterDistanceFeatures] <- "character"
 collated[.heatMapClusterMethodFeatures] <- "character"

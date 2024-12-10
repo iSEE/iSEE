@@ -9,6 +9,7 @@
 #' @param use_custom_row_slot String specifying the name of the slot indicating whether to use custom rows.
 #' @param custom_row_text_slot String specifying the name of the slot holding the custom row names.
 #' This is expected to be of the same format as described in \code{?\link{.createCustomDimnamesModalObservers}}.
+#' @param cap_row_selection_slot String specifying the name of the slot containing the cap on the number of selected rows.
 #' @param as_matrix Logical scalar indicating whether to coerce the submatrix into an ordinary matrix.
 #' If \code{FALSE}, the existing matrix representation is preserved.
 #'
@@ -29,7 +30,8 @@
 #' @export
 #' @rdname extractAssaySubmatrix
 #' @importFrom SummarizedExperiment assay
-.extractAssaySubmatrix <- function(x, se, envir, use_custom_row_slot, custom_row_text_slot, as_matrix=TRUE) {
+#' @importFrom shiny getDefaultReactiveDomain
+.extractAssaySubmatrix <- function(x, se, envir, use_custom_row_slot, custom_row_text_slot, cap_row_selection_slot=NULL, as_matrix=TRUE) {
     all_cmds <- character(0)
 
     # Feature names default to custom selection if no multiple selection is available.
@@ -39,6 +41,12 @@
         all_cmds[["rows"]] <- sprintf(".chosen.rows <- %s;", .deparse_for_viewing(rn))
     } else {
         all_cmds[["rows"]] <- ".chosen.rows <- intersect(rownames(se), unlist(row_selected));"
+        if (!is.null(cap_row_selection_slot)) {
+            cap <- slot(x, cap_row_selection_slot)
+            if (cap) {
+                all_cmds[["rows"]] <- paste(all_cmds[["rows"]], ".original.chosen.rows <- .chosen.rows;", sprintf(".chosen.rows <- head(.chosen.rows, %s);", cap), sep="\n")
+            }
+        }
     }
 
     if (!is.null(envir$col_selected) && slot(x, .selectColumnRestrict)) {
@@ -59,6 +67,16 @@
     all_cmds[["data"]] <- subset_cmds
 
     .textEval(all_cmds, envir)
+
+    if (!is.null(envir$.original.chosen.rows) && length(envir$.original.chosen.rows) > length(envir$.chosen.rows)) {
+        session <- getDefaultReactiveDomain()
+        if (!is.null(session)) {
+            #nocov start
+            showNotification(sprintf("capped selection to the first %s rows in %s", cap, .getEncodedName(x)), type="warning", session=session)
+            #nocov end
+        }
+    }
+
     all_cmds
 }
 

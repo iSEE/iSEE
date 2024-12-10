@@ -39,6 +39,10 @@ If \code{FALSE}, the incoming selection is used instead. Defaults to \code{TRUE}
 \item \code{CustomRowsText}, string containing newline-separated row names.
 This specifies which rows of the \linkS4class{SummarizedExperiment} object are to be shown in the heatmap.
 If \code{NA}, defaults to the first row name of the SummarizedExperiment.
+\item \code{CapRowSelection}, an integer specifying the cap on the number of rows from a multiple selection to show in the heatmap,
+to avoid a frozen state when the application attempts to process a very large heatmap.
+Ignored if \code{CustomRows = TRUE}.
+Defaults to 200.
 }
 
 The following slots control the metadata variables that are used:

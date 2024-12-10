@@ -11,6 +11,10 @@
 #' \item \code{CustomRowsText}, string containing newline-separated row names.
 #' This specifies which rows of the \linkS4class{SummarizedExperiment} object are to be shown in the heatmap.
 #' If \code{NA}, defaults to the first row name of the SummarizedExperiment.
+#' \item \code{CapRowSelection}, an integer specifying the cap on the number of rows from a multiple selection to show in the heatmap,
+#' to avoid a frozen state when the application attempts to process a very large heatmap.
+#' Ignored if \code{CustomRows = TRUE}.
+#' Defaults to 200.
 #' }
 #'
 #' The following slots control the metadata variables that are used:
@@ -237,6 +241,8 @@ setMethod("initialize", "ComplexHeatmapPlot", function(.Object, ...) {
         args[[.heatMapFeatNameText]] <- paste(vals, collapse="\n")
     }
 
+    args <- .emptyDefault(args, .heatMapCapRowSelection, 200L)
+
     args <- .emptyDefault(args, .heatMapClusterFeatures, FALSE)
     args <- .emptyDefault(args, .heatMapClusterDistanceFeatures, .clusterDistanceSpearman)
     args <- .emptyDefault(args, .heatMapClusterMethodFeatures, .clusterMethodWardD2)
@@ -283,6 +289,9 @@ setValidity2("ComplexHeatmapPlot", function(object) {
     msg <- .multipleChoiceError(msg, object, .showDimnames,
         c(.showNamesRowTitle, .showNamesColumnTitle))
 
+    msg <- .validNumberError(msg, object, .heatMapCapRowSelection,
+                             lower=0, upper=Inf)
+
     msg <- .validNumberError(msg, object, .namesRowFontSize,
                              lower=0, upper=Inf)
     msg <- .validNumberError(msg, object, .namesColumnFontSize,
@@ -295,7 +304,7 @@ setValidity2("ComplexHeatmapPlot", function(object) {
         c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle))
 
     msg <- .validLogicalError(msg, object, c(
-        .heatMapCustomFeatNames, .heatMapCustomFeatNames,
+        .heatMapCustomFeatNames,
         .heatMapClusterFeatures, .dataParamBoxOpen,
         .heatMapCustomAssayBounds,
         .assayCenterRows, .assayScaleRows,
@@ -485,6 +494,17 @@ These matrices should be loaded into the object prior to calling <strong>iSEE</s
         )
     })
 
+    .addSpecificTour(class(x)[1], .heatMapCapRowSelection, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element = paste0("#", plot_name, "_", .heatMapCapRowSelection),
+                    intro = "Sometimes, when receiving a multiple selection of rows from another panel, there may be too many rows to visualize efficiently on the heatmap. This field allows us to cap the number of rows in the selection so that the application does not freeze while attempting to render a very large heatmap. (Setting this value to zero will show all selected rows.)"
+                )
+            )
+        )
+    })
+
     .addSpecificTour(class(x)[1], .heatMapClusterFeatures, function(plot_name) {
         data.frame(
             element = paste0("#", plot_name, "_", .heatMapClusterFeatures),
@@ -521,6 +541,16 @@ The clustering itself is done using <code>hclust</code>, i.e., hierarchical clus
             .input_FUN(.heatMapCustomFeatNames),
             on_select=TRUE,
             actionButton(.input_FUN(.dimnamesModalOpen), label="Edit feature names")),
+        .conditionalOnCheckSolo(
+            .input_FUN(.heatMapCustomFeatNames),
+            on_select=FALSE,
+            .numericInput.iSEE(x, .heatMapCapRowSelection, 
+                label="Cap on the number of selected rows",
+                value=slot(x, .heatMapCapRowSelection),
+                min=0,
+                step=1,
+                help = TRUE),
+            ),
         ABLEFUN(
             .checkboxInput.iSEE(
                 x, .heatMapClusterFeatures,
@@ -582,7 +612,9 @@ setMethod(".generateOutput", "ComplexHeatmapPlot", function(x, se, all_memory, a
     all_cmds$select <- .processMultiSelections(x, all_memory, all_contents, plot_env)
     all_cmds$assay <- .extractAssaySubmatrix(x, se, plot_env,
         use_custom_row_slot=.heatMapCustomFeatNames,
-        custom_row_text_slot=.heatMapFeatNameText)
+        custom_row_text_slot=.heatMapFeatNameText,
+        cap_row_selection_slot=.heatMapCapRowSelection
+    )
 
     # If there is a matrix to work with at all
     if (all(dim(plot_env[["plot.data"]]) > 0)) {
@@ -701,6 +733,7 @@ setMethod(".createObservers", "ComplexHeatmapPlot", function(x, se, input, sessi
             .heatMapClusterDistanceFeatures,
             .heatMapClusterMethodFeatures,
             .heatMapCustomFeatNames,
+            .heatMapCapRowSelection,
             .heatMapOrderSelection
         ),
         input=input, pObjects=pObjects, rObjects=rObjects)

@@ -207,7 +207,7 @@ test_that(".generateOutput handles row_selected when not using custom feature na
     out <- .generateOutput(memory$SampleAssayPlot1, sce, all_memory = memory, all_contents = pObjects$contents)
     pObjects$contents[["SampleAssayPlot1"]] <- out$contents
 
-    x <- ComplexHeatmapPlot()
+    x <- ComplexHeatmapPlot(CapRowSelection=0L) # skip the capping for the time being.
     sce <- .cacheCommonInfo(x, sce)
     x <- .refineParameters(x, sce)
     x[[iSEE:::.selectRowSource]] <- "SampleAssayPlot1"
@@ -402,3 +402,22 @@ test_that(".extractAssaySubmatrix works without coercion to matrix", {
     expect_identical(dim(evalenv$plot.data), c(length(evalenv$row_selected), length(evalenv$col_selected)))
 })
 
+
+test_that(".extractAssaySubmatrix works with a cap on the row selections", {
+
+    evalenv <- new.env()
+    evalenv$se <- sce
+    evalenv$row_selected <- head(rownames(sce))
+    evalenv$col_selected <- head(colnames(sce))
+
+    x <- ComplexHeatmapPlot(CustomRows=FALSE, ColumnSelectionRestrict=TRUE, CapRowSelection=2L)
+    extracted <- .extractAssaySubmatrix(x, sce, evalenv, 
+        use_custom_row_slot=iSEE:::.heatMapCustomFeatNames,
+        custom_row_text_slot=iSEE:::.heatMapFeatNameText,
+        cap_row_selection_slot=iSEE:::.heatMapCapRowSelection,
+        as_matrix=FALSE
+    )
+
+    expect_identical(extracted[["data"]], 'plot.data <- assay(se, "logcounts")[.chosen.rows, .chosen.columns, drop=FALSE];')
+    expect_identical(dim(evalenv$plot.data), c(2L, length(evalenv$col_selected)))
+})

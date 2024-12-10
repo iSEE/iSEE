@@ -10,6 +10,7 @@
   envir,
   use_custom_row_slot,
   custom_row_text_slot,
+  cap_row_selection_slot = NULL,
   as_matrix = TRUE
 )
 }
@@ -25,6 +26,8 @@ This assumes that \code{\link{.processMultiSelections}} has already been run.}
 
 \item{custom_row_text_slot}{String specifying the name of the slot holding the custom row names.
 This is expected to be of the same format as described in \code{?\link{.createCustomDimnamesModalObservers}}.}
+
+\item{cap_row_selection_slot}{String specifying the name of the slot containing the cap on the number of selected rows.}
 
 \item{as_matrix}{Logical scalar indicating whether to coerce the submatrix into an ordinary matrix.
 If \code{FALSE}, the existing matrix representation is preserved.}

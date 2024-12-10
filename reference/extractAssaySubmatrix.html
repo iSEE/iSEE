@@ -52,7 +52,14 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.extractAssaySubmatrix</span><span class="op">(</span><span class="va">x</span>, <span class="va">se</span>, <span class="va">envir</span>, <span class="va">use_custom_row_slot</span>, <span class="va">custom_row_text_slot</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">.extractAssaySubmatrix</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  <span class="va">se</span>,</span>
+<span>  <span class="va">envir</span>,</span>
+<span>  <span class="va">use_custom_row_slot</span>,</span>
+<span>  <span class="va">custom_row_text_slot</span>,</span>
+<span>  as_matrix <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -79,6 +86,11 @@ This assumes that <code><a href="processMultiSelections.html">.processMultiSelec
 <dt id="arg-custom-row-text-slot">custom_row_text_slot<a class="anchor" aria-label="anchor" href="#arg-custom-row-text-slot"></a></dt>
 <dd><p>String specifying the name of the slot holding the custom row names.
 This is expected to be of the same format as described in <code>?<a href="createCustomDimnamesModalObservers.html">.createCustomDimnamesModalObservers</a></code>.</p></dd>
+
+
+<dt id="arg-as-matrix">as_matrix<a class="anchor" aria-label="anchor" href="#arg-as-matrix"></a></dt>
+<dd><p>Logical scalar indicating whether to coerce the submatrix into an ordinary matrix.
+If <code>FALSE</code>, the existing matrix representation is preserved.</p></dd>
 
 </dl></div>
     <div class="section level2">

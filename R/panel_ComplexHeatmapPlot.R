@@ -298,7 +298,7 @@ setValidity2("ComplexHeatmapPlot", function(object) {
                              lower=0, upper=Inf)
 
     msg <- .allowableChoiceError(msg, object, .plotLegendPosition,
-        c(.plotLegendRightTitle, .plotLegendBottomTitle))
+        c(.plotLegendRightTitle, .plotLegendBottomTitle, .plotLegendNoneTitle))
 
     msg <- .allowableChoiceError(msg, object, .plotLegendDirection,
         c(.plotLegendHorizontalTitle, .plotLegendVerticalTitle))

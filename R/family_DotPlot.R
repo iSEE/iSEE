@@ -133,7 +133,7 @@
 #' Defaults to 1 in \code{\link{getPanelDefault}}.
 #' \item \code{LegendPosition}, string specifying the position of the legend on the plot.
 #' Defaults to \code{"Bottom"} in \code{\link{getPanelDefault}}.
-#' The other valid choice is \code{"Right"}.
+#' Other valid choices include \code{"Right"} and \code{"None"}.
 #' }
 #'
 #' In addition, this class inherits all slots from its parent \linkS4class{Panel} class.
@@ -362,7 +362,7 @@ setValidity2("DotPlot", function(object) {
     msg <- .validNumberError(msg, object, .legendPointSize, lower=0, upper=Inf)
 
     msg <- .allowableChoiceError(msg, object, .plotLegendPosition,
-        c(.plotLegendRightTitle, .plotLegendBottomTitle))
+        c(.plotLegendRightTitle, .plotLegendBottomTitle, .plotLegendNoneTitle))
 
     if (length(msg)) {
         return(msg)
@@ -1084,7 +1084,8 @@ setMethod(".defineVisualTextInterface", "DotPlot", function(x, se) {
                 min=0, value=slot(x, .legendPointSize)),
             .radioButtons.iSEE(x, .plotLegendPosition,
                 label="Legend position:", inline=TRUE,
-                choices=c(.plotLegendBottomTitle, .plotLegendRightTitle),
+                choices=c(.plotLegendBottomTitle, .plotLegendRightTitle,
+                          .plotLegendNoneTitle),
                 selected=slot(x, .plotLegendPosition))
         )
     )

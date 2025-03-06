@@ -106,6 +106,7 @@ NULL
 
 .plotLegendRightTitle <- "Right"
 .plotLegendBottomTitle <- "Bottom"
+.plotLegendNoneTitle <- "None"
 
 .plotLegendHorizontalTitle <- "Horizontal"
 .plotLegendVerticalTitle <- "Vertical"

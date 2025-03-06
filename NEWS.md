@@ -1,3 +1,7 @@
+# iSEE 2.19.3
+
+* Added an option to have no legend shown in the dotplot panel class
+
 # iSEE 2.19.1
 
 * Changed the processing of the title for the app - if provided explicitly, now it can also correctly handle HTML content tags and more. Thanks to @RiboRings for spotting this, resolving #681

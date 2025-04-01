@@ -12,6 +12,7 @@ iSEE(
   landingPage = createLandingPage(),
   tour = NULL,
   appTitle = NULL,
+  tabTitle = NULL,
   runLocal = TRUE,
   voice = FALSE,
   bugs = FALSE,
@@ -40,6 +41,9 @@ Ignored if \code{se} is not supplied.}
 
 \item{appTitle}{A string indicating the title to be displayed in the app.
 If not provided, the app displays the version info of \code{\link{iSEE}}.}
+
+\item{tabTitle}{A string indicating the title to be displayed in the browser
+tab. If not provided, the tab is named \code{"iSEE"}.}
 
 \item{runLocal}{A logical indicating whether the app is to be run locally or remotely on a server, which determines how documentation will be accessed.}
 

@@ -1,3 +1,8 @@
+# iSEE 2.19.4
+
+* Added a parameter to control the title displayed in the browser tab, currently 
+defaulting to "iSEE". Thanks to @RiboRings for the implementation!
+
 # iSEE 2.19.3
 
 * Added an option to have no legend shown in the dotplot panel class

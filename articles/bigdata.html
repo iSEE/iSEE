@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">iSEE</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.19.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.21.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,7 +97,7 @@ Lun</h4>
                   <a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       
                   
-            <h4 data-toc-skip class="date">14 April 2025</h4>
+            <h4 data-toc-skip class="date">2 June 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/devel/vignettes/bigdata.Rmd" class="external-link"><code>vignettes/bigdata.Rmd</code></a></small>
       <div class="d-none name"><code>bigdata.Rmd</code></div>
@@ -105,7 +105,7 @@ Lun</h4>
 
     
     
-<p><strong>Compiled date</strong>: 2025-04-14</p>
+<p><strong>Compiled date</strong>: 2025-06-02</p>
 <p><strong>Last edited</strong>: 2018-03-08</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div class="section level2">
@@ -211,7 +211,7 @@ datasets with limited resources.</p>
 <span>            YAxisFeatureSource<span class="op">=</span><span class="st">"RowDataTable1"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="screenshots%2Fbigdata-hdf5.png"><!-- --></p>
+<p><img src="screenshots/bigdata-hdf5.png"><!-- --></p>
 <p>Generally speaking, these HDF5 files are written once by a process
 with sufficient computational resources (i.e., memory and time). We
 typically create <code>HDF5Matrix</code> objects using the
@@ -261,7 +261,7 @@ counterpart above.</p>
 <span>        <span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="screenshots%2Fbigdata-downsample.png"><!-- --></p>
+<p><img src="screenshots/bigdata-downsample.png"><!-- --></p>
 <p>Downsampling is possible in all <code><a href="../reference/iSEE.html">iSEE()</a></code> plotting panels
 that represent features or samples as points. We can turn on
 downsampling for all such panels using the relevant field in
@@ -274,7 +274,7 @@ plot rendering. Any interactions with other panels occur as if all of
 the points were still there. For example, if one makes a brush, all of
 the points therein will be selected regardless of whether they were
 downsampled.</p>
-<p><img src="screenshots%2Fbigdata-downsample2.png"><!-- --></p>
+<p><img src="screenshots/bigdata-downsample2.png"><!-- --></p>
 <p>The downsampling resolution determines the degree to which points are
 considered to be overlapping. Decreasing the resolution will downsample
 more aggressively, improving plotting speed but potentially affecting
@@ -329,9 +329,9 @@ of the 1st Shiny Contest</a>.</p>
 </h2>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; R Under development (unstable) (2025-03-08 r87910)</span></span>
+<span><span class="co">#&gt; R version 4.5.0 (2025-04-11)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">#&gt; Running under: Ubuntu 24.04.1 LTS</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 24.04.2 LTS</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Matrix products: default</span></span>
 <span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -353,63 +353,63 @@ of the 1st Shiny Contest</a>.</p>
 <span><span class="co">#&gt; [8] base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt;  [1] iSEE_2.19.4                 scRNAseq_2.21.1            </span></span>
-<span><span class="co">#&gt;  [3] TENxPBMCData_1.25.0         HDF5Array_1.35.16          </span></span>
-<span><span class="co">#&gt;  [5] h5mread_0.99.4              rhdf5_2.51.2               </span></span>
-<span><span class="co">#&gt;  [7] DelayedArray_0.33.6         SparseArray_1.7.7          </span></span>
-<span><span class="co">#&gt;  [9] S4Arrays_1.7.3              abind_1.4-8                </span></span>
-<span><span class="co">#&gt; [11] Matrix_1.7-3                SingleCellExperiment_1.29.2</span></span>
-<span><span class="co">#&gt; [13] SummarizedExperiment_1.37.0 Biobase_2.67.0             </span></span>
-<span><span class="co">#&gt; [15] GenomicRanges_1.59.1        GenomeInfoDb_1.43.4        </span></span>
-<span><span class="co">#&gt; [17] IRanges_2.41.3              S4Vectors_0.45.4           </span></span>
-<span><span class="co">#&gt; [19] BiocGenerics_0.53.6         generics_0.1.3             </span></span>
-<span><span class="co">#&gt; [21] MatrixGenerics_1.19.1       matrixStats_1.5.0          </span></span>
-<span><span class="co">#&gt; [23] BiocStyle_2.35.0           </span></span>
+<span><span class="co">#&gt;  [1] iSEE_2.21.0                 scRNAseq_2.22.0            </span></span>
+<span><span class="co">#&gt;  [3] TENxPBMCData_1.26.0         HDF5Array_1.36.0           </span></span>
+<span><span class="co">#&gt;  [5] h5mread_1.0.1               rhdf5_2.52.0               </span></span>
+<span><span class="co">#&gt;  [7] DelayedArray_0.34.1         SparseArray_1.8.0          </span></span>
+<span><span class="co">#&gt;  [9] S4Arrays_1.8.0              abind_1.4-8                </span></span>
+<span><span class="co">#&gt; [11] Matrix_1.7-3                SingleCellExperiment_1.30.1</span></span>
+<span><span class="co">#&gt; [13] SummarizedExperiment_1.38.1 Biobase_2.68.0             </span></span>
+<span><span class="co">#&gt; [15] GenomicRanges_1.60.0        GenomeInfoDb_1.44.0        </span></span>
+<span><span class="co">#&gt; [17] IRanges_2.42.0              S4Vectors_0.46.0           </span></span>
+<span><span class="co">#&gt; [19] BiocGenerics_0.54.0         generics_0.1.4             </span></span>
+<span><span class="co">#&gt; [21] MatrixGenerics_1.20.0       matrixStats_1.5.0          </span></span>
+<span><span class="co">#&gt; [23] BiocStyle_2.36.0           </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
 <span><span class="co">#&gt;   [1] RColorBrewer_1.1-3       jsonlite_2.0.0           shape_1.4.6.1           </span></span>
-<span><span class="co">#&gt;   [4] magrittr_2.0.3           GenomicFeatures_1.59.1   gypsum_1.3.0            </span></span>
-<span><span class="co">#&gt;   [7] rmarkdown_2.29           GlobalOptions_0.1.2      fs_1.6.6                </span></span>
-<span><span class="co">#&gt;  [10] BiocIO_1.17.2            ragg_1.4.0               vctrs_0.6.5             </span></span>
-<span><span class="co">#&gt;  [13] memoise_2.0.1            Rsamtools_2.23.1         RCurl_1.98-1.17         </span></span>
-<span><span class="co">#&gt;  [16] htmltools_0.5.8.1        AnnotationHub_3.15.0     curl_6.2.2              </span></span>
-<span><span class="co">#&gt;  [19] Rhdf5lib_1.29.2          sass_0.4.10              alabaster.base_1.7.8    </span></span>
-<span><span class="co">#&gt;  [22] bslib_0.9.0              htmlwidgets_1.6.4        desc_1.4.3              </span></span>
-<span><span class="co">#&gt;  [25] alabaster.sce_1.7.0      fontawesome_0.5.3        listviewer_4.0.0        </span></span>
-<span><span class="co">#&gt;  [28] httr2_1.1.2              cachem_1.1.0             GenomicAlignments_1.43.0</span></span>
-<span><span class="co">#&gt;  [31] igraph_2.1.4             mime_0.13                lifecycle_1.0.4         </span></span>
-<span><span class="co">#&gt;  [34] iterators_1.0.14         pkgconfig_2.0.3          colourpicker_1.3.0      </span></span>
-<span><span class="co">#&gt;  [37] R6_2.6.1                 fastmap_1.2.0            shiny_1.10.0            </span></span>
-<span><span class="co">#&gt;  [40] GenomeInfoDbData_1.2.14  clue_0.3-66              digest_0.6.37           </span></span>
-<span><span class="co">#&gt;  [43] colorspace_2.1-1         AnnotationDbi_1.69.1     ExperimentHub_2.15.0    </span></span>
-<span><span class="co">#&gt;  [46] textshaping_1.0.0        RSQLite_2.3.9            filelock_1.0.3          </span></span>
-<span><span class="co">#&gt;  [49] mgcv_1.9-3               httr_1.4.7               compiler_4.5.0          </span></span>
-<span><span class="co">#&gt;  [52] bit64_4.6.0-1            withr_3.0.2              doParallel_1.0.17       </span></span>
-<span><span class="co">#&gt;  [55] BiocParallel_1.41.5      DBI_1.2.3                shinyAce_0.4.4          </span></span>
-<span><span class="co">#&gt;  [58] alabaster.ranges_1.7.0   alabaster.schemas_1.7.0  rappdirs_0.3.3          </span></span>
-<span><span class="co">#&gt;  [61] rjson_0.2.23             tools_4.5.0              vipor_0.4.7             </span></span>
-<span><span class="co">#&gt;  [64] httpuv_1.6.15            glue_1.8.0               restfulr_0.0.15         </span></span>
-<span><span class="co">#&gt;  [67] nlme_3.1-168             promises_1.3.2           rhdf5filters_1.19.2     </span></span>
-<span><span class="co">#&gt;  [70] grid_4.5.0               cluster_2.1.8.1          gtable_0.3.6            </span></span>
-<span><span class="co">#&gt;  [73] ensembldb_2.31.0         XVector_0.47.2           ggrepel_0.9.6           </span></span>
-<span><span class="co">#&gt;  [76] BiocVersion_3.21.1       foreach_1.5.2            pillar_1.10.2           </span></span>
-<span><span class="co">#&gt;  [79] later_1.4.2              rintrojs_0.3.4           splines_4.5.0           </span></span>
-<span><span class="co">#&gt;  [82] circlize_0.4.16          dplyr_1.1.4              BiocFileCache_2.15.1    </span></span>
-<span><span class="co">#&gt;  [85] lattice_0.22-7           rtracklayer_1.67.1       bit_4.6.0               </span></span>
-<span><span class="co">#&gt;  [88] tidyselect_1.2.1         ComplexHeatmap_2.23.1    miniUI_0.1.1.1          </span></span>
-<span><span class="co">#&gt;  [91] Biostrings_2.75.4        knitr_1.50               bookdown_0.42           </span></span>
-<span><span class="co">#&gt;  [94] ProtGenerics_1.39.2      shinydashboard_0.7.2     xfun_0.52               </span></span>
-<span><span class="co">#&gt;  [97] DT_0.33                  UCSC.utils_1.3.1         lazyeval_0.2.2          </span></span>
-<span><span class="co">#&gt; [100] yaml_2.3.10              shinyWidgets_0.9.0       evaluate_1.0.3          </span></span>
-<span><span class="co">#&gt; [103] codetools_0.2-20         tibble_3.2.1             alabaster.matrix_1.7.8  </span></span>
-<span><span class="co">#&gt; [106] BiocManager_1.30.25      cli_3.6.4                xtable_1.8-4            </span></span>
-<span><span class="co">#&gt; [109] systemfonts_1.2.2        munsell_0.5.1            jquerylib_0.1.4         </span></span>
+<span><span class="co">#&gt;   [4] magrittr_2.0.3           GenomicFeatures_1.60.0   gypsum_1.4.0            </span></span>
+<span><span class="co">#&gt;   [7] farver_2.1.2             rmarkdown_2.29           GlobalOptions_0.1.2     </span></span>
+<span><span class="co">#&gt;  [10] fs_1.6.6                 BiocIO_1.18.0            ragg_1.4.0              </span></span>
+<span><span class="co">#&gt;  [13] vctrs_0.6.5              memoise_2.0.1            Rsamtools_2.24.0        </span></span>
+<span><span class="co">#&gt;  [16] RCurl_1.98-1.17          htmltools_0.5.8.1        AnnotationHub_3.16.0    </span></span>
+<span><span class="co">#&gt;  [19] curl_6.2.3               Rhdf5lib_1.30.0          sass_0.4.10             </span></span>
+<span><span class="co">#&gt;  [22] alabaster.base_1.8.0     bslib_0.9.0              htmlwidgets_1.6.4       </span></span>
+<span><span class="co">#&gt;  [25] desc_1.4.3               alabaster.sce_1.8.0      fontawesome_0.5.3       </span></span>
+<span><span class="co">#&gt;  [28] listviewer_4.0.0         httr2_1.1.2              cachem_1.1.0            </span></span>
+<span><span class="co">#&gt;  [31] GenomicAlignments_1.44.0 igraph_2.1.4             mime_0.13               </span></span>
+<span><span class="co">#&gt;  [34] lifecycle_1.0.4          iterators_1.0.14         pkgconfig_2.0.3         </span></span>
+<span><span class="co">#&gt;  [37] colourpicker_1.3.0       R6_2.6.1                 fastmap_1.2.0           </span></span>
+<span><span class="co">#&gt;  [40] shiny_1.10.0             GenomeInfoDbData_1.2.14  clue_0.3-66             </span></span>
+<span><span class="co">#&gt;  [43] digest_0.6.37            colorspace_2.1-1         AnnotationDbi_1.70.0    </span></span>
+<span><span class="co">#&gt;  [46] ExperimentHub_2.16.0     textshaping_1.0.1        RSQLite_2.4.0           </span></span>
+<span><span class="co">#&gt;  [49] filelock_1.0.3           mgcv_1.9-3               httr_1.4.7              </span></span>
+<span><span class="co">#&gt;  [52] compiler_4.5.0           bit64_4.6.0-1            withr_3.0.2             </span></span>
+<span><span class="co">#&gt;  [55] doParallel_1.0.17        BiocParallel_1.42.0      DBI_1.2.3               </span></span>
+<span><span class="co">#&gt;  [58] shinyAce_0.4.4           alabaster.ranges_1.8.0   alabaster.schemas_1.8.0 </span></span>
+<span><span class="co">#&gt;  [61] rappdirs_0.3.3           rjson_0.2.23             tools_4.5.0             </span></span>
+<span><span class="co">#&gt;  [64] vipor_0.4.7              httpuv_1.6.16            glue_1.8.0              </span></span>
+<span><span class="co">#&gt;  [67] restfulr_0.0.15          nlme_3.1-168             promises_1.3.3          </span></span>
+<span><span class="co">#&gt;  [70] rhdf5filters_1.20.0      grid_4.5.0               cluster_2.1.8.1         </span></span>
+<span><span class="co">#&gt;  [73] gtable_0.3.6             ensembldb_2.32.0         XVector_0.48.0          </span></span>
+<span><span class="co">#&gt;  [76] ggrepel_0.9.6            BiocVersion_3.21.1       foreach_1.5.2           </span></span>
+<span><span class="co">#&gt;  [79] pillar_1.10.2            later_1.4.2              rintrojs_0.3.4          </span></span>
+<span><span class="co">#&gt;  [82] splines_4.5.0            circlize_0.4.16          dplyr_1.1.4             </span></span>
+<span><span class="co">#&gt;  [85] BiocFileCache_2.16.0     lattice_0.22-7           rtracklayer_1.68.0      </span></span>
+<span><span class="co">#&gt;  [88] bit_4.6.0                tidyselect_1.2.1         ComplexHeatmap_2.24.0   </span></span>
+<span><span class="co">#&gt;  [91] miniUI_0.1.2             Biostrings_2.76.0        knitr_1.50              </span></span>
+<span><span class="co">#&gt;  [94] bookdown_0.43            ProtGenerics_1.40.0      shinydashboard_0.7.3    </span></span>
+<span><span class="co">#&gt;  [97] xfun_0.52                DT_0.33                  UCSC.utils_1.4.0        </span></span>
+<span><span class="co">#&gt; [100] lazyeval_0.2.2           yaml_2.3.10              shinyWidgets_0.9.0      </span></span>
+<span><span class="co">#&gt; [103] evaluate_1.0.3           codetools_0.2-20         tibble_3.2.1            </span></span>
+<span><span class="co">#&gt; [106] alabaster.matrix_1.8.0   BiocManager_1.30.25      cli_3.6.5               </span></span>
+<span><span class="co">#&gt; [109] xtable_1.8-4             systemfonts_1.2.3        jquerylib_0.1.4         </span></span>
 <span><span class="co">#&gt; [112] Rcpp_1.0.14              dbplyr_2.5.0             png_0.1-8               </span></span>
 <span><span class="co">#&gt; [115] XML_3.99-0.18            parallel_4.5.0           ggplot2_3.5.2           </span></span>
-<span><span class="co">#&gt; [118] pkgdown_2.1.1            blob_1.2.4               AnnotationFilter_1.31.0 </span></span>
-<span><span class="co">#&gt; [121] bitops_1.0-9             viridisLite_0.4.2        alabaster.se_1.7.0      </span></span>
-<span><span class="co">#&gt; [124] scales_1.3.0             purrr_1.0.4              crayon_1.5.3            </span></span>
-<span><span class="co">#&gt; [127] GetoptLong_1.0.5         rlang_1.1.6              KEGGREST_1.47.1         </span></span>
+<span><span class="co">#&gt; [118] pkgdown_2.1.3            blob_1.2.4               AnnotationFilter_1.32.0 </span></span>
+<span><span class="co">#&gt; [121] bitops_1.0-9             viridisLite_0.4.2        alabaster.se_1.8.0      </span></span>
+<span><span class="co">#&gt; [124] scales_1.4.0             purrr_1.0.4              crayon_1.5.3            </span></span>
+<span><span class="co">#&gt; [127] GetoptLong_1.0.5         rlang_1.1.6              KEGGREST_1.48.0         </span></span>
 <span><span class="co">#&gt; [130] shinyjs_2.1.0</span></span>
 <span><span class="co"># devtools::session_info()</span></span></code></pre></div>
 </div>
@@ -424,7 +424,7 @@ of the 1st Shiny Contest</a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

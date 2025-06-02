@@ -23,7 +23,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">iSEE</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.19.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.21.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -97,7 +97,7 @@ Lun</h4>
                   <a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       
                   
-            <h4 data-toc-skip class="date">14 April 2025</h4>
+            <h4 data-toc-skip class="date">2 June 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/devel/vignettes/configure.Rmd" class="external-link"><code>vignettes/configure.Rmd</code></a></small>
       <div class="d-none name"><code>configure.Rmd</code></div>
@@ -105,7 +105,7 @@ Lun</h4>
 
     
     
-<p><strong>Compiled date</strong>: 2025-04-14</p>
+<p><strong>Compiled date</strong>: 2025-06-02</p>
 <p><strong>Last edited</strong>: 2020-04-20</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div class="section level2">
@@ -134,7 +134,7 @@ package.</p>
 <span>    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span><span class="op">(</span>PanelWidth<span class="op">=</span><span class="fl">6L</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span><span class="op">(</span>PanelWidth<span class="op">=</span><span class="fl">6L</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="screenshots%2Fconfigure-FAP-basic.png"><!-- --></p>
+<p><img src="screenshots/configure-FAP-basic.png"><!-- --></p>
 <p>The genes to show on the Y-axis in the two plots can be specified via
 the <code>YAxisFeatureName</code> argument to the respective panels in
 <code>iSEE</code>.</p>
@@ -143,7 +143,7 @@ the <code>YAxisFeatureName</code> argument to the respective panels in
 <span>    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span><span class="op">(</span>YAxisFeatureName<span class="op">=</span><span class="st">"0610009L18Rik"</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span><span class="op">(</span>YAxisFeatureName<span class="op">=</span><span class="st">"0610009B22Rik"</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="screenshots%2Fconfigure-FAP-preset-genes.png"><!-- --></p>
+<p><img src="screenshots/configure-FAP-preset-genes.png"><!-- --></p>
 <p>This will open the app with two feature assay plots, showing the
 selected genes. Of course, from this starting point, all the interactive
 functionality is still available, and new panels can be added, modified
@@ -178,7 +178,7 @@ individual <em>column data plot</em> panels as follows:</p>
 <span>    <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span><span class="op">(</span>YAxis<span class="op">=</span><span class="st">"NREADS"</span>, PanelWidth<span class="op">=</span><span class="fl">6L</span>, DataBoxOpen<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span><span class="op">(</span>YAxis<span class="op">=</span><span class="st">"TOTAL_DUP"</span>, PanelWidth<span class="op">=</span><span class="fl">6L</span>, DataBoxOpen<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="screenshots%2Fconfigure-CDP-basic.png"><!-- --></p>
+<p><img src="screenshots/configure-CDP-basic.png"><!-- --></p>
 </div>
 <div class="section level3">
 <h3 id="xaxis">Setting the X-axis<a class="anchor" aria-label="anchor" href="#xaxis"></a>
@@ -236,7 +236,7 @@ data table</em> panel with an active selection set in its own
 <span></span>
 <span><span class="co"># Initialisation</span></span>
 <span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, initial<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">fex1</span>, <span class="va">fex2</span>, <span class="va">fex3</span>, <span class="va">fex4</span>, <span class="va">rex</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="screenshots%2Fconfigure-FAP-xaxis.png"><!-- --></p>
+<p><img src="screenshots/configure-FAP-xaxis.png"><!-- --></p>
 <p>Note how <em>Example 3b</em> requires an active <em>row data
 table</em> as a source of selection. To facilitate visualisation, we
 added the features identifiers as the <code>gene_id</code> column in
@@ -257,7 +257,7 @@ slot:</p>
 <span>    <span class="fu"><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span><span class="op">(</span>DataBoxOpen<span class="op">=</span><span class="cn">TRUE</span>, Type<span class="op">=</span><span class="st">"TSNE"</span>, </span>
 <span>        XAxis<span class="op">=</span><span class="fl">2L</span>, YAxis<span class="op">=</span><span class="fl">1L</span>, PanelWidth<span class="op">=</span><span class="fl">6L</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="screenshots%2Fconfigure-ReDP-basic.png"><!-- --></p>
+<p><img src="screenshots/configure-ReDP-basic.png"><!-- --></p>
 </div>
 <div class="section level3">
 <h3 id="assay">Configuring the type of assay data<a class="anchor" aria-label="anchor" href="#assay"></a>
@@ -270,7 +270,7 @@ plot</em> panels, the assay to display can be set through the
 <span>    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span><span class="op">(</span>DataBoxOpen<span class="op">=</span><span class="cn">TRUE</span>, Assay<span class="op">=</span><span class="st">"logcounts"</span>, PanelWidth<span class="op">=</span><span class="fl">6L</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="../reference/FeatureAssayPlot-class.html">FeatureAssayPlot</a></span><span class="op">(</span>DataBoxOpen<span class="op">=</span><span class="cn">TRUE</span>, Assay<span class="op">=</span><span class="st">"tophat_counts"</span>, PanelWidth<span class="op">=</span><span class="fl">6L</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="screenshots%2Fconfigure-FAP-assay.png"><!-- --></p>
+<p><img src="screenshots/configure-FAP-assay.png"><!-- --></p>
 </div>
 </div>
 <div class="section level2">
@@ -317,7 +317,7 @@ parameters in the second panel:</p>
 <span><span class="va">cdp2</span><span class="op">[[</span><span class="st">"FontSize"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">2</span></span>
 <span></span>
 <span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, initial<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">cdp</span>, <span class="va">cdp2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="screenshots%2Fconfigure-CDP-visual.png"><!-- --></p>
+<p><img src="screenshots/configure-CDP-visual.png"><!-- --></p>
 <p>Note that for this demonstration, we facilitate visualization of the
 preconfigured arguments by setting <code>VisualChoices</code> to display
 both the <code>"Color"</code> and <code>"Shape"</code> UI panels.</p>
@@ -341,7 +341,7 @@ the <code>ColorBy</code> value to <code>"Column data"</code>, and the
 <span><span class="va">cdp2</span><span class="op">[[</span><span class="st">"ShapeByColumnData"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"driver_1_s"</span></span>
 <span></span>
 <span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, initial<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">cdp</span>, <span class="va">cdp2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="screenshots%2Fconfigure-CDP-linked-visual.png"><!-- --></p>
+<p><img src="screenshots/configure-CDP-linked-visual.png"><!-- --></p>
 <p>Note that points may only be shaped by a categorical variable.</p>
 </div>
 <div class="section level3">
@@ -364,7 +364,7 @@ both:</p>
 <span><span class="va">cdp3</span><span class="op">[[</span><span class="st">"FacetColumnBy"</span><span class="op">]</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"None"</span> </span>
 <span></span>
 <span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, initial<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">cdp</span>, <span class="va">cdp2</span>, <span class="va">cdp3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="screenshots%2Fconfigure-CDP-facets.png"><!-- --></p>
+<p><img src="screenshots/configure-CDP-facets.png"><!-- --></p>
 </div>
 </div>
 <div class="section level2">
@@ -420,7 +420,7 @@ relevant point selection data. The result should look as below:</p>
 <span><span class="op">)</span>    </span>
 <span></span>
 <span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, initial<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">cdArgs</span>, <span class="va">rdArgs</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="screenshots%2Fconfigure-ReDP-select.png"><!-- --></p>
+<p><img src="screenshots/configure-ReDP-select.png"><!-- --></p>
 <p>Note that in the example above, we color selected data points in the
 receiver panel by setting the <code>ColorBy</code> argument to
 <code>"Column selection"</code>. The default is to increase the
@@ -447,7 +447,7 @@ selection:</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">app</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/iSEE.html">iSEE</a></span><span class="op">(</span><span class="va">sce</span>, initial<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="va">cdArgs</span>, <span class="va">rdArgs</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="screenshots%2Fconfigure-ReDP-lasso.png"><!-- --></p>
+<p><img src="screenshots/configure-ReDP-lasso.png"><!-- --></p>
 </div>
 <div class="section level2">
 <h2 id="writing-your-own-tour">Writing your own tour<a class="anchor" aria-label="anchor" href="#writing-your-own-tour"></a>
@@ -539,9 +539,9 @@ useful examples for setting up your own configurations.</p>
 </h2>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; R Under development (unstable) (2025-03-08 r87910)</span></span>
+<span><span class="co">#&gt; R version 4.5.0 (2025-04-11)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">#&gt; Running under: Ubuntu 24.04.1 LTS</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 24.04.2 LTS</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Matrix products: default</span></span>
 <span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -563,45 +563,45 @@ useful examples for setting up your own configurations.</p>
 <span><span class="co">#&gt; [8] base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt;  [1] iSEE_2.19.4                 SingleCellExperiment_1.29.2</span></span>
-<span><span class="co">#&gt;  [3] SummarizedExperiment_1.37.0 Biobase_2.67.0             </span></span>
-<span><span class="co">#&gt;  [5] GenomicRanges_1.59.1        GenomeInfoDb_1.43.4        </span></span>
-<span><span class="co">#&gt;  [7] IRanges_2.41.3              S4Vectors_0.45.4           </span></span>
-<span><span class="co">#&gt;  [9] BiocGenerics_0.53.6         generics_0.1.3             </span></span>
-<span><span class="co">#&gt; [11] MatrixGenerics_1.19.1       matrixStats_1.5.0          </span></span>
-<span><span class="co">#&gt; [13] BiocStyle_2.35.0           </span></span>
+<span><span class="co">#&gt;  [1] iSEE_2.21.0                 SingleCellExperiment_1.30.1</span></span>
+<span><span class="co">#&gt;  [3] SummarizedExperiment_1.38.1 Biobase_2.68.0             </span></span>
+<span><span class="co">#&gt;  [5] GenomicRanges_1.60.0        GenomeInfoDb_1.44.0        </span></span>
+<span><span class="co">#&gt;  [7] IRanges_2.42.0              S4Vectors_0.46.0           </span></span>
+<span><span class="co">#&gt;  [9] BiocGenerics_0.54.0         generics_0.1.4             </span></span>
+<span><span class="co">#&gt; [11] MatrixGenerics_1.20.0       matrixStats_1.5.0          </span></span>
+<span><span class="co">#&gt; [13] BiocStyle_2.36.0           </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] rlang_1.1.6             magrittr_2.0.3          shinydashboard_0.7.2   </span></span>
+<span><span class="co">#&gt;  [1] rlang_1.1.6             magrittr_2.0.3          shinydashboard_0.7.3   </span></span>
 <span><span class="co">#&gt;  [4] clue_0.3-66             GetoptLong_1.0.5        compiler_4.5.0         </span></span>
-<span><span class="co">#&gt;  [7] mgcv_1.9-3              png_0.1-8               systemfonts_1.2.2      </span></span>
+<span><span class="co">#&gt;  [7] mgcv_1.9-3              png_0.1-8               systemfonts_1.2.3      </span></span>
 <span><span class="co">#&gt; [10] vctrs_0.6.5             pkgconfig_2.0.3         shape_1.4.6.1          </span></span>
-<span><span class="co">#&gt; [13] crayon_1.5.3            fastmap_1.2.0           XVector_0.47.2         </span></span>
-<span><span class="co">#&gt; [16] fontawesome_0.5.3       promises_1.3.2          rmarkdown_2.29         </span></span>
-<span><span class="co">#&gt; [19] UCSC.utils_1.3.1        shinyAce_0.4.4          ragg_1.4.0             </span></span>
+<span><span class="co">#&gt; [13] crayon_1.5.3            fastmap_1.2.0           XVector_0.48.0         </span></span>
+<span><span class="co">#&gt; [16] fontawesome_0.5.3       promises_1.3.3          rmarkdown_2.29         </span></span>
+<span><span class="co">#&gt; [19] UCSC.utils_1.4.0        shinyAce_0.4.4          ragg_1.4.0             </span></span>
 <span><span class="co">#&gt; [22] xfun_0.52               cachem_1.1.0            jsonlite_2.0.0         </span></span>
-<span><span class="co">#&gt; [25] listviewer_4.0.0        later_1.4.2             DelayedArray_0.33.6    </span></span>
+<span><span class="co">#&gt; [25] listviewer_4.0.0        later_1.4.2             DelayedArray_0.34.1    </span></span>
 <span><span class="co">#&gt; [28] parallel_4.5.0          cluster_2.1.8.1         R6_2.6.1               </span></span>
 <span><span class="co">#&gt; [31] bslib_0.9.0             RColorBrewer_1.1-3      jquerylib_0.1.4        </span></span>
-<span><span class="co">#&gt; [34] Rcpp_1.0.14             bookdown_0.42           iterators_1.0.14       </span></span>
-<span><span class="co">#&gt; [37] knitr_1.50              httpuv_1.6.15           Matrix_1.7-3           </span></span>
+<span><span class="co">#&gt; [34] Rcpp_1.0.14             bookdown_0.43           iterators_1.0.14       </span></span>
+<span><span class="co">#&gt; [37] knitr_1.50              httpuv_1.6.16           Matrix_1.7-3           </span></span>
 <span><span class="co">#&gt; [40] splines_4.5.0           igraph_2.1.4            tidyselect_1.2.1       </span></span>
 <span><span class="co">#&gt; [43] abind_1.4-8             yaml_2.3.10             doParallel_1.0.17      </span></span>
-<span><span class="co">#&gt; [46] codetools_0.2-20        miniUI_0.1.1.1          lattice_0.22-7         </span></span>
+<span><span class="co">#&gt; [46] codetools_0.2-20        miniUI_0.1.2            lattice_0.22-7         </span></span>
 <span><span class="co">#&gt; [49] tibble_3.2.1            shiny_1.10.0            evaluate_1.0.3         </span></span>
 <span><span class="co">#&gt; [52] desc_1.4.3              circlize_0.4.16         pillar_1.10.2          </span></span>
 <span><span class="co">#&gt; [55] BiocManager_1.30.25     DT_0.33                 foreach_1.5.2          </span></span>
-<span><span class="co">#&gt; [58] shinyjs_2.1.0           ggplot2_3.5.2           munsell_0.5.1          </span></span>
-<span><span class="co">#&gt; [61] scales_1.3.0            xtable_1.8-4            glue_1.8.0             </span></span>
-<span><span class="co">#&gt; [64] tools_4.5.0             colourpicker_1.3.0      fs_1.6.6               </span></span>
-<span><span class="co">#&gt; [67] grid_4.5.0              colorspace_2.1-1        nlme_3.1-168           </span></span>
-<span><span class="co">#&gt; [70] GenomeInfoDbData_1.2.14 vipor_0.4.7             cli_3.6.4              </span></span>
-<span><span class="co">#&gt; [73] textshaping_1.0.0       viridisLite_0.4.2       S4Arrays_1.7.3         </span></span>
-<span><span class="co">#&gt; [76] ComplexHeatmap_2.23.1   dplyr_1.1.4             gtable_0.3.6           </span></span>
-<span><span class="co">#&gt; [79] rintrojs_0.3.4          sass_0.4.10             digest_0.6.37          </span></span>
-<span><span class="co">#&gt; [82] SparseArray_1.7.7       ggrepel_0.9.6           rjson_0.2.23           </span></span>
-<span><span class="co">#&gt; [85] htmlwidgets_1.6.4       memoise_2.0.1           htmltools_0.5.8.1      </span></span>
-<span><span class="co">#&gt; [88] pkgdown_2.1.1           lifecycle_1.0.4         httr_1.4.7             </span></span>
+<span><span class="co">#&gt; [58] shinyjs_2.1.0           ggplot2_3.5.2           scales_1.4.0           </span></span>
+<span><span class="co">#&gt; [61] xtable_1.8-4            glue_1.8.0              tools_4.5.0            </span></span>
+<span><span class="co">#&gt; [64] colourpicker_1.3.0      fs_1.6.6                grid_4.5.0             </span></span>
+<span><span class="co">#&gt; [67] colorspace_2.1-1        nlme_3.1-168            GenomeInfoDbData_1.2.14</span></span>
+<span><span class="co">#&gt; [70] vipor_0.4.7             cli_3.6.5               textshaping_1.0.1      </span></span>
+<span><span class="co">#&gt; [73] viridisLite_0.4.2       S4Arrays_1.8.0          ComplexHeatmap_2.24.0  </span></span>
+<span><span class="co">#&gt; [76] dplyr_1.1.4             gtable_0.3.6            rintrojs_0.3.4         </span></span>
+<span><span class="co">#&gt; [79] sass_0.4.10             digest_0.6.37           SparseArray_1.8.0      </span></span>
+<span><span class="co">#&gt; [82] ggrepel_0.9.6           rjson_0.2.23            htmlwidgets_1.6.4      </span></span>
+<span><span class="co">#&gt; [85] farver_2.1.2            memoise_2.0.1           htmltools_0.5.8.1      </span></span>
+<span><span class="co">#&gt; [88] pkgdown_2.1.3           lifecycle_1.0.4         httr_1.4.7             </span></span>
 <span><span class="co">#&gt; [91] shinyWidgets_0.9.0      GlobalOptions_0.1.2     mime_0.13</span></span>
 <span><span class="co"># devtools::session_info()</span></span></code></pre></div>
 </div>
@@ -628,7 +628,7 @@ Rue-Albrecht, K., F. Marini, C. Soneson, and A. T. L. Lun. 2018.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

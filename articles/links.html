@@ -21,7 +21,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">iSEE</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.19.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.21.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -94,7 +94,7 @@ Lun</h4>
                   <a class="author_email" href="mailto:#"></a><a href="mailto:infinite.monkeys.with.keyboards@gmail.com" class="email">infinite.monkeys.with.keyboards@gmail.com</a>
       
                   
-            <h4 data-toc-skip class="date">14 April 2025</h4>
+            <h4 data-toc-skip class="date">2 June 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/iSEE/iSEE/blob/devel/vignettes/links.Rmd" class="external-link"><code>vignettes/links.Rmd</code></a></small>
       <div class="d-none name"><code>links.Rmd</code></div>
@@ -102,7 +102,7 @@ Lun</h4>
 
     
     
-<p><strong>Compiled date</strong>: 2025-04-14</p>
+<p><strong>Compiled date</strong>: 2025-06-02</p>
 <p><strong>Last edited</strong>: 2020-04-20</p>
 <p><strong>License</strong>: MIT + file LICENSE</p>
 <div class="section level2">
@@ -135,23 +135,23 @@ plot.</p>
 <span>    <span class="fu"><a href="../reference/ReducedDimensionPlot-class.html">ReducedDimensionPlot</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="../reference/ColumnDataPlot-class.html">ColumnDataPlot</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="screenshots%2Flinks-multi-naive.png"><!-- --></p>
+<p><img src="screenshots/links-multi-naive.png"><!-- --></p>
 <p>We indicate that we want one panel to “receive” a multiple selection
 from another panel. This is done by specifying the selection source (for
 samples/columns in this case, given the nature of the two panels) and
 indicating that the column data plot is to receive a selection from the
 reduced dimension plot.</p>
-<p><img src="screenshots%2Flinks-multi-unselected.png"><!-- --></p>
+<p><img src="screenshots/links-multi-unselected.png"><!-- --></p>
 <p>We can click-and-drag to select multiple points in the reduced
 dimension plot with a brush, which highlights those same points in the
 column data plot. This enables users to easily explore relationships
 between different visualizations in the <code><a href="../reference/iSEE.html">iSEE()</a></code>
 interface.</p>
-<p><img src="screenshots%2Flinks-multi-brushed.png"><!-- --></p>
+<p><img src="screenshots/links-multi-brushed.png"><!-- --></p>
 <p>Alternatively, a single click will lay down lasso waypoints for a
 non-rectangular selection. Once closed, the points in the lasso will be
 transmitted to the column data plot.</p>
-<p><img src="screenshots%2Flinks-multi-lasso.png"><!-- --></p>
+<p><img src="screenshots/links-multi-lasso.png"><!-- --></p>
 </div>
 <div class="section level3">
 <h3 id="selection-effects">Selection effects<a class="anchor" aria-label="anchor" href="#selection-effects"></a>
@@ -159,7 +159,7 @@ transmitted to the column data plot.</p>
 <p>Transparency is the default aesthetic effect used to distinguish
 points in multiple selections in receiving plots. Alternatively, we may
 use color:</p>
-<p><img src="screenshots%2Flinks-multi-color.png"><!-- --></p>
+<p><img src="screenshots/links-multi-color.png"><!-- --></p>
 <p>Another option is to restrict the receiving plot so that it only
 shows the points in the multiple selection. This effectively “gates” the
 dataset on the selection in the reduced dimension plot, analogous to
@@ -168,15 +168,15 @@ Indeed, this gating process can be repeated as many times as desired; a
 multiple selection could made on the column data plot and transmitted to
 another panel, and so on. (See <a href="https://github.com/iSEE/iSEE2018/blob/master/tours/cytof/app.R" class="external-link">this
 mass cytometry tour</a> for an example.)</p>
-<p><img src="screenshots%2Flinks-multi-restrict.png"><!-- --></p>
+<p><img src="screenshots/links-multi-restrict.png"><!-- --></p>
 <p>Of course, not all receiving panels need to be plots. If we transmit
 a multiple selection to a column data table, the effect is to subset the
 rows of the table corresponding to the selected points.</p>
-<p><img src="screenshots%2Flinks-multi-table.png"><!-- --></p>
+<p><img src="screenshots/links-multi-table.png"><!-- --></p>
 <p>As an aside, it is equally possible for a table to transmit a
 multiple selection to other panels. This is achieved using the search
 fields to subset the dataset to the desired selection.</p>
-<p><img src="screenshots%2Flinks-multi-table2.png"><!-- --></p>
+<p><img src="screenshots/links-multi-table2.png"><!-- --></p>
 </div>
 <div class="section level3">
 <h3 id="saving-selections">Saving selections<a class="anchor" aria-label="anchor" href="#saving-selections"></a>
@@ -184,7 +184,7 @@ fields to subset the dataset to the desired selection.</p>
 <p>In certain panels (usually plots), multiple selections can be saved
 to form disjoint selections. Receiving plots will respond to the union
 of all active and saved selections:</p>
-<p><img src="screenshots%2Flinks-multi-saved.png"><!-- --></p>
+<p><img src="screenshots/links-multi-saved.png"><!-- --></p>
 <p>The saved selection history operates on a first-in-last-out basis.
 Upon saving, a snapshot is taken of the current “active” selection,
 i.e., the brush or lasso that is just created. Deletion will only
@@ -200,25 +200,25 @@ other panels to focus on a feature or sample of interest. For example,
 we can transmit a single selection from a row data table to a reduced
 dimension plot, instructing the latter to color points by the expression
 of the chosen feature.</p>
-<p><img src="screenshots%2Flinks-single-color.png"><!-- --></p>
+<p><img src="screenshots/links-single-color.png"><!-- --></p>
 <p>The same approach can be used to control what is plotted on a feature
 assay plot. Clicking on a different row of the table will directly
 change the axes (in this case, the y-axis) of the plot, allowing the
 user to synchronise different aspects of the <code><a href="../reference/iSEE.html">iSEE()</a></code>
 interface to whatever is currently of interest.</p>
-<p><img src="screenshots%2Flinks-single-yaxis.png"><!-- --></p>
+<p><img src="screenshots/links-single-yaxis.png"><!-- --></p>
 <p>We can also perform single selections on sample identities. In the
 example below, the reduced dimension plot highlights the location of the
 sample chosen in the column data table. This is useful for checking the
 behavior of specific samples of interest, e.g., during quality
 control.</p>
-<p><img src="screenshots%2Flinks-single-sample.png"><!-- --></p>
+<p><img src="screenshots/links-single-sample.png"><!-- --></p>
 <p>Furthermore, it is possible to transmit single selections from a plot
 using brushes or lassos. If the brush/lasso contains multiple points,
 one of them is arbitrarily chosen for the purposes of obtaining a single
 selection. Below, we select a single highly variable gene to examine its
 distribution of expression values across the reduced dimension plot.</p>
-<p><img src="screenshots%2Flinks-single-plot2plot.png"><!-- --></p>
+<p><img src="screenshots/links-single-plot2plot.png"><!-- --></p>
 </div>
 <div class="section level2">
 <h2 id="dynamic-selections">Dynamic selections<a class="anchor" aria-label="anchor" href="#dynamic-selections"></a>
@@ -230,13 +230,13 @@ and have all participating receiving panels immediately use that
 selection without requiring manual resetting of the transmitter. To
 illustrate, let’s set up an instance with three different plots that all
 represent points as samples.</p>
-<p><img src="screenshots%2Flinks-dynamic-multi.png"><!-- --></p>
+<p><img src="screenshots/links-dynamic-multi.png"><!-- --></p>
 <p>Notice how we have checked the dynamic source selection option in the
 selection parameter box for all panels. This means that, upon making a
 selection in any one of the plots, all of the other plots will
 automatically respond as if they had been manually set to receive a
 transmission from that plot.</p>
-<p><img src="screenshots%2Flinks-dynamic-multi2.png"><!-- --></p>
+<p><img src="screenshots/links-dynamic-multi2.png"><!-- --></p>
 <p>The same logic applies for some parameters that respond to single
 selections. This allows a panel to respond to an appropriate single
 selection from any other panel in the interface, without requiring the
@@ -244,16 +244,16 @@ user to manually set the relationship between panels. In the example
 below, users can easily define the y-axis of the feature assay plot from
 a selected row in the row data table or from a selected single point in
 the row data plot.</p>
-<p><img src="screenshots%2Flinks-dynamic-single.png"><!-- --></p>
+<p><img src="screenshots/links-dynamic-single.png"><!-- --></p>
 </div>
 <div class="section level2">
 <h2 class="unnumbered" id="session-info">Session Info<a class="anchor" aria-label="anchor" href="#session-info"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; R Under development (unstable) (2025-03-08 r87910)</span></span>
+<span><span class="co">#&gt; R version 4.5.0 (2025-04-11)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">#&gt; Running under: Ubuntu 24.04.1 LTS</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 24.04.2 LTS</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Matrix products: default</span></span>
 <span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>
@@ -275,45 +275,45 @@ the row data plot.</p>
 <span><span class="co">#&gt; [8] base     </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; other attached packages:</span></span>
-<span><span class="co">#&gt;  [1] iSEE_2.19.4                 SingleCellExperiment_1.29.2</span></span>
-<span><span class="co">#&gt;  [3] SummarizedExperiment_1.37.0 Biobase_2.67.0             </span></span>
-<span><span class="co">#&gt;  [5] GenomicRanges_1.59.1        GenomeInfoDb_1.43.4        </span></span>
-<span><span class="co">#&gt;  [7] IRanges_2.41.3              S4Vectors_0.45.4           </span></span>
-<span><span class="co">#&gt;  [9] BiocGenerics_0.53.6         generics_0.1.3             </span></span>
-<span><span class="co">#&gt; [11] MatrixGenerics_1.19.1       matrixStats_1.5.0          </span></span>
-<span><span class="co">#&gt; [13] BiocStyle_2.35.0           </span></span>
+<span><span class="co">#&gt;  [1] iSEE_2.21.0                 SingleCellExperiment_1.30.1</span></span>
+<span><span class="co">#&gt;  [3] SummarizedExperiment_1.38.1 Biobase_2.68.0             </span></span>
+<span><span class="co">#&gt;  [5] GenomicRanges_1.60.0        GenomeInfoDb_1.44.0        </span></span>
+<span><span class="co">#&gt;  [7] IRanges_2.42.0              S4Vectors_0.46.0           </span></span>
+<span><span class="co">#&gt;  [9] BiocGenerics_0.54.0         generics_0.1.4             </span></span>
+<span><span class="co">#&gt; [11] MatrixGenerics_1.20.0       matrixStats_1.5.0          </span></span>
+<span><span class="co">#&gt; [13] BiocStyle_2.36.0           </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; loaded via a namespace (and not attached):</span></span>
-<span><span class="co">#&gt;  [1] rlang_1.1.6             magrittr_2.0.3          shinydashboard_0.7.2   </span></span>
+<span><span class="co">#&gt;  [1] rlang_1.1.6             magrittr_2.0.3          shinydashboard_0.7.3   </span></span>
 <span><span class="co">#&gt;  [4] clue_0.3-66             GetoptLong_1.0.5        compiler_4.5.0         </span></span>
-<span><span class="co">#&gt;  [7] mgcv_1.9-3              png_0.1-8               systemfonts_1.2.2      </span></span>
+<span><span class="co">#&gt;  [7] mgcv_1.9-3              png_0.1-8               systemfonts_1.2.3      </span></span>
 <span><span class="co">#&gt; [10] vctrs_0.6.5             pkgconfig_2.0.3         shape_1.4.6.1          </span></span>
-<span><span class="co">#&gt; [13] crayon_1.5.3            fastmap_1.2.0           XVector_0.47.2         </span></span>
-<span><span class="co">#&gt; [16] fontawesome_0.5.3       promises_1.3.2          rmarkdown_2.29         </span></span>
-<span><span class="co">#&gt; [19] UCSC.utils_1.3.1        shinyAce_0.4.4          ragg_1.4.0             </span></span>
+<span><span class="co">#&gt; [13] crayon_1.5.3            fastmap_1.2.0           XVector_0.48.0         </span></span>
+<span><span class="co">#&gt; [16] fontawesome_0.5.3       promises_1.3.3          rmarkdown_2.29         </span></span>
+<span><span class="co">#&gt; [19] UCSC.utils_1.4.0        shinyAce_0.4.4          ragg_1.4.0             </span></span>
 <span><span class="co">#&gt; [22] xfun_0.52               cachem_1.1.0            jsonlite_2.0.0         </span></span>
-<span><span class="co">#&gt; [25] listviewer_4.0.0        later_1.4.2             DelayedArray_0.33.6    </span></span>
+<span><span class="co">#&gt; [25] listviewer_4.0.0        later_1.4.2             DelayedArray_0.34.1    </span></span>
 <span><span class="co">#&gt; [28] parallel_4.5.0          cluster_2.1.8.1         R6_2.6.1               </span></span>
 <span><span class="co">#&gt; [31] bslib_0.9.0             RColorBrewer_1.1-3      jquerylib_0.1.4        </span></span>
-<span><span class="co">#&gt; [34] Rcpp_1.0.14             bookdown_0.42           iterators_1.0.14       </span></span>
-<span><span class="co">#&gt; [37] knitr_1.50              httpuv_1.6.15           Matrix_1.7-3           </span></span>
+<span><span class="co">#&gt; [34] Rcpp_1.0.14             bookdown_0.43           iterators_1.0.14       </span></span>
+<span><span class="co">#&gt; [37] knitr_1.50              httpuv_1.6.16           Matrix_1.7-3           </span></span>
 <span><span class="co">#&gt; [40] splines_4.5.0           igraph_2.1.4            tidyselect_1.2.1       </span></span>
 <span><span class="co">#&gt; [43] abind_1.4-8             yaml_2.3.10             doParallel_1.0.17      </span></span>
-<span><span class="co">#&gt; [46] codetools_0.2-20        miniUI_0.1.1.1          lattice_0.22-7         </span></span>
+<span><span class="co">#&gt; [46] codetools_0.2-20        miniUI_0.1.2            lattice_0.22-7         </span></span>
 <span><span class="co">#&gt; [49] tibble_3.2.1            shiny_1.10.0            evaluate_1.0.3         </span></span>
 <span><span class="co">#&gt; [52] desc_1.4.3              circlize_0.4.16         pillar_1.10.2          </span></span>
 <span><span class="co">#&gt; [55] BiocManager_1.30.25     DT_0.33                 foreach_1.5.2          </span></span>
-<span><span class="co">#&gt; [58] shinyjs_2.1.0           ggplot2_3.5.2           munsell_0.5.1          </span></span>
-<span><span class="co">#&gt; [61] scales_1.3.0            xtable_1.8-4            glue_1.8.0             </span></span>
-<span><span class="co">#&gt; [64] tools_4.5.0             colourpicker_1.3.0      fs_1.6.6               </span></span>
-<span><span class="co">#&gt; [67] grid_4.5.0              colorspace_2.1-1        nlme_3.1-168           </span></span>
-<span><span class="co">#&gt; [70] GenomeInfoDbData_1.2.14 vipor_0.4.7             cli_3.6.4              </span></span>
-<span><span class="co">#&gt; [73] textshaping_1.0.0       viridisLite_0.4.2       S4Arrays_1.7.3         </span></span>
-<span><span class="co">#&gt; [76] ComplexHeatmap_2.23.1   dplyr_1.1.4             gtable_0.3.6           </span></span>
-<span><span class="co">#&gt; [79] rintrojs_0.3.4          sass_0.4.10             digest_0.6.37          </span></span>
-<span><span class="co">#&gt; [82] SparseArray_1.7.7       ggrepel_0.9.6           rjson_0.2.23           </span></span>
-<span><span class="co">#&gt; [85] htmlwidgets_1.6.4       memoise_2.0.1           htmltools_0.5.8.1      </span></span>
-<span><span class="co">#&gt; [88] pkgdown_2.1.1           lifecycle_1.0.4         httr_1.4.7             </span></span>
+<span><span class="co">#&gt; [58] shinyjs_2.1.0           ggplot2_3.5.2           scales_1.4.0           </span></span>
+<span><span class="co">#&gt; [61] xtable_1.8-4            glue_1.8.0              tools_4.5.0            </span></span>
+<span><span class="co">#&gt; [64] colourpicker_1.3.0      fs_1.6.6                grid_4.5.0             </span></span>
+<span><span class="co">#&gt; [67] colorspace_2.1-1        nlme_3.1-168            GenomeInfoDbData_1.2.14</span></span>
+<span><span class="co">#&gt; [70] vipor_0.4.7             cli_3.6.5               textshaping_1.0.1      </span></span>
+<span><span class="co">#&gt; [73] viridisLite_0.4.2       S4Arrays_1.8.0          ComplexHeatmap_2.24.0  </span></span>
+<span><span class="co">#&gt; [76] dplyr_1.1.4             gtable_0.3.6            rintrojs_0.3.4         </span></span>
+<span><span class="co">#&gt; [79] sass_0.4.10             digest_0.6.37           SparseArray_1.8.0      </span></span>
+<span><span class="co">#&gt; [82] ggrepel_0.9.6           rjson_0.2.23            htmlwidgets_1.6.4      </span></span>
+<span><span class="co">#&gt; [85] farver_2.1.2            memoise_2.0.1           htmltools_0.5.8.1      </span></span>
+<span><span class="co">#&gt; [88] pkgdown_2.1.3           lifecycle_1.0.4         httr_1.4.7             </span></span>
 <span><span class="co">#&gt; [91] shinyWidgets_0.9.0      GlobalOptions_0.1.2     mime_0.13</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -327,7 +327,7 @@ the row data plot.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

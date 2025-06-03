@@ -1,3 +1,7 @@
+# iSEE 2.21.1
+
+* Fixed dimensions of exported figures.
+
 # iSEE 2.19.4
 
 * Added a parameter to control the title displayed in the browser tab, currently 

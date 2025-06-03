@@ -1134,7 +1134,7 @@ setMethod(".exportOutput", "DotPlot", function(x, se, all_memory, all_contents) 
 
     # These are reasonably satisfactory heuristics:
     # Width = Pixels -> Inches, Height = Bootstrap -> Inches.
-    pdf(newpath, width=slot(x, .organizationHeight)/75, height=slot(x, .organizationWidth)*2)
+    pdf(newpath, width=slot(x, .organizationWidth)*2, height=slot(x, .organizationHeight)/75)
     print(contents$plot)
     dev.off()
 

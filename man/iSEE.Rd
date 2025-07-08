@@ -13,6 +13,7 @@ iSEE(
   tour = NULL,
   appTitle = NULL,
   tabTitle = NULL,
+  appFooter = NULL,
   runLocal = TRUE,
   voice = FALSE,
   bugs = FALSE,
@@ -44,6 +45,11 @@ If not provided, the app displays the version info of \code{\link{iSEE}}.}
 
 \item{tabTitle}{A string indicating the title to be displayed in the browser
 tab. If not provided, the tab is named \code{"iSEE"}.}
+
+\item{appFooter}{Either a character string to be visualized as a footer-like 
+element, or some valid HTML content, provided e.g. via shiny tag commands (
+which would be rendered "as is"). Defaults to NULL, showing no footer. If 
+neither a character nor a shiny.tag, it silently displays no header.}
 
 \item{runLocal}{A logical indicating whether the app is to be run locally or remotely on a server, which determines how documentation will be accessed.}
 

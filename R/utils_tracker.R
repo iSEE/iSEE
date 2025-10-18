@@ -21,6 +21,7 @@
         "## Copy them into a script or an R session containing your SingleCellExperiment.",
         "## All commands below refer to your SingleCellExperiment object as `se`.",
         "",
+        "library(ggplot2)",
         sprintf("se <- %s", se_name),
         sprintf("colormap <- %s", ecm_name),
         mod_commands,

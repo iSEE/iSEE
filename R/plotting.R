@@ -531,7 +531,7 @@ plot.data$Y <- tmp;")
     plot_cmds[["ggplot"]] <- "dot.plot <- ggplot(plot.data) +"
     plot_cmds[["tile"]] <-
 "geom_tile(aes(x=X, y=Y, height=2*YWidth, width=2*XWidth, group=interaction(X, Y)),
-    summary.data, color='black', alpha=0, size=0.5) +"
+    summary.data, color='black', alpha=0, linewidth=0.5) +"
 
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)

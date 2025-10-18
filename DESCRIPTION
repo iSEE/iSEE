@@ -30,7 +30,7 @@ Imports:
     shinyjs,
     DT,
     rintrojs, 
-    ggplot2,
+    ggplot2 (>= 3.4.0),
     ggrepel,
     colourpicker,
     igraph,

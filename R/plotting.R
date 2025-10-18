@@ -120,7 +120,7 @@ names(.all_aes_values) <- .all_aes_names
         }
 
         res <- slot(param_choices, .plotPointSampleRes)
-        subset.args <- sprintf("resolution=%i", res)
+        subset.args <- sprintf("resolution=%f", res)
         if (priority) {
             if (rescaled) {
                 subset.args <- paste0(subset.args, "*.rescaled")
@@ -764,7 +764,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
     if (custom_point_size && discrete_color) {
         sprintf(
-            "guides(colour = guide_legend(override.aes = list(size=%i)), fill = guide_legend(override.aes = list(size=%i))) +",
+            "guides(colour = guide_legend(override.aes = list(size=%f)), fill = guide_legend(override.aes = list(size=%f))) +",
             legend_size, legend_size
         )
     } else {

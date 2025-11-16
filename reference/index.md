@@ -1,0 +1,539 @@
+# Package index
+
+## All functions
+
+- [`ColumnDataPlot-class`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)
+  [`ColumnDataPlot`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)
+  [`initialize,ColumnDataPlot-method`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)
+  [`.refineParameters,ColumnDataPlot-method`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)
+  [`.defineDataInterface,ColumnDataPlot-method`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)
+  [`.createObservers,ColumnDataPlot-method`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)
+  [`.fullName,ColumnDataPlot-method`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)
+  [`.panelColor,ColumnDataPlot-method`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)
+  [`.generateDotPlotData,ColumnDataPlot-method`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)
+  [`.multiSelectionInvalidated,ColumnDataPlot-method`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)
+  [`.allowableXAxisChoices,ColumnDataPlot-method`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)
+  [`.allowableYAxisChoices,ColumnDataPlot-method`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)
+  [`.definePanelTour,ColumnDataPlot-method`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)
+  : The ColumnDataPlot panel
+
+- [`ColumnDataTable-class`](https://isee.github.io/iSEE/reference/ColumnDataTable-class.md)
+  [`ColumnDataTable`](https://isee.github.io/iSEE/reference/ColumnDataTable-class.md)
+  [`initialize,ColumnDataTable-method`](https://isee.github.io/iSEE/reference/ColumnDataTable-class.md)
+  [`.cacheCommonInfo,ColumnDataTable-method`](https://isee.github.io/iSEE/reference/ColumnDataTable-class.md)
+  [`.refineParameters,ColumnDataTable-method`](https://isee.github.io/iSEE/reference/ColumnDataTable-class.md)
+  [`.generateTable,ColumnDataTable-method`](https://isee.github.io/iSEE/reference/ColumnDataTable-class.md)
+  [`.panelColor,ColumnDataTable-method`](https://isee.github.io/iSEE/reference/ColumnDataTable-class.md)
+  [`.fullName,ColumnDataTable-method`](https://isee.github.io/iSEE/reference/ColumnDataTable-class.md)
+  [`.definePanelTour,ColumnDataTable-method`](https://isee.github.io/iSEE/reference/ColumnDataTable-class.md)
+  : The ColumnDataTable panel
+
+- [`ColumnDotPlot-class`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`initialize,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`.cacheCommonInfo,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`.refineParameters,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`.defineInterface,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`.createObservers,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`.getTooltipUI,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`.hideInterface,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`.multiSelectionDimension,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`.multiSelectionResponsive,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`.multiSelectionRestricted,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`.multiSelectionInvalidated,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`.singleSelectionDimension,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`.definePanelTour,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`.getDotPlotColorHelp,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`[[,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`[[,ColumnDotPlot,ANY,ANY-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`[[<-,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`[[<-,ColumnDotPlot,ANY,ANY-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  [`updateObject,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
+  : The ColumnDotPlot virtual class
+
+- [`ColumnTable-class`](https://isee.github.io/iSEE/reference/ColumnTable-class.md)
+  [`initialize,ColumnTable-method`](https://isee.github.io/iSEE/reference/ColumnTable-class.md)
+  [`.refineParameters,ColumnTable-method`](https://isee.github.io/iSEE/reference/ColumnTable-class.md)
+  [`.defineInterface,ColumnTable-method`](https://isee.github.io/iSEE/reference/ColumnTable-class.md)
+  [`.createObservers,ColumnTable-method`](https://isee.github.io/iSEE/reference/ColumnTable-class.md)
+  [`.hideInterface,ColumnTable-method`](https://isee.github.io/iSEE/reference/ColumnTable-class.md)
+  [`.multiSelectionDimension,ColumnTable-method`](https://isee.github.io/iSEE/reference/ColumnTable-class.md)
+  [`.multiSelectionResponsive,ColumnTable-method`](https://isee.github.io/iSEE/reference/ColumnTable-class.md)
+  [`.singleSelectionDimension,ColumnTable-method`](https://isee.github.io/iSEE/reference/ColumnTable-class.md)
+  [`.showSelectionDetails,ColumnTable-method`](https://isee.github.io/iSEE/reference/ColumnTable-class.md)
+  : The ColumnTable class
+
+- [`ComplexHeatmapPlot-class`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`ComplexHeatmapPlot`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`.cacheCommonInfo,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`.createObservers,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`.defineDataInterface,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`.defineInterface,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`.defineOutput,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`.fullName,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`.generateOutput,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`.hideInterface,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`.multiSelectionResponsive,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`.multiSelectionRestricted,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`.panelColor,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`.refineParameters,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`.renderOutput,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`.exportOutput,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`initialize,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`.definePanelTour,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`[[,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`[[,ComplexHeatmapPlot,ANY,ANY-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`[[<-,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`[[<-,ComplexHeatmapPlot,ANY,ANY-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  [`updateObject,ComplexHeatmapPlot-method`](https://isee.github.io/iSEE/reference/ComplexHeatmapPlot-class.md)
+  : The ComplexHeatmapPlot panel
+
+- [`DotPlot-class`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`initialize,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`updateObject,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.defineOutput,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.generateOutput,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.generateDotPlot,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.renderOutput,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.exportOutput,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.refineParameters,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.cacheCommonInfo,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.createObservers,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.hideInterface,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.multiSelectionActive,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.multiSelectionCommands,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.multiSelectionClear,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.multiSelectionDimension,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.isBrushable,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.singleSelectionValue,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.singleSelectionSlots,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.prioritizeDotPlotData,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.colorByNoneDotPlotField,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.colorByNoneDotPlotScale,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.defineInterface,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.defineVisualColorInterface,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.defineVisualSizeInterface,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.defineVisualShapeInterface,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.defineVisualTextInterface,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.defineVisualPointInterface,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.defineVisualOtherInterface,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.defineVisualFacetInterface,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.allowableColorByDataChoices,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`.definePanelTour,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`[[,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`[[,DotPlot,ANY,ANY-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`[[<-,DotPlot-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  [`[[<-,DotPlot,ANY,ANY-method`](https://isee.github.io/iSEE/reference/DotPlot-class.md)
+  : The DotPlot virtual class
+
+- [`ExperimentColorMap()`](https://isee.github.io/iSEE/reference/ExperimentColorMap-class.md)
+  : ExperimentColorMap class
+
+- [`FeatureAssayPlot-class`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)
+  [`FeatureAssayPlot`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)
+  [`initialize,FeatureAssayPlot-method`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)
+  [`.refineParameters,FeatureAssayPlot-method`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)
+  [`.defineDataInterface,FeatureAssayPlot-method`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)
+  [`.createObservers,FeatureAssayPlot-method`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)
+  [`.singleSelectionSlots,FeatureAssayPlot-method`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)
+  [`.multiSelectionInvalidated,FeatureAssayPlot-method`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)
+  [`.fullName,FeatureAssayPlot-method`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)
+  [`.panelColor,FeatureAssayPlot-method`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)
+  [`.generateDotPlotData,FeatureAssayPlot-method`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)
+  [`.definePanelTour,FeatureAssayPlot-method`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)
+  : The FeatureAssayPlot panel
+
+- [`Panel-class`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`initialize,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`[[,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`[[<-,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`[[,Panel,ANY,ANY-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`[[<-,Panel,ANY,ANY-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`show,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.defineInterface,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.refineParameters,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.cacheCommonInfo,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.createObservers,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.hideInterface,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.defineDataInterface,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.renderOutput,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.exportOutput,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.multiSelectionRestricted,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.multiSelectionDimension,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.multiSelectionClear,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.multiSelectionActive,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.multiSelectionInvalidated,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.multiSelectionAvailable,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.multiSelectionResponsive,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.isBrushable,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.singleSelectionDimension,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.singleSelectionValue,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.singleSelectionSlots,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`.definePanelTour,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  [`updateObject,Panel-method`](https://isee.github.io/iSEE/reference/Panel-class.md)
+  : The Panel virtual class
+
+- [`ReducedDimensionPlot-class`](https://isee.github.io/iSEE/reference/ReducedDimensionPlot-class.md)
+  [`ReducedDimensionPlot`](https://isee.github.io/iSEE/reference/ReducedDimensionPlot-class.md)
+  [`initialize,ReducedDimensionPlot-method`](https://isee.github.io/iSEE/reference/ReducedDimensionPlot-class.md)
+  [`.refineParameters,ReducedDimensionPlot-method`](https://isee.github.io/iSEE/reference/ReducedDimensionPlot-class.md)
+  [`.cacheCommonInfo,ReducedDimensionPlot-method`](https://isee.github.io/iSEE/reference/ReducedDimensionPlot-class.md)
+  [`.defineDataInterface,ReducedDimensionPlot-method`](https://isee.github.io/iSEE/reference/ReducedDimensionPlot-class.md)
+  [`.createObservers,ReducedDimensionPlot-method`](https://isee.github.io/iSEE/reference/ReducedDimensionPlot-class.md)
+  [`.fullName,ReducedDimensionPlot-method`](https://isee.github.io/iSEE/reference/ReducedDimensionPlot-class.md)
+  [`.panelColor,ReducedDimensionPlot-method`](https://isee.github.io/iSEE/reference/ReducedDimensionPlot-class.md)
+  [`.generateDotPlotData,ReducedDimensionPlot-method`](https://isee.github.io/iSEE/reference/ReducedDimensionPlot-class.md)
+  [`.definePanelTour,ReducedDimensionPlot-method`](https://isee.github.io/iSEE/reference/ReducedDimensionPlot-class.md)
+  : The ReducedDimensionPlot panel
+
+- [`RowDataPlot-class`](https://isee.github.io/iSEE/reference/RowDataPlot-class.md)
+  [`RowDataPlot`](https://isee.github.io/iSEE/reference/RowDataPlot-class.md)
+  [`initialize,RowDataPlot-method`](https://isee.github.io/iSEE/reference/RowDataPlot-class.md)
+  [`.refineParameters,RowDataPlot-method`](https://isee.github.io/iSEE/reference/RowDataPlot-class.md)
+  [`.defineDataInterface,RowDataPlot-method`](https://isee.github.io/iSEE/reference/RowDataPlot-class.md)
+  [`.createObservers,RowDataPlot-method`](https://isee.github.io/iSEE/reference/RowDataPlot-class.md)
+  [`.fullName,RowDataPlot-method`](https://isee.github.io/iSEE/reference/RowDataPlot-class.md)
+  [`.panelColor,RowDataPlot-method`](https://isee.github.io/iSEE/reference/RowDataPlot-class.md)
+  [`.multiSelectionInvalidated,RowDataPlot-method`](https://isee.github.io/iSEE/reference/RowDataPlot-class.md)
+  [`.generateDotPlotData,RowDataPlot-method`](https://isee.github.io/iSEE/reference/RowDataPlot-class.md)
+  [`.allowableXAxisChoices,RowDataPlot-method`](https://isee.github.io/iSEE/reference/RowDataPlot-class.md)
+  [`.allowableYAxisChoices,RowDataPlot-method`](https://isee.github.io/iSEE/reference/RowDataPlot-class.md)
+  [`.definePanelTour,RowDataPlot-method`](https://isee.github.io/iSEE/reference/RowDataPlot-class.md)
+  : The RowDataPlot panel
+
+- [`RowDataTable-class`](https://isee.github.io/iSEE/reference/RowDataTable-class.md)
+  [`RowDataTable`](https://isee.github.io/iSEE/reference/RowDataTable-class.md)
+  [`initialize,RowDataTable-method`](https://isee.github.io/iSEE/reference/RowDataTable-class.md)
+  [`.cacheCommonInfo,RowDataTable-method`](https://isee.github.io/iSEE/reference/RowDataTable-class.md)
+  [`.refineParameters,RowDataTable-method`](https://isee.github.io/iSEE/reference/RowDataTable-class.md)
+  [`.generateTable,RowDataTable-method`](https://isee.github.io/iSEE/reference/RowDataTable-class.md)
+  [`.panelColor,RowDataTable-method`](https://isee.github.io/iSEE/reference/RowDataTable-class.md)
+  [`.fullName,RowDataTable-method`](https://isee.github.io/iSEE/reference/RowDataTable-class.md)
+  [`.definePanelTour,RowDataTable-method`](https://isee.github.io/iSEE/reference/RowDataTable-class.md)
+  : The RowDataTable panel
+
+- [`RowDotPlot-class`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`initialize,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`.cacheCommonInfo,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`.refineParameters,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`.defineInterface,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`.createObservers,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`.getTooltipUI,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`.hideInterface,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`.multiSelectionDimension,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`.multiSelectionResponsive,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`.multiSelectionRestricted,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`.multiSelectionInvalidated,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`.singleSelectionDimension,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`.definePanelTour,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`.getDotPlotColorHelp,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`[[,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`[[,RowDotPlot,ANY,ANY-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`[[<-,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`[[<-,RowDotPlot,ANY,ANY-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  [`updateObject,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
+  : The RowDotPlot virtual class
+
+- [`RowTable-class`](https://isee.github.io/iSEE/reference/RowTable-class.md)
+  [`initialize,RowTable-method`](https://isee.github.io/iSEE/reference/RowTable-class.md)
+  [`.refineParameters,RowTable-method`](https://isee.github.io/iSEE/reference/RowTable-class.md)
+  [`.defineInterface,RowTable-method`](https://isee.github.io/iSEE/reference/RowTable-class.md)
+  [`.createObservers,RowTable-method`](https://isee.github.io/iSEE/reference/RowTable-class.md)
+  [`.hideInterface,RowTable-method`](https://isee.github.io/iSEE/reference/RowTable-class.md)
+  [`.multiSelectionDimension,RowTable-method`](https://isee.github.io/iSEE/reference/RowTable-class.md)
+  [`.multiSelectionResponsive,RowTable-method`](https://isee.github.io/iSEE/reference/RowTable-class.md)
+  [`.singleSelectionDimension,RowTable-method`](https://isee.github.io/iSEE/reference/RowTable-class.md)
+  [`.showSelectionDetails,RowTable-method`](https://isee.github.io/iSEE/reference/RowTable-class.md)
+  : The RowTable class
+
+- [`SampleAssayPlot-class`](https://isee.github.io/iSEE/reference/SampleAssayPlot-class.md)
+  [`SampleAssayPlot`](https://isee.github.io/iSEE/reference/SampleAssayPlot-class.md)
+  [`initialize,SampleAssayPlot-method`](https://isee.github.io/iSEE/reference/SampleAssayPlot-class.md)
+  [`.refineParameters,SampleAssayPlot-method`](https://isee.github.io/iSEE/reference/SampleAssayPlot-class.md)
+  [`.defineDataInterface,SampleAssayPlot-method`](https://isee.github.io/iSEE/reference/SampleAssayPlot-class.md)
+  [`.createObservers,SampleAssayPlot-method`](https://isee.github.io/iSEE/reference/SampleAssayPlot-class.md)
+  [`.singleSelectionSlots,SampleAssayPlot-method`](https://isee.github.io/iSEE/reference/SampleAssayPlot-class.md)
+  [`.multiSelectionInvalidated,SampleAssayPlot-method`](https://isee.github.io/iSEE/reference/SampleAssayPlot-class.md)
+  [`.fullName,SampleAssayPlot-method`](https://isee.github.io/iSEE/reference/SampleAssayPlot-class.md)
+  [`.panelColor,SampleAssayPlot-method`](https://isee.github.io/iSEE/reference/SampleAssayPlot-class.md)
+  [`.generateDotPlotData,SampleAssayPlot-method`](https://isee.github.io/iSEE/reference/SampleAssayPlot-class.md)
+  [`.definePanelTour,SampleAssayPlot-method`](https://isee.github.io/iSEE/reference/SampleAssayPlot-class.md)
+  : The SampleAssayPlot panel
+
+- [`Table-class`](https://isee.github.io/iSEE/reference/Table-class.md)
+  [`initialize,Table-method`](https://isee.github.io/iSEE/reference/Table-class.md)
+  [`.refineParameters,Table-method`](https://isee.github.io/iSEE/reference/Table-class.md)
+  [`.createObservers,Table-method`](https://isee.github.io/iSEE/reference/Table-class.md)
+  [`.generateOutput,Table-method`](https://isee.github.io/iSEE/reference/Table-class.md)
+  [`.renderOutput,Table-method`](https://isee.github.io/iSEE/reference/Table-class.md)
+  [`.defineOutput,Table-method`](https://isee.github.io/iSEE/reference/Table-class.md)
+  [`.exportOutput,Table-method`](https://isee.github.io/iSEE/reference/Table-class.md)
+  [`.hideInterface,Table-method`](https://isee.github.io/iSEE/reference/Table-class.md)
+  [`.multiSelectionCommands,Table-method`](https://isee.github.io/iSEE/reference/Table-class.md)
+  [`.multiSelectionActive,Table-method`](https://isee.github.io/iSEE/reference/Table-class.md)
+  [`.multiSelectionRestricted,Table-method`](https://isee.github.io/iSEE/reference/Table-class.md)
+  [`.singleSelectionValue,Table-method`](https://isee.github.io/iSEE/reference/Table-class.md)
+  [`.definePanelTour,Table-method`](https://isee.github.io/iSEE/reference/Table-class.md)
+  [`.defineDataInterface,Table-method`](https://isee.github.io/iSEE/reference/Table-class.md)
+  [`updateObject,Table-method`](https://isee.github.io/iSEE/reference/Table-class.md)
+  : The Table class
+
+- [`.addCustomLabelsCommands()`](https://isee.github.io/iSEE/reference/addCustomLabelsCommands.md)
+  : Add custom label plotting commands
+
+- [`.addLabelCentersCommands()`](https://isee.github.io/iSEE/reference/addLabelCentersCommands.md)
+  : Add centered label plotting commands
+
+- [`.addMultiSelectionPlotCommands()`](https://isee.github.io/iSEE/reference/addMultiSelectionCommands.md)
+  : Add multiple selection plotting commands
+
+- [`.addTourStep()`](https://isee.github.io/iSEE/reference/addTourStep.md)
+  : Add a step to the tour
+
+- [`.buildAes()`](https://isee.github.io/iSEE/reference/aes-utils.md) :
+  Generate ggplot aesthetic instructions
+
+- [`.findAtomicFields()`](https://isee.github.io/iSEE/reference/cache-utils.md)
+  [`.whichGroupable()`](https://isee.github.io/iSEE/reference/cache-utils.md)
+  [`.whichNumeric()`](https://isee.github.io/iSEE/reference/cache-utils.md)
+  [`.isAssayNumeric()`](https://isee.github.io/iSEE/reference/cache-utils.md)
+  : Caching utilities
+
+- [`checkColormapCompatibility()`](https://isee.github.io/iSEE/reference/checkColormapCompatibility.md)
+  : Check compatibility between ExperimentColorMap and
+  SummarizedExperiment objects
+
+- [`.emptyDefault()`](https://isee.github.io/iSEE/reference/class-utils.md)
+  : Set default slot values
+
+- [`cleanDataset()`](https://isee.github.io/iSEE/reference/cleanDataset.md)
+  : Clean the dataset
+
+- [`collapseBox()`](https://isee.github.io/iSEE/reference/collapseBox.md)
+  : A collapsible box
+
+- [`.conditionalOnRadio()`](https://isee.github.io/iSEE/reference/conditional-utils.md)
+  [`.conditionalOnCheckSolo()`](https://isee.github.io/iSEE/reference/conditional-utils.md)
+  [`.conditionalOnCheckGroup()`](https://isee.github.io/iSEE/reference/conditional-utils.md)
+  : Conditional elements on radio or checkbox selection
+
+- [`constants`](https://isee.github.io/iSEE/reference/constants.md)
+  [`.dataParamBoxOpen`](https://isee.github.io/iSEE/reference/constants.md)
+  [`.multiSelectHistory`](https://isee.github.io/iSEE/reference/constants.md)
+  [`.noSelection`](https://isee.github.io/iSEE/reference/constants.md)
+  [`.organizationHeight`](https://isee.github.io/iSEE/reference/constants.md)
+  [`.organizationWidth`](https://isee.github.io/iSEE/reference/constants.md)
+  : Constants
+
+- [`.createCustomDimnamesModalObservers()`](https://isee.github.io/iSEE/reference/createCustomDimnamesModalObservers.md)
+  : Create observers for a modal for custom dimnames
+
+- [`createCustomTable()`](https://isee.github.io/iSEE/reference/createCustomPanels.md)
+  [`createCustomPlot()`](https://isee.github.io/iSEE/reference/createCustomPanels.md)
+  : Create custom panels
+
+- [`createLandingPage()`](https://isee.github.io/iSEE/reference/createLandingPage.md)
+  : Create a landing page
+
+- [`.createUnprotectedParameterObservers()`](https://isee.github.io/iSEE/reference/createProtectedParameterObservers.md)
+  [`.createProtectedParameterObservers()`](https://isee.github.io/iSEE/reference/createProtectedParameterObservers.md)
+  : Define parameter observers
+
+- [`defaultTour()`](https://isee.github.io/iSEE/reference/defaultTour.md)
+  : Define the default tour
+
+- [`documentation-generics`](https://isee.github.io/iSEE/reference/documentation-generics.md)
+  [`.definePanelTour`](https://isee.github.io/iSEE/reference/documentation-generics.md)
+  [`.getDotPlotColorHelp`](https://isee.github.io/iSEE/reference/documentation-generics.md)
+  : Documentation generics
+
+- [`.extractAssaySubmatrix()`](https://isee.github.io/iSEE/reference/extractAssaySubmatrix.md)
+  : Extract assay submatrix
+
+- [`filterDTColumn()`](https://isee.github.io/iSEE/reference/filterDTColumn.md)
+  [`filterDT()`](https://isee.github.io/iSEE/reference/filterDTColumn.md)
+  :
+
+  Filter DT columns
+
+- [`.fullName()`](https://isee.github.io/iSEE/reference/getEncodedName.md)
+  [`.getEncodedName()`](https://isee.github.io/iSEE/reference/getEncodedName.md)
+  [`.getFullName()`](https://isee.github.io/iSEE/reference/getEncodedName.md)
+  : Get panel names
+
+- [`.panelColor()`](https://isee.github.io/iSEE/reference/getPanelColor.md)
+  [`.getPanelColor()`](https://isee.github.io/iSEE/reference/getPanelColor.md)
+  : Get panel colors
+
+- [`.selectInputHidden()`](https://isee.github.io/iSEE/reference/hidden-inputs.md)
+  : Hidden interface elements
+
+- [`iSEE-package`](https://isee.github.io/iSEE/reference/iSEE-pkg.md)
+  [`iSEE-pkg`](https://isee.github.io/iSEE/reference/iSEE-pkg.md) :
+  iSEE: interactive SummarizedExperiment/SingleCellExperiment Explorer
+
+- [`iSEE()`](https://isee.github.io/iSEE/reference/iSEE.md) : iSEE:
+  interactive SummarizedExperiment Explorer
+
+- [`iSEEOptions`](https://isee.github.io/iSEE/reference/iSEEOptions.md)
+  :
+
+  Global iSEE options
+
+- [`interface-generics`](https://isee.github.io/iSEE/reference/interface-generics.md)
+  [`.defineInterface`](https://isee.github.io/iSEE/reference/interface-generics.md)
+  [`.defineDataInterface`](https://isee.github.io/iSEE/reference/interface-generics.md)
+  [`.hideInterface`](https://isee.github.io/iSEE/reference/interface-generics.md)
+  : Generics for the panel interface
+
+- [`.selectInput.iSEE()`](https://isee.github.io/iSEE/reference/interface-wrappers.md)
+  [`.selectizeInput.iSEE()`](https://isee.github.io/iSEE/reference/interface-wrappers.md)
+  [`.checkboxInput.iSEE()`](https://isee.github.io/iSEE/reference/interface-wrappers.md)
+  [`.checkboxGroupInput.iSEE()`](https://isee.github.io/iSEE/reference/interface-wrappers.md)
+  [`.sliderInput.iSEE()`](https://isee.github.io/iSEE/reference/interface-wrappers.md)
+  [`.numericInput.iSEE()`](https://isee.github.io/iSEE/reference/interface-wrappers.md)
+  [`.radioButtons.iSEE()`](https://isee.github.io/iSEE/reference/interface-wrappers.md)
+  :
+
+  iSEE UI element wrappers
+
+- [`jitterSquarePoints()`](https://isee.github.io/iSEE/reference/jitterPoints.md)
+  [`jitterViolinPoints()`](https://isee.github.io/iSEE/reference/jitterPoints.md)
+  : Jitter points for categorical variables
+
+- [`.buildLabs()`](https://isee.github.io/iSEE/reference/labs-utils.md)
+  : Generate ggplot title and label instructions
+
+- [`lassoPoints()`](https://isee.github.io/iSEE/reference/lassoPoints.md)
+  : Find rows of data within a closed lasso
+
+- [`.textEval()`](https://isee.github.io/iSEE/reference/manage_commands.md)
+  : Manage commands to be evaluated
+
+- [`metadata-plot-generics`](https://isee.github.io/iSEE/reference/metadata-plot-generics.md)
+  [`.allowableYAxisChoices`](https://isee.github.io/iSEE/reference/metadata-plot-generics.md)
+  [`.allowableXAxisChoices`](https://isee.github.io/iSEE/reference/metadata-plot-generics.md)
+  : Generics for row/column metadata plots
+
+- [`multi-select-generics`](https://isee.github.io/iSEE/reference/multi-select-generics.md)
+  [`.multiSelectionDimension`](https://isee.github.io/iSEE/reference/multi-select-generics.md)
+  [`.isBrushable`](https://isee.github.io/iSEE/reference/multi-select-generics.md)
+  [`.multiSelectionRestricted`](https://isee.github.io/iSEE/reference/multi-select-generics.md)
+  [`.multiSelectionActive`](https://isee.github.io/iSEE/reference/multi-select-generics.md)
+  [`.multiSelectionCommands`](https://isee.github.io/iSEE/reference/multi-select-generics.md)
+  [`.multiSelectionClear`](https://isee.github.io/iSEE/reference/multi-select-generics.md)
+  [`.multiSelectionInvalidated`](https://isee.github.io/iSEE/reference/multi-select-generics.md)
+  [`.multiSelectionAvailable`](https://isee.github.io/iSEE/reference/multi-select-generics.md)
+  [`.multiSelectionResponsive`](https://isee.github.io/iSEE/reference/multi-select-generics.md)
+  : Generics for controlling multiple selections
+
+- [`multiSelectionToFactor()`](https://isee.github.io/iSEE/reference/multiSelectionToFactor.md)
+  : Convert multiple selections into a factor
+
+- [`observer-generics`](https://isee.github.io/iSEE/reference/observer-generics.md)
+  [`.createObservers`](https://isee.github.io/iSEE/reference/observer-generics.md)
+  : Generic for the panel observers
+
+- [`output-generics`](https://isee.github.io/iSEE/reference/output-generics.md)
+  [`.renderOutput`](https://isee.github.io/iSEE/reference/output-generics.md)
+  [`.defineOutput`](https://isee.github.io/iSEE/reference/output-generics.md)
+  [`.generateOutput`](https://isee.github.io/iSEE/reference/output-generics.md)
+  [`.exportOutput`](https://isee.github.io/iSEE/reference/output-generics.md)
+  : Generics for Panel outputs
+
+- [`panelDefaults()`](https://isee.github.io/iSEE/reference/panelDefaults.md)
+  [`getPanelDefault()`](https://isee.github.io/iSEE/reference/panelDefaults.md)
+  : Panel defaults
+
+- [`plot-generics`](https://isee.github.io/iSEE/reference/plot-generics.md)
+  [`.generateDotPlotData`](https://isee.github.io/iSEE/reference/plot-generics.md)
+  [`.generateDotPlot`](https://isee.github.io/iSEE/reference/plot-generics.md)
+  [`.prioritizeDotPlotData`](https://isee.github.io/iSEE/reference/plot-generics.md)
+  [`.colorByNoneDotPlotField`](https://isee.github.io/iSEE/reference/plot-generics.md)
+  [`.colorByNoneDotPlotScale`](https://isee.github.io/iSEE/reference/plot-generics.md)
+  : Generics for DotPlot plotting
+
+- [`.addFacets()`](https://isee.github.io/iSEE/reference/plot-utils.md)
+  : Process faceting choices
+
+- [`.processMultiSelections()`](https://isee.github.io/iSEE/reference/processMultiSelections.md)
+  : Process multiple selections
+
+- [`registerAppOptions()`](https://isee.github.io/iSEE/reference/registerAppOptions.md)
+  [`getAppOption()`](https://isee.github.io/iSEE/reference/registerAppOptions.md)
+  [`getAllAppOptions()`](https://isee.github.io/iSEE/reference/registerAppOptions.md)
+  : Set and get app-level options
+
+- [`.removeInvalidChoices()`](https://isee.github.io/iSEE/reference/removeInvalidChoices.md)
+  : Remove invalid values in multiple choices
+
+- [`.replaceMissingWithFirst()`](https://isee.github.io/iSEE/reference/replaceMissingWithFirst.md)
+  : Replace with first choice
+
+- [`.requestUpdate()`](https://isee.github.io/iSEE/reference/requestUpdate.md)
+  [`.requestCleanUpdate()`](https://isee.github.io/iSEE/reference/requestUpdate.md)
+  [`.requestActiveSelectionUpdate()`](https://isee.github.io/iSEE/reference/requestUpdate.md)
+  : Request Panel updates
+
+- [`.retrieveOutput()`](https://isee.github.io/iSEE/reference/retrieveOutput.md)
+  : Retrieve the panel output
+
+- [`columnSelectionColorMap()`](https://isee.github.io/iSEE/reference/selectionColorMap.md)
+  [`rowSelectionColorMap()`](https://isee.github.io/iSEE/reference/selectionColorMap.md)
+  : Define the selection colormap
+
+- [`.setCachedCommonInfo()`](https://isee.github.io/iSEE/reference/setCachedCommonInfo.md)
+  [`.getCachedCommonInfo()`](https://isee.github.io/iSEE/reference/setCachedCommonInfo.md)
+  : Set and get cached commons
+
+- [`setup-generics`](https://isee.github.io/iSEE/reference/setup-generics.md)
+  [`.refineParameters`](https://isee.github.io/iSEE/reference/setup-generics.md)
+  [`.cacheCommonInfo`](https://isee.github.io/iSEE/reference/setup-generics.md)
+  : Generics for setting up parameters
+
+- [`single-select-generics`](https://isee.github.io/iSEE/reference/single-select-generics.md)
+  [`.singleSelectionDimension`](https://isee.github.io/iSEE/reference/single-select-generics.md)
+  [`.singleSelectionValue`](https://isee.github.io/iSEE/reference/single-select-generics.md)
+  [`.singleSelectionSlots`](https://isee.github.io/iSEE/reference/single-select-generics.md)
+  : Generics for controlling single selections
+
+- [`.addSpecificTour()`](https://isee.github.io/iSEE/reference/specific-tours.md)
+  [`.getSpecificTours()`](https://isee.github.io/iSEE/reference/specific-tours.md)
+  [`.clearSpecificTours()`](https://isee.github.io/iSEE/reference/specific-tours.md)
+  : UI-specific tour management utilities
+
+- [`subsetPointsByGrid()`](https://isee.github.io/iSEE/reference/subsetPointsByGrid.md)
+  : Subset points for faster plotting
+
+- [`synchronizeAssays()`](https://isee.github.io/iSEE/reference/synchronizeAssays.md)
+  : Synchronize assay colormaps to match those in a SummarizedExperiment
+
+- [`table-generics`](https://isee.github.io/iSEE/reference/table-generics.md)
+  [`.generateTable`](https://isee.github.io/iSEE/reference/table-generics.md)
+  [`.showSelectionDetails`](https://isee.github.io/iSEE/reference/table-generics.md)
+  : Generics for table construction
+
+- [`.trackUpdate()`](https://isee.github.io/iSEE/reference/track-utils.md)
+  [`.trackSingleSelection()`](https://isee.github.io/iSEE/reference/track-utils.md)
+  [`.trackMultiSelection()`](https://isee.github.io/iSEE/reference/track-utils.md)
+  [`.trackRelinkedSelection()`](https://isee.github.io/iSEE/reference/track-utils.md)
+  : Track internal events
+
+- [`.singleStringError()`](https://isee.github.io/iSEE/reference/validate-utils.md)
+  [`.validLogicalError()`](https://isee.github.io/iSEE/reference/validate-utils.md)
+  [`.validStringError()`](https://isee.github.io/iSEE/reference/validate-utils.md)
+  [`.allowableChoiceError()`](https://isee.github.io/iSEE/reference/validate-utils.md)
+  [`.multipleChoiceError()`](https://isee.github.io/iSEE/reference/validate-utils.md)
+  [`.validNumberError()`](https://isee.github.io/iSEE/reference/validate-utils.md)
+  : Validation error utilities
+
+- [`visual-parameters-generics`](https://isee.github.io/iSEE/reference/visual-parameters-generics.md)
+  [`.defineVisualColorInterface`](https://isee.github.io/iSEE/reference/visual-parameters-generics.md)
+  [`.defineVisualShapeInterface`](https://isee.github.io/iSEE/reference/visual-parameters-generics.md)
+  [`.defineVisualSizeInterface`](https://isee.github.io/iSEE/reference/visual-parameters-generics.md)
+  [`.defineVisualPointInterface`](https://isee.github.io/iSEE/reference/visual-parameters-generics.md)
+  [`.defineVisualFacetInterface`](https://isee.github.io/iSEE/reference/visual-parameters-generics.md)
+  [`.defineVisualTextInterface`](https://isee.github.io/iSEE/reference/visual-parameters-generics.md)
+  [`.defineVisualOtherInterface`](https://isee.github.io/iSEE/reference/visual-parameters-generics.md)
+  [`.allowableColorByDataChoices`](https://isee.github.io/iSEE/reference/visual-parameters-generics.md)
+  [`.getTooltipUI`](https://isee.github.io/iSEE/reference/visual-parameters-generics.md)
+  : Generics for visual DotPlot parameters

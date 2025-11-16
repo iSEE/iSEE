@@ -1,0 +1,108 @@
+# Synchronize assay colormaps to match those in a SummarizedExperiment
+
+This function returns an updated
+[ExperimentColorMap](https://isee.github.io/iSEE/reference/ExperimentColorMap-class.md)
+in which colormaps in the `assays` slot are ordered to match the
+position of their corresponding assay in the
+[SingleCellExperiment](https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html)
+object. Assays in the SingleCellExperiment that do not have a match in
+the ExperimentColorMap are assigned the appropriate default colormap.
+
+## Usage
+
+``` r
+synchronizeAssays(ecm, se)
+```
+
+## Arguments
+
+- ecm:
+
+  An
+  [ExperimentColorMap](https://isee.github.io/iSEE/reference/ExperimentColorMap-class.md).
+
+- se:
+
+  A
+  [SingleCellExperiment](https://rdrr.io/pkg/SingleCellExperiment/man/SingleCellExperiment.html).
+
+## Value
+
+An
+[ExperimentColorMap](https://isee.github.io/iSEE/reference/ExperimentColorMap-class.md)
+with colormaps in the `assay` slot synchronized to match the position of
+the corresponding assay in the SingleCellExperiment.
+
+## Details
+
+It is highly recommended to name *all* assays in both ExperimentColorMap
+and SummarizedExperiment prior to calling this function, as this will
+facilitate the identification of matching assays between the two
+objects. In most cases, unnamed colormaps will be dropped from the new
+ExperimentColorMap object.
+
+The function supports three main situations:
+
+- If *all* assays in the SingleCellExperiment are named, this function
+  will populate the `assays` slot of the new ExperimentColorMap with the
+  name-matched colormap from the input ExperimentColorMap, if available.
+  Assays in the SingleCellExperiment that do not have a colormap defined
+  in the ExperimentColorMap are assigned the appropriate default
+  colormap.
+
+- If *all* assays in the SingleCellExperiment are unnamed, this function
+  requires that the ExperimentColorMap supplies a number of assay
+  colormaps *identical* to the number of assays in the
+  SingleCellExperiment object. In that case, the ExperimentColorMap
+  object will be returned *as is*.
+
+- If only a subset of assays in the SingleCellExperiment are named, this
+  function will ignore unnamed colormaps in the ExperimentColorMap; It
+  will populate the `assays` slot of the new ExperimentColorMap with the
+  name-matched colormap from the input ExperimentColorMap, if available.
+  Assays in the SingleCellExperiment that are unnamed, or that do not
+  have a colormap defined in the ExperimentColorMap are assigned the
+  appropriate default colormap.
+
+## Author
+
+Kevin Rue-Albrecht
+
+## Examples
+
+``` r
+
+# Example ExperimentColorMap ----
+
+count_colors <- function(n){
+  c("black","brown","red","orange","yellow")
+}
+fpkm_colors <- viridis::inferno
+
+ecm <- ExperimentColorMap(
+    assays = list(
+        counts = count_colors,
+        tophat_counts = count_colors,
+        cufflinks_fpkm = fpkm_colors,
+        rsem_counts = count_colors,
+        orphan = count_colors,
+        orphan2 = count_colors,
+        count_colors,
+        fpkm_colors
+    )
+)
+
+# Example SingleCellExperiment ----
+
+library(scRNAseq)
+sce <- ReprocessedAllenData(assays="tophat_counts")
+library(scater)
+sce <- logNormCounts(sce, exprs_values="tophat_counts")
+sce <- runPCA(sce)
+sce <- runTSNE(sce)
+
+# Example ----
+
+ecm_sync <- synchronizeAssays(ecm, sce)
+#> Warning: Unused assays dropped from ecm: unnamed [7,8], named [counts,cufflinks_fpkm,rsem_counts,orphan,orphan2]
+```

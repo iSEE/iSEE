@@ -543,7 +543,7 @@ setMethod(".createObservers", "Panel", function(x, se, input, session, pObjects,
     .safe_reactive_init(rObjects, .input_FUN(.flagMultiSelect))
     .safe_reactive_init(rObjects, .input_FUN(.flagRelinkedSelect))
 
-    .create_box_observers(panel_name, c(.dataParamBoxOpen, .selectParamBoxOpen), pObjects, rObjects)
+    .create_box_observers(panel_name, c(.dataParamBoxOpen, .selectParamBoxOpen), input, pObjects)
 
     .create_multi_selection_choice_observer(panel_name, by_field=.selectRowSource,
         input=input, session=session, pObjects=pObjects, rObjects=rObjects)

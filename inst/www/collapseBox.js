@@ -14,18 +14,20 @@ $.extend(iseeCollapse, {
 
   setValue: function(el, value) {
     if (value) {
-      $(el).children(".panel-collapse").classList.add("in");
+      $(el).children(".panel-collapse").addClass("in");
     } else {
-      $(el).children(".panel-collapse").classList.remove("in");
+      $(el).children(".panel-collapse").removeClass("in");
     }
   },
 
   subscribe: function(el, callback) {
-    $(el).children(".panel-collapse").on("shown.bs.collapse hidden.bs.collapse", callback);
+    $(el).children(".panel-collapse").on("shown.bs.collapse hidden.bs.collapse", function() {
+      callback();
+    });
   },
 
   unsubscribe: function(el) {
-    $(el).off(".iseeCollapse");
+    $(el).children(".panel-collapse").off("shown.bs.collapse hidden.bs.collapse");
   }
 });
 

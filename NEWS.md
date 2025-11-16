@@ -1,19 +1,27 @@
+# iSEE 2.23.1
+
+* Use linewidth to set width of lines in plots, require ggplot2 >= 3.4
+* Allow sampling resolution and guide sizes to be non-integer values
+* Remove Windows line endings when validating inputs in the ace editor
+* Add line to load ggplot2 in the exported code
+* Fix bug in the reporting of collapsible box status. Addresses #701
+
 # iSEE 2.21.1
 
-* Fixed dimensions of exported figures.
+* Fix dimensions of exported figures.
 
 # iSEE 2.19.4
 
-* Added a parameter to control the title displayed in the browser tab, currently 
+* Add a parameter to control the title displayed in the browser tab, currently 
 defaulting to "iSEE". Thanks to @RiboRings for the implementation!
 
 # iSEE 2.19.3
 
-* Added an option to have no legend shown in the dotplot panel class
+* Add an option to have no legend shown in the dotplot panel class
 
 # iSEE 2.19.1
 
-* Changed the processing of the title for the app - if provided explicitly, now it can also correctly handle HTML content tags and more. Thanks to @RiboRings for spotting this, resolving #681
+* Change the processing of the title for the app - if provided explicitly, now it can also correctly handle HTML content tags and more. Thanks to @RiboRings for spotting this, resolving #681
 
 # iSEE 2.17.4
 

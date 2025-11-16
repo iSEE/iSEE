@@ -1179,7 +1179,7 @@ test_that(".downsample_points responds to priority", {
     cdpp <- as(cdp, "ColumnDataPlotPrioritized")
     out <- .generateOutput(cdpp, sce, all_memory=all_memory, all_contents=pObjects$contents)
     expect_true(any(grepl('grouping=\\.priority', unlist(out$commands))))
-    expect_true(any(grepl('resolution=50\\*\\.rescaled', unlist(out$commands))))
+    expect_true(any(grepl('resolution=50\\.0+\\*\\.rescaled', unlist(out$commands))))
 
     expect_identical(out$contents, ref$contents)
     expect_false(identical(out$plot$data, ref$plot$data))
@@ -1276,7 +1276,7 @@ test_that(".create_guides_command produces a command when expected", {
     out <- iSEE:::.create_guides_command(x, factor(sce$driver_1_s))
     expect_identical(
         out,
-        "guides(colour = guide_legend(override.aes = list(size=2)), fill = guide_legend(override.aes = list(size=2))) +"
+        "guides(colour = guide_legend(override.aes = list(size=2.000000)), fill = guide_legend(override.aes = list(size=2.000000))) +"
     )
 
     # Same point size in plot and legend returns NULL

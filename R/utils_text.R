@@ -9,6 +9,7 @@
 #' @rdname INTERNAL_convert_text_to_names
 .convert_text_to_names <- function(txt) {
     rn <- strsplit(txt, split="\n")[[1]]
+    rn <- sub("\r$", "", rn)
     rn <- sub("#.*", "", rn)
     rn <- sub("^ +", "", rn)
     sub(" +$", "", rn)

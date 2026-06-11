@@ -1,3 +1,7 @@
+# iSEE 2.23.2
+
+* Export four addDotPlotData functions from family_ColumnDotPlot.R
+
 # iSEE 2.23.1
 
 * Use linewidth to set width of lines in plots, require ggplot2 >= 3.4

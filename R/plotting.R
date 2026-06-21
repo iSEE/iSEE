@@ -30,6 +30,7 @@ names(.all_aes_values) <- .all_aes_names
 #' This mostly involves coercing categorical variables to factors.
 #'
 #' @param envir Environment containing a \code{plot.data} data.frame with \code{X} and \code{Y} fields.
+#' @param param_choices Memory object containing a \code{LineAdd} slot.
 #'
 #' @return
 #' A character vector is returned containing commands to perform calculations for each plot type
@@ -57,11 +58,11 @@ names(.all_aes_values) <- .all_aes_names
     } else if (!group_Y) {
         mode <- "violin"
         specific <- .violin_setup(envir$plot.data, horizontal=FALSE,
-                                  lineAdd=slot(param_choices, .lineAdd))
+                                  line_add=slot(param_choices, .lineAdd))
     } else if (!group_X) {
         mode <- "violin_horizontal"
         specific <- .violin_setup(envir$plot.data, horizontal=TRUE, 
-                                  lineAdd=FALSE)
+                                  line_add=FALSE)
 
         if (exists("plot.data.all", envir)) { # flipping plot.data.all as well, otherwise it becomes chaotic in .violin_plot().
             specific <- c(specific,
@@ -302,6 +303,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @param by_row A logical scalar specifying whether the plot deals with row-level metadata.
 #' @param is_subsetted A logical scalar specifying whether \code{plot_data} was subsetted during \code{\link{.process_selectby_choice}}.
 #' @param is_downsampled A logical scalar specifying whether \code{plot_data} was downsampled.
+#' @param line_add A logical scalar specifying whether to connect the points with a line or not.
 #'
 #' @return
 #' For \code{\link{.violin_setup}}, a character vector of commands to be parsed
@@ -449,7 +451,7 @@ names(.all_aes_values) <- .all_aes_names
 }
 
 #' @rdname INTERNAL_violin_plot
-.violin_setup <- function(plot_data, horizontal=FALSE, lineAdd=FALSE) {
+.violin_setup <- function(plot_data, horizontal=FALSE, line_add=FALSE) {
     setup_cmds <- list()
 
     # Switching X and Y axes if we want a horizontal violin plot.
@@ -476,7 +478,7 @@ plot.data$Y <- tmp;")
     # Figuring out the jitter. This is done ahead of time to guarantee the
     # same results regardless of the subset used for point selection. Note adjust=1
     # for consistency with geom_violin (differs from geom_quasirandom default).
-    if (lineAdd & !horizontal) {
+    if (line_add & !horizontal) {
         setup_cmds[["calcX"]] <- "plot.data$jitteredX <- plot.data$X"
         # plot.data$X has been converted into a factor previously
         setup_cmds[["lineCoords"]] <- "plot.data$numericX <- as.numeric(plot.data$X);"

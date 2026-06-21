@@ -144,7 +144,7 @@ The following slots control the addition of a line to connect the points in the 
 \itemize{
 \item \code{LineAdd}, logical scalar indicating whether a line should be added to a plot.
 Defaults to \code{FALSE}.
-\item \code{lineColor}, string specifying the color to use for the line.
+\item \code{LineColor}, string specifying the color to use for the line.
 Defaults to \code{"blue"}.
 }
 

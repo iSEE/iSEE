@@ -231,43 +231,42 @@
 #' @author Aaron Lun
 #'
 #' @name DotPlot-class
-#' @aliases
-#' initialize,DotPlot-method
-#' updateObject,DotPlot-method
-#' .defineOutput,DotPlot-method
-#' .generateOutput,DotPlot-method
-#' .generateDotPlot,DotPlot-method
-#' .renderOutput,DotPlot-method
-#' .exportOutput,DotPlot-method
-#' .refineParameters,DotPlot-method
-#' .cacheCommonInfo,DotPlot-method
-#' .createObservers,DotPlot-method
-#' .hideInterface,DotPlot-method
-#' .multiSelectionActive,DotPlot-method
-#' .multiSelectionCommands,DotPlot-method
-#' .multiSelectionClear,DotPlot-method
-#' .multiSelectionDimension,DotPlot-method
-#' .isBrushable,DotPlot-method
-#' .singleSelectionValue,DotPlot-method
-#' .singleSelectionSlots,DotPlot-method
-#' .prioritizeDotPlotData,DotPlot-method
-#' .colorByNoneDotPlotField,DotPlot-method
-#' .colorByNoneDotPlotScale,DotPlot-method
-#' .defineInterface,DotPlot-method
-#' .defineVisualColorInterface,DotPlot-method
-#' .defineVisualSizeInterface,DotPlot-method
-#' .defineVisualShapeInterface,DotPlot-method
-#' .defineVisualTextInterface,DotPlot-method
-#' .defineVisualPointInterface,DotPlot-method
-#' .defineVisualOtherInterface,DotPlot-method
-#' .defineVisualFacetInterface,DotPlot-method
-#' .allowableColorByDataChoices,DotPlot-method
-#' .definePanelTour,DotPlot-method
-#' updateObject,DotPlot-method
-#' [[,DotPlot-method
-#' [[,DotPlot,ANY,ANY-method
-#' [[<-,DotPlot-method
-#' [[<-,DotPlot,ANY,ANY-method
+#' @aliases initialize,DotPlot-method
+#' @aliases updateObject,DotPlot-method
+#' @aliases .defineOutput,DotPlot-method
+#' @aliases .generateOutput,DotPlot-method
+#' @aliases .generateDotPlot,DotPlot-method
+#' @aliases .renderOutput,DotPlot-method
+#' @aliases .exportOutput,DotPlot-method
+#' @aliases .refineParameters,DotPlot-method
+#' @aliases .cacheCommonInfo,DotPlot-method
+#' @aliases .createObservers,DotPlot-method
+#' @aliases .hideInterface,DotPlot-method
+#' @aliases .multiSelectionActive,DotPlot-method
+#' @aliases .multiSelectionCommands,DotPlot-method
+#' @aliases .multiSelectionClear,DotPlot-method
+#' @aliases .multiSelectionDimension,DotPlot-method
+#' @aliases .isBrushable,DotPlot-method
+#' @aliases .singleSelectionValue,DotPlot-method
+#' @aliases .singleSelectionSlots,DotPlot-method
+#' @aliases .prioritizeDotPlotData,DotPlot-method
+#' @aliases .colorByNoneDotPlotField,DotPlot-method
+#' @aliases .colorByNoneDotPlotScale,DotPlot-method
+#' @aliases .defineInterface,DotPlot-method
+#' @aliases .defineVisualColorInterface,DotPlot-method
+#' @aliases .defineVisualSizeInterface,DotPlot-method
+#' @aliases .defineVisualShapeInterface,DotPlot-method
+#' @aliases .defineVisualTextInterface,DotPlot-method
+#' @aliases .defineVisualPointInterface,DotPlot-method
+#' @aliases .defineVisualOtherInterface,DotPlot-method
+#' @aliases .defineVisualFacetInterface,DotPlot-method
+#' @aliases .allowableColorByDataChoices,DotPlot-method
+#' @aliases .definePanelTour,DotPlot-method
+#' @aliases updateObject,DotPlot-method
+#' @aliases [[,DotPlot-method
+#' @aliases [[,DotPlot,ANY,ANY-method
+#' @aliases [[<-,DotPlot-method
+#' @aliases [[<-,DotPlot,ANY,ANY-method
 NULL
 
 #' @export

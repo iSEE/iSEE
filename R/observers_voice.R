@@ -15,7 +15,7 @@
 #' @author Aaron Lun
 #'
 #' @importFrom shiny observeEvent isolate renderUI updateSelectizeInput
-#' showNotification removeNotification
+#' @importFrom shiny showNotification removeNotification
 #' @rdname INTERNAL_create_voice_observers
 .create_voice_observers <- function(input, output, session, se, pObjects, rObjects) {
     # nocov start

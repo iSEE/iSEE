@@ -92,26 +92,25 @@
 #' @author Aaron Lun
 #'
 #' @docType methods
-#' @aliases
-#' initialize,ColumnDotPlot-method
-#' .cacheCommonInfo,ColumnDotPlot-method
-#' .refineParameters,ColumnDotPlot-method
-#' .defineInterface,ColumnDotPlot-method
-#' .createObservers,ColumnDotPlot-method
-#' .getTooltipUI,ColumnDotPlot-method
-#' .hideInterface,ColumnDotPlot-method
-#' .multiSelectionDimension,ColumnDotPlot-method
-#' .multiSelectionResponsive,ColumnDotPlot-method
-#' .multiSelectionRestricted,ColumnDotPlot-method
-#' .multiSelectionInvalidated,ColumnDotPlot-method
-#' .singleSelectionDimension,ColumnDotPlot-method
-#' .definePanelTour,ColumnDotPlot-method
-#' .getDotPlotColorHelp,ColumnDotPlot-method
-#' [[,ColumnDotPlot-method
-#' [[,ColumnDotPlot,ANY,ANY-method
-#' [[<-,ColumnDotPlot-method
-#' [[<-,ColumnDotPlot,ANY,ANY-method
-#' updateObject,ColumnDotPlot-method
+#' @aliases initialize,ColumnDotPlot-method
+#' @aliases .cacheCommonInfo,ColumnDotPlot-method
+#' @aliases .refineParameters,ColumnDotPlot-method
+#' @aliases .defineInterface,ColumnDotPlot-method
+#' @aliases .createObservers,ColumnDotPlot-method
+#' @aliases .getTooltipUI,ColumnDotPlot-method
+#' @aliases .hideInterface,ColumnDotPlot-method
+#' @aliases .multiSelectionDimension,ColumnDotPlot-method
+#' @aliases .multiSelectionResponsive,ColumnDotPlot-method
+#' @aliases .multiSelectionRestricted,ColumnDotPlot-method
+#' @aliases .multiSelectionInvalidated,ColumnDotPlot-method
+#' @aliases .singleSelectionDimension,ColumnDotPlot-method
+#' @aliases .definePanelTour,ColumnDotPlot-method
+#' @aliases .getDotPlotColorHelp,ColumnDotPlot-method
+#' @aliases [[,ColumnDotPlot-method
+#' @aliases [[,ColumnDotPlot,ANY,ANY-method
+#' @aliases [[<-,ColumnDotPlot-method
+#' @aliases [[<-,ColumnDotPlot,ANY,ANY-method
+#' @aliases updateObject,ColumnDotPlot-method
 #' @name ColumnDotPlot-class
 NULL
 

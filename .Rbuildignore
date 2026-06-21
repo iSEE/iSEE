@@ -15,3 +15,5 @@
 ^CODE_OF_CONDUCT\.md$
 ^\.github$
 ^LICENSE\.md$
+^\.positai$
+^\.claude$

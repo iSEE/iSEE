@@ -95,15 +95,15 @@
 #'
 #' @docType methods
 #' @aliases ReducedDimensionPlot ReducedDimensionPlot-class
-#' initialize,ReducedDimensionPlot-method
-#' .refineParameters,ReducedDimensionPlot-method
-#' .cacheCommonInfo,ReducedDimensionPlot-method
-#' .defineDataInterface,ReducedDimensionPlot-method
-#' .createObservers,ReducedDimensionPlot-method
-#' .fullName,ReducedDimensionPlot-method
-#' .panelColor,ReducedDimensionPlot-method
-#' .generateDotPlotData,ReducedDimensionPlot-method
-#' .definePanelTour,ReducedDimensionPlot-method
+#' @aliases initialize,ReducedDimensionPlot-method
+#' @aliases .refineParameters,ReducedDimensionPlot-method
+#' @aliases .cacheCommonInfo,ReducedDimensionPlot-method
+#' @aliases .defineDataInterface,ReducedDimensionPlot-method
+#' @aliases .createObservers,ReducedDimensionPlot-method
+#' @aliases .fullName,ReducedDimensionPlot-method
+#' @aliases .panelColor,ReducedDimensionPlot-method
+#' @aliases .generateDotPlotData,ReducedDimensionPlot-method
+#' @aliases .definePanelTour,ReducedDimensionPlot-method
 #'
 #' @name ReducedDimensionPlot-class
 NULL

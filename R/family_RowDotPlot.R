@@ -92,26 +92,25 @@
 #' \linkS4class{DotPlot}, for the immediate parent class that contains the actual slot definitions.
 #'
 #' @docType methods
-#' @aliases
-#' initialize,RowDotPlot-method
-#' .cacheCommonInfo,RowDotPlot-method
-#' .refineParameters,RowDotPlot-method
-#' .defineInterface,RowDotPlot-method
-#' .createObservers,RowDotPlot-method
-#' .getTooltipUI,RowDotPlot-method
-#' .hideInterface,RowDotPlot-method
-#' .multiSelectionDimension,RowDotPlot-method
-#' .multiSelectionResponsive,RowDotPlot-method
-#' .multiSelectionRestricted,RowDotPlot-method
-#' .multiSelectionInvalidated,RowDotPlot-method
-#' .singleSelectionDimension,RowDotPlot-method
-#' .definePanelTour,RowDotPlot-method
-#' .getDotPlotColorHelp,RowDotPlot-method
-#' [[,RowDotPlot-method
-#' [[,RowDotPlot,ANY,ANY-method
-#' [[<-,RowDotPlot-method
-#' [[<-,RowDotPlot,ANY,ANY-method
-#' updateObject,RowDotPlot-method
+#' @aliases initialize,RowDotPlot-method
+#' @aliases .cacheCommonInfo,RowDotPlot-method
+#' @aliases .refineParameters,RowDotPlot-method
+#' @aliases .defineInterface,RowDotPlot-method
+#' @aliases .createObservers,RowDotPlot-method
+#' @aliases .getTooltipUI,RowDotPlot-method
+#' @aliases .hideInterface,RowDotPlot-method
+#' @aliases .multiSelectionDimension,RowDotPlot-method
+#' @aliases .multiSelectionResponsive,RowDotPlot-method
+#' @aliases .multiSelectionRestricted,RowDotPlot-method
+#' @aliases .multiSelectionInvalidated,RowDotPlot-method
+#' @aliases .singleSelectionDimension,RowDotPlot-method
+#' @aliases .definePanelTour,RowDotPlot-method
+#' @aliases .getDotPlotColorHelp,RowDotPlot-method
+#' @aliases [[,RowDotPlot-method
+#' @aliases [[,RowDotPlot,ANY,ANY-method
+#' @aliases [[<-,RowDotPlot-method
+#' @aliases [[<-,RowDotPlot,ANY,ANY-method
+#' @aliases updateObject,RowDotPlot-method
 #' @name RowDotPlot-class
 NULL
 

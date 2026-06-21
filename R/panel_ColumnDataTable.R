@@ -67,14 +67,14 @@
 #'
 #' @name ColumnDataTable-class
 #' @aliases ColumnDataTable ColumnDataTable-class
-#' initialize,ColumnDataTable-method
-#' .cacheCommonInfo,ColumnDataTable-method
-#' .refineParameters,ColumnDataTable-method
-#' .generateTable,ColumnDataTable-method
-#' .panelColor,ColumnDataTable-method
-#' .fullName,ColumnDataTable-method
-#' .generateTable,ColumnDataTable-method
-#' .definePanelTour,ColumnDataTable-method
+#' @aliases initialize,ColumnDataTable-method
+#' @aliases .cacheCommonInfo,ColumnDataTable-method
+#' @aliases .refineParameters,ColumnDataTable-method
+#' @aliases .generateTable,ColumnDataTable-method
+#' @aliases .panelColor,ColumnDataTable-method
+#' @aliases .fullName,ColumnDataTable-method
+#' @aliases .generateTable,ColumnDataTable-method
+#' @aliases .definePanelTour,ColumnDataTable-method
 NULL
 
 #' @export

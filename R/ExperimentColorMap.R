@@ -123,31 +123,31 @@
 #' @export rowDataColorMap
 #' @export rowDataColorMap<-
 #' @aliases class:ExperimentColorMap ExperimentColorMap-class
-#' ExperimentColorMap
-#' assayColorMap colDataColorMap rowDataColorMap
-#' assayColorMap<- colDataColorMap<- rowDataColorMap<-
-#' assays,ExperimentColorMap-method
-#' assays<-,ExperimentColorMap,list-method
-#' assayNames,ExperimentColorMap-method
-#' assayNames<-,ExperimentColorMap,ANY-method
-#' colData,ExperimentColorMap-method
-#' colData<-,ExperimentColorMap,ANY-method
-#' rowData,ExperimentColorMap-method
-#' rowData<-,ExperimentColorMap,ANY-method
-#' assayColorMap,ExperimentColorMap,character-method
-#' assayColorMap,ExperimentColorMap,numeric-method
-#' assayColorMap,ExperimentColorMap,missing-method
-#' assay,ExperimentColorMap,character-method
-#' assay,ExperimentColorMap,numeric-method
-#' colDataColorMap,ExperimentColorMap,character-method
-#' colDataColorMap,ExperimentColorMap,missing-method
-#' rowDataColorMap,ExperimentColorMap,character-method
-#' rowDataColorMap,ExperimentColorMap,missing-method
-#' assayColorMap<-,ExperimentColorMap,character-method
-#' assayColorMap<-,ExperimentColorMap,numeric-method
-#' colDataColorMap<-,ExperimentColorMap,character-method
-#' rowDataColorMap<-,ExperimentColorMap,character-method
-#' show,ExperimentColorMap-method
+#' @aliases ExperimentColorMap
+#' @aliases assayColorMap colDataColorMap rowDataColorMap
+#' @aliases assayColorMap<- colDataColorMap<- rowDataColorMap<-
+#' @aliases assays,ExperimentColorMap-method
+#' @aliases assays<-,ExperimentColorMap,list-method
+#' @aliases assayNames,ExperimentColorMap-method
+#' @aliases assayNames<-,ExperimentColorMap,ANY-method
+#' @aliases colData,ExperimentColorMap-method
+#' @aliases colData<-,ExperimentColorMap,ANY-method
+#' @aliases rowData,ExperimentColorMap-method
+#' @aliases rowData<-,ExperimentColorMap,ANY-method
+#' @aliases assayColorMap,ExperimentColorMap,character-method
+#' @aliases assayColorMap,ExperimentColorMap,numeric-method
+#' @aliases assayColorMap,ExperimentColorMap,missing-method
+#' @aliases assay,ExperimentColorMap,character-method
+#' @aliases assay,ExperimentColorMap,numeric-method
+#' @aliases colDataColorMap,ExperimentColorMap,character-method
+#' @aliases colDataColorMap,ExperimentColorMap,missing-method
+#' @aliases rowDataColorMap,ExperimentColorMap,character-method
+#' @aliases rowDataColorMap,ExperimentColorMap,missing-method
+#' @aliases assayColorMap<-,ExperimentColorMap,character-method
+#' @aliases assayColorMap<-,ExperimentColorMap,numeric-method
+#' @aliases colDataColorMap<-,ExperimentColorMap,character-method
+#' @aliases rowDataColorMap<-,ExperimentColorMap,character-method
+#' @aliases show,ExperimentColorMap-method
 #'
 #' @examples
 #'

@@ -109,17 +109,17 @@
 #'
 #' @docType methods
 #' @aliases ColumnDataPlot ColumnDataPlot-class
-#' initialize,ColumnDataPlot-method
-#' .refineParameters,ColumnDataPlot-method
-#' .defineDataInterface,ColumnDataPlot-method
-#' .createObservers,ColumnDataPlot-method
-#' .fullName,ColumnDataPlot-method
-#' .panelColor,ColumnDataPlot-method
-#' .generateDotPlotData,ColumnDataPlot-method
-#' .multiSelectionInvalidated,ColumnDataPlot-method
-#' .allowableXAxisChoices,ColumnDataPlot-method
-#' .allowableYAxisChoices,ColumnDataPlot-method
-#' .definePanelTour,ColumnDataPlot-method
+#' @aliases initialize,ColumnDataPlot-method
+#' @aliases .refineParameters,ColumnDataPlot-method
+#' @aliases .defineDataInterface,ColumnDataPlot-method
+#' @aliases .createObservers,ColumnDataPlot-method
+#' @aliases .fullName,ColumnDataPlot-method
+#' @aliases .panelColor,ColumnDataPlot-method
+#' @aliases .generateDotPlotData,ColumnDataPlot-method
+#' @aliases .multiSelectionInvalidated,ColumnDataPlot-method
+#' @aliases .allowableXAxisChoices,ColumnDataPlot-method
+#' @aliases .allowableYAxisChoices,ColumnDataPlot-method
+#' @aliases .definePanelTour,ColumnDataPlot-method
 #'
 #' @name ColumnDataPlot-class
 NULL

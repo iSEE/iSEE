@@ -196,28 +196,28 @@
 #'
 #' @docType methods
 #' @aliases ComplexHeatmapPlot ComplexHeatmapPlot-class
-#' .cacheCommonInfo,ComplexHeatmapPlot-method
-#' .createObservers,ComplexHeatmapPlot-method
-#' .defineDataInterface,ComplexHeatmapPlot-method
-#' .defineInterface,ComplexHeatmapPlot-method
-#' .defineOutput,ComplexHeatmapPlot-method
-#' .defineInterface,ComplexHeatmapPlot-method
-#' .fullName,ComplexHeatmapPlot-method
-#' .generateOutput,ComplexHeatmapPlot-method
-#' .hideInterface,ComplexHeatmapPlot-method
-#' .multiSelectionResponsive,ComplexHeatmapPlot-method
-#' .multiSelectionRestricted,ComplexHeatmapPlot-method
-#' .panelColor,ComplexHeatmapPlot-method
-#' .refineParameters,ComplexHeatmapPlot-method
-#' .renderOutput,ComplexHeatmapPlot-method
-#' .exportOutput,ComplexHeatmapPlot-method
-#' initialize,ComplexHeatmapPlot-method
-#' .definePanelTour,ComplexHeatmapPlot-method
-#' [[,ComplexHeatmapPlot-method
-#' [[,ComplexHeatmapPlot,ANY,ANY-method
-#' [[<-,ComplexHeatmapPlot-method
-#' [[<-,ComplexHeatmapPlot,ANY,ANY-method
-#' updateObject,ComplexHeatmapPlot-method
+#' @aliases .cacheCommonInfo,ComplexHeatmapPlot-method
+#' @aliases .createObservers,ComplexHeatmapPlot-method
+#' @aliases .defineDataInterface,ComplexHeatmapPlot-method
+#' @aliases .defineInterface,ComplexHeatmapPlot-method
+#' @aliases .defineOutput,ComplexHeatmapPlot-method
+#' @aliases .defineInterface,ComplexHeatmapPlot-method
+#' @aliases .fullName,ComplexHeatmapPlot-method
+#' @aliases .generateOutput,ComplexHeatmapPlot-method
+#' @aliases .hideInterface,ComplexHeatmapPlot-method
+#' @aliases .multiSelectionResponsive,ComplexHeatmapPlot-method
+#' @aliases .multiSelectionRestricted,ComplexHeatmapPlot-method
+#' @aliases .panelColor,ComplexHeatmapPlot-method
+#' @aliases .refineParameters,ComplexHeatmapPlot-method
+#' @aliases .renderOutput,ComplexHeatmapPlot-method
+#' @aliases .exportOutput,ComplexHeatmapPlot-method
+#' @aliases initialize,ComplexHeatmapPlot-method
+#' @aliases .definePanelTour,ComplexHeatmapPlot-method
+#' @aliases [[,ComplexHeatmapPlot-method
+#' @aliases [[,ComplexHeatmapPlot,ANY,ANY-method
+#' @aliases [[<-,ComplexHeatmapPlot-method
+#' @aliases [[<-,ComplexHeatmapPlot,ANY,ANY-method
+#' @aliases updateObject,ComplexHeatmapPlot-method
 #'
 #' @name ComplexHeatmapPlot-class
 NULL

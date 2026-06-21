@@ -18,11 +18,8 @@
 #' @author Kevin Rue-Albrecht
 #' 
 #' @name constants
-#' @aliases .dataParamBoxOpen
-#' .multiSelectHistory
-#' .noSelection
-#' .organizationHeight
-#' .organizationWidth
+#' @aliases .dataParamBoxOpen .multiSelectHistory .noSelection
+#' @aliases .organizationHeight .organizationWidth
 NULL
 
 # Point colouring parameters. ----

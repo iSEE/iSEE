@@ -434,10 +434,10 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #'
 #' @name plot-generics
 #' @aliases .generateDotPlotData
-#' .generateDotPlot
-#' .prioritizeDotPlotData
-#' .colorByNoneDotPlotField
-#' .colorByNoneDotPlotScale
+#' @aliases .generateDotPlot
+#' @aliases .prioritizeDotPlotData
+#' @aliases .colorByNoneDotPlotField
+#' @aliases .colorByNoneDotPlotScale
 NULL
 
 #' @export
@@ -517,27 +517,26 @@ setGeneric(".colorByNoneDotPlotScale", function(x) standardGeneric(".colorByNone
 #' it also avoids potential double evaluation by making it clear that evaluation is the method's responsibility.
 #' The same philosophy applies to \code{\link{.generateDotPlotData}} and \code{\link{.generateDotPlot}}.
 #'
-#' @aliases
-#' .addDotPlotDataColor
-#' .addDotPlotDataShape
-#' .addDotPlotDataSize
-#' .addDotPlotDataFacets
-#' .addDotPlotDataSelected
-#' .colorDotPlot
-#' .addDotPlotDataColor,ColumnDotPlot-method
-#' .addDotPlotDataShape,ColumnDotPlot-method
-#' .addDotPlotDataSize,ColumnDotPlot-method
-#' .addDotPlotDataFacets,ColumnDotPlot-method
-#' .addDotPlotDataSelected,ColumnDotPlot-method
-#' .colorDotPlot,ColumnDotPlot-method
-#' .addDotPlotDataColor,RowDotPlot-method
-#' .addDotPlotDataShape,RowDotPlot-method
-#' .addDotPlotDataSize,RowDotPlot-method
-#' .addDotPlotDataFacets,RowDotPlot-method
-#' .addDotPlotDataSelected,RowDotPlot-method
-#' .colorDotPlot,RowDotPlot-method
-#' .getDotPlotMetadataCommand
-#' .getDotPlotNamesCommand
+#' @aliases .addDotPlotDataColor
+#' @aliases .addDotPlotDataShape
+#' @aliases .addDotPlotDataSize
+#' @aliases .addDotPlotDataFacets
+#' @aliases .addDotPlotDataSelected
+#' @aliases .colorDotPlot
+#' @aliases .addDotPlotDataColor,ColumnDotPlot-method
+#' @aliases .addDotPlotDataShape,ColumnDotPlot-method
+#' @aliases .addDotPlotDataSize,ColumnDotPlot-method
+#' @aliases .addDotPlotDataFacets,ColumnDotPlot-method
+#' @aliases .addDotPlotDataSelected,ColumnDotPlot-method
+#' @aliases .colorDotPlot,ColumnDotPlot-method
+#' @aliases .addDotPlotDataColor,RowDotPlot-method
+#' @aliases .addDotPlotDataShape,RowDotPlot-method
+#' @aliases .addDotPlotDataSize,RowDotPlot-method
+#' @aliases .addDotPlotDataFacets,RowDotPlot-method
+#' @aliases .addDotPlotDataSelected,RowDotPlot-method
+#' @aliases .colorDotPlot,RowDotPlot-method
+#' @aliases .getDotPlotMetadataCommand
+#' @aliases .getDotPlotNamesCommand
 #'
 #' @author Kevin Rue-Albrecht
 #'
@@ -665,9 +664,8 @@ setGeneric(".showSelectionDetails", function(x) standardGeneric(".showSelectionD
 #'
 #' @author Aaron Lun
 #' @name setup-generics
-#' @aliases
-#' .refineParameters
-#' .cacheCommonInfo
+#' @aliases .refineParameters
+#' @aliases .cacheCommonInfo
 NULL
 
 #' @export
@@ -751,14 +749,14 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' @author Aaron Lun
 #' @name multi-select-generics
 #' @aliases .multiSelectionDimension
-#' .isBrushable
-#' .multiSelectionRestricted
-#' .multiSelectionActive
-#' .multiSelectionCommands
-#' .multiSelectionClear
-#' .multiSelectionInvalidated
-#' .multiSelectionAvailable
-#' .multiSelectionResponsive
+#' @aliases .isBrushable
+#' @aliases .multiSelectionRestricted
+#' @aliases .multiSelectionActive
+#' @aliases .multiSelectionCommands
+#' @aliases .multiSelectionClear
+#' @aliases .multiSelectionInvalidated
+#' @aliases .multiSelectionAvailable
+#' @aliases .multiSelectionResponsive
 NULL
 
 #' @export
@@ -843,8 +841,8 @@ setGeneric(".isBrushable", function(x) standardGeneric(".isBrushable"))
 #' @author Aaron Lun
 #' @name single-select-generics
 #' @aliases .singleSelectionDimension
-#' .singleSelectionValue
-#' .singleSelectionSlots
+#' @aliases .singleSelectionValue
+#' @aliases .singleSelectionSlots
 NULL
 
 #' @export
@@ -884,7 +882,7 @@ setGeneric(".singleSelectionSlots", function(x) standardGeneric(".singleSelectio
 #'
 #' @name metadata-plot-generics
 #' @aliases .allowableYAxisChoices
-#' .allowableXAxisChoices
+#' @aliases .allowableXAxisChoices
 NULL
 
 #' @export
@@ -941,14 +939,14 @@ setGeneric(".allowableXAxisChoices", function(x, se) standardGeneric(".allowable
 #'
 #' @name visual-parameters-generics
 #' @aliases .defineVisualColorInterface
-#' .defineVisualShapeInterface
-#' .defineVisualSizeInterface
-#' .defineVisualPointInterface
-#' .defineVisualFacetInterface
-#' .defineVisualTextInterface
-#' .defineVisualOtherInterface
-#' .allowableColorByDataChoices
-#' .getTooltipUI
+#' @aliases .defineVisualShapeInterface
+#' @aliases .defineVisualSizeInterface
+#' @aliases .defineVisualPointInterface
+#' @aliases .defineVisualFacetInterface
+#' @aliases .defineVisualTextInterface
+#' @aliases .defineVisualOtherInterface
+#' @aliases .allowableColorByDataChoices
+#' @aliases .getTooltipUI
 NULL
 
 #' @export
@@ -1012,15 +1010,14 @@ setGeneric(".getTooltipUI", function(x, se, name) standardGeneric(".getTooltipUI
 #' \code{.getDotPlotFacetConstants(x)} returns facet-related constants.
 #'
 #' @name INTERNAL_dotplot-interface
-#' @aliases
-#' .getDiscreteMetadataChoices
-#' .getMetadataChoices
-#' .getContinuousMetadataChoices
-#' .defineDotPlotColorChoices
-#' .getDotPlotColorConstants
-#' .getDotPlotShapeConstants
-#' .getDotPlotSizeConstants
-#' .getDotPlotFacetConstants
+#' @aliases .getDiscreteMetadataChoices
+#' @aliases .getMetadataChoices
+#' @aliases .getContinuousMetadataChoices
+#' @aliases .defineDotPlotColorChoices
+#' @aliases .getDotPlotColorConstants
+#' @aliases .getDotPlotShapeConstants
+#' @aliases .getDotPlotSizeConstants
+#' @aliases .getDotPlotFacetConstants
 NULL
 
 setGeneric(".getDiscreteMetadataChoices", function(x, se) standardGeneric(".getDiscreteMetadataChoices"))
@@ -1083,9 +1080,8 @@ setGeneric(".getDotPlotFacetConstants", function(x) standardGeneric(".getDotPlot
 #' Aaron Lun
 #'
 #' @name documentation-generics
-#' @aliases
-#' .definePanelTour
-#' .getDotPlotColorHelp
+#' @aliases .definePanelTour
+#' @aliases .getDotPlotColorHelp
 NULL
 
 #' @export

@@ -333,7 +333,7 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.generateDotPlot}}
 #'
 #' @importFrom ggplot2 ggplot geom_violin coord_cartesian theme_bw theme
-#' coord_flip scale_x_discrete scale_y_discrete
+#' @importFrom ggplot2 coord_flip scale_x_discrete scale_y_discrete
 .violin_plot <- function(plot_data, param_choices,
     x_lab, y_lab, color_lab, shape_lab, size_lab, title,
     by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE, horizontal=FALSE)
@@ -541,7 +541,7 @@ plot.data$Y <- tmp;")
 #' \code{\link{.generateDotPlot}}
 #'
 #' @importFrom ggplot2 ggplot geom_tile coord_cartesian theme_bw theme
-#' scale_x_discrete scale_y_discrete guides
+#' @importFrom ggplot2 scale_x_discrete scale_y_discrete guides
 .square_plot <- function(plot_data, param_choices,
     x_lab, y_lab, color_lab, shape_lab, size_lab, title,
     by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE)
@@ -719,7 +719,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' \code{\link{.colorDotPlot,ColumnDotPlot-method}}
 #'
 #' @importFrom ggplot2 scale_color_manual scale_fill_manual
-#' scale_color_gradientn scale_fill_gradientn
+#' @importFrom ggplot2 scale_color_gradientn scale_fill_gradientn
 .create_color_scale <- function(command, choice, colorby) {
     discrete_color <- is.factor(colorby)
     if (discrete_color) {
@@ -1251,7 +1251,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' \code{\link{.generateDotPlot}}
 #'
 #' @importFrom ggplot2 geom_point geom_polygon geom_path scale_shape_manual
-#' scale_fill_manual guides
+#' @importFrom ggplot2 scale_fill_manual guides
 .draw_lasso <- function(plot_name, param_choices, index,
     facet_row, facet_column, stroke_color, fill_color)
 {

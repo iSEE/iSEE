@@ -67,14 +67,14 @@
 #'
 #' @name RowDataTable-class
 #' @aliases RowDataTable RowDataTable-class
-#' initialize,RowDataTable-method
-#' .cacheCommonInfo,RowDataTable-method
-#' .refineParameters,RowDataTable-method
-#' .generateTable,RowDataTable-method
-#' .panelColor,RowDataTable-method
-#' .fullName,RowDataTable-method
-#' .generateTable,RowDataTable-method
-#' .definePanelTour,RowDataTable-method
+#' @aliases initialize,RowDataTable-method
+#' @aliases .cacheCommonInfo,RowDataTable-method
+#' @aliases .refineParameters,RowDataTable-method
+#' @aliases .generateTable,RowDataTable-method
+#' @aliases .panelColor,RowDataTable-method
+#' @aliases .fullName,RowDataTable-method
+#' @aliases .generateTable,RowDataTable-method
+#' @aliases .definePanelTour,RowDataTable-method
 NULL
 
 #' @export

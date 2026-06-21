@@ -77,22 +77,21 @@
 #' @seealso \linkS4class{Panel}, for the immediate parent class.
 #'
 #' @name Table-class
-#' @aliases
-#' initialize,Table-method
-#' .refineParameters,Table-method
-#' .createObservers,Table-method
-#' .generateOutput,Table-method
-#' .renderOutput,Table-method
-#' .defineOutput,Table-method
-#' .exportOutput,Table-method
-#' .hideInterface,Table-method
-#' .multiSelectionCommands,Table-method
-#' .multiSelectionActive,Table-method
-#' .multiSelectionRestricted,Table-method
-#' .singleSelectionValue,Table-method
-#' .definePanelTour,Table-method
-#' .defineDataInterface,Table-method
-#' updateObject,Table-method
+#' @aliases initialize,Table-method
+#' @aliases .refineParameters,Table-method
+#' @aliases .createObservers,Table-method
+#' @aliases .generateOutput,Table-method
+#' @aliases .renderOutput,Table-method
+#' @aliases .defineOutput,Table-method
+#' @aliases .exportOutput,Table-method
+#' @aliases .hideInterface,Table-method
+#' @aliases .multiSelectionCommands,Table-method
+#' @aliases .multiSelectionActive,Table-method
+#' @aliases .multiSelectionRestricted,Table-method
+#' @aliases .singleSelectionValue,Table-method
+#' @aliases .definePanelTour,Table-method
+#' @aliases .defineDataInterface,Table-method
+#' @aliases updateObject,Table-method
 NULL
 
 #' @export

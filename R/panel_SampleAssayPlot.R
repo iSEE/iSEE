@@ -125,16 +125,16 @@
 #'
 #' @docType methods
 #' @aliases SampleAssayPlot SampleAssayPlot-class
-#' initialize,SampleAssayPlot-method
-#' .refineParameters,SampleAssayPlot-method
-#' .defineDataInterface,SampleAssayPlot-method
-#' .createObservers,SampleAssayPlot-method
-#' .singleSelectionSlots,SampleAssayPlot-method
-#' .multiSelectionInvalidated,SampleAssayPlot-method
-#' .fullName,SampleAssayPlot-method
-#' .panelColor,SampleAssayPlot-method
-#' .generateDotPlotData,SampleAssayPlot-method
-#' .definePanelTour,SampleAssayPlot-method
+#' @aliases initialize,SampleAssayPlot-method
+#' @aliases .refineParameters,SampleAssayPlot-method
+#' @aliases .defineDataInterface,SampleAssayPlot-method
+#' @aliases .createObservers,SampleAssayPlot-method
+#' @aliases .singleSelectionSlots,SampleAssayPlot-method
+#' @aliases .multiSelectionInvalidated,SampleAssayPlot-method
+#' @aliases .fullName,SampleAssayPlot-method
+#' @aliases .panelColor,SampleAssayPlot-method
+#' @aliases .generateDotPlotData,SampleAssayPlot-method
+#' @aliases .definePanelTour,SampleAssayPlot-method
 #'
 #' @name SampleAssayPlot-class
 NULL

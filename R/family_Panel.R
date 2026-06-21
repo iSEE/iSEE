@@ -125,34 +125,33 @@
 #' \linkS4class{DotPlot} and \linkS4class{Table}, for examples of direct subclasses.
 #'
 #' @name Panel-class
-#' @aliases
-#' initialize,Panel-method
-#' [[,Panel-method
-#' [[<-,Panel-method
-#' [[,Panel,ANY,ANY-method
-#' [[<-,Panel,ANY,ANY-method
-#' show,Panel-method
-#' .defineInterface,Panel-method
-#' .refineParameters,Panel-method
-#' .cacheCommonInfo,Panel-method
-#' .createObservers,Panel-method
-#' .hideInterface,Panel-method
-#' .defineDataInterface,Panel-method
-#' .renderOutput,Panel-method
-#' .exportOutput,Panel-method
-#' .multiSelectionRestricted,Panel-method
-#' .multiSelectionDimension,Panel-method
-#' .multiSelectionClear,Panel-method
-#' .multiSelectionActive,Panel-method
-#' .multiSelectionInvalidated,Panel-method
-#' .multiSelectionAvailable,Panel-method
-#' .multiSelectionResponsive,Panel-method
-#' .isBrushable,Panel-method
-#' .singleSelectionDimension,Panel-method
-#' .singleSelectionValue,Panel-method
-#' .singleSelectionSlots,Panel-method
-#' .definePanelTour,Panel-method
-#' updateObject,Panel-method
+#' @aliases initialize,Panel-method
+#' @aliases [[,Panel-method
+#' @aliases [[<-,Panel-method
+#' @aliases [[,Panel,ANY,ANY-method
+#' @aliases [[<-,Panel,ANY,ANY-method
+#' @aliases show,Panel-method
+#' @aliases .defineInterface,Panel-method
+#' @aliases .refineParameters,Panel-method
+#' @aliases .cacheCommonInfo,Panel-method
+#' @aliases .createObservers,Panel-method
+#' @aliases .hideInterface,Panel-method
+#' @aliases .defineDataInterface,Panel-method
+#' @aliases .renderOutput,Panel-method
+#' @aliases .exportOutput,Panel-method
+#' @aliases .multiSelectionRestricted,Panel-method
+#' @aliases .multiSelectionDimension,Panel-method
+#' @aliases .multiSelectionClear,Panel-method
+#' @aliases .multiSelectionActive,Panel-method
+#' @aliases .multiSelectionInvalidated,Panel-method
+#' @aliases .multiSelectionAvailable,Panel-method
+#' @aliases .multiSelectionResponsive,Panel-method
+#' @aliases .isBrushable,Panel-method
+#' @aliases .singleSelectionDimension,Panel-method
+#' @aliases .singleSelectionValue,Panel-method
+#' @aliases .singleSelectionSlots,Panel-method
+#' @aliases .definePanelTour,Panel-method
+#' @aliases updateObject,Panel-method
 NULL
 
 #' @export

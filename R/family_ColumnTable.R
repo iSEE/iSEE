@@ -62,16 +62,15 @@
 #' @author Aaron Lun
 #'
 #' @docType methods
-#' @aliases 
-#' initialize,ColumnTable-method
-#' .refineParameters,ColumnTable-method
-#' .defineInterface,ColumnTable-method
-#' .createObservers,ColumnTable-method
-#' .hideInterface,ColumnTable-method
-#' .multiSelectionDimension,ColumnTable-method
-#' .multiSelectionResponsive,ColumnTable-method
-#' .singleSelectionDimension,ColumnTable-method
-#' .showSelectionDetails,ColumnTable-method
+#' @aliases initialize,ColumnTable-method
+#' @aliases .refineParameters,ColumnTable-method
+#' @aliases .defineInterface,ColumnTable-method
+#' @aliases .createObservers,ColumnTable-method
+#' @aliases .hideInterface,ColumnTable-method
+#' @aliases .multiSelectionDimension,ColumnTable-method
+#' @aliases .multiSelectionResponsive,ColumnTable-method
+#' @aliases .singleSelectionDimension,ColumnTable-method
+#' @aliases .showSelectionDetails,ColumnTable-method
 #' @name ColumnTable-class
 NULL
 

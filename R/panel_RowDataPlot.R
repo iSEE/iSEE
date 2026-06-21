@@ -106,17 +106,17 @@
 #'
 #' @docType methods
 #' @aliases RowDataPlot RowDataPlot-class
-#' initialize,RowDataPlot-method
-#' .refineParameters,RowDataPlot-method
-#' .defineDataInterface,RowDataPlot-method
-#' .createObservers,RowDataPlot-method
-#' .fullName,RowDataPlot-method
-#' .panelColor,RowDataPlot-method
-#' .multiSelectionInvalidated,RowDataPlot-method
-#' .generateDotPlotData,RowDataPlot-method
-#' .allowableXAxisChoices,RowDataPlot-method
-#' .allowableYAxisChoices,RowDataPlot-method
-#' .definePanelTour,RowDataPlot-method
+#' @aliases initialize,RowDataPlot-method
+#' @aliases .refineParameters,RowDataPlot-method
+#' @aliases .defineDataInterface,RowDataPlot-method
+#' @aliases .createObservers,RowDataPlot-method
+#' @aliases .fullName,RowDataPlot-method
+#' @aliases .panelColor,RowDataPlot-method
+#' @aliases .multiSelectionInvalidated,RowDataPlot-method
+#' @aliases .generateDotPlotData,RowDataPlot-method
+#' @aliases .allowableXAxisChoices,RowDataPlot-method
+#' @aliases .allowableYAxisChoices,RowDataPlot-method
+#' @aliases .definePanelTour,RowDataPlot-method
 #'
 #' @name RowDataPlot-class
 NULL

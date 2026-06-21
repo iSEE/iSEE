@@ -100,6 +100,14 @@
 #' Defaults to \code{"blue"}.
 #' }
 #' 
+#' The following slots control the addition of a line to connect the points in the plot:
+#' \itemize{
+#' \item \code{LineAdd}, logical scalar indicating whether a line should be added to a plot.
+#' Defaults to \code{FALSE}.
+#' \item \code{lineColor}, string specifying the color to use for the line.
+#' Defaults to \code{"blue"}.
+#' }
+#' 
 #' The following slot controls whether the aspect ratio is fixed to 1 or not:
 #' \itemize{
 #' \item \code{FixAspectRatio}, logical scalar indicating whether the aspect ratio of a scatter plot should be fixed to 1. 
@@ -291,6 +299,9 @@ setMethod("initialize", "DotPlot", function(.Object, ...) {
 
     args <- .emptyDefault(args, .contourAdd, FALSE)
     args <- .emptyDefault(args, .contourColor, getPanelDefault(.contourColor))
+
+    args <- .emptyDefault(args, .lineAdd, FALSE)
+    args <- .emptyDefault(args, .lineColor, getPanelDefault(.lineColor))
     
     args <- .emptyDefault(args, .fixAspectRatio, FALSE)
 
@@ -321,9 +332,9 @@ setValidity2("DotPlot", function(object) {
     msg <- character(0)
 
     msg <- .validLogicalError(msg, object,
-        c(.plotCustomLabels, .visualParamBoxOpen, .contourAdd, .plotPointDownsample,
-            .plotHoverInfo,
-            .plotLabelCenters, .fixAspectRatio, .violinAdd
+        c(.plotCustomLabels, .visualParamBoxOpen, .contourAdd, .lineAdd, 
+          .plotPointDownsample, .plotHoverInfo,
+          .plotLabelCenters, .fixAspectRatio, .violinAdd
         ))
 
     msg <- .singleStringError(msg, object,
@@ -335,7 +346,7 @@ setValidity2("DotPlot", function(object) {
 
     msg <- .validStringError(msg, object,
         c(.colorByDefaultColor,
-            .contourColor,
+            .contourColor, .lineColor, 
             .plotLabelCentersColor
         ))
 
@@ -484,8 +495,9 @@ setMethod(".createObservers", "DotPlot", function(x, se, input, session, pObject
             .colorByDefaultColor, .selectTransAlpha,
             .shapeByField, .sizeByField,
             .plotPointSize, .plotPointAlpha, .plotFontSize, .legendPointSize, .plotLegendPosition,
-            .plotPointDownsample, .plotPointSampleRes, .contourAdd,
-            .contourColor, .fixAspectRatio, .violinAdd, .plotCustomLabels, .plotHoverInfo,
+            .plotPointDownsample, .plotPointSampleRes, .contourAdd, .lineAdd, 
+            .contourColor, .lineColor, .fixAspectRatio, .violinAdd, 
+            .plotCustomLabels, .plotHoverInfo,
             .plotLabelCenters, .plotLabelCentersBy, .plotLabelCentersColor),
         input=input, pObjects=pObjects, rObjects=rObjects)
 
@@ -788,6 +800,21 @@ setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
         )
     })
     
+    .addSpecificTour(class(x)[1], .lineAdd, function(plot_name) {
+        data.frame(
+            rbind(
+                c(
+                    element=paste0("#", plot_name, "_", .lineAdd),
+                    intro="We can add a line connecting the points in the plot"
+                ),
+                c(
+                    element=paste0("#", plot_name, "_", .lineColor),
+                    intro="And we can change the color of the line."
+                )
+            )
+        )
+    })
+    
     .addSpecificTour(class(x)[1], .fixAspectRatio, function(plot_name) {
         data.frame(
             rbind(
@@ -835,6 +862,15 @@ setMethod(".defineVisualPointInterface", "DotPlot", function(x, se) {
             colourInput(
                 paste0(plot_name, "_", .contourColor), label=NULL,
                 value=slot(x, .contourColor))),
+        .checkboxInput.iSEE(x, .lineAdd,
+                            label="Add line (scatter and vertical violin only)",
+                            value=slot(x, .lineAdd)),
+        .conditionalOnCheckSolo(
+            paste0(plot_name, "_", .lineAdd),
+            on_select=TRUE,
+            colourInput(
+                paste0(plot_name, "_", .lineColor), label=NULL,
+                value=slot(x, .lineColor))),
         .checkboxInput.iSEE(x, .fixAspectRatio,
                             label="Fix aspect ratio to 1 (scatter only)",
                             value=slot(x, .fixAspectRatio)),
@@ -1236,7 +1272,7 @@ setMethod(".generateOutput", "DotPlot", function(x, se, all_memory, all_contents
 
     # We need to set up the plot type before downsampling,
     # to ensure the X/Y jitter is correctly computed.
-    all_cmds$setup <- .choose_plot_type(plot_env)
+    all_cmds$setup <- .choose_plot_type(plot_env, param_choices=x)
 
     # Also collect the plot coordinates before downsampling.
     panel_data <- plot_env$plot.data

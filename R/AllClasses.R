@@ -216,6 +216,12 @@ collated[.visualParamChoice] <- "character"
 collated[.contourAdd] <- "logical"
 collated[.contourColor] <- "character"
 
+.lineColor <- "LineColor"
+.lineAdd <- "LineAdd"
+
+collated[.lineAdd] <- "logical"
+collated[.lineColor] <- "character"
+
 .fixAspectRatio <- "FixAspectRatio"
 collated[.fixAspectRatio] <- "logical"
 

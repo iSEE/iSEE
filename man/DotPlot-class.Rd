@@ -140,6 +140,14 @@ Defaults to \code{FALSE}.
 Defaults to \code{"blue"}.
 }
 
+The following slots control the addition of a line to connect the points in the plot:
+\itemize{
+\item \code{LineAdd}, logical scalar indicating whether a line should be added to a plot.
+Defaults to \code{FALSE}.
+\item \code{lineColor}, string specifying the color to use for the line.
+Defaults to \code{"blue"}.
+}
+
 The following slot controls whether the aspect ratio is fixed to 1 or not:
 \itemize{
 \item \code{FixAspectRatio}, logical scalar indicating whether the aspect ratio of a scatter plot should be fixed to 1. 

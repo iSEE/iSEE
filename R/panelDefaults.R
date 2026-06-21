@@ -15,6 +15,7 @@ panel.default.env$options <- list(
     MultipleSelectionDynamicSource = FALSE,
 
     ContourColor = "blue",
+    LineColor = "blue",
 
     FontSize = 1,
     LegendPointSize = 1,
@@ -68,6 +69,7 @@ panel.default.env$options <- list(
 #' \item \code{DownsampleResolution}, defaults to 200.
 #' \item \code{SelectionAlpha}, defaults to 0.1.
 #' \item \code{ContourColor}, defaults to \code{"blue"}.
+#' \item \code{LineColor}, defaults to \code{"blue"}.
 #' \item \code{FontSize}, defaults to 1.
 #' \item \code{LegendPointSize}, defaults to 1.
 #' }

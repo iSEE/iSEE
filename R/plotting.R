@@ -48,7 +48,7 @@ names(.all_aes_values) <- .all_aes_names
 #' \code{\link{.violin_setup}},
 #' \code{\link{.square_setup}},
 #' \code{\link{.generateDotPlotData}}
-.choose_plot_type <- function(envir) {
+.choose_plot_type <- function(envir, param_choices) {
     group_X <- .is_groupable(envir$plot.data$X)
     group_Y <- .is_groupable(envir$plot.data$Y)
     if (!group_Y && !group_X) {
@@ -56,10 +56,12 @@ names(.all_aes_values) <- .all_aes_names
         specific <- NULL
     } else if (!group_Y) {
         mode <- "violin"
-        specific <- .violin_setup(envir$plot.data, horizontal=FALSE)
+        specific <- .violin_setup(envir$plot.data, horizontal=FALSE,
+                                  lineAdd=slot(param_choices, .lineAdd))
     } else if (!group_X) {
         mode <- "violin_horizontal"
-        specific <- .violin_setup(envir$plot.data, horizontal=TRUE)
+        specific <- .violin_setup(envir$plot.data, horizontal=TRUE, 
+                                  lineAdd=FALSE)
 
         if (exists("plot.data.all", envir)) { # flipping plot.data.all as well, otherwise it becomes chaotic in .violin_plot().
             specific <- c(specific,
@@ -193,7 +195,7 @@ names(.all_aes_values) <- .all_aes_names
 #' @seealso
 #' \code{\link{.generateDotPlot}}
 #'
-#' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme element_text geom_density_2d coord_fixed
+#' @importFrom ggplot2 ggplot coord_cartesian theme_bw theme element_text geom_density_2d coord_fixed geom_line
 .scatter_plot <- function(plot_data, param_choices,
     x_lab, y_lab, color_lab, shape_lab, size_lab, title,
     by_row=FALSE, is_subsetted=FALSE, is_downsampled=FALSE)
@@ -244,6 +246,10 @@ names(.all_aes_values) <- .all_aes_names
         plot_cmds[["contours"]] <- sprintf("geom_density_2d(aes(x=X, y=Y), plot.data, colour='%s') +", slot(param_choices, .contourColor))
     }
 
+    if (slot(param_choices, .lineAdd)) {
+        plot_cmds[["line"]] <- sprintf("geom_line(aes(x=X, y=Y), plot.data, colour='%s') +", slot(param_choices, .lineColor))
+    }
+    
     # Retain axes when no points are present.
     if (nrow(plot_data) == 0 && is_subsetted) {
         plot_cmds[["select_blank"]] <- "geom_blank(data=plot.data.all, inherit.aes=FALSE, aes(x=X, y=Y)) +"
@@ -341,6 +347,13 @@ names(.all_aes_values) <- .all_aes_names
             ifelse(is_downsampled, "plot.data.pre", "plot.data")
         )
     }
+    
+    # Adding the line to the plot
+    if (slot(param_choices, .lineAdd) && !horizontal) {
+        plot_cmds[["line"]] <- sprintf(
+            "geom_line(aes(x=numericX, y=Y), data=plot.data, color='%s') +",
+            slot(param_choices, .lineColor))
+    }
 
     # Adding the points to the plot (with/without point selection).
     color_set <- !is.null(plot_data$ColorBy)
@@ -436,7 +449,7 @@ names(.all_aes_values) <- .all_aes_names
 }
 
 #' @rdname INTERNAL_violin_plot
-.violin_setup <- function(plot_data, horizontal=FALSE) {
+.violin_setup <- function(plot_data, horizontal=FALSE, lineAdd=FALSE) {
     setup_cmds <- list()
 
     # Switching X and Y axes if we want a horizontal violin plot.
@@ -463,11 +476,17 @@ plot.data$Y <- tmp;")
     # Figuring out the jitter. This is done ahead of time to guarantee the
     # same results regardless of the subset used for point selection. Note adjust=1
     # for consistency with geom_violin (differs from geom_quasirandom default).
-    setup_cmds[["seed"]] <- "set.seed(100);"
-    setup_cmds[["calcX"]] <- sprintf(
-"plot.data$jitteredX <- iSEE::jitterViolinPoints(plot.data$X, plot.data$Y, %s
+    if (lineAdd & !horizontal) {
+        setup_cmds[["calcX"]] <- "plot.data$jitteredX <- plot.data$X"
+        # plot.data$X has been converted into a factor previously
+        setup_cmds[["lineCoords"]] <- "plot.data$numericX <- as.numeric(plot.data$X);"
+    } else {
+        setup_cmds[["seed"]] <- "set.seed(100);"
+        setup_cmds[["calcX"]] <- sprintf(
+            "plot.data$jitteredX <- iSEE::jitterViolinPoints(plot.data$X, plot.data$Y, %s
     width=0.4, varwidth=FALSE, adjust=1,
     method='quasirandom', nbins=NULL);", groupvar)
+    }
 
     unlist(setup_cmds)
 }

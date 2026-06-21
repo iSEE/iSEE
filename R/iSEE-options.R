@@ -53,6 +53,7 @@ new_defaults = function(value = list()) {
     MultipleSelectionDynamicSource = "selection.dynamic.multiple",
 
     ContourColor = "contour.color",
+    LineColor = "line.color",
 
     FontSize = "font.size",
     LegendPointSize = "legend.point.size",
@@ -98,6 +99,7 @@ new_defaults = function(value = list()) {
 #' \item{\code{selection.dynamic.single}}{Toggle dynamic single selections for all panels (logical).}
 #' \item{\code{selection.dynamic.multiple}}{Toggle dynamic multiple selections for all panels (logical).}
 #' \item{\code{contour.color}}{Color of the 2d density estimation contour in \code{DotPlot} panels (character).}
+#' \item{\code{line.color}}{Color of the lines in \code{DotPlot} panels (character).}
 #' \item{\code{font.size}}{Global multiplier controlling the magnification of plot title and text elements in \code{DotPlot} panels (numeric).}
 #' \item{\code{legend.position}}{Position of the legend in \code{DotPlot} and \code{ComplexHeatmapPlot} panels (one of \code{"Bottom"}, \code{"Right"}, or \code{"None"}).}
 #' \item{\code{legend.direction}}{Position of the legend in \code{DotPlot} and \code{ComplexHeatmapPlot} panels (one of \code{"Horizontal"}, \code{"Vertical"}).}

@@ -43,8 +43,7 @@
 #' @author Aaron Lun
 #'
 #' @importFrom utils read.delim sessionInfo citation browseURL capture.output
-#' @importFrom shiny observeEvent showModal modalDialog HTML br tagList showNotification p pre downloadButton
-#' checkboxInput actionButton
+#' @importFrom shiny observeEvent showModal modalDialog HTML br tagList showNotification p pre downloadButton checkboxInput actionButton
 #' @importFrom shinyAce aceEditor
 #' @importFrom listviewer jsoneditOutput
 #'

@@ -26,8 +26,7 @@
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_organization_observers
-#' @importFrom shiny renderUI reactiveValues observeEvent
-#' showModal modalDialog isolate removeModal
+#' @importFrom shiny renderUI reactiveValues observeEvent showModal modalDialog isolate removeModal
 .create_organization_observers <- function(se, input, output, session, pObjects, rObjects) {
     # nocov start
     output$allPanels <- renderUI({

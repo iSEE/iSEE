@@ -124,17 +124,7 @@
 #' .refineParameters(x, sce0)
 #'
 #' @docType methods
-#' @aliases SampleAssayPlot SampleAssayPlot-class
-#' initialize,SampleAssayPlot-method
-#' .refineParameters,SampleAssayPlot-method
-#' .defineDataInterface,SampleAssayPlot-method
-#' .createObservers,SampleAssayPlot-method
-#' .singleSelectionSlots,SampleAssayPlot-method
-#' .multiSelectionInvalidated,SampleAssayPlot-method
-#' .fullName,SampleAssayPlot-method
-#' .panelColor,SampleAssayPlot-method
-#' .generateDotPlotData,SampleAssayPlot-method
-#' .definePanelTour,SampleAssayPlot-method
+#' @aliases SampleAssayPlot SampleAssayPlot-class initialize,SampleAssayPlot-method .refineParameters,SampleAssayPlot-method .defineDataInterface,SampleAssayPlot-method .createObservers,SampleAssayPlot-method .singleSelectionSlots,SampleAssayPlot-method .multiSelectionInvalidated,SampleAssayPlot-method .fullName,SampleAssayPlot-method .panelColor,SampleAssayPlot-method .generateDotPlotData,SampleAssayPlot-method .definePanelTour,SampleAssayPlot-method
 #'
 #' @name SampleAssayPlot-class
 NULL

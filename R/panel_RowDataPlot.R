@@ -105,18 +105,7 @@
 #' .refineParameters(x, sce0)
 #'
 #' @docType methods
-#' @aliases RowDataPlot RowDataPlot-class
-#' initialize,RowDataPlot-method
-#' .refineParameters,RowDataPlot-method
-#' .defineDataInterface,RowDataPlot-method
-#' .createObservers,RowDataPlot-method
-#' .fullName,RowDataPlot-method
-#' .panelColor,RowDataPlot-method
-#' .multiSelectionInvalidated,RowDataPlot-method
-#' .generateDotPlotData,RowDataPlot-method
-#' .allowableXAxisChoices,RowDataPlot-method
-#' .allowableYAxisChoices,RowDataPlot-method
-#' .definePanelTour,RowDataPlot-method
+#' @aliases RowDataPlot RowDataPlot-class initialize,RowDataPlot-method .refineParameters,RowDataPlot-method .defineDataInterface,RowDataPlot-method .createObservers,RowDataPlot-method .fullName,RowDataPlot-method .panelColor,RowDataPlot-method .multiSelectionInvalidated,RowDataPlot-method .generateDotPlotData,RowDataPlot-method .allowableXAxisChoices,RowDataPlot-method .allowableYAxisChoices,RowDataPlot-method .definePanelTour,RowDataPlot-method
 #'
 #' @name RowDataPlot-class
 NULL

@@ -223,43 +223,7 @@
 #' @author Aaron Lun
 #'
 #' @name DotPlot-class
-#' @aliases
-#' initialize,DotPlot-method
-#' updateObject,DotPlot-method
-#' .defineOutput,DotPlot-method
-#' .generateOutput,DotPlot-method
-#' .generateDotPlot,DotPlot-method
-#' .renderOutput,DotPlot-method
-#' .exportOutput,DotPlot-method
-#' .refineParameters,DotPlot-method
-#' .cacheCommonInfo,DotPlot-method
-#' .createObservers,DotPlot-method
-#' .hideInterface,DotPlot-method
-#' .multiSelectionActive,DotPlot-method
-#' .multiSelectionCommands,DotPlot-method
-#' .multiSelectionClear,DotPlot-method
-#' .multiSelectionDimension,DotPlot-method
-#' .isBrushable,DotPlot-method
-#' .singleSelectionValue,DotPlot-method
-#' .singleSelectionSlots,DotPlot-method
-#' .prioritizeDotPlotData,DotPlot-method
-#' .colorByNoneDotPlotField,DotPlot-method
-#' .colorByNoneDotPlotScale,DotPlot-method
-#' .defineInterface,DotPlot-method
-#' .defineVisualColorInterface,DotPlot-method
-#' .defineVisualSizeInterface,DotPlot-method
-#' .defineVisualShapeInterface,DotPlot-method
-#' .defineVisualTextInterface,DotPlot-method
-#' .defineVisualPointInterface,DotPlot-method
-#' .defineVisualOtherInterface,DotPlot-method
-#' .defineVisualFacetInterface,DotPlot-method
-#' .allowableColorByDataChoices,DotPlot-method
-#' .definePanelTour,DotPlot-method
-#' updateObject,DotPlot-method
-#' [[,DotPlot-method
-#' [[,DotPlot,ANY,ANY-method
-#' [[<-,DotPlot-method
-#' [[<-,DotPlot,ANY,ANY-method
+#' @aliases initialize,DotPlot-method updateObject,DotPlot-method .defineOutput,DotPlot-method .generateOutput,DotPlot-method .generateDotPlot,DotPlot-method .renderOutput,DotPlot-method .exportOutput,DotPlot-method .refineParameters,DotPlot-method .cacheCommonInfo,DotPlot-method .createObservers,DotPlot-method .hideInterface,DotPlot-method .multiSelectionActive,DotPlot-method .multiSelectionCommands,DotPlot-method .multiSelectionClear,DotPlot-method .multiSelectionDimension,DotPlot-method .isBrushable,DotPlot-method .singleSelectionValue,DotPlot-method .singleSelectionSlots,DotPlot-method .prioritizeDotPlotData,DotPlot-method .colorByNoneDotPlotField,DotPlot-method .colorByNoneDotPlotScale,DotPlot-method .defineInterface,DotPlot-method .defineVisualColorInterface,DotPlot-method .defineVisualSizeInterface,DotPlot-method .defineVisualShapeInterface,DotPlot-method .defineVisualTextInterface,DotPlot-method .defineVisualPointInterface,DotPlot-method .defineVisualOtherInterface,DotPlot-method .defineVisualFacetInterface,DotPlot-method .allowableColorByDataChoices,DotPlot-method .definePanelTour,DotPlot-method updateObject,DotPlot-method [[,DotPlot-method [[,DotPlot,ANY,ANY-method [[<-,DotPlot-method [[<-,DotPlot,ANY,ANY-method
 NULL
 
 #' @export

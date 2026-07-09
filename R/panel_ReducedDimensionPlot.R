@@ -94,16 +94,7 @@
 #' .refineParameters(x, sce0)
 #'
 #' @docType methods
-#' @aliases ReducedDimensionPlot ReducedDimensionPlot-class
-#' initialize,ReducedDimensionPlot-method
-#' .refineParameters,ReducedDimensionPlot-method
-#' .cacheCommonInfo,ReducedDimensionPlot-method
-#' .defineDataInterface,ReducedDimensionPlot-method
-#' .createObservers,ReducedDimensionPlot-method
-#' .fullName,ReducedDimensionPlot-method
-#' .panelColor,ReducedDimensionPlot-method
-#' .generateDotPlotData,ReducedDimensionPlot-method
-#' .definePanelTour,ReducedDimensionPlot-method
+#' @aliases ReducedDimensionPlot ReducedDimensionPlot-class initialize,ReducedDimensionPlot-method .refineParameters,ReducedDimensionPlot-method .cacheCommonInfo,ReducedDimensionPlot-method .defineDataInterface,ReducedDimensionPlot-method .createObservers,ReducedDimensionPlot-method .fullName,ReducedDimensionPlot-method .panelColor,ReducedDimensionPlot-method .generateDotPlotData,ReducedDimensionPlot-method .definePanelTour,ReducedDimensionPlot-method
 #'
 #' @name ReducedDimensionPlot-class
 NULL

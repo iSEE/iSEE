@@ -66,15 +66,7 @@
 #' .refineParameters(x, sce0)
 #'
 #' @name ColumnDataTable-class
-#' @aliases ColumnDataTable ColumnDataTable-class
-#' initialize,ColumnDataTable-method
-#' .cacheCommonInfo,ColumnDataTable-method
-#' .refineParameters,ColumnDataTable-method
-#' .generateTable,ColumnDataTable-method
-#' .panelColor,ColumnDataTable-method
-#' .fullName,ColumnDataTable-method
-#' .generateTable,ColumnDataTable-method
-#' .definePanelTour,ColumnDataTable-method
+#' @aliases ColumnDataTable ColumnDataTable-class initialize,ColumnDataTable-method .cacheCommonInfo,ColumnDataTable-method .refineParameters,ColumnDataTable-method .generateTable,ColumnDataTable-method .panelColor,ColumnDataTable-method .fullName,ColumnDataTable-method .generateTable,ColumnDataTable-method .definePanelTour,ColumnDataTable-method
 NULL
 
 #' @export

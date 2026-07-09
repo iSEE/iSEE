@@ -124,17 +124,7 @@
 #' .refineParameters(x, sce0)
 #'
 #' @docType methods
-#' @aliases FeatureAssayPlot FeatureAssayPlot-class
-#' initialize,FeatureAssayPlot-method
-#' .refineParameters,FeatureAssayPlot-method
-#' .defineDataInterface,FeatureAssayPlot-method
-#' .createObservers,FeatureAssayPlot-method
-#' .singleSelectionSlots,FeatureAssayPlot-method
-#' .multiSelectionInvalidated,FeatureAssayPlot-method
-#' .fullName,FeatureAssayPlot-method
-#' .panelColor,FeatureAssayPlot-method
-#' .generateDotPlotData,FeatureAssayPlot-method
-#' .definePanelTour,FeatureAssayPlot-method
+#' @aliases FeatureAssayPlot FeatureAssayPlot-class initialize,FeatureAssayPlot-method .refineParameters,FeatureAssayPlot-method .defineDataInterface,FeatureAssayPlot-method .createObservers,FeatureAssayPlot-method .singleSelectionSlots,FeatureAssayPlot-method .multiSelectionInvalidated,FeatureAssayPlot-method .fullName,FeatureAssayPlot-method .panelColor,FeatureAssayPlot-method .generateDotPlotData,FeatureAssayPlot-method .definePanelTour,FeatureAssayPlot-method
 #'
 #' @name FeatureAssayPlot-class
 NULL

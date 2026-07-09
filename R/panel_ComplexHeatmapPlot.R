@@ -195,29 +195,7 @@
 #' .refineParameters(x, sce0)
 #'
 #' @docType methods
-#' @aliases ComplexHeatmapPlot ComplexHeatmapPlot-class
-#' .cacheCommonInfo,ComplexHeatmapPlot-method
-#' .createObservers,ComplexHeatmapPlot-method
-#' .defineDataInterface,ComplexHeatmapPlot-method
-#' .defineInterface,ComplexHeatmapPlot-method
-#' .defineOutput,ComplexHeatmapPlot-method
-#' .defineInterface,ComplexHeatmapPlot-method
-#' .fullName,ComplexHeatmapPlot-method
-#' .generateOutput,ComplexHeatmapPlot-method
-#' .hideInterface,ComplexHeatmapPlot-method
-#' .multiSelectionResponsive,ComplexHeatmapPlot-method
-#' .multiSelectionRestricted,ComplexHeatmapPlot-method
-#' .panelColor,ComplexHeatmapPlot-method
-#' .refineParameters,ComplexHeatmapPlot-method
-#' .renderOutput,ComplexHeatmapPlot-method
-#' .exportOutput,ComplexHeatmapPlot-method
-#' initialize,ComplexHeatmapPlot-method
-#' .definePanelTour,ComplexHeatmapPlot-method
-#' [[,ComplexHeatmapPlot-method
-#' [[,ComplexHeatmapPlot,ANY,ANY-method
-#' [[<-,ComplexHeatmapPlot-method
-#' [[<-,ComplexHeatmapPlot,ANY,ANY-method
-#' updateObject,ComplexHeatmapPlot-method
+#' @aliases ComplexHeatmapPlot ComplexHeatmapPlot-class .cacheCommonInfo,ComplexHeatmapPlot-method .createObservers,ComplexHeatmapPlot-method .defineDataInterface,ComplexHeatmapPlot-method .defineInterface,ComplexHeatmapPlot-method .defineOutput,ComplexHeatmapPlot-method .defineInterface,ComplexHeatmapPlot-method .fullName,ComplexHeatmapPlot-method .generateOutput,ComplexHeatmapPlot-method .hideInterface,ComplexHeatmapPlot-method .multiSelectionResponsive,ComplexHeatmapPlot-method .multiSelectionRestricted,ComplexHeatmapPlot-method .panelColor,ComplexHeatmapPlot-method .refineParameters,ComplexHeatmapPlot-method .renderOutput,ComplexHeatmapPlot-method .exportOutput,ComplexHeatmapPlot-method initialize,ComplexHeatmapPlot-method .definePanelTour,ComplexHeatmapPlot-method [[,ComplexHeatmapPlot-method [[,ComplexHeatmapPlot,ANY,ANY-method [[<-,ComplexHeatmapPlot-method [[<-,ComplexHeatmapPlot,ANY,ANY-method updateObject,ComplexHeatmapPlot-method
 #'
 #' @name ComplexHeatmapPlot-class
 NULL

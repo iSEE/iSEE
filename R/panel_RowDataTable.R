@@ -66,15 +66,7 @@
 #' .refineParameters(x, sce)
 #'
 #' @name RowDataTable-class
-#' @aliases RowDataTable RowDataTable-class
-#' initialize,RowDataTable-method
-#' .cacheCommonInfo,RowDataTable-method
-#' .refineParameters,RowDataTable-method
-#' .generateTable,RowDataTable-method
-#' .panelColor,RowDataTable-method
-#' .fullName,RowDataTable-method
-#' .generateTable,RowDataTable-method
-#' .definePanelTour,RowDataTable-method
+#' @aliases RowDataTable RowDataTable-class initialize,RowDataTable-method .cacheCommonInfo,RowDataTable-method .refineParameters,RowDataTable-method .generateTable,RowDataTable-method .panelColor,RowDataTable-method .fullName,RowDataTable-method .generateTable,RowDataTable-method .definePanelTour,RowDataTable-method
 NULL
 
 #' @export

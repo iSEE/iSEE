@@ -93,25 +93,7 @@
 #'
 #' @docType methods
 #' @aliases
-#' initialize,RowDotPlot-method
-#' .cacheCommonInfo,RowDotPlot-method
-#' .refineParameters,RowDotPlot-method
-#' .defineInterface,RowDotPlot-method
-#' .createObservers,RowDotPlot-method
-#' .getTooltipUI,RowDotPlot-method
-#' .hideInterface,RowDotPlot-method
-#' .multiSelectionDimension,RowDotPlot-method
-#' .multiSelectionResponsive,RowDotPlot-method
-#' .multiSelectionRestricted,RowDotPlot-method
-#' .multiSelectionInvalidated,RowDotPlot-method
-#' .singleSelectionDimension,RowDotPlot-method
-#' .definePanelTour,RowDotPlot-method
-#' .getDotPlotColorHelp,RowDotPlot-method
-#' [[,RowDotPlot-method
-#' [[,RowDotPlot,ANY,ANY-method
-#' [[<-,RowDotPlot-method
-#' [[<-,RowDotPlot,ANY,ANY-method
-#' updateObject,RowDotPlot-method
+#' initialize,RowDotPlot-method .cacheCommonInfo,RowDotPlot-method .refineParameters,RowDotPlot-method .defineInterface,RowDotPlot-method .createObservers,RowDotPlot-method .getTooltipUI,RowDotPlot-method .hideInterface,RowDotPlot-method .multiSelectionDimension,RowDotPlot-method .multiSelectionResponsive,RowDotPlot-method .multiSelectionRestricted,RowDotPlot-method .multiSelectionInvalidated,RowDotPlot-method .singleSelectionDimension,RowDotPlot-method .definePanelTour,RowDotPlot-method .getDotPlotColorHelp,RowDotPlot-method [[,RowDotPlot-method [[,RowDotPlot,ANY,ANY-method [[<-,RowDotPlot-method [[<-,RowDotPlot,ANY,ANY-method updateObject,RowDotPlot-method
 #' @name RowDotPlot-class
 NULL
 

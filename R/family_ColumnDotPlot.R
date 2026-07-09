@@ -12,7 +12,7 @@
 #' Defaults to the first valid field (see \code{.cacheCommonInfo} below).
 #' \item \code{ColorByFeatureNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
 #' if \code{ColorBy="Feature name"}.
-#' Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}}, falling back to the name of the first valid assay 
+#' Defaults to \code{"logcounts"} in \code{\link{getPanelDefault}}, falling back to the name of the first valid assay
 #' (see \code{?"\link{.cacheCommonInfo,DotPlot-method}"} for the definition of validity).
 #' \item \code{ColorBySampleNameColor}, a string specifying the color to use for coloring an individual sample on the plot,
 #' if \code{ColorBy="Sample name"}.
@@ -30,7 +30,7 @@
 #' \item \code{TooltipColumnData}, a character vector specifying \code{\link{colData}} fields to show in the tooltip.
 #' Defaults to `character(0)`, which displays only the `colnames` value of the data point.
 #' }
-#' 
+#'
 #' In addition, this class inherits all slots from its parent \linkS4class{DotPlot} and \linkS4class{Panel} classes.
 #'
 #' @section Supported methods:
@@ -108,7 +108,7 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ..., SelectionEffect=
 
     args <- .emptyDefault(args, .sizeByColData, NA_character_)
 
-    # Defensive measure to avoid problems with cyclic graphs 
+    # Defensive measure to avoid problems with cyclic graphs
     # that the user doesn't have permissions to change!
     args <- .emptyDefault(args, .selectRowDynamic, FALSE)
 
@@ -141,7 +141,7 @@ setMethod("initialize", "ColumnDotPlot", function(.Object, ..., SelectionEffect=
     if (!is.null(SelectionColor)) {
         .Deprecated(msg="'SelectionColor=' is deprecated and will be ignored")
     }
-    
+
     args <- .emptyDefault(args, .tooltipColData, getPanelDefault(.tooltipColData))
 
     do.call(callNextMethod, c(list(.Object), args))
@@ -183,7 +183,7 @@ setMethod("[[", "ColumnDotPlot", function(x, i, j, ...) {
             cname, i, cname, .selectColumnRestrict, cname, .colorByField))
 
         if (slot(x, .selectColumnRestrict)) {
-            "Restrict" 
+            "Restrict"
         } else if (slot(x, .colorByField) == .colorByColSelectionsTitle) {
             "Color"
         } else {
@@ -200,7 +200,7 @@ setReplaceMethod("[[", "ColumnDotPlot", function(x, i, j, ..., value) {
     if (i == "SelectionColor") {
         cname <- class(x)[1]
         .Deprecated(msg=sprintf("Setting <%s>[['%s']] is deprecated.", cname, i))
-        x 
+        x
     } else if (i == "SelectionEffect") {
         x <- updateObject(x, check=FALSE)
 
@@ -265,7 +265,7 @@ setMethod(".refineParameters", "ColumnDotPlot", function(x, se) {
 
     continuous <- cdp_cached$continuous.colData.names
     x <- .replaceMissingWithFirst(x, .sizeByColData, continuous)
-    
+
     x <- .replaceMissingWithFirst(x, .plotCustomLabelsText, colnames(se)[1])
 
     x
@@ -309,8 +309,8 @@ setMethod(".multiSelectionRestricted", "ColumnDotPlot", function(x) {
 
 #' @export
 setMethod(".multiSelectionInvalidated", "ColumnDotPlot", function(x) {
-    slot(x, .facetRow) == .facetByColSelectionsTitle || 
-        slot(x, .facetColumn) == .facetByColSelectionsTitle || 
+    slot(x, .facetRow) == .facetByColSelectionsTitle ||
+        slot(x, .facetColumn) == .facetByColSelectionsTitle ||
         callNextMethod()
 })
 
@@ -402,6 +402,7 @@ setMethod(".getDotPlotFacetConstants", "ColumnDotPlot", function(x) {
 ###############################################################
 # See ?.addDotPlotDataColor for documentation on these methods.
 
+#' @export
 setMethod(".addDotPlotDataColor", "ColumnDotPlot", function(x, envir) {
     color_choice <- slot(x, .colorByField)
 
@@ -432,7 +433,7 @@ setMethod(".addDotPlotDataColor", "ColumnDotPlot", function(x, envir) {
             target <- "list()"
         }
         cmds <- sprintf(
-            "plot.data$ColorBy <- iSEE::multiSelectionToFactor(%s, colnames(se));", 
+            "plot.data$ColorBy <- iSEE::multiSelectionToFactor(%s, colnames(se));",
             target
         )
 
@@ -445,6 +446,7 @@ setMethod(".addDotPlotDataColor", "ColumnDotPlot", function(x, envir) {
     list(commands=cmds, labels=list(ColorBy=label))
 })
 
+#' @export
 setMethod(".addDotPlotDataShape", "ColumnDotPlot", function(x, envir) {
     shape_choice <- slot(x, .shapeByField)
 
@@ -462,6 +464,7 @@ setMethod(".addDotPlotDataShape", "ColumnDotPlot", function(x, envir) {
     list(commands=cmds, labels=list(ShapeBy=label))
 })
 
+#' @export
 setMethod(".addDotPlotDataSize", "ColumnDotPlot", function(x, envir) {
     size_choice <- slot(x, .sizeByField)
 
@@ -479,6 +482,7 @@ setMethod(".addDotPlotDataSize", "ColumnDotPlot", function(x, envir) {
     list(commands=cmds, labels=list(SizeBy=label))
 })
 
+#' @export
 setMethod(".addDotPlotDataFacets", "ColumnDotPlot", function(x, envir) {
     facet_cmds <- NULL
     labels <- list()
@@ -515,6 +519,7 @@ setMethod(".addDotPlotDataFacets", "ColumnDotPlot", function(x, envir) {
     list(commands=facet_cmds, labels=labels)
 })
 
+#' @export
 setMethod(".addDotPlotDataSelected", "ColumnDotPlot", function(x, envir) {
     if (!exists("col_selected", envir=envir, inherits=FALSE)) {
         return(NULL)
@@ -566,8 +571,8 @@ setMethod(".colorDotPlot", "ColumnDotPlot", function(x, colorby, x_aes="X", y_ae
         )
 
     } else if (color_choice == .colorByColSelectionsTitle) {
-        sprintf("scale_color_manual(values=iSEE::columnSelectionColorMap(colormap, %s), drop=FALSE) +", 
-            paste(deparse(levels(colorby)), collapse="")) 
+        sprintf("scale_color_manual(values=iSEE::columnSelectionColorMap(colormap, %s), drop=FALSE) +",
+            paste(deparse(levels(colorby)), collapse=""))
 
     } else {
         .colorByNoneDotPlotScale(x)
@@ -665,7 +670,7 @@ setMethod(".getDotPlotColorHelp", "ColumnDotPlot", function(x, color_choices) {
             steps <- c(steps, list(
                 c(
                     element=start,
-                    intro="If we <strong>select <em>Column selection</em></strong>, we will color the points according to the multiple column selection transmitted from another panel (see the Selection Parameters box). If a column is included in the active selection of the other panel, the corresponding point in this panel is assigned a certain color; if the column is in one of the saved selections, it gets another color; and if the column is not in any selection, it gets the default color (usually grey). Points that are present in multiple selections also get a different color."  
+                    intro="If we <strong>select <em>Column selection</em></strong>, we will color the points according to the multiple column selection transmitted from another panel (see the Selection Parameters box). If a column is included in the active selection of the other panel, the corresponding point in this panel is assigned a certain color; if the column is in one of the saved selections, it gets another color; and if the column is not in any selection, it gets the default color (usually grey). Points that are present in multiple selections also get a different color."
                 )
             ))
         }

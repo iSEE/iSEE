@@ -123,9 +123,10 @@ library(scRNAseq)
 sce <- ReprocessedAllenData(assays="tophat_counts")
 class(sce)
 
-library(scater)
-sce <- logNormCounts(sce, exprs_values="tophat_counts")
+library(scrapper)
+sce <- normalizeRnaCounts.se(sce, assay.type = "tophat_counts")
 
+library(scater)
 sce <- runPCA(sce, ncomponents=4)
 sce <- runTSNE(sce)
 rowData(sce)$ave_count <- rowMeans(assay(sce, "tophat_counts"))

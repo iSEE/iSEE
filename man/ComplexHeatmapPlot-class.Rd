@@ -208,7 +208,8 @@ x[["ShowDimNames"]] <- c("Rows", "Columns")
 
 library(scater)
 sce <- mockSCE()
-sce <- logNormCounts(sce)
+library(scrapper)
+sce <- normalizeRnaCounts.se(sce)
 
 old_cd <- colData(sce)
 colData(sce) <- NULL

@@ -93,7 +93,8 @@
 #'
 #' library(scater)
 #' sce <- mockSCE()
-#' sce <- logNormCounts(sce)
+#' library(scrapper)
+#' sce <- normalizeRnaCounts.se(sce)
 #'
 #' old_cd <- colData(sce)
 #' colData(sce) <- NULL
@@ -108,18 +109,7 @@
 #' .refineParameters(x, sce0)
 #'
 #' @docType methods
-#' @aliases ColumnDataPlot ColumnDataPlot-class
-#' initialize,ColumnDataPlot-method
-#' .refineParameters,ColumnDataPlot-method
-#' .defineDataInterface,ColumnDataPlot-method
-#' .createObservers,ColumnDataPlot-method
-#' .fullName,ColumnDataPlot-method
-#' .panelColor,ColumnDataPlot-method
-#' .generateDotPlotData,ColumnDataPlot-method
-#' .multiSelectionInvalidated,ColumnDataPlot-method
-#' .allowableXAxisChoices,ColumnDataPlot-method
-#' .allowableYAxisChoices,ColumnDataPlot-method
-#' .definePanelTour,ColumnDataPlot-method
+#' @aliases ColumnDataPlot ColumnDataPlot-class initialize,ColumnDataPlot-method .refineParameters,ColumnDataPlot-method .defineDataInterface,ColumnDataPlot-method .createObservers,ColumnDataPlot-method .fullName,ColumnDataPlot-method .panelColor,ColumnDataPlot-method .generateDotPlotData,ColumnDataPlot-method .multiSelectionInvalidated,ColumnDataPlot-method .allowableXAxisChoices,ColumnDataPlot-method .allowableYAxisChoices,ColumnDataPlot-method .definePanelTour,ColumnDataPlot-method
 #'
 #' @name ColumnDataPlot-class
 NULL

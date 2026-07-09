@@ -77,22 +77,7 @@
 #' @seealso \linkS4class{Panel}, for the immediate parent class.
 #'
 #' @name Table-class
-#' @aliases
-#' initialize,Table-method
-#' .refineParameters,Table-method
-#' .createObservers,Table-method
-#' .generateOutput,Table-method
-#' .renderOutput,Table-method
-#' .defineOutput,Table-method
-#' .exportOutput,Table-method
-#' .hideInterface,Table-method
-#' .multiSelectionCommands,Table-method
-#' .multiSelectionActive,Table-method
-#' .multiSelectionRestricted,Table-method
-#' .singleSelectionValue,Table-method
-#' .definePanelTour,Table-method
-#' .defineDataInterface,Table-method
-#' updateObject,Table-method
+#' @aliases initialize,Table-method .refineParameters,Table-method .createObservers,Table-method .generateOutput,Table-method .renderOutput,Table-method .defineOutput,Table-method .exportOutput,Table-method .hideInterface,Table-method .multiSelectionCommands,Table-method .multiSelectionActive,Table-method .multiSelectionRestricted,Table-method .singleSelectionValue,Table-method .definePanelTour,Table-method .defineDataInterface,Table-method updateObject,Table-method
 NULL
 
 #' @export

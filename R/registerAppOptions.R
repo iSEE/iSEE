@@ -78,9 +78,7 @@
 #' # Wiping out all options.
 #' se <- registerAppOptions(se, list())
 #' getAllAppOptions(se)
-#' @aliases
-#' .activateAppOptionRegistry
-#' .deactivateAppOptionRegistry
+#' @aliases .activateAppOptionRegistry .deactivateAppOptionRegistry
 #' @export
 #' @importFrom S4Vectors metadata metadata<-
 registerAppOptions <- function(se, ...) {

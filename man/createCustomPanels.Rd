@@ -113,8 +113,8 @@ GEN()
 if (interactive()) {
     library(scRNAseq)
     sce <- ReprocessedAllenData("tophat_counts")
-    library(scater)
-    sce <- logNormCounts(sce, exprs_values="tophat_counts")
+    library(scrapper)
+    sce <- normalizeRnaCounts.se(sce, assay.type = "tophat_counts")
 
     iSEE(sce, initial=list(
         ColumnDataPlot(PanelId=1L),

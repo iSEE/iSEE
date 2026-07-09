@@ -89,9 +89,10 @@
 #' sce <- ReprocessedAllenData(assays="tophat_counts")
 #' class(sce)
 #'
-#' library(scater)
-#' sce <- logNormCounts(sce, exprs_values="tophat_counts")
+#' library(scrapper)
+#' sce <- normalizeRnaCounts.se(sce, assay.type = "tophat_counts")
 #'
+#' library(scater)
 #' sce <- runPCA(sce, ncomponents=4)
 #' sce <- runTSNE(sce)
 #' rowData(sce)$ave_count <- rowMeans(assay(sce, "tophat_counts"))
@@ -106,14 +107,11 @@
 #' }
 #'
 #' @export
-#' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage
-#' dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu 
-#' notificationItem
+#' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu notificationItem
 #' @importFrom utils packageVersion
 #' @importFrom shinyjs useShinyjs
 #' @importFrom rintrojs introjsUI
-#' @importFrom shiny reactiveValues uiOutput actionButton shinyApp
-#' HTML icon tags includeCSS isolate showNotification onStop stopApp
+#' @importFrom shiny reactiveValues uiOutput actionButton shinyApp HTML icon tags includeCSS isolate showNotification onStop stopApp
 iSEE <- function(se,
     initial=NULL,
     extra=NULL,
@@ -405,7 +403,9 @@ iSEE <- function(se,
 #' @inheritParams iSEE
 #' @param se_name String containing the variable name of the SummarizedExperiment object.
 #' @param ecm_name String containing the variable name of the ExperimentColorMap object.
-#' @param input,output,session The typical Shiny objects to be used in various reactive expressions.
+#' @param input The Shiny input object from the server function.
+#' @param output The Shiny output object from the server function.
+#' @param session The Shiny session object from the server function.
 #' @param rObjects A list of reactive variables used throughout the app.
 #'
 #' @return

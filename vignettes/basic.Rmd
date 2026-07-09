@@ -97,11 +97,11 @@ As provided, the `sce` object contains raw data and a number of quality control 
 colnames(colData(sce))
 ```
 
-Then, we normalize the expression values with `r Biocpkg("scater")`. 
+Then, we normalize the expression values with `r Biocpkg("scrapper")`. 
 
 ```{r}
-library(scater)
-sce <- logNormCounts(sce, exprs_values="tophat_counts")
+library(scrapper)
+sce <- normalizeRnaCounts.se(sce, assay.type = "tophat_counts")
 ```
 
 Next, we apply PCA and *t*-SNE to generate two low-dimensional representations of the cells.
@@ -109,6 +109,7 @@ The dimensionality reduction results are stored in `reducedDim(sce)`.
 
 ```{r allen-dataset-2}
 set.seed(1000)
+library(scater)
 sce <- runPCA(sce)
 sce <- runTSNE(sce)
 reducedDimNames(sce)

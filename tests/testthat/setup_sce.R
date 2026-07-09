@@ -1,12 +1,13 @@
 stopifnot(
   require(scRNAseq),
-  require(scater)
+  require(scater),
+  require(scrapper)
 )
 
 # Example data ----
 sce <- ReprocessedAllenData(assays = "tophat_counts", legacy = TRUE)
 
-sce <- logNormCounts(sce, exprs_values="tophat_counts")
+sce <- normalizeRnaCounts.se(sce, assay.type = "tophat_counts")
 
 ro <- order(rowVars(assay(sce, "logcounts")), decreasing = TRUE)
 sce <- sce[head(ro, 100),]

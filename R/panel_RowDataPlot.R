@@ -93,7 +93,8 @@
 #'
 #' library(scater)
 #' sce <- mockSCE()
-#' sce <- logNormCounts(sce)
+#' library(scrapper)
+#' sce <- normalizeRnaCounts.se(sce)
 #'
 #' # Spits out a NULL and a warning if is nothing to plot.
 #' sce0 <- .cacheCommonInfo(x, sce)

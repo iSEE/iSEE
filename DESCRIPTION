@@ -53,6 +53,7 @@ Suggests:
     scRNAseq,
     TENxPBMCData,
     scater,
+    scrapper,
     DelayedArray,
     HDF5Array,
     RColorBrewer,

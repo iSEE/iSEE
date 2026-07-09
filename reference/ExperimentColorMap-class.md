@@ -72,7 +72,6 @@ categorical color palette (Credit:
 This palette returns a set of colors sampled in steps of equal size that
 correspond to approximately equal perceptual changes in color:
 
-
     function(n) {
         hues=seq(15, 375, length=(n + 1))
         hcl(h=hues, l=65, c=100)[seq_len(n)]
@@ -82,7 +81,6 @@ To change the palette for all categorical variables, users must supply a
 colormap that returns a similar value; namely, an unnamed character
 vector of length `n`. For instance, using the base R palette
 `rainbow.colors`
-
 
     function(n) {
         rainbow(n)
@@ -201,27 +199,27 @@ assayColorMap(ecm, "logcounts") # [undefined --> default]
 #>     cols <- fn_cols(seq(begin, end, length.out = n))/255
 #>     grDevices::rgb(cols[, 1], cols[, 2], cols[, 3], alpha = alpha)
 #> }
-#> <bytecode: 0x5565938f5198>
+#> <bytecode: 0x559ee7ec3488>
 #> <environment: namespace:viridisLite>
 assayColorMap(ecm, "counts")
 #> function (n) 
 #> {
 #>     c("black", "brown", "red", "orange", "yellow")
 #> }
-#> <environment: 0x556592d26898>
+#> <environment: 0x559ee7c5bd50>
 assayColorMap(ecm, "cufflinks_fpkm")
 #> function (n, alpha = 1, begin = 0, end = 1, direction = 1) 
 #> {
 #>     viridis(n, alpha, begin, end, direction, option = "inferno")
 #> }
-#> <bytecode: 0x5565913d1268>
+#> <bytecode: 0x559ee7cd6498>
 #> <environment: namespace:viridisLite>
 assay(ecm, "cufflinks_fpkm") # alias
 #> function (n, alpha = 1, begin = 0, end = 1, direction = 1) 
 #> {
 #>     viridis(n, alpha, begin, end, direction, option = "inferno")
 #> }
-#> <bytecode: 0x5565913d1268>
+#> <bytecode: 0x559ee7cd6498>
 #> <environment: namespace:viridisLite>
 
 # colData colormaps
@@ -232,7 +230,7 @@ colDataColorMap(ecm, "passes_qc_checks_s")
 #>     names(qc_colors) <- c("Y", "N")
 #>     return(qc_colors)
 #> }
-#> <environment: 0x556592d26898>
+#> <environment: 0x559ee7c5bd50>
 colDataColorMap(ecm, "undefined")
 #> function (n, alpha = 1, begin = 0, end = 1, direction = 1, option = "D") 
 #> {
@@ -265,7 +263,7 @@ colDataColorMap(ecm, "undefined")
 #>     cols <- fn_cols(seq(begin, end, length.out = n))/255
 #>     grDevices::rgb(cols[, 1], cols[, 2], cols[, 3], alpha = alpha)
 #> }
-#> <bytecode: 0x5565938f5198>
+#> <bytecode: 0x559ee7ec3488>
 #> <environment: namespace:viridisLite>
 
 # rowData colormaps
@@ -301,7 +299,7 @@ rowDataColorMap(ecm, "undefined")
 #>     cols <- fn_cols(seq(begin, end, length.out = n))/255
 #>     grDevices::rgb(cols[, 1], cols[, 2], cols[, 3], alpha = alpha)
 #> }
-#> <bytecode: 0x5565938f5198>
+#> <bytecode: 0x559ee7ec3488>
 #> <environment: namespace:viridisLite>
 
 # generic accessors
@@ -311,21 +309,21 @@ assays(ecm)
 #> {
 #>     c("black", "brown", "red", "orange", "yellow")
 #> }
-#> <environment: 0x556592d26898>
+#> <environment: 0x559ee7c5bd50>
 #> 
 #> $tophat_counts
 #> function (n) 
 #> {
 #>     c("black", "brown", "red", "orange", "yellow")
 #> }
-#> <environment: 0x556592d26898>
+#> <environment: 0x559ee7c5bd50>
 #> 
 #> $cufflinks_fpkm
 #> function (n, alpha = 1, begin = 0, end = 1, direction = 1) 
 #> {
 #>     viridis(n, alpha, begin, end, direction, option = "inferno")
 #> }
-#> <bytecode: 0x5565913d1268>
+#> <bytecode: 0x559ee7cd6498>
 #> <environment: namespace:viridisLite>
 #> 
 #> $rsem_tpm
@@ -333,7 +331,7 @@ assays(ecm)
 #> {
 #>     viridis(n, alpha, begin, end, direction, option = "plasma")
 #> }
-#> <bytecode: 0x5565913a8490>
+#> <bytecode: 0x559ee7d253c0>
 #> <environment: namespace:viridisLite>
 #> 
 assayNames(ecm)

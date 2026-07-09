@@ -124,7 +124,8 @@ x[["Type"]] <- "TSNE"
 
 library(scater)
 sce <- mockSCE()
-sce <- logNormCounts(sce)
+library(scrapper)
+sce <- normalizeRnaCounts.se(sce)
 
 # Spits out a NULL and a warning if no reducedDims are available.
 sce0 <- .cacheCommonInfo(x, sce)

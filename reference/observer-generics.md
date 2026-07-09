@@ -51,7 +51,6 @@ Consider an observer for an interface element that modifies a slot of
 `x`. The code within this observer is expected to modify the “memory” of
 the app state in `pObjects`, via:
 
-
     new_value <- input[[paste0(PANEL, "_", SLOT)]]
     pObjects$memory[[PANEL]][[SLOT]] <- new_value
 

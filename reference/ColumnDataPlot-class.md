@@ -136,7 +136,16 @@ library(scater)
 #> Loading required package: scuttle
 #> Loading required package: ggplot2
 sce <- mockSCE()
-sce <- logNormCounts(sce)
+library(scrapper)
+#> 
+#> Attaching package: ‘scrapper’
+#> The following objects are masked from ‘package:scater’:
+#> 
+#>     aggregateAcrossCells, normalizeCounts
+#> The following objects are masked from ‘package:scuttle’:
+#> 
+#>     aggregateAcrossCells, normalizeCounts
+sce <- normalizeRnaCounts.se(sce)
 
 old_cd <- colData(sce)
 colData(sce) <- NULL

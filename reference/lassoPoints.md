@@ -47,16 +47,16 @@ lasso <- list(coord=rbind(c(0, 0), c(0.5, 0), c(0, 0.5), c(0, 0)),
 values <- data.frame(X=runif(100), Y=runif(100),
     row.names=sprintf("VALUE_%i", seq_len(100)))
 lassoPoints(values, lasso)
-#>                    X           Y
-#> VALUE_8  0.129155676 0.072476775
-#> VALUE_12 0.284979716 0.009333532
-#> VALUE_39 0.009614826 0.117817924
-#> VALUE_41 0.119281282 0.199199808
-#> VALUE_49 0.442380808 0.056098610
-#> VALUE_63 0.112004488 0.008002894
-#> VALUE_66 0.463874441 0.016999303
-#> VALUE_74 0.377463480 0.087603043
-#> VALUE_75 0.389771624 0.100078950
+#>                    X          Y
+#> VALUE_1   0.09840762 0.31913564
+#> VALUE_18  0.26061129 0.19330017
+#> VALUE_37  0.05110693 0.17549008
+#> VALUE_51  0.32752527 0.08856087
+#> VALUE_53  0.33588159 0.16012563
+#> VALUE_54  0.10722201 0.19520387
+#> VALUE_57  0.24380122 0.23567961
+#> VALUE_94  0.05336088 0.02877703
+#> VALUE_100 0.09970638 0.06994667
 
 # With faceting information:
 lasso <- list(coord=rbind(c(0, 0), c(0.5, 0), c(0, 0.5), c(0, 0)),
@@ -68,7 +68,6 @@ values <- data.frame(X=runif(100), Y=runif(100),
     FacetColumn=sample(LETTERS[1:4], 100, replace=TRUE),
     row.names=sprintf("VALUE_%i", seq_len(100)))
 lassoPoints(values, lasso)
-#>                   X         Y FacetRow FacetColumn
-#> VALUE_19 0.07664754 0.2915067        A           B
-#> VALUE_70 0.25793844 0.0886977        A           B
+#>                  X          Y FacetRow FacetColumn
+#> VALUE_11 0.4350417 0.01447103        A           B
 ```

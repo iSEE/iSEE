@@ -1,6 +1,6 @@
 # Deploying custom panels in the iSEE interface
 
-**Compiled date**: 2025-11-16
+**Compiled date**: 2026-07-09
 
 **Last edited**: 2020-04-20
 
@@ -356,9 +356,9 @@ things that will not fit into this vignette.
 ``` r
 
 sessionInfo()
-#> R Under development (unstable) (2025-11-12 r89009)
+#> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.3 LTS
+#> Running under: Ubuntu 24.04.4 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -380,51 +380,51 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] iSEE_2.23.1                 scater_1.39.0              
-#>  [3] ggplot2_4.0.1               scuttle_1.21.0             
-#>  [5] SingleCellExperiment_1.33.0 SummarizedExperiment_1.41.0
-#>  [7] Biobase_2.71.0              GenomicRanges_1.63.0       
-#>  [9] Seqinfo_1.1.0               IRanges_2.45.0             
-#> [11] S4Vectors_0.49.0            BiocGenerics_0.57.0        
-#> [13] generics_0.1.4              MatrixGenerics_1.23.0      
-#> [15] matrixStats_1.5.0           BiocStyle_2.39.0           
+#>  [1] iSEE_2.23.1                 scater_1.40.2              
+#>  [3] ggplot2_4.0.3               scuttle_1.22.0             
+#>  [5] SingleCellExperiment_1.34.0 SummarizedExperiment_1.42.0
+#>  [7] Biobase_2.72.0              GenomicRanges_1.64.0       
+#>  [9] Seqinfo_1.2.0               IRanges_2.46.0             
+#> [11] S4Vectors_0.50.1            BiocGenerics_0.58.1        
+#> [13] generics_0.1.4              MatrixGenerics_1.24.0      
+#> [15] matrixStats_1.5.0           BiocStyle_2.40.0           
 #> 
 #> loaded via a namespace (and not attached):
-#>   [1] gridExtra_2.3         rlang_1.1.6           magrittr_2.0.4       
-#>   [4] shinydashboard_0.7.3  clue_0.3-66           GetoptLong_1.0.5     
-#>   [7] otel_0.2.0            compiler_4.6.0        mgcv_1.9-4           
-#>  [10] png_0.1-8             systemfonts_1.3.1     vctrs_0.6.5          
+#>   [1] gridExtra_2.3.1       rlang_1.3.0           magrittr_2.0.5       
+#>   [4] shinydashboard_0.7.3  clue_0.3-68           GetoptLong_1.1.1     
+#>   [7] otel_0.2.0            compiler_4.6.1        mgcv_1.9-4           
+#>  [10] png_0.1-9             systemfonts_1.3.2     vctrs_0.7.3          
 #>  [13] pkgconfig_2.0.3       shape_1.4.6.1         crayon_1.5.3         
-#>  [16] fastmap_1.2.0         XVector_0.51.0        fontawesome_0.5.3    
-#>  [19] promises_1.5.0        rmarkdown_2.30        shinyAce_0.4.4       
-#>  [22] ggbeeswarm_0.7.2      ragg_1.5.0            xfun_0.54            
-#>  [25] cachem_1.1.0          beachmat_2.27.0       jsonlite_2.0.0       
-#>  [28] listviewer_4.0.0      later_1.4.4           DelayedArray_0.37.0  
-#>  [31] BiocParallel_1.45.0   irlba_2.3.5.1         parallel_4.6.0       
-#>  [34] cluster_2.1.8.1       R6_2.6.1              bslib_0.9.0          
-#>  [37] RColorBrewer_1.1-3    jquerylib_0.1.4       Rcpp_1.1.0           
-#>  [40] bookdown_0.45         iterators_1.0.14      knitr_1.50           
-#>  [43] splines_4.6.0         igraph_2.2.1          httpuv_1.6.16        
-#>  [46] Matrix_1.7-4          tidyselect_1.2.1      abind_1.4-8          
-#>  [49] yaml_2.3.10           viridis_0.6.5         doParallel_1.0.17    
-#>  [52] codetools_0.2-20      miniUI_0.1.2          lattice_0.22-7       
-#>  [55] tibble_3.3.0          shiny_1.11.1          withr_3.0.2          
-#>  [58] S7_0.2.1              evaluate_1.0.5        desc_1.4.3           
-#>  [61] circlize_0.4.16       pillar_1.11.1         BiocManager_1.30.27  
-#>  [64] DT_0.34.0             foreach_1.5.2         shinyjs_2.1.0        
-#>  [67] scales_1.4.0          xtable_1.8-4          glue_1.8.0           
-#>  [70] tools_4.6.0           BiocNeighbors_2.5.0   ScaledMatrix_1.19.0  
-#>  [73] colourpicker_1.3.0    fs_1.6.6              grid_4.6.0           
-#>  [76] colorspace_2.1-2      nlme_3.1-168          beeswarm_0.4.0       
-#>  [79] BiocSingular_1.27.0   vipor_0.4.7           cli_3.6.5            
-#>  [82] rsvd_1.0.5            textshaping_1.0.4     S4Arrays_1.11.0      
-#>  [85] viridisLite_0.4.2     ComplexHeatmap_2.27.0 dplyr_1.1.4          
+#>  [16] fastmap_1.2.0         XVector_0.52.0        fontawesome_0.5.3    
+#>  [19] promises_1.5.0        rmarkdown_2.31        shinyAce_0.4.4       
+#>  [22] ggbeeswarm_0.7.3      ragg_1.5.2            xfun_0.59            
+#>  [25] cachem_1.1.0          beachmat_2.28.0       jsonlite_2.0.0       
+#>  [28] listviewer_4.0.0      later_1.4.8           DelayedArray_0.38.2  
+#>  [31] BiocParallel_1.46.0   irlba_2.3.7           parallel_4.6.1       
+#>  [34] cluster_2.1.8.2       R6_2.6.1              bslib_0.11.0         
+#>  [37] RColorBrewer_1.1-3    jquerylib_0.1.4       Rcpp_1.1.2           
+#>  [40] bookdown_0.47         iterators_1.0.14      knitr_1.51           
+#>  [43] splines_4.6.1         igraph_2.3.3          httpuv_1.6.17        
+#>  [46] Matrix_1.7-5          tidyselect_1.2.1      abind_1.4-8          
+#>  [49] yaml_2.3.12           viridis_0.6.5         doParallel_1.0.17    
+#>  [52] codetools_0.2-20      miniUI_0.1.2          lattice_0.22-9       
+#>  [55] tibble_3.3.1          shiny_1.14.0          withr_3.0.3          
+#>  [58] S7_0.2.2              evaluate_1.0.5        desc_1.4.3           
+#>  [61] circlize_0.4.18       pillar_1.11.1         BiocManager_1.30.27  
+#>  [64] DT_0.34.0             foreach_1.5.2         shinyjs_2.1.1        
+#>  [67] scales_1.4.0          xtable_1.8-8          glue_1.8.1           
+#>  [70] tools_4.6.1           BiocNeighbors_2.6.0   ScaledMatrix_1.20.0  
+#>  [73] colourpicker_1.3.0    fs_2.1.0              grid_4.6.1           
+#>  [76] colorspace_2.1-2      nlme_3.1-169          beeswarm_0.4.0       
+#>  [79] BiocSingular_1.28.0   vipor_0.4.7           cli_3.6.6            
+#>  [82] rsvd_1.0.5            textshaping_1.0.5     S4Arrays_1.12.0      
+#>  [85] viridisLite_0.4.3     ComplexHeatmap_2.28.0 dplyr_1.2.1          
 #>  [88] gtable_0.3.6          rintrojs_0.3.4        sass_0.4.10          
-#>  [91] digest_0.6.38         SparseArray_1.11.1    ggrepel_0.9.6        
+#>  [91] digest_0.6.39         SparseArray_1.12.2    ggrepel_0.9.8        
 #>  [94] rjson_0.2.23          htmlwidgets_1.6.4     farver_2.1.2         
-#>  [97] memoise_2.0.1         htmltools_0.5.8.1     pkgdown_2.2.0        
-#> [100] lifecycle_1.0.4       shinyWidgets_0.9.0    mime_0.13            
-#> [103] GlobalOptions_0.1.2
+#>  [97] memoise_2.0.1         htmltools_0.5.9       pkgdown_2.2.1        
+#> [100] lifecycle_1.0.5       shinyWidgets_0.9.1    mime_0.13            
+#> [103] GlobalOptions_0.1.4
 # devtools::session_info()
 ```
 

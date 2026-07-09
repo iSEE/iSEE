@@ -16,10 +16,6 @@ construction) and
 iSEEOptions
 ```
 
-## Format
-
-An object of class `list` of length 4.
-
 ## Commands
 
 `str(iSEEOptions$get())` will show the default values for all options.

@@ -71,13 +71,13 @@ Y <- X + rnorm(100000)
 
 summary(subsetPointsByGrid(X, Y, resolution=100))
 #>    Mode   FALSE    TRUE 
-#> logical   96501    3499 
+#> logical   96654    3346 
 
 summary(subsetPointsByGrid(X, Y, resolution=200))
 #>    Mode   FALSE    TRUE 
-#> logical   89516   10484 
+#> logical   89902   10098 
 
 summary(subsetPointsByGrid(X, Y, resolution=1000))
 #>    Mode   FALSE    TRUE 
-#> logical   29680   70320 
+#> logical   30494   69506 
 ```

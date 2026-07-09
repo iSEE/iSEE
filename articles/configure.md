@@ -1,6 +1,6 @@
 # Configuring iSEE apps
 
-**Compiled date**: 2025-11-16
+**Compiled date**: 2026-07-09
 
 **Last edited**: 2020-04-20
 
@@ -459,9 +459,9 @@ examples for setting up your own configurations.
 ``` r
 
 sessionInfo()
-#> R Under development (unstable) (2025-11-12 r89009)
+#> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.3 LTS
+#> Running under: Ubuntu 24.04.4 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -483,46 +483,46 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] iSEE_2.23.1                 SingleCellExperiment_1.33.0
-#>  [3] SummarizedExperiment_1.41.0 Biobase_2.71.0             
-#>  [5] GenomicRanges_1.63.0        Seqinfo_1.1.0              
-#>  [7] IRanges_2.45.0              S4Vectors_0.49.0           
-#>  [9] BiocGenerics_0.57.0         generics_0.1.4             
-#> [11] MatrixGenerics_1.23.0       matrixStats_1.5.0          
-#> [13] BiocStyle_2.39.0           
+#>  [1] iSEE_2.23.1                 SingleCellExperiment_1.34.0
+#>  [3] SummarizedExperiment_1.42.0 Biobase_2.72.0             
+#>  [5] GenomicRanges_1.64.0        Seqinfo_1.2.0              
+#>  [7] IRanges_2.46.0              S4Vectors_0.50.1           
+#>  [9] BiocGenerics_0.58.1         generics_0.1.4             
+#> [11] MatrixGenerics_1.24.0       matrixStats_1.5.0          
+#> [13] BiocStyle_2.40.0           
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] rlang_1.1.6           magrittr_2.0.4        shinydashboard_0.7.3 
-#>  [4] clue_0.3-66           GetoptLong_1.0.5      otel_0.2.0           
-#>  [7] compiler_4.6.0        mgcv_1.9-4            png_0.1-8            
-#> [10] systemfonts_1.3.1     vctrs_0.6.5           pkgconfig_2.0.3      
+#>  [1] rlang_1.3.0           magrittr_2.0.5        shinydashboard_0.7.3 
+#>  [4] clue_0.3-68           GetoptLong_1.1.1      otel_0.2.0           
+#>  [7] compiler_4.6.1        mgcv_1.9-4            png_0.1-9            
+#> [10] systemfonts_1.3.2     vctrs_0.7.3           pkgconfig_2.0.3      
 #> [13] shape_1.4.6.1         crayon_1.5.3          fastmap_1.2.0        
-#> [16] XVector_0.51.0        fontawesome_0.5.3     promises_1.5.0       
-#> [19] rmarkdown_2.30        shinyAce_0.4.4        ragg_1.5.0           
-#> [22] xfun_0.54             cachem_1.1.0          jsonlite_2.0.0       
-#> [25] listviewer_4.0.0      later_1.4.4           DelayedArray_0.37.0  
-#> [28] parallel_4.6.0        cluster_2.1.8.1       R6_2.6.1             
-#> [31] bslib_0.9.0           RColorBrewer_1.1-3    jquerylib_0.1.4      
-#> [34] Rcpp_1.1.0            bookdown_0.45         iterators_1.0.14     
-#> [37] knitr_1.50            httpuv_1.6.16         Matrix_1.7-4         
-#> [40] splines_4.6.0         igraph_2.2.1          tidyselect_1.2.1     
-#> [43] abind_1.4-8           yaml_2.3.10           doParallel_1.0.17    
-#> [46] codetools_0.2-20      miniUI_0.1.2          lattice_0.22-7       
-#> [49] tibble_3.3.0          shiny_1.11.1          S7_0.2.1             
-#> [52] evaluate_1.0.5        desc_1.4.3            circlize_0.4.16      
+#> [16] XVector_0.52.0        fontawesome_0.5.3     promises_1.5.0       
+#> [19] rmarkdown_2.31        shinyAce_0.4.4        ragg_1.5.2           
+#> [22] xfun_0.59             cachem_1.1.0          jsonlite_2.0.0       
+#> [25] listviewer_4.0.0      later_1.4.8           DelayedArray_0.38.2  
+#> [28] parallel_4.6.1        cluster_2.1.8.2       R6_2.6.1             
+#> [31] bslib_0.11.0          RColorBrewer_1.1-3    jquerylib_0.1.4      
+#> [34] Rcpp_1.1.2            bookdown_0.47         iterators_1.0.14     
+#> [37] knitr_1.51            httpuv_1.6.17         Matrix_1.7-5         
+#> [40] splines_4.6.1         igraph_2.3.3          tidyselect_1.2.1     
+#> [43] abind_1.4-8           yaml_2.3.12           doParallel_1.0.17    
+#> [46] codetools_0.2-20      miniUI_0.1.2          lattice_0.22-9       
+#> [49] tibble_3.3.1          shiny_1.14.0          S7_0.2.2             
+#> [52] evaluate_1.0.5        desc_1.4.3            circlize_0.4.18      
 #> [55] pillar_1.11.1         BiocManager_1.30.27   DT_0.34.0            
-#> [58] foreach_1.5.2         shinyjs_2.1.0         ggplot2_4.0.1        
-#> [61] scales_1.4.0          xtable_1.8-4          glue_1.8.0           
-#> [64] tools_4.6.0           colourpicker_1.3.0    fs_1.6.6             
-#> [67] grid_4.6.0            colorspace_2.1-2      nlme_3.1-168         
-#> [70] vipor_0.4.7           cli_3.6.5             textshaping_1.0.4    
-#> [73] viridisLite_0.4.2     S4Arrays_1.11.0       ComplexHeatmap_2.27.0
-#> [76] dplyr_1.1.4           gtable_0.3.6          rintrojs_0.3.4       
-#> [79] sass_0.4.10           digest_0.6.38         SparseArray_1.11.1   
-#> [82] ggrepel_0.9.6         rjson_0.2.23          htmlwidgets_1.6.4    
-#> [85] farver_2.1.2          memoise_2.0.1         htmltools_0.5.8.1    
-#> [88] pkgdown_2.2.0         lifecycle_1.0.4       shinyWidgets_0.9.0   
-#> [91] GlobalOptions_0.1.2   mime_0.13
+#> [58] foreach_1.5.2         shinyjs_2.1.1         ggplot2_4.0.3        
+#> [61] scales_1.4.0          xtable_1.8-8          glue_1.8.1           
+#> [64] tools_4.6.1           colourpicker_1.3.0    fs_2.1.0             
+#> [67] grid_4.6.1            colorspace_2.1-2      nlme_3.1-169         
+#> [70] vipor_0.4.7           cli_3.6.6             textshaping_1.0.5    
+#> [73] viridisLite_0.4.3     S4Arrays_1.12.0       ComplexHeatmap_2.28.0
+#> [76] dplyr_1.2.1           gtable_0.3.6          rintrojs_0.3.4       
+#> [79] sass_0.4.10           digest_0.6.39         SparseArray_1.12.2   
+#> [82] ggrepel_0.9.8         rjson_0.2.23          htmlwidgets_1.6.4    
+#> [85] farver_2.1.2          memoise_2.0.1         htmltools_0.5.9      
+#> [88] pkgdown_2.2.1         lifecycle_1.0.5       shinyWidgets_0.9.1   
+#> [91] GlobalOptions_0.1.4   mime_0.13
 # devtools::session_info()
 ```
 

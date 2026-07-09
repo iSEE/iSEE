@@ -164,7 +164,8 @@ x[["XAxisRowData"]] <- "stuff"
 
 library(scater)
 sce <- mockSCE()
-sce <- logNormCounts(sce)
+library(scrapper)
+sce <- normalizeRnaCounts.se(sce)
 
 old_assay_names <- assayNames(sce)
 assayNames(sce) <- character(length(old_assay_names))

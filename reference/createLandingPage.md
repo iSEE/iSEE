@@ -173,8 +173,8 @@ createLandingPage()
 #>     }, ignoreNULL = TRUE, ignoreInit = TRUE)
 #>     invisible(NULL)
 #> }
-#> <bytecode: 0x559f01a3f6e0>
-#> <environment: 0x559f01a451f8>
+#> <bytecode: 0x556f0add6068>
+#> <environment: 0x556f0add9e60>
 
 # Alternative approach, to create a landing page
 # that opens one of the datasets from the scRNAseq package.

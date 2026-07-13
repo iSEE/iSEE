@@ -1,6 +1,6 @@
 # Deploying custom panels in the iSEE interface
 
-**Compiled date**: 2026-07-09
+**Compiled date**: 2026-07-13
 
 **Last edited**: 2020-04-20
 
@@ -380,7 +380,7 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] iSEE_2.23.1                 scater_1.40.2              
+#>  [1] iSEE_2.25.1                 scater_1.40.2              
 #>  [3] ggplot2_4.0.3               scuttle_1.22.0             
 #>  [5] SingleCellExperiment_1.34.0 SummarizedExperiment_1.42.0
 #>  [7] Biobase_2.72.0              GenomicRanges_1.64.0       
@@ -397,7 +397,7 @@ sessionInfo()
 #>  [13] pkgconfig_2.0.3       shape_1.4.6.1         crayon_1.5.3         
 #>  [16] fastmap_1.2.0         XVector_0.52.0        fontawesome_0.5.3    
 #>  [19] promises_1.5.0        rmarkdown_2.31        shinyAce_0.4.4       
-#>  [22] ggbeeswarm_0.7.3      ragg_1.5.2            xfun_0.59            
+#>  [22] ggbeeswarm_0.7.3      ragg_1.5.2            xfun_0.60            
 #>  [25] cachem_1.1.0          beachmat_2.28.0       jsonlite_2.0.0       
 #>  [28] listviewer_4.0.0      later_1.4.8           DelayedArray_0.38.2  
 #>  [31] BiocParallel_1.46.0   irlba_2.3.7           parallel_4.6.1       
@@ -415,7 +415,7 @@ sessionInfo()
 #>  [67] scales_1.4.0          xtable_1.8-8          glue_1.8.1           
 #>  [70] tools_4.6.1           BiocNeighbors_2.6.0   ScaledMatrix_1.20.0  
 #>  [73] colourpicker_1.3.0    fs_2.1.0              grid_4.6.1           
-#>  [76] colorspace_2.1-2      nlme_3.1-169          beeswarm_0.4.0       
+#>  [76] colorspace_2.1-3      nlme_3.1-169          beeswarm_0.4.0       
 #>  [79] BiocSingular_1.28.0   vipor_0.4.7           cli_3.6.6            
 #>  [82] rsvd_1.0.5            textshaping_1.0.5     S4Arrays_1.12.0      
 #>  [85] viridisLite_0.4.3     ComplexHeatmap_2.28.0 dplyr_1.2.1          

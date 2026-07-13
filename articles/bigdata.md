@@ -1,6 +1,6 @@
 # How to use iSEE with big data
 
-**Compiled date**: 2026-07-09
+**Compiled date**: 2026-07-13
 
 **Last edited**: 2018-03-08
 
@@ -304,7 +304,7 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] iSEE_2.23.1                 scRNAseq_2.26.0            
+#>  [1] iSEE_2.25.1                 scRNAseq_2.26.0            
 #>  [3] TENxPBMCData_1.30.0         HDF5Array_1.40.0           
 #>  [5] h5mread_1.4.0               rhdf5_2.56.0               
 #>  [7] DelayedArray_0.38.2         SparseArray_1.12.2         
@@ -332,7 +332,7 @@ sessionInfo()
 #>  [34] lifecycle_1.0.5          iterators_1.0.14         pkgconfig_2.0.3         
 #>  [37] colourpicker_1.3.0       R6_2.6.1                 fastmap_1.2.0           
 #>  [40] shiny_1.14.0             clue_0.3-68              digest_0.6.39           
-#>  [43] colorspace_2.1-2         AnnotationDbi_1.74.0     ExperimentHub_3.2.0     
+#>  [43] colorspace_2.1-3         AnnotationDbi_1.74.0     ExperimentHub_3.2.0     
 #>  [46] textshaping_1.0.5        RSQLite_3.53.3           filelock_1.0.3          
 #>  [49] mgcv_1.9-4               httr_1.4.8               compiler_4.6.1          
 #>  [52] bit64_4.8.2              withr_3.0.3              doParallel_1.0.17       
@@ -350,7 +350,7 @@ sessionInfo()
 #>  [88] rtracklayer_1.72.0       bit_4.6.0                tidyselect_1.2.1        
 #>  [91] ComplexHeatmap_2.28.0    miniUI_0.1.2             Biostrings_2.80.1       
 #>  [94] knitr_1.51               bookdown_0.47            ProtGenerics_1.44.0     
-#>  [97] shinydashboard_0.7.3     xfun_0.59                DT_0.34.0               
+#>  [97] shinydashboard_0.7.3     xfun_0.60                DT_0.34.0               
 #> [100] UCSC.utils_1.8.0         lazyeval_0.2.3           yaml_2.3.12             
 #> [103] shinyWidgets_0.9.1       evaluate_1.0.5           codetools_0.2-20        
 #> [106] cigarillo_1.2.0          tibble_3.3.1             alabaster.matrix_1.12.0 

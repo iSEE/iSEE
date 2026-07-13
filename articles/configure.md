@@ -1,6 +1,6 @@
 # Configuring iSEE apps
 
-**Compiled date**: 2026-07-09
+**Compiled date**: 2026-07-13
 
 **Last edited**: 2020-04-20
 
@@ -483,7 +483,7 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] iSEE_2.23.1                 SingleCellExperiment_1.34.0
+#>  [1] iSEE_2.25.1                 SingleCellExperiment_1.34.0
 #>  [3] SummarizedExperiment_1.42.0 Biobase_2.72.0             
 #>  [5] GenomicRanges_1.64.0        Seqinfo_1.2.0              
 #>  [7] IRanges_2.46.0              S4Vectors_0.50.1           
@@ -499,7 +499,7 @@ sessionInfo()
 #> [13] shape_1.4.6.1         crayon_1.5.3          fastmap_1.2.0        
 #> [16] XVector_0.52.0        fontawesome_0.5.3     promises_1.5.0       
 #> [19] rmarkdown_2.31        shinyAce_0.4.4        ragg_1.5.2           
-#> [22] xfun_0.59             cachem_1.1.0          jsonlite_2.0.0       
+#> [22] xfun_0.60             cachem_1.1.0          jsonlite_2.0.0       
 #> [25] listviewer_4.0.0      later_1.4.8           DelayedArray_0.38.2  
 #> [28] parallel_4.6.1        cluster_2.1.8.2       R6_2.6.1             
 #> [31] bslib_0.11.0          RColorBrewer_1.1-3    jquerylib_0.1.4      
@@ -514,7 +514,7 @@ sessionInfo()
 #> [58] foreach_1.5.2         shinyjs_2.1.1         ggplot2_4.0.3        
 #> [61] scales_1.4.0          xtable_1.8-8          glue_1.8.1           
 #> [64] tools_4.6.1           colourpicker_1.3.0    fs_2.1.0             
-#> [67] grid_4.6.1            colorspace_2.1-2      nlme_3.1-169         
+#> [67] grid_4.6.1            colorspace_2.1-3      nlme_3.1-169         
 #> [70] vipor_0.4.7           cli_3.6.6             textshaping_1.0.5    
 #> [73] viridisLite_0.4.3     S4Arrays_1.12.0       ComplexHeatmap_2.28.0
 #> [76] dplyr_1.2.1           gtable_0.3.6          rintrojs_0.3.4       

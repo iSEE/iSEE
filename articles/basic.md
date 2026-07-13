@@ -1,6 +1,6 @@
 # An introduction to the iSEE interface
 
-**Compiled date**: 2026-07-09
+**Compiled date**: 2026-07-13
 
 **Last edited**: 2020-04-20
 
@@ -643,7 +643,7 @@ sessionInfo()
 #> other attached packages:
 #>  [1] scater_1.40.2               ggplot2_4.0.3              
 #>  [3] scuttle_1.22.0              scrapper_1.6.3             
-#>  [5] scRNAseq_2.26.0             iSEE_2.23.1                
+#>  [5] scRNAseq_2.26.0             iSEE_2.25.1                
 #>  [7] SingleCellExperiment_1.34.0 SummarizedExperiment_1.42.0
 #>  [9] Biobase_2.72.0              GenomicRanges_1.64.0       
 #> [11] Seqinfo_1.2.0               IRanges_2.46.0             
@@ -670,13 +670,13 @@ sessionInfo()
 #>  [46] GetoptLong_1.1.1         BiocNeighbors_2.6.0      iterators_1.0.14        
 #>  [49] systemfonts_1.3.2        foreach_1.5.2            tools_4.6.1             
 #>  [52] ragg_1.5.2               Rcpp_1.1.2               glue_1.8.1              
-#>  [55] gridExtra_2.3.1          SparseArray_1.12.2       xfun_0.59               
+#>  [55] gridExtra_2.3.1          SparseArray_1.12.2       xfun_0.60               
 #>  [58] mgcv_1.9-4               GenomeInfoDb_1.48.0      dplyr_1.2.1             
 #>  [61] HDF5Array_1.40.0         gypsum_1.8.0             shinydashboard_0.7.3    
 #>  [64] withr_3.0.3              BiocManager_1.30.27      fastmap_1.2.0           
 #>  [67] rhdf5filters_1.24.0      shinyjs_2.1.1            rsvd_1.0.5              
 #>  [70] digest_0.6.39            R6_2.6.1                 mime_0.13               
-#>  [73] textshaping_1.0.5        colorspace_2.1-2         listviewer_4.0.0        
+#>  [73] textshaping_1.0.5        colorspace_2.1-3         listviewer_4.0.0        
 #>  [76] RSQLite_3.53.3           cigarillo_1.2.0          h5mread_1.4.0           
 #>  [79] rtracklayer_1.72.0       httr_1.4.8               htmlwidgets_1.6.4       
 #>  [82] S4Arrays_1.12.0          pkgconfig_2.0.3          gtable_0.3.6            

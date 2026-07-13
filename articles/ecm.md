@@ -1,6 +1,6 @@
 # Describing the ExperimentColorMap class
 
-**Compiled date**: 2026-07-09
+**Compiled date**: 2026-07-13
 
 **Last edited**: 2018-03-08
 
@@ -257,7 +257,7 @@ sessionInfo()
 #> [8] base     
 #> 
 #> other attached packages:
-#>  [1] iSEE_2.23.1                 SingleCellExperiment_1.34.0
+#>  [1] iSEE_2.25.1                 SingleCellExperiment_1.34.0
 #>  [3] SummarizedExperiment_1.42.0 Biobase_2.72.0             
 #>  [5] GenomicRanges_1.64.0        Seqinfo_1.2.0              
 #>  [7] IRanges_2.46.0              S4Vectors_0.50.1           
@@ -273,7 +273,7 @@ sessionInfo()
 #> [13] pkgconfig_2.0.3       shape_1.4.6.1         crayon_1.5.3         
 #> [16] fastmap_1.2.0         XVector_0.52.0        fontawesome_0.5.3    
 #> [19] promises_1.5.0        rmarkdown_2.31        shinyAce_0.4.4       
-#> [22] ragg_1.5.2            xfun_0.59             cachem_1.1.0         
+#> [22] ragg_1.5.2            xfun_0.60             cachem_1.1.0         
 #> [25] jsonlite_2.0.0        listviewer_4.0.0      later_1.4.8          
 #> [28] DelayedArray_0.38.2   parallel_4.6.1        cluster_2.1.8.2      
 #> [31] R6_2.6.1              bslib_0.11.0          RColorBrewer_1.1-3   
@@ -289,7 +289,7 @@ sessionInfo()
 #> [61] shinyjs_2.1.1         ggplot2_4.0.3         scales_1.4.0         
 #> [64] xtable_1.8-8          glue_1.8.1            tools_4.6.1          
 #> [67] colourpicker_1.3.0    fs_2.1.0              grid_4.6.1           
-#> [70] colorspace_2.1-2      nlme_3.1-169          vipor_0.4.7          
+#> [70] colorspace_2.1-3      nlme_3.1-169          vipor_0.4.7          
 #> [73] cli_3.6.6             textshaping_1.0.5     S4Arrays_1.12.0      
 #> [76] viridisLite_0.4.3     ComplexHeatmap_2.28.0 dplyr_1.2.1          
 #> [79] gtable_0.3.6          rintrojs_0.3.4        sass_0.4.10          

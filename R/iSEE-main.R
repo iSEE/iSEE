@@ -19,6 +19,10 @@
 #' If not provided, the app displays the version info of \code{\link{iSEE}}.
 #' @param tabTitle A string indicating the title to be displayed in the browser
 #' tab. If not provided, the tab is named \code{"iSEE"}.
+#' @param appFooter Either a character string to be visualized as a footer-like 
+#' element, or some valid HTML content, provided e.g. via shiny tag commands (
+#' which would be rendered "as is"). Defaults to NULL, showing no footer. If 
+#' neither a character nor a shiny.tag, it silently displays no header.
 #' @param runLocal A logical indicating whether the app is to be run locally or remotely on a server, which determines how documentation will be accessed.
 #' @param voice A logical indicating whether the voice recognition should be enabled.
 #' @param bugs Set to \code{TRUE} to enable the bugs Easter egg.
@@ -120,6 +124,7 @@ iSEE <- function(se,
     tour=NULL,
     appTitle=NULL,
     tabTitle=NULL,
+    appFooter=NULL,
     runLocal=TRUE,
     voice=FALSE,
     bugs=FALSE,
@@ -150,6 +155,30 @@ iSEE <- function(se,
         }
         if (is.null(extra)) {
             extra <- all_defaults
+        }
+    }
+    
+    if (!is.null(appFooter)) {
+        if(is(appFooter, "shiny.tag")) {
+        #     # render as is
+            message("render as is")
+            appFooter <- appFooter
+        } else if (is.character(appFooter)) {
+            # "enforce it as footer"
+            message("enforce as footer")
+            appFooter <- tags$div(
+                class = "panel-footer",
+                style = "text-align:center",
+                tags$div(
+                    class = "foot-inner",
+                    list(
+                        appFooter
+                    )
+                )
+            )
+        } else {
+            message("Invalid footer, converting this to NULL")
+            appFooter <- NULL
         }
     }
 
@@ -337,7 +366,9 @@ iSEE <- function(se,
                 )
             ),
 
-            uiOutput("allPanels")
+            uiOutput("allPanels"),
+            # handling the content of the footer, just placed after the panels
+            appFooter
         ), # end of dashboardBody
         skin="black"
     ) # end of dashboardPage

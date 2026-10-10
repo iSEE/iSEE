@@ -4,6 +4,9 @@
 # Produces, per platform:  isee-<store-version>-<platform>.zip
 #   bundle/ +- manifest.json +- app/app.R +- rlib/<Pkg>/
 #
+# v4 changes:
+#  - app.R now raises shiny.maxRequestSize (default 5 MB) so the landing page
+#    can upload realistic SummarizedExperiment/SingleCellExperiment RDS files.
 # v3 changes:
 #  1) STORE version (Release tag) is DECOUPLED from the upstream package version
 #     in DESCRIPTION: we locate the tarball R CMD build actually produced
@@ -129,9 +132,12 @@ jobs:
           bundle <- file.path(getwd(), "bundle")
           lib <- file.path(bundle, "rlib")
           dir.create(file.path(bundle, "app"), recursive = TRUE, showWarnings = FALSE)
+          # shiny.maxRequestSize default is 5 MB; raise it so the landing page can
+          # accept realistic SE/SCE RDS uploads (500 MB here).
           writeLines(c(
             'library(iSEE)',
-            'options(shiny.launch.browser = FALSE, shiny.deprecation.messages = FALSE)',
+            'options(shiny.launch.browser = FALSE, shiny.deprecation.messages = FALSE,',
+            '        shiny.maxRequestSize = 500 * 1024^2)',
             'iSEE()'
           ), file.path(bundle, "app", "app.R"))
 

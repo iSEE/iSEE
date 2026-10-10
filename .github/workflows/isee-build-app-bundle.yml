@@ -4,9 +4,13 @@
 # Produces, per platform:  isee-<store-version>-<platform>.zip
 #   bundle/ +- manifest.json +- app/app.R +- rlib/<Pkg>/
 #
-# NOTE: the STORE version (from the Release tag) is DECOUPLED from the upstream
-# package version in DESCRIPTION. We locate the tarball R CMD build actually
-# produced (iSEE_*.tar.gz), so tag v0.1.0 works even when DESCRIPTION says 2.25.1.
+# v3 changes:
+#  1) STORE version (Release tag) is DECOUPLED from the upstream package version
+#     in DESCRIPTION: we locate the tarball R CMD build actually produced
+#     (iSEE_*.tar.gz), so tag v0.1.0 works even when DESCRIPTION says 2.25.1.
+#  2) The dependency closure excludes only R *base* priority packages, not
+#     everything preinstalled on the runner. This keeps R *recommended* Imports
+#     such as `mgcv` inside rlib/ instead of relying on the shell Tier-0 runtime.
 
 name: Build app bundle
 
@@ -78,10 +82,10 @@ jobs:
           # Store version (tag) and upstream package version are independent:
           # use whatever source tarball R CMD build produced.
           tb <- list.files(".", pattern = "^iSEE_.*[.]tar[.]gz$", full.names = TRUE)
-          if (length(tb) == 0) stop("no iSEE_*.tar.gz found -- did 'R CMD build' run?")
+          if (length(tb) == 0) stop("no iSEE_*.tar.gz found -- did R CMD build run?")
           tb <- tb[which.max(file.mtime(tb))]
-          cat("source tarball:", basename(tb), "\n")
-          cat("store bundle version (from tag):", Sys.getenv("VERSION"), "\n")
+          cat("source tarball:", basename(tb), fill = TRUE)
+          cat("store bundle version (from tag):", Sys.getenv("VERSION"), fill = TRUE)
           local_paths <- normalizePath(tb, winslash = "/", mustWork = TRUE)
 
           read_desc <- function(p) {
@@ -96,23 +100,28 @@ jobs:
             fields <- intersect(c("Depends", "Imports", "LinkingTo"), colnames(d))
             vals <- unlist(lapply(fields, function(f) if (is.na(d[1, f])) "" else d[1, f]))
             parts <- trimws(unlist(strsplit(paste(vals, collapse = ","), ",")))
-            parts <- trimws(sub("\\(.*\\)$", "", parts))
+            parts <- trimws(sub("[(].*[)]$", "", parts))
             parts[nzchar(parts) & parts != "R"]
           })))
 
           db <- available.packages(repos = repos)
           seed <- unique(c(loc_names, declared))
           closure <- unique(c(unlist(tools::package_dependencies(seed, db = db, recursive = TRUE)), declared))
-          closure <- setdiff(closure, c(loc_names, rownames(installed.packages()), basename(list.dirs(lib, recursive = FALSE))))
+          # Exclude ONLY base-priority packages (they ship with R and cannot be
+          # installed from a repo). Keep recommended ones (e.g. mgcv, Matrix) so
+          # the bundle is self-contained and does not depend on shell Tier-0.
+          base_pkgs <- rownames(installed.packages(priority = "base"))
+          closure <- setdiff(closure, c(loc_names, base_pkgs, basename(list.dirs(lib, recursive = FALSE))))
           if (length(closure)) {
             install.packages(closure, lib = lib, repos = repos, type = "binary",
                              dependencies = FALSE, Ncpus = 2)
           }
           install.packages(local_paths, lib = lib, repos = NULL, type = "source", dependencies = FALSE)
 
-          missing <- setdiff(loc_names, basename(list.dirs(lib, recursive = FALSE)))
-          if (length(missing)) stop("local packages not installed: ", paste(missing, collapse = ", "))
-          cat("rlib packages:", length(list.dirs(lib, recursive = FALSE)), "\n")
+          present <- basename(list.dirs(lib, recursive = FALSE))
+          missing <- setdiff(c(loc_names, setdiff(declared, base_pkgs)), present)
+          if (length(missing)) stop("packages missing from rlib: ", paste(missing, collapse = ", "))
+          cat("rlib packages:", length(present), fill = TRUE)
 
       - name: Assemble app + manifest.json
         shell: Rscript {0}
@@ -156,7 +165,7 @@ jobs:
           writeLines(sprintf('{"platform":"%s","file":"%s","sha256":"%s","size":%d}',
                      "${{ matrix.platform }}", out, sha, file.size(out)),
                      sprintf("meta-%s.json", "${{ matrix.platform }}"))
-          cat("bundle zip size:", file.size(out), "\n")
+          cat("bundle zip size:", file.size(out), fill = TRUE)
 
       - uses: actions/upload-artifact@v4
         with:

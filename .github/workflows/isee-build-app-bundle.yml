@@ -1,11 +1,12 @@
 # iSEE app-layer bundle builder for the ShinyApps store (Route A).
 # Place at  fentouxungui/iSEE/.github/workflows/isee-build-app-bundle.yml  (on the DEFAULT branch = devel).
 #
-# Produces, per platform:  isee-<version>-<platform>.zip
+# Produces, per platform:  isee-<store-version>-<platform>.zip
 #   bundle/ +- manifest.json +- app/app.R +- rlib/<Pkg>/
 #
-# IMPORTANT: the release tag version and DESCRIPTION Version must match, or the
-# built source tarball name will not match and the bundle is built without the app.
+# NOTE: the STORE version (from the Release tag) is DECOUPLED from the upstream
+# package version in DESCRIPTION. We locate the tarball R CMD build actually
+# produced (iSEE_*.tar.gz), so tag v0.1.0 works even when DESCRIPTION says 2.25.1.
 
 name: Build app bundle
 
@@ -18,7 +19,7 @@ on:
         description: "Existing tag to attach bundles to"
         required: false
         type: string
-        default: "v2.25.1"
+        default: "v0.1.0"
 
 permissions:
   contents: write
@@ -53,7 +54,7 @@ jobs:
         shell: bash
         run: Rscript -e 'install.packages(c("jsonlite","zip","digest","BiocManager"), repos="https://cloud.r-project.org")'
 
-      - name: Resolve version
+      - name: Resolve store version
         shell: bash
         run: |
           V="${{ github.event.release.tag_name }}${{ inputs.tag }}"
@@ -74,10 +75,13 @@ jobs:
           repos <- BiocManager::repositories()
           options(repos = repos)
 
-          tb <- list.files(".", pattern = sprintf("^iSEE_%s[.]tar[.]gz$", Sys.getenv("VERSION")), full.names = TRUE)
-          if (length(tb) == 0) {
-            stop(sprintf("iSEE_%s.tar.gz not found -- bump DESCRIPTION Version to match the tag (version mismatch)", Sys.getenv("VERSION")))
-          }
+          # Store version (tag) and upstream package version are independent:
+          # use whatever source tarball R CMD build produced.
+          tb <- list.files(".", pattern = "^iSEE_.*[.]tar[.]gz$", full.names = TRUE)
+          if (length(tb) == 0) stop("no iSEE_*.tar.gz found -- did 'R CMD build' run?")
+          tb <- tb[which.max(file.mtime(tb))]
+          cat("source tarball:", basename(tb), "\n")
+          cat("store bundle version (from tag):", Sys.getenv("VERSION"), "\n")
           local_paths <- normalizePath(tb, winslash = "/", mustWork = TRUE)
 
           read_desc <- function(p) {

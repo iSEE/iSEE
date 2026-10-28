@@ -107,11 +107,14 @@
 #' }
 #'
 #' @export
-#' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu notificationItem
+#' @importFrom shinydashboard dashboardBody dashboardHeader dashboardPage 
+#'   dashboardSidebar menuItem tabBox valueBox valueBoxOutput dropdownMenu 
+#'   notificationItem
 #' @importFrom utils packageVersion
 #' @importFrom shinyjs useShinyjs
 #' @importFrom rintrojs introjsUI
-#' @importFrom shiny reactiveValues uiOutput actionButton shinyApp HTML icon tags includeCSS isolate showNotification onStop stopApp
+#' @importFrom shiny reactiveValues uiOutput actionButton shinyApp HTML icon 
+#'   tags includeCSS isolate showNotification onStop stopApp
 iSEE <- function(se,
     initial=NULL,
     extra=NULL,

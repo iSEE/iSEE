@@ -43,7 +43,8 @@
 #' @author Aaron Lun
 #'
 #' @importFrom utils read.delim sessionInfo citation browseURL capture.output
-#' @importFrom shiny observeEvent showModal modalDialog HTML br tagList showNotification p pre downloadButton checkboxInput actionButton
+#' @importFrom shiny observeEvent showModal modalDialog HTML br tagList 
+#'   showNotification p pre downloadButton checkboxInput actionButton
 #' @importFrom shinyAce aceEditor
 #' @importFrom listviewer jsoneditOutput
 #'
@@ -244,7 +245,8 @@
 #' @author Aaron Lun
 #'
 #' @rdname INTERNAL_export_observers
-#' @importFrom shiny observeEvent showModal modalDialog updateCheckboxGroupInput uiOutput
+#' @importFrom shiny observeEvent showModal modalDialog updateCheckboxGroupInput 
+#'   uiOutput
 .create_export_observers <- function(input, session, pObjects) {
     observeEvent(input[[.generalExportOutput]], {
         showModal(modalDialog(

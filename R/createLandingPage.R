@@ -83,7 +83,8 @@
 #' }
 #'
 #' @export
-#' @importFrom shiny showNotification fileInput HTML observeEvent textInput actionButton
+#' @importFrom shiny showNotification fileInput HTML observeEvent textInput 
+#'   actionButton
 #' @importFrom shinyjs hidden
 createLandingPage <- function(seUI=NULL, seLoad=NULL, initUI=NULL, initLoad=NULL, requireButton=TRUE) {
     if (is.null(seUI)) {

@@ -39,7 +39,8 @@ NULL
 
 #' @export
 #' @rdname cleanDataset
-#' @importFrom SummarizedExperiment rowData colData rowData<- colData<- assayNames assayNames<- rowRanges
+#' @importFrom SummarizedExperiment rowData colData rowData<- colData<- 
+#'   assayNames assayNames<- rowRanges
 setMethod("cleanDataset", "SummarizedExperiment", function(se) {
     if (is.null(rownames(se))) {
         if (nrow(se) > 0) {

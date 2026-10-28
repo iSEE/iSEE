@@ -32,7 +32,8 @@
 #' @author Kevin Rue-Albrecht
 #'
 #' @export
-#' @importFrom shiny modalDialog removeModal fluidRow column h4 actionButton br tagList em strong
+#' @importFrom shiny modalDialog removeModal fluidRow column h4 actionButton br
+#'   tagList em strong
 #' @importFrom shinyAce aceEditor updateAceEditor
 #' @importFrom shinyjs disabled
 #' @rdname createCustomDimnamesModalObservers

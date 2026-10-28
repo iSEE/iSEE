@@ -33,7 +33,8 @@
 #' @seealso
 #' \code{\link{.defineInterface}}, where this function is typically called.
 #'
-#' @importFrom shiny radioButtons tagList selectInput selectizeInput checkboxGroupInput
+#' @importFrom shiny radioButtons tagList selectInput selectizeInput 
+#'   checkboxGroupInput
 #' @importFrom colourpicker colourInput
 #' @importFrom stats setNames
 #'
@@ -153,7 +154,8 @@
 #' @seealso
 #' \code{\link{.defineInterface}}, where this function is typically called.
 #'
-#' @importFrom shiny checkboxGroupInput selectizeInput checkboxInput numericInput radioButtons
+#' @importFrom shiny checkboxGroupInput selectizeInput checkboxInput numericInput 
+#'   radioButtons
 #' @importFrom shinyjs disabled
 #'
 #' @rdname INTERNAL_create_visual_box_for_complexheatmap

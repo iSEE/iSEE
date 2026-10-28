@@ -1,6 +1,6 @@
 # Configuring iSEE apps
 
-**Compiled date**: 2026-07-13
+**Compiled date**: 2026-10-28
 
 **Last edited**: 2020-04-20
 
@@ -25,27 +25,23 @@ Note that each panel is set to occupy half the width of the application
 window, which is set to 12 units by the
 *[shiny](https://CRAN.R-project.org/package=shiny)* package.
 
-``` r
-
-library(iSEE)
-app <- iSEE(sce, initial=list(
-    FeatureAssayPlot(PanelWidth=6L),
-    FeatureAssayPlot(PanelWidth=6L)
-))
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`iSEE`](https://isee.github.io/iSEE/)`)`\
+`app`` ``<-`` `[`iSEE`](https://isee.github.io/iSEE/reference/iSEE.md)`(``sce``, initial``=`[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    `[`FeatureAssayPlot`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)`(``PanelWidth``=``6L``)``,`\
+`    `[`FeatureAssayPlot`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)`(``PanelWidth``=``6L``)`\
+`)``)`
 
 ![](screenshots/configure-FAP-basic.png)
 
 The genes to show on the Y-axis in the two plots can be specified via
 the `YAxisFeatureName` argument to the respective panels in `iSEE`.
 
-``` r
-
-app <- iSEE(sce, initial=list(
-    FeatureAssayPlot(YAxisFeatureName="0610009L18Rik"),
-    FeatureAssayPlot(YAxisFeatureName="0610009B22Rik")
-)) 
-```
+\
+`app`` ``<-`` `[`iSEE`](https://isee.github.io/iSEE/reference/iSEE.md)`(``sce``, initial``=`[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    `[`FeatureAssayPlot`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)`(``YAxisFeatureName``=``"0610009L18Rik"``)``,`\
+`    `[`FeatureAssayPlot`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)`(``YAxisFeatureName``=``"0610009B22Rik"``)`\
+`)``)`` `
 
 ![](screenshots/configure-FAP-preset-genes.png)
 
@@ -77,13 +73,11 @@ The nature of the Y-axis is defined by the type of panel. For instance,
 `colData(sce)`. Users can preconfigure the Y-axis of individual *column
 data plot* panels as follows:
 
-``` r
-
-app <- iSEE(sce, initial=list(
-    ColumnDataPlot(YAxis="NREADS", PanelWidth=6L, DataBoxOpen=TRUE),
-    ColumnDataPlot(YAxis="TOTAL_DUP", PanelWidth=6L, DataBoxOpen=TRUE)
-))
-```
+\
+`app`` ``<-`` `[`iSEE`](https://isee.github.io/iSEE/reference/iSEE.md)`(``sce``, initial``=`[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    `[`ColumnDataPlot`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)`(``YAxis``=``"NREADS"``, PanelWidth``=``6L``, DataBoxOpen``=``TRUE``)``,`\
+`    `[`ColumnDataPlot`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)`(``YAxis``=``"TOTAL_DUP"``, PanelWidth``=``6L``, DataBoxOpen``=``TRUE``)`\
+`)``)`
 
 ![](screenshots/configure-CDP-basic.png)
 
@@ -110,33 +104,31 @@ to four different values:
 
 Each of these scenarios is demonstrated below:
 
-``` r
-
-fex <- FeatureAssayPlot(DataBoxOpen=TRUE, PanelWidth=6L)
-
-# Example 1
-fex1 <- fex
-fex1[["XAxis"]] <- "None"
-
-# Example 2
-fex2 <- fex
-fex2[["XAxis"]] <- "Column data"
-fex2[["XAxisColumnData"]] <- "Core.Type"
-
-# Example 3a
-fex3 <- fex
-fex3[["XAxis"]] <- "Feature name"
-fex3[["XAxisFeatureName"]] <- "Zyx"
-
-# Example 4 (also requires a row statistic table)
-fex4 <- fex
-fex4[["XAxis"]] <- "Feature name"
-fex4[["XAxisFeatureSource"]] <- "RowDataTable1"
-rex <- RowDataTable(Selected="Ints2", Search="Ints", PanelWidth=12L)
-
-# Initialisation
-app <- iSEE(sce, initial=list(fex1, fex2, fex3, fex4, rex))
-```
+\
+`fex`` ``<-`` `[`FeatureAssayPlot`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)`(``DataBoxOpen``=``TRUE``, PanelWidth``=``6L``)`\
+\
+`# Example 1`\
+`fex1`` ``<-`` ``fex`\
+`fex1``[[``"XAxis"``]``]`` ``<-`` ``"None"`\
+\
+`# Example 2`\
+`fex2`` ``<-`` ``fex`\
+`fex2``[[``"XAxis"``]``]`` ``<-`` ``"Column data"`\
+`fex2``[[``"XAxisColumnData"``]``]`` ``<-`` ``"Core.Type"`\
+\
+`# Example 3a`\
+`fex3`` ``<-`` ``fex`\
+`fex3``[[``"XAxis"``]``]`` ``<-`` ``"Feature name"`\
+`fex3``[[``"XAxisFeatureName"``]``]`` ``<-`` ``"Zyx"`\
+\
+`# Example 4 (also requires a row statistic table)`\
+`fex4`` ``<-`` ``fex`\
+`fex4``[[``"XAxis"``]``]`` ``<-`` ``"Feature name"`\
+`fex4``[[``"XAxisFeatureSource"``]``]`` ``<-`` ``"RowDataTable1"`\
+`rex`` ``<-`` `[`RowDataTable`](https://isee.github.io/iSEE/reference/RowDataTable-class.md)`(``Selected``=``"Ints2"``, Search``=``"Ints"``, PanelWidth``=``12L``)`\
+\
+`# Initialisation`\
+`app`` ``<-`` `[`iSEE`](https://isee.github.io/iSEE/reference/iSEE.md)`(``sce``, initial``=`[`list`](https://rdrr.io/r/base/list.html)`(``fex1``, ``fex2``, ``fex3``, ``fex4``, ``rex``)``)`
 
 ![](screenshots/configure-FAP-xaxis.png)
 
@@ -152,13 +144,11 @@ In the case of reduced dimension plots, *data parameters* include the
 name of the reduced dimension slot from which to fetch coordinates. This
 information is stored in the `Type` slot:
 
-``` r
-
-app <- iSEE(sce, initial=list(
-    ReducedDimensionPlot(DataBoxOpen=TRUE, Type="TSNE", 
-        XAxis=2L, YAxis=1L, PanelWidth=6L)
-))
-```
+\
+`app`` ``<-`` `[`iSEE`](https://isee.github.io/iSEE/reference/iSEE.md)`(``sce``, initial``=`[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    `[`ReducedDimensionPlot`](https://isee.github.io/iSEE/reference/ReducedDimensionPlot-class.md)`(``DataBoxOpen``=``TRUE``, Type``=``"TSNE"``, `\
+`        XAxis``=``2L``, YAxis``=``1L``, PanelWidth``=``6L``)`\
+`)``)`
 
 ![](screenshots/configure-ReDP-basic.png)
 
@@ -167,13 +157,11 @@ app <- iSEE(sce, initial=list(
 For axes linked to an assay, such as the Y-axis of *feature assay plot*
 panels, the assay to display can be set through the `Assay` argument:
 
-``` r
-
-app <- iSEE(sce, initial=list(
-    FeatureAssayPlot(DataBoxOpen=TRUE, Assay="logcounts", PanelWidth=6L),
-    FeatureAssayPlot(DataBoxOpen=TRUE, Assay="tophat_counts", PanelWidth=6L)
-))
-```
+\
+`app`` ``<-`` `[`iSEE`](https://isee.github.io/iSEE/reference/iSEE.md)`(``sce``, initial``=`[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    `[`FeatureAssayPlot`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)`(``DataBoxOpen``=``TRUE``, Assay``=``"logcounts"``, PanelWidth``=``6L``)``,`\
+`    `[`FeatureAssayPlot`](https://isee.github.io/iSEE/reference/FeatureAssayPlot-class.md)`(``DataBoxOpen``=``TRUE``, Assay``=``"tophat_counts"``, PanelWidth``=``6L``)`\
+`)``)`
 
 ![](screenshots/configure-FAP-assay.png)
 
@@ -207,21 +195,19 @@ through the `ColorByDefaultColor` slot, while the default transparency
 value is controlled through the `PointAlpha` slot Here, we alter several
 default visual parameters in the second panel:
 
-``` r
-
-cdp <- ColumnDataPlot(VisualBoxOpen=TRUE, 
-    VisualChoices=c("Color", "Size", "Point", "Text"))
-
-cdp2 <- cdp
-cdp2[["ColorByDefaultColor"]] <- "chocolate3"
-cdp2[["PointAlpha"]] <- 0.2
-cdp2[["PointSize"]] <- 2
-cdp2[["Downsample"]] <- TRUE
-cdp2[["DownsampleResolution"]] <- 150
-cdp2[["FontSize"]] <- 2
-
-app <- iSEE(sce, initial=list(cdp, cdp2))
-```
+\
+`cdp`` ``<-`` `[`ColumnDataPlot`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)`(``VisualBoxOpen``=``TRUE``, `\
+`    VisualChoices``=`[`c`](https://rdrr.io/r/base/c.html)`(``"Color"``, ``"Size"``, ``"Point"``, ``"Text"``)``)`\
+\
+`cdp2`` ``<-`` ``cdp`\
+`cdp2``[[``"ColorByDefaultColor"``]``]`` ``<-`` ``"chocolate3"`\
+`cdp2``[[``"PointAlpha"``]``]`` ``<-`` ``0.2`\
+`cdp2``[[``"PointSize"``]``]`` ``<-`` ``2`\
+`cdp2``[[``"Downsample"``]``]`` ``<-`` ``TRUE`\
+`cdp2``[[``"DownsampleResolution"``]``]`` ``<-`` ``150`\
+`cdp2``[[``"FontSize"``]``]`` ``<-`` ``2`\
+\
+`app`` ``<-`` `[`iSEE`](https://isee.github.io/iSEE/reference/iSEE.md)`(``sce``, initial``=`[`list`](https://rdrr.io/r/base/list.html)`(``cdp``, ``cdp2``)``)`
 
 ![](screenshots/configure-CDP-visual.png)
 
@@ -239,18 +225,16 @@ be set to a variable in `colData(sce)` by setting the `ColorBy` value to
 `"Column data"`, and the `ColorByColumnData` value to the desired column
 name:
 
-``` r
-
-cdp <- ColumnDataPlot(VisualBoxOpen=TRUE, VisualChoices=c("Color", "Shape"),
-    ColorByColumnData="Core.Type", ShapeByColumnData="Core.Type",
-    ColorBy="Column data", ShapeBy="Column data")
-
-cdp2 <- cdp
-cdp2[["ColorByColumnData"]] <- "TOTAL_DUP"
-cdp2[["ShapeByColumnData"]] <- "driver_1_s"
-
-app <- iSEE(sce, initial=list(cdp, cdp2))
-```
+\
+`cdp`` ``<-`` `[`ColumnDataPlot`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)`(``VisualBoxOpen``=``TRUE``, VisualChoices``=`[`c`](https://rdrr.io/r/base/c.html)`(``"Color"``, ``"Shape"``)``,`\
+`    ColorByColumnData``=``"Core.Type"``, ShapeByColumnData``=``"Core.Type"``,`\
+`    ColorBy``=``"Column data"``, ShapeBy``=``"Column data"``)`\
+\
+`cdp2`` ``<-`` ``cdp`\
+`cdp2``[[``"ColorByColumnData"``]``]`` ``<-`` ``"TOTAL_DUP"`\
+`cdp2``[[``"ShapeByColumnData"``]``]`` ``<-`` ``"driver_1_s"`\
+\
+`app`` ``<-`` `[`iSEE`](https://isee.github.io/iSEE/reference/iSEE.md)`(``sce``, initial``=`[`list`](https://rdrr.io/r/base/list.html)`(``cdp``, ``cdp2``)``)`
 
 ![](screenshots/configure-CDP-linked-visual.png)
 
@@ -263,20 +247,18 @@ For instance, *column data plot* panels can be facet by variables stored
 in the columns of `colData(sce)`. We demonstrate below how faceting may
 be enabled by row, column, or both:
 
-``` r
-
-cdp <- ColumnDataPlot(VisualBoxOpen=TRUE, VisualChoices=c("Facet"),
-    FacetRowBy="Column data", FacetRowByColData="driver_1_s", 
-    FacetColumnBy="Column data", FacetColumnByColData="Core.Type", PanelWidth=4L)
-
-cdp2 <- cdp
-cdp2[["FacetRowBy"]] <- "None"
-
-cdp3 <- cdp
-cdp3[["FacetColumnBy"]] <- "None" 
-
-app <- iSEE(sce, initial=list(cdp, cdp2, cdp3))
-```
+\
+`cdp`` ``<-`` `[`ColumnDataPlot`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)`(``VisualBoxOpen``=``TRUE``, VisualChoices``=`[`c`](https://rdrr.io/r/base/c.html)`(``"Facet"``)``,`\
+`    FacetRowBy``=``"Column data"``, FacetRowByColData``=``"driver_1_s"``, `\
+`    FacetColumnBy``=``"Column data"``, FacetColumnByColData``=``"Core.Type"``, PanelWidth``=``4L``)`\
+\
+`cdp2`` ``<-`` ``cdp`\
+`cdp2``[[``"FacetRowBy"``]``]`` ``<-`` ``"None"`\
+\
+`cdp3`` ``<-`` ``cdp`\
+`cdp3``[[``"FacetColumnBy"``]``]`` ``<-`` ``"None"`` `\
+\
+`app`` ``<-`` `[`iSEE`](https://isee.github.io/iSEE/reference/iSEE.md)`(``sce``, initial``=`[`list`](https://rdrr.io/r/base/list.html)`(``cdp``, ``cdp2``, ``cdp3``)``)`
 
 ![](screenshots/configure-CDP-facets.png)
 
@@ -295,46 +277,44 @@ The simplest way to obtain a valid `BrushData` value is to launch an
 the *iSEE* code tracker, and copy paste the relevant point selection
 data. The result should look as below:
 
-``` r
-
-# Preconfigure the receiver panel
-cdArgs <- ColumnDataPlot(
-    XAxis="Column data",
-    XAxisColumnData="driver_1_s",
-
-    # Configuring the selection parameters.
-    SelectionBoxOpen=TRUE,
-    ColumnSelectionSource="ReducedDimensionPlot1",
-    ColorBy="Column selection", 
-
-    # Throwing in some parameters for aesthetic reasons.
-    ColorByDefaultColor="#BDB3B3", 
-    PointSize=2,
-    PanelWidth=6L)
-
-# Preconfigure the sender panel, including the point selection.
-# NOTE: You don't actually have to write this from scratch! Just
-# open an iSEE instance, make a brush and then look at the 'BrushData'
-# entry when you click on the 'Display panel settings' button.
-rdArgs <- ReducedDimensionPlot(
-    BrushData = list(
-        xmin = 13.7, xmax = 53.5, ymin = -36.5, ymax = 37.2, 
-        coords_css = list(xmin = 413.2, xmax = 650.2, ymin = 83.0, ymax = 344.0), 
-        coords_img = list(xmin = 537.2, xmax = 845.3, ymin = 107.9, ymax = 447.2), 
-        img_css_ratio = list(x = 1.3, y = 1.3), 
-        mapping = list(x = "X", y = "Y"), 
-        domain = list(left = -49.1, right = 57.2, bottom = -70.4, top = 53.5), 
-        range = list(left = 50.9, right = 873.9, bottom = 603.0, top = 33.1), 
-        log = list(x = NULL, y = NULL), 
-        direction = "xy", 
-        brushId = "ReducedDimensionPlot1_Brush", 
-        outputId = "ReducedDimensionPlot1"
-    ),
-    PanelWidth=6L
-)    
-
-app <- iSEE(sce, initial=list(cdArgs, rdArgs))
-```
+\
+`# Preconfigure the receiver panel`\
+`cdArgs`` ``<-`` `[`ColumnDataPlot`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)`(`\
+`    XAxis``=``"Column data"``,`\
+`    XAxisColumnData``=``"driver_1_s"``,`\
+\
+`    ``# Configuring the selection parameters.`\
+`    SelectionBoxOpen``=``TRUE``,`\
+`    ColumnSelectionSource``=``"ReducedDimensionPlot1"``,`\
+`    ColorBy``=``"Column selection"``, `\
+\
+`    ``# Throwing in some parameters for aesthetic reasons.`\
+`    ColorByDefaultColor``=``"#BDB3B3"``, `\
+`    PointSize``=``2``,`\
+`    PanelWidth``=``6L``)`\
+\
+`# Preconfigure the sender panel, including the point selection.`\
+`# NOTE: You don't actually have to write this from scratch! Just`\
+`# open an iSEE instance, make a brush and then look at the 'BrushData'`\
+`# entry when you click on the 'Display panel settings' button.`\
+`rdArgs`` ``<-`` `[`ReducedDimensionPlot`](https://isee.github.io/iSEE/reference/ReducedDimensionPlot-class.md)`(`\
+`    BrushData ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`        xmin ``=`` ``13.7``, xmax ``=`` ``53.5``, ymin ``=`` ``-``36.5``, ymax ``=`` ``37.2``, `\
+`        coords_css ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``xmin ``=`` ``413.2``, xmax ``=`` ``650.2``, ymin ``=`` ``83.0``, ymax ``=`` ``344.0``)``, `\
+`        coords_img ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``xmin ``=`` ``537.2``, xmax ``=`` ``845.3``, ymin ``=`` ``107.9``, ymax ``=`` ``447.2``)``, `\
+`        img_css_ratio ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``x ``=`` ``1.3``, y ``=`` ``1.3``)``, `\
+`        mapping ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``x ``=`` ``"X"``, y ``=`` ``"Y"``)``, `\
+`        domain ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``left ``=`` ``-``49.1``, right ``=`` ``57.2``, bottom ``=`` ``-``70.4``, top ``=`` ``53.5``)``, `\
+`        range ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``left ``=`` ``50.9``, right ``=`` ``873.9``, bottom ``=`` ``603.0``, top ``=`` ``33.1``)``, `\
+`        log ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``x ``=`` ``NULL``, y ``=`` ``NULL``)``, `\
+`        direction ``=`` ``"xy"``, `\
+`        brushId ``=`` ``"ReducedDimensionPlot1_Brush"``, `\
+`        outputId ``=`` ``"ReducedDimensionPlot1"`\
+`    ``)``,`\
+`    PanelWidth``=``6L`\
+`)``    `\
+\
+`app`` ``<-`` `[`iSEE`](https://isee.github.io/iSEE/reference/iSEE.md)`(``sce``, initial``=`[`list`](https://rdrr.io/r/base/list.html)`(``cdArgs``, ``rdArgs``)``)`
 
 ![](screenshots/configure-ReDP-select.png)
 
@@ -348,26 +328,24 @@ points.
 An identical process can be followed to preconfigure a lasso point
 selection:
 
-``` r
-
-# Preconfigure the sender panel, including the point selection.
-# NOTE: again, you shouldn't try writing this from scratch! Just
-# make a lasso and then copy the panel settings in 'BrushData'.
-rdArgs[["BrushData"]] <- list(
-    lasso = NULL, closed = TRUE, panelvar1 = NULL, panelvar2 = NULL, 
-    mapping = list(x = "X", y = "Y"), 
-    coord = structure(c(18.4, 
-        18.5, 26.1, 39.9, 
-        55.2, 50.3, 54.3, 
-        33.3, 18.4, 35.5, 
-        -4.2, -21.2, -46.1, 
-        -43.5, -18.1, 7.3, 
-        19.7, 35.5), .Dim = c(9L, 2L)
-    )
-)
-
-app <- iSEE(sce, initial=list(cdArgs, rdArgs))
-```
+\
+`# Preconfigure the sender panel, including the point selection.`\
+`# NOTE: again, you shouldn't try writing this from scratch! Just`\
+`# make a lasso and then copy the panel settings in 'BrushData'.`\
+`rdArgs``[[``"BrushData"``]``]`` ``<-`` `[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    lasso ``=`` ``NULL``, closed ``=`` ``TRUE``, panelvar1 ``=`` ``NULL``, panelvar2 ``=`` ``NULL``, `\
+`    mapping ``=`` `[`list`](https://rdrr.io/r/base/list.html)`(``x ``=`` ``"X"``, y ``=`` ``"Y"``)``, `\
+`    coord ``=`` `[`structure`](https://rdrr.io/r/base/structure.html)`(`[`c`](https://rdrr.io/r/base/c.html)`(``18.4``, `\
+`        ``18.5``, ``26.1``, ``39.9``, `\
+`        ``55.2``, ``50.3``, ``54.3``, `\
+`        ``33.3``, ``18.4``, ``35.5``, `\
+`        ``-``4.2``, ``-``21.2``, ``-``46.1``, `\
+`        ``-``43.5``, ``-``18.1``, ``7.3``, `\
+`        ``19.7``, ``35.5``)``, .Dim ``=`` `[`c`](https://rdrr.io/r/base/c.html)`(``9L``, ``2L``)`\
+`    ``)`\
+`)`\
+\
+`app`` ``<-`` `[`iSEE`](https://isee.github.io/iSEE/reference/iSEE.md)`(``sce``, initial``=`[`list`](https://rdrr.io/r/base/list.html)`(``cdArgs``, ``rdArgs``)``)`
 
 ![](screenshots/configure-ReDP-lasso.png)
 
@@ -377,25 +355,23 @@ By providing a data frame to the `tour` argument of `iSEE`, you can
 create your own tour that will start when the app is launched[^2]. The
 data frame should have two columns, `element` and `intro`:
 
-``` r
-
-introtour <- defaultTour()
-head(introtour)
-#>                                            element
-#> 1                                         #Welcome
-#> 2                                       #allpanels
-#> 3                           #ReducedDimensionPlot1
-#> 4               #ReducedDimensionPlot1_DataBoxOpen
-#> 5 #ReducedDimensionPlot1_Type + .selectize-control
-#> 6                           #ReducedDimensionPlot1
-#>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   intro
-#> 1 Welcome to the interactive tour for iSEE - the Interactive SummarizedExperiment Explorer.<br/><br/>You will be shown around the different components of iSEE and learn the basic usage mechanisms by doing. Highlighted elements will respond to the user's actions, while the rest of the UI will be shaded. You will be prompted at particular spots to perform some actions, which will be marked with "<strong>Action:</strong>" text. Please take care to follow these instructions, since later parts of the tour may assume that all the actions from previous steps have been performed.<br/><br/><strong>Action:</strong> now, click on the 'Next' button or use the right arrow of your keyboard to proceed into your tour.
-#> 2    iSEE provides a Shiny interface that allows you to generate a series of panels for exploring <code>SummarizedExperiment</code> objects. Here, we use single-cell RNA sequencing data from the <a href="https://doi.org/doi:10.18129/B9.bioc.scRNAseq"><i>scRNAseq</i> package</a>, specifically a subset of gene expression profiles from cells in the mouse visual cortex <a href="https://doi.org/10.1038/nn.4216">(Tasic <i>et al.</i>, 2016)</a>. Each column of the <code>SummarizedExperiment</code> corresponds to a cell, while each row corresponds to a gene.<br/><br/>Using iSEE, you can generate a variety of different panel types to visualize the data. These are described in more detail in the following steps.
-#> 3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          For example, you can construct a <font color="#402ee8">Reduced dimension plot</font> to visualize a low-dimensional representation (e.g., PCA, <i>t</i>-SNE) of our dataset of interest. Here, each point represents a cell.
-#> 4                                                                                                                                                                                                                                                                                                                 For each plot panel, a variety of parameters are available to control the appearance and behaviour of the plot. These parameters are located in these collapsible boxes, such as the <font color="#402ee8">Data parameters</font> box that contains parameters related to the type of data being shown.<br /><br /><strong>Action:</strong> click on the header of this collapsible box to see the available options.
-#> 5                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     <strong>Action:</strong> change this to <code>TSNE</code> to see the two-dimensional <i>t</i>-SNE representation.
-#> 6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      You can see how the panel immediately switched to the requested dimensionality reduction result.
-```
+\
+`introtour`` ``<-`` `[`defaultTour`](https://isee.github.io/iSEE/reference/defaultTour.md)`(``)`\
+[`head`](https://rdrr.io/r/utils/head.html)`(``introtour``)`\
+`#>                                            element`\
+`#> 1                                         #Welcome`\
+`#> 2                                       #allpanels`\
+`#> 3                           #ReducedDimensionPlot1`\
+`#> 4               #ReducedDimensionPlot1_DataBoxOpen`\
+`#> 5 #ReducedDimensionPlot1_Type + .selectize-control`\
+`#> 6                           #ReducedDimensionPlot1`\
+`#>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   intro`\
+`#> 1 Welcome to the interactive tour for iSEE - the Interactive SummarizedExperiment Explorer.<br/><br/>You will be shown around the different components of iSEE and learn the basic usage mechanisms by doing. Highlighted elements will respond to the user's actions, while the rest of the UI will be shaded. You will be prompted at particular spots to perform some actions, which will be marked with "<strong>Action:</strong>" text. Please take care to follow these instructions, since later parts of the tour may assume that all the actions from previous steps have been performed.<br/><br/><strong>Action:</strong> now, click on the 'Next' button or use the right arrow of your keyboard to proceed into your tour.`\
+`#> 2    iSEE provides a Shiny interface that allows you to generate a series of panels for exploring <code>SummarizedExperiment</code> objects. Here, we use single-cell RNA sequencing data from the <a href="https://doi.org/doi:10.18129/B9.bioc.scRNAseq"><i>scRNAseq</i> package</a>, specifically a subset of gene expression profiles from cells in the mouse visual cortex <a href="https://doi.org/10.1038/nn.4216">(Tasic <i>et al.</i>, 2016)</a>. Each column of the <code>SummarizedExperiment</code> corresponds to a cell, while each row corresponds to a gene.<br/><br/>Using iSEE, you can generate a variety of different panel types to visualize the data. These are described in more detail in the following steps.`\
+`#> 3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          For example, you can construct a <font color="#402ee8">Reduced dimension plot</font> to visualize a low-dimensional representation (e.g., PCA, <i>t</i>-SNE) of our dataset of interest. Here, each point represents a cell.`\
+`#> 4                                                                                                                                                                                                                                                                                                                 For each plot panel, a variety of parameters are available to control the appearance and behaviour of the plot. These parameters are located in these collapsible boxes, such as the <font color="#402ee8">Data parameters</font> box that contains parameters related to the type of data being shown.<br /><br /><strong>Action:</strong> click on the header of this collapsible box to see the available options.`\
+`#> 5                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     <strong>Action:</strong> change this to <code>TSNE</code> to see the two-dimensional <i>t</i>-SNE representation.`\
+`#> 6                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      You can see how the panel immediately switched to the requested dimensionality reduction result.`
 
 Each entry of the `element` column contains the name of a UI element in
 the application, prefixed by a hash sign (`#`). The `intro` column
@@ -456,75 +432,73 @@ examples for setting up your own configurations.
 
 ## Session Info
 
-``` r
-
-sessionInfo()
-#> R version 4.6.1 (2026-06-24)
-#> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.4 LTS
-#> 
-#> Matrix products: default
-#> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
-#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
-#> 
-#> locale:
-#>  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-#>  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-#>  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-#>  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-#>  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-#> [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
-#> 
-#> time zone: UTC
-#> tzcode source: system (glibc)
-#> 
-#> attached base packages:
-#> [1] stats4    stats     graphics  grDevices utils     datasets  methods  
-#> [8] base     
-#> 
-#> other attached packages:
-#>  [1] iSEE_2.25.1                 SingleCellExperiment_1.34.0
-#>  [3] SummarizedExperiment_1.42.0 Biobase_2.72.0             
-#>  [5] GenomicRanges_1.64.0        Seqinfo_1.2.0              
-#>  [7] IRanges_2.46.0              S4Vectors_0.50.1           
-#>  [9] BiocGenerics_0.58.1         generics_0.1.4             
-#> [11] MatrixGenerics_1.24.0       matrixStats_1.5.0          
-#> [13] BiocStyle_2.40.0           
-#> 
-#> loaded via a namespace (and not attached):
-#>  [1] rlang_1.3.0           magrittr_2.0.5        shinydashboard_0.7.3 
-#>  [4] clue_0.3-68           GetoptLong_1.1.1      otel_0.2.0           
-#>  [7] compiler_4.6.1        mgcv_1.9-4            png_0.1-9            
-#> [10] systemfonts_1.3.2     vctrs_0.7.3           pkgconfig_2.0.3      
-#> [13] shape_1.4.6.1         crayon_1.5.3          fastmap_1.2.0        
-#> [16] XVector_0.52.0        fontawesome_0.5.3     promises_1.5.0       
-#> [19] rmarkdown_2.31        shinyAce_0.4.4        ragg_1.5.2           
-#> [22] xfun_0.60             cachem_1.1.0          jsonlite_2.0.0       
-#> [25] listviewer_4.0.0      later_1.4.8           DelayedArray_0.38.2  
-#> [28] parallel_4.6.1        cluster_2.1.8.2       R6_2.6.1             
-#> [31] bslib_0.11.0          RColorBrewer_1.1-3    jquerylib_0.1.4      
-#> [34] Rcpp_1.1.2            bookdown_0.47         iterators_1.0.14     
-#> [37] knitr_1.51            httpuv_1.6.17         Matrix_1.7-5         
-#> [40] splines_4.6.1         igraph_2.3.3          tidyselect_1.2.1     
-#> [43] abind_1.4-8           yaml_2.3.12           doParallel_1.0.17    
-#> [46] codetools_0.2-20      miniUI_0.1.2          lattice_0.22-9       
-#> [49] tibble_3.3.1          shiny_1.14.0          S7_0.2.2             
-#> [52] evaluate_1.0.5        desc_1.4.3            circlize_0.4.18      
-#> [55] pillar_1.11.1         BiocManager_1.30.27   DT_0.34.0            
-#> [58] foreach_1.5.2         shinyjs_2.1.1         ggplot2_4.0.3        
-#> [61] scales_1.4.0          xtable_1.8-8          glue_1.8.1           
-#> [64] tools_4.6.1           colourpicker_1.3.0    fs_2.1.0             
-#> [67] grid_4.6.1            colorspace_2.1-3      nlme_3.1-169         
-#> [70] vipor_0.4.7           cli_3.6.6             textshaping_1.0.5    
-#> [73] viridisLite_0.4.3     S4Arrays_1.12.0       ComplexHeatmap_2.28.0
-#> [76] dplyr_1.2.1           gtable_0.3.6          rintrojs_0.3.4       
-#> [79] sass_0.4.10           digest_0.6.39         SparseArray_1.12.2   
-#> [82] ggrepel_0.9.8         rjson_0.2.23          htmlwidgets_1.6.4    
-#> [85] farver_2.1.2          memoise_2.0.1         htmltools_0.5.9      
-#> [88] pkgdown_2.2.1         lifecycle_1.0.5       shinyWidgets_0.9.1   
-#> [91] GlobalOptions_0.1.4   mime_0.13
-# devtools::session_info()
-```
+\
+[`sessionInfo`](https://rdrr.io/r/utils/sessionInfo.html)`(``)`\
+`#> R version 4.6.1 (2026-06-24)`\
+`#> Platform: x86_64-pc-linux-gnu`\
+`#> Running under: Ubuntu 24.04.5 LTS`\
+`#> `\
+`#> Matrix products: default`\
+`#> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 `\
+`#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0`\
+`#> `\
+`#> locale:`\
+`#>  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              `\
+`#>  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    `\
+`#>  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   `\
+`#>  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 `\
+`#>  [9] LC_ADDRESS=C               LC_TELEPHONE=C            `\
+`#> [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       `\
+`#> `\
+`#> time zone: UTC`\
+`#> tzcode source: system (glibc)`\
+`#> `\
+`#> attached base packages:`\
+`#> [1] stats4    stats     graphics  grDevices utils     datasets  methods  `\
+`#> [8] base     `\
+`#> `\
+`#> other attached packages:`\
+`#>  [1] iSEE_2.25.2                 SingleCellExperiment_1.34.0`\
+`#>  [3] SummarizedExperiment_1.42.0 Biobase_2.72.0             `\
+`#>  [5] GenomicRanges_1.64.0        Seqinfo_1.2.0              `\
+`#>  [7] IRanges_2.46.0              S4Vectors_0.50.3           `\
+`#>  [9] BiocGenerics_0.58.1         generics_0.1.4             `\
+`#> [11] MatrixGenerics_1.24.0       matrixStats_1.5.0          `\
+`#> [13] BiocStyle_2.40.0           `\
+`#> `\
+`#> loaded via a namespace (and not attached):`\
+`#>  [1] rlang_1.3.0           magrittr_2.0.5        shinydashboard_0.7.3 `\
+`#>  [4] clue_0.3-68           GetoptLong_1.1.1      otel_0.2.0           `\
+`#>  [7] compiler_4.6.1        mgcv_1.9-4            png_0.1-9            `\
+`#> [10] systemfonts_1.3.2     vctrs_0.7.3           pkgconfig_2.0.3      `\
+`#> [13] shape_1.4.6.1         crayon_1.5.3          fastmap_1.2.0        `\
+`#> [16] XVector_0.52.0        fontawesome_0.5.3     promises_1.5.0       `\
+`#> [19] rmarkdown_2.32        shinyAce_0.4.4        ragg_1.5.2           `\
+`#> [22] xfun_0.62             cachem_1.1.0          jsonlite_2.0.0       `\
+`#> [25] listviewer_4.0.0      later_1.4.8           DelayedArray_0.38.2  `\
+`#> [28] parallel_4.6.1        cluster_2.1.8.3       R6_2.6.1             `\
+`#> [31] bslib_0.12.0          RColorBrewer_1.1-3    jquerylib_0.1.4      `\
+`#> [34] Rcpp_1.1.2            bookdown_0.48         iterators_1.0.14     `\
+`#> [37] knitr_1.52            httpuv_1.6.17         Matrix_1.7-6         `\
+`#> [40] splines_4.6.1         igraph_2.3.4          tidyselect_1.2.1     `\
+`#> [43] abind_1.4-8           yaml_2.3.12           doParallel_1.0.17    `\
+`#> [46] codetools_0.2-20      miniUI_0.1.2          lattice_0.23-1       `\
+`#> [49] tibble_3.3.1          shiny_1.14.0          S7_0.2.2             `\
+`#> [52] evaluate_1.0.5        desc_1.4.3            circlize_0.4.18      `\
+`#> [55] pillar_1.11.1         BiocManager_1.30.27   DT_0.34.0            `\
+`#> [58] foreach_1.5.2         shinyjs_2.1.1         ggplot2_4.0.3        `\
+`#> [61] scales_1.4.0          xtable_1.8-8          glue_1.8.1           `\
+`#> [64] tools_4.6.1           colourpicker_1.3.0    fs_2.1.0             `\
+`#> [67] grid_4.6.1            colorspace_2.1-4      nlme_3.1-171         `\
+`#> [70] vipor_0.4.7           cli_3.6.6             textshaping_1.0.5    `\
+`#> [73] viridisLite_0.4.3     S4Arrays_1.12.1       ComplexHeatmap_2.28.0`\
+`#> [76] dplyr_1.2.1           gtable_0.3.6          rintrojs_0.3.4       `\
+`#> [79] sass_0.4.10           digest_0.6.39         SparseArray_1.12.3   `\
+`#> [82] ggrepel_0.9.8         rjson_0.2.23          htmlwidgets_1.6.4    `\
+`#> [85] farver_2.1.2          memoise_2.0.1         htmltools_0.5.9      `\
+`#> [88] pkgdown_2.2.1         lifecycle_1.0.5       shinyWidgets_0.9.1   `\
+`#> [91] GlobalOptions_0.1.4   mime_0.13`\
+`# devtools::session_info()`
 
 ## References
 

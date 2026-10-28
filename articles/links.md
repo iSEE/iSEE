@@ -1,6 +1,6 @@
 # Sharing information across iSEE panels
 
-**Compiled date**: 2026-07-13
+**Compiled date**: 2026-10-28
 
 **Last edited**: 2020-04-20
 
@@ -28,14 +28,12 @@ samples in one panel and transmitting their identities to another panel
 to affect the visualization. To demonstrate, we will create a small app
 involving a single reduced dimension plot and a column metadata plot.
 
-``` r
-
-library(iSEE)
-app <- iSEE(sce, initial=list(
-    ReducedDimensionPlot(),
-    ColumnDataPlot()
-))
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`iSEE`](https://isee.github.io/iSEE/)`)`\
+`app`` ``<-`` `[`iSEE`](https://isee.github.io/iSEE/reference/iSEE.md)`(``sce``, initial``=`[`list`](https://rdrr.io/r/base/list.html)`(`\
+`    `[`ReducedDimensionPlot`](https://isee.github.io/iSEE/reference/ReducedDimensionPlot-class.md)`(``)``,`\
+`    `[`ColumnDataPlot`](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)`(``)`\
+`)``)`
 
 ![](screenshots/links-multi-naive.png)
 
@@ -173,71 +171,69 @@ the row data plot.
 
 ## Session Info
 
-``` r
-
-sessionInfo()
-#> R version 4.6.1 (2026-06-24)
-#> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.4 LTS
-#> 
-#> Matrix products: default
-#> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
-#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
-#> 
-#> locale:
-#>  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-#>  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-#>  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-#>  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-#>  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-#> [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
-#> 
-#> time zone: UTC
-#> tzcode source: system (glibc)
-#> 
-#> attached base packages:
-#> [1] stats4    stats     graphics  grDevices utils     datasets  methods  
-#> [8] base     
-#> 
-#> other attached packages:
-#>  [1] iSEE_2.25.1                 SingleCellExperiment_1.34.0
-#>  [3] SummarizedExperiment_1.42.0 Biobase_2.72.0             
-#>  [5] GenomicRanges_1.64.0        Seqinfo_1.2.0              
-#>  [7] IRanges_2.46.0              S4Vectors_0.50.1           
-#>  [9] BiocGenerics_0.58.1         generics_0.1.4             
-#> [11] MatrixGenerics_1.24.0       matrixStats_1.5.0          
-#> [13] BiocStyle_2.40.0           
-#> 
-#> loaded via a namespace (and not attached):
-#>  [1] rlang_1.3.0           magrittr_2.0.5        shinydashboard_0.7.3 
-#>  [4] clue_0.3-68           GetoptLong_1.1.1      otel_0.2.0           
-#>  [7] compiler_4.6.1        mgcv_1.9-4            png_0.1-9            
-#> [10] systemfonts_1.3.2     vctrs_0.7.3           pkgconfig_2.0.3      
-#> [13] shape_1.4.6.1         crayon_1.5.3          fastmap_1.2.0        
-#> [16] XVector_0.52.0        fontawesome_0.5.3     promises_1.5.0       
-#> [19] rmarkdown_2.31        shinyAce_0.4.4        ragg_1.5.2           
-#> [22] xfun_0.60             cachem_1.1.0          jsonlite_2.0.0       
-#> [25] listviewer_4.0.0      later_1.4.8           DelayedArray_0.38.2  
-#> [28] parallel_4.6.1        cluster_2.1.8.2       R6_2.6.1             
-#> [31] bslib_0.11.0          RColorBrewer_1.1-3    jquerylib_0.1.4      
-#> [34] Rcpp_1.1.2            bookdown_0.47         iterators_1.0.14     
-#> [37] knitr_1.51            httpuv_1.6.17         Matrix_1.7-5         
-#> [40] splines_4.6.1         igraph_2.3.3          tidyselect_1.2.1     
-#> [43] abind_1.4-8           yaml_2.3.12           doParallel_1.0.17    
-#> [46] codetools_0.2-20      miniUI_0.1.2          lattice_0.22-9       
-#> [49] tibble_3.3.1          shiny_1.14.0          S7_0.2.2             
-#> [52] evaluate_1.0.5        desc_1.4.3            circlize_0.4.18      
-#> [55] pillar_1.11.1         BiocManager_1.30.27   DT_0.34.0            
-#> [58] foreach_1.5.2         shinyjs_2.1.1         ggplot2_4.0.3        
-#> [61] scales_1.4.0          xtable_1.8-8          glue_1.8.1           
-#> [64] tools_4.6.1           colourpicker_1.3.0    fs_2.1.0             
-#> [67] grid_4.6.1            colorspace_2.1-3      nlme_3.1-169         
-#> [70] vipor_0.4.7           cli_3.6.6             textshaping_1.0.5    
-#> [73] viridisLite_0.4.3     S4Arrays_1.12.0       ComplexHeatmap_2.28.0
-#> [76] dplyr_1.2.1           gtable_0.3.6          rintrojs_0.3.4       
-#> [79] sass_0.4.10           digest_0.6.39         SparseArray_1.12.2   
-#> [82] ggrepel_0.9.8         rjson_0.2.23          htmlwidgets_1.6.4    
-#> [85] farver_2.1.2          memoise_2.0.1         htmltools_0.5.9      
-#> [88] pkgdown_2.2.1         lifecycle_1.0.5       shinyWidgets_0.9.1   
-#> [91] GlobalOptions_0.1.4   mime_0.13
-```
+\
+[`sessionInfo`](https://rdrr.io/r/utils/sessionInfo.html)`(``)`\
+`#> R version 4.6.1 (2026-06-24)`\
+`#> Platform: x86_64-pc-linux-gnu`\
+`#> Running under: Ubuntu 24.04.5 LTS`\
+`#> `\
+`#> Matrix products: default`\
+`#> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 `\
+`#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0`\
+`#> `\
+`#> locale:`\
+`#>  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              `\
+`#>  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    `\
+`#>  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   `\
+`#>  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 `\
+`#>  [9] LC_ADDRESS=C               LC_TELEPHONE=C            `\
+`#> [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       `\
+`#> `\
+`#> time zone: UTC`\
+`#> tzcode source: system (glibc)`\
+`#> `\
+`#> attached base packages:`\
+`#> [1] stats4    stats     graphics  grDevices utils     datasets  methods  `\
+`#> [8] base     `\
+`#> `\
+`#> other attached packages:`\
+`#>  [1] iSEE_2.25.2                 SingleCellExperiment_1.34.0`\
+`#>  [3] SummarizedExperiment_1.42.0 Biobase_2.72.0             `\
+`#>  [5] GenomicRanges_1.64.0        Seqinfo_1.2.0              `\
+`#>  [7] IRanges_2.46.0              S4Vectors_0.50.3           `\
+`#>  [9] BiocGenerics_0.58.1         generics_0.1.4             `\
+`#> [11] MatrixGenerics_1.24.0       matrixStats_1.5.0          `\
+`#> [13] BiocStyle_2.40.0           `\
+`#> `\
+`#> loaded via a namespace (and not attached):`\
+`#>  [1] rlang_1.3.0           magrittr_2.0.5        shinydashboard_0.7.3 `\
+`#>  [4] clue_0.3-68           GetoptLong_1.1.1      otel_0.2.0           `\
+`#>  [7] compiler_4.6.1        mgcv_1.9-4            png_0.1-9            `\
+`#> [10] systemfonts_1.3.2     vctrs_0.7.3           pkgconfig_2.0.3      `\
+`#> [13] shape_1.4.6.1         crayon_1.5.3          fastmap_1.2.0        `\
+`#> [16] XVector_0.52.0        fontawesome_0.5.3     promises_1.5.0       `\
+`#> [19] rmarkdown_2.32        shinyAce_0.4.4        ragg_1.5.2           `\
+`#> [22] xfun_0.62             cachem_1.1.0          jsonlite_2.0.0       `\
+`#> [25] listviewer_4.0.0      later_1.4.8           DelayedArray_0.38.2  `\
+`#> [28] parallel_4.6.1        cluster_2.1.8.3       R6_2.6.1             `\
+`#> [31] bslib_0.12.0          RColorBrewer_1.1-3    jquerylib_0.1.4      `\
+`#> [34] Rcpp_1.1.2            bookdown_0.48         iterators_1.0.14     `\
+`#> [37] knitr_1.52            httpuv_1.6.17         Matrix_1.7-6         `\
+`#> [40] splines_4.6.1         igraph_2.3.4          tidyselect_1.2.1     `\
+`#> [43] abind_1.4-8           yaml_2.3.12           doParallel_1.0.17    `\
+`#> [46] codetools_0.2-20      miniUI_0.1.2          lattice_0.23-1       `\
+`#> [49] tibble_3.3.1          shiny_1.14.0          S7_0.2.2             `\
+`#> [52] evaluate_1.0.5        desc_1.4.3            circlize_0.4.18      `\
+`#> [55] pillar_1.11.1         BiocManager_1.30.27   DT_0.34.0            `\
+`#> [58] foreach_1.5.2         shinyjs_2.1.1         ggplot2_4.0.3        `\
+`#> [61] scales_1.4.0          xtable_1.8-8          glue_1.8.1           `\
+`#> [64] tools_4.6.1           colourpicker_1.3.0    fs_2.1.0             `\
+`#> [67] grid_4.6.1            colorspace_2.1-4      nlme_3.1-171         `\
+`#> [70] vipor_0.4.7           cli_3.6.6             textshaping_1.0.5    `\
+`#> [73] viridisLite_0.4.3     S4Arrays_1.12.1       ComplexHeatmap_2.28.0`\
+`#> [76] dplyr_1.2.1           gtable_0.3.6          rintrojs_0.3.4       `\
+`#> [79] sass_0.4.10           digest_0.6.39         SparseArray_1.12.3   `\
+`#> [82] ggrepel_0.9.8         rjson_0.2.23          htmlwidgets_1.6.4    `\
+`#> [85] farver_2.1.2          memoise_2.0.1         htmltools_0.5.9      `\
+`#> [88] pkgdown_2.2.1         lifecycle_1.0.5       shinyWidgets_0.9.1   `\
+`#> [91] GlobalOptions_0.1.4   mime_0.13`

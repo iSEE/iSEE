@@ -1,6 +1,6 @@
 # An introduction to the iSEE interface
 
-**Compiled date**: 2026-07-13
+**Compiled date**: 2026-10-28
 
 **Last edited**: 2020-04-20
 
@@ -16,19 +16,15 @@ Instructions to install the package are available
 [here](https://bioconductor.org/packages/3.23/iSEE). Once installed, the
 package can be loaded and attached to your current workspace as follows:
 
-``` r
-
-library(iSEE)
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`iSEE`](https://isee.github.io/iSEE/)`)`
 
 If you have a `SummarizedExperiment` object[^1] named `se`, you can
 launch an *[iSEE](https://bioconductor.org/packages/3.23/iSEE)* app by
 running:
 
-``` r
-
-iSEE(se)
-```
+\
+[`iSEE`](https://isee.github.io/iSEE/reference/iSEE.md)`(``se``)`
 
 In this vignette, we demonstrate this process using the `allen`
 single-cell RNA-seq data set from the
@@ -36,10 +32,8 @@ single-cell RNA-seq data set from the
 However, if you want to start playing with the app immediately, you can
 simply run:
 
-``` r
-
-example(iSEE, ask=FALSE)
-```
+\
+[`example`](https://rdrr.io/r/utils/example.html)`(``iSEE``, ask``=``FALSE``)`
 
 ## Setting up the data
 
@@ -50,77 +44,67 @@ calling
 and specifying the value for the `assays` parameter. To begin with, we
 assign the output of this call to an `sce` object and inspect it.
 
-``` r
-
-library(scRNAseq)
-sce <- ReprocessedAllenData(assays = "tophat_counts")   # specifying the assays to speed up the example
-sce
-#> class: SingleCellExperiment 
-#> dim: 20816 379 
-#> metadata(2): SuppInfo which_qc
-#> assays(1): tophat_counts
-#> rownames(20816): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3
-#> rowData names(0):
-#> colnames(379): SRR2140028 SRR2140022 ... SRR2139341 SRR2139336
-#> colData names(22): NREADS NALIGNED ... Animal.ID passes_qc_checks_s
-#> reducedDimNames(0):
-#> mainExpName: endogenous
-#> altExpNames(1): ERCC
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(``scRNAseq``)`\
+`sce`` ``<-`` `[`ReprocessedAllenData`](https://rdrr.io/pkg/scRNAseq/man/ReprocessedData.html)`(``assays ``=`` ``"tophat_counts"``)``   ``# specifying the assays to speed up the example`\
+`sce`\
+`#> class: SingleCellExperiment `\
+`#> dim: 20816 379 `\
+`#> metadata(2): SuppInfo which_qc`\
+`#> assays(1): tophat_counts`\
+`#> rownames(20816): 0610007P14Rik 0610009B22Rik ... Zzef1 Zzz3`\
+`#> rowData names(0):`\
+`#> colnames(379): SRR2140028 SRR2140022 ... SRR2139341 SRR2139336`\
+`#> colData names(22): NREADS NALIGNED ... Animal.ID passes_qc_checks_s`\
+`#> reducedDimNames(0):`\
+`#> mainExpName: endogenous`\
+`#> altExpNames(1): ERCC`
 
 As provided, the `sce` object contains raw data and a number of quality
 control and experimental cell annotations, all available in
 `colData(sce)`.
 
-``` r
-
-colnames(colData(sce))
-#>  [1] "NREADS"                       "NALIGNED"                    
-#>  [3] "RALIGN"                       "TOTAL_DUP"                   
-#>  [5] "PRIMER"                       "PCT_RIBOSOMAL_BASES"         
-#>  [7] "PCT_CODING_BASES"             "PCT_UTR_BASES"               
-#>  [9] "PCT_INTRONIC_BASES"           "PCT_INTERGENIC_BASES"        
-#> [11] "PCT_MRNA_BASES"               "MEDIAN_CV_COVERAGE"          
-#> [13] "MEDIAN_5PRIME_BIAS"           "MEDIAN_3PRIME_BIAS"          
-#> [15] "MEDIAN_5PRIME_TO_3PRIME_BIAS" "driver_1_s"                  
-#> [17] "dissection_s"                 "Core.Type"                   
-#> [19] "Primary.Type"                 "Secondary.Type"              
-#> [21] "Animal.ID"                    "passes_qc_checks_s"
-```
+\
+[`colnames`](https://rdrr.io/r/base/colnames.html)`(`[`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)`(``sce``)``)`\
+`#>  [1] "NREADS"                       "NALIGNED"                    `\
+`#>  [3] "RALIGN"                       "TOTAL_DUP"                   `\
+`#>  [5] "PRIMER"                       "PCT_RIBOSOMAL_BASES"         `\
+`#>  [7] "PCT_CODING_BASES"             "PCT_UTR_BASES"               `\
+`#>  [9] "PCT_INTRONIC_BASES"           "PCT_INTERGENIC_BASES"        `\
+`#> [11] "PCT_MRNA_BASES"               "MEDIAN_CV_COVERAGE"          `\
+`#> [13] "MEDIAN_5PRIME_BIAS"           "MEDIAN_3PRIME_BIAS"          `\
+`#> [15] "MEDIAN_5PRIME_TO_3PRIME_BIAS" "driver_1_s"                  `\
+`#> [17] "dissection_s"                 "Core.Type"                   `\
+`#> [19] "Primary.Type"                 "Secondary.Type"              `\
+`#> [21] "Animal.ID"                    "passes_qc_checks_s"`
 
 Then, we normalize the expression values with
 *[scrapper](https://bioconductor.org/packages/3.23/scrapper)*.
 
-``` r
-
-library(scrapper)
-sce <- normalizeRnaCounts.se(sce, assay.type = "tophat_counts")
-```
+\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`scrapper`](https://github.com/libscran/scrapper)`)`\
+`sce`` ``<-`` `[`normalizeRnaCounts.se`](https://rdrr.io/pkg/scrapper/man/normalizeRnaCounts.se.html)`(``sce``, assay.type ``=`` ``"tophat_counts"``)`
 
 Next, we apply PCA and *t*-SNE to generate two low-dimensional
 representations of the cells. The dimensionality reduction results are
 stored in `reducedDim(sce)`.
 
-``` r
-
-set.seed(1000)
-library(scater)
-sce <- runPCA(sce)
-sce <- runTSNE(sce)
-reducedDimNames(sce)
-#> [1] "PCA"  "TSNE"
-```
+\
+[`set.seed`](https://rdrr.io/r/base/Random.html)`(``1000``)`\
+[`library`](https://rdrr.io/r/base/library.html)`(`[`scater`](http://bioconductor.org/packages/scater/)`)`\
+`sce`` ``<-`` `[`runPCA`](https://rdrr.io/pkg/BiocSingular/man/runPCA.html)`(``sce``)`\
+`sce`` ``<-`` `[`runTSNE`](https://rdrr.io/pkg/scater/man/runTSNE.html)`(``sce``)`\
+[`reducedDimNames`](https://rdrr.io/pkg/SingleCellExperiment/man/reducedDims.html)`(``sce``)`\
+`#> [1] "PCA"  "TSNE"`
 
 At this point, the `sce` object does not contain any annotations for the
 rows (i.e., features) in the data set. Thus, to prepare a fully-featured
 example application, we also add some gene metadata to the `rowData`
 related to the mean-variance relationship in the data.
 
-``` r
-
-rowData(sce)$mean_log <- rowMeans(logcounts(sce))
-rowData(sce)$var_log <- apply(logcounts(sce), 1, var)
-```
+\
+[`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)`(``sce``)``$``mean_log`` ``<-`` `[`rowMeans`](https://rdrr.io/r/base/colSums.html)`(`[`logcounts`](https://rdrr.io/pkg/SingleCellExperiment/man/assays.html)`(``sce``)``)`\
+[`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)`(``sce``)``$``var_log`` ``<-`` `[`apply`](https://rdrr.io/r/base/apply.html)`(`[`logcounts`](https://rdrr.io/pkg/SingleCellExperiment/man/assays.html)`(``sce``)``, ``1``, ``var``)`
 
 It is important to note that `iSEE` relies primarily on precomputed
 values stored in the various slots of objects derived from the
@@ -142,17 +126,13 @@ be extensively
 [reconfigured](https://bioconductor.org/packages/3.23/iSEE/vignettes/configure.html)
 using a number of optional arguments to the `iSEE` function.
 
-``` r
-
-app <- iSEE(sce)
-```
+\
+`app`` ``<-`` `[`iSEE`](https://isee.github.io/iSEE/reference/iSEE.md)`(``sce``)`
 
 The `runApp` function launches the app in our browser.
 
-``` r
-
-shiny::runApp(app)
-```
+\
+`shiny``::`[`runApp`](https://rdrr.io/pkg/shiny/man/runApp.html)`(``app``)`
 
 ![Basic demo.](screenshots/basic-demo.png)
 
@@ -587,122 +567,118 @@ better, pull requests.
 If you use *[iSEE](https://bioconductor.org/packages/3.23/iSEE)* for
 your analysis, please cite it as shown below:
 
-``` r
-
-citation("iSEE")
-#> To cite package 'iSEE' in publications use:
-#> 
-#>   Rue-Albrecht K, Marini F, Soneson C, Lun ATL (2018). "iSEE:
-#>   Interactive SummarizedExperiment Explorer." _F1000Research_, *7*,
-#>   741. doi:10.12688/f1000research.14966.1
-#>   <https://doi.org/10.12688/f1000research.14966.1>.
-#> 
-#> A BibTeX entry for LaTeX users is
-#> 
-#>   @Article{,
-#>     title = {iSEE: Interactive SummarizedExperiment Explorer},
-#>     author = {Kevin Rue-Albrecht and Federico Marini and Charlotte Soneson and Aaron T. L. Lun},
-#>     publisher = {F1000 Research, Ltd.},
-#>     journal = {F1000Research},
-#>     year = {2018},
-#>     month = {Jun},
-#>     volume = {7},
-#>     pages = {741},
-#>     doi = {10.12688/f1000research.14966.1},
-#>   }
-```
+\
+[`citation`](https://rdrr.io/r/utils/citation.html)`(``"iSEE"``)`\
+`#> To cite package 'iSEE' in publications use:`\
+`#> `\
+`#>   Rue-Albrecht K, Marini F, Soneson C, Lun ATL (2018). "iSEE:`\
+`#>   Interactive SummarizedExperiment Explorer." _F1000Research_, *7*,`\
+`#>   741. doi:10.12688/f1000research.14966.1`\
+`#>   <https://doi.org/10.12688/f1000research.14966.1>.`\
+`#> `\
+`#> A BibTeX entry for LaTeX users is`\
+`#> `\
+`#>   @Article{,`\
+`#>     title = {iSEE: Interactive SummarizedExperiment Explorer},`\
+`#>     author = {Kevin Rue-Albrecht and Federico Marini and Charlotte Soneson and Aaron T. L. Lun},`\
+`#>     publisher = {F1000 Research, Ltd.},`\
+`#>     journal = {F1000Research},`\
+`#>     year = {2018},`\
+`#>     month = {Jun},`\
+`#>     volume = {7},`\
+`#>     pages = {741},`\
+`#>     doi = {10.12688/f1000research.14966.1},`\
+`#>   }`
 
 ## Session Info
 
-``` r
-
-sessionInfo()
-#> R version 4.6.1 (2026-06-24)
-#> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.4 LTS
-#> 
-#> Matrix products: default
-#> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
-#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0
-#> 
-#> locale:
-#>  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
-#>  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    
-#>  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   
-#>  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 
-#>  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-#> [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       
-#> 
-#> time zone: UTC
-#> tzcode source: system (glibc)
-#> 
-#> attached base packages:
-#> [1] stats4    stats     graphics  grDevices utils     datasets  methods  
-#> [8] base     
-#> 
-#> other attached packages:
-#>  [1] scater_1.40.2               ggplot2_4.0.3              
-#>  [3] scuttle_1.22.0              scrapper_1.6.3             
-#>  [5] scRNAseq_2.26.0             iSEE_2.25.1                
-#>  [7] SingleCellExperiment_1.34.0 SummarizedExperiment_1.42.0
-#>  [9] Biobase_2.72.0              GenomicRanges_1.64.0       
-#> [11] Seqinfo_1.2.0               IRanges_2.46.0             
-#> [13] S4Vectors_0.50.1            BiocGenerics_0.58.1        
-#> [15] generics_0.1.4              MatrixGenerics_1.24.0      
-#> [17] matrixStats_1.5.0           BiocStyle_2.40.0           
-#> 
-#> loaded via a namespace (and not attached):
-#>   [1] splines_4.6.1            later_1.4.8              BiocIO_1.22.0           
-#>   [4] bitops_1.0-9             filelock_1.0.3           tibble_3.3.1            
-#>   [7] XML_3.99-0.23            lifecycle_1.0.5          httr2_1.2.3             
-#>  [10] doParallel_1.0.17        lattice_0.22-9           ensembldb_2.36.1        
-#>  [13] alabaster.base_1.12.1    magrittr_2.0.5           sass_0.4.10             
-#>  [16] rmarkdown_2.31           jquerylib_0.1.4          yaml_2.3.12             
-#>  [19] httpuv_1.6.17            otel_0.2.0               DBI_1.3.0               
-#>  [22] RColorBrewer_1.1-3       abind_1.4-8              Rtsne_0.17              
-#>  [25] AnnotationFilter_1.36.0  RCurl_1.98-1.19          rappdirs_0.3.4          
-#>  [28] circlize_0.4.18          ggrepel_0.9.8            irlba_2.3.7             
-#>  [31] alabaster.sce_1.12.0     pkgdown_2.2.1            codetools_0.2-20        
-#>  [34] DelayedArray_0.38.2      DT_0.34.0                tidyselect_1.2.1        
-#>  [37] shape_1.4.6.1            UCSC.utils_1.8.0         farver_2.1.2            
-#>  [40] viridis_0.6.5            ScaledMatrix_1.20.0      shinyWidgets_0.9.1      
-#>  [43] BiocFileCache_3.2.0      GenomicAlignments_1.48.0 jsonlite_2.0.0          
-#>  [46] GetoptLong_1.1.1         BiocNeighbors_2.6.0      iterators_1.0.14        
-#>  [49] systemfonts_1.3.2        foreach_1.5.2            tools_4.6.1             
-#>  [52] ragg_1.5.2               Rcpp_1.1.2               glue_1.8.1              
-#>  [55] gridExtra_2.3.1          SparseArray_1.12.2       xfun_0.60               
-#>  [58] mgcv_1.9-4               GenomeInfoDb_1.48.0      dplyr_1.2.1             
-#>  [61] HDF5Array_1.40.0         gypsum_1.8.0             shinydashboard_0.7.3    
-#>  [64] withr_3.0.3              BiocManager_1.30.27      fastmap_1.2.0           
-#>  [67] rhdf5filters_1.24.0      shinyjs_2.1.1            rsvd_1.0.5              
-#>  [70] digest_0.6.39            R6_2.6.1                 mime_0.13               
-#>  [73] textshaping_1.0.5        colorspace_2.1-3         listviewer_4.0.0        
-#>  [76] RSQLite_3.53.3           cigarillo_1.2.0          h5mread_1.4.0           
-#>  [79] rtracklayer_1.72.0       httr_1.4.8               htmlwidgets_1.6.4       
-#>  [82] S4Arrays_1.12.0          pkgconfig_2.0.3          gtable_0.3.6            
-#>  [85] blob_1.3.0               ComplexHeatmap_2.28.0    S7_0.2.2                
-#>  [88] XVector_0.52.0           htmltools_0.5.9          bookdown_0.47           
-#>  [91] ProtGenerics_1.44.0      rintrojs_0.3.4           clue_0.3-68             
-#>  [94] scales_1.4.0             alabaster.matrix_1.12.0  png_0.1-9               
-#>  [97] knitr_1.51               rjson_0.2.23             nlme_3.1-169            
-#> [100] curl_7.1.0               shinyAce_0.4.4           cachem_1.1.0            
-#> [103] rhdf5_2.56.0             GlobalOptions_0.1.4      BiocVersion_3.23.1      
-#> [106] parallel_4.6.1           miniUI_0.1.2             vipor_0.4.7             
-#> [109] AnnotationDbi_1.74.0     restfulr_0.0.17          desc_1.4.3              
-#> [112] pillar_1.11.1            grid_4.6.1               alabaster.schemas_1.12.0
-#> [115] vctrs_0.7.3              promises_1.5.0           BiocSingular_1.28.0     
-#> [118] dbplyr_2.6.0             beachmat_2.28.0          xtable_1.8-8            
-#> [121] cluster_2.1.8.2          beeswarm_0.4.0           evaluate_1.0.5          
-#> [124] GenomicFeatures_1.64.0   cli_3.6.6                compiler_4.6.1          
-#> [127] Rsamtools_2.28.0         rlang_1.3.0              crayon_1.5.3            
-#> [130] ggbeeswarm_0.7.3         fs_2.1.0                 viridisLite_0.4.3       
-#> [133] alabaster.se_1.12.0      BiocParallel_1.46.0      Biostrings_2.80.1       
-#> [136] lazyeval_0.2.3           colourpicker_1.3.0       Matrix_1.7-5            
-#> [139] ExperimentHub_3.2.0      bit64_4.8.2              Rhdf5lib_2.0.0          
-#> [142] KEGGREST_1.52.2          shiny_1.14.0             alabaster.ranges_1.12.0 
-#> [145] AnnotationHub_4.2.2      fontawesome_0.5.3        igraph_2.3.3            
-#> [148] memoise_2.0.1            bslib_0.11.0             bit_4.6.0
-```
+\
+[`sessionInfo`](https://rdrr.io/r/utils/sessionInfo.html)`(``)`\
+`#> R version 4.6.1 (2026-06-24)`\
+`#> Platform: x86_64-pc-linux-gnu`\
+`#> Running under: Ubuntu 24.04.5 LTS`\
+`#> `\
+`#> Matrix products: default`\
+`#> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 `\
+`#> LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.26.so;  LAPACK version 3.12.0`\
+`#> `\
+`#> locale:`\
+`#>  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              `\
+`#>  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    `\
+`#>  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   `\
+`#>  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 `\
+`#>  [9] LC_ADDRESS=C               LC_TELEPHONE=C            `\
+`#> [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       `\
+`#> `\
+`#> time zone: UTC`\
+`#> tzcode source: system (glibc)`\
+`#> `\
+`#> attached base packages:`\
+`#> [1] stats4    stats     graphics  grDevices utils     datasets  methods  `\
+`#> [8] base     `\
+`#> `\
+`#> other attached packages:`\
+`#>  [1] scater_1.40.2               ggplot2_4.0.3              `\
+`#>  [3] scuttle_1.22.0              scrapper_1.6.3             `\
+`#>  [5] scRNAseq_2.26.0             iSEE_2.25.2                `\
+`#>  [7] SingleCellExperiment_1.34.0 SummarizedExperiment_1.42.0`\
+`#>  [9] Biobase_2.72.0              GenomicRanges_1.64.0       `\
+`#> [11] Seqinfo_1.2.0               IRanges_2.46.0             `\
+`#> [13] S4Vectors_0.50.3            BiocGenerics_0.58.1        `\
+`#> [15] generics_0.1.4              MatrixGenerics_1.24.0      `\
+`#> [17] matrixStats_1.5.0           BiocStyle_2.40.0           `\
+`#> `\
+`#> loaded via a namespace (and not attached):`\
+`#>   [1] splines_4.6.1            later_1.4.8              BiocIO_1.22.0           `\
+`#>   [4] bitops_1.1-0             filelock_1.0.3           tibble_3.3.1            `\
+`#>   [7] XML_3.99-0.25            lifecycle_1.0.5          httr2_1.3.0             `\
+`#>  [10] doParallel_1.0.17        lattice_0.23-1           ensembldb_2.36.1        `\
+`#>  [13] alabaster.base_1.12.1    magrittr_2.0.5           sass_0.4.10             `\
+`#>  [16] rmarkdown_2.32           jquerylib_0.1.4          yaml_2.3.12             `\
+`#>  [19] httpuv_1.6.17            otel_0.2.0               DBI_1.3.0               `\
+`#>  [22] RColorBrewer_1.1-3       abind_1.4-8              Rtsne_0.17              `\
+`#>  [25] AnnotationFilter_1.36.0  RCurl_1.98-1.20          rappdirs_0.3.4          `\
+`#>  [28] circlize_0.4.18          ggrepel_0.9.8            irlba_2.4.1             `\
+`#>  [31] alabaster.sce_1.12.0     pkgdown_2.2.1            codetools_0.2-20        `\
+`#>  [34] DelayedArray_0.38.2      DT_0.34.0                tidyselect_1.2.1        `\
+`#>  [37] shape_1.4.6.1            UCSC.utils_1.8.0         farver_2.1.2            `\
+`#>  [40] viridis_0.6.5            ScaledMatrix_1.20.0      shinyWidgets_0.9.1      `\
+`#>  [43] BiocFileCache_3.2.0      GenomicAlignments_1.48.0 jsonlite_2.0.0          `\
+`#>  [46] GetoptLong_1.1.1         BiocNeighbors_2.6.0      iterators_1.0.14        `\
+`#>  [49] systemfonts_1.3.2        foreach_1.5.2            tools_4.6.1             `\
+`#>  [52] ragg_1.5.2               Rcpp_1.1.2               glue_1.8.1              `\
+`#>  [55] gridExtra_2.3.1          SparseArray_1.12.3       xfun_0.62               `\
+`#>  [58] mgcv_1.9-4               GenomeInfoDb_1.48.0      dplyr_1.2.1             `\
+`#>  [61] HDF5Array_1.40.0         gypsum_1.8.0             shinydashboard_0.7.3    `\
+`#>  [64] withr_3.0.3              BiocManager_1.30.27      fastmap_1.2.0           `\
+`#>  [67] rhdf5filters_1.24.1      shinyjs_2.1.1            rsvd_1.0.6              `\
+`#>  [70] digest_0.6.39            R6_2.6.1                 mime_0.13               `\
+`#>  [73] textshaping_1.0.5        colorspace_2.1-4         listviewer_4.0.0        `\
+`#>  [76] RSQLite_3.53.3           cigarillo_1.2.1          h5mread_1.4.1           `\
+`#>  [79] rtracklayer_1.72.0       httr_1.4.9               htmlwidgets_1.6.4       `\
+`#>  [82] S4Arrays_1.12.1          pkgconfig_2.0.3          gtable_0.3.6            `\
+`#>  [85] blob_1.3.0               ComplexHeatmap_2.28.0    S7_0.2.2                `\
+`#>  [88] XVector_0.52.0           htmltools_0.5.9          bookdown_0.48           `\
+`#>  [91] ProtGenerics_1.44.0      rintrojs_0.3.4           clue_0.3-68             `\
+`#>  [94] scales_1.4.0             alabaster.matrix_1.12.0  png_0.1-9               `\
+`#>  [97] knitr_1.52               rjson_0.2.23             nlme_3.1-171            `\
+`#> [100] curl_8.1.0               shinyAce_0.4.4           cachem_1.1.0            `\
+`#> [103] rhdf5_2.56.1             GlobalOptions_0.1.4      BiocVersion_3.23.1      `\
+`#> [106] parallel_4.6.1           miniUI_0.1.2             vipor_0.4.7             `\
+`#> [109] AnnotationDbi_1.74.0     restfulr_0.0.17          desc_1.4.3              `\
+`#> [112] pillar_1.11.1            grid_4.6.1               alabaster.schemas_1.12.0`\
+`#> [115] vctrs_0.7.3              promises_1.5.0           BiocSingular_1.28.1     `\
+`#> [118] dbplyr_2.6.0             beachmat_2.28.0          xtable_1.8-8            `\
+`#> [121] cluster_2.1.8.3          beeswarm_0.4.0           evaluate_1.0.5          `\
+`#> [124] GenomicFeatures_1.64.0   cli_3.6.6                compiler_4.6.1          `\
+`#> [127] Rsamtools_2.28.0         rlang_1.3.0              crayon_1.5.3            `\
+`#> [130] ggbeeswarm_0.7.3         fs_2.1.0                 viridisLite_0.4.3       `\
+`#> [133] alabaster.se_1.12.0      BiocParallel_1.46.0      Biostrings_2.80.2       `\
+`#> [136] lazyeval_0.2.3           colourpicker_1.3.0       Matrix_1.7-6            `\
+`#> [139] ExperimentHub_3.2.2      bit64_4.8.6              Rhdf5lib_2.0.0          `\
+`#> [142] KEGGREST_1.52.2          shiny_1.14.0             alabaster.ranges_1.12.0 `\
+`#> [145] AnnotationHub_4.2.2      fontawesome_0.5.3        igraph_2.3.4            `\
+`#> [148] memoise_2.0.1            bslib_0.12.0             bit_4.6.0`
 
 ## References
 

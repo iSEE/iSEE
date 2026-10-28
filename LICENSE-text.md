@@ -1,4 +1,4 @@
 # License
 
-    YEAR: 2024
-    COPYRIGHT HOLDER: iSEE authors
+YEAR: 2024\
+COPYRIGHT HOLDER: iSEE authors\

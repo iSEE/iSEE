@@ -33,14 +33,12 @@ layout.](https://f1000researchdata.s3.amazonaws.com/manuscripts/16293/6bf85f9d-8
 *iSEE* can be easily installed from Bioconductor using
 [`BiocManager::install()`](https://bioconductor.github.io/BiocManager/reference/install.html):
 
-``` r
-
-if (!requireNamespace("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
-BiocManager::install("iSEE")
-# or also...
-BiocManager::install("iSEE", dependencies = TRUE)
-```
+\
+`if`` ``(``!`[`requireNamespace`](https://rdrr.io/r/base/ns-load.html)`(``"BiocManager"``, quietly ``=`` ``TRUE``)``)`\
+`    `[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``"BiocManager"``)`\
+`BiocManager``::`[`install`](https://bioconductor.github.io/BiocManager/reference/install.html)`(``"iSEE"``)`\
+`# or also...`\
+`BiocManager``::`[`install`](https://bioconductor.github.io/BiocManager/reference/install.html)`(``"iSEE"``, dependencies ``=`` ``TRUE``)`
 
 Setting `dependencies = TRUE` should ensure that all packages, including
 the ones in the `Suggests:` field of the `DESCRIPTION`, are installed -

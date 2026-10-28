@@ -21,14 +21,14 @@ Rue-Albrecht K, Marini F, Soneson C, Lun ATL (2018). “iSEE: Interactive
 SummarizedExperiment Explorer.” *F1000Research*, **7**, 741.
 [doi:10.12688/f1000research.14966.1](https://doi.org/10.12688/f1000research.14966.1).
 
-    @Article{,
-      title = {iSEE: Interactive SummarizedExperiment Explorer},
-      author = {Kevin Rue-Albrecht and Federico Marini and Charlotte Soneson and Aaron T. L. Lun},
-      publisher = {F1000 Research, Ltd.},
-      journal = {F1000Research},
-      year = {2018},
-      month = {Jun},
-      volume = {7},
-      pages = {741},
-      doi = {10.12688/f1000research.14966.1},
-    }
+@Article{,\
+  title = {iSEE: Interactive SummarizedExperiment Explorer},\
+  author = {Kevin Rue-Albrecht and Federico Marini and Charlotte Soneson and Aaron T. L. Lun},\
+  publisher = {F1000 Research, Ltd.},\
+  journal = {F1000Research},\
+  year = {2018},\
+  month = {Jun},\
+  volume = {7},\
+  pages = {741},\
+  doi = {10.12688/f1000research.14966.1},\
+}

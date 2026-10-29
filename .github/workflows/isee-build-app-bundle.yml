@@ -1,0 +1,197 @@
+# iSEE app-layer bundle builder for the ShinyApps store (Route A).
+# Place at  fentouxungui/iSEE/.github/workflows/isee-build-app-bundle.yml  (on the DEFAULT branch = devel).
+#
+# Produces, per platform:  isee-<store-version>-<platform>.zip
+#   bundle/ +- manifest.json +- app/app.R +- rlib/<Pkg>/
+#
+# v4 changes:
+#  - app.R now raises shiny.maxRequestSize (default 5 MB) so the landing page
+#    can upload realistic SummarizedExperiment/SingleCellExperiment RDS files.
+# v3 changes:
+#  1) STORE version (Release tag) is DECOUPLED from the upstream package version
+#     in DESCRIPTION: we locate the tarball R CMD build actually produced
+#     (iSEE_*.tar.gz), so tag v0.1.0 works even when DESCRIPTION says 2.25.1.
+#  2) The dependency closure excludes only R *base* priority packages, not
+#     everything preinstalled on the runner. This keeps R *recommended* Imports
+#     such as `mgcv` inside rlib/ instead of relying on the shell Tier-0 runtime.
+
+name: Build app bundle
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing tag to attach bundles to"
+        required: false
+        type: string
+        default: "v0.1.0"
+
+permissions:
+  contents: write
+
+env:
+  APP_ID: isee
+  APP_NAME: iSEE
+  APP_AUTHOR: "Kevin Rue-Albrecht, Federico Marini, Charlotte Soneson, Aaron Lun"
+  APP_DESC: "Interactive SummarizedExperiment Explorer"
+  APP_HOMEPAGE: "https://github.com/fentouxungui/iSEE"
+  APP_LICENSE: "MIT"
+  R_VERSION: "4.6.1"
+
+jobs:
+  bundle:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-latest, platform: "win-x64" }
+          - { os: macos-14,       platform: "mac-arm64" }
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ env.R_VERSION }}
+          use-public-rspm: true
+
+      - name: Install build helpers
+        shell: bash
+        run: Rscript -e 'install.packages(c("jsonlite","zip","digest","BiocManager"), repos="https://cloud.r-project.org")'
+
+      - name: Resolve store version
+        shell: bash
+        run: |
+          V="${{ github.event.release.tag_name }}${{ inputs.tag }}"
+          V="${V#v}"
+          if [ -z "$V" ]; then V=$(grep '^Version:' DESCRIPTION | awk '{print $2}'); fi
+          echo "VERSION=$V" >> "$GITHUB_ENV"
+
+      - name: Build source tarball
+        shell: bash
+        run: R CMD build --no-build-vignettes --no-manual .
+
+      - name: Install app + dependency closure into bundle/rlib
+        shell: Rscript {0}
+        run: |
+          bundle <- file.path(getwd(), "bundle")
+          unlink(bundle, recursive = TRUE); dir.create(bundle, recursive = TRUE)
+          lib <- file.path(bundle, "rlib"); dir.create(lib, recursive = TRUE)
+          repos <- BiocManager::repositories()
+          options(repos = repos)
+
+          # Store version (tag) and upstream package version are independent:
+          # use whatever source tarball R CMD build produced.
+          tb <- list.files(".", pattern = "^iSEE_.*[.]tar[.]gz$", full.names = TRUE)
+          if (length(tb) == 0) stop("no iSEE_*.tar.gz found -- did R CMD build run?")
+          tb <- tb[which.max(file.mtime(tb))]
+          cat("source tarball:", basename(tb), fill = TRUE)
+          cat("store bundle version (from tag):", Sys.getenv("VERSION"), fill = TRUE)
+          local_paths <- normalizePath(tb, winslash = "/", mustWork = TRUE)
+
+          read_desc <- function(p) {
+            td <- tempfile(); dir.create(td)
+            utils::untar(p, exdir = td)
+            dd <- list.files(td, pattern = "^DESCRIPTION$", recursive = TRUE, full.names = TRUE)[1]
+            read.dcf(dd)
+          }
+          dcfs <- lapply(local_paths, read_desc)
+          loc_names <- vapply(dcfs, function(d) d[1, "Package"], character(1))
+          declared <- unique(unlist(lapply(dcfs, function(d) {
+            fields <- intersect(c("Depends", "Imports", "LinkingTo"), colnames(d))
+            vals <- unlist(lapply(fields, function(f) if (is.na(d[1, f])) "" else d[1, f]))
+            parts <- trimws(unlist(strsplit(paste(vals, collapse = ","), ",")))
+            parts <- trimws(sub("[(].*[)]$", "", parts))
+            parts[nzchar(parts) & parts != "R"]
+          })))
+
+          db <- available.packages(repos = repos)
+          seed <- unique(c(loc_names, declared))
+          closure <- unique(c(unlist(tools::package_dependencies(seed, db = db, recursive = TRUE)), declared))
+          # Exclude ONLY base-priority packages (they ship with R and cannot be
+          # installed from a repo). Keep recommended ones (e.g. mgcv, Matrix) so
+          # the bundle is self-contained and does not depend on shell Tier-0.
+          base_pkgs <- rownames(installed.packages(priority = "base"))
+          closure <- setdiff(closure, c(loc_names, base_pkgs, basename(list.dirs(lib, recursive = FALSE))))
+          if (length(closure)) {
+            install.packages(closure, lib = lib, repos = repos, type = "binary",
+                             dependencies = FALSE, Ncpus = 2)
+          }
+          install.packages(local_paths, lib = lib, repos = NULL, type = "source", dependencies = FALSE)
+
+          present <- basename(list.dirs(lib, recursive = FALSE))
+          missing <- setdiff(c(loc_names, setdiff(declared, base_pkgs)), present)
+          if (length(missing)) stop("packages missing from rlib: ", paste(missing, collapse = ", "))
+          cat("rlib packages:", length(present), fill = TRUE)
+
+      - name: Assemble app + manifest.json
+        shell: Rscript {0}
+        run: |
+          bundle <- file.path(getwd(), "bundle")
+          lib <- file.path(bundle, "rlib")
+          dir.create(file.path(bundle, "app"), recursive = TRUE, showWarnings = FALSE)
+          # shiny.maxRequestSize default is 5 MB; raise it so the landing page can
+          # accept realistic SE/SCE RDS uploads (500 MB here).
+          writeLines(c(
+            'library(iSEE)',
+            'options(shiny.launch.browser = FALSE, shiny.deprecation.messages = FALSE,',
+            '        shiny.maxRequestSize = 500 * 1024^2)',
+            'iSEE()'
+          ), file.path(bundle, "app", "app.R"))
+
+          pkgs <- as.data.frame(installed.packages(lib.loc = lib))
+          man <- list(
+            schema = 1L,
+            id = Sys.getenv("APP_ID"), name = Sys.getenv("APP_NAME"), version = Sys.getenv("VERSION"),
+            author = Sys.getenv("APP_AUTHOR"), description = Sys.getenv("APP_DESC"),
+            homepage = Sys.getenv("APP_HOMEPAGE"), license = Sys.getenv("APP_LICENSE"),
+            runtime = "r-shiny", entry = "app/app.R",
+            platform = "${{ matrix.platform }}",
+            r_version = Sys.getenv("R_VERSION"), min_shell_version = "0.1.0",
+            packages = lapply(seq_len(nrow(pkgs)), function(i) list(
+              name = pkgs$Package[i], version = pkgs$Version[i],
+              path = file.path("rlib", pkgs$Package[i]), source = "cran"))
+          )
+          jsonlite::write_json(man, file.path(bundle, "manifest.json"), pretty = TRUE, auto_unbox = TRUE)
+
+      - name: Zip + sha256
+        shell: Rscript {0}
+        run: |
+          out <- sprintf("%s-%s-%s.zip", Sys.getenv("APP_ID"), Sys.getenv("VERSION"), "${{ matrix.platform }}")
+          bundle <- file.path(getwd(), "bundle")
+          old <- setwd(bundle); on.exit(setwd(old))
+          zip::zipr(out, files = list.files(".", all.files = TRUE, no.. = TRUE))
+          entries <- utils::unzip(out, list = TRUE)$Name
+          if (!any(grepl("^rlib/", entries))) stop("zip is missing rlib/ -- aborting")
+          setwd(old)
+          file.rename(file.path(bundle, out), out)
+          sha <- digest::digest(out, algo = "sha256", file = TRUE)
+          writeLines(sprintf('{"platform":"%s","file":"%s","sha256":"%s","size":%d}',
+                     "${{ matrix.platform }}", out, sha, file.size(out)),
+                     sprintf("meta-%s.json", "${{ matrix.platform }}"))
+          cat("bundle zip size:", file.size(out), fill = TRUE)
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bundle-${{ matrix.platform }}
+          path: |
+            *.zip
+            meta-*.json
+
+  release:
+    needs: bundle
+    if: github.event_name == 'release' || startsWith(github.ref, 'refs/tags/v') || inputs.tag != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag || github.ref_name }}
+          files: artifacts/*.zip

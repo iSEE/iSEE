@@ -74,7 +74,7 @@ Defaults to \code{FALSE}.
 Each element of this list corresponds to one saved selection in the current panel.
 Defaults to an empty list.
 \item \code{VersionInfo}, a named list of \link{package_version} objects specifying the versions of packages used to create a given \linkS4class{Panel} instance.
-This information is used to inform \code{\link{updateObject}} of any updates that need to be applied.
+This information is used to inform \code{\link[BiocGenerics:updateObject]{updateObject}} of any updates that need to be applied.
 By default, it is filled with a single \code{"iSEE"} entry containing the current version of \pkg{iSEE}.
 }
 }
@@ -97,7 +97,7 @@ Refer to the documentation for each method for more details on the remaining arg
 
 For setting up data values:
 \itemize{
-\item \code{\link{.refineParameters}(x, se)} calls \code{\link{updateObject}(x)}.
+\item \code{\link{.refineParameters}(x, se)} calls \code{\link[BiocGenerics:updateObject]{updateObject}(x)}.
 If \code{x} is up to date, this operation is a no-op and returns \code{x} without modification.
 \item \code{\link{.cacheCommonInfo}(x, se)} is a no-op, returning \code{se} without modification.
 }

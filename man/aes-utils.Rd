@@ -41,7 +41,7 @@ aesthetic instructions (default: \code{TRUE}).}
 \item{alt}{Alternative aesthetics, supplied as a named character vector.}
 }
 \value{
-Aesthetic instructions for \code{\link{ggplot}} as a character
+Aesthetic instructions for \code{\link[ggplot2:ggplot]{ggplot}} as a character
 value.
 }
 \description{

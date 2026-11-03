@@ -10,14 +10,14 @@
 .getCachedCommonInfo(se, cls)
 }
 \arguments{
-\item{se}{A \linkS4class{SummarizedExperiment} object containing the current dataset.}
+\item{se}{A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.}
 
 \item{cls}{String containing the name of the class for which this information is cached.}
 
 \item{...}{Any number of named R objects to cache.}
 }
 \value{
-\code{.setCachedCommonInfo} returns \code{se} with \code{...} added to its \code{\link{int_metadata}}.
+\code{.setCachedCommonInfo} returns \code{se} with \code{...} added to its \code{\link[SingleCellExperiment:int_metadata]{int_metadata}}.
 
 \code{.getCachedCommonInfo} retrieves the cached common information for class \code{cls}.
 }

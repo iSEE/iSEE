@@ -22,7 +22,7 @@ Returns an interface element with or without the CSS class \code{shinyjs-hide}, 
 This allows panels to hide interface elements that are provided by parent classes but are not needed in the subclass.
 }
 \details{
-\code{.selectInputHidden(x, field, ...)} produces a Shiny \code{\link{selectInput}} element that will be hidden if \code{.hideInterface(x)} is \code{TRUE}.
+\code{.selectInputHidden(x, field, ...)} produces a Shiny \code{\link[shiny:selectInput]{selectInput}} element that will be hidden if \code{.hideInterface(x)} is \code{TRUE}.
 }
 \examples{
 .selectInputHidden(ComplexHeatmapPlot(), "SelectionHistory",

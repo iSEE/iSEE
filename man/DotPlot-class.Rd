@@ -39,7 +39,7 @@
 \alias{[[<-,DotPlot,ANY,ANY-method}
 \title{The DotPlot virtual class}
 \description{
-The DotPlot is a virtual class for all panels where each row or column in the \linkS4class{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link{ggplot} plot.
+The DotPlot is a virtual class for all panels where each row or column in the \linkS4class[SummarizedExperiment]{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link[ggplot2:ggplot]{ggplot} plot.
 It provides slots and methods to create the plot, to control various aesthetics of the dots, and to store the brush or lasso selection.
 }
 \section{Slot overview}{
@@ -98,7 +98,7 @@ The following slots control any text to be shown on the plot:
 \item \code{LabelCenters}, a logical scalar indicating whether the label the centers (technically medoids) of all cells in each group, where groups are defined by a discrete covariate in the relevant metadata field.
 Defaults to \code{FALSE}.
 \item \code{LabelCentersBy}, a string specifying the metadata field to define the groups when \code{LabelCenters} is \code{TRUE}.
-This should be a discrete variable in \code{\link{rowData}} or \code{\link{colData}} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
+This should be a discrete variable in \code{\link[SummarizedExperiment:rowData]{rowData}} or \code{\link[SummarizedExperiment:colData]{colData}} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
 Defaults to the name of the first column.
 \item \code{LabelCentersColor}, a string specifying the color used for the labels at the center of each group.
 Only used when \code{LabelCenters} is \code{TRUE}.
@@ -115,7 +115,7 @@ The following slots control interactions with the plot image:
 \itemize{
 \item \code{ZoomData}, a named numeric vector of plot coordinates with \code{"xmin"}, \code{"xmax"}, \code{"ymin"} and \code{"ymax"} elements parameterizing the zoom boundaries.
 Defaults to an empty vector, i.e., no zoom.
-\item \code{BrushData}, a list containing either a Shiny brush (see \code{?\link{brushedPoints}}) or an \pkg{iSEE} lasso (see \code{?\link{lassoPoints}}).
+\item \code{BrushData}, a list containing either a Shiny brush (see \code{?\link[shiny:brushedPoints]{brushedPoints}}) or an \pkg{iSEE} lasso (see \code{?\link{lassoPoints}}).
 Defaults to an empty list, i.e., no brush or lasso.
 \item \code{HoverInfo}, a logical scalar indicating whether the feature/sample name should be shown upon mouse-over of the point.
 Defaults to \code{TRUE}.
@@ -213,17 +213,17 @@ Currently this returns \code{NULL}.
 For generating the output:
 \itemize{
 \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the plot;
-\code{plot}, a \link{ggplot} object;
+\code{plot}, a \link[ggplot2:ggplot]{ggplot} object;
 \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot};
 and \code{varname}, a string containing the name of the variable in \code{commands} that was used to obtain \code{contents}.
 \item \code{\link{.generateDotPlot}(x, labels, envir)} returns a list containing \code{plot} and \code{commands}, as described above.
 This is called within \code{\link{.generateOutput}} for all \linkS4class{DotPlot} instances by default.
-Methods are also guaranteed to generate a \code{dot.plot} variable in \code{envir} containing the \link{ggplot} object corresponding to \code{plot}.
+Methods are also guaranteed to generate a \code{dot.plot} variable in \code{envir} containing the \link[ggplot2:ggplot]{ggplot} object corresponding to \code{plot}.
 \item \code{\link{.prioritizeDotPlotData}(x, envir)} returns \code{NULL}.
 \item \code{\link{.colorByNoneDotPlotField}(x)} returns \code{NULL}.
 \item \code{\link{.colorByNoneDotPlotScale}(x)} returns \code{NULL}.
 \item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} will create a PDF file containing the current plot, and return a string containing the path to that PDF.
-This assumes that the \code{plot} field returned by \code{\link{.generateOutput}} is a \link{ggplot} object.
+This assumes that the \code{plot} field returned by \code{\link{.generateOutput}} is a \link[ggplot2:ggplot]{ggplot} object.
 }
 
 For defining reactive expressions:

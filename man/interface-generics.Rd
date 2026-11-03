@@ -16,7 +16,7 @@ An overview of the generics for defining the user interface (UI) for each panel 
 The required arguments are:
 \itemize{
 \item \code{x}, an instance of a \linkS4class{Panel} class.
-\item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
+\item \code{se}, a \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 This can be assumed to have been produced by running \code{\link{.refineParameters}(x, se)}.
 \item \code{select_info}, a list of two lists, \code{single} and \code{multiple},
 each of which contains the character vectors \code{row} and \code{column}.

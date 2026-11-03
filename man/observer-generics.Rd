@@ -12,7 +12,7 @@ The workhorse generic for defining the Shiny observers for a given panel, along 
 In \code{.createObservers(x, se, input, session, pObjects, rObjects)}, the required arguments are:
 \itemize{
 \item \code{x}, an instance of a \linkS4class{Panel} class.
-\item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
+\item \code{se}, a \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 This can be assumed to have been produced by running \code{\link{.refineParameters}(x, se)}.
 \item \code{input}, the Shiny input object from the server function.
 \item \code{session}, the Shiny session object from the server function.

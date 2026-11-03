@@ -15,7 +15,7 @@ getAppOption(name, se, default = NULL)
 getAllAppOptions(se)
 }
 \arguments{
-\item{se}{The \linkS4class{SummarizedExperiment} object to be supplied to \code{\link{iSEE}}.}
+\item{se}{The \linkS4class[SummarizedExperiment]{SummarizedExperiment} object to be supplied to \code{\link{iSEE}}.}
 
 \item{...}{Named options to register.
 Alternatively a single named list containing the options to register.}

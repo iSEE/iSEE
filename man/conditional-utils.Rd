@@ -28,13 +28,13 @@ A HTML object containing interface elements in \code{...} that only appear when 
 Creates a conditional UI element that appears when the user picks a certain choice in a radio button, single checkbox or checkbox group interface element.
 }
 \details{
-These functions are just wrappers around \code{\link{conditionalPanel}},
+These functions are just wrappers around \code{\link[shiny:conditionalPanel]{conditionalPanel}},
 with the added value coming from the pre-written conditional expressions in Javascript.
 They are useful for hiding elements that are only relevant when the right radio button or checkbox is selected.
 This means that we avoid cluttering the UI with options that are not immediately useful to the user.
 }
 \seealso{
-\code{\link{conditionalPanel}}, which is used under the hood.
+\code{\link[shiny:conditionalPanel]{conditionalPanel}}, which is used under the hood.
 }
 \author{
 Aaron Lun

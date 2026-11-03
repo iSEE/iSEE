@@ -16,7 +16,7 @@ createLandingPage(
 \item{seUI}{Function that accepts a single \code{id} argument and returns a UI element for specifying the SummarizedExperiment.}
 
 \item{seLoad}{Function that accepts the input value of the UI element from \code{seUI}
-and returns a \linkS4class{SummarizedExperiment} object.}
+and returns a \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.}
 
 \item{initUI}{Function that accepts a single \code{id} argument and returns a UI element for specifying the initial state.}
 
@@ -31,7 +31,7 @@ A function that generates a landing page upon being passed to \code{\link{iSEE}}
 as the \code{landingPage} argument.
 }
 \description{
-Define a function to create a landing page in which users can specify or upload \link{SummarizedExperiment} objects.
+Define a function to create a landing page in which users can specify or upload \linkS4class[SummarizedExperiment]{SummarizedExperiment} objects.
 }
 \details{
 By default, this function creates a landing page in which users can upload an RDS file containing a SummarizedExperiment,
@@ -69,7 +69,7 @@ This function expects to be passed:
 \item \code{session}, the Shiny session object.
 }
 
-The \code{landingPage} function should define a \code{\link{renderUI}} expression that is assigned to \code{output$allPanels}.
+The \code{landingPage} function should define a \code{\link[shiny:renderUI]{renderUI}} expression that is assigned to \code{output$allPanels}.
 This should define a UI that contains all widgets necessary for a user to set up an \code{\link{iSEE}} session interactively.
 We suggest that all UI elements have IDs prefixed with \code{"initialize_INTERNAL"} to avoid conflicts.
 

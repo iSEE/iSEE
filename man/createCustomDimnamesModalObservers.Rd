@@ -24,7 +24,7 @@ This will be modified by user interactions with the modal.}
 
 \item{button_name}{String containing the name of the button in the panel UI that launches the modal.}
 
-\item{se}{A \linkS4class{SummarizedExperiment} object after running \code{\link{.cacheCommonInfo}}.}
+\item{se}{A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object after running \code{\link{.cacheCommonInfo}}.}
 
 \item{input}{The Shiny input object from the server function.}
 

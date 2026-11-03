@@ -24,7 +24,7 @@ createCustomPlot(
 )
 }
 \arguments{
-\item{FUN}{A function that generates a data.frame or a \link{ggplot},
+\item{FUN}{A function that generates a data.frame or a \link[ggplot2:ggplot]{ggplot},
 for \code{createCustomTable} and \code{createCustomPlot} respectively.
 See Details for the expected arguments.}
 
@@ -51,7 +51,7 @@ This creates a new class with specialized methods for showing content based on a
 \details{
 \code{FUN} is expected to have the following first 3 arguments:
 \itemize{
-\item \code{se}, a \linkS4class{SummarizedExperiment} object for the current dataset of interest.
+\item \code{se}, a \linkS4class[SummarizedExperiment]{SummarizedExperiment} object for the current dataset of interest.
 \item \code{rows}, a list of row selections received from the transmitting panel.
 This contains one or more character vectors of row names in active and saved selections.
 Alternatively, this may be \code{NULL} if no selection has been made in the transmitter.
@@ -64,10 +64,10 @@ Any number of additional named arguments may also be present in \code{FUN}.
 All such arguments should have default values,
 as these are used to automatically generate UI elements in the panel:
 \itemize{
-\item Character vectors will get a \code{\link{selectInput}}.
-\item Strings will get a \code{\link{textInput}}.
-\item Numeric scalars will get a \code{\link{numericInput}}.
-\item Logical scalars will get a \code{\link{checkboxInput}}.
+\item Character vectors will get a \code{\link[shiny:selectInput]{selectInput}}.
+\item Strings will get a \code{\link[shiny:textInput]{textInput}}.
+\item Numeric scalars will get a \code{\link[shiny:numericInput]{numericInput}}.
+\item Logical scalars will get a \code{\link[shiny:checkboxInput]{checkboxInput}}.
 }
 Arguments with other types of default values are ignored.
 If \code{restrict} is specified, arguments will only have corresponding UI elements if they are listed in \code{restrict}.

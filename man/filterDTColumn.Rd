@@ -14,7 +14,7 @@ filterDT(df, column, global)
 
 \item{search}{A string specifying the search filter to apply to \code{x}.}
 
-\item{df}{A data.frame that was used in the \code{\link{datatable}} widget.}
+\item{df}{A data.frame that was used in the \code{\link[DT:datatable]{datatable}} widget.}
 
 \item{column}{A character vector of per-column search strings to apply to \code{df}.
 If any entry is an empty string, the corresponding column is not used for any filtering.}
@@ -26,7 +26,7 @@ If an empty string, no filtering is performed.}
 A logical vector indicating which entries of \code{x} or rows of \code{df} are to be retained.
 }
 \description{
-Filter a data.frame based on the \pkg{DT} \code{\link{datatable}} widget column search string.
+Filter a data.frame based on the \pkg{DT} \code{\link[DT:datatable]{datatable}} widget column search string.
 }
 \details{
 For character \code{x}, \code{search} is treated as a regular expression.
@@ -69,7 +69,7 @@ filterDT(X, "", global="A")
 
 }
 \seealso{
-\code{\link{datatable}} and associated documentation for more details about column searches.
+\code{\link[DT:datatable]{datatable}} and associated documentation for more details about column searches.
 }
 \author{
 Aaron Lun

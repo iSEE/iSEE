@@ -14,7 +14,7 @@
 \item{all_contents}{A named list of arbitrary contents with one entry per panel.}
 
 \item{envir}{The evaluation environment.
-This is assumed to already contain \code{se}, the \linkS4class{SummarizedExperiment} object for the current dataset.}
+This is assumed to already contain \code{se}, the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object for the current dataset.}
 }
 \value{
 \code{envir} is populated with one, none or both of \code{col_selected} and/or \code{row_selected},

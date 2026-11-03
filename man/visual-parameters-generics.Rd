@@ -17,7 +17,7 @@ These generics allow subclasses to override the user interface elements controll
 }
 \section{Interface definition}{
 
-In all of the code snippets below, \code{x} is a \linkS4class{Panel} instance and \code{se} is the \linkS4class{SummarizedExperiment} object.
+In all of the code snippets below, \code{x} is a \linkS4class{Panel} instance and \code{se} is the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.
 \itemize{
 \item \code{.defineVisualColorInterface(x, se, select_info)} should return a HTML tag definition that contains UI input elements controlling the \code{color} aesthetic of \code{ggplot} objects.
 Here, \code{select_info} is a list of two character vectors named \code{row} and \code{column}, which specifies the names of panels available for transmitting single selections on the rows/columns respectively.
@@ -42,7 +42,7 @@ All of these generics are called by \code{\link{.defineInterface}} for DotPlot s
 Developers of subclasses can simply specialize these generics to change the UI instead of reimplementing \code{.defineInterface} itself.
 
 When implementing methods for these generics, it is a good idea to make use of information precomputed by \code{\link{.cacheCommonInfo}}.
-For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link{colData}} is valid and discrete or continuous.
+For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link[SummarizedExperiment:colData]{colData}} is valid and discrete or continuous.
 }
 
 \section{Controlling \code{ColorBy*Data} choices}{

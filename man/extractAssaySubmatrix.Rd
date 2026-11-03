@@ -17,7 +17,7 @@
 \arguments{
 \item{x}{A \linkS4class{Panel} instance that uses the row selection modal.}
 
-\item{se}{The current \linkS4class{SummarizedExperiment} object.}
+\item{se}{The current \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.}
 
 \item{envir}{The evaluation environment.
 This assumes that \code{\link{.processMultiSelections}} has already been run.}

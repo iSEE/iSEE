@@ -32,7 +32,7 @@ setGeneric("rowDataColorMap<-", signature=c("x", "i"),
 #' The required arguments are:
 #' \itemize{
 #' \item \code{x}, an instance of a \linkS4class{Panel} class.
-#' \item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' \item \code{se}, a \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 #' This can be assumed to have been produced by running \code{\link{.refineParameters}(x, se)}.
 #' \item \code{select_info}, a list of two lists, \code{single} and \code{multiple},
 #' each of which contains the character vectors \code{row} and \code{column}.
@@ -101,7 +101,7 @@ setGeneric(".hideInterface", function(x, field) standardGeneric(".hideInterface"
 #' In \code{.createObservers(x, se, input, session, pObjects, rObjects)}, the required arguments are:
 #' \itemize{
 #' \item \code{x}, an instance of a \linkS4class{Panel} class.
-#' \item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' \item \code{se}, a \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 #' This can be assumed to have been produced by running \code{\link{.refineParameters}(x, se)}.
 #' \item \code{input}, the Shiny input object from the server function.
 #' \item \code{session}, the Shiny session object from the server function.
@@ -163,9 +163,9 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' \code{.defineOutput(x)} defines the output element of the panel (e.g., a plot or table widget),
 #' given an instance of a \linkS4class{Panel} subclass in \code{x}.
 #'
-#' Methods for this generic are expected to return a HTML element containing the visual output of the panel, such as the return value of \code{\link{plotOutput}} or \code{\link{dataTableOutput}}.
+#' Methods for this generic are expected to return a HTML element containing the visual output of the panel, such as the return value of \code{\link[shiny:plotOutput]{plotOutput}} or \code{\link[DT:dataTableOutput]{dataTableOutput}}.
 #' This element will be shown in the \pkg{iSEE} interface above the parameter boxes for \code{x}.
-#' Multiple elements can be returned via a \code{\link{tagList}}.
+#' Multiple elements can be returned via a \code{\link[htmltools:tagList]{tagList}}.
 #'
 #' The IDs of the output elements are expected to be prefixed with the panel name from \code{\link{.getEncodedName}(x)} and an underscore, e.g., \code{"ReducedDimensionPlot1_someOutput"}.
 #' One of the output elements may simply have the ID set to \code{PANEL} alone;
@@ -176,7 +176,7 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' The following arguments are required:
 #' \itemize{
 #' \item \code{x}, an instance of a \linkS4class{Panel} class.
-#' \item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' \item \code{se}, a \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 #' \item \code{...}, further arguments that may be used by specific methods.
 #' \item \code{output}, the Shiny output object from the server function.
 #' \item \code{pObjects}, an environment containing global parameters generated in the \code{\link{iSEE}} app.
@@ -184,7 +184,7 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' }
 #'
 #' It is expected to attach one or more reactive expressions to \code{output} to render the output element(s) defined by \code{.defineOutput}.
-#' This is typically done by calling \pkg{shiny} rendering functions like \code{\link{renderPlot}} or the most appropriate equivalent for the panel's output. 
+#' This is typically done by calling \pkg{shiny} rendering functions like \code{\link[shiny:renderPlot]{renderPlot}} or the most appropriate equivalent for the panel's output. 
 #' The return value of this generic is not used; only the side-effect of the reactive output set-up is relevant.
 #'
 #' The rendering expression inside the chosen rendering function is expected to:
@@ -203,7 +203,7 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' }
 #'
 #' We strongly recommend calling \code{\link{.retrieveOutput}} within the rendering expression, which will automatically perform all of the tasks above, rather than calling \code{\link{.generateOutput}} manually.
-#' By doing so, the only extra work required of the rendering expression is to actually render the output (e.g., by \code{print}ing a \link{ggplot} object).
+#' By doing so, the only extra work required of the rendering expression is to actually render the output (e.g., by \code{print}ing a \link[ggplot2:ggplot]{ggplot} object).
 #' Of course, the rendering expression must itself be encapsulated by an appropriate rendering function assigned to \code{output}.
 #'
 #' Developers should not attempt to modify \code{x} in any rendering expression.
@@ -216,7 +216,7 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' The following arguments are required:
 #' \itemize{
 #' \item \code{x}, an instance of a \linkS4class{Panel} class.
-#' \item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' \item \code{se}, a \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 #' \item \code{all_memory}, a named list containing \linkS4class{Panel} objects parameterizing the current state of the app.
 #' \item \code{all_contents}, a named list containing the contents of each panel.
 #' }
@@ -227,7 +227,7 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' The values therein are used by \code{\link{.multiSelectionCommands}} to determine the multiple row/column selection in \code{x} to be transmitted to other (child) panels.
 #' The app will ensure that the \code{pObjects$contents} of each panel is populated before attempting to render their children. 
 #' \code{contents} may be set to \code{NULL} if \code{x} does not transmit, i.e., \code{\link{.multiSelectionDimension}} returns \code{"none"}.
-#' \item \code{commands}, a list of character vectors of R commands that, when executed, produces the contents of the panel and any displayed output (e.g., a \link{ggplot} object).
+#' \item \code{commands}, a list of character vectors of R commands that, when executed, produces the contents of the panel and any displayed output (e.g., a \link[ggplot2:ggplot]{ggplot} object).
 #' Developers should write these commands as if the evaluation environment only contains the SummarizedExperiment \code{se} and ExperimentColorMap \code{colormap}.
 #' It may also contain \code{col_selected}, if a multiple column selection is being transmitted to \code{x};
 #' and possibly \code{row_selected}, if a multiple row selection is being transmitted to \code{x}.
@@ -249,7 +249,7 @@ setGeneric(".createObservers", function(x, se, input, session, pObjects, rObject
 #' The following arguments are required:
 #' \itemize{
 #' \item \code{x}, an instance of a \linkS4class{Panel} class.
-#' \item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' \item \code{se}, a \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 #' \item \code{all_memory}, a named list containing \linkS4class{Panel} objects parameterizing the current state of the app.
 #' \item \code{all_contents}, a named list containing the contents of each panel.
 #' }
@@ -308,7 +308,7 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' \itemize{
 #' \item \code{x}, an instance of a \linkS4class{DotPlot} subclass.
 #' \item \code{envir}, the evaluation environment in which the data.frame is to be constructed.
-#' This can be assumed to have \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset;
+#' This can be assumed to have \code{se}, the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset;
 #' possibly \code{col_selected}, if a multiple column selection is being transmitted to \code{x};
 #' and possibly \code{row_selected}, if a multiple row selection is being transmitted to \code{x}.
 #' }
@@ -334,7 +334,7 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' \item \code{x}, an instance of a \linkS4class{DotPlot} subclass.
 #' \item \code{labels}, a list of labels corresponding to the columns of \code{plot.data}.
 #' This is typically used to define axis or legend labels in the plot.
-#' \item \code{envir}, the evaluation environment in which the \link{ggplot} object is to be constructed.
+#' \item \code{envir}, the evaluation environment in which the \link[ggplot2:ggplot]{ggplot} object is to be constructed.
 #' This can be assumed to have \code{plot.data}, a data.frame of plotting data.
 #'
 #' Note that \code{se}, \code{row_selected} and \code{col_selected} will still be present in \code{envir},
@@ -342,7 +342,7 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' This is because the order and number of rows in \code{plot.data} may have changed since \code{\link{.generateDotPlotData}}.
 #' }
 #'
-#' Methods for this generic should return a list with \code{plot}, a \link{ggplot} object;
+#' Methods for this generic should return a list with \code{plot}, a \link[ggplot2:ggplot]{ggplot} object;
 #' and \code{commands}, a character vector of commands to produce that object when evaluated inside \code{envir}.
 #' This plot will subsequently be the rendered output in \code{\link{.renderOutput}}.
 #' Note that \code{envir} should contain a copy of the \code{plot} object in a variable named \code{dot.plot} -
@@ -382,8 +382,8 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' It would be very unwise for methods to alter the x-axis, y-axis or faceting values in \code{plot.data}.
 #' This will lead to unintuitive discrepancies between apparent visual selections for a brush/lasso and the actual multiple selection that is evaluated by downstream functions like \code{\link{.processMultiSelections}}.
 #'
-#' In certain situations, a \linkS4class{DotPlot} subclass may be able to build off a \link{ggplot} generated by its parent class.
-#' This is easily done by exploiting the fact that methods for this generic are expected to store a copy of their \code{plot} \link{ggplot} object as a \code{dot.plot} variable in \code{envir}.
+#' In certain situations, a \linkS4class{DotPlot} subclass may be able to build off a \link[ggplot2:ggplot]{ggplot} generated by its parent class.
+#' This is easily done by exploiting the fact that methods for this generic are expected to store a copy of their \code{plot} \link[ggplot2:ggplot]{ggplot} object as a \code{dot.plot} variable in \code{envir}.
 #' A specialized method for the subclass can \code{\link{callNextMethod}()} to populate \code{envir} with the initial \code{dot.plot}, and then just construct and execute commands to add more \pkg{ggplot2} layers as desired.
 #'
 #' This generic is called by \code{.generateOutput} for DotPlot subclasses.
@@ -394,7 +394,7 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' The following arguments are required:
 #' \itemize{
 #' \item \code{x}, an instance of a \linkS4class{DotPlot} subclass.
-#' \item \code{envir}, the evaluation environment in which the \link{ggplot} object is to be constructed.
+#' \item \code{envir}, the evaluation environment in which the \link[ggplot2:ggplot]{ggplot} object is to be constructed.
 #' This can be assumed to have \code{plot.data}, a data.frame of plotting data.
 #'
 #' Again, note that \code{se}, \code{row_selected} and \code{col_selected} will still be present in \code{envir}, but it is simplest to only use information that has already been incorporated into \code{plot.data} where possible.
@@ -424,7 +424,7 @@ setGeneric(".panelColor", function(x) standardGeneric(".panelColor"))
 #' \code{.colorByNoneDotPlotField(x)} expects \code{x}, an instance of a \linkS4class{DotPlot} subclass, and returns a string containing a name of a column in \code{plot.data} to use for coloring in the \code{ggplot} mapping.
 #' This assumes that the relevant field was added to \code{plot.data} by a method for \code{\link{.generateDotPlotData}}.
 #'
-#' \code{.colorByNoneDotPlotScale(x)} expects \code{x}, an instance of a \linkS4class{DotPlot} subclass, and returns a string containing a \pkg{ggplot2} \code{scale_color_*} call, e.g., \code{\link{scale_color_manual}}.
+#' \code{.colorByNoneDotPlotScale(x)} expects \code{x}, an instance of a \linkS4class{DotPlot} subclass, and returns a string containing a \pkg{ggplot2} \code{scale_color_*} call, e.g., \code{\link[ggplot2:scale_color_manual]{scale_color_manual}}.
 #' This string should end with a \code{"+"} operator as additional \pkg{ggplot2} layers will be added by \pkg{iSEE}.
 #'
 #' This generic is called by \code{.generateDotPlot}, which is in turn called by \code{\link{.generateOutput}}.
@@ -543,22 +543,22 @@ setGeneric(".getDotPlotNamesCommand", function(x) standardGeneric(".getDotPlotNa
 
 #' Generics for table construction
 #'
-#' Generic to control the creation of a data.frame to show in the \code{\link{datatable}} widget of a \linkS4class{Table} panel.
+#' Generic to control the creation of a data.frame to show in the \code{\link[DT:datatable]{datatable}} widget of a \linkS4class{Table} panel.
 #' \linkS4class{Table} subclasses can specialize methods to modify the behavior of \code{\link{.generateOutput}}.
 #'
 #' @section Constructing the table:
-#' \code{.generateTable(x, envir)} generates the data.frame to use in the \code{\link{datatable}} widget.
+#' \code{.generateTable(x, envir)} generates the data.frame to use in the \code{\link[DT:datatable]{datatable}} widget.
 #' The following arguments are required:
 #' \itemize{
 #' \item \code{x}, an instance of a Table subclass.
 #' \item \code{envir}, the evaluation environment in which the data.frame is to be constructed.
-#' This can be assumed to have \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset;
+#' This can be assumed to have \code{se}, the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset;
 #' possibly \code{col_selected}, if a multiple column selection is being transmitted to \code{x};
 #' and possibly \code{row_selected}, if a multiple row selection is being transmitted to \code{x}.
 #' }
 #'
 #' In return, the method should add a \code{tab} variable in \code{envir} containing the relevant data.frame.
-#' This will automatically be passed to the \code{\link{datatable}} widget as well as being stored in \code{pObjects$contents}.
+#' This will automatically be passed to the \code{\link[DT:datatable]{datatable}} widget as well as being stored in \code{pObjects$contents}.
 #' The return value should be a character vector of commands that produces \code{tab} when evaluated in \code{envir}.
 #'
 #' Each row of the \code{tab} data.frame should correspond to one row or column in the SummarizedExperiment \code{envir$se} for \linkS4class{RowTable}s and \linkS4class{ColumnTable}s respectively.
@@ -604,10 +604,10 @@ setGeneric(".showSelectionDetails", function(x) standardGeneric(".showSelectionD
 #' The following arguments are required:
 #' \itemize{
 #' \item \code{x}, an instance of a \linkS4class{Panel} class.
-#' \item \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' \item \code{se}, the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 #' }
 #'
-#' It is expected to return \code{se} with (optionally) extra fields added to \code{\link{int_metadata}(se)$iSEE}.
+#' It is expected to return \code{se} with (optionally) extra fields added to \code{\link[SingleCellExperiment:int_metadata]{int_metadata}(se)$iSEE}.
 #' Each field should be named according to the class name and contain some common information that is constant for all instances of the class of \code{x} - see \code{\link{.setCachedCommonInfo}} for an appropriate setter utility.
 #' The goal is to avoid repeated recomputation of required values when creating user interface elements or observers that respond to those elements.
 #'
@@ -624,7 +624,7 @@ setGeneric(".showSelectionDetails", function(x) standardGeneric(".showSelectionD
 #' The following arguments are required:
 #' \itemize{
 #' \item \code{x}, an instance of a \linkS4class{Panel} class.
-#' \item \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' \item \code{se}, the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 #' }
 #'
 #' Methods for this generic should return a copy of \code{x} where slots with invalid values are replaced with appropriate entries from \code{se}.
@@ -638,7 +638,7 @@ setGeneric(".showSelectionDetails", function(x) standardGeneric(".showSelectionD
 #' Of course, any slots that are not \code{se}-dependent should just be set at construction and checked by the validity method.
 #'
 #' It is also possible for this generic to return \code{NULL}, which is used as an indicator that \code{se} does not contain information to meaningfully show any instance of the class of \code{x} in the \pkg{iSEE} app.
-#' For example, the method for \linkS4class{ReducedDimensionPlot} will return \code{NULL} if \code{se} is not a \linkS4class{SingleCellExperiment} containing some dimensionality reduction results.
+#' For example, the method for \linkS4class{ReducedDimensionPlot} will return \code{NULL} if \code{se} is not a \linkS4class[SingleCellExperiment]{SingleCellExperiment} containing some dimensionality reduction results.
 #'
 #' @author Aaron Lun
 #' @name setup-generics
@@ -689,7 +689,7 @@ setGeneric(".cacheCommonInfo", function(x, se) standardGeneric(".cacheCommonInfo
 #' \item \code{contents}, some arbitrary content saved by the rendering expression in \code{\link{.renderOutput}(x)}.
 #' This is most often a data.frame but can be anything as long as \code{.multiSelectionCommands} knows how to process it.
 #' For example, a data.frame of coordinates is stored by \linkS4class{DotPlot}s to identify the points selected by a brush/lasso.
-#' \item \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' \item \code{se}, the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 #' }
 #'
 #' The output commands are expected to produce a character vector named \code{selected} in the evaluation environment.
@@ -782,7 +782,7 @@ setGeneric(".isBrushable", function(x) standardGeneric(".isBrushable"))
 #' \item \code{source}, the name of the slot of \code{x} that indicates which transmitting panel to respond to, e.g., \code{ColorByFeatureSource} in \linkS4class{DotPlot}s.
 #' }
 #'
-#' For each set of responsive slots, the expected paradigm is that the user interface will contain two \code{\link{selectInput}} elements, one for each of the \code{param} and \code{source} slots.
+#' For each set of responsive slots, the expected paradigm is that the user interface will contain two \code{\link[shiny:selectInput]{selectInput}} elements, one for each of the \code{param} and \code{source} slots.
 #' Users are free to manually alter the choice of feature/sample in the \code{param}'s \code{selectInput}.
 #' Users are also allowed to change the identity of the transmitting panel via the \code{source}'s \code{selectInput}, which will automatically update the chosen entry in the \code{param}'s \code{selectInput} when the transmitter's single selection changes.
 #'
@@ -794,7 +794,7 @@ setGeneric(".isBrushable", function(x) standardGeneric(".isBrushable"))
 #' If this is not present, no observers will be set up.
 #' \item \code{dynamic}, the name of the slot indicating whether the choice of transmitting panel should change dynamically.
 #' One example would be \code{"ColorByFeatureDynamicSource"} for \linkS4class{DotPlot}s.
-#' If supplied, a \code{\link{checkboxInput}} should also be present in the UI to turn on/off dynamic choices for this parameter.
+#' If supplied, a \code{\link[shiny:checkboxInput]{checkboxInput}} should also be present in the UI to turn on/off dynamic choices for this parameter.
 #' This field can be missing if the current panel does not support dynamic selection sources.
 #' \item \code{use_mode}, the name of the slot of \code{x} containing the current usage mode.
 #' This is used in cases where there are multiple choices of which only one involves using information held in \code{source}.
@@ -829,13 +829,13 @@ setGeneric(".singleSelectionSlots", function(x) standardGeneric(".singleSelectio
 #' This is most useful for restricting the visualization to a subset of variables, e.g., only taking log-fold changes in a y-axis of a MA plot.
 #'
 #' @section Allowable y-axis choices:
-#' \code{.allowableYAxisChoices(x, se)} takes \code{x}, a \linkS4class{Panel} instance; and \code{se}, the \linkS4class{SummarizedExperiment} object.
+#' \code{.allowableYAxisChoices(x, se)} takes \code{x}, a \linkS4class{Panel} instance; and \code{se}, the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.
 #' It is expected to return a character vector containing the names of acceptable variables to show on the y-axis.
-#' For \linkS4class{ColumnDataPlot}s, these should be a subset of the variables in \code{\link{colData}(se)}, while for \linkS4class{RowDataPlot}s, these should be a subset of the variables in \code{\link{rowData}(se)}.
+#' For \linkS4class{ColumnDataPlot}s, these should be a subset of the variables in \code{\link[SummarizedExperiment:colData]{colData}(se)}, while for \linkS4class{RowDataPlot}s, these should be a subset of the variables in \code{\link[SummarizedExperiment:rowData]{rowData}(se)}.
 #'
 #' Given a constant \code{se}, the output of this function should be constant for all instances of the same panel class.
 #' As such, it is a good idea to make use of information precomputed by \code{\link{.cacheCommonInfo}}.
-#' For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link{colData}} is valid and discrete or continuous, which can be intersected with any additional requirements in a subclass's method for this generic.
+#' For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link[SummarizedExperiment:colData]{colData}} is valid and discrete or continuous, which can be intersected with any additional requirements in a subclass's method for this generic.
 #'
 #' This generic is called by \code{\link{.defineDataInterface}} for \linkS4class{ColumnDataPlot}s and \linkS4class{RowDataPlot}s.
 #' Thus, developers wanting to restrict those choices for subclasses can simply specialize \code{.allowableYAxisChoices} rather than reimplementing \code{.defineDataInterface}.
@@ -865,7 +865,7 @@ setGeneric(".allowableXAxisChoices", function(x, se) standardGeneric(".allowable
 #' These generics allow subclasses to override the user interface elements controlling visual parameters of \linkS4class{DotPlot} panels.
 #'
 #' @section Interface definition:
-#' In all of the code snippets below, \code{x} is a \linkS4class{Panel} instance and \code{se} is the \linkS4class{SummarizedExperiment} object.
+#' In all of the code snippets below, \code{x} is a \linkS4class{Panel} instance and \code{se} is the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.
 #' \itemize{
 #' \item \code{.defineVisualColorInterface(x, se, select_info)} should return a HTML tag definition that contains UI input elements controlling the \code{color} aesthetic of \code{ggplot} objects.
 #' Here, \code{select_info} is a list of two character vectors named \code{row} and \code{column}, which specifies the names of panels available for transmitting single selections on the rows/columns respectively.
@@ -890,7 +890,7 @@ setGeneric(".allowableXAxisChoices", function(x, se) standardGeneric(".allowable
 #' Developers of subclasses can simply specialize these generics to change the UI instead of reimplementing \code{.defineInterface} itself.
 #'
 #' When implementing methods for these generics, it is a good idea to make use of information precomputed by \code{\link{.cacheCommonInfo}}.
-#' For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link{colData}} is valid and discrete or continuous.
+#' For example, \code{\link{.cacheCommonInfo,ColumnDotPlot-method}} will add vectors specifying whether a variable in the \code{\link[SummarizedExperiment:colData]{colData}} is valid and discrete or continuous.
 #'
 #' @section Controlling \code{ColorBy*Data} choices:
 #' \code{.allowableColorByDataChoices(x, se)} should return a character vector of the allowable row/column data variables to use 
@@ -944,7 +944,7 @@ setGeneric(".getTooltipUI", function(x, se, name) standardGeneric(".getTooltipUI
 #' and \code{se} is a SummarizedExperiment after running \code{\link{.cacheCommonInfo}}.
 #'
 #' @section Get metadata choices:
-#' \code{.getMetadataChoices(x, se)} returns a character vector of possible metadata choices, usually names of columns in the \code{\link{rowData}} or \code{\link{colData}} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
+#' \code{.getMetadataChoices(x, se)} returns a character vector of possible metadata choices, usually names of columns in the \code{\link[SummarizedExperiment:rowData]{rowData}} or \code{\link[SummarizedExperiment:colData]{colData}} for \linkS4class{RowDotPlot}s and \linkS4class{ColumnDotPlot}s, respectively.
 #' This should be applied on \code{se} after running \code{\link{.cacheCommonInfo}}.
 #'
 #' \code{.getDiscreteMetadataChoices(x, se)} returns a character vector of discrete metadata choices.

@@ -1057,7 +1057,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' This utility is intended for use within \code{\link{.generateDotPlot}} methods.
 #'
 #' @param param_choices An instance of a \linkS4class{DotPlot} class.
-#' @param flip A \code{logical} value that indicates whether \code{\\link[ggplot2:coord_flip]{coord_flip}} was applied to the plot.
+#' @param flip A \code{logical} value that indicates whether \code{\link[ggplot2:coord_flip]{coord_flip}} was applied to the plot.
 #'
 #' @return A character vector containing \link[ggplot2:ggplot]{ggplot} commands to create rectangles (for Shiny brushes)
 #' or polygons (for closed lassos) or paths (for open lassos) in the current plot.

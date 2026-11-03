@@ -3,7 +3,7 @@
 #' Set and get global options for the \code{\link{iSEE}} application.
 #' These are options that do not correspond to any \linkS4class{Panel} slot and cannot be changed by the user after initialization.
 #'
-#' @param se The \linkS4class{SummarizedExperiment} object to be supplied to \code{\link{iSEE}}.
+#' @param se The \linkS4class[SummarizedExperiment]{SummarizedExperiment} object to be supplied to \code{\link{iSEE}}.
 #' @param ... Named options to register.
 #' Alternatively a single named list containing the options to register.
 #' @param name String containing the name of the option to retrieve.

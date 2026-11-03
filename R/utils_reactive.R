@@ -2,7 +2,7 @@
 #'
 #' Retrieve the results of a previous \code{\link{.generateOutput}} call on this panel.
 #'
-#' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' @param se A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 #' @param panel_name String containing the panel name.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.

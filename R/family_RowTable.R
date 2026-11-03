@@ -1,6 +1,6 @@
 #' The RowTable class
 #'
-#' The RowTable is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by no more than one row in a \code{\link{datatable}} widget.
+#' The RowTable is a virtual class where each row in the \linkS4class[SummarizedExperiment]{SummarizedExperiment} is represented by no more than one row in a \code{\link[DT:datatable]{datatable}} widget.
 #' In panels of this class, single and multiple selections can only be transmitted on the features.
 #' 
 #' @section Slot overview:
@@ -54,7 +54,7 @@
 #' \item \code{\link{.panelColor}}
 #' }
 #'
-#' The method for \code{\link{.generateTable}} should create a \code{tab} data.frame where each row corresponds to a row in the \linkS4class{SummarizedExperiment} object.
+#' The method for \code{\link{.generateTable}} should create a \code{tab} data.frame where each row corresponds to a row in the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.
 #'
 #' @seealso
 #' \linkS4class{Table}, for the immediate parent class that contains the actual slot definitions.

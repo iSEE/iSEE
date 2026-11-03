@@ -4,7 +4,7 @@
 #' in a manner that satisfies all the requirements of the \code{\link{.renderOutput}} generic.
 #'
 #' @param panel_name String containing the name of the panel.
-#' @param se A \linkS4class{SummarizedExperiment} object for the current dataset.
+#' @param se A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object for the current dataset.
 #' @param output The Shiny output object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
@@ -125,7 +125,7 @@
 #' This uses \code{\link{.generateTable}} and is itself called inside \code{\link{.generateOutput}}.
 #'
 #' @param x An instance of a \linkS4class{Table} class.
-#' @param se A \linkS4class{SummarizedExperiment} object for the current dataset.
+#' @param se A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object for the current dataset.
 #' @param all_memory A list of \linkS4class{Panel} instances representing the current state of the application.
 #' @param all_contents A list of displayed contents for each panel in the app, see \code{\link{.renderOutput}} for details.
 #'

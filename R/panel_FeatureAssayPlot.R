@@ -1,6 +1,6 @@
 #' The FeatureAssayPlot panel
 #'
-#' The FeatureAssayPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents the expression of a feature of interest, using the \code{\link{assay}} values of the \linkS4class{SummarizedExperiment}.
+#' The FeatureAssayPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents the expression of a feature of interest, using the \code{\link[SummarizedExperiment:assay]{assay}} values of the \linkS4class[SummarizedExperiment]{SummarizedExperiment}.
 #' It provides slots and methods to specify the feature and what to plot on the x-axis, as well as a method to actually create a data.frame containing those pieces of data in preparation for plotting.
 #'
 #' @section Slot overview:
@@ -22,9 +22,9 @@
 #' \item \code{XAxis}, string specifying what should be plotting on the x-axis.
 #' This can be any one of \code{"None"}, \code{"Feature name"}, \code{"Column data"} or \code{"Column selection"}.
 #' Defaults to \code{"None"}.
-#' \item \code{XAxisColumnData}, string specifying which column of the \code{\link{colData}} should be shown on the x-axis,
+#' \item \code{XAxisColumnData}, string specifying which column of the \code{\link[SummarizedExperiment:colData]{colData}} should be shown on the x-axis,
 #' if \code{XAxis="Column data"}.
-#' Defaults to the first valid \code{\link{colData}} field (see \code{?"\link{.refineParameters,ColumnDotPlot-method}"} for details).
+#' Defaults to the first valid \code{\link[SummarizedExperiment:colData]{colData}} field (see \code{?"\link{.refineParameters,ColumnDotPlot-method}"} for details).
 #' \item \code{XAaxisFeatureName}, string specifying the name of the feature to plot on the x-axis,
 #' if \code{XAxis="Feature name"}.
 #' Defaults to the first row name.

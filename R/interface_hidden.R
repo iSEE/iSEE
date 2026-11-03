@@ -12,10 +12,10 @@
 #' @return
 #' The output of \code{FUN(id, ..)} is returned where \code{id} is defined by concatenating \code{\link{.getEncodedName}(x)} and \code{field} (separated by an underscore).
 #'
-#' If \code{.hideInterface(x, field)} is \code{TRUE}, the output is wrapped inside a \code{\link{hidden}} call.
+#' If \code{.hideInterface(x, field)} is \code{TRUE}, the output is wrapped inside a \code{\link[shinyjs:hidden]{hidden}} call.
 #'
 #' @details
-#' Wrapping the output inside a \code{\link{hidden}} call is intended to avoid problems with conditional elements.
+#' Wrapping the output inside a \code{\link[shinyjs:hidden]{hidden}} call is intended to avoid problems with conditional elements.
 #' Consider a situation where \code{\link{.conditionalOnRadio}} depends on the value of a UI element;
 #' one needs the upstream element to exist for the conditional element to have correct behavior.
 #'
@@ -43,7 +43,7 @@
 #' Returns an interface element with or without the CSS class \code{shinyjs-hide}, depending on whether the element is hidden based on \code{\link{.hideInterface}}.
 #' This allows panels to hide interface elements that are provided by parent classes but are not needed in the subclass.
 #' 
-#' \code{.selectInputHidden(x, field, ...)} produces a Shiny \code{\link{selectInput}} element that will be hidden if \code{.hideInterface(x)} is \code{TRUE}.
+#' \code{.selectInputHidden(x, field, ...)} produces a Shiny \code{\link[shiny:selectInput]{selectInput}} element that will be hidden if \code{.hideInterface(x)} is \code{TRUE}.
 #'
 #' @param x An instance of a \linkS4class{Panel} class.
 #' @param field String specifying the name of the suffix of the ID of the interface element.
@@ -111,10 +111,10 @@
 #' @param help Logical scalar indicating whether a help icon should be added to the label.
 #'
 #' @return
-#' The output of \code{FUN(id, ..)} is returned where \code{FUN} is set the corresponding \pkg{shiny} function, e.g., \code{\link{selectInput}} for \code{.selectInput.iSEE}.
+#' The output of \code{FUN(id, ..)} is returned where \code{FUN} is set the corresponding \pkg{shiny} function, e.g., \code{\link[shiny:selectInput]{selectInput}} for \code{.selectInput.iSEE}.
 #' \code{id} is defined by concatenating \code{\link{.getEncodedName}(x)} and \code{field} (separated by an underscore).
 #'
-#' If \code{.hideInterface(x, field)} is \code{TRUE}, the output is wrapped inside a \code{\link{hidden}} call.
+#' If \code{.hideInterface(x, field)} is \code{TRUE}, the output is wrapped inside a \code{\link[shinyjs:hidden]{hidden}} call.
 #'
 #' @author Aaron Lun
 #'
@@ -250,7 +250,7 @@ NULL
 #' A HTML object containing interface elements in \code{...} that only appear when the relevant condition is satisfied.
 #'
 #' @details
-#' These functions are just wrappers around \code{\link{conditionalPanel}},
+#' These functions are just wrappers around \code{\link[shiny:conditionalPanel]{conditionalPanel}},
 #' with the added value coming from the pre-written conditional expressions in Javascript.
 #' They are useful for hiding elements that are only relevant when the right radio button or checkbox is selected.
 #' This means that we avoid cluttering the UI with options that are not immediately useful to the user.
@@ -258,7 +258,7 @@ NULL
 #' @author Aaron Lun
 #' @rdname conditional-utils
 #' @seealso
-#' \code{\link{conditionalPanel}}, which is used under the hood.
+#' \code{\link[shiny:conditionalPanel]{conditionalPanel}}, which is used under the hood.
 #'
 #' @export
 #' @importFrom shiny conditionalPanel

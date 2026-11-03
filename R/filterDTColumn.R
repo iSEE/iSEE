@@ -1,8 +1,8 @@
 #' Filter \pkg{DT} columns
 #'
-#' Filter a data.frame based on the \pkg{DT} \code{\link{datatable}} widget column search string.
+#' Filter a data.frame based on the \pkg{DT} \code{\link[DT:datatable]{datatable}} widget column search string.
 #' 
-#' @param df A data.frame that was used in the \code{\link{datatable}} widget.
+#' @param df A data.frame that was used in the \code{\link[DT:datatable]{datatable}} widget.
 #' @param x A numeric or character vector, usually representing a column of a data.frame.
 #' @param search A string specifying the search filter to apply to \code{x}.
 #' @param column A character vector of per-column search strings to apply to \code{df}.
@@ -37,7 +37,7 @@
 #' @author Aaron Lun
 #'
 #' @seealso
-#' \code{\link{datatable}} and associated documentation for more details about column searches.
+#' \code{\link[DT:datatable]{datatable}} and associated documentation for more details about column searches.
 #'
 #' @examples
 #' # Regular expression:

@@ -1,13 +1,13 @@
 #' The RowDotPlot virtual class
 #'
-#' The RowDotPlot is a virtual class where each row in the \linkS4class{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link{ggplot} plot.
-#' It provides slots and methods to extract \code{\link{rowData}} fields to control the per-point aesthetics on the plot.
+#' The RowDotPlot is a virtual class where each row in the \linkS4class[SummarizedExperiment]{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link[ggplot2:ggplot]{ggplot} plot.
+#' It provides slots and methods to extract \code{\link[SummarizedExperiment:rowData]{rowData}} fields to control the per-point aesthetics on the plot.
 #' This panel will transmit row identities in both its single and multiple selections, and it can receive multiple row selections but not multiple column selections.
 #'
 #' @section Slot overview:
 #' The following slots control coloring of the points:
 #' \itemize{
-#' \item \code{ColorByRowData}, a string specifying the \code{\link{rowData}} field for controlling point color,
+#' \item \code{ColorByRowData}, a string specifying the \code{\link[SummarizedExperiment:rowData]{rowData}} field for controlling point color,
 #' if \code{ColorBy="Row data"} (see the \linkS4class{Panel} class).
 #' Defaults to the first valid field (see \code{.cacheCommonInfo} below).
 #' \item \code{ColorBySampleNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
@@ -21,13 +21,13 @@
 #'
 #' The following slots control other metadata-related aesthetic aspects of the points:
 #' \itemize{
-#' \item \code{ShapeByRowData}, a string specifying the \code{\link{rowData}} field for controlling point shape,
+#' \item \code{ShapeByRowData}, a string specifying the \code{\link[SummarizedExperiment:rowData]{rowData}} field for controlling point shape,
 #' if \code{ShapeBy="Row data"} (see the \linkS4class{Panel} class).
 #' The specified field should contain categorical values; defaults to the first such field.
-#' \item \code{SizeByRowData}, a string specifying the \code{\link{rowData}} field for controlling point size,
+#' \item \code{SizeByRowData}, a string specifying the \code{\link[SummarizedExperiment:rowData]{rowData}} field for controlling point size,
 #' if \code{SizeBy="Row data"} (see the \linkS4class{Panel} class).
 #' The specified field should contain continuous values; defaults to the first such field.
-#' \item \code{TooltipRowData}, a character vector specifying \code{\link{rowData}} fields to show in the tooltip.
+#' \item \code{TooltipRowData}, a character vector specifying \code{\link[SummarizedExperiment:rowData]{rowData}} fields to show in the tooltip.
 #' Defaults to `character(0)`, which displays only the `rownames` value of the data point.
 #' }
 #'
@@ -85,7 +85,7 @@
 #' \item \code{\link{.panelColor}}
 #' }
 #'
-#' The method for \code{\link{.generateDotPlotData}} should create a \code{plot.data} data.frame with one row per row in the \linkS4class{SummarizedExperiment} object.
+#' The method for \code{\link{.generateDotPlotData}} should create a \code{plot.data} data.frame with one row per row in the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.
 #'
 #' @author Aaron Lun
 #' @seealso

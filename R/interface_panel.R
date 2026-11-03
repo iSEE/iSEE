@@ -53,7 +53,7 @@ height_limits <- c(400L, 1000L)
 #' using the parameters in memory to set appropriate initial values for all widgets.
 #'
 #' @param all_memory A list of \linkS4class{Panel} objects specifying the current state of the application.
-#' @param se A \linkS4class{SummarizedExperiment} object.
+#' @param se A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.
 #'
 #' @return
 #' A HTML tag object containing the UI elements for the main body of the app.

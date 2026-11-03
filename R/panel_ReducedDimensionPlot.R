@@ -1,13 +1,13 @@
 #' The ReducedDimensionPlot panel
 #'
-#' The ReducedDimensionPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the coordinates of each column/sample are taken from the \code{\link{reducedDims}} of a \linkS4class{SingleCellExperiment} object.
+#' The ReducedDimensionPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the coordinates of each column/sample are taken from the \code{\link[SingleCellExperiment:reducedDims]{reducedDims}} of a \linkS4class[SingleCellExperiment]{SingleCellExperiment} object.
 #' It provides slots and methods to specify which dimensionality reduction result to use and to create the data.frame with the coordinates of the specified results for plotting.
 #'
 #' @section ReducedDimensionPlot slot overview:
 #' The following slots control the dimensionality reduction result that is used:
 #' \itemize{
 #' \item \code{Type}, a string specifying the name of the dimensionality reduction result.
-#' If \code{NA}, defaults to the first entry of \code{\link{reducedDims}}.
+#' If \code{NA}, defaults to the first entry of \code{\link[SingleCellExperiment:reducedDims]{reducedDims}}.
 #' \item \code{XAxis}, integer scalar specifying the dimension to plot on the x-axis.
 #' Defaults to 1.
 #' \item \code{YAxis}, integer scalar specifying the dimension to plot on the y-axis.

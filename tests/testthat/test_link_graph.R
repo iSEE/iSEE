@@ -125,7 +125,7 @@ test_that("evaluation order works properly", {
 
 test_that("graph adding and deleting responds to fields", {
     # Adding to an existing link augments the available fields.
-    id <- igraph::get.edge.ids(g, c("ReducedDimensionPlot1", "ColumnDataPlot1"))
+    id <- igraph::get_edge_ids(g, c("ReducedDimensionPlot1", "ColumnDataPlot1"))
     expect_identical(igraph::E(g)$fields[[id]], iSEE:::.selectColumnSource)
 
     g2 <- iSEE:::.add_interpanel_link(g, "ColumnDataPlot1", "ReducedDimensionPlot1", "BLAH")
@@ -137,15 +137,15 @@ test_that("graph adding and deleting responds to fields", {
 
     # Removing all fields from a link removes the link.
     g4 <- iSEE:::.delete_interpanel_link(g3, "ColumnDataPlot1", "ReducedDimensionPlot1", iSEE:::.selectColumnSource)
-    expect_identical(igraph::get.edge.ids(g4, c("ReducedDimensionPlot1", "ColumnDataPlot1")), 0)
+    expect_identical(igraph::get_edge_ids(g4, c("ReducedDimensionPlot1", "ColumnDataPlot1")), 0)
 
     # Adding a completely new link works as well.
-    id <- igraph::get.edge.ids(g, c("ReducedDimensionPlot1", "ReducedDimensionPlot2"))
+    id <- igraph::get_edge_ids(g, c("ReducedDimensionPlot1", "ReducedDimensionPlot2"))
     expect_identical(id, 0)
 
     g5 <- iSEE:::.add_interpanel_link(g, "ReducedDimensionPlot2", "ReducedDimensionPlot1", "YAY")
 
-    id <- igraph::get.edge.ids(g5, c("ReducedDimensionPlot1", "ReducedDimensionPlot2"))
+    id <- igraph::get_edge_ids(g5, c("ReducedDimensionPlot1", "ReducedDimensionPlot2"))
     expect_identical(igraph::E(g5)$fields[[id]], "YAY")
 
     # Adding or removing links involving non-existent parents has no effect.
@@ -167,13 +167,13 @@ test_that("aesthetics links construction works as expected", {
     g <- pObjects$aesthetics_links
 
     # All of the correct slots corresponding to each *Table slot are registered:
-    ids <- igraph::get.edge.ids(g, c("RowDataTable1", "ReducedDimensionPlot1"))
+    ids <- igraph::get_edge_ids(g, c("RowDataTable1", "ReducedDimensionPlot1"))
     expect_identical(igraph::E(g)$fields[[ids]], "ColorByFeatureName")
 
-    ids <- igraph::get.edge.ids(g, c("RowDataPlot1", "FeatureAssayPlot1"))
+    ids <- igraph::get_edge_ids(g, c("RowDataPlot1", "FeatureAssayPlot1"))
     expect_identical(igraph::E(g)$fields[[ids]], "YAxisFeatureName")
 
-    ids <- igraph::get.edge.ids(g, c("ColumnDataTable1", "SampleAssayPlot1"))
+    ids <- igraph::get_edge_ids(g, c("ColumnDataTable1", "SampleAssayPlot1"))
     expect_identical(igraph::E(g)$fields[[ids]], "XAxisSampleName")
 })
 

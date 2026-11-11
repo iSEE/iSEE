@@ -94,7 +94,7 @@
 
 #' @rdname INTERNAL_link_info_output
 #' @importFrom shiny tagList renderUI em strong br
-#' @importFrom igraph adjacent_vertices get.edge.ids E
+#' @importFrom igraph adjacent_vertices get_edge_ids E
 .create_link_info_output <- function(plot_name, output, pObjects, rObjects) {
     link_field <- paste0(plot_name, "_", .panelSelectLinkInfo)
     # nocov start
@@ -122,7 +122,7 @@
         parents2 <- names(adjacent_vertices(graph2, plot_name, mode="in")[[1]])
         for (p in parents2) {
             full_name <- .getFullName(pObjects$memory[[p]])
-            eid <- get.edge.ids(graph2, c(p, plot_name))
+            eid <- get_edge_ids(graph2, c(p, plot_name))
 
             fields <- E(graph2)$fields[[eid]]
             for (f in fields) {
@@ -133,7 +133,7 @@
         children2 <- names(adjacent_vertices(graph2, plot_name)[[1]])
         for (child in children2) {
             full_name <- .getFullName(pObjects$memory[[child]])
-            eid <- get.edge.ids(graph2, c(plot_name, child))
+            eid <- get_edge_ids(graph2, c(plot_name, child))
 
             fields <- E(graph2)$fields[[eid]]
             for (f in fields) {

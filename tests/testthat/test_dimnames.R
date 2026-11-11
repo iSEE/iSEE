@@ -110,7 +110,7 @@ test_that("dimname observers work to change the usage mode", {
     input$FeatureAssayPlot1_XAxisFeatureSource <- "RowDataTable1"
     expect_identical(pObjects$memory$FeatureAssayPlot1[["XAxis"]], "None")
 
-    id <- igraph::get.edge.ids(pObjects$aesthetics_links, c("RowDataTable1", "FeatureAssayPlot1"))
+    id <- igraph::get_edge_ids(pObjects$aesthetics_links, c("RowDataTable1", "FeatureAssayPlot1"))
     expect_identical(igraph::E(pObjects$aesthetics_links)$fields[[id]], iSEE:::.featAssayYAxisFeatName)
 
     out <- iSEE:::.setup_dimname_source_observer(

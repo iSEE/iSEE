@@ -37,10 +37,10 @@
 \item{help}{Logical scalar indicating whether a help icon should be added to the label.}
 }
 \value{
-The output of \code{FUN(id, ..)} is returned where \code{FUN} is set the corresponding \pkg{shiny} function, e.g., \code{\link{selectInput}} for \code{.selectInput.iSEE}.
+The output of \code{FUN(id, ..)} is returned where \code{FUN} is set the corresponding \pkg{shiny} function, e.g., \code{\link[shiny:selectInput]{selectInput}} for \code{.selectInput.iSEE}.
 \code{id} is defined by concatenating \code{\link{.getEncodedName}(x)} and \code{field} (separated by an underscore).
 
-If \code{.hideInterface(x, field)} is \code{TRUE}, the output is wrapped inside a \code{\link{hidden}} call.
+If \code{.hideInterface(x, field)} is \code{TRUE}, the output is wrapped inside a \code{\link[shinyjs:hidden]{hidden}} call.
 }
 \description{
 Wrapper functions to create the standard \pkg{shiny} user interface elements,

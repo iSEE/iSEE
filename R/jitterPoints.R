@@ -6,10 +6,10 @@
 #' @param X A factor corresponding to a categorical variable.
 #' @param Y A numeric vector of the same length as \code{X} for \code{jitterViolinPoints}, or a factor of the same length as \code{X} for \code{jitterSquarePoints}. 
 #' @param grouping A named list of factors of the same length as \code{X}, specifying how elements should be grouped.
-#' @param ... Further arguments to be passed to \code{\link{offsetX}}.
+#' @param ... Further arguments to be passed to \code{\link[vipor:offsetX]{offsetX}}.
 #'
 #' @details
-#' The \code{jitterViolinPoints} function calls \code{\link{offsetX}} to obtain quasi-random jittered x-axis values.
+#' The \code{jitterViolinPoints} function calls \code{\link[vipor:offsetX]{offsetX}} to obtain quasi-random jittered x-axis values.
 #' This reflects the area occupied by a violin plot, though some tuning of arguments in \code{...} may be required to get an exact match.
 #' 
 #' The \code{jitterSquarePoints} function will uniformly jitter points on both the x- and y-axes. 

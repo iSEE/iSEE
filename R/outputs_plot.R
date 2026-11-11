@@ -1,6 +1,6 @@
 #' Define the plot UI
 #'
-#' Define the \code{\link{plotOutput}} object for a given panel containing a single plot.
+#' Define the \code{\link[shiny:plotOutput]{plotOutput}} object for a given panel containing a single plot.
 #'
 #' @param plot_name String containing the name of the plot.
 #' @param height Integer scalar specifying the height of the plot in pixels.
@@ -8,7 +8,7 @@
 #' @param brush_fill String containing a color to use for the fill of the brush.
 #' @param brush_stroke String containing a color to use for the stroke of the brush.
 #'
-#' @return The output of \code{\link{plotOutput}} with relevant parametrization.
+#' @return The output of \code{\link[shiny:plotOutput]{plotOutput}} with relevant parametrization.
 #'
 #' @author Aaron Lun
 #'

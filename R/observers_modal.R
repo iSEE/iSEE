@@ -7,7 +7,7 @@
 #' @param slot_name String specifying the slot of containing the names of the custom features.
 #' This will be modified by user interactions with the modal.
 #' @param button_name String containing the name of the button in the panel UI that launches the modal.
-#' @param se A \linkS4class{SummarizedExperiment} object after running \code{\link{.cacheCommonInfo}}.
+#' @param se A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object after running \code{\link{.cacheCommonInfo}}.
 #' @param input The Shiny input object from the server function.
 #' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.

@@ -55,7 +55,7 @@ For example, for \linkS4class{DotPlot}s, \code{select} will be either a Shiny br
 \item \code{contents}, some arbitrary content saved by the rendering expression in \code{\link{.renderOutput}(x)}.
 This is most often a data.frame but can be anything as long as \code{.multiSelectionCommands} knows how to process it.
 For example, a data.frame of coordinates is stored by \linkS4class{DotPlot}s to identify the points selected by a brush/lasso.
-\item \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset.
+\item \code{se}, the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 }
 
 The output commands are expected to produce a character vector named \code{selected} in the evaluation environment.

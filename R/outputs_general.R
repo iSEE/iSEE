@@ -2,7 +2,7 @@
 #'
 #' Create rendering expressions for \code{\link{iSEE}} outputs that are general to the entire app, not just specific panels.
 #'
-#' @param se A \linkS4class{SummarizedExperiment} object containing the data of interest.
+#' @param se A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the data of interest.
 #' @param input The Shiny input object from the server function.
 #' @param output The Shiny output object from the server function.
 #' @param session The Shiny session object from the server function.

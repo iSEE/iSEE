@@ -9,13 +9,13 @@
 \arguments{
 \item{x}{An instance of a \linkS4class{DotPlot} class.}
 
-\item{commands}{A character vector representing the sequence of commands to create the \link{ggplot} object.}
+\item{commands}{A character vector representing the sequence of commands to create the \link[ggplot2:ggplot]{ggplot} object.}
 }
 \value{
 A character vector containing \code{commands} plus any additional commands required to generate the labels.
 }
 \description{
-Add \link{ggplot} instructions to label the center of each group on a scatter plot.
+Add \link[ggplot2:ggplot]{ggplot} instructions to label the center of each group on a scatter plot.
 This is a utility function that is intended for use in \code{\link{.generateDotPlot}}.
 }
 \author{

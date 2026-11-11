@@ -3,7 +3,7 @@
 #' Clean the SummarizedExperiment by making sure that names of various fields are available and unique.
 #' Also transfer any information stored in \code{rowRanges} into \code{rowData}.
 #'
-#' @param se A \linkS4class{SummarizedExperiment} object or one of its subclasses.
+#' @param se A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object or one of its subclasses.
 #'
 #' @return 
 #' A cleaned version of \code{se}.
@@ -12,14 +12,14 @@
 #' Various \linkS4class{Panel}s assume that the row and column names of the input SummarizedExperiment are available and unique.
 #' This function enforces that, adding consecutive integer names if not available and calling \code{\link{make.unique}} if they are duplicated.
 #'
-#' Various \linkS4class{Panel}s further assume that the \code{\link{assay}}, \code{\link{rowData}}, \code{\link{colData}} names are unique;
-#' if this is not the case, \code{\link{selectInput}} behaves in unexpected (and incorrect) ways.
+#' Various \linkS4class{Panel}s further assume that the \code{\link[SummarizedExperiment:assay]{assay}}, \code{\link[SummarizedExperiment:rowData]{rowData}}, \code{\link[SummarizedExperiment:colData]{colData}} names are unique;
+#' if this is not the case, \code{\link[shiny:selectInput]{selectInput}} behaves in unexpected (and incorrect) ways.
 #' This function enforces that as well by running them through \code{\link{make.unique}}.
 #' 
 #' Finally, positional information in \code{rowRanges} is not accessible to \code{iSEE}.
 #' This function moves this information into \code{rowData}, prefixing the column names with \code{rowRanges_}.
 #'
-#' For \linkS4class{SingleCellExperiment} object, we enforce uniqueness in the \code{\link{reducedDims}}.
+#' For \linkS4class[SingleCellExperiment]{SingleCellExperiment} object, we enforce uniqueness in the \code{\link[SingleCellExperiment:reducedDims]{reducedDims}}.
 #'
 #' All changes result in warnings as a \dQuote{sensible} object is not expected to require any work.
 #'

@@ -7,13 +7,13 @@
 #'
 #' @param panel_name String containing the name of the current transmitting panel.
 #' @param choices Character vector containing all of possible choices for the transmitted dimension names.
-#' Usually set to the row or column names of the provided \linkS4class{SummarizedExperiment} object.
+#' Usually set to the row or column names of the provided \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.
 #' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
 #'
 #' @details
-#' The specification of \code{choices} is necessary because we run \code{\link{updateSelectizeInput}} to update the choice of dimension name in the child panels;
+#' The specification of \code{choices} is necessary because we run \code{\link[shiny:updateSelectizeInput]{updateSelectizeInput}} to update the choice of dimension name in the child panels;
 #' however, for a server-side selectize, it seems that the possible choices are forgotten unless they are explicitly provided during the update.
 #'
 #' We do not need to explicitly trigger re-rendering of child panels, as this should be handled by each child's observer on the affected field.
@@ -207,8 +207,8 @@
 #' @details
 #' This is handled separately from the other observers because:
 #' \itemize{
-#' \item The \code{\link{selectizeInput}} element used for the dimension names are typically updated server-side,
-#' requiring some care to defend against empty inputs before the \code{\link{updateSelectizeInput}} runs.
+#' \item The \code{\link[shiny:selectizeInput]{selectizeInput}} element used for the dimension names are typically updated server-side,
+#' requiring some care to defend against empty inputs before the \code{\link[shiny:updateSelectizeInput]{updateSelectizeInput}} runs.
 #' \item The dimension name can change (due to the linked table) without directly affecting the plot,
 #' if the dimension name is not currently in use.
 #' In such cases, we want to avoid needless re-rendering.

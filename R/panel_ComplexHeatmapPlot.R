@@ -1,6 +1,6 @@
 #' The ComplexHeatmapPlot panel
 #'
-#' The ComplexHeatmapPlot is a panel class for creating a \linkS4class{Panel} that displays an assay of a \linkS4class{SummarizedExperiment} object as a \code{\link{Heatmap}} with features as rows and samples and columns, respectively.
+#' The ComplexHeatmapPlot is a panel class for creating a \linkS4class{Panel} that displays an assay of a \linkS4class[SummarizedExperiment]{SummarizedExperiment} object as a \code{\link[ComplexHeatmap:Heatmap]{Heatmap}} with features as rows and samples and columns, respectively.
 #' It provides slots and methods for specifying the features of interest, which assay to display in the main heatmap, any transformations to perform on the data, and which metadata variables to display as row and column heatmap annotations.
 #'
 #' @section ComplexHeatmapPlot slot overview:
@@ -9,7 +9,7 @@
 #' \item \code{CustomRows}, a logical scalar indicating whether the custom list of rows should be used.
 #' If \code{FALSE}, the incoming selection is used instead. Defaults to \code{TRUE}.
 #' \item \code{CustomRowsText}, string containing newline-separated row names.
-#' This specifies which rows of the \linkS4class{SummarizedExperiment} object are to be shown in the heatmap.
+#' This specifies which rows of the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object are to be shown in the heatmap.
 #' If \code{NA}, defaults to the first row name of the SummarizedExperiment.
 #' \item \code{CapRowSelection}, an integer specifying the cap on the number of rows from a multiple selection to show in the heatmap,
 #' to avoid a frozen state when the application attempts to process a very large heatmap.
@@ -19,9 +19,9 @@
 #'
 #' The following slots control the metadata variables that are used:
 #' \itemize{
-#' \item \code{ColumnData}, a character vector specifying columns of the \code{\link{colData}} to show as \code{\link{columnAnnotation}}.
+#' \item \code{ColumnData}, a character vector specifying columns of the \code{\link[SummarizedExperiment:colData]{colData}} to show as \code{\link[ComplexHeatmap:columnAnnotation]{Heatmap}}.
 #' Defaults to \code{character(0)}.
-#' \item \code{RowData}, a character vector specifying columns of the \code{\link{rowData}} to show as \code{\link{rowAnnotation}}.
+#' \item \code{RowData}, a character vector specifying columns of the \code{\link[SummarizedExperiment:rowData]{rowData}} to show as \code{\link[ComplexHeatmap:rowAnnotation]{Heatmap}}.
 #' Defaults to \code{character(0)}.
 #' \item \code{ShowColumnSelection}, a logical vector indicating whether the column selection should be shown as an extra annotation bar.
 #' Defaults to \code{TRUE}.
@@ -134,11 +134,11 @@
 #'
 #' For generating the output:
 #' \itemize{
-#' \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{plot}, a \link{Heatmap} object;
+#' \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{plot}, a \link[ComplexHeatmap:Heatmap]{Heatmap} object;
 #' \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot};
 #' and \code{contents} and \code{varname}, both set to \code{NULL} as this is not a transmitting panel.
 #' \item \code{\link{.exportOutput}(x, se, all_memory, all_contents)} will create a PDF file containing the current plot, and return a string containing the path to that PDF.
-#' This assumes that the \code{plot} field returned by \code{\link{.generateOutput}} is a \link{Heatmap} object.
+#' This assumes that the \code{plot} field returned by \code{\link{.generateOutput}} is a \link[ComplexHeatmap:Heatmap]{Heatmap} object.
 #' }
 #'
 #' For monitoring reactive expressions:

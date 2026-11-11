@@ -16,7 +16,7 @@ jitterViolinPoints(X, Y, grouping = NULL, ...)
 
 \item{grouping}{A named list of factors of the same length as \code{X}, specifying how elements should be grouped.}
 
-\item{...}{Further arguments to be passed to \code{\link{offsetX}}.}
+\item{...}{Further arguments to be passed to \code{\link[vipor:offsetX]{offsetX}}.}
 }
 \value{
 For \code{jitterViolinPoints}, a numeric vector is returned containing the jittered x-axis coordinates for all points.
@@ -29,7 +29,7 @@ Add quasi-random jitter on the x-axis for violin plots when the x-axis variable 
 Add random jitter within a rectangular area for square plots when both x- and y-axis variables are categorical.
 }
 \details{
-The \code{jitterViolinPoints} function calls \code{\link{offsetX}} to obtain quasi-random jittered x-axis values.
+The \code{jitterViolinPoints} function calls \code{\link[vipor:offsetX]{offsetX}} to obtain quasi-random jittered x-axis values.
 This reflects the area occupied by a violin plot, though some tuning of arguments in \code{...} may be required to get an exact match.
 
 The \code{jitterSquarePoints} function will uniformly jitter points on both the x- and y-axes. 

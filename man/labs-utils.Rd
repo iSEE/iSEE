@@ -36,7 +36,7 @@
 \item{subtitle}{The character title for the plot subtitle}
 }
 \value{
-Title and label instructions for \code{\link{ggplot}} as a character value.
+Title and label instructions for \code{\link[ggplot2:ggplot]{ggplot}} as a character value.
 }
 \description{
 Generate ggplot title and label instructions

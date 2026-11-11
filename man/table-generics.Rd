@@ -6,23 +6,23 @@
 \alias{.showSelectionDetails}
 \title{Generics for table construction}
 \description{
-Generic to control the creation of a data.frame to show in the \code{\link{datatable}} widget of a \linkS4class{Table} panel.
+Generic to control the creation of a data.frame to show in the \code{\link[DT:datatable]{datatable}} widget of a \linkS4class{Table} panel.
 \linkS4class{Table} subclasses can specialize methods to modify the behavior of \code{\link{.generateOutput}}.
 }
 \section{Constructing the table}{
 
-\code{.generateTable(x, envir)} generates the data.frame to use in the \code{\link{datatable}} widget.
+\code{.generateTable(x, envir)} generates the data.frame to use in the \code{\link[DT:datatable]{datatable}} widget.
 The following arguments are required:
 \itemize{
 \item \code{x}, an instance of a Table subclass.
 \item \code{envir}, the evaluation environment in which the data.frame is to be constructed.
-This can be assumed to have \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset;
+This can be assumed to have \code{se}, the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset;
 possibly \code{col_selected}, if a multiple column selection is being transmitted to \code{x};
 and possibly \code{row_selected}, if a multiple row selection is being transmitted to \code{x}.
 }
 
 In return, the method should add a \code{tab} variable in \code{envir} containing the relevant data.frame.
-This will automatically be passed to the \code{\link{datatable}} widget as well as being stored in \code{pObjects$contents}.
+This will automatically be passed to the \code{\link[DT:datatable]{datatable}} widget as well as being stored in \code{pObjects$contents}.
 The return value should be a character vector of commands that produces \code{tab} when evaluated in \code{envir}.
 
 Each row of the \code{tab} data.frame should correspond to one row or column in the SummarizedExperiment \code{envir$se} for \linkS4class{RowTable}s and \linkS4class{ColumnTable}s respectively.

@@ -9,7 +9,7 @@
 \arguments{
 \item{panel_name}{String containing the panel name.}
 
-\item{se}{A \linkS4class{SummarizedExperiment} object containing the current dataset.}
+\item{se}{A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.}
 
 \item{pObjects}{An environment containing global parameters generated in the \code{\link{iSEE}} app.}
 

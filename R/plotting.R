@@ -688,9 +688,9 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @details
 #' The appropriate ggplot coloring command will depend on whether
 #' \code{colorby} is categorical or not.
-#' If it is, \code{\link{scale_color_manual}} is used with the appropriate
+#' If it is, \code{\link[ggplot2:scale_color_manual]{scale_color_manual}} is used with the appropriate
 #' number of levels.
-#' Otherwise, \code{\link{scale_color_gradientn}} is used.
+#' Otherwise, \code{\link[ggplot2:scale_color_gradientn]{scale_color_gradientn}} is used.
 #' The \code{discrete=} argument of the accessor in \code{command} will also
 #' be set appropriately.
 #'
@@ -878,7 +878,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' \code{group} in the aesthetic instructions (default: \code{FALSE}).
 #' @param alt Alternative aesthetics, supplied as a named character vector.
 #'
-#' @return Aesthetic instructions for \code{\link{ggplot}} as a character
+#' @return Aesthetic instructions for \code{\link[ggplot2:ggplot]{ggplot}} as a character
 #' value.
 #'
 #' @author Kevin Rue-Albrecht
@@ -934,7 +934,7 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 #' @details
 #' If any argument is \code{NULL}, the corresponding label is not set.
 #'
-#' @return Title and label instructions for \code{\link{ggplot}} as a character value.
+#' @return Title and label instructions for \code{\link[ggplot2:ggplot]{ggplot}} as a character value.
 #'
 #' @author Kevin Rue-Albrecht
 #' @rdname labs-utils
@@ -1053,13 +1053,13 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
 #' Draw brushes and lassos
 #'
-#' Generate \link{ggplot} instructions to draw all active and saved multiple selections in a \linkS4class{DotPlot} panel.
+#' Generate \link[ggplot2:ggplot]{ggplot} instructions to draw all active and saved multiple selections in a \linkS4class{DotPlot} panel.
 #' This utility is intended for use within \code{\link{.generateDotPlot}} methods.
 #'
 #' @param param_choices An instance of a \linkS4class{DotPlot} class.
-#' @param flip A \code{logical} value that indicates whether \code{\link{coord_flip}} was applied to the plot.
+#' @param flip A \code{logical} value that indicates whether \code{\link[ggplot2:coord_flip]{coord_flip}} was applied to the plot.
 #'
-#' @return A character vector containing \link{ggplot} commands to create rectangles (for Shiny brushes)
+#' @return A character vector containing \link[ggplot2:ggplot]{ggplot} commands to create rectangles (for Shiny brushes)
 #' or polygons (for closed lassos) or paths (for open lassos) in the current plot.
 #'
 #' @details
@@ -1348,13 +1348,13 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
 #' Add multiple selection plotting commands
 #'
-#' Add \link{ggplot} instructions to create brushes and lassos for both saved and active multiple selections in a \linkS4class{DotPlot} panel.
+#' Add \link[ggplot2:ggplot]{ggplot} instructions to create brushes and lassos for both saved and active multiple selections in a \linkS4class{DotPlot} panel.
 #'
 #' @param x An instance of a \linkS4class{DotPlot} class.
-#' @param envir The environment in which the \link{ggplot} commands are to be evaluated.
+#' @param envir The environment in which the \link[ggplot2:ggplot]{ggplot} commands are to be evaluated.
 #' @param flip A logical scalar indicating whether the x- and y-axes are flipped,
 #' only relevant to horizontal violin plots.
-#' @param commands A character vector representing the sequence of commands to create the \link{ggplot} object.
+#' @param commands A character vector representing the sequence of commands to create the \link[ggplot2:ggplot]{ggplot} object.
 #'
 #' @return A character vector containing \code{commands} plus any additional commands required to draw the self selections.
 #'
@@ -1388,11 +1388,11 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
 #' Add centered label plotting commands
 #'
-#' Add \link{ggplot} instructions to label the center of each group on a scatter plot.
+#' Add \link[ggplot2:ggplot]{ggplot} instructions to label the center of each group on a scatter plot.
 #' This is a utility function that is intended for use in \code{\link{.generateDotPlot}}.
 #'
 #' @param x An instance of a \linkS4class{DotPlot} class.
-#' @param commands A character vector representing the sequence of commands to create the \link{ggplot} object.
+#' @param commands A character vector representing the sequence of commands to create the \link[ggplot2:ggplot]{ggplot} object.
 #' 
 #' @return A character vector containing \code{commands} plus any additional commands required to generate the labels.
 #'
@@ -1432,11 +1432,11 @@ plot.data$jitteredY <- j.out$Y;", groupvar)
 
 #' Add custom label plotting commands
 #'
-#' Add \link{ggplot} instructions to add custom labels to specified points in a \linkS4class{DotPlot}.
+#' Add \link[ggplot2:ggplot]{ggplot} instructions to add custom labels to specified points in a \linkS4class{DotPlot}.
 #' This is a utility function that is intended for use in \code{\link{.generateDotPlot}}.
 #'
 #' @param x An instance of a \linkS4class{DotPlot} class.
-#' @param commands A character vector representing the sequence of commands to create the \link{ggplot} object.
+#' @param commands A character vector representing the sequence of commands to create the \link[ggplot2:ggplot]{ggplot} object.
 #' @param plot_type String specifying the type of plot, e.g., \code{"scatter"}, \code{"square"}, \code{"violin"}.
 #'
 #' @return A character vector containing \code{commands} plus any additional commands required to generate the labels.

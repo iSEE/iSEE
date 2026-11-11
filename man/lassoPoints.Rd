@@ -15,10 +15,10 @@ lassoPoints(df, lasso)
 A subset of rows from \code{df} with coordinates lying within \code{lasso}.
 }
 \description{
-Identify the rows of a data.frame lying within a closed lasso polygon, analogous to \code{\link{brushedPoints}}.
+Identify the rows of a data.frame lying within a closed lasso polygon, analogous to \code{\link[shiny:brushedPoints]{brushedPoints}}.
 }
 \details{
-This function uses \code{\link{in.out}} from the \pkg{mgcv} package to identify points within a polygon.
+This function uses \code{\link[mgcv:in.out]{in.out}} from the \pkg{mgcv} package to identify points within a polygon.
 This involves a boundary crossing algorithm that may not be robust in the presence of complex polygons with intersecting edges.
 }
 \examples{
@@ -41,7 +41,7 @@ lassoPoints(values, lasso)
 
 }
 \seealso{
-\code{\link{brushedPoints}}
+\code{\link[shiny:brushedPoints]{brushedPoints}}
 }
 \author{
 Aaron Lun

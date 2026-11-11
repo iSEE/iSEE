@@ -10,14 +10,14 @@ checkColormapCompatibility(ecm, se)
 \arguments{
 \item{ecm}{An \linkS4class{ExperimentColorMap}.}
 
-\item{se}{A \linkS4class{SingleCellExperiment}.}
+\item{se}{A \linkS4class[SingleCellExperiment]{SingleCellExperiment}.}
 }
 \value{
 A character vector of incompatibility error messages, if any.
 }
 \description{
 This function compares a pair of \linkS4class{ExperimentColorMap} and
-\linkS4class{SingleCellExperiment} objects, and examines whether
+\linkS4class[SingleCellExperiment]{SingleCellExperiment} objects, and examines whether
 all of the \code{assays}, \code{colData}, and \code{rowData} defined
 in the ExperimentColorMap object exist in the SingleCellExperiment object.
 }

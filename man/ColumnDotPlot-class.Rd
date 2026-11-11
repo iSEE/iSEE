@@ -24,15 +24,15 @@
 \alias{updateObject,ColumnDotPlot-method}
 \title{The ColumnDotPlot virtual class}
 \description{
-The ColumnDotPlot is a virtual class where each column in the \linkS4class{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link{ggplot} plot.
-It provides slots and methods to extract \code{\link{colData}} fields to control the per-point aesthetics on the plot.
+The ColumnDotPlot is a virtual class where each column in the \linkS4class[SummarizedExperiment]{SummarizedExperiment} is represented by no more than one point (i.e., a \dQuote{dot}) in a brushable \link[ggplot2:ggplot]{ggplot} plot.
+It provides slots and methods to extract \code{\link[SummarizedExperiment:colData]{colData}} fields to control the per-point aesthetics on the plot.
 This panel will transmit column identities in both its single and multiple selections, and it can receive multiple column selections but not multiple row selections.
 }
 \section{Slot overview}{
 
 The following slots control coloring of the points:
 \itemize{
-\item \code{ColorByColumnData}, a string specifying the \code{\link{colData}} field for controlling point color,
+\item \code{ColorByColumnData}, a string specifying the \code{\link[SummarizedExperiment:colData]{colData}} field for controlling point color,
 if \code{ColorBy="Column data"} (see the \linkS4class{Panel} class).
 Defaults to the first valid field (see \code{.cacheCommonInfo} below).
 \item \code{ColorByFeatureNameAssay}, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
@@ -46,13 +46,13 @@ Defaults to \code{"red"} in \code{\link{getPanelDefault}}.
 
 The following slots control other metadata-related aesthetic aspects of the points:
 \itemize{
-\item \code{ShapeByColumnData}, a string specifying the \code{\link{colData}} field for controlling point shape,
+\item \code{ShapeByColumnData}, a string specifying the \code{\link[SummarizedExperiment:colData]{colData}} field for controlling point shape,
 if \code{ShapeBy="Column data"} (see the \linkS4class{Panel} class).
 The specified field should contain categorical values; defaults to the first such valid field.
-\item \code{SizeByColumnData}, a string specifying the \code{\link{colData}} field for controlling point size,
+\item \code{SizeByColumnData}, a string specifying the \code{\link[SummarizedExperiment:colData]{colData}} field for controlling point size,
 if \code{SizeBy="Column data"} (see the \linkS4class{Panel} class).
 The specified field should contain continuous values; defaults to the first such valid field.
-\item \code{TooltipColumnData}, a character vector specifying \code{\link{colData}} fields to show in the tooltip.
+\item \code{TooltipColumnData}, a character vector specifying \code{\link[SummarizedExperiment:colData]{colData}} fields to show in the tooltip.
 Defaults to `character(0)`, which displays only the `colnames` value of the data point.
 }
 
@@ -114,7 +114,7 @@ Subclasses are expected to implement methods for, at least:
 \item \code{\link{.panelColor}}
 }
 
-The method for \code{\link{.generateDotPlotData}} should create a \code{plot.data} data.frame with one row per column in the \linkS4class{SummarizedExperiment} object.
+The method for \code{\link{.generateDotPlotData}} should create a \code{plot.data} data.frame with one row per column in the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.
 }
 
 \seealso{

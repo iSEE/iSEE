@@ -3,7 +3,7 @@
 #' Extract an assay submatrix based on the multiple row/column selection and any custom specifications from \code{\link{.createCustomDimnamesModalObservers}}.
 #'
 #' @param x A \linkS4class{Panel} instance that uses the row selection modal.
-#' @param se The current \linkS4class{SummarizedExperiment} object.
+#' @param se The current \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.
 #' @param envir The evaluation environment.
 #' This assumes that \code{\link{.processMultiSelections}} has already been run.
 #' @param use_custom_row_slot String specifying the name of the slot indicating whether to use custom rows.
@@ -86,23 +86,23 @@
 
 #' Process heatmap colorscales
 #'
-#' These functions construct and evaluate commands to generate various colorscales for a \code{Complex\link{Heatmap}}.
+#' These functions construct and evaluate commands to generate various colorscales for a \code{Complex\link[ComplexHeatmap:Heatmap]{Heatmap}}.
 #'
 #' @param x An instance of a \linkS4class{ComplexHeatmapPlot} class.
-#' @param se A \linkS4class{SummarizedExperiment} object after running \code{\link{.cacheCommonInfo}}.
+#' @param se A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object after running \code{\link{.cacheCommonInfo}}.
 #' @param envir An environment containing \code{plot.data}.
 #'
 #' @return
 #' \code{.process_heatmap_assay_colormap} creates \code{.assay_colors} in \code{envir}
 #' and returns a character vector of commands used to do so.
 #' This is either a named set of color for discrete assays
-#' or a \code{\link{colorRamp2}} function that interpolates colors for continuous assays.
+#' or a \code{\link[circlize:colorRamp2]{colorRamp2}} function that interpolates colors for continuous assays.
 #'
-#' \code{.process_heatmap_column_annotations_colorscale} defines \code{.column_annot}, a \code{\link{columnAnnotation}} object,
+#' \code{.process_heatmap_column_annotations_colorscale} defines \code{.column_annot}, a \code{\link[ComplexHeatmap:columnAnnotation]{Heatmap}} object,
 #' and returns a character vector of commands used to do so.
 #' If no column metadata was selected, this function is a no-op.
 #'
-#' \code{.process_heatmap_row_annotations_colorscale} defines \code{row_annot}, a \code{\link{rowAnnotation}} object,
+#' \code{.process_heatmap_row_annotations_colorscale} defines \code{row_annot}, a \code{\link[ComplexHeatmap:rowAnnotation]{Heatmap}} object,
 #' and returns a character vector of commands used to do so.
 #' If no row metadata was selected, this function is a no-op.
 #'
@@ -345,7 +345,7 @@
 #' @param val A numeric vector from which the range of possible values is defined.
 #' @param map A string containing the variable name for the vector of colors to interpolate across.
 #'
-#' @return A string containing an R expression that uses \code{\link{colorRamp2}} to interpolate the colors.
+#' @return A string containing an R expression that uses \code{\link[circlize:colorRamp2]{colorRamp2}} to interpolate the colors.
 #'
 #' @author Kevin Rue-Albrecht
 #'
@@ -363,7 +363,7 @@
 #' Process transformations applied to rows of a heatmap matrix
 #'
 #' @param x An instance of a \linkS4class{ComplexHeatmapPlot} class.
-#' @param se The current \linkS4class{SummarizedExperiment} object.
+#' @param se The current \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.
 #' @param envir The evaluation environment.
 #'
 #' @return A character vector of commands that apply transformations to \code{plot.data},

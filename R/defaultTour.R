@@ -2,7 +2,7 @@
 #'
 #' Assemble an appropriate tour based on the presence of available parameters.
 #'
-#' @param se A \linkS4class{SummarizedExperiment} object containing the dataset of interest.
+#' @param se A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the dataset of interest.
 #' @param memory A list of \linkS4class{Panel} objects specifying the current memory of the app.
 #'
 #' @return A named list containing the steps of a tour.

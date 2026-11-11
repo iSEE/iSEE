@@ -1,6 +1,6 @@
 #' Find rows of data within a closed lasso
 #'
-#' Identify the rows of a data.frame lying within a closed lasso polygon, analogous to \code{\link{brushedPoints}}.
+#' Identify the rows of a data.frame lying within a closed lasso polygon, analogous to \code{\link[shiny:brushedPoints]{brushedPoints}}.
 #'
 #' @param df A data.frame from which to select rows.
 #' @param lasso A list containing data from a lasso.
@@ -8,11 +8,11 @@
 #' @return A subset of rows from \code{df} with coordinates lying within \code{lasso}.
 #'
 #' @details
-#' This function uses \code{\link{in.out}} from the \pkg{mgcv} package to identify points within a polygon.
+#' This function uses \code{\link[mgcv:in.out]{in.out}} from the \pkg{mgcv} package to identify points within a polygon.
 #' This involves a boundary crossing algorithm that may not be robust in the presence of complex polygons with intersecting edges.
 #'
 #' @export
-#' @seealso \code{\link{brushedPoints}}
+#' @seealso \code{\link[shiny:brushedPoints]{brushedPoints}}
 #' @author Aaron Lun
 #' @examples
 #' lasso <- list(coord=rbind(c(0, 0), c(0.5, 0), c(0, 0.5), c(0, 0)),

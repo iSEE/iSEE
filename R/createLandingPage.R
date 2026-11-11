@@ -1,10 +1,10 @@
 #' Create a landing page
 #'
-#' Define a function to create a landing page in which users can specify or upload \link{SummarizedExperiment} objects.
+#' Define a function to create a landing page in which users can specify or upload \linkS4class[SummarizedExperiment]{SummarizedExperiment} objects.
 #'
 #' @param seUI Function that accepts a single \code{id} argument and returns a UI element for specifying the SummarizedExperiment.
 #' @param seLoad Function that accepts the input value of the UI element from \code{seUI}
-#' and returns a \linkS4class{SummarizedExperiment} object.
+#' and returns a \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.
 #' @param initUI Function that accepts a single \code{id} argument and returns a UI element for specifying the initial state.
 #' @param initLoad Function that accepts the input value of the UI element from \code{initUI}
 #' and returns a list of \linkS4class{Panel}s.
@@ -49,7 +49,7 @@
 #' \item \code{session}, the Shiny session object.
 #' }
 #'
-#' The \code{landingPage} function should define a \code{\link{renderUI}} expression that is assigned to \code{output$allPanels}.
+#' The \code{landingPage} function should define a \code{\link[shiny:renderUI]{renderUI}} expression that is assigned to \code{output$allPanels}.
 #' This should define a UI that contains all widgets necessary for a user to set up an \code{\link{iSEE}} session interactively.
 #' We suggest that all UI elements have IDs prefixed with \code{"initialize_INTERNAL"} to avoid conflicts.
 #'

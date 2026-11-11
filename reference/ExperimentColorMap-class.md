@@ -199,27 +199,27 @@ assayColorMap(ecm, "logcounts") # [undefined --> default]
 #>     cols <- fn_cols(seq(begin, end, length.out = n))/255
 #>     grDevices::rgb(cols[, 1], cols[, 2], cols[, 3], alpha = alpha)
 #> }
-#> <bytecode: 0x64ee01086800>
+#> <bytecode: 0x5f3c3ea7d520>
 #> <environment: namespace:viridisLite>
 assayColorMap(ecm, "counts")
 #> function (n) 
 #> {
 #>     c("black", "brown", "red", "orange", "yellow")
 #> }
-#> <environment: 0x64ee00e19368>
+#> <environment: 0x5f3c3e8101a8>
 assayColorMap(ecm, "cufflinks_fpkm")
 #> function (n, alpha = 1, begin = 0, end = 1, direction = 1) 
 #> {
 #>     viridis(n, alpha, begin, end, direction, option = "inferno")
 #> }
-#> <bytecode: 0x64ee00e979b0>
+#> <bytecode: 0x5f3c3e88e7f0>
 #> <environment: namespace:viridisLite>
 assay(ecm, "cufflinks_fpkm") # alias
 #> function (n, alpha = 1, begin = 0, end = 1, direction = 1) 
 #> {
 #>     viridis(n, alpha, begin, end, direction, option = "inferno")
 #> }
-#> <bytecode: 0x64ee00e979b0>
+#> <bytecode: 0x5f3c3e88e7f0>
 #> <environment: namespace:viridisLite>
 
 # colData colormaps
@@ -230,7 +230,7 @@ colDataColorMap(ecm, "passes_qc_checks_s")
 #>     names(qc_colors) <- c("Y", "N")
 #>     return(qc_colors)
 #> }
-#> <environment: 0x64ee00e19368>
+#> <environment: 0x5f3c3e8101a8>
 colDataColorMap(ecm, "undefined")
 #> function (n, alpha = 1, begin = 0, end = 1, direction = 1, option = "D") 
 #> {
@@ -263,7 +263,7 @@ colDataColorMap(ecm, "undefined")
 #>     cols <- fn_cols(seq(begin, end, length.out = n))/255
 #>     grDevices::rgb(cols[, 1], cols[, 2], cols[, 3], alpha = alpha)
 #> }
-#> <bytecode: 0x64ee01086800>
+#> <bytecode: 0x5f3c3ea7d520>
 #> <environment: namespace:viridisLite>
 
 # rowData colormaps
@@ -299,7 +299,7 @@ rowDataColorMap(ecm, "undefined")
 #>     cols <- fn_cols(seq(begin, end, length.out = n))/255
 #>     grDevices::rgb(cols[, 1], cols[, 2], cols[, 3], alpha = alpha)
 #> }
-#> <bytecode: 0x64ee01086800>
+#> <bytecode: 0x5f3c3ea7d520>
 #> <environment: namespace:viridisLite>
 
 # generic accessors
@@ -309,21 +309,21 @@ assays(ecm)
 #> {
 #>     c("black", "brown", "red", "orange", "yellow")
 #> }
-#> <environment: 0x64ee00e19368>
+#> <environment: 0x5f3c3e8101a8>
 #> 
 #> $tophat_counts
 #> function (n) 
 #> {
 #>     c("black", "brown", "red", "orange", "yellow")
 #> }
-#> <environment: 0x64ee00e19368>
+#> <environment: 0x5f3c3e8101a8>
 #> 
 #> $cufflinks_fpkm
 #> function (n, alpha = 1, begin = 0, end = 1, direction = 1) 
 #> {
 #>     viridis(n, alpha, begin, end, direction, option = "inferno")
 #> }
-#> <bytecode: 0x64ee00e979b0>
+#> <bytecode: 0x5f3c3e88e7f0>
 #> <environment: namespace:viridisLite>
 #> 
 #> $rsem_tpm
@@ -331,7 +331,7 @@ assays(ecm)
 #> {
 #>     viridis(n, alpha, begin, end, direction, option = "plasma")
 #> }
-#> <bytecode: 0x64ee00ee5a98>
+#> <bytecode: 0x5f3c3e8db7f8>
 #> <environment: namespace:viridisLite>
 #> 
 assayNames(ecm)

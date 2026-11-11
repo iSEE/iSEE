@@ -1,6 +1,6 @@
 # An introduction to the iSEE interface
 
-**Compiled date**: 2026-10-28
+**Compiled date**: 2026-11-11
 
 **Last edited**: 2020-04-20
 
@@ -620,7 +620,7 @@ your analysis, please cite it as shown below:
 `#> other attached packages:`\
 `#>  [1] scater_1.40.2               ggplot2_4.0.3              `\
 `#>  [3] scuttle_1.22.0              scrapper_1.6.3             `\
-`#>  [5] scRNAseq_2.26.0             iSEE_2.25.2                `\
+`#>  [5] scRNAseq_2.26.0             iSEE_2.25.3                `\
 `#>  [7] SingleCellExperiment_1.34.0 SummarizedExperiment_1.42.0`\
 `#>  [9] Biobase_2.72.0              GenomicRanges_1.64.0       `\
 `#> [11] Seqinfo_1.2.0               IRanges_2.46.0             `\

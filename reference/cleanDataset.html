@@ -9,7 +9,7 @@ Also transfer any information stored in rowRanges into rowData."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">iSEE</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -80,8 +80,8 @@ Also transfer any information stored in <code>rowRanges</code> into <code>rowDat
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Various <a href="Panel-class.html">Panel</a>s assume that the row and column names of the input SummarizedExperiment are available and unique.
 This function enforces that, adding consecutive integer names if not available and calling <code><a href="https://rdrr.io/r/base/make.unique.html" class="external-link">make.unique</a></code> if they are duplicated.</p>
-<p>Various <a href="Panel-class.html">Panel</a>s further assume that the <code>assay</code>, <code>rowData</code>, <code>colData</code> names are unique;
-if this is not the case, <code>selectInput</code> behaves in unexpected (and incorrect) ways.
+<p>Various <a href="Panel-class.html">Panel</a>s further assume that the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></code>, <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></code>, <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></code> names are unique;
+if this is not the case, <code><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">selectInput</a></code> behaves in unexpected (and incorrect) ways.
 This function enforces that as well by running them through <code><a href="https://rdrr.io/r/base/make.unique.html" class="external-link">make.unique</a></code>.</p>
 <p>Finally, positional information in <code>rowRanges</code> is not accessible to <code>iSEE</code>.
 This function moves this information into <code>rowData</code>, prefixing the column names with <code>rowRanges_</code>.</p>

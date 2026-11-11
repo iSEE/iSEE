@@ -30,7 +30,8 @@ jitterViolinPoints(X, Y, grouping = NULL, ...)
 
 - ...:
 
-  Further arguments to be passed to `offsetX`.
+  Further arguments to be passed to
+  [`offsetX`](https://rdrr.io/pkg/vipor/man/offsetX.html).
 
 ## Value
 
@@ -44,10 +45,11 @@ and side lengths for each unique pairing of X/Y levels.
 
 ## Details
 
-The `jitterViolinPoints` function calls `offsetX` to obtain quasi-random
-jittered x-axis values. This reflects the area occupied by a violin
-plot, though some tuning of arguments in `...` may be required to get an
-exact match.
+The `jitterViolinPoints` function calls
+[`offsetX`](https://rdrr.io/pkg/vipor/man/offsetX.html) to obtain
+quasi-random jittered x-axis values. This reflects the area occupied by
+a violin plot, though some tuning of arguments in `...` may be required
+to get an exact match.
 
 The `jitterSquarePoints` function will uniformly jitter points on both
 the x- and y-axes. The jitter area is a square with area proportional to

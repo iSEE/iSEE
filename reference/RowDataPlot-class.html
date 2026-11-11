@@ -9,7 +9,7 @@ It provides slots and methods for specifying which variable to use on the y-axis
 
     <a class="navbar-brand me-2" href="../index.html">iSEE</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@ It provides slots and methods for specifying which variable to use on the y-axis
     </div>
 
     <div class="ref-description section level2">
-    <p>The RowDataPlot is a panel class for creating a <a href="RowDotPlot-class.html">RowDotPlot</a> where the y-axis represents a variable from the <code>rowData</code> of a SummarizedExperiment object.
+    <p>The RowDataPlot is a panel class for creating a <a href="RowDotPlot-class.html">RowDotPlot</a> where the y-axis represents a variable from the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></code> of a SummarizedExperiment object.
 It provides slots and methods for specifying which variable to use on the y-axis (and, optionally, also the x-axis), as well as a method to create the data.frame in preparation for plotting.</p>
     </div>
 
@@ -58,12 +58,12 @@ It provides slots and methods for specifying which variable to use on the y-axis
     <h2 id="slot-overview">Slot overview<a class="anchor" aria-label="anchor" href="#slot-overview"></a></h2>
 
 
-<p>The following slots control the variables to be shown:</p><ul><li><p><code>YAxis</code>, a string specifying the row of the <code>rowData</code> to show on the y-axis.
+<p>The following slots control the variables to be shown:</p><ul><li><p><code>YAxis</code>, a string specifying the row of the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></code> to show on the y-axis.
 If <code>NA</code>, defaults to the first valid field (see <code>?"<a href="RowDotPlot-class.html">.refineParameters,RowDotPlot-method</a>"</code>).</p></li>
 <li><p><code>XAxis</code>, string specifying what should be plotting on the x-axis.
 This can be any one of <code>"None"</code>, <code>"Row data"</code> and <code>"Row selection"</code>.
 Defaults to <code>"None"</code>.</p></li>
-<li><p><code>XAxisRowData</code>, string specifying the row of the <code>rowData</code> to show on the x-axis.
+<li><p><code>XAxisRowData</code>, string specifying the row of the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></code> to show on the x-axis.
 If <code>NA</code>, defaults to the first valid field.</p></li>
 </ul><p>In addition, this class inherits all slots from its parent <a href="RowDotPlot-class.html">RowDotPlot</a>, <a href="DotPlot-class.html">DotPlot</a> and <a href="Panel-class.html">Panel</a> classes.</p>
     </div>
@@ -79,14 +79,14 @@ If <code>NA</code>, defaults to the first valid field.</p></li>
 
 <p>In the following code snippets, <code>x</code> is an instance of a RowDataPlot class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
-<p>For setting up data values:</p><ul><li><p><code><a href="setup-generics.html">.refineParameters</a>(x, se)</code> returns <code>x</code> after replacing any <code>NA</code> value in <code>YAxis</code> or <code>XAxisRowData</code> with the name of the first valid <code>rowData</code> variable.
+<p>For setting up data values:</p><ul><li><p><code><a href="setup-generics.html">.refineParameters</a>(x, se)</code> returns <code>x</code> after replacing any <code>NA</code> value in <code>YAxis</code> or <code>XAxisRowData</code> with the name of the first valid <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></code> variable.
 This will also call the equivalent <a href="RowDotPlot-class.html">RowDotPlot</a> method for further refinements to <code>x</code>.
 If no valid row metadata variables are available, <code>NULL</code> is returned instead.</p></li>
 </ul><p>For defining the interface:</p><ul><li><p><code><a href="interface-generics.html">.defineDataInterface</a>(x, se, select_info)</code> returns a list of interface elements for manipulating all slots described above.</p></li>
 <li><p><code><a href="getPanelColor.html">.panelColor</a>(x)</code> will return the specified default color for this panel class.</p></li>
-<li><p><code><a href="metadata-plot-generics.html">.allowableXAxisChoices</a>(x, se)</code> returns a character vector specifying the acceptable variables in <code>rowData(se)</code> that can be used as choices for the x-axis.
+<li><p><code><a href="metadata-plot-generics.html">.allowableXAxisChoices</a>(x, se)</code> returns a character vector specifying the acceptable variables in <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a>(se)</code> that can be used as choices for the x-axis.
 This consists of all variables with atomic values.</p></li>
-<li><p><code><a href="metadata-plot-generics.html">.allowableYAxisChoices</a>(x, se)</code> returns a character vector specifying the acceptable variables in <code>rowData(se)</code> that can be used as choices for the y-axis.
+<li><p><code><a href="metadata-plot-generics.html">.allowableYAxisChoices</a>(x, se)</code> returns a character vector specifying the acceptable variables in <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a>(se)</code> that can be used as choices for the y-axis.
 This consists of all variables with atomic values.</p></li>
 </ul><p>For monitoring reactive expressions:</p><ul><li><p><code><a href="observer-generics.html">.createObservers</a>(x, se, input, session, pObjects, rObjects)</code> sets up observers for all slots described above and in the parent classes.
 This will also call the equivalent <a href="RowDotPlot-class.html">RowDotPlot</a> method.</p></li>

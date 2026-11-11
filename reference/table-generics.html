@@ -9,7 +9,7 @@ Table subclasses can specialize methods to modify the behavior of .generateOutpu
 
     <a class="navbar-brand me-2" href="../index.html">iSEE</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@ Table subclasses can specialize methods to modify the behavior of .generateOutpu
     </div>
 
     <div class="ref-description section level2">
-    <p>Generic to control the creation of a data.frame to show in the <code>datatable</code> widget of a <a href="Table-class.html">Table</a> panel.
+    <p>Generic to control the creation of a data.frame to show in the <code><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">datatable</a></code> widget of a <a href="Table-class.html">Table</a> panel.
 <a href="Table-class.html">Table</a> subclasses can specialize methods to modify the behavior of <code><a href="output-generics.html">.generateOutput</a></code>.</p>
     </div>
 
@@ -58,14 +58,14 @@ Table subclasses can specialize methods to modify the behavior of .generateOutpu
     <h2 id="constructing-the-table">Constructing the table<a class="anchor" aria-label="anchor" href="#constructing-the-table"></a></h2>
 
 
-<p><code>.generateTable(x, envir)</code> generates the data.frame to use in the <code>datatable</code> widget.
+<p><code>.generateTable(x, envir)</code> generates the data.frame to use in the <code><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">datatable</a></code> widget.
 The following arguments are required:</p><ul><li><p><code>x</code>, an instance of a Table subclass.</p></li>
 <li><p><code>envir</code>, the evaluation environment in which the data.frame is to be constructed.
 This can be assumed to have <code>se</code>, the SummarizedExperiment object containing the current dataset;
 possibly <code>col_selected</code>, if a multiple column selection is being transmitted to <code>x</code>;
 and possibly <code>row_selected</code>, if a multiple row selection is being transmitted to <code>x</code>.</p></li>
 </ul><p>In return, the method should add a <code>tab</code> variable in <code>envir</code> containing the relevant data.frame.
-This will automatically be passed to the <code>datatable</code> widget as well as being stored in <code>pObjects$contents</code>.
+This will automatically be passed to the <code><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">datatable</a></code> widget as well as being stored in <code>pObjects$contents</code>.
 The return value should be a character vector of commands that produces <code>tab</code> when evaluated in <code>envir</code>.</p>
 <p>Each row of the <code>tab</code> data.frame should correspond to one row or column in the SummarizedExperiment <code>envir$se</code> for <a href="RowTable-class.html">RowTable</a>s and <a href="ColumnTable-class.html">ColumnTable</a>s respectively.
 Unlike <code><a href="plot-generics.html">.generateDotPlotData</a></code>, it is not necessary for all rows or columns to be represented in this data.frame.</p>

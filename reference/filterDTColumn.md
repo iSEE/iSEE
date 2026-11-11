@@ -1,7 +1,8 @@
 # Filter DT columns
 
-Filter a data.frame based on the DT `datatable` widget column search
-string.
+Filter a data.frame based on the DT
+[`datatable`](https://rdrr.io/pkg/DT/man/datatable.html) widget column
+search string.
 
 ## Usage
 
@@ -24,7 +25,8 @@ filterDT(df, column, global)
 
 - df:
 
-  A data.frame that was used in the `datatable` widget.
+  A data.frame that was used in the
+  [`datatable`](https://rdrr.io/pkg/DT/man/datatable.html) widget.
 
 - column:
 
@@ -72,8 +74,8 @@ column by `global`.
 
 ## See also
 
-`datatable` and associated documentation for more details about column
-searches.
+[`datatable`](https://rdrr.io/pkg/DT/man/datatable.html) and associated
+documentation for more details about column searches.
 
 ## Author
 

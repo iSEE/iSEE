@@ -59,7 +59,7 @@ corresponding shiny function, e.g.,
 and `field` (separated by an underscore).
 
 If `.hideInterface(x, field)` is `TRUE`, the output is wrapped inside a
-`hidden` call.
+[`hidden`](https://rdrr.io/pkg/shinyjs/man/hidden.html) call.
 
 ## Author
 

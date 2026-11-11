@@ -9,7 +9,7 @@ It provides functionality to extract the colData to coerce it into an appropriat
 
     <a class="navbar-brand me-2" href="../index.html">iSEE</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,8 +49,8 @@ It provides functionality to extract the colData to coerce it into an appropriat
     </div>
 
     <div class="ref-description section level2">
-    <p>The ColumnDataTable is a panel class for creating a <a href="ColumnTable-class.html">ColumnTable</a> where the value of the table is defined as the <code>colData</code> of the SummarizedExperiment.
-It provides functionality to extract the <code>colData</code> to coerce it into an appropriate data.frame in preparation for rendering.</p>
+    <p>The ColumnDataTable is a panel class for creating a <a href="ColumnTable-class.html">ColumnTable</a> where the value of the table is defined as the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></code> of the SummarizedExperiment.
+It provides functionality to extract the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></code> to coerce it into an appropriate data.frame in preparation for rendering.</p>
     </div>
 
 
@@ -65,7 +65,7 @@ It provides functionality to extract the <code>colData</code> to coerce it into 
 
 
 <p><code>ColumnDataTable(...)</code> creates an instance of a ColumnDataTable class, where any slot and its value can be passed to <code>...</code> as a named argument.</p>
-<p>Note that <code>ColSearch</code> should be a character vector of length equal to the total number of columns in the <code>colData</code>, though only the entries for the atomic fields will actually be used.</p>
+<p>Note that <code>ColSearch</code> should be a character vector of length equal to the total number of columns in the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></code>, though only the entries for the atomic fields will actually be used.</p>
     </div>
     <div class="section level2">
     <h2 id="supported-methods">Supported methods<a class="anchor" aria-label="anchor" href="#supported-methods"></a></h2>
@@ -73,9 +73,9 @@ It provides functionality to extract the <code>colData</code> to coerce it into 
 
 <p>In the following code snippets, <code>x</code> is an instance of a ColumnDataTable class.
 Refer to the documentation for each method for more details on the remaining arguments.</p>
-<p>For setting up data values:</p><ul><li><p><code><a href="setup-generics.html">.cacheCommonInfo</a>(x)</code> adds a <code>"ColumnDataTable"</code> entry containing <code>valid.colData.names</code>, a character vector of names of atomic columns of the <code>colData</code>.
+<p>For setting up data values:</p><ul><li><p><code><a href="setup-generics.html">.cacheCommonInfo</a>(x)</code> adds a <code>"ColumnDataTable"</code> entry containing <code>valid.colData.names</code>, a character vector of names of atomic columns of the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></code>.
 This will also call the equivalent <a href="ColumnTable-class.html">ColumnTable</a> method.</p></li>
-<li><p><code><a href="setup-generics.html">.refineParameters</a>(x, se)</code> adjusts <code>ColSearch</code> to a character vector of length equal to the number of atomic fields in the <code>colData</code>.
+<li><p><code><a href="setup-generics.html">.refineParameters</a>(x, se)</code> adjusts <code>ColSearch</code> to a character vector of length equal to the number of atomic fields in the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></code>.
 This will also call the equivalent <a href="ColumnTable-class.html">ColumnTable</a> method for further refinements to <code>x</code>.</p></li>
 </ul><p>For defining the interface:</p><ul><li><p><code><a href="getEncodedName.html">.fullName</a>(x)</code> will return <code>"Column data table"</code>.</p></li>
 <li><p><code><a href="getPanelColor.html">.panelColor</a>(x)</code> will return the specified default color for this panel class.</p></li>

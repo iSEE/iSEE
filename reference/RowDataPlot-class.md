@@ -2,8 +2,9 @@
 
 The RowDataPlot is a panel class for creating a
 [RowDotPlot](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
-where the y-axis represents a variable from the `rowData` of a
-SummarizedExperiment object. It provides slots and methods for
+where the y-axis represents a variable from the
+[`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+of a SummarizedExperiment object. It provides slots and methods for
 specifying which variable to use on the y-axis (and, optionally, also
 the x-axis), as well as a method to create the data.frame in preparation
 for plotting.
@@ -12,16 +13,18 @@ for plotting.
 
 The following slots control the variables to be shown:
 
-- `YAxis`, a string specifying the row of the `rowData` to show on the
-  y-axis. If `NA`, defaults to the first valid field (see
+- `YAxis`, a string specifying the row of the
+  [`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+  to show on the y-axis. If `NA`, defaults to the first valid field (see
   `?"`[`.refineParameters,RowDotPlot-method`](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)`"`).
 
 - `XAxis`, string specifying what should be plotting on the x-axis. This
   can be any one of `"None"`, `"Row data"` and `"Row selection"`.
   Defaults to `"None"`.
 
-- `XAxisRowData`, string specifying the row of the `rowData` to show on
-  the x-axis. If `NA`, defaults to the first valid field.
+- `XAxisRowData`, string specifying the row of the
+  [`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+  to show on the x-axis. If `NA`, defaults to the first valid field.
 
 In addition, this class inherits all slots from its parent
 [RowDotPlot](https://isee.github.io/iSEE/reference/RowDotPlot-class.md),
@@ -43,8 +46,9 @@ For setting up data values:
 
 - [`.refineParameters`](https://isee.github.io/iSEE/reference/setup-generics.md)`(x, se)`
   returns `x` after replacing any `NA` value in `YAxis` or
-  `XAxisRowData` with the name of the first valid `rowData` variable.
-  This will also call the equivalent
+  `XAxisRowData` with the name of the first valid
+  [`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+  variable. This will also call the equivalent
   [RowDotPlot](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
   method for further refinements to `x`. If no valid row metadata
   variables are available, `NULL` is returned instead.
@@ -60,13 +64,15 @@ For defining the interface:
 
 - [`.allowableXAxisChoices`](https://isee.github.io/iSEE/reference/metadata-plot-generics.md)`(x, se)`
   returns a character vector specifying the acceptable variables in
-  `rowData(se)` that can be used as choices for the x-axis. This
-  consists of all variables with atomic values.
+  [`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)`(se)`
+  that can be used as choices for the x-axis. This consists of all
+  variables with atomic values.
 
 - [`.allowableYAxisChoices`](https://isee.github.io/iSEE/reference/metadata-plot-generics.md)`(x, se)`
   returns a character vector specifying the acceptable variables in
-  `rowData(se)` that can be used as choices for the y-axis. This
-  consists of all variables with atomic values.
+  [`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)`(se)`
+  that can be used as choices for the y-axis. This consists of all
+  variables with atomic values.
 
 For monitoring reactive expressions:
 

@@ -16,9 +16,12 @@ and `se`, the SummarizedExperiment object. It is expected to return a
 character vector containing the names of acceptable variables to show on
 the y-axis. For
 [ColumnDataPlot](https://isee.github.io/iSEE/reference/ColumnDataPlot-class.md)s,
-these should be a subset of the variables in `colData(se)`, while for
+these should be a subset of the variables in
+[`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)`(se)`,
+while for
 [RowDataPlot](https://isee.github.io/iSEE/reference/RowDataPlot-class.md)s,
-these should be a subset of the variables in `rowData(se)`.
+these should be a subset of the variables in
+[`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)`(se)`.
 
 Given a constant `se`, the output of this function should be constant
 for all instances of the same panel class. As such, it is a good idea to
@@ -26,9 +29,10 @@ make use of information precomputed by
 [`.cacheCommonInfo`](https://isee.github.io/iSEE/reference/setup-generics.md).
 For example,
 [`.cacheCommonInfo,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
-will add vectors specifying whether a variable in the `colData` is valid
-and discrete or continuous, which can be intersected with any additional
-requirements in a subclass's method for this generic.
+will add vectors specifying whether a variable in the
+[`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+is valid and discrete or continuous, which can be intersected with any
+additional requirements in a subclass's method for this generic.
 
 This generic is called by
 [`.defineDataInterface`](https://isee.github.io/iSEE/reference/interface-generics.md)

@@ -9,7 +9,7 @@ It provides observers for rendering the table widget, monitoring single selectio
 
     <a class="navbar-brand me-2" href="../index.html">iSEE</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@ It provides observers for rendering the table widget, monitoring single selectio
     </div>
 
     <div class="ref-description section level2">
-    <p>The Table is a virtual class for all panels containing a <code>datatable</code> widget from the <span class="pkg">DT</span> package, where each row <em>usually</em> corresponds to a row or column of the SummarizedExperiment object.
+    <p>The Table is a virtual class for all panels containing a <code><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">datatable</a></code> widget from the <span class="pkg">DT</span> package, where each row <em>usually</em> corresponds to a row or column of the SummarizedExperiment object.
 It provides observers for rendering the table widget, monitoring single selections, and applying global and column-specific searches (which serve as multiple selections).</p>
     </div>
 
@@ -83,7 +83,7 @@ Note that this is populated by <code><a href="output-generics.html">.generateOut
 as we do not know the available columns before that point.</p></li>
 </ul><p>For defining reactive expressions:</p><ul><li><p><code><a href="observer-generics.html">.createObservers</a>(x, se, input, session, pObjects, rObjects)</code> sets up observers for all of the slots.
 This will also call the equivalent <a href="Panel-class.html">Panel</a> method.</p></li>
-<li><p><code><a href="output-generics.html">.renderOutput</a>(x, se, output, pObjects, rObjects)</code> will add a rendered <code>datatable</code> object to <code>output</code>.
+<li><p><code><a href="output-generics.html">.renderOutput</a>(x, se, output, pObjects, rObjects)</code> will add a rendered <code><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">datatable</a></code> object to <code>output</code>.
 This will also call the equivalent <a href="Panel-class.html">Panel</a> method to render the panel information text boxes.</p></li>
 <li><p><code><a href="output-generics.html">.generateOutput</a>(x, se, all_memory, all_contents)</code> returns a list containing <code>contents</code>, a data.frame with one row per point currently present in the table;
 <code>commands</code>, a list of character vector containing the R commands required to generate <code>contents</code> and <code>plot</code>;
@@ -96,7 +96,7 @@ Transmission of a selection to a Table will manifest as a subsetting of the rows
 If both contain only empty strings, a <code>NULL</code> is returned instead.</p></li>
 <li><p><code><a href="multi-select-generics.html">.multiSelectionCommands</a>(x, index)</code> returns a character vector of R expressions that - when evaluated - return a character vector of the row names of the table after applying all search filters.
 The value of <code>index</code> is ignored.</p></li>
-<li><p><code><a href="single-select-generics.html">.singleSelectionValue</a>(x, contents)</code> returns the name of the row that was last selected in the <code>datatable</code> widget.</p></li>
+<li><p><code><a href="single-select-generics.html">.singleSelectionValue</a>(x, contents)</code> returns the name of the row that was last selected in the <code><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">datatable</a></code> widget.</p></li>
 </ul><p>For documentation:</p><ul><li><p><code><a href="documentation-generics.html">.definePanelTour</a>(x)</code> returns an data.frame containing the steps of a tour relevant to subclasses,
 mostly describing the effect of selection from other panels and the use of row filters to transmit selections.</p></li>
 </ul><p>Unless explicitly specialized above, all methods from the parent class <a href="Panel-class.html">Panel</a> are also available.</p>

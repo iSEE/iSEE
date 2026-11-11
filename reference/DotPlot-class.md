@@ -108,7 +108,11 @@ The following slots control any text to be shown on the plot:
 
 - `LabelCentersBy`, a string specifying the metadata field to define the
   groups when `LabelCenters` is `TRUE`. This should be a discrete
-  variable in `rowData` or `colData` for
+  variable in
+  [`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+  or
+  [`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+  for
   [RowDotPlot](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)s
   and
   [ColumnDotPlot](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)s,
@@ -138,7 +142,8 @@ The following slots control interactions with the plot image:
   boundaries. Defaults to an empty vector, i.e., no zoom.
 
 - `BrushData`, a list containing either a Shiny brush (see
-  `?brushedPoints`) or an iSEE lasso (see
+  `?`[`brushedPoints`](https://rdrr.io/pkg/shiny/man/brushedPoints.html))
+  or an iSEE lasso (see
   `?`[`lassoPoints`](https://isee.github.io/iSEE/reference/lassoPoints.md)).
   Defaults to an empty list, i.e., no brush or lasso.
 

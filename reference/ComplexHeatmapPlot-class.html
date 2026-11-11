@@ -9,7 +9,7 @@ It provides slots and methods for specifying the features of interest, which ass
 
     <a class="navbar-brand me-2" href="../index.html">iSEE</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@ It provides slots and methods for specifying the features of interest, which ass
     </div>
 
     <div class="ref-description section level2">
-    <p>The ComplexHeatmapPlot is a panel class for creating a <a href="Panel-class.html">Panel</a> that displays an assay of a SummarizedExperiment object as a <code>Heatmap</code> with features as rows and samples and columns, respectively.
+    <p>The ComplexHeatmapPlot is a panel class for creating a <a href="Panel-class.html">Panel</a> that displays an assay of a SummarizedExperiment object as a <code><a href="https://rdrr.io/pkg/ComplexHeatmap/man/Heatmap.html" class="external-link">Heatmap</a></code> with features as rows and samples and columns, respectively.
 It provides slots and methods for specifying the features of interest, which assay to display in the main heatmap, any transformations to perform on the data, and which metadata variables to display as row and column heatmap annotations.</p>
     </div>
 
@@ -67,9 +67,9 @@ If <code>NA</code>, defaults to the first row name of the SummarizedExperiment.<
 to avoid a frozen state when the application attempts to process a very large heatmap.
 Ignored if <code>CustomRows = TRUE</code>.
 Defaults to 200.</p></li>
-</ul><p>The following slots control the metadata variables that are used:</p><ul><li><p><code>ColumnData</code>, a character vector specifying columns of the <code>colData</code> to show as <code>columnAnnotation</code>.
+</ul><p>The following slots control the metadata variables that are used:</p><ul><li><p><code>ColumnData</code>, a character vector specifying columns of the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></code> to show as <code><a href="https://rdrr.io/pkg/ComplexHeatmap/man/columnAnnotation.html" class="external-link">Heatmap</a></code>.
 Defaults to <code>character(0)</code>.</p></li>
-<li><p><code>RowData</code>, a character vector specifying columns of the <code>rowData</code> to show as <code>rowAnnotation</code>.
+<li><p><code>RowData</code>, a character vector specifying columns of the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></code> to show as <code><a href="https://rdrr.io/pkg/ComplexHeatmap/man/rowAnnotation.html" class="external-link">Heatmap</a></code>.
 Defaults to <code>character(0)</code>.</p></li>
 <li><p><code>ShowColumnSelection</code>, a logical vector indicating whether the column selection should be shown as an extra annotation bar.
 Defaults to <code>TRUE</code>.</p></li>
@@ -151,11 +151,11 @@ This will <em>override</em> the <a href="Panel-class.html">Panel</a> method.</p>
 <li><p><code><a href="interface-generics.html">.hideInterface</a>(x, field)</code> returns a logical scalar indicating whether the interface element corresponding to <code>field</code> should be hidden.
 This returns <code>TRUE</code> for the selection history (<code>"SelectionHistory"</code>),
 otherwise it dispatches to the <a href="Panel-class.html">Panel</a> method.</p></li>
-</ul><p>For generating the output:</p><ul><li><p><code><a href="output-generics.html">.generateOutput</a>(x, se, all_memory, all_contents)</code> returns a list containing <code>plot</code>, a Heatmap object;
+</ul><p>For generating the output:</p><ul><li><p><code><a href="output-generics.html">.generateOutput</a>(x, se, all_memory, all_contents)</code> returns a list containing <code>plot</code>, a <a href="https://rdrr.io/pkg/ComplexHeatmap/man/Heatmap.html" class="external-link">Heatmap</a> object;
 <code>commands</code>, a list of character vector containing the R commands required to generate <code>contents</code> and <code>plot</code>;
 and <code>contents</code> and <code>varname</code>, both set to <code>NULL</code> as this is not a transmitting panel.</p></li>
 <li><p><code><a href="output-generics.html">.exportOutput</a>(x, se, all_memory, all_contents)</code> will create a PDF file containing the current plot, and return a string containing the path to that PDF.
-This assumes that the <code>plot</code> field returned by <code><a href="output-generics.html">.generateOutput</a></code> is a Heatmap object.</p></li>
+This assumes that the <code>plot</code> field returned by <code><a href="output-generics.html">.generateOutput</a></code> is a <a href="https://rdrr.io/pkg/ComplexHeatmap/man/Heatmap.html" class="external-link">Heatmap</a> object.</p></li>
 </ul><p>For monitoring reactive expressions:</p><ul><li><p><code><a href="observer-generics.html">.createObservers</a>(x, se, input, session, pObjects, rObjects)</code> sets up observers for all slots described above and in the parent classes.
 This will also call the equivalent <a href="Panel-class.html">Panel</a> method.</p></li>
 <li><p><code><a href="output-generics.html">.renderOutput</a>(x, se, output, pObjects, rObjects)</code> will add a rendered plot element to <code>output</code>.

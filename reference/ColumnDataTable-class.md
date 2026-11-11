@@ -2,8 +2,10 @@
 
 The ColumnDataTable is a panel class for creating a
 [ColumnTable](https://isee.github.io/iSEE/reference/ColumnTable-class.md)
-where the value of the table is defined as the `colData` of the
-SummarizedExperiment. It provides functionality to extract the `colData`
+where the value of the table is defined as the
+[`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+of the SummarizedExperiment. It provides functionality to extract the
+[`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
 to coerce it into an appropriate data.frame in preparation for
 rendering.
 
@@ -20,8 +22,9 @@ classes.
 where any slot and its value can be passed to `...` as a named argument.
 
 Note that `ColSearch` should be a character vector of length equal to
-the total number of columns in the `colData`, though only the entries
-for the atomic fields will actually be used.
+the total number of columns in the
+[`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html),
+though only the entries for the atomic fields will actually be used.
 
 ## Supported methods
 
@@ -33,15 +36,17 @@ For setting up data values:
 
 - [`.cacheCommonInfo`](https://isee.github.io/iSEE/reference/setup-generics.md)`(x)`
   adds a `"ColumnDataTable"` entry containing `valid.colData.names`, a
-  character vector of names of atomic columns of the `colData`. This
-  will also call the equivalent
+  character vector of names of atomic columns of the
+  [`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html).
+  This will also call the equivalent
   [ColumnTable](https://isee.github.io/iSEE/reference/ColumnTable-class.md)
   method.
 
 - [`.refineParameters`](https://isee.github.io/iSEE/reference/setup-generics.md)`(x, se)`
   adjusts `ColSearch` to a character vector of length equal to the
-  number of atomic fields in the `colData`. This will also call the
-  equivalent
+  number of atomic fields in the
+  [`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html).
+  This will also call the equivalent
   [ColumnTable](https://isee.github.io/iSEE/reference/ColumnTable-class.md)
   method for further refinements to `x`.
 

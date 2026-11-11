@@ -26,10 +26,10 @@ A subset of rows from `df` with coordinates lying within `lasso`.
 
 ## Details
 
-This function uses `in.out` from the mgcv package to identify points
-within a polygon. This involves a boundary crossing algorithm that may
-not be robust in the presence of complex polygons with intersecting
-edges.
+This function uses [`in.out`](https://rdrr.io/pkg/mgcv/man/in.out.html)
+from the mgcv package to identify points within a polygon. This involves
+a boundary crossing algorithm that may not be robust in the presence of
+complex polygons with intersecting edges.
 
 ## See also
 

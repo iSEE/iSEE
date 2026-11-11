@@ -1,11 +1,11 @@
 # The Table class
 
-The Table is a virtual class for all panels containing a `datatable`
-widget from the DT package, where each row *usually* corresponds to a
-row or column of the SummarizedExperiment object. It provides observers
-for rendering the table widget, monitoring single selections, and
-applying global and column-specific searches (which serve as multiple
-selections).
+The Table is a virtual class for all panels containing a
+[`datatable`](https://rdrr.io/pkg/DT/man/datatable.html) widget from the
+DT package, where each row *usually* corresponds to a row or column of
+the SummarizedExperiment object. It provides observers for rendering the
+table widget, monitoring single selections, and applying global and
+column-specific searches (which serve as multiple selections).
 
 ## Slot overview
 
@@ -65,8 +65,9 @@ For defining reactive expressions:
   [Panel](https://isee.github.io/iSEE/reference/Panel-class.md) method.
 
 - [`.renderOutput`](https://isee.github.io/iSEE/reference/output-generics.md)`(x, se, output, pObjects, rObjects)`
-  will add a rendered `datatable` object to `output`. This will also
-  call the equivalent
+  will add a rendered
+  [`datatable`](https://rdrr.io/pkg/DT/man/datatable.html) object to
+  `output`. This will also call the equivalent
   [Panel](https://isee.github.io/iSEE/reference/Panel-class.md) method
   to render the panel information text boxes.
 
@@ -101,8 +102,8 @@ For controlling selections:
   all search filters. The value of `index` is ignored.
 
 - [`.singleSelectionValue`](https://isee.github.io/iSEE/reference/single-select-generics.md)`(x, contents)`
-  returns the name of the row that was last selected in the `datatable`
-  widget.
+  returns the name of the row that was last selected in the
+  [`datatable`](https://rdrr.io/pkg/DT/man/datatable.html) widget.
 
 For documentation:
 

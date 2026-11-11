@@ -3,10 +3,12 @@
 The SampleAssayPlot is a panel class for creating a
 [RowDotPlot](https://isee.github.io/iSEE/reference/RowDotPlot-class.md)
 where the y-axis represents the expression of a sample of interest,
-using the `assay` values of the SummarizedExperiment. It provides slots
-and methods for specifying the sample and what to plot on the x-axis, as
-well as a method to actually create a data.frame containing those pieces
-of data in preparation for plotting.
+using the
+[`assay`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+values of the SummarizedExperiment. It provides slots and methods for
+specifying the sample and what to plot on the x-axis, as well as a
+method to actually create a data.frame containing those pieces of data
+in preparation for plotting.
 
 ## Slot overview
 
@@ -39,9 +41,12 @@ The following slots control the values on the x-axis:
   can be any one of `"None"`, `"Sample name"`, `"Row data"` or
   `"Row selection"`. Defaults to `"None"`.
 
-- `XAxisColumnData`, string specifying which column of the `colData`
+- `XAxisColumnData`, string specifying which column of the
+  [`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
   should be shown on the x-axis, if `XAxis="Column data"`. Defaults to
-  the first valid `colData` field (see
+  the first valid
+  [`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+  field (see
   `?"`[`.refineParameters,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)`"`
   for details).
 

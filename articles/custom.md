@@ -1,6 +1,6 @@
 # Deploying custom panels in the iSEE interface
 
-**Compiled date**: 2026-10-28
+**Compiled date**: 2026-11-11
 
 **Last edited**: 2020-04-20
 
@@ -363,7 +363,7 @@ things that will not fit into this vignette.
 `#> [8] base     `\
 `#> `\
 `#> other attached packages:`\
-`#>  [1] iSEE_2.25.2                 scater_1.40.2              `\
+`#>  [1] iSEE_2.25.3                 scater_1.40.2              `\
 `#>  [3] ggplot2_4.0.3               scuttle_1.22.0             `\
 `#>  [5] SingleCellExperiment_1.34.0 SummarizedExperiment_1.42.0`\
 `#>  [7] Biobase_2.72.0              GenomicRanges_1.64.0       `\

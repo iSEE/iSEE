@@ -1,9 +1,10 @@
 # The ColumnTable class
 
 The ColumnTable is a virtual class where each column in the
-SummarizedExperiment is represented by no more than row in a `datatable`
-widget. In panels of this class, single and multiple selections can only
-be transmitted on the samples.
+SummarizedExperiment is represented by no more than row in a
+[`datatable`](https://rdrr.io/pkg/DT/man/datatable.html) widget. In
+panels of this class, single and multiple selections can only be
+transmitted on the samples.
 
 ## Slot overview
 

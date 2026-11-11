@@ -23,7 +23,10 @@ to populate the user interface.
 
 - x:
 
-  A data.frame or DataFrame, most typically the `rowData` or `colData`.
+  A data.frame or DataFrame, most typically the
+  [`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+  or
+  [`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html).
 
 - max_levels:
 
@@ -57,10 +60,11 @@ assay as numeric.
 `.findAtomicFields` is necessary as many of the widgets used by
 [`iSEE`](https://isee.github.io/iSEE/reference/iSEE.md) (e.g.,
 [`ggplot`](https://ggplot2.tidyverse.org/reference/ggplot.html),
-`datatable`) do not know how to handle more complex types being stored
-as columns. Similarly, `.whichNumeric` and `.whichGroupable` can be used
-to specify options for visualization modes that only make sense for
-continuous or discrete variables respectively (e.g., sizing, faceting).
+[`datatable`](https://rdrr.io/pkg/DT/man/datatable.html)) do not know
+how to handle more complex types being stored as columns. Similarly,
+`.whichNumeric` and `.whichGroupable` can be used to specify options for
+visualization modes that only make sense for continuous or discrete
+variables respectively (e.g., sizing, faceting).
 
 ## Author
 

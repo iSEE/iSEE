@@ -2,8 +2,9 @@
 
 The ColumnDataPlot is a panel class for creating a
 [ColumnDotPlot](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
-where the y-axis represents a variable from the `colData` of a
-SummarizedExperiment object. It provides slots and methods for
+where the y-axis represents a variable from the
+[`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+of a SummarizedExperiment object. It provides slots and methods for
 specifying which variable to use on the y-axis (and, optionally, also
 the x-axis), as well as a method to create the data.frame in preparation
 for plotting.
@@ -12,16 +13,18 @@ for plotting.
 
 The following slots control the column data information that is used:
 
-- `YAxis`, a string specifying the column of the `colData` to show on
-  the y-axis. If `NA`, defaults to the first valid field (see
+- `YAxis`, a string specifying the column of the
+  [`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+  to show on the y-axis. If `NA`, defaults to the first valid field (see
   `?"`[`.refineParameters,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)`"`).
 
 - `XAxis`, string specifying what should be plotting on the x-axis. This
   can be any one of `"None"`, `"Column data"` or `"Column selection"`.
   Defaults to `"None"`.
 
-- `XAxisColumnData`, string specifying the column of the `colData` to
-  show on the x-axis. If `NA`, defaults to the first valid field.
+- `XAxisColumnData`, string specifying the column of the
+  [`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+  to show on the x-axis. If `NA`, defaults to the first valid field.
 
 In addition, this class inherits all slots from its parent
 [ColumnDotPlot](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md),
@@ -43,8 +46,9 @@ For setting up data values:
 
 - [`.refineParameters`](https://isee.github.io/iSEE/reference/setup-generics.md)`(x, se)`
   returns `x` after replacing any `NA` value in `YAxis` or
-  `XAxisColumnData` with the name of the first valid `colData` variable.
-  This will also call the equivalent
+  `XAxisColumnData` with the name of the first valid
+  [`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+  variable. This will also call the equivalent
   [ColumnDotPlot](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
   method for further refinements to `x`. If no valid column metadata
   variables are available, `NULL` is returned instead.
@@ -60,13 +64,15 @@ For defining the interface:
 
 - [`.allowableXAxisChoices`](https://isee.github.io/iSEE/reference/metadata-plot-generics.md)`(x, se)`
   returns a character vector specifying the acceptable variables in
-  `colData(se)` that can be used as choices for the x-axis. This
-  consists of all variables with atomic values.
+  [`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)`(se)`
+  that can be used as choices for the x-axis. This consists of all
+  variables with atomic values.
 
 - [`.allowableYAxisChoices`](https://isee.github.io/iSEE/reference/metadata-plot-generics.md)`(x, se)`
   returns a character vector specifying the acceptable variables in
-  `colData(se)` that can be used as choices for the y-axis. This
-  consists of all variables with atomic values.
+  [`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)`(se)`
+  that can be used as choices for the y-axis. This consists of all
+  variables with atomic values.
 
 For monitoring reactive expressions:
 

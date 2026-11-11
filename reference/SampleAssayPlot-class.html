@@ -9,7 +9,7 @@ It provides slots and methods for specifying the sample and what to plot on the 
 
     <a class="navbar-brand me-2" href="../index.html">iSEE</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@ It provides slots and methods for specifying the sample and what to plot on the 
     </div>
 
     <div class="ref-description section level2">
-    <p>The SampleAssayPlot is a panel class for creating a <a href="RowDotPlot-class.html">RowDotPlot</a> where the y-axis represents the expression of a sample of interest, using the <code>assay</code> values of the SummarizedExperiment.
+    <p>The SampleAssayPlot is a panel class for creating a <a href="RowDotPlot-class.html">RowDotPlot</a> where the y-axis represents the expression of a sample of interest, using the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">assay</a></code> values of the SummarizedExperiment.
 It provides slots and methods for specifying the sample and what to plot on the x-axis, as well as a method to actually create a data.frame containing those pieces of data in preparation for plotting.</p>
     </div>
 
@@ -70,9 +70,9 @@ Defaults to <code>FALSE</code> in <code><a href="panelDefaults.html">getPanelDef
 </ul><p>The following slots control the values on the x-axis:</p><ul><li><p><code>XAxis</code>, string specifying what should be plotted on the x-axis.
 This can be any one of <code>"None"</code>, <code>"Sample name"</code>, <code>"Row data"</code> or <code>"Row selection"</code>.
 Defaults to <code>"None"</code>.</p></li>
-<li><p><code>XAxisColumnData</code>, string specifying which column of the <code>colData</code> should be shown on the x-axis,
+<li><p><code>XAxisColumnData</code>, string specifying which column of the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></code> should be shown on the x-axis,
 if <code>XAxis="Column data"</code>.
-Defaults to the first valid <code>colData</code> field (see <code>?"<a href="ColumnDotPlot-class.html">.refineParameters,ColumnDotPlot-method</a>"</code> for details).</p></li>
+Defaults to the first valid <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></code> field (see <code>?"<a href="ColumnDotPlot-class.html">.refineParameters,ColumnDotPlot-method</a>"</code> for details).</p></li>
 <li><p><code>XAaxisSampleName</code>, string specifying the name of the sample to plot on the x-axis,
 if <code>XAxis="Sample name"</code>.
 Defaults to the first column name.</p></li>

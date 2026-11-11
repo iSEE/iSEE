@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">iSEE</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +66,7 @@
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>A data.frame or DataFrame, most typically the <code>rowData</code> or <code>colData</code>.</p></dd>
+<dd><p>A data.frame or DataFrame, most typically the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></code> or <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></code>.</p></dd>
 
 
 <dt id="arg-max-levels">max_levels<a class="anchor" aria-label="anchor" href="#arg-max-levels"></a></dt>
@@ -90,7 +90,7 @@
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>.findAtomicFields</code> is necessary as many of the widgets used by <code><a href="iSEE.html">iSEE</a></code> (e.g., <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></code>, <code>datatable</code>) do not know how to handle more complex types being stored as columns.
+    <p><code>.findAtomicFields</code> is necessary as many of the widgets used by <code><a href="iSEE.html">iSEE</a></code> (e.g., <code><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></code>, <code><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">datatable</a></code>) do not know how to handle more complex types being stored as columns.
 Similarly, <code>.whichNumeric</code> and <code>.whichGroupable</code> can be used to specify options for visualization modes that only make sense for continuous or discrete variables respectively (e.g., sizing, faceting).</p>
     </div>
     <div class="section level2">

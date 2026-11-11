@@ -36,10 +36,15 @@ consecutive integer names if not available and calling
 duplicated.
 
 Various [Panel](https://isee.github.io/iSEE/reference/Panel-class.md)s
-further assume that the `assay`, `rowData`, `colData` names are unique;
-if this is not the case, `selectInput` behaves in unexpected (and
-incorrect) ways. This function enforces that as well by running them
-through [`make.unique`](https://rdrr.io/r/base/make.unique.html).
+further assume that the
+[`assay`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html),
+[`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html),
+[`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+names are unique; if this is not the case,
+[`selectInput`](https://rdrr.io/pkg/shiny/man/selectInput.html) behaves
+in unexpected (and incorrect) ways. This function enforces that as well
+by running them through
+[`make.unique`](https://rdrr.io/r/base/make.unique.html).
 
 Finally, positional information in `rowRanges` is not accessible to
 `iSEE`. This function moves this information into `rowData`, prefixing

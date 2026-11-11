@@ -9,7 +9,7 @@ It provides slots and methods to create the plot, to control various aesthetics 
 
     <a class="navbar-brand me-2" href="../index.html">iSEE</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,7 +98,7 @@ Defaults to <code>"None"</code>, i.e., no column faceting.</p></li>
 </ul><p>The following slots control any text to be shown on the plot:</p><ul><li><p><code>LabelCenters</code>, a logical scalar indicating whether the label the centers (technically medoids) of all cells in each group, where groups are defined by a discrete covariate in the relevant metadata field.
 Defaults to <code>FALSE</code>.</p></li>
 <li><p><code>LabelCentersBy</code>, a string specifying the metadata field to define the groups when <code>LabelCenters</code> is <code>TRUE</code>.
-This should be a discrete variable in <code>rowData</code> or <code>colData</code> for <a href="RowDotPlot-class.html">RowDotPlot</a>s and <a href="ColumnDotPlot-class.html">ColumnDotPlot</a>s, respectively.
+This should be a discrete variable in <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></code> or <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">colData</a></code> for <a href="RowDotPlot-class.html">RowDotPlot</a>s and <a href="ColumnDotPlot-class.html">ColumnDotPlot</a>s, respectively.
 Defaults to the name of the first column.</p></li>
 <li><p><code>LabelCentersColor</code>, a string specifying the color used for the labels at the center of each group.
 Only used when <code>LabelCenters</code> is <code>TRUE</code>.
@@ -111,7 +111,7 @@ Leading and trailing whitespace are stripped, and all text on a line after <code
 Defaults to the name of the first row/column.</p></li>
 </ul><p>The following slots control interactions with the plot image:</p><ul><li><p><code>ZoomData</code>, a named numeric vector of plot coordinates with <code>"xmin"</code>, <code>"xmax"</code>, <code>"ymin"</code> and <code>"ymax"</code> elements parameterizing the zoom boundaries.
 Defaults to an empty vector, i.e., no zoom.</p></li>
-<li><p><code>BrushData</code>, a list containing either a Shiny brush (see <code>?brushedPoints</code>) or an <span class="pkg">iSEE</span> lasso (see <code>?<a href="lassoPoints.html">lassoPoints</a></code>).
+<li><p><code>BrushData</code>, a list containing either a Shiny brush (see <code>?<a href="https://rdrr.io/pkg/shiny/man/brushedPoints.html" class="external-link">brushedPoints</a></code>) or an <span class="pkg">iSEE</span> lasso (see <code>?<a href="lassoPoints.html">lassoPoints</a></code>).
 Defaults to an empty list, i.e., no brush or lasso.</p></li>
 <li><p><code>HoverInfo</code>, a logical scalar indicating whether the feature/sample name should be shown upon mouse-over of the point.
 Defaults to <code>TRUE</code>.</p></li>

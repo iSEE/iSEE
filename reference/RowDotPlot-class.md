@@ -4,17 +4,20 @@ The RowDotPlot is a virtual class where each row in the
 SummarizedExperiment is represented by no more than one point (i.e., a
 “dot”) in a brushable
 [ggplot](https://ggplot2.tidyverse.org/reference/ggplot.html) plot. It
-provides slots and methods to extract `rowData` fields to control the
-per-point aesthetics on the plot. This panel will transmit row
-identities in both its single and multiple selections, and it can
-receive multiple row selections but not multiple column selections.
+provides slots and methods to extract
+[`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+fields to control the per-point aesthetics on the plot. This panel will
+transmit row identities in both its single and multiple selections, and
+it can receive multiple row selections but not multiple column
+selections.
 
 ## Slot overview
 
 The following slots control coloring of the points:
 
-- `ColorByRowData`, a string specifying the `rowData` field for
-  controlling point color, if `ColorBy="Row data"` (see the
+- `ColorByRowData`, a string specifying the
+  [`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+  field for controlling point color, if `ColorBy="Row data"` (see the
   [Panel](https://isee.github.io/iSEE/reference/Panel-class.md) class).
   Defaults to the first valid field (see `.cacheCommonInfo` below).
 
@@ -34,21 +37,24 @@ The following slots control coloring of the points:
 The following slots control other metadata-related aesthetic aspects of
 the points:
 
-- `ShapeByRowData`, a string specifying the `rowData` field for
-  controlling point shape, if `ShapeBy="Row data"` (see the
+- `ShapeByRowData`, a string specifying the
+  [`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+  field for controlling point shape, if `ShapeBy="Row data"` (see the
   [Panel](https://isee.github.io/iSEE/reference/Panel-class.md) class).
   The specified field should contain categorical values; defaults to the
   first such field.
 
-- `SizeByRowData`, a string specifying the `rowData` field for
-  controlling point size, if `SizeBy="Row data"` (see the
+- `SizeByRowData`, a string specifying the
+  [`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+  field for controlling point size, if `SizeBy="Row data"` (see the
   [Panel](https://isee.github.io/iSEE/reference/Panel-class.md) class).
   The specified field should contain continuous values; defaults to the
   first such field.
 
-- `TooltipRowData`, a character vector specifying `rowData` fields to
-  show in the tooltip. Defaults to \`character(0)\`, which displays only
-  the \`rownames\` value of the data point.
+- `TooltipRowData`, a character vector specifying
+  [`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+  fields to show in the tooltip. Defaults to \`character(0)\`, which
+  displays only the \`rownames\` value of the data point.
 
 In addition, this class inherits all slots from its parent
 [DotPlot](https://isee.github.io/iSEE/reference/DotPlot-class.md) and

@@ -13,7 +13,7 @@ in `x`.
 Methods for this generic are expected to return a HTML element
 containing the visual output of the panel, such as the return value of
 [`plotOutput`](https://rdrr.io/pkg/shiny/man/plotOutput.html) or
-[`dataTableOutput`](https://rdrr.io/pkg/shiny/man/renderDataTable.html).
+[`dataTableOutput`](https://rdrr.io/pkg/DT/man/dataTableOutput.html).
 This element will be shown in the iSEE interface above the parameter
 boxes for `x`. Multiple elements can be returned via a
 [`tagList`](https://rstudio.github.io/htmltools/reference/tagList.html).

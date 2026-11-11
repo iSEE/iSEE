@@ -1,7 +1,7 @@
 # Generics for table construction
 
 Generic to control the creation of a data.frame to show in the
-`datatable` widget of a
+[`datatable`](https://rdrr.io/pkg/DT/man/datatable.html) widget of a
 [Table](https://isee.github.io/iSEE/reference/Table-class.md) panel.
 [Table](https://isee.github.io/iSEE/reference/Table-class.md) subclasses
 can specialize methods to modify the behavior of
@@ -10,7 +10,8 @@ can specialize methods to modify the behavior of
 ## Constructing the table
 
 `.generateTable(x, envir)` generates the data.frame to use in the
-`datatable` widget. The following arguments are required:
+[`datatable`](https://rdrr.io/pkg/DT/man/datatable.html) widget. The
+following arguments are required:
 
 - `x`, an instance of a Table subclass.
 
@@ -23,9 +24,10 @@ can specialize methods to modify the behavior of
 
 In return, the method should add a `tab` variable in `envir` containing
 the relevant data.frame. This will automatically be passed to the
-`datatable` widget as well as being stored in `pObjects$contents`. The
-return value should be a character vector of commands that produces
-`tab` when evaluated in `envir`.
+[`datatable`](https://rdrr.io/pkg/DT/man/datatable.html) widget as well
+as being stored in `pObjects$contents`. The return value should be a
+character vector of commands that produces `tab` when evaluated in
+`envir`.
 
 Each row of the `tab` data.frame should correspond to one row or column
 in the SummarizedExperiment `envir$se` for

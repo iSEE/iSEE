@@ -1,6 +1,6 @@
 # How to use iSEE with big data
 
-**Compiled date**: 2026-10-28
+**Compiled date**: 2026-11-11
 
 **Last edited**: 2018-03-08
 
@@ -285,7 +285,7 @@ Contest](https://blog.rstudio.com/2019/04/05/first-shiny-contest-winners/).
 `#> [8] base     `\
 `#> `\
 `#> other attached packages:`\
-`#>  [1] iSEE_2.25.2                 scRNAseq_2.26.0            `\
+`#>  [1] iSEE_2.25.3                 scRNAseq_2.26.0            `\
 `#>  [3] TENxPBMCData_1.30.0         HDF5Array_1.40.0           `\
 `#>  [5] h5mread_1.4.1               rhdf5_2.56.1               `\
 `#>  [7] DelayedArray_0.38.2         SparseArray_1.12.3         `\

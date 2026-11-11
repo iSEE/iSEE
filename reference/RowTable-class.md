@@ -2,8 +2,9 @@
 
 The RowTable is a virtual class where each row in the
 SummarizedExperiment is represented by no more than one row in a
-`datatable` widget. In panels of this class, single and multiple
-selections can only be transmitted on the features.
+[`datatable`](https://rdrr.io/pkg/DT/man/datatable.html) widget. In
+panels of this class, single and multiple selections can only be
+transmitted on the features.
 
 ## Slot overview
 

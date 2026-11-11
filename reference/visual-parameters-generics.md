@@ -68,8 +68,9 @@ use of information precomputed by
 [`.cacheCommonInfo`](https://isee.github.io/iSEE/reference/setup-generics.md).
 For example,
 [`.cacheCommonInfo,ColumnDotPlot-method`](https://isee.github.io/iSEE/reference/ColumnDotPlot-class.md)
-will add vectors specifying whether a variable in the `colData` is valid
-and discrete or continuous.
+will add vectors specifying whether a variable in the
+[`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+is valid and discrete or continuous.
 
 ## Controlling `ColorBy*Data` choices
 

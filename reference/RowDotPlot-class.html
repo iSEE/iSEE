@@ -11,7 +11,7 @@ This panel will transmit row identities in both its single and multiple selectio
 
     <a class="navbar-brand me-2" href="../index.html">iSEE</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,7 +52,7 @@ This panel will transmit row identities in both its single and multiple selectio
 
     <div class="ref-description section level2">
     <p>The RowDotPlot is a virtual class where each row in the SummarizedExperiment is represented by no more than one point (i.e., a “dot”) in a brushable <a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a> plot.
-It provides slots and methods to extract <code>rowData</code> fields to control the per-point aesthetics on the plot.
+It provides slots and methods to extract <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></code> fields to control the per-point aesthetics on the plot.
 This panel will transmit row identities in both its single and multiple selections, and it can receive multiple row selections but not multiple column selections.</p>
     </div>
 
@@ -61,7 +61,7 @@ This panel will transmit row identities in both its single and multiple selectio
     <h2 id="slot-overview">Slot overview<a class="anchor" aria-label="anchor" href="#slot-overview"></a></h2>
 
 
-<p>The following slots control coloring of the points:</p><ul><li><p><code>ColorByRowData</code>, a string specifying the <code>rowData</code> field for controlling point color,
+<p>The following slots control coloring of the points:</p><ul><li><p><code>ColorByRowData</code>, a string specifying the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></code> field for controlling point color,
 if <code>ColorBy="Row data"</code> (see the <a href="Panel-class.html">Panel</a> class).
 Defaults to the first valid field (see <code>.cacheCommonInfo</code> below).</p></li>
 <li><p><code>ColorBySampleNameAssay</code>, a string specifying the assay of the SummarizedExperiment object containing values to use for coloring,
@@ -71,13 +71,13 @@ Defaults to <code>"logcounts"</code> in <code><a href="panelDefaults.html">getPa
 <li><p><code>ColorByFeatureNameColor</code>, a string specifying the color to use for coloring an individual sample on the plot,
 if <code>ColorBy="Feature name"</code>.
 Defaults to <code>"red"</code> in <code><a href="panelDefaults.html">getPanelDefault</a></code>.</p></li>
-</ul><p>The following slots control other metadata-related aesthetic aspects of the points:</p><ul><li><p><code>ShapeByRowData</code>, a string specifying the <code>rowData</code> field for controlling point shape,
+</ul><p>The following slots control other metadata-related aesthetic aspects of the points:</p><ul><li><p><code>ShapeByRowData</code>, a string specifying the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></code> field for controlling point shape,
 if <code>ShapeBy="Row data"</code> (see the <a href="Panel-class.html">Panel</a> class).
 The specified field should contain categorical values; defaults to the first such field.</p></li>
-<li><p><code>SizeByRowData</code>, a string specifying the <code>rowData</code> field for controlling point size,
+<li><p><code>SizeByRowData</code>, a string specifying the <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></code> field for controlling point size,
 if <code>SizeBy="Row data"</code> (see the <a href="Panel-class.html">Panel</a> class).
 The specified field should contain continuous values; defaults to the first such field.</p></li>
-<li><p><code>TooltipRowData</code>, a character vector specifying <code>rowData</code> fields to show in the tooltip.
+<li><p><code>TooltipRowData</code>, a character vector specifying <code><a href="https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html" class="external-link">rowData</a></code> fields to show in the tooltip.
 Defaults to `character(0)`, which displays only the `rownames` value of the data point.</p></li>
 </ul><p>In addition, this class inherits all slots from its parent <a href="DotPlot-class.html">DotPlot</a> and <a href="Panel-class.html">Panel</a> classes.</p>
     </div>

@@ -2,7 +2,8 @@
 
 The ComplexHeatmapPlot is a panel class for creating a
 [Panel](https://isee.github.io/iSEE/reference/Panel-class.md) that
-displays an assay of a SummarizedExperiment object as a `Heatmap` with
+displays an assay of a SummarizedExperiment object as a
+[`Heatmap`](https://rdrr.io/pkg/ComplexHeatmap/man/Heatmap.html) with
 features as rows and samples and columns, respectively. It provides
 slots and methods for specifying the features of interest, which assay
 to display in the main heatmap, any transformations to perform on the
@@ -29,11 +30,17 @@ The following slots control the rows that are used:
 
 The following slots control the metadata variables that are used:
 
-- `ColumnData`, a character vector specifying columns of the `colData`
-  to show as `columnAnnotation`. Defaults to `character(0)`.
+- `ColumnData`, a character vector specifying columns of the
+  [`colData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+  to show as
+  [`Heatmap`](https://rdrr.io/pkg/ComplexHeatmap/man/columnAnnotation.html).
+  Defaults to `character(0)`.
 
-- `RowData`, a character vector specifying columns of the `rowData` to
-  show as `rowAnnotation`. Defaults to `character(0)`.
+- `RowData`, a character vector specifying columns of the
+  [`rowData`](https://rdrr.io/pkg/SummarizedExperiment/man/SummarizedExperiment-class.html)
+  to show as
+  [`Heatmap`](https://rdrr.io/pkg/ComplexHeatmap/man/rowAnnotation.html).
+  Defaults to `character(0)`.
 
 - `ShowColumnSelection`, a logical vector indicating whether the column
   selection should be shown as an extra annotation bar. Defaults to
@@ -198,17 +205,19 @@ For defining the interface:
 For generating the output:
 
 - [`.generateOutput`](https://isee.github.io/iSEE/reference/output-generics.md)`(x, se, all_memory, all_contents)`
-  returns a list containing `plot`, a Heatmap object; `commands`, a list
-  of character vector containing the R commands required to generate
-  `contents` and `plot`; and `contents` and `varname`, both set to
-  `NULL` as this is not a transmitting panel.
+  returns a list containing `plot`, a
+  [Heatmap](https://rdrr.io/pkg/ComplexHeatmap/man/Heatmap.html) object;
+  `commands`, a list of character vector containing the R commands
+  required to generate `contents` and `plot`; and `contents` and
+  `varname`, both set to `NULL` as this is not a transmitting panel.
 
 - [`.exportOutput`](https://isee.github.io/iSEE/reference/output-generics.md)`(x, se, all_memory, all_contents)`
   will create a PDF file containing the current plot, and return a
   string containing the path to that PDF. This assumes that the `plot`
   field returned by
   [`.generateOutput`](https://isee.github.io/iSEE/reference/output-generics.md)
-  is a Heatmap object.
+  is a [Heatmap](https://rdrr.io/pkg/ComplexHeatmap/man/Heatmap.html)
+  object.
 
 For monitoring reactive expressions:
 

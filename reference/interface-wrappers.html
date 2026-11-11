@@ -11,7 +11,7 @@ Also responds to requests to hide a particular element via .hideInterface."></he
 
     <a class="navbar-brand me-2" href="../index.html">iSEE</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.25.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -101,7 +101,7 @@ Also responds to requests to hide a particular element via <code><a href="interf
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>The output of <code>FUN(id, ..)</code> is returned where <code>FUN</code> is set the corresponding <span class="pkg">shiny</span> function, e.g., <code><a href="https://rdrr.io/pkg/shiny/man/selectInput.html" class="external-link">selectInput</a></code> for <code>.selectInput.iSEE</code>.
 <code>id</code> is defined by concatenating <code><a href="getEncodedName.html">.getEncodedName</a>(x)</code> and <code>field</code> (separated by an underscore).</p>
-<p>If <code>.hideInterface(x, field)</code> is <code>TRUE</code>, the output is wrapped inside a <code>hidden</code> call.</p>
+<p>If <code>.hideInterface(x, field)</code> is <code>TRUE</code>, the output is wrapped inside a <code><a href="https://rdrr.io/pkg/shinyjs/man/hidden.html" class="external-link">hidden</a></code> call.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>

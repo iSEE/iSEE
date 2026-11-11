@@ -575,12 +575,12 @@ setMethod(
 #' objects
 #'
 #' This function compares a pair of \linkS4class{ExperimentColorMap} and
-#' \linkS4class{SingleCellExperiment} objects, and examines whether
+#' \linkS4class[SingleCellExperiment]{SingleCellExperiment} objects, and examines whether
 #' all of the \code{assays}, \code{colData}, and \code{rowData} defined
 #' in the ExperimentColorMap object exist in the SingleCellExperiment object.
 #'
 #' @param ecm An \linkS4class{ExperimentColorMap}.
-#' @param se A \linkS4class{SingleCellExperiment}.
+#' @param se A \linkS4class[SingleCellExperiment]{SingleCellExperiment}.
 #'
 #' @return A character vector of incompatibility error messages, if any.
 #'
@@ -682,7 +682,7 @@ checkColormapCompatibility <- function(ecm, se){
 #' This function returns an updated \linkS4class{ExperimentColorMap}
 #' in which colormaps in the \code{assays} slot
 #' are ordered to match the position of their corresponding
-#' assay in the \linkS4class{SingleCellExperiment} object.
+#' assay in the \linkS4class[SingleCellExperiment]{SingleCellExperiment} object.
 #' Assays in the SingleCellExperiment that do not have a match
 #' in the ExperimentColorMap are assigned the appropriate default colormap.
 #'
@@ -723,7 +723,7 @@ checkColormapCompatibility <- function(ecm, se){
 #' }
 #'
 #' @param ecm An \linkS4class{ExperimentColorMap}.
-#' @param se A \linkS4class{SingleCellExperiment}.
+#' @param se A \linkS4class[SingleCellExperiment]{SingleCellExperiment}.
 #'
 #' @return An \linkS4class{ExperimentColorMap} with colormaps in the
 #' \code{assay} slot synchronized to match the position of the corresponding

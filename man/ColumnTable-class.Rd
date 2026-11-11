@@ -14,7 +14,7 @@
 \alias{.showSelectionDetails,ColumnTable-method}
 \title{The ColumnTable class}
 \description{
-The ColumnTable is a virtual class where each column in the \linkS4class{SummarizedExperiment} is represented by no more than row in a \code{\link{datatable}} widget.
+The ColumnTable is a virtual class where each column in the \linkS4class[SummarizedExperiment]{SummarizedExperiment} is represented by no more than row in a \code{\link[DT:datatable]{datatable}} widget.
 In panels of this class, single and multiple selections can only be transmitted on the samples.
 }
 \section{Slot overview}{
@@ -73,7 +73,7 @@ Subclasses are expected to implement methods for:
 \item \code{\link{.panelColor}}
 }
 
-The method for \code{\link{.generateTable}} should create a \code{tab} data.frame where each row corresponds to a column in the \linkS4class{SummarizedExperiment} object.
+The method for \code{\link{.generateTable}} should create a \code{tab} data.frame where each row corresponds to a column in the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.
 }
 
 \seealso{

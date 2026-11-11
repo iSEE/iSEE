@@ -17,11 +17,11 @@
 .isAssayNumeric(se, i)
 }
 \arguments{
-\item{x}{A data.frame or \linkS4class{DataFrame}, most typically the \code{\link{rowData}} or \code{\link{colData}}.}
+\item{x}{A data.frame or \linkS4class[S4Vectors]{DataFrame}, most typically the \code{\link[SummarizedExperiment:rowData]{rowData}} or \code{\link[SummarizedExperiment:colData]{colData}}.}
 
 \item{max_levels}{Integer scalar specifying the maximum number unique values for \code{x} to be categorical.}
 
-\item{se}{The \linkS4class{SummarizedExperiment} object.}
+\item{se}{The \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.}
 
 \item{i}{An integer scalar or string specifying the assay of interest in \code{se}.}
 }
@@ -35,10 +35,10 @@ For \code{.whichGroupable}, an integer vector containing the indices of the cate
 For \code{.isAssayNumeric}, a logical scalar indicating whether the specified assay as numeric.
 }
 \description{
-Utility functions to be used in a \code{\link{.cacheCommonInfo}} method, usually to identify names of elements of the \linkS4class{SummarizedExperiment} for later use in \code{\link{.defineInterface}} to populate the user interface.
+Utility functions to be used in a \code{\link{.cacheCommonInfo}} method, usually to identify names of elements of the \linkS4class[SummarizedExperiment]{SummarizedExperiment} for later use in \code{\link{.defineInterface}} to populate the user interface.
 }
 \details{
-\code{.findAtomicFields} is necessary as many of the widgets used by \code{\link{iSEE}} (e.g., \code{\link{ggplot}}, \code{\link{datatable}}) do not know how to handle more complex types being stored as columns.
+\code{.findAtomicFields} is necessary as many of the widgets used by \code{\link{iSEE}} (e.g., \code{\link[ggplot2:ggplot]{ggplot}}, \code{\link[DT:datatable]{datatable}}) do not know how to handle more complex types being stored as columns.
 Similarly, \code{.whichNumeric} and \code{.whichGroupable} can be used to specify options for visualization modes that only make sense for continuous or discrete variables respectively (e.g., sizing, faceting).
 }
 \examples{

@@ -11,7 +11,7 @@
 #' The line is formatted as \dQuote{\bold{name:} value}.
 #'
 #' @return 
-#' \code{.generate_tooltip_html} returns an \code{\link{HTML}} element
+#' \code{.generate_tooltip_html} returns an \code{\link[htmltools:HTML]{HTML}} element
 #' that will be displayed in the tooltip.
 #' 
 #' \code{.process_tooltip_field} converts individual fields to a character

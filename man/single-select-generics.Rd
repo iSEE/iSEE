@@ -37,7 +37,7 @@ This internal list should contain at least entries with the following names:
 \item \code{source}, the name of the slot of \code{x} that indicates which transmitting panel to respond to, e.g., \code{ColorByFeatureSource} in \linkS4class{DotPlot}s.
 }
 
-For each set of responsive slots, the expected paradigm is that the user interface will contain two \code{\link{selectInput}} elements, one for each of the \code{param} and \code{source} slots.
+For each set of responsive slots, the expected paradigm is that the user interface will contain two \code{\link[shiny:selectInput]{selectInput}} elements, one for each of the \code{param} and \code{source} slots.
 Users are free to manually alter the choice of feature/sample in the \code{param}'s \code{selectInput}.
 Users are also allowed to change the identity of the transmitting panel via the \code{source}'s \code{selectInput}, which will automatically update the chosen entry in the \code{param}'s \code{selectInput} when the transmitter's single selection changes.
 
@@ -49,7 +49,7 @@ This specifies whether the slot specified by \code{param} contains the identity 
 If this is not present, no observers will be set up.
 \item \code{dynamic}, the name of the slot indicating whether the choice of transmitting panel should change dynamically.
 One example would be \code{"ColorByFeatureDynamicSource"} for \linkS4class{DotPlot}s.
-If supplied, a \code{\link{checkboxInput}} should also be present in the UI to turn on/off dynamic choices for this parameter.
+If supplied, a \code{\link[shiny:checkboxInput]{checkboxInput}} should also be present in the UI to turn on/off dynamic choices for this parameter.
 This field can be missing if the current panel does not support dynamic selection sources.
 \item \code{use_mode}, the name of the slot of \code{x} containing the current usage mode.
 This is used in cases where there are multiple choices of which only one involves using information held in \code{source}.

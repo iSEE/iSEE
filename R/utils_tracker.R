@@ -4,7 +4,7 @@
 #'
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param all_memory A list of \linkS4class{Panel}s representing the current state of the application.
-#' @param graph A \link{graph} object containing point selection links between panels.
+#' @param graph A \link[igraph:graph]{graph} object containing point selection links between panels.
 #' @param commands A list of lists of character vectors, where each internal list contains commands to generate each panel.
 #' @param varname A list of strings containing the variable name for the contents of each panel.
 #' @param se_name String containing the initial name of the SummarizedExperiment or SingleCellExperiment object.
@@ -149,7 +149,7 @@
 #'
 #' Creates a graph of the current links among all currently active panels, and plots it.
 #'
-#' @param graph A \link{graph} containing panels as nodes and directional edges as transmissions of multiple selections.
+#' @param graph A \link[igraph:graph]{graph} containing panels as nodes and directional edges as transmissions of multiple selections.
 #' @param panel_colors A named character vector of colors for each panel.
 #'
 #' @return Plots the graph representing the snapshot of links among plots/panels

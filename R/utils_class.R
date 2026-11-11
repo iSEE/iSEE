@@ -4,12 +4,12 @@
 #' The setter should only ever be called in \code{\link{.cacheCommonInfo}}.
 #' The getter can be called anywhere but most usually in \code{\link{.defineInterface}}.
 #'
-#' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' @param se A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 #' @param cls String containing the name of the class for which this information is cached.
 #' @param ... Any number of named R objects to cache.
 #'
 #' @return
-#' \code{.setCachedCommonInfo} returns \code{se} with \code{...} added to its \code{\link{int_metadata}}.
+#' \code{.setCachedCommonInfo} returns \code{se} with \code{...} added to its \code{\link[SingleCellExperiment:int_metadata]{int_metadata}}.
 #'
 #' \code{.getCachedCommonInfo} retrieves the cached common information for class \code{cls}.
 #'
@@ -54,9 +54,9 @@
 
 #' Dedicated colormap getters/setters
 #'
-#' Store/retrieve the \linkS4class{ExperimentColorMap} in the \linkS4class{SummarizedExperiment} using the caching machinery.
+#' Store/retrieve the \linkS4class{ExperimentColorMap} in the \linkS4class[SummarizedExperiment]{SummarizedExperiment} using the caching machinery.
 #'
-#' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' @param se A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 #' @param colormap A \linkS4class{ExperimentColorMap} object.
 #'
 #' @return 
@@ -108,15 +108,15 @@
 
 #' Caching utilities
 #'
-#' Utility functions to be used in a \code{\link{.cacheCommonInfo}} method, usually to identify names of elements of the \linkS4class{SummarizedExperiment} for later use in \code{\link{.defineInterface}} to populate the user interface.
+#' Utility functions to be used in a \code{\link{.cacheCommonInfo}} method, usually to identify names of elements of the \linkS4class[SummarizedExperiment]{SummarizedExperiment} for later use in \code{\link{.defineInterface}} to populate the user interface.
 #'
-#' @param x A data.frame or \linkS4class{DataFrame}, most typically the \code{\link{rowData}} or \code{\link{colData}}.
-#' @param se The \linkS4class{SummarizedExperiment} object.
+#' @param x A data.frame or \linkS4class[S4Vectors]{DataFrame}, most typically the \code{\link[SummarizedExperiment:rowData]{rowData}} or \code{\link[SummarizedExperiment:colData]{colData}}.
+#' @param se The \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.
 #' @param i An integer scalar or string specifying the assay of interest in \code{se}.
 #' @param max_levels Integer scalar specifying the maximum number unique values for \code{x} to be categorical.
 #'
 #' @details
-#' \code{.findAtomicFields} is necessary as many of the widgets used by \code{\link{iSEE}} (e.g., \code{\link{ggplot}}, \code{\link{datatable}}) do not know how to handle more complex types being stored as columns.
+#' \code{.findAtomicFields} is necessary as many of the widgets used by \code{\link{iSEE}} (e.g., \code{\link[ggplot2:ggplot]{ggplot}}, \code{\link[DT:datatable]{datatable}}) do not know how to handle more complex types being stored as columns.
 #' Similarly, \code{.whichNumeric} and \code{.whichGroupable} can be used to specify options for visualization modes that only make sense for continuous or discrete variables respectively (e.g., sizing, faceting).
 #'
 #' @return 

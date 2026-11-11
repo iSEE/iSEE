@@ -1,17 +1,17 @@
 #' The ColumnDataPlot panel
 #'
-#' The ColumnDataPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents a variable from the \code{\link{colData}} of a \linkS4class{SummarizedExperiment} object.
+#' The ColumnDataPlot is a panel class for creating a \linkS4class{ColumnDotPlot} where the y-axis represents a variable from the \code{\link[SummarizedExperiment:colData]{colData}} of a \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.
 #' It provides slots and methods for specifying which variable to use on the y-axis (and, optionally, also the x-axis), as well as a method to create the data.frame in preparation for plotting.
 #'
 #' @section Slot overview:
 #' The following slots control the column data information that is used:
 #' \itemize{
-#' \item \code{YAxis}, a string specifying the column of the \code{\link{colData}} to show on the y-axis.
+#' \item \code{YAxis}, a string specifying the column of the \code{\link[SummarizedExperiment:colData]{colData}} to show on the y-axis.
 #' If \code{NA}, defaults to the first valid field (see \code{?"\link{.refineParameters,ColumnDotPlot-method}"}).
 #' \item \code{XAxis}, string specifying what should be plotting on the x-axis.
 #' This can be any one of \code{"None"}, \code{"Column data"} or \code{"Column selection"}.
 #' Defaults to \code{"None"}.
-#' \item \code{XAxisColumnData}, string specifying the column of the \code{\link{colData}} to show on the x-axis.
+#' \item \code{XAxisColumnData}, string specifying the column of the \code{\link[SummarizedExperiment:colData]{colData}} to show on the x-axis.
 #' If \code{NA}, defaults to the first valid field.
 #' }
 #'
@@ -26,7 +26,7 @@
 #'
 #' For setting up data values:
 #' \itemize{
-#' \item \code{\link{.refineParameters}(x, se)} returns \code{x} after replacing any \code{NA} value in \code{YAxis} or \code{XAxisColumnData} with the name of the first valid \code{\link{colData}} variable.
+#' \item \code{\link{.refineParameters}(x, se)} returns \code{x} after replacing any \code{NA} value in \code{YAxis} or \code{XAxisColumnData} with the name of the first valid \code{\link[SummarizedExperiment:colData]{colData}} variable.
 #' This will also call the equivalent \linkS4class{ColumnDotPlot} method for further refinements to \code{x}.
 #' If no valid column metadata variables are available, \code{NULL} is returned instead.
 #' }
@@ -35,9 +35,9 @@
 #' \itemize{
 #' \item \code{\link{.defineDataInterface}(x, se, select_info)} returns a list of interface elements for manipulating all slots described above.
 #' \item \code{\link{.panelColor}(x)} will return the specified default color for this panel class.
-#' \item \code{\link{.allowableXAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{colData}(se)} that can be used as choices for the x-axis. 
+#' \item \code{\link{.allowableXAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link[SummarizedExperiment:colData]{colData}(se)} that can be used as choices for the x-axis. 
 #' This consists of all variables with atomic values.
-#' \item \code{\link{.allowableYAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link{colData}(se)} that can be used as choices for the y-axis. 
+#' \item \code{\link{.allowableYAxisChoices}(x, se)} returns a character vector specifying the acceptable variables in \code{\link[SummarizedExperiment:colData]{colData}(se)} that can be used as choices for the y-axis. 
 #' This consists of all variables with atomic values.
 #' }
 #'

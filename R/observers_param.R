@@ -72,7 +72,7 @@
 #' @inheritParams .create_box_observers
 #' @param fields Character vector of names of parameters for which to set up observers.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
-#' @param ignoreInit,ignoreNULL Further arguments to pass to \code{\link{observeEvent}}.
+#' @param ignoreInit,ignoreNULL Further arguments to pass to \code{\link[shiny:observeEvent]{observeEvent}}.
 #'
 #' @return
 #' Observers are set up to monitor the UI elements that can change the protected and non-fundamental parameters.

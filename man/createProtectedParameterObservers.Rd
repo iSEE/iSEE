@@ -36,7 +36,7 @@
 
 \item{rObjects}{A reactive list of values generated in the \code{\link{iSEE}} app.}
 
-\item{ignoreInit, ignoreNULL}{Further arguments to pass to \code{\link{observeEvent}}.}
+\item{ignoreInit, ignoreNULL}{Further arguments to pass to \code{\link[shiny:observeEvent]{observeEvent}}.}
 }
 \value{
 Observers are set up to monitor the UI elements that can change the protected and non-fundamental parameters.

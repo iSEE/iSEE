@@ -8,7 +8,7 @@
 #' @param session The Shiny session object from the server function.
 #' @param input The Shiny input object from the server function.
 #' @param output The Shiny output object from the server function.
-#' @param se The \linkS4class{SummarizedExperiment} object.
+#' @param se The \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.
 #'

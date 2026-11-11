@@ -14,10 +14,10 @@ These generics are related to the initial setup of the \pkg{iSEE} application.
 The following arguments are required:
 \itemize{
 \item \code{x}, an instance of a \linkS4class{Panel} class.
-\item \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset.
+\item \code{se}, the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 }
 
-It is expected to return \code{se} with (optionally) extra fields added to \code{\link{int_metadata}(se)$iSEE}.
+It is expected to return \code{se} with (optionally) extra fields added to \code{\link[SingleCellExperiment:int_metadata]{int_metadata}(se)$iSEE}.
 Each field should be named according to the class name and contain some common information that is constant for all instances of the class of \code{x} - see \code{\link{.setCachedCommonInfo}} for an appropriate setter utility.
 The goal is to avoid repeated recomputation of required values when creating user interface elements or observers that respond to those elements.
 
@@ -36,7 +36,7 @@ This is because the code tracker does not capture the code used to construct the
 The following arguments are required:
 \itemize{
 \item \code{x}, an instance of a \linkS4class{Panel} class.
-\item \code{se}, the \linkS4class{SummarizedExperiment} object containing the current dataset.
+\item \code{se}, the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 }
 
 Methods for this generic should return a copy of \code{x} where slots with invalid values are replaced with appropriate entries from \code{se}.
@@ -50,7 +50,7 @@ typically by using \code{\link{.getCachedCommonInfo}} to extract the cached set 
 Of course, any slots that are not \code{se}-dependent should just be set at construction and checked by the validity method.
 
 It is also possible for this generic to return \code{NULL}, which is used as an indicator that \code{se} does not contain information to meaningfully show any instance of the class of \code{x} in the \pkg{iSEE} app.
-For example, the method for \linkS4class{ReducedDimensionPlot} will return \code{NULL} if \code{se} is not a \linkS4class{SingleCellExperiment} containing some dimensionality reduction results.
+For example, the method for \linkS4class{ReducedDimensionPlot} will return \code{NULL} if \code{se} is not a \linkS4class[SingleCellExperiment]{SingleCellExperiment} containing some dimensionality reduction results.
 }
 
 \author{

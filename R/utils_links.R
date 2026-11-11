@@ -4,7 +4,7 @@
 #'
 #' @param all_memory A named list of \linkS4class{Panel} objects representing the current state of the application.
 #'
-#' @return A \link{graph} object containing one node per panel and one directed edge from parent to child.
+#' @return A \link[igraph:graph]{graph} object containing one node per panel and one directed edge from parent to child.
 #' Each edge has a \code{fields} attribute specifying the slot in the child to which the transmission is directed.
 #' 
 #' @author Aaron Lun
@@ -63,12 +63,12 @@
 #'
 #' Add or remote inter-panel links that reflect single or multiple selections.
 #'
-#' @param graph A \link{graph} object containing one node per panel in the app.
+#' @param graph A \link[igraph:graph]{graph} object containing one node per panel in the app.
 #' @param panel_name String containing the name of the receiving panel.
 #' @param parent_name String containing the name of the transmitting (parent) panel.
 #' @param field String containing the name of the slot that is modified by the transmission.
 #'
-#' @return A \link{graph} where the requested link is added or removed.
+#' @return A \link[igraph:graph]{graph} where the requested link is added or removed.
 #'
 #' @details
 #' Adding a link will either create an edge with the \code{fields} attribute set to \code{field}.
@@ -121,7 +121,7 @@
 #'
 #' Identifies the receiving panels that need to be updated when a transmitting panel updates its multiple/single selection.
 #'
-#' @param graph A \link{graph} object with panel names as the vertices, see \code{\link{.spawn_multi_selection_graph}}.
+#' @param graph A \link[igraph:graph]{graph} object with panel names as the vertices, see \code{\link{.spawn_multi_selection_graph}}.
 #' @param panel_name A string containing the encoded name of the current transmitting panel.
 #'
 #' @return A character vector of names for all panels that need to be updated.

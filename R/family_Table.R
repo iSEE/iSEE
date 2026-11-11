@@ -1,6 +1,6 @@
 #' The Table class
 #'
-#' The Table is a virtual class for all panels containing a \code{\link{datatable}} widget from the \pkg{DT} package, where each row \emph{usually} corresponds to a row or column of the \linkS4class{SummarizedExperiment} object.
+#' The Table is a virtual class for all panels containing a \code{\link[DT:datatable]{datatable}} widget from the \pkg{DT} package, where each row \emph{usually} corresponds to a row or column of the \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.
 #' It provides observers for rendering the table widget, monitoring single selections, and applying global and column-specific searches (which serve as multiple selections).
 #'
 #' @section Slot overview:
@@ -30,7 +30,7 @@
 #'
 #' For defining the interface:
 #' \itemize{
-#' \item \code{\link{.defineOutput}(x)} returns a UI element for a \code{\link[DT]{dataTableOutput}} widget.
+#' \item \code{\link{.defineOutput}(x)} returns a UI element for a \code{\link[DT:dataTableOutput]{dataTableOutput}} widget.
 #' \item \code{\link{.defineDataInterface}(x)} will create interface elements for modifying the table,
 #' namely to choose which columns to hide.
 #' Note that this is populated by \code{\link{.generateOutput}} upon table rendering,
@@ -41,7 +41,7 @@
 #' \itemize{
 #' \item \code{\link{.createObservers}(x, se, input, session, pObjects, rObjects)} sets up observers for all of the slots.
 #' This will also call the equivalent \linkS4class{Panel} method.
-#' \item \code{\link{.renderOutput}(x, se, output, pObjects, rObjects)} will add a rendered \code{\link{datatable}} object to \code{output}.
+#' \item \code{\link{.renderOutput}(x, se, output, pObjects, rObjects)} will add a rendered \code{\link[DT:datatable]{datatable}} object to \code{output}.
 #' This will also call the equivalent \linkS4class{Panel} method to render the panel information text boxes.
 #' \item \code{\link{.generateOutput}(x, se, all_memory, all_contents)} returns a list containing \code{contents}, a data.frame with one row per point currently present in the table;
 #' \code{commands}, a list of character vector containing the R commands required to generate \code{contents} and \code{plot};
@@ -58,7 +58,7 @@
 #' If both contain only empty strings, a \code{NULL} is returned instead.
 #' \item \code{\link{.multiSelectionCommands}(x, index)} returns a character vector of R expressions that - when evaluated - return a character vector of the row names of the table after applying all search filters.
 #' The value of \code{index} is ignored.
-#' \item \code{\link{.singleSelectionValue}(x, contents)} returns the name of the row that was last selected in the \code{\link{datatable}} widget.
+#' \item \code{\link{.singleSelectionValue}(x, contents)} returns the name of the row that was last selected in the \code{\link[DT:datatable]{datatable}} widget.
 #' }
 #'
 #' For documentation:

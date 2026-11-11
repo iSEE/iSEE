@@ -16,9 +16,9 @@ An overview of the generics for defining the panel outputs, along with recommend
 \code{.defineOutput(x)} defines the output element of the panel (e.g., a plot or table widget),
 given an instance of a \linkS4class{Panel} subclass in \code{x}.
 
-Methods for this generic are expected to return a HTML element containing the visual output of the panel, such as the return value of \code{\link{plotOutput}} or \code{\link{dataTableOutput}}.
+Methods for this generic are expected to return a HTML element containing the visual output of the panel, such as the return value of \code{\link[shiny:plotOutput]{plotOutput}} or \code{\link[DT:dataTableOutput]{dataTableOutput}}.
 This element will be shown in the \pkg{iSEE} interface above the parameter boxes for \code{x}.
-Multiple elements can be returned via a \code{\link{tagList}}.
+Multiple elements can be returned via a \code{\link[htmltools:tagList]{tagList}}.
 
 The IDs of the output elements are expected to be prefixed with the panel name from \code{\link{.getEncodedName}(x)} and an underscore, e.g., \code{"ReducedDimensionPlot1_someOutput"}.
 One of the output elements may simply have the ID set to \code{PANEL} alone;
@@ -31,7 +31,7 @@ this is usually the case for simple panels with one primary output like a \linkS
 The following arguments are required:
 \itemize{
 \item \code{x}, an instance of a \linkS4class{Panel} class.
-\item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
+\item \code{se}, a \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 \item \code{...}, further arguments that may be used by specific methods.
 \item \code{output}, the Shiny output object from the server function.
 \item \code{pObjects}, an environment containing global parameters generated in the \code{\link{iSEE}} app.
@@ -39,7 +39,7 @@ The following arguments are required:
 }
 
 It is expected to attach one or more reactive expressions to \code{output} to render the output element(s) defined by \code{.defineOutput}.
-This is typically done by calling \pkg{shiny} rendering functions like \code{\link{renderPlot}} or the most appropriate equivalent for the panel's output. 
+This is typically done by calling \pkg{shiny} rendering functions like \code{\link[shiny:renderPlot]{renderPlot}} or the most appropriate equivalent for the panel's output. 
 The return value of this generic is not used; only the side-effect of the reactive output set-up is relevant.
 
 The rendering expression inside the chosen rendering function is expected to:
@@ -58,7 +58,7 @@ This is used for code reporting, and again, is only strictly necessary if the pa
 }
 
 We strongly recommend calling \code{\link{.retrieveOutput}} within the rendering expression, which will automatically perform all of the tasks above, rather than calling \code{\link{.generateOutput}} manually.
-By doing so, the only extra work required of the rendering expression is to actually render the output (e.g., by \code{print}ing a \link{ggplot} object).
+By doing so, the only extra work required of the rendering expression is to actually render the output (e.g., by \code{print}ing a \link[ggplot2:ggplot]{ggplot} object).
 Of course, the rendering expression must itself be encapsulated by an appropriate rendering function assigned to \code{output}.
 
 Developers should not attempt to modify \code{x} in any rendering expression.
@@ -73,7 +73,7 @@ Any adjustment of parameters should be handled elsewhere, e.g., by the observer 
 The following arguments are required:
 \itemize{
 \item \code{x}, an instance of a \linkS4class{Panel} class.
-\item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
+\item \code{se}, a \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 \item \code{all_memory}, a named list containing \linkS4class{Panel} objects parameterizing the current state of the app.
 \item \code{all_contents}, a named list containing the contents of each panel.
 }
@@ -84,7 +84,7 @@ Methods for this generic should return a list containing:
 The values therein are used by \code{\link{.multiSelectionCommands}} to determine the multiple row/column selection in \code{x} to be transmitted to other (child) panels.
 The app will ensure that the \code{pObjects$contents} of each panel is populated before attempting to render their children. 
 \code{contents} may be set to \code{NULL} if \code{x} does not transmit, i.e., \code{\link{.multiSelectionDimension}} returns \code{"none"}.
-\item \code{commands}, a list of character vectors of R commands that, when executed, produces the contents of the panel and any displayed output (e.g., a \link{ggplot} object).
+\item \code{commands}, a list of character vectors of R commands that, when executed, produces the contents of the panel and any displayed output (e.g., a \link[ggplot2:ggplot]{ggplot} object).
 Developers should write these commands as if the evaluation environment only contains the SummarizedExperiment \code{se} and ExperimentColorMap \code{colormap}.
 It may also contain \code{col_selected}, if a multiple column selection is being transmitted to \code{x};
 and possibly \code{row_selected}, if a multiple row selection is being transmitted to \code{x}.
@@ -108,7 +108,7 @@ It would be unusual and inadvisable to use these arguments for any other informa
 The following arguments are required:
 \itemize{
 \item \code{x}, an instance of a \linkS4class{Panel} class.
-\item \code{se}, a \linkS4class{SummarizedExperiment} object containing the current dataset.
+\item \code{se}, a \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 \item \code{all_memory}, a named list containing \linkS4class{Panel} objects parameterizing the current state of the app.
 \item \code{all_contents}, a named list containing the contents of each panel.
 }

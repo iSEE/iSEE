@@ -9,7 +9,7 @@ synchronizeAssays(ecm, se)
 \arguments{
 \item{ecm}{An \linkS4class{ExperimentColorMap}.}
 
-\item{se}{A \linkS4class{SingleCellExperiment}.}
+\item{se}{A \linkS4class[SingleCellExperiment]{SingleCellExperiment}.}
 }
 \value{
 An \linkS4class{ExperimentColorMap} with colormaps in the
@@ -20,7 +20,7 @@ assay in the SingleCellExperiment.
 This function returns an updated \linkS4class{ExperimentColorMap}
 in which colormaps in the \code{assays} slot
 are ordered to match the position of their corresponding
-assay in the \linkS4class{SingleCellExperiment} object.
+assay in the \linkS4class[SingleCellExperiment]{SingleCellExperiment} object.
 Assays in the SingleCellExperiment that do not have a match
 in the ExperimentColorMap are assigned the appropriate default colormap.
 }

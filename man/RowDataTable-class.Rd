@@ -12,8 +12,8 @@
 \alias{.definePanelTour,RowDataTable-method}
 \title{The RowDataTable panel}
 \description{
-The RowDataTable is a panel class for creating a \linkS4class{ColumnTable} where the value of the table is defined as the \code{\link{rowData}} of the \linkS4class{SummarizedExperiment}.
-It provides functionality to extract the \code{\link{rowData}} to coerce it into an appropriate data.frame in preparation for rendering.
+The RowDataTable is a panel class for creating a \linkS4class{ColumnTable} where the value of the table is defined as the \code{\link[SummarizedExperiment:rowData]{rowData}} of the \linkS4class[SummarizedExperiment]{SummarizedExperiment}.
+It provides functionality to extract the \code{\link[SummarizedExperiment:rowData]{rowData}} to coerce it into an appropriate data.frame in preparation for rendering.
 }
 \section{Slot overview}{
 
@@ -24,7 +24,7 @@ This class inherits all slots from its parent \linkS4class{ColumnTable} and \lin
 
 \code{RowDataTable(...)} creates an instance of a RowDataTable class, where any slot and its value can be passed to \code{...} as a named argument.
 
-Note that \code{ColSearch} should be a character vector of length equal to the total number of columns in the \code{\link{rowData}}, though only the entries for the atomic fields will actually be used.
+Note that \code{ColSearch} should be a character vector of length equal to the total number of columns in the \code{\link[SummarizedExperiment:rowData]{rowData}}, though only the entries for the atomic fields will actually be used.
 }
 
 \section{Supported methods}{
@@ -34,9 +34,9 @@ Refer to the documentation for each method for more details on the remaining arg
 
 For setting up data values:
 \itemize{
-\item \code{\link{.cacheCommonInfo}(x)} adds a \code{"RowDataTable"} entry containing \code{valid.rowData.names}, a character vector of names of atomic columns of the \code{\link{rowData}}.
+\item \code{\link{.cacheCommonInfo}(x)} adds a \code{"RowDataTable"} entry containing \code{valid.rowData.names}, a character vector of names of atomic columns of the \code{\link[SummarizedExperiment:rowData]{rowData}}.
 This will also call the equivalent \linkS4class{ColumnTable} method.
-\item \code{\link{.refineParameters}(x, se)} adjusts \code{ColSearch} to a character vector of length equal to the number of atomic fields in the \code{\link{rowData}}.
+\item \code{\link{.refineParameters}(x, se)} adjusts \code{ColSearch} to a character vector of length equal to the number of atomic fields in the \code{\link[SummarizedExperiment:rowData]{rowData}}.
 This will also call the equivalent \linkS4class{ColumnTable} method for further refinements to \code{x}.
 }
 

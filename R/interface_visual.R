@@ -4,7 +4,7 @@
 #'
 #' @param x A DataFrame with one row, containing the parameter choices for the current plot.
 #' @param select_info A list of character vectors named \code{row} and \code{column} which specifies the names of panels available for transmitting single selections on the rows/columns.
-#' @param se A \linkS4class{SummarizedExperiment} object after running \code{\link{.cacheCommonInfo}}.
+#' @param se A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object after running \code{\link{.cacheCommonInfo}}.
 #'
 #' @return
 #' A HTML tag object containing a \code{\link{collapseBox}} with visual parameters for row- or column-based plots.
@@ -89,7 +89,7 @@
 #' Define the available colouring options for row- or column-based plots,
 #' where availability is defined on the presence of the appropriate data in a SingleCellExperiment object.
 #'
-#' @param se A \linkS4class{SummarizedExperiment} object.
+#' @param se A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object.
 #' @param covariates Character vector of available covariates to use for coloring.
 #' @param assay_names Character vector of available assay names to use for coloring.
 #'
@@ -136,7 +136,7 @@
 #' Create a visual parameter box for heatmap plots, i.e., where features are rows and samples are columns.
 #'
 #' @param x A DataFrame with one row, containing the parameter choices for the current plot.
-#' @param se A \linkS4class{SummarizedExperiment} object after running \code{\link{.cacheCommonInfo}}.
+#' @param se A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object after running \code{\link{.cacheCommonInfo}}.
 #'
 #' @return
 #' A HTML tag object containing a \code{\link{collapseBox}} with visual parameters for heatmap plots.

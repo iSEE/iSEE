@@ -10,7 +10,7 @@
 #' The observer will also decide whether child panels need to be regenerated
 #' based on the panels that have been marked as modified.
 #'
-#' @param se A \linkS4class{SummarizedExperiment} object containing the current dataset.
+#' @param se A \linkS4class[SummarizedExperiment]{SummarizedExperiment} object containing the current dataset.
 #' @param session The Shiny session object from the server function.
 #' @param pObjects An environment containing global parameters generated in the \code{\link{iSEE}} app.
 #' @param rObjects A reactive list of values generated in the \code{\link{iSEE}} app.

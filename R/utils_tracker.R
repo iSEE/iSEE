@@ -33,8 +33,8 @@
         .track_selection_code(pObjects$memory),
 
         .track_plotting_code(pObjects$memory, pObjects$selection_links, pObjects$commands, pObjects$varname),
-
-        strrep("#", 80),
+        
+        "# About this session --------------------",
         "## To guarantee the reproducibility of your code, you should also",
         "## record the output of sessionInfo()",
         "sessionInfo()")
@@ -73,17 +73,17 @@
 
     tracked_code <- list(character(0), character(0))
     if (any(lengths(brush_code) > 0)) {
-        tracked_code[[1]] <- c(strrep("#", 80),
-            "# Defining brushes",
-            strrep("#", 80), "",
+        tracked_code[[1]] <- c(
+            "# Defining brushes --------------------",
+            "",
             "all_active <- list()",
             unlist(brush_code), "")
     }
 
     if (any(lengths(history_code) > 0)) {
-        tracked_code[[2]] <- c(strrep("#", 80),
-            "# Defining selection histories",
-            strrep("#", 80), "",
+        tracked_code[[2]] <- c(
+            "# Defining selection histories --------------------",
+            "",
             "all_saved <- list()",
             unlist(history_code), "")
     }
@@ -99,10 +99,9 @@
 
     for (panel_name in ordering) {
         instance <- all_memory[[panel_name]]
-        header_comments <- c(strrep("#", 80),
-            paste("##", .getFullName(instance)),
-            strrep("#", 80),
-            "")
+        header_comments <- c(
+            paste("##", .getFullName(instance), "--------------------")
+        )
 
         # Adding the plotting commands.
         collated <- character(0)
@@ -122,7 +121,8 @@
         all_tracks[[panel_name]] <- c(header_comments, collated)
     }
 
-    unlist(all_tracks)
+    c("# Recording the panel outputs --------------------", "", 
+      unlist(all_tracks))
 }
 
 #' Deparse R expressions for viewing
@@ -180,15 +180,15 @@
 #' @seealso
 #' \code{\link{iSEE}}
 .report_memory <- function(all_memory) {
-    collected <- list("initial <- list()")
+    collected <- list(
+      "# iSEE initial configuration --------------------", 
+      "initial <- list()")
 
     for (i in names(all_memory)) {
         panel <- all_memory[[i]]
         collected[[i]] <- list(
             "",
-            strrep("#", 80),
-            sprintf("# Settings for %s", .getFullName(panel)),
-            strrep("#", 80), "",
+            sprintf("## Settings for %s --------------------", .getFullName(panel)),
             paste(
                 sprintf("initial[[%s]] <-", deparse(i)),
                 paste(deparse(panel), collapse="\n")

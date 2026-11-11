@@ -1,3 +1,9 @@
+# iSEE 2.25.4
+
+* The exported code for the outputs and the panel configurations has now a bit of 
+structure that can be better captured in the outline functionaltiy within an IDE
+such as RStudio
+
 # iSEE 2.23.1
 
 * Use linewidth to set width of lines in plots, require ggplot2 >= 3.4

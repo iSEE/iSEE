@@ -84,11 +84,11 @@
 #' @author Aaron Lun
 #'
 #' @rdname INTERNAL_interpanel_link
-#' @importFrom igraph add_edges get.edge.ids E E<- V
+#' @importFrom igraph add_edges get_edge_ids E E<- V
 #' @importFrom stats setNames
 .add_interpanel_link <- function(graph, panel_name, parent_name, field) {
     if (parent_name %in% names(V(graph))) { # implicitly protects against noSelection *and* recently deleted panels.
-        idx <- get.edge.ids(graph, c(parent_name, panel_name))
+        idx <- get_edge_ids(graph, c(parent_name, panel_name))
         if (idx==0L) {
             graph <- add_edges(graph, c(parent_name, panel_name), attr=list(fields=list(field)))
         } else {
@@ -99,10 +99,10 @@
 }
 
 #' @rdname INTERNAL_interpanel_link
-#' @importFrom igraph E<- E delete_edges
+#' @importFrom igraph E<- E delete_edges get_edge_ids
 .delete_interpanel_link <- function(graph, panel_name, parent_name, field) {
     if (parent_name %in% names(V(graph))) { # implicitly protects against noSelection *and* recently deleted panels.
-        idx <- get.edge.ids(graph, c(parent_name, panel_name))
+        idx <- get_edge_ids(graph, c(parent_name, panel_name))
         if (idx!=0L) {
             fields <- E(graph)$fields[[idx]]
             remaining <- setdiff(fields, field)
@@ -137,7 +137,7 @@
 #'
 #' @author Aaron Lun
 #' @rdname INTERNAL_get_direct_children
-#' @importFrom igraph adjacent_vertices get.edge.ids
+#' @importFrom igraph adjacent_vertices get_edge_ids
 .get_direct_children <- function(graph, panel_name) {
     children <- names(adjacent_vertices(graph, panel_name, mode="out")[[1]])
     children <- setdiff(children, panel_name) # self-updates are handled elsewhere.
@@ -146,7 +146,7 @@
         return(list())
     }
 
-    ids <- get.edge.ids(graph, as.vector(rbind(panel_name, children)))
+    ids <- get_edge_ids(graph, as.vector(rbind(panel_name, children)))
     output <- E(graph)$fields[ids]
     names(output) <- children
     output    
